@@ -1,17 +1,15 @@
-﻿using Ether.Network.Packets;
+﻿using Kermalis.EndianBinaryIO;
 using Kermalis.PokemonBattleEngine.Battle;
 using Kermalis.PokemonBattleEngine.Data;
-using System;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.IO;
 
 namespace Kermalis.PokemonBattleEngine.Packets
 {
-    public sealed class PBEIllusionPacket : INetPacket
+    public sealed class PBEIllusionPacket : IPBEPacket
     {
-        public const short Code = 0x25;
-        public ReadOnlyCollection<byte> Buffer { get; }
+        public const ushort Code = 0x25;
+        public ReadOnlyCollection<byte> Data { get; }
 
         public PBEFieldPosition Pokemon { get; }
         public PBETeam PokemonTeam { get; }
@@ -25,34 +23,34 @@ namespace Kermalis.PokemonBattleEngine.Packets
 
         internal PBEIllusionPacket(PBEPokemon pokemon)
         {
-            var bytes = new List<byte>();
-            bytes.AddRange(BitConverter.GetBytes(Code));
-            bytes.Add((byte)(Pokemon = pokemon.FieldPosition));
-            bytes.Add((PokemonTeam = pokemon.Team).Id);
-            bytes.Add((byte)(ActualGender = pokemon.Gender));
-            PBEUtils.StringToBytes(bytes, ActualNickname = pokemon.Nickname);
-            bytes.Add((byte)((ActualShiny = pokemon.Shiny) ? 1 : 0));
-            bytes.AddRange(BitConverter.GetBytes((ushort)(ActualSpecies = pokemon.Species)));
-            bytes.Add((byte)(ActualType1 = pokemon.Type1));
-            bytes.Add((byte)(ActualType2 = pokemon.Type2));
-            bytes.AddRange(BitConverter.GetBytes(ActualWeight = pokemon.Weight));
-            bytes.InsertRange(0, BitConverter.GetBytes((short)bytes.Count));
-            Buffer = new ReadOnlyCollection<byte>(bytes);
+            using (var ms = new MemoryStream())
+            using (var w = new EndianBinaryWriter(ms, encoding: EncodingType.UTF16))
+            {
+                w.Write(Code);
+                w.Write(Pokemon = pokemon.FieldPosition);
+                w.Write((PokemonTeam = pokemon.Team).Id);
+                w.Write(ActualGender = pokemon.Gender);
+                w.Write(ActualNickname = pokemon.Nickname, true);
+                w.Write(ActualShiny = pokemon.Shiny);
+                w.Write(ActualSpecies = pokemon.Species);
+                w.Write(ActualType1 = pokemon.Type1);
+                w.Write(ActualType2 = pokemon.Type2);
+                w.Write(ActualWeight = pokemon.Weight);
+                Data = new ReadOnlyCollection<byte>(ms.ToArray());
+            }
         }
-        internal PBEIllusionPacket(ReadOnlyCollection<byte> buffer, BinaryReader r, PBEBattle battle)
+        internal PBEIllusionPacket(byte[] data, EndianBinaryReader r, PBEBattle battle)
         {
-            Buffer = buffer;
-            Pokemon = (PBEFieldPosition)r.ReadByte();
+            Data = new ReadOnlyCollection<byte>(data);
+            Pokemon = r.ReadEnum<PBEFieldPosition>();
             PokemonTeam = battle.Teams[r.ReadByte()];
-            ActualGender = (PBEGender)r.ReadByte();
-            ActualNickname = PBEUtils.StringFromBytes(r);
+            ActualGender = r.ReadEnum<PBEGender>();
+            ActualNickname = r.ReadStringNullTerminated();
             ActualShiny = r.ReadBoolean();
-            ActualSpecies = (PBESpecies)r.ReadUInt16();
-            ActualType1 = (PBEType)r.ReadByte();
-            ActualType2 = (PBEType)r.ReadByte();
+            ActualSpecies = r.ReadEnum<PBESpecies>();
+            ActualType1 = r.ReadEnum<PBEType>();
+            ActualType2 = r.ReadEnum<PBEType>();
             ActualWeight = r.ReadDouble();
         }
-
-        public void Dispose() { }
     }
 }

@@ -1,17 +1,15 @@
-﻿using Ether.Network.Packets;
+﻿using Kermalis.EndianBinaryIO;
 using Kermalis.PokemonBattleEngine.Battle;
 using Kermalis.PokemonBattleEngine.Data;
-using System;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.IO;
 
 namespace Kermalis.PokemonBattleEngine.Packets
 {
-    public sealed class PBEMoveMissedPacket : INetPacket
+    public sealed class PBEMoveMissedPacket : IPBEPacket
     {
-        public const short Code = 0x0D;
-        public ReadOnlyCollection<byte> Buffer { get; }
+        public const ushort Code = 0x0D;
+        public ReadOnlyCollection<byte> Data { get; }
 
         public PBEFieldPosition MoveUser { get; }
         public PBETeam MoveUserTeam { get; }
@@ -20,24 +18,24 @@ namespace Kermalis.PokemonBattleEngine.Packets
 
         internal PBEMoveMissedPacket(PBEPokemon moveUser, PBEPokemon pokemon2)
         {
-            var bytes = new List<byte>();
-            bytes.AddRange(BitConverter.GetBytes(Code));
-            bytes.Add((byte)(MoveUser = moveUser.FieldPosition));
-            bytes.Add((MoveUserTeam = moveUser.Team).Id);
-            bytes.Add((byte)(Pokemon2 = pokemon2.FieldPosition));
-            bytes.Add((Pokemon2Team = pokemon2.Team).Id);
-            bytes.InsertRange(0, BitConverter.GetBytes((short)bytes.Count));
-            Buffer = new ReadOnlyCollection<byte>(bytes);
+            using (var ms = new MemoryStream())
+            using (var w = new EndianBinaryWriter(ms, encoding: EncodingType.UTF16))
+            {
+                w.Write(Code);
+                w.Write(MoveUser = moveUser.FieldPosition);
+                w.Write((MoveUserTeam = moveUser.Team).Id);
+                w.Write(Pokemon2 = pokemon2.FieldPosition);
+                w.Write((Pokemon2Team = pokemon2.Team).Id);
+                Data = new ReadOnlyCollection<byte>(ms.ToArray());
+            }
         }
-        internal PBEMoveMissedPacket(ReadOnlyCollection<byte> buffer, BinaryReader r, PBEBattle battle)
+        internal PBEMoveMissedPacket(byte[] data, EndianBinaryReader r, PBEBattle battle)
         {
-            Buffer = buffer;
-            MoveUser = (PBEFieldPosition)r.ReadByte();
+            Data = new ReadOnlyCollection<byte>(data);
+            MoveUser = r.ReadEnum<PBEFieldPosition>();
             MoveUserTeam = battle.Teams[r.ReadByte()];
-            Pokemon2 = (PBEFieldPosition)r.ReadByte();
+            Pokemon2 = r.ReadEnum<PBEFieldPosition>();
             Pokemon2Team = battle.Teams[r.ReadByte()];
         }
-
-        public void Dispose() { }
     }
 }

@@ -4,7 +4,7 @@ using System.Net.Sockets;
 
 namespace Kermalis.PokemonBattleEngine.Network
 {
-    internal static class NetworkUtils
+    internal static class PBENetworkUtils
     {
         public static void Send(byte[] data, Socket socket)
         {
@@ -24,12 +24,17 @@ namespace Kermalis.PokemonBattleEngine.Network
             }
         }
 
-        // TODO: Endianness
         private static SocketAsyncEventArgs CreateArgs(byte[] data)
         {
-            byte[] message = new byte[data.Length + 2];
-            Buffer.BlockCopy(BitConverter.GetBytes((ushort)data.Length), 0, message, 0, 2);
-            Buffer.BlockCopy(data, 0, message, 2, data.Length);
+            int len = data.Length;
+            if (len <= 0 || len > ushort.MaxValue)
+            {
+                throw new ArgumentException($"Data length must be greater than 0 bytes and must not exceed {ushort.MaxValue} bytes.");
+            }
+            byte[] message = new byte[len + 2];
+            message[0] = (byte)(len & 0xFF); // Convert length to little endian each time regardless of system endianness
+            message[1] = (byte)(len >> 8);
+            Buffer.BlockCopy(data, 0, message, 2, len);
             var e = new SocketAsyncEventArgs();
             e.SetBuffer(message, 0, message.Length);
             return e;

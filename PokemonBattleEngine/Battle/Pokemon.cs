@@ -1,8 +1,8 @@
-﻿using Kermalis.PokemonBattleEngine.Data;
+﻿using Kermalis.EndianBinaryIO;
+using Kermalis.PokemonBattleEngine.Data;
 using Kermalis.PokemonBattleEngine.Packets;
 using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
 using System.Text;
 
@@ -158,24 +158,24 @@ namespace Kermalis.PokemonBattleEngine.Battle
         public bool SpeedBoost_AbleToSpeedBoostThisTurn { get; set; }
         #endregion
 
-        internal PBEPokemon(BinaryReader r, PBETeam team)
+        internal PBEPokemon(EndianBinaryReader r, PBETeam team)
         {
             Team = team;
             Id = r.ReadByte();
-            Species = OriginalSpecies = KnownSpecies = (PBESpecies)r.ReadUInt32();
+            Species = OriginalSpecies = KnownSpecies = r.ReadEnum<PBESpecies>();
             var pData = PBEPokemonData.GetData(Species);
             KnownType1 = Type1 = pData.Type1;
             KnownType2 = Type2 = pData.Type2;
             KnownWeight = Weight = pData.Weight;
-            Nickname = KnownNickname = PBEUtils.StringFromBytes(r);
+            Nickname = KnownNickname = r.ReadStringNullTerminated();
             Level = r.ReadByte();
             Friendship = r.ReadByte();
             Shiny = KnownShiny = r.ReadBoolean();
-            Ability = OriginalAbility = (PBEAbility)r.ReadByte();
+            Ability = OriginalAbility = r.ReadEnum<PBEAbility>();
             KnownAbility = PBEAbility.MAX;
-            Nature = (PBENature)r.ReadByte();
-            Gender = KnownGender = (PBEGender)r.ReadByte();
-            Item = OriginalItem = (PBEItem)r.ReadUInt16();
+            Nature = r.ReadEnum<PBENature>();
+            Gender = KnownGender = r.ReadEnum<PBEGender>();
+            Item = OriginalItem = r.ReadEnum<PBEItem>();
             KnownItem = (PBEItem)ushort.MaxValue;
             EffortValues = new PBEEffortValues(Team.Battle.Settings, r);
             IndividualValues = new PBEIndividualValues(Team.Battle.Settings, r);
@@ -992,21 +992,21 @@ namespace Kermalis.PokemonBattleEngine.Battle
             return count == 0 ? ushort.MaxValue : (ushort)(ushort.MaxValue / (count * 2));
         }
 
-        internal void ToBytes(List<byte> bytes)
+        internal void ToBytes(EndianBinaryWriter w)
         {
-            bytes.Add(Id);
-            bytes.AddRange(BitConverter.GetBytes((uint)OriginalSpecies));
-            PBEUtils.StringToBytes(bytes, Nickname);
-            bytes.Add(Level);
-            bytes.Add(Friendship);
-            bytes.Add((byte)(Shiny ? 1 : 0));
-            bytes.Add((byte)OriginalAbility);
-            bytes.Add((byte)Nature);
-            bytes.Add((byte)Gender);
-            bytes.AddRange(BitConverter.GetBytes((ushort)OriginalItem));
-            EffortValues.ToBytes(bytes);
-            IndividualValues.ToBytes(bytes);
-            OriginalMoveset.ToBytes(bytes);
+            w.Write(Id);
+            w.Write(OriginalSpecies);
+            w.Write(Nickname, true);
+            w.Write(Level);
+            w.Write(Friendship);
+            w.Write(Shiny);
+            w.Write(OriginalAbility);
+            w.Write(Nature);
+            w.Write(Gender);
+            w.Write(OriginalItem);
+            EffortValues.ToBytes(w);
+            IndividualValues.ToBytes(w);
+            OriginalMoveset.ToBytes(w);
         }
 
         // Will only be accurate for the host

@@ -1,6 +1,5 @@
-﻿using Ether.Network.Common;
-using Ether.Network.Packets;
-using Kermalis.PokemonBattleEngine.Data;
+﻿using Kermalis.PokemonBattleEngine.Data;
+using Kermalis.PokemonBattleEngine.Network;
 using Kermalis.PokemonBattleEngine.Packets;
 using System;
 using System.Diagnostics;
@@ -8,12 +7,21 @@ using System.Threading;
 
 namespace Kermalis.PokemonBattleEngineServer
 {
-    internal sealed class Player : NetUser
+    internal sealed class Player
     {
+        public BattleServer Server { get; }
+        public PBEServerClient Client { get; }
         public ManualResetEvent ResetEvent { get; } = new ManualResetEvent(true);
         public string TrainerName { get; set; }
         public int BattleId { get; set; } = int.MaxValue;
         public PBETeamShell TeamShell { get; private set; }
+
+        public Player(BattleServer server, PBEServerClient client)
+        {
+            Server = server;
+            Client = client;
+            Client.MessageReceived += HandleMessage;
+        }
 
         public bool WaitForResponse()
         {
@@ -21,20 +29,20 @@ namespace Kermalis.PokemonBattleEngineServer
             if (!receivedResponseInTime)
             {
                 Console.WriteLine($"Kicking client ({BattleId} {TrainerName})");
-                Server.DisconnectClient(Id);
+                Server.DisconnectClient(this);
             }
             return receivedResponseInTime;
         }
 
-        public override void Send(INetPacket packet)
+        public void Send(IPBEPacket packet)
         {
             ResetEvent.Reset();
-            base.Send(packet);
+            Client.Send(packet);
         }
-        public override void HandleMessage(INetPacket packet)
+        private void HandleMessage(object sender, IPBEPacket packet)
         {
             Debug.WriteLine($"Message received: \"{packet.GetType().Name}\" ({BattleId})");
-            if (Socket == null || ResetEvent.SafeWaitHandle.IsClosed)
+            if (Client == null || ResetEvent.SafeWaitHandle.IsClosed)
             {
                 return;
             }
@@ -42,12 +50,11 @@ namespace Kermalis.PokemonBattleEngineServer
 
             if (BattleId < 2)
             {
-                var ser = (BattleServer)Server;
                 switch (packet)
                 {
                     case PBEActionsResponsePacket arp:
                     {
-                        ser.ActionsSubmitted(this, arp.Actions);
+                        Server.ActionsSubmitted(this, arp.Actions);
                         break;
                     }
                     case PBEPartyResponsePacket prp:
@@ -56,7 +63,7 @@ namespace Kermalis.PokemonBattleEngineServer
                         if (TeamShell == null)
                         {
                             TeamShell = prp.TeamShell;
-                            ser.PartySubmitted(this);
+                            Server.PartySubmitted(this);
                         }
                         else
                         {
@@ -66,7 +73,7 @@ namespace Kermalis.PokemonBattleEngineServer
                     }
                     case PBESwitchInResponsePacket sirp:
                     {
-                        ser.SwitchesSubmitted(this, sirp.Switches);
+                        Server.SwitchesSubmitted(this, sirp.Switches);
                         break;
                     }
                 }

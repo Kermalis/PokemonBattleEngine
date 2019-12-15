@@ -1,17 +1,15 @@
-﻿using Ether.Network.Packets;
+﻿using Kermalis.EndianBinaryIO;
 using Kermalis.PokemonBattleEngine.Battle;
 using Kermalis.PokemonBattleEngine.Data;
-using System;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.IO;
 
 namespace Kermalis.PokemonBattleEngine.Packets
 {
-    public sealed class PBEStatus1Packet : INetPacket
+    public sealed class PBEStatus1Packet : IPBEPacket
     {
-        public const short Code = 0x11;
-        public ReadOnlyCollection<byte> Buffer { get; }
+        public const ushort Code = 0x11;
+        public ReadOnlyCollection<byte> Data { get; }
 
         public PBEFieldPosition Pokemon2 { get; }
         public PBETeam Pokemon2Team { get; }
@@ -22,28 +20,28 @@ namespace Kermalis.PokemonBattleEngine.Packets
 
         internal PBEStatus1Packet(PBEPokemon status1Receiver, PBEPokemon pokemon2, PBEStatus1 status1, PBEStatusAction statusAction)
         {
-            var bytes = new List<byte>();
-            bytes.AddRange(BitConverter.GetBytes(Code));
-            bytes.Add((byte)(Status1Receiver = status1Receiver.FieldPosition));
-            bytes.Add((Status1ReceiverTeam = status1Receiver.Team).Id);
-            bytes.Add((byte)(Pokemon2 = pokemon2.FieldPosition));
-            bytes.Add((Pokemon2Team = pokemon2.Team).Id);
-            bytes.Add((byte)(Status1 = status1));
-            bytes.Add((byte)(StatusAction = statusAction));
-            bytes.InsertRange(0, BitConverter.GetBytes((short)bytes.Count));
-            Buffer = new ReadOnlyCollection<byte>(bytes);
+            using (var ms = new MemoryStream())
+            using (var w = new EndianBinaryWriter(ms, encoding: EncodingType.UTF16))
+            {
+                w.Write(Code);
+                w.Write(Status1Receiver = status1Receiver.FieldPosition);
+                w.Write((Status1ReceiverTeam = status1Receiver.Team).Id);
+                w.Write(Pokemon2 = pokemon2.FieldPosition);
+                w.Write((Pokemon2Team = pokemon2.Team).Id);
+                w.Write(Status1 = status1);
+                w.Write(StatusAction = statusAction);
+                Data = new ReadOnlyCollection<byte>(ms.ToArray());
+            }
         }
-        internal PBEStatus1Packet(ReadOnlyCollection<byte> buffer, BinaryReader r, PBEBattle battle)
+        internal PBEStatus1Packet(byte[] data, EndianBinaryReader r, PBEBattle battle)
         {
-            Buffer = buffer;
-            Status1Receiver = (PBEFieldPosition)r.ReadByte();
+            Data = new ReadOnlyCollection<byte>(data);
+            Status1Receiver = r.ReadEnum<PBEFieldPosition>();
             Status1ReceiverTeam = battle.Teams[r.ReadByte()];
-            Pokemon2 = (PBEFieldPosition)r.ReadByte();
+            Pokemon2 = r.ReadEnum<PBEFieldPosition>();
             Pokemon2Team = battle.Teams[r.ReadByte()];
-            Status1 = (PBEStatus1)r.ReadByte();
-            StatusAction = (PBEStatusAction)r.ReadByte();
+            Status1 = r.ReadEnum<PBEStatus1>();
+            StatusAction = r.ReadEnum<PBEStatusAction>();
         }
-
-        public void Dispose() { }
     }
 }

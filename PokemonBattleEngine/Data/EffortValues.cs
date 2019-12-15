@@ -1,4 +1,5 @@
-﻿using Newtonsoft.Json;
+﻿using Kermalis.EndianBinaryIO;
+using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using System;
 using System.Collections;
@@ -101,7 +102,7 @@ namespace Kermalis.PokemonBattleEngine.Data
             }
         }
 
-        internal PBEEffortValues(PBESettings settings, BinaryReader r)
+        internal PBEEffortValues(PBESettings settings, EndianBinaryReader r)
         {
             byte hp = r.ReadByte();
             byte attack = r.ReadByte();
@@ -273,11 +274,11 @@ namespace Kermalis.PokemonBattleEngine.Data
             return GetEnumerator();
         }
 
-        internal void ToBytes(List<byte> bytes)
+        internal void ToBytes(EndianBinaryWriter w)
         {
             for (int i = 0; i < 6; i++)
             {
-                bytes.Add(_evs[i].Value);
+                w.Write(_evs[i].Value);
             }
         }
         internal void ToJson(JsonTextWriter w)

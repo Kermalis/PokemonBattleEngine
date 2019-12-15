@@ -1,7 +1,7 @@
-﻿using Kermalis.PokemonBattleEngine.Data;
+﻿using Kermalis.EndianBinaryIO;
+using Kermalis.PokemonBattleEngine.Data;
 using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
 
 namespace Kermalis.PokemonBattleEngine.Battle
@@ -14,16 +14,16 @@ namespace Kermalis.PokemonBattleEngine.Battle
         public PBETurnTarget FightTargets { get; internal set; } // Internal set because of PBEMoveTarget.RandomFoeSurrounding
         public byte SwitchPokemonId { get; }
 
-        internal PBETurnAction(BinaryReader r)
+        internal PBETurnAction(EndianBinaryReader r)
         {
             PokemonId = r.ReadByte();
-            Decision = (PBETurnDecision)r.ReadByte();
+            Decision = r.ReadEnum<PBETurnDecision>();
             switch (Decision)
             {
                 case PBETurnDecision.Fight:
                 {
-                    FightMove = (PBEMove)r.ReadUInt16();
-                    FightTargets = (PBETurnTarget)r.ReadByte();
+                    FightMove = r.ReadEnum<PBEMove>();
+                    FightTargets = r.ReadEnum<PBETurnTarget>();
                     break;
                 }
                 case PBETurnDecision.SwitchOut:
@@ -48,21 +48,21 @@ namespace Kermalis.PokemonBattleEngine.Battle
             SwitchPokemonId = switchPokemonId;
         }
 
-        internal void ToBytes(List<byte> bytes)
+        internal void ToBytes(EndianBinaryWriter w)
         {
-            bytes.Add(PokemonId);
-            bytes.Add((byte)Decision);
+            w.Write(PokemonId);
+            w.Write(Decision);
             switch (Decision)
             {
                 case PBETurnDecision.Fight:
                 {
-                    bytes.AddRange(BitConverter.GetBytes((ushort)FightMove));
-                    bytes.Add((byte)FightTargets);
+                    w.Write(FightMove);
+                    w.Write(FightTargets);
                     break;
                 }
                 case PBETurnDecision.SwitchOut:
                 {
-                    bytes.Add(SwitchPokemonId);
+                    w.Write(SwitchPokemonId);
                     break;
                 }
                 throw new ArgumentOutOfRangeException(nameof(Decision));
@@ -74,10 +74,10 @@ namespace Kermalis.PokemonBattleEngine.Battle
         public byte PokemonId { get; }
         public PBEFieldPosition Position { get; }
 
-        internal PBESwitchIn(BinaryReader r)
+        internal PBESwitchIn(EndianBinaryReader r)
         {
             PokemonId = r.ReadByte();
-            Position = (PBEFieldPosition)r.ReadByte();
+            Position = r.ReadEnum<PBEFieldPosition>();
         }
         public PBESwitchIn(byte pokemonId, PBEFieldPosition position)
         {
@@ -85,10 +85,10 @@ namespace Kermalis.PokemonBattleEngine.Battle
             Position = position;
         }
 
-        internal void ToBytes(List<byte> bytes)
+        internal void ToBytes(EndianBinaryWriter w)
         {
-            bytes.Add(PokemonId);
-            bytes.Add((byte)Position);
+            w.Write(PokemonId);
+            w.Write(Position);
         }
     }
     public sealed partial class PBEBattle

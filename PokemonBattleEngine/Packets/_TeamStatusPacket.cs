@@ -1,17 +1,15 @@
-﻿using Ether.Network.Packets;
+﻿using Kermalis.EndianBinaryIO;
 using Kermalis.PokemonBattleEngine.Battle;
 using Kermalis.PokemonBattleEngine.Data;
-using System;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.IO;
 
 namespace Kermalis.PokemonBattleEngine.Packets
 {
-    public sealed class PBETeamStatusPacket : INetPacket
+    public sealed class PBETeamStatusPacket : IPBEPacket
     {
-        public const short Code = 0x13;
-        public ReadOnlyCollection<byte> Buffer { get; }
+        public const ushort Code = 0x13;
+        public ReadOnlyCollection<byte> Data { get; }
 
         public PBETeam Team { get; }
         public PBETeamStatus TeamStatus { get; }
@@ -20,24 +18,24 @@ namespace Kermalis.PokemonBattleEngine.Packets
 
         internal PBETeamStatusPacket(PBETeam team, PBETeamStatus teamStatus, PBETeamStatusAction teamStatusAction, PBEPokemon damageVictim)
         {
-            var bytes = new List<byte>();
-            bytes.AddRange(BitConverter.GetBytes(Code));
-            bytes.Add((Team = team).Id);
-            bytes.AddRange(BitConverter.GetBytes((ushort)(TeamStatus = teamStatus)));
-            bytes.Add((byte)(TeamStatusAction = teamStatusAction));
-            bytes.Add((byte)(DamageVictim = damageVictim == null ? PBEFieldPosition.None : damageVictim.FieldPosition));
-            bytes.InsertRange(0, BitConverter.GetBytes((short)bytes.Count));
-            Buffer = new ReadOnlyCollection<byte>(bytes);
+            using (var ms = new MemoryStream())
+            using (var w = new EndianBinaryWriter(ms, encoding: EncodingType.UTF16))
+            {
+                w.Write(Code);
+                w.Write((Team = team).Id);
+                w.Write(TeamStatus = teamStatus);
+                w.Write(TeamStatusAction = teamStatusAction);
+                w.Write(DamageVictim = damageVictim == null ? PBEFieldPosition.None : damageVictim.FieldPosition);
+                Data = new ReadOnlyCollection<byte>(ms.ToArray());
+            }
         }
-        internal PBETeamStatusPacket(ReadOnlyCollection<byte> buffer, BinaryReader r, PBEBattle battle)
+        internal PBETeamStatusPacket(byte[] data, EndianBinaryReader r, PBEBattle battle)
         {
-            Buffer = buffer;
+            Data = new ReadOnlyCollection<byte>(data);
             Team = battle.Teams[r.ReadByte()];
-            TeamStatus = (PBETeamStatus)r.ReadUInt16();
-            TeamStatusAction = (PBETeamStatusAction)r.ReadByte();
-            DamageVictim = (PBEFieldPosition)r.ReadByte();
+            TeamStatus = r.ReadEnum<PBETeamStatus>();
+            TeamStatusAction = r.ReadEnum<PBETeamStatusAction>();
+            DamageVictim = r.ReadEnum<PBEFieldPosition>();
         }
-
-        public void Dispose() { }
     }
 }

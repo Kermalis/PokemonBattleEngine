@@ -1,5 +1,4 @@
-﻿using Ether.Network.Packets;
-using Kermalis.PokemonBattleEngine.AI;
+﻿using Kermalis.PokemonBattleEngine.AI;
 using Kermalis.PokemonBattleEngine.Battle;
 using Kermalis.PokemonBattleEngine.Data;
 using Kermalis.PokemonBattleEngine.Packets;
@@ -89,7 +88,7 @@ namespace Kermalis.PokemonBattleEngineExtras
             Console.ReadKey();
         }
 
-        private static void Battle_OnNewEvent(PBEBattle battle, INetPacket packet)
+        private static void Battle_OnNewEvent(PBEBattle battle, IPBEPacket packet)
         {
             try
             {

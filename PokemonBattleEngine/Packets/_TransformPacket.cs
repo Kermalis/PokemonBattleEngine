@@ -1,17 +1,15 @@
-﻿using Ether.Network.Packets;
+﻿using Kermalis.EndianBinaryIO;
 using Kermalis.PokemonBattleEngine.Battle;
 using Kermalis.PokemonBattleEngine.Data;
-using System;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.IO;
 
 namespace Kermalis.PokemonBattleEngine.Packets
 {
-    public sealed class PBETransformPacket : INetPacket
+    public sealed class PBETransformPacket : IPBEPacket
     {
-        public const short Code = 0x18;
-        public ReadOnlyCollection<byte> Buffer { get; }
+        public const ushort Code = 0x18;
+        public ReadOnlyCollection<byte> Data { get; }
 
         public PBEFieldPosition User { get; }
         public PBETeam UserTeam { get; }
@@ -38,43 +36,45 @@ namespace Kermalis.PokemonBattleEngine.Packets
 
         internal PBETransformPacket(PBEPokemon user, PBEPokemon target)
         {
-            var bytes = new List<byte>();
-            bytes.AddRange(BitConverter.GetBytes(Code));
-            bytes.Add((byte)(User = user.FieldPosition));
-            bytes.Add((UserTeam = user.Team).Id);
-            bytes.Add((byte)(Target = target.FieldPosition));
-            bytes.Add((TargetTeam = target.Team).Id);
-            bytes.AddRange(BitConverter.GetBytes(TargetAttack = target.Attack));
-            bytes.AddRange(BitConverter.GetBytes(TargetDefense = target.Defense));
-            bytes.AddRange(BitConverter.GetBytes(TargetSpAttack = target.SpAttack));
-            bytes.AddRange(BitConverter.GetBytes(TargetSpDefense = target.SpDefense));
-            bytes.AddRange(BitConverter.GetBytes(TargetSpeed = target.Speed));
-            bytes.Add((byte)(TargetAttackChange = target.AttackChange));
-            bytes.Add((byte)(TargetDefenseChange = target.DefenseChange));
-            bytes.Add((byte)(TargetSpAttackChange = target.SpAttackChange));
-            bytes.Add((byte)(TargetSpDefenseChange = target.SpDefenseChange));
-            bytes.Add((byte)(TargetSpeedChange = target.SpeedChange));
-            bytes.Add((byte)(TargetAccuracyChange = target.AccuracyChange));
-            bytes.Add((byte)(TargetEvasionChange = target.EvasionChange));
-            bytes.Add((byte)(TargetAbility = target.Ability));
-            bytes.AddRange(BitConverter.GetBytes((ushort)(TargetSpecies = target.Species)));
-            bytes.Add((byte)(TargetType1 = target.Type1));
-            bytes.Add((byte)(TargetType2 = target.Type2));
-            bytes.AddRange(BitConverter.GetBytes(TargetWeight = target.Weight));
-            TargetMoves = target.Moves.ForTransformPacket();
-            for (int i = 0; i < (byte)TargetMoves.Count; i++)
+            using (var ms = new MemoryStream())
+            using (var w = new EndianBinaryWriter(ms, encoding: EncodingType.UTF16))
             {
-                bytes.AddRange(BitConverter.GetBytes((ushort)TargetMoves[i]));
+                w.Write(Code);
+                w.Write(User = user.FieldPosition);
+                w.Write((UserTeam = user.Team).Id);
+                w.Write(Target = target.FieldPosition);
+                w.Write((TargetTeam = target.Team).Id);
+                w.Write(TargetAttack = target.Attack);
+                w.Write(TargetDefense = target.Defense);
+                w.Write(TargetSpAttack = target.SpAttack);
+                w.Write(TargetSpDefense = target.SpDefense);
+                w.Write(TargetSpeed = target.Speed);
+                w.Write(TargetAttackChange = target.AttackChange);
+                w.Write(TargetDefenseChange = target.DefenseChange);
+                w.Write(TargetSpAttackChange = target.SpAttackChange);
+                w.Write(TargetSpDefenseChange = target.SpDefenseChange);
+                w.Write(TargetSpeedChange = target.SpeedChange);
+                w.Write(TargetAccuracyChange = target.AccuracyChange);
+                w.Write(TargetEvasionChange = target.EvasionChange);
+                w.Write(TargetAbility = target.Ability);
+                w.Write(TargetSpecies = target.Species);
+                w.Write(TargetType1 = target.Type1);
+                w.Write(TargetType2 = target.Type2);
+                w.Write(TargetWeight = target.Weight);
+                TargetMoves = target.Moves.ForTransformPacket();
+                for (int i = 0; i < TargetMoves.Count; i++)
+                {
+                    w.Write(TargetMoves[i]);
+                }
+                Data = new ReadOnlyCollection<byte>(ms.ToArray());
             }
-            bytes.InsertRange(0, BitConverter.GetBytes((short)bytes.Count));
-            Buffer = new ReadOnlyCollection<byte>(bytes);
         }
-        internal PBETransformPacket(ReadOnlyCollection<byte> buffer, BinaryReader r, PBEBattle battle)
+        internal PBETransformPacket(byte[] data, EndianBinaryReader r, PBEBattle battle)
         {
-            Buffer = buffer;
-            User = (PBEFieldPosition)r.ReadByte();
+            Data = new ReadOnlyCollection<byte>(data);
+            User = r.ReadEnum<PBEFieldPosition>();
             UserTeam = battle.Teams[r.ReadByte()];
-            Target = (PBEFieldPosition)r.ReadByte();
+            Target = r.ReadEnum<PBEFieldPosition>();
             TargetTeam = battle.Teams[r.ReadByte()];
             TargetAttack = r.ReadUInt16();
             TargetDefense = r.ReadUInt16();
@@ -88,19 +88,17 @@ namespace Kermalis.PokemonBattleEngine.Packets
             TargetSpeedChange = r.ReadSByte();
             TargetAccuracyChange = r.ReadSByte();
             TargetEvasionChange = r.ReadSByte();
-            TargetAbility = (PBEAbility)r.ReadByte();
-            TargetSpecies = (PBESpecies)r.ReadUInt16();
-            TargetType1 = (PBEType)r.ReadByte();
-            TargetType2 = (PBEType)r.ReadByte();
+            TargetAbility = r.ReadEnum<PBEAbility>();
+            TargetSpecies = r.ReadEnum<PBESpecies>();
+            TargetType1 = r.ReadEnum<PBEType>();
+            TargetType2 = r.ReadEnum<PBEType>();
             TargetWeight = r.ReadDouble();
             var moves = new PBEMove[battle.Settings.NumMoves];
             for (int i = 0; i < moves.Length; i++)
             {
-                moves[i] = (PBEMove)r.ReadUInt16();
+                moves[i] = r.ReadEnum<PBEMove>();
             }
             TargetMoves = new ReadOnlyCollection<PBEMove>(moves);
         }
-
-        public void Dispose() { }
     }
 }

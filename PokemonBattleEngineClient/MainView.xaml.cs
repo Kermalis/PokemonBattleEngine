@@ -1,7 +1,6 @@
 ﻿using Avalonia.Controls;
 using Avalonia.Markup.Xaml;
 using Avalonia.Threading;
-using Kermalis.PokemonBattleEngine.Battle;
 using Kermalis.PokemonBattleEngine.Data;
 using Kermalis.PokemonBattleEngineClient.Views;
 using ReactiveUI;
@@ -60,13 +59,23 @@ namespace Kermalis.PokemonBattleEngineClient
         {
             _connect.IsEnabled = false;
             ConnectText = "Connecting...";
-            var client = new BattleClient(_ip.Text, (int)_port.Value, PBEBattleFormat.Double, _teamBuilder.Team.Shell);
+            string host = _ip.Text;
+            ushort port = (ushort)_port.Value;
+            var client = new NetworkClient(PBEBattleFormat.Double, _teamBuilder.Team.Shell); // Must be called on UI thread
             new Thread(() =>
             {
-                client.Connect();
+                bool b;
+                try
+                {
+                    b = client.Connect(host, port);
+                }
+                catch
+                {
+                    b = false;
+                }
                 Dispatcher.UIThread.InvokeAsync(() =>
                 {
-                    if (client.IsConnected)
+                    if (b)
                     {
                         Add(client);
                     }
@@ -80,7 +89,7 @@ namespace Kermalis.PokemonBattleEngineClient
         }
         private void WatchReplay()
         {
-            Add(new BattleClient(PBEBattle.LoadReplay(@"D:\Development\GitHub\PokemonBattleEngine\PokemonBattleEngineExtras\bin\Debug\netcoreapp2.2\AI Demo Replay.pbereplay"), BattleClient.ClientMode.Replay));
+            Add(new ReplayClient(@"C:\Users\Kermalis\Documents\Development\GitHub\PokemonBattleEngine\PokemonBattleEngineExtras\bin\Debug\netcoreapp2.2\AI Demo Replay.pbereplay"));
         }
         private void SinglePlayer()
         {
@@ -90,9 +99,7 @@ namespace Kermalis.PokemonBattleEngineClient
             team1Shell = new PBETeamShell(settings, settings.MaxPartySize, true);
             team2Shell = new PBETeamShell(settings, settings.MaxPartySize, true);
 
-            var battle = new PBEBattle(PBEBattleFormat.Double, team1Shell, "May", team2Shell, "Champion Steven");
-            Add(new BattleClient(battle, BattleClient.ClientMode.SinglePlayer));
-            new Thread(battle.Begin) { Name = "Battle Thread" }.Start();
+            Add(new SinglePlayerClient(PBEBattleFormat.Double, team1Shell, "May", team2Shell, "Champion Steven"));
         }
 
         // TODO: Removing battles

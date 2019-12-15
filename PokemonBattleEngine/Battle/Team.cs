@@ -1,8 +1,8 @@
-﻿using Kermalis.PokemonBattleEngine.Data;
+﻿using Kermalis.EndianBinaryIO;
+using Kermalis.PokemonBattleEngine.Data;
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
 using System.Text;
 
@@ -143,20 +143,21 @@ namespace Kermalis.PokemonBattleEngine.Battle
             return b;
         }
 
-        internal void ToBytes(List<byte> bytes)
+        internal void ToBytes(EndianBinaryWriter w)
         {
-            PBEUtils.StringToBytes(bytes, TrainerName);
-            bytes.Add((byte)Party.Count);
-            for (int i = 0; i < (sbyte)Party.Count; i++)
+            w.Write(TrainerName, true);
+            sbyte count = (sbyte)Party.Count;
+            w.Write(count);
+            for (int i = 0; i < count; i++)
             {
-                Party[i].ToBytes(bytes);
+                Party[i].ToBytes(w);
             }
         }
-        internal void FromBytes(BinaryReader r)
+        internal void FromBytes(EndianBinaryReader r)
         {
-            TrainerName = PBEUtils.StringFromBytes(r);
-            sbyte amt = r.ReadSByte();
-            for (int i = 0; i < amt; i++)
+            TrainerName = r.ReadStringNullTerminated();
+            sbyte count = r.ReadSByte();
+            for (int i = 0; i < count; i++)
             {
                 new PBEPokemon(r, this);
             }

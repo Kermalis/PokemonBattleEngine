@@ -1,17 +1,15 @@
-﻿using Ether.Network.Packets;
+﻿using Kermalis.EndianBinaryIO;
 using Kermalis.PokemonBattleEngine.Battle;
 using Kermalis.PokemonBattleEngine.Data;
-using System;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.IO;
 
 namespace Kermalis.PokemonBattleEngine.Packets
 {
-    public sealed class PBEPkmnHPChangedPacket : INetPacket
+    public sealed class PBEPkmnHPChangedPacket : IPBEPacket
     {
-        public const short Code = 0x0A;
-        public ReadOnlyCollection<byte> Buffer { get; }
+        public const ushort Code = 0x0A;
+        public ReadOnlyCollection<byte> Data { get; }
 
         public PBEFieldPosition Pokemon { get; }
         public PBETeam PokemonTeam { get; }
@@ -20,23 +18,27 @@ namespace Kermalis.PokemonBattleEngine.Packets
         public double OldHPPercentage { get; }
         public double NewHPPercentage { get; }
 
-        internal PBEPkmnHPChangedPacket(PBEFieldPosition pokemon, PBETeam pokemonTeam, ushort oldHP, ushort newHP, double oldHPPercentage, double newHPPercentage)
+        private PBEPkmnHPChangedPacket(PBEFieldPosition pokemon, PBETeam pokemonTeam, ushort oldHP, ushort newHP, double oldHPPercentage, double newHPPercentage)
         {
-            var bytes = new List<byte>();
-            bytes.AddRange(BitConverter.GetBytes(Code));
-            bytes.Add((byte)(Pokemon = pokemon));
-            bytes.Add((PokemonTeam = pokemonTeam).Id);
-            bytes.AddRange(BitConverter.GetBytes(OldHP = oldHP));
-            bytes.AddRange(BitConverter.GetBytes(NewHP = newHP));
-            bytes.AddRange(BitConverter.GetBytes(OldHPPercentage = oldHPPercentage));
-            bytes.AddRange(BitConverter.GetBytes(NewHPPercentage = newHPPercentage));
-            bytes.InsertRange(0, BitConverter.GetBytes((short)bytes.Count));
-            Buffer = new ReadOnlyCollection<byte>(bytes);
+            using (var ms = new MemoryStream())
+            using (var w = new EndianBinaryWriter(ms, encoding: EncodingType.UTF16))
+            {
+                w.Write(Code);
+                w.Write(Pokemon = pokemon);
+                w.Write((PokemonTeam = pokemonTeam).Id);
+                w.Write(OldHP = oldHP);
+                w.Write(NewHP = newHP);
+                w.Write(OldHPPercentage = oldHPPercentage);
+                w.Write(NewHPPercentage = newHPPercentage);
+                Data = new ReadOnlyCollection<byte>(ms.ToArray());
+            }
         }
-        internal PBEPkmnHPChangedPacket(ReadOnlyCollection<byte> buffer, BinaryReader r, PBEBattle battle)
+        internal PBEPkmnHPChangedPacket(PBEPokemon pokemon, ushort oldHP, double oldHPPercentage)
+            : this(pokemon.FieldPosition, pokemon.Team, oldHP, pokemon.HP, oldHPPercentage, pokemon.HPPercentage) { }
+        internal PBEPkmnHPChangedPacket(byte[] data, EndianBinaryReader r, PBEBattle battle)
         {
-            Buffer = buffer;
-            Pokemon = (PBEFieldPosition)r.ReadByte();
+            Data = new ReadOnlyCollection<byte>(data);
+            Pokemon = r.ReadEnum<PBEFieldPosition>();
             PokemonTeam = battle.Teams[r.ReadByte()];
             OldHP = r.ReadUInt16();
             NewHP = r.ReadUInt16();
@@ -48,7 +50,5 @@ namespace Kermalis.PokemonBattleEngine.Packets
         {
             return new PBEPkmnHPChangedPacket(Pokemon, PokemonTeam, ushort.MinValue, ushort.MinValue, OldHPPercentage, NewHPPercentage);
         }
-
-        public void Dispose() { }
     }
 }

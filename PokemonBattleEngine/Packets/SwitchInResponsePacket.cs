@@ -1,4 +1,4 @@
-﻿using Ether.Network.Packets;
+﻿using Kermalis.EndianBinaryIO;
 using Kermalis.PokemonBattleEngine.Battle;
 using System;
 using System.Collections.Generic;
@@ -8,10 +8,10 @@ using System.Linq;
 
 namespace Kermalis.PokemonBattleEngine.Packets
 {
-    public sealed class PBESwitchInResponsePacket : INetPacket
+    public sealed class PBESwitchInResponsePacket : IPBEPacket
     {
-        public const short Code = 0x24;
-        public ReadOnlyCollection<byte> Buffer { get; }
+        public const ushort Code = 0x24;
+        public ReadOnlyCollection<byte> Data { get; }
 
         public ReadOnlyCollection<PBESwitchIn> Switches { get; }
 
@@ -29,19 +29,22 @@ namespace Kermalis.PokemonBattleEngine.Packets
             {
                 throw new ArgumentNullException(nameof(switches));
             }
-            var bytes = new List<byte>();
-            bytes.AddRange(BitConverter.GetBytes(Code));
-            bytes.Add((byte)(Switches = new ReadOnlyCollection<PBESwitchIn>(switches)).Count);
-            for (int i = 0; i < (byte)Switches.Count; i++)
+            using (var ms = new MemoryStream())
+            using (var w = new EndianBinaryWriter(ms, encoding: EncodingType.UTF16))
             {
-                Switches[i].ToBytes(bytes);
+                w.Write(Code);
+                byte count = (byte)(Switches = new ReadOnlyCollection<PBESwitchIn>(switches)).Count;
+                w.Write(count);
+                for (int i = 0; i < count; i++)
+                {
+                    Switches[i].ToBytes(w);
+                }
+                Data = new ReadOnlyCollection<byte>(ms.ToArray());
             }
-            bytes.InsertRange(0, BitConverter.GetBytes((short)bytes.Count));
-            Buffer = new ReadOnlyCollection<byte>(bytes);
         }
-        internal PBESwitchInResponsePacket(ReadOnlyCollection<byte> buffer, BinaryReader r, PBEBattle battle)
+        internal PBESwitchInResponsePacket(byte[] data, EndianBinaryReader r)
         {
-            Buffer = buffer;
+            Data = new ReadOnlyCollection<byte>(data);
             var switches = new PBESwitchIn[r.ReadByte()];
             for (int i = 0; i < switches.Length; i++)
             {
@@ -49,7 +52,5 @@ namespace Kermalis.PokemonBattleEngine.Packets
             }
             Switches = new ReadOnlyCollection<PBESwitchIn>(switches);
         }
-
-        public void Dispose() { }
     }
 }

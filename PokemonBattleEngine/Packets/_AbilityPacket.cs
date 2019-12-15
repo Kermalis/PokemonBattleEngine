@@ -1,17 +1,15 @@
-﻿using Ether.Network.Packets;
+﻿using Kermalis.EndianBinaryIO;
 using Kermalis.PokemonBattleEngine.Battle;
 using Kermalis.PokemonBattleEngine.Data;
-using System;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.IO;
 
 namespace Kermalis.PokemonBattleEngine.Packets
 {
-    public sealed class PBEAbilityPacket : INetPacket
+    public sealed class PBEAbilityPacket : IPBEPacket
     {
-        public const short Code = 0x19;
-        public ReadOnlyCollection<byte> Buffer { get; }
+        public const ushort Code = 0x19;
+        public ReadOnlyCollection<byte> Data { get; }
 
         public PBEFieldPosition AbilityOwner { get; }
         public PBETeam AbilityOwnerTeam { get; }
@@ -22,28 +20,28 @@ namespace Kermalis.PokemonBattleEngine.Packets
 
         internal PBEAbilityPacket(PBEPokemon abilityOwner, PBEPokemon pokemon2, PBEAbility ability, PBEAbilityAction abilityAction)
         {
-            var bytes = new List<byte>();
-            bytes.AddRange(BitConverter.GetBytes(Code));
-            bytes.Add((byte)(AbilityOwner = abilityOwner.FieldPosition));
-            bytes.Add((AbilityOwnerTeam = abilityOwner.Team).Id);
-            bytes.Add((byte)(Pokemon2 = pokemon2.FieldPosition));
-            bytes.Add((Pokemon2Team = pokemon2.Team).Id);
-            bytes.Add((byte)(Ability = ability));
-            bytes.Add((byte)(AbilityAction = abilityAction));
-            bytes.InsertRange(0, BitConverter.GetBytes((short)bytes.Count));
-            Buffer = new ReadOnlyCollection<byte>(bytes);
+            using (var ms = new MemoryStream())
+            using (var w = new EndianBinaryWriter(ms, encoding: EncodingType.UTF16))
+            {
+                w.Write(Code);
+                w.Write(AbilityOwner = abilityOwner.FieldPosition);
+                w.Write((AbilityOwnerTeam = abilityOwner.Team).Id);
+                w.Write(Pokemon2 = pokemon2.FieldPosition);
+                w.Write((Pokemon2Team = pokemon2.Team).Id);
+                w.Write(Ability = ability);
+                w.Write(AbilityAction = abilityAction);
+                Data = new ReadOnlyCollection<byte>(ms.ToArray());
+            }
         }
-        internal PBEAbilityPacket(ReadOnlyCollection<byte> buffer, BinaryReader r, PBEBattle battle)
+        internal PBEAbilityPacket(byte[] data, EndianBinaryReader r, PBEBattle battle)
         {
-            Buffer = buffer;
-            AbilityOwner = (PBEFieldPosition)r.ReadByte();
+            Data = new ReadOnlyCollection<byte>(data);
+            AbilityOwner = r.ReadEnum<PBEFieldPosition>();
             AbilityOwnerTeam = battle.Teams[r.ReadByte()];
-            Pokemon2 = (PBEFieldPosition)r.ReadByte();
+            Pokemon2 = r.ReadEnum<PBEFieldPosition>();
             Pokemon2Team = battle.Teams[r.ReadByte()];
-            Ability = (PBEAbility)r.ReadByte();
-            AbilityAction = (PBEAbilityAction)r.ReadByte();
+            Ability = r.ReadEnum<PBEAbility>();
+            AbilityAction = r.ReadEnum<PBEAbilityAction>();
         }
-
-        public void Dispose() { }
     }
 }

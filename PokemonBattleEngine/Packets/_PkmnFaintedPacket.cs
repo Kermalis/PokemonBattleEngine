@@ -1,37 +1,39 @@
-﻿using Ether.Network.Packets;
+﻿using Kermalis.EndianBinaryIO;
 using Kermalis.PokemonBattleEngine.Battle;
 using Kermalis.PokemonBattleEngine.Data;
-using System;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.IO;
 
 namespace Kermalis.PokemonBattleEngine.Packets
 {
-    public sealed class PBEPkmnFaintedPacket : INetPacket
+    public sealed class PBEPkmnFaintedPacket : IPBEPacket
     {
-        public const short Code = 0x0E;
-        public ReadOnlyCollection<byte> Buffer { get; }
+        public const ushort Code = 0x0E;
+        public ReadOnlyCollection<byte> Data { get; }
 
         public byte PokemonId { get; }
         public PBEFieldPosition PokemonPosition { get; }
         public PBETeam PokemonTeam { get; }
 
-        internal PBEPkmnFaintedPacket(byte pokemonId, PBEFieldPosition pokemonPosition, PBETeam pokemonTeam)
+        private PBEPkmnFaintedPacket(byte pokemonId, PBEFieldPosition pokemonPosition, PBETeam pokemonTeam)
         {
-            var bytes = new List<byte>();
-            bytes.AddRange(BitConverter.GetBytes(Code));
-            bytes.Add(PokemonId = pokemonId);
-            bytes.Add((byte)(PokemonPosition = pokemonPosition));
-            bytes.Add((PokemonTeam = pokemonTeam).Id);
-            bytes.InsertRange(0, BitConverter.GetBytes((short)bytes.Count));
-            Buffer = new ReadOnlyCollection<byte>(bytes);
+            using (var ms = new MemoryStream())
+            using (var w = new EndianBinaryWriter(ms, encoding: EncodingType.UTF16))
+            {
+                w.Write(Code);
+                w.Write(PokemonId = pokemonId);
+                w.Write(PokemonPosition = pokemonPosition);
+                w.Write((PokemonTeam = pokemonTeam).Id);
+                Data = new ReadOnlyCollection<byte>(ms.ToArray());
+            }
         }
-        internal PBEPkmnFaintedPacket(ReadOnlyCollection<byte> buffer, BinaryReader r, PBEBattle battle)
+        internal PBEPkmnFaintedPacket(PBEPokemon pokemon, PBEFieldPosition oldPosition)
+            : this(pokemon.Id, oldPosition, pokemon.Team) { }
+        internal PBEPkmnFaintedPacket(byte[] data, EndianBinaryReader r, PBEBattle battle)
         {
-            Buffer = buffer;
+            Data = new ReadOnlyCollection<byte>(data);
             PokemonId = r.ReadByte();
-            PokemonPosition = (PBEFieldPosition)r.ReadByte();
+            PokemonPosition = r.ReadEnum<PBEFieldPosition>();
             PokemonTeam = battle.Teams[r.ReadByte()];
         }
 
@@ -39,7 +41,5 @@ namespace Kermalis.PokemonBattleEngine.Packets
         {
             return new PBEPkmnFaintedPacket(byte.MaxValue, PokemonPosition, PokemonTeam);
         }
-
-        public void Dispose() { }
     }
 }

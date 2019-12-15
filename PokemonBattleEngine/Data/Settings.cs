@@ -1,6 +1,6 @@
-﻿using Kermalis.PokemonBattleEngine.Battle;
+﻿using Kermalis.EndianBinaryIO;
+using Kermalis.PokemonBattleEngine.Battle;
 using System;
-using System.Collections.Generic;
 using System.ComponentModel;
 using System.IO;
 
@@ -852,7 +852,7 @@ namespace Kermalis.PokemonBattleEngine.Data
             {
                 throw new ArgumentNullException(code);
             }
-            using (var r = new BinaryReader(new MemoryStream(Convert.FromBase64String(code))))
+            using (var r = new EndianBinaryReader(new MemoryStream(Convert.FromBase64String(code)), encoding: EncodingType.UTF16))
             {
                 FromBytes(r);
             }
@@ -905,7 +905,7 @@ namespace Kermalis.PokemonBattleEngine.Data
             SunTurns = other._sunTurns;
             HeatRockTurnExtension = other._heatRockTurnExtension;
         }
-        internal PBESettings(BinaryReader r)
+        internal PBESettings(EndianBinaryReader r)
         {
             FromBytes(r);
         }
@@ -1092,257 +1092,264 @@ namespace Kermalis.PokemonBattleEngine.Data
         /// <summary>Converts this <see cref="PBESettings"/> object into a unique code <see cref="string"/>.</summary>
         public override string ToString()
         {
-            var list = new List<byte>();
-            ToBytes(list);
-            return Convert.ToBase64String(list.ToArray());
+            return Convert.ToBase64String(ToBytes());
         }
 
-        internal void ToBytes(List<byte> bytes)
+        internal byte[] ToBytes()
         {
-            int startIndex = bytes.Count;
+            byte[] data;
             ushort numChanged = 0;
-            if (_maxLevel != DefaultMaxLevel)
+            using (var ms = new MemoryStream())
+            using (var w = new EndianBinaryWriter(ms, encoding: EncodingType.UTF16))
             {
-                bytes.AddRange(BitConverter.GetBytes((ushort)PBESettingID.MaxLevel));
-                bytes.Add(_maxLevel);
-                numChanged++;
+                if (_maxLevel != DefaultMaxLevel)
+                {
+                    w.Write(PBESettingID.MaxLevel);
+                    w.Write(_maxLevel);
+                    numChanged++;
+                }
+                if (_minLevel != DefaultMinLevel)
+                {
+                    w.Write(PBESettingID.MinLevel);
+                    w.Write(_minLevel);
+                    numChanged++;
+                }
+                if (_maxPartySize != DefaultMaxPartySize)
+                {
+                    w.Write(PBESettingID.MaxPartySize);
+                    w.Write(_maxPartySize);
+                    numChanged++;
+                }
+                if (_maxPokemonNameLength != DefaultMaxPokemonNameLength)
+                {
+                    w.Write(PBESettingID.MaxPokemonNameLength);
+                    w.Write(_maxPokemonNameLength);
+                    numChanged++;
+                }
+                if (_maxTrainerNameLength != DefaultMaxTrainerNameLength)
+                {
+                    w.Write(PBESettingID.MaxTrainerNameLength);
+                    w.Write(_maxTrainerNameLength);
+                    numChanged++;
+                }
+                if (_maxTotalEVs != DefaultMaxTotalEVs)
+                {
+                    w.Write(PBESettingID.MaxTotalEVs);
+                    w.Write(_maxTotalEVs);
+                    numChanged++;
+                }
+                if (_maxIVs != DefaultMaxIVs)
+                {
+                    w.Write(PBESettingID.MaxIVs);
+                    w.Write(_maxIVs);
+                    numChanged++;
+                }
+                if (_natureStatBoost != DefaultNatureStatBoost)
+                {
+                    w.Write(PBESettingID.NatureStatBoost);
+                    w.Write(_natureStatBoost);
+                    numChanged++;
+                }
+                if (_maxStatChange != DefaultMaxStatChange)
+                {
+                    w.Write(PBESettingID.MaxStatChange);
+                    w.Write(_maxStatChange);
+                    numChanged++;
+                }
+                if (_numMoves != DefaultNumMoves)
+                {
+                    w.Write(PBESettingID.NumMoves);
+                    w.Write(_numMoves);
+                    numChanged++;
+                }
+                if (_ppMultiplier != DefaultPPMultiplier)
+                {
+                    w.Write(PBESettingID.PPMultiplier);
+                    w.Write(_ppMultiplier);
+                    numChanged++;
+                }
+                if (_maxPPUps != DefaultMaxPPUps)
+                {
+                    w.Write(PBESettingID.MaxPPUps);
+                    w.Write(_maxPPUps);
+                    numChanged++;
+                }
+                if (_critMultiplier != DefaultCritMultiplier)
+                {
+                    w.Write(PBESettingID.CritMultiplier);
+                    w.Write(_critMultiplier);
+                    numChanged++;
+                }
+                if (_confusionMaxTurns != DefaultConfusionMaxTurns)
+                {
+                    w.Write(PBESettingID.ConfusionMaxTurns);
+                    w.Write(_confusionMaxTurns);
+                    numChanged++;
+                }
+                if (_confusionMinTurns != DefaultConfusionMinTurns)
+                {
+                    w.Write(PBESettingID.ConfusionMinTurns);
+                    w.Write(_confusionMinTurns);
+                    numChanged++;
+                }
+                if (_sleepMaxTurns != DefaultSleepMaxTurns)
+                {
+                    w.Write(PBESettingID.SleepMaxTurns);
+                    w.Write(_sleepMaxTurns);
+                    numChanged++;
+                }
+                if (_sleepMinTurns != DefaultSleepMinTurns)
+                {
+                    w.Write(PBESettingID.SleepMinTurns);
+                    w.Write(_sleepMinTurns);
+                    numChanged++;
+                }
+                if (_burnDamageDenominator != DefaultBurnDamageDenominator)
+                {
+                    w.Write(PBESettingID.BurnDamageDenominator);
+                    w.Write(_burnDamageDenominator);
+                    numChanged++;
+                }
+                if (_poisonDamageDenominator != DefaultPoisonDamageDenominator)
+                {
+                    w.Write(PBESettingID.PoisonDamageDenominator);
+                    w.Write(_poisonDamageDenominator);
+                    numChanged++;
+                }
+                if (_toxicDamageDenominator != DefaultToxicDamageDenominator)
+                {
+                    w.Write(PBESettingID.ToxicDamageDenominator);
+                    w.Write(_toxicDamageDenominator);
+                    numChanged++;
+                }
+                if (_leechSeedDenominator != DefaultLeechSeedDenominator)
+                {
+                    w.Write(PBESettingID.LeechSeedDenominator);
+                    w.Write(_leechSeedDenominator);
+                    numChanged++;
+                }
+                if (_curseDenominator != DefaultCurseDenominator)
+                {
+                    w.Write(PBESettingID.CurseDenominator);
+                    w.Write(_curseDenominator);
+                    numChanged++;
+                }
+                if (_leftoversHealDenominator != DefaultLeftoversHealDenominator)
+                {
+                    w.Write(PBESettingID.LeftoversHealDenominator);
+                    w.Write(_leftoversHealDenominator);
+                    numChanged++;
+                }
+                if (_blackSludgeDamageDenominator != DefaultBlackSludgeDamageDenominator)
+                {
+                    w.Write(PBESettingID.BlackSludgeDamageDenominator);
+                    w.Write(_blackSludgeDamageDenominator);
+                    numChanged++;
+                }
+                if (_blackSludgeHealDenominator != DefaultBlackSludgeHealDenominator)
+                {
+                    w.Write(PBESettingID.BlackSludgeHealDenominator);
+                    w.Write(_blackSludgeHealDenominator);
+                    numChanged++;
+                }
+                if (_reflectTurns != DefaultReflectTurns)
+                {
+                    w.Write(PBESettingID.ReflectTurns);
+                    w.Write(_reflectTurns);
+                    numChanged++;
+                }
+                if (_lightScreenTurns != DefaultLightScreenTurns)
+                {
+                    w.Write(PBESettingID.LightScreenTurns);
+                    w.Write(_lightScreenTurns);
+                    numChanged++;
+                }
+                if (_lightClayTurnExtension != DefaultLightClayTurnExtension)
+                {
+                    w.Write(PBESettingID.LightClayTurnExtension);
+                    w.Write(_lightClayTurnExtension);
+                    numChanged++;
+                }
+                if (_hailTurns != DefaultHailTurns)
+                {
+                    w.Write(PBESettingID.HailTurns);
+                    w.Write(_hailTurns);
+                    numChanged++;
+                }
+                if (_hailDamageDenominator != DefaultHailDamageDenominator)
+                {
+                    w.Write(PBESettingID.HailDamageDenominator);
+                    w.Write(_hailDamageDenominator);
+                    numChanged++;
+                }
+                if (_icyRockTurnExtension != DefaultIcyRockTurnExtension)
+                {
+                    w.Write(PBESettingID.IcyRockTurnExtension);
+                    w.Write(_icyRockTurnExtension);
+                    numChanged++;
+                }
+                if (_iceBodyHealDenominator != DefaultIceBodyHealDenominator)
+                {
+                    w.Write(PBESettingID.IceBodyHealDenominator);
+                    w.Write(_iceBodyHealDenominator);
+                    numChanged++;
+                }
+                if (_rainTurns != DefaultRainTurns)
+                {
+                    w.Write(PBESettingID.RainTurns);
+                    w.Write(_rainTurns);
+                    numChanged++;
+                }
+                if (_dampRockTurnExtension != DefaultDampRockTurnExtension)
+                {
+                    w.Write(PBESettingID.DampRockTurnExtension);
+                    w.Write(_dampRockTurnExtension);
+                    numChanged++;
+                }
+                if (_sandstormTurns != DefaultSandstormTurns)
+                {
+                    w.Write(PBESettingID.SandstormTurns);
+                    w.Write(_sandstormTurns);
+                    numChanged++;
+                }
+                if (_sandstormDamageDenominator != DefaultSandstormDamageDenominator)
+                {
+                    w.Write(PBESettingID.SandstormDamageDenominator);
+                    w.Write(_sandstormDamageDenominator);
+                    numChanged++;
+                }
+                if (_smoothRockTurnExtension != DefaultSmoothRockTurnExtension)
+                {
+                    w.Write(PBESettingID.SmoothRockTurnExtension);
+                    w.Write(_smoothRockTurnExtension);
+                    numChanged++;
+                }
+                if (_sunTurns != DefaultSunTurns)
+                {
+                    w.Write(PBESettingID.SunTurns);
+                    w.Write(_sunTurns);
+                    numChanged++;
+                }
+                if (_heatRockTurnExtension != DefaultHeatRockTurnExtension)
+                {
+                    w.Write(PBESettingID.HeatRockTurnExtension);
+                    w.Write(_heatRockTurnExtension);
+                    numChanged++;
+                }
+                data = ms.ToArray();
             }
-            if (_minLevel != DefaultMinLevel)
-            {
-                bytes.AddRange(BitConverter.GetBytes((ushort)PBESettingID.MinLevel));
-                bytes.Add(_minLevel);
-                numChanged++;
-            }
-            if (_maxPartySize != DefaultMaxPartySize)
-            {
-                bytes.AddRange(BitConverter.GetBytes((ushort)PBESettingID.MaxPartySize));
-                bytes.Add((byte)_maxPartySize);
-                numChanged++;
-            }
-            if (_maxPokemonNameLength != DefaultMaxPokemonNameLength)
-            {
-                bytes.AddRange(BitConverter.GetBytes((ushort)PBESettingID.MaxPokemonNameLength));
-                bytes.Add(_maxPokemonNameLength);
-                numChanged++;
-            }
-            if (_maxTrainerNameLength != DefaultMaxTrainerNameLength)
-            {
-                bytes.AddRange(BitConverter.GetBytes((ushort)PBESettingID.MaxTrainerNameLength));
-                bytes.Add(_maxTrainerNameLength);
-                numChanged++;
-            }
-            if (_maxTotalEVs != DefaultMaxTotalEVs)
-            {
-                bytes.AddRange(BitConverter.GetBytes((ushort)PBESettingID.MaxTotalEVs));
-                bytes.AddRange(BitConverter.GetBytes(_maxTotalEVs));
-                numChanged++;
-            }
-            if (_maxIVs != DefaultMaxIVs)
-            {
-                bytes.AddRange(BitConverter.GetBytes((ushort)PBESettingID.MaxIVs));
-                bytes.Add(_maxIVs);
-                numChanged++;
-            }
-            if (_natureStatBoost != DefaultNatureStatBoost)
-            {
-                bytes.AddRange(BitConverter.GetBytes((ushort)PBESettingID.NatureStatBoost));
-                bytes.AddRange(BitConverter.GetBytes(_natureStatBoost));
-                numChanged++;
-            }
-            if (_maxStatChange != DefaultMaxStatChange)
-            {
-                bytes.AddRange(BitConverter.GetBytes((ushort)PBESettingID.MaxStatChange));
-                bytes.Add((byte)_maxStatChange);
-                numChanged++;
-            }
-            if (_numMoves != DefaultNumMoves)
-            {
-                bytes.AddRange(BitConverter.GetBytes((ushort)PBESettingID.NumMoves));
-                bytes.Add(_numMoves);
-                numChanged++;
-            }
-            if (_ppMultiplier != DefaultPPMultiplier)
-            {
-                bytes.AddRange(BitConverter.GetBytes((ushort)PBESettingID.PPMultiplier));
-                bytes.Add(_ppMultiplier);
-                numChanged++;
-            }
-            if (_maxPPUps != DefaultMaxPPUps)
-            {
-                bytes.AddRange(BitConverter.GetBytes((ushort)PBESettingID.MaxPPUps));
-                bytes.Add(_maxPPUps);
-                numChanged++;
-            }
-            if (_critMultiplier != DefaultCritMultiplier)
-            {
-                bytes.AddRange(BitConverter.GetBytes((ushort)PBESettingID.CritMultiplier));
-                bytes.AddRange(BitConverter.GetBytes(_critMultiplier));
-                numChanged++;
-            }
-            if (_confusionMaxTurns != DefaultConfusionMaxTurns)
-            {
-                bytes.AddRange(BitConverter.GetBytes((ushort)PBESettingID.ConfusionMaxTurns));
-                bytes.Add(_confusionMaxTurns);
-                numChanged++;
-            }
-            if (_confusionMinTurns != DefaultConfusionMinTurns)
-            {
-                bytes.AddRange(BitConverter.GetBytes((ushort)PBESettingID.ConfusionMinTurns));
-                bytes.Add(_confusionMinTurns);
-                numChanged++;
-            }
-            if (_sleepMaxTurns != DefaultSleepMaxTurns)
-            {
-                bytes.AddRange(BitConverter.GetBytes((ushort)PBESettingID.SleepMaxTurns));
-                bytes.Add(_sleepMaxTurns);
-                numChanged++;
-            }
-            if (_sleepMinTurns != DefaultSleepMinTurns)
-            {
-                bytes.AddRange(BitConverter.GetBytes((ushort)PBESettingID.SleepMinTurns));
-                bytes.Add(_sleepMinTurns);
-                numChanged++;
-            }
-            if (_burnDamageDenominator != DefaultBurnDamageDenominator)
-            {
-                bytes.AddRange(BitConverter.GetBytes((ushort)PBESettingID.BurnDamageDenominator));
-                bytes.Add(_burnDamageDenominator);
-                numChanged++;
-            }
-            if (_poisonDamageDenominator != DefaultPoisonDamageDenominator)
-            {
-                bytes.AddRange(BitConverter.GetBytes((ushort)PBESettingID.PoisonDamageDenominator));
-                bytes.Add(_poisonDamageDenominator);
-                numChanged++;
-            }
-            if (_toxicDamageDenominator != DefaultToxicDamageDenominator)
-            {
-                bytes.AddRange(BitConverter.GetBytes((ushort)PBESettingID.ToxicDamageDenominator));
-                bytes.Add(_toxicDamageDenominator);
-                numChanged++;
-            }
-            if (_leechSeedDenominator != DefaultLeechSeedDenominator)
-            {
-                bytes.AddRange(BitConverter.GetBytes((ushort)PBESettingID.LeechSeedDenominator));
-                bytes.Add(_leechSeedDenominator);
-                numChanged++;
-            }
-            if (_curseDenominator != DefaultCurseDenominator)
-            {
-                bytes.AddRange(BitConverter.GetBytes((ushort)PBESettingID.CurseDenominator));
-                bytes.Add(_curseDenominator);
-                numChanged++;
-            }
-            if (_leftoversHealDenominator != DefaultLeftoversHealDenominator)
-            {
-                bytes.AddRange(BitConverter.GetBytes((ushort)PBESettingID.LeftoversHealDenominator));
-                bytes.Add(_leftoversHealDenominator);
-                numChanged++;
-            }
-            if (_blackSludgeDamageDenominator != DefaultBlackSludgeDamageDenominator)
-            {
-                bytes.AddRange(BitConverter.GetBytes((ushort)PBESettingID.BlackSludgeDamageDenominator));
-                bytes.Add(_blackSludgeDamageDenominator);
-                numChanged++;
-            }
-            if (_blackSludgeHealDenominator != DefaultBlackSludgeHealDenominator)
-            {
-                bytes.AddRange(BitConverter.GetBytes((ushort)PBESettingID.BlackSludgeHealDenominator));
-                bytes.Add(_blackSludgeHealDenominator);
-                numChanged++;
-            }
-            if (_reflectTurns != DefaultReflectTurns)
-            {
-                bytes.AddRange(BitConverter.GetBytes((ushort)PBESettingID.ReflectTurns));
-                bytes.Add(_reflectTurns);
-                numChanged++;
-            }
-            if (_lightScreenTurns != DefaultLightScreenTurns)
-            {
-                bytes.AddRange(BitConverter.GetBytes((ushort)PBESettingID.LightScreenTurns));
-                bytes.Add(_lightScreenTurns);
-                numChanged++;
-            }
-            if (_lightClayTurnExtension != DefaultLightClayTurnExtension)
-            {
-                bytes.AddRange(BitConverter.GetBytes((ushort)PBESettingID.LightClayTurnExtension));
-                bytes.Add(_lightClayTurnExtension);
-                numChanged++;
-            }
-            if (_hailTurns != DefaultHailTurns)
-            {
-                bytes.AddRange(BitConverter.GetBytes((ushort)PBESettingID.HailTurns));
-                bytes.Add(_hailTurns);
-                numChanged++;
-            }
-            if (_hailDamageDenominator != DefaultHailDamageDenominator)
-            {
-                bytes.AddRange(BitConverter.GetBytes((ushort)PBESettingID.HailDamageDenominator));
-                bytes.Add(_hailDamageDenominator);
-                numChanged++;
-            }
-            if (_icyRockTurnExtension != DefaultIcyRockTurnExtension)
-            {
-                bytes.AddRange(BitConverter.GetBytes((ushort)PBESettingID.IcyRockTurnExtension));
-                bytes.Add(_icyRockTurnExtension);
-                numChanged++;
-            }
-            if (_iceBodyHealDenominator != DefaultIceBodyHealDenominator)
-            {
-                bytes.AddRange(BitConverter.GetBytes((ushort)PBESettingID.IceBodyHealDenominator));
-                bytes.Add(_iceBodyHealDenominator);
-                numChanged++;
-            }
-            if (_rainTurns != DefaultRainTurns)
-            {
-                bytes.AddRange(BitConverter.GetBytes((ushort)PBESettingID.RainTurns));
-                bytes.Add(_rainTurns);
-                numChanged++;
-            }
-            if (_dampRockTurnExtension != DefaultDampRockTurnExtension)
-            {
-                bytes.AddRange(BitConverter.GetBytes((ushort)PBESettingID.DampRockTurnExtension));
-                bytes.Add(_dampRockTurnExtension);
-                numChanged++;
-            }
-            if (_sandstormTurns != DefaultSandstormTurns)
-            {
-                bytes.AddRange(BitConverter.GetBytes((ushort)PBESettingID.SandstormTurns));
-                bytes.Add(_sandstormTurns);
-                numChanged++;
-            }
-            if (_sandstormDamageDenominator != DefaultSandstormDamageDenominator)
-            {
-                bytes.AddRange(BitConverter.GetBytes((ushort)PBESettingID.SandstormDamageDenominator));
-                bytes.Add(_sandstormDamageDenominator);
-                numChanged++;
-            }
-            if (_smoothRockTurnExtension != DefaultSmoothRockTurnExtension)
-            {
-                bytes.AddRange(BitConverter.GetBytes((ushort)PBESettingID.SmoothRockTurnExtension));
-                bytes.Add(_smoothRockTurnExtension);
-                numChanged++;
-            }
-            if (_sunTurns != DefaultSunTurns)
-            {
-                bytes.AddRange(BitConverter.GetBytes((ushort)PBESettingID.SunTurns));
-                bytes.Add(_sunTurns);
-                numChanged++;
-            }
-            if (_heatRockTurnExtension != DefaultHeatRockTurnExtension)
-            {
-                bytes.AddRange(BitConverter.GetBytes((ushort)PBESettingID.HeatRockTurnExtension));
-                bytes.Add(_heatRockTurnExtension);
-                numChanged++;
-            }
-            bytes.InsertRange(startIndex, BitConverter.GetBytes(numChanged));
+            byte[] ret = new byte[data.Length + 2];
+            ret[0] = (byte)(numChanged & 0xFF); // Convert numChanged to little endian each time regardless of system endianness
+            ret[1] = (byte)(numChanged >> 8);
+            Buffer.BlockCopy(data, 0, ret, 2, data.Length);
+            return ret;
         }
-        private void FromBytes(BinaryReader r)
+        private void FromBytes(EndianBinaryReader r)
         {
             ushort numChanged = r.ReadUInt16();
             for (ushort i = 0; i < numChanged; i++)
             {
-                switch ((PBESettingID)r.ReadUInt16())
+                switch (r.ReadEnum<PBESettingID>())
                 {
                     case PBESettingID.MaxLevel: MaxLevel = r.ReadByte(); break;
                     case PBESettingID.MinLevel: MinLevel = r.ReadByte(); break;

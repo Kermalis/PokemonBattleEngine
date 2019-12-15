@@ -20,7 +20,7 @@
     <AvaloniaResource Include="**\*.xaml">
       <SubType>Designer</SubType>
     </AvaloniaResource>
-    <EmbeddedResource Include="../Shared Assets\**" />
+    <EmbeddedResource Include="..\Shared Assets\**" />
     <EmbeddedResource Include="..\PokemonBattleEngine\PokemonBattleEngine.db">
       <Link>PokemonBattleEngine.db</Link>
     </EmbeddedResource>
@@ -33,9 +33,6 @@
     <ProjectReference Include="..\PokemonBattleEngine\PokemonBattleEngine.csproj" />
     <Reference Include="AvaloniaGif">
       <HintPath>Dependencies\AvaloniaGif.dll</HintPath>
-    </Reference>
-    <Reference Include="Ether.Network">
-      <HintPath>../Shared Dependencies\Ether.Network.dll</HintPath>
     </Reference>
   </ItemGroup>
   

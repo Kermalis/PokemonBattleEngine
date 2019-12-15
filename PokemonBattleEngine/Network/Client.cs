@@ -19,7 +19,10 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
+using Kermalis.PokemonBattleEngine.Battle;
+using Kermalis.PokemonBattleEngine.Packets;
 using System;
+using System.Linq;
 using System.Net;
 using System.Net.Sockets;
 
@@ -27,32 +30,25 @@ namespace Kermalis.PokemonBattleEngine.Network
 {
     public sealed class PBEClient : IDisposable
     {
+        public PBEBattle Battle { get; set; }
+
         private Socket _socket;
         private PBEEncryption _encryption;
-        private ushort _maxDataSize;
         private byte[] _buffer;
 
-        public event EventHandler<PBEMessage> MessageReceived;
-        public event EventHandler<PBEClient> Disconnected;
+        public event EventHandler<IPBEPacket> MessageReceived;
+        public event EventHandler Disconnected;
         public event EventHandler<Exception> Error;
 
-        public bool Connect(IPAddress ip, ushort port, TimeSpan timeout, PBEEncryption encryption = null, ushort maxDataSize = 1024)
+        public bool Connect(IPEndPoint ip, int millisecondsTimeout, PBEEncryption encryption = null)
         {
             if (ip == null)
             {
                 throw new ArgumentNullException(nameof(ip));
             }
-            if (port <= 0)
+            if (millisecondsTimeout < -1)
             {
-                throw new ArgumentException($"\"{nameof(port)}\" must be greater than 0.");
-            }
-            if (timeout.Ticks <= 0)
-            {
-                throw new ArgumentException($"\"{nameof(timeout)}\" is invalid.");
-            }
-            if (maxDataSize <= 0)
-            {
-                throw new ArgumentException($"\"{nameof(maxDataSize)}\" must be greater than 0.");
+                throw new ArgumentException($"\"{nameof(millisecondsTimeout)}\" is invalid.");
             }
 
             Disconnect(true);
@@ -60,17 +56,19 @@ namespace Kermalis.PokemonBattleEngine.Network
 
             try
             {
-                _socket.BeginConnect(ip, port, null, null).AsyncWaitHandle.WaitOne(timeout);
-                _encryption = encryption;
-                _maxDataSize = maxDataSize;
-                BeginReceive(_socket);
-                return true;
+                if (_socket.BeginConnect(ip, null, null).AsyncWaitHandle.WaitOne(millisecondsTimeout))
+                {
+                    _encryption = encryption;
+                    BeginReceive();
+                    return true;
+                }
             }
-            catch
+            catch (Exception ex)
             {
-                Disconnect(false);
-                return false;
+                NotifyError(ex);
             }
+            Disconnect(false);
+            return false;
         }
         public void Disconnect(bool notifyOnDisconnect)
         {
@@ -90,55 +88,50 @@ namespace Kermalis.PokemonBattleEngine.Network
             _socket = null;
             if (notifyOnDisconnect)
             {
-                Disconnected?.Invoke(this, this);
+                Disconnected?.Invoke(this, EventArgs.Empty);
             }
         }
 
-        public void Send(byte[] data, bool encrypt = false)
+        public void Send(IPBEPacket packet)
         {
             if (_socket == null)
             {
                 throw new InvalidOperationException("Socket not connected.");
             }
-            if (data == null)
+            if (packet == null)
             {
-                throw new ArgumentNullException(nameof(data));
+                throw new ArgumentNullException(nameof(packet));
             }
-            if (encrypt)
+            byte[] data = packet.Data.ToArray();
+            if (_encryption != null)
             {
-                if (_encryption == null)
-                {
-                    throw new ArgumentNullException(nameof(_encryption));
-                }
                 data = _encryption.Encrypt(data);
             }
-            NetworkUtils.Send(data, _socket);
+            PBENetworkUtils.Send(data, _socket);
         }
 
-        private void BeginReceive(Socket socket)
+        private void BeginReceive()
         {
-            socket.BeginReceive(_buffer = new byte[2], 0, 2, SocketFlags.None, OnReceiveLength, socket);
+            _socket.BeginReceive(_buffer = new byte[2], 0, 2, SocketFlags.None, OnReceiveLength, null);
         }
-        // TODO: Endianness
         private void OnReceiveLength(IAsyncResult ar)
         {
-            var socket = ar.AsyncState as Socket;
             try
             {
-                if (socket.Poll(0, SelectMode.SelectRead) && socket.Available <= 0)
+                if (_socket.Poll(0, SelectMode.SelectRead) && _socket.Available <= 0)
                 {
                     Disconnect(true);
                 }
                 else
                 {
-                    ushort dataLength = BitConverter.ToUInt16(_buffer, 0);
-                    if (dataLength <= 0 || dataLength > _maxDataSize)
+                    ushort dataLength = (ushort)(_buffer[0] | (_buffer[1] << 8));
+                    if (dataLength <= 0)
                     {
                         Disconnect(true);
                     }
                     else
                     {
-                        socket.BeginReceive(_buffer = new byte[dataLength], 0, dataLength, SocketFlags.None, OnReceiveData, socket);
+                        _socket.BeginReceive(_buffer = new byte[dataLength], 0, dataLength, SocketFlags.None, OnReceiveData, null);
                     }
                 }
             }
@@ -150,17 +143,21 @@ namespace Kermalis.PokemonBattleEngine.Network
         }
         private void OnReceiveData(IAsyncResult ar)
         {
-            var socket = ar.AsyncState as Socket;
             try
             {
-                if (socket.Poll(0, SelectMode.SelectRead) && socket.Available <= 0)
+                if (_socket.Poll(0, SelectMode.SelectRead) && _socket.Available <= 0)
                 {
                     Disconnect(true);
                 }
                 else
                 {
-                    MessageReceived?.Invoke(this, new PBEMessage(_buffer, socket, _encryption));
-                    BeginReceive(socket);
+                    byte[] data = _buffer;
+                    if (_encryption != null)
+                    {
+                        data = _encryption.Decrypt(data);
+                    }
+                    MessageReceived?.Invoke(this, PBEPacketProcessor.CreatePacket(Battle, data));
+                    BeginReceive();
                 }
             }
             catch (Exception ex)
@@ -174,7 +171,7 @@ namespace Kermalis.PokemonBattleEngine.Network
         {
             if (Error != null)
             {
-                Error(this, ex);
+                Error.Invoke(this, ex);
             }
             else
             {

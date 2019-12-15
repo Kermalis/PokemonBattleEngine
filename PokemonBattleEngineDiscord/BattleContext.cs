@@ -1,7 +1,6 @@
 ﻿using Discord;
 using Discord.Net;
 using Discord.WebSocket;
-using Ether.Network.Packets;
 using Kermalis.PokemonBattleEngine.Battle;
 using Kermalis.PokemonBattleEngine.Data;
 using Kermalis.PokemonBattleEngine.Packets;
@@ -400,7 +399,7 @@ namespace Kermalis.PokemonBattleEngineDiscord
             }
             return Task.CompletedTask;
         }
-        private static async Task Battle_OnNewEvent(BattleContext context, INetPacket packet)
+        private static async Task Battle_OnNewEvent(BattleContext context, IPBEPacket packet)
         {
             string NameForTrainer(PBEPokemon pkmn)
             {

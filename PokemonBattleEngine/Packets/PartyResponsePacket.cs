@@ -1,17 +1,16 @@
-﻿using Ether.Network.Packets;
+﻿using Kermalis.EndianBinaryIO;
 using Kermalis.PokemonBattleEngine.Battle;
 using Kermalis.PokemonBattleEngine.Data;
 using System;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.IO;
 
 namespace Kermalis.PokemonBattleEngine.Packets
 {
-    public sealed class PBEPartyResponsePacket : INetPacket
+    public sealed class PBEPartyResponsePacket : IPBEPacket
     {
-        public const short Code = 0x04;
-        public ReadOnlyCollection<byte> Buffer { get; }
+        public const ushort Code = 0x04;
+        public ReadOnlyCollection<byte> Data { get; }
 
         public PBETeamShell TeamShell { get; }
 
@@ -21,18 +20,18 @@ namespace Kermalis.PokemonBattleEngine.Packets
             {
                 throw new ArgumentNullException(nameof(teamShell));
             }
-            var bytes = new List<byte>();
-            bytes.AddRange(BitConverter.GetBytes(Code));
-            (TeamShell = teamShell).ToBytes(bytes);
-            bytes.InsertRange(0, BitConverter.GetBytes((short)bytes.Count));
-            Buffer = new ReadOnlyCollection<byte>(bytes);
+            using (var ms = new MemoryStream())
+            using (var w = new EndianBinaryWriter(ms, encoding: EncodingType.UTF16))
+            {
+                w.Write(Code);
+                (TeamShell = teamShell).ToBytes(w);
+                Data = new ReadOnlyCollection<byte>(ms.ToArray());
+            }
         }
-        internal PBEPartyResponsePacket(ReadOnlyCollection<byte> buffer, BinaryReader r, PBEBattle battle)
+        internal PBEPartyResponsePacket(byte[] data, EndianBinaryReader r, PBEBattle battle)
         {
-            Buffer = buffer;
-            TeamShell = new PBETeamShell(battle.Settings, r); // What happens if an exception occurs? Similar question to https://github.com/Kermalis/PokemonBattleEngine/issues/167
+            Data = new ReadOnlyCollection<byte>(data);
+            TeamShell = new PBETeamShell(battle.Settings, r);
         }
-
-        public void Dispose() { }
     }
 }

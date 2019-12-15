@@ -26,10 +26,10 @@ This will change in the future as the server will send the settings to all conne
 
 ----
 # PokemonBattleEngine Uses:
-* [My fork of Ether.Network](https://github.com/Kermalis/Ether.Network)
 * [Microsoft.Data.Sqlite](https://docs.microsoft.com/en-us/ef/core)
 * [Newtonsoft.Json](https://github.com/JamesNK/Newtonsoft.Json)
 * [SQLitePCLRaw](https://github.com/ericsink/SQLitePCL.raw)
+* [TCP networking insprired by EasyTcp](https://github.com/GHenkje/EasyTcp)
 
 # PokemonBattleEngineClient Uses:
 * [Avalonia](https://github.com/AvaloniaUI/Avalonia)

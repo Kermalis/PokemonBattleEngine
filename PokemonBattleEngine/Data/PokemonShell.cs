@@ -1,9 +1,9 @@
-﻿using Newtonsoft.Json;
+﻿using Kermalis.EndianBinaryIO;
+using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
-using System.IO;
 using System.Linq;
 
 namespace Kermalis.PokemonBattleEngine.Data
@@ -174,14 +174,14 @@ namespace Kermalis.PokemonBattleEngine.Data
         public PBEIndividualValues IndividualValues { get; }
         public PBEMoveset Moveset { get; }
 
-        internal PBEPokemonShell(PBESettings settings, BinaryReader r)
+        internal PBEPokemonShell(PBESettings settings, EndianBinaryReader r)
         {
             Settings = settings;
-            var species = (PBESpecies)r.ReadUInt32();
+            PBESpecies species = r.ReadEnum<PBESpecies>();
             ValidateSpecies(species);
             _species = species;
             SetSelectable();
-            string nickname = PBEUtils.StringFromBytes(r);
+            string nickname = r.ReadStringNullTerminated();
             ValidateNickname(nickname, Settings);
             _nickname = nickname;
             byte level = r.ReadByte();
@@ -189,16 +189,16 @@ namespace Kermalis.PokemonBattleEngine.Data
             _level = level;
             _friendship = r.ReadByte();
             _shiny = r.ReadBoolean();
-            var ability = (PBEAbility)r.ReadByte();
+            PBEAbility ability = r.ReadEnum<PBEAbility>();
             ValidateAbility(ability);
             _ability = ability;
-            var nature = (PBENature)r.ReadByte();
+            PBENature nature = r.ReadEnum<PBENature>();
             ValidateNature(nature);
             _nature = nature;
-            var gender = (PBEGender)r.ReadByte();
+            PBEGender gender = r.ReadEnum<PBEGender>();
             ValidateGender(gender);
             _gender = gender;
-            var item = (PBEItem)r.ReadUInt16();
+            PBEItem item = r.ReadEnum<PBEItem>();
             ValidateItem(item);
             _item = item;
             Settings.PropertyChanged += OnSettingsChanged;
@@ -420,20 +420,20 @@ namespace Kermalis.PokemonBattleEngine.Data
             }
         }
 
-        internal void ToBytes(List<byte> bytes)
+        internal void ToBytes(EndianBinaryWriter w)
         {
-            bytes.AddRange(BitConverter.GetBytes((uint)_species));
-            PBEUtils.StringToBytes(bytes, _nickname);
-            bytes.Add(_level);
-            bytes.Add(_friendship);
-            bytes.Add((byte)(_shiny ? 1 : 0));
-            bytes.Add((byte)_ability);
-            bytes.Add((byte)_nature);
-            bytes.Add((byte)_gender);
-            bytes.AddRange(BitConverter.GetBytes((ushort)_item));
-            EffortValues.ToBytes(bytes);
-            IndividualValues.ToBytes(bytes);
-            Moveset.ToBytes(bytes);
+            w.Write(_species);
+            w.Write(_nickname, true);
+            w.Write(_level);
+            w.Write(_friendship);
+            w.Write(_shiny);
+            w.Write(_ability);
+            w.Write(_nature);
+            w.Write(_gender);
+            w.Write(_item);
+            EffortValues.ToBytes(w);
+            IndividualValues.ToBytes(w);
+            Moveset.ToBytes(w);
         }
         internal void ToJson(JsonTextWriter w)
         {
