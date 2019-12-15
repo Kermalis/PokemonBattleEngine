@@ -111,55 +111,54 @@ namespace Kermalis.PokemonBattleEngine.Network
 
         private void OnClientConnected(IAsyncResult ar)
         {
-            if (!IsRunning)
+            if (IsRunning)
             {
-                return;
-            }
-            PBEServerClient client = null;
-            try
-            {
-                client = new PBEServerClient(_listener.EndAccept(ar), _encryption);
-                bool isBanned;
-                lock (_bannedIPs)
+                PBEServerClient client = null;
+                try
                 {
-                    isBanned = _bannedIPs.Contains(client.IP);
-                }
-                if (isBanned)
-                {
-                    RefuseClient(client, true);
-                }
-                else
-                {
-                    int count;
-                    lock (_connectedClients)
+                    client = new PBEServerClient(_listener.EndAccept(ar), _encryption);
+                    bool isBanned;
+                    lock (_bannedIPs)
                     {
-                        count = _connectedClients.Count;
+                        isBanned = _bannedIPs.Contains(client.IP);
                     }
-                    if (count >= _maxConnections)
+                    if (isBanned)
                     {
-                        RefuseClient(client, false);
+                        RefuseClient(client, true);
                     }
                     else
                     {
+                        int count;
                         lock (_connectedClients)
                         {
-                            _connectedClients.Add(client);
+                            count = _connectedClients.Count;
                         }
-                        client.IsConnected = true;
-                        ClientConnected?.Invoke(this, client);
-                        BeginReceive(client);
+                        if (count >= _maxConnections)
+                        {
+                            RefuseClient(client, false);
+                        }
+                        else
+                        {
+                            lock (_connectedClients)
+                            {
+                                _connectedClients.Add(client);
+                            }
+                            client.IsConnected = true;
+                            ClientConnected?.Invoke(this, client);
+                            BeginReceive(client);
+                        }
                     }
                 }
-            }
-            catch (Exception ex)
-            {
-                NotifyError(ex);
-                if (client != null)
+                catch (Exception ex)
                 {
-                    DisconnectClient(client);
+                    NotifyError(ex);
+                    if (client != null)
+                    {
+                        DisconnectClient(client);
+                    }
                 }
+                _listener.BeginAccept(OnClientConnected, _listener);
             }
-            _listener.BeginAccept(OnClientConnected, _listener);
         }
 
         private void BeginReceive(PBEServerClient client)
@@ -217,7 +216,7 @@ namespace Kermalis.PokemonBattleEngine.Network
                         {
                             data = _encryption.Decrypt(data);
                         }
-                        client.FireMessageReceived(PBEPacketProcessor.CreatePacket(Battle, data));
+                        client.FirePacketReceived(PBEPacketProcessor.CreatePacket(Battle, data));
                         BeginReceive(client);
                     }
                 }

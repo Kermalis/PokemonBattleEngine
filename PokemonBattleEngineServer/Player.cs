@@ -11,21 +11,22 @@ namespace Kermalis.PokemonBattleEngineServer
     {
         public BattleServer Server { get; }
         public PBEServerClient Client { get; }
-        public ManualResetEvent ResetEvent { get; } = new ManualResetEvent(true);
         public string TrainerName { get; set; }
         public int BattleId { get; set; } = int.MaxValue;
-        public PBETeamShell TeamShell { get; private set; }
+
+        private readonly ManualResetEvent resetEvent = new ManualResetEvent(true);
+        private bool submittedTeam;
 
         public Player(BattleServer server, PBEServerClient client)
         {
             Server = server;
             Client = client;
-            Client.MessageReceived += HandleMessage;
+            Client.PacketReceived += OnPacketReceived;
         }
 
         public bool WaitForResponse()
         {
-            bool receivedResponseInTime = ResetEvent.WaitOne(1000 * 5);
+            bool receivedResponseInTime = resetEvent.WaitOne(1000 * 5);
             if (!receivedResponseInTime)
             {
                 Console.WriteLine($"Kicking client ({BattleId} {TrainerName})");
@@ -36,19 +37,17 @@ namespace Kermalis.PokemonBattleEngineServer
 
         public void Send(IPBEPacket packet)
         {
-            Debug.WriteLine($"Message sent ({BattleId} \"{packet.GetType().Name}\")");
-            ResetEvent.Reset();
-            Client.Send(packet);
-        }
-        private void HandleMessage(object sender, IPBEPacket packet)
-        {
-            Debug.WriteLine($"Message received ({BattleId} \"{packet.GetType().Name}\")");
-            if (Client == null || ResetEvent.SafeWaitHandle.IsClosed)
+            if (Client.IsConnected)
             {
-                return;
+                Debug.WriteLine($"Packet sent ({BattleId} \"{packet.GetType().Name}\")");
+                resetEvent.Reset();
+                Client.Send(packet);
             }
-            ResetEvent.Set();
-
+        }
+        private void OnPacketReceived(object sender, IPBEPacket packet)
+        {
+            Debug.WriteLine($"Packet received ({BattleId} \"{packet.GetType().Name}\")");
+            resetEvent.Set();
             if (BattleId < 2)
             {
                 switch (packet)
@@ -61,10 +60,12 @@ namespace Kermalis.PokemonBattleEngineServer
                     case PBEPartyResponsePacket prp:
                     {
                         Console.WriteLine($"Received team from {TrainerName}!");
-                        if (TeamShell == null)
+                        if (!submittedTeam)
                         {
-                            TeamShell = prp.TeamShell;
-                            Server.PartySubmitted(this);
+                            submittedTeam = true;
+                            PBETeamShell s = prp.TeamShell;
+                            Server.PartySubmitted(this, s);
+                            s.Dispose();
                         }
                         else
                         {
@@ -79,13 +80,13 @@ namespace Kermalis.PokemonBattleEngineServer
                     }
                 }
             }
+            // TODO: Kick players who are sending bogus packets or sending too many
         }
 
         public void Dispose()
         {
-            ResetEvent.Dispose();
-            Client.MessageReceived -= HandleMessage;
-            TeamShell?.Dispose();
+            resetEvent.Dispose();
+            Client.PacketReceived -= OnPacketReceived;
         }
     }
 }

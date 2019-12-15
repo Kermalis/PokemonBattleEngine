@@ -20,12 +20,12 @@ namespace Kermalis.PokemonBattleEngineClient
             _client = new PBEClient { Battle = Battle };
             _client.Disconnected += OnDisconnected;
             _client.Error += OnError;
-            _client.MessageReceived += HandleMessage;
+            _client.PacketReceived += OnPacketReceived;
         }
 
         public bool Connect(string host, ushort port)
         {
-            if (_client.Connect(new IPEndPoint(IPAddress.Parse(host), port), -1))
+            if (_client.Connect(new IPEndPoint(IPAddress.Parse(host), port), 10 * 1000))
             {
                 OnConnected();
                 return true;
@@ -35,23 +35,22 @@ namespace Kermalis.PokemonBattleEngineClient
 
         private void OnConnected()
         {
-            Debug.WriteLine("Connected to {0}", "ur mum");
-            //Debug.WriteLine("Connected to {0}", _client.Socket.RemoteEndPoint);
-            BattleView.AddMessage("Waiting for players...", messageBox: false);
+            Debug.WriteLine("Connected to {0}", _client.RemoteIP);
+            BattleView.AddMessage("Connected to host.", messageBox: false);
         }
         private void OnDisconnected(object sender, EventArgs e)
         {
-            Debug.WriteLine("Disconnected from server");
-            BattleView.AddMessage("Disconnected from server.", messageBox: false);
+            Debug.WriteLine("Disconnected from host");
+            BattleView.AddMessage("Disconnected from host.", messageBox: false);
         }
         private void OnError(object sender, Exception ex)
         {
             Debug.WriteLine("Error: {0}", ex);
         }
 
-        private void HandleMessage(object sender, IPBEPacket packet)
+        private void OnPacketReceived(object sender, IPBEPacket packet)
         {
-            Debug.WriteLine($"Message received: \"{packet.GetType().Name}\"");
+            Debug.WriteLine($"Packet received (\"{packet.GetType().Name}\")");
             switch (packet)
             {
                 case PBEMatchCancelledPacket _:
@@ -68,9 +67,9 @@ namespace Kermalis.PokemonBattleEngineClient
                         if (id < 2)
                         {
                             Team = Battle.Teams[id];
+                            ShowRawValues0 = id == 0;
+                            ShowRawValues1 = id == 1;
                         }
-                        ShowRawValues0 = id == 0;
-                        ShowRawValues1 = id == 1;
                     }
                     else
                     {
@@ -80,12 +79,12 @@ namespace Kermalis.PokemonBattleEngineClient
                     {
                         Battle.Teams[id].TrainerName = pjp.TrainerName;
                     }
-                    _client.Send(new PBEResponsePacket());
+                    Send(new PBEResponsePacket());
                     break;
                 }
                 case PBEPartyRequestPacket _:
                 {
-                    _client.Send(new PBEPartyResponsePacket(_teamShell));
+                    Send(new PBEPartyResponsePacket(_teamShell));
                     break;
                 }
                 case PBEActionsRequestPacket _:
@@ -94,13 +93,13 @@ namespace Kermalis.PokemonBattleEngineClient
                 {
                     Battle.Events.Add(packet);
                     StartPacketThread();
-                    _client.Send(new PBEResponsePacket());
+                    Send(new PBEResponsePacket());
                     break;
                 }
                 default:
                 {
                     Battle.Events.Add(packet);
-                    _client.Send(new PBEResponsePacket());
+                    Send(new PBEResponsePacket());
                     break;
                 }
             }
@@ -109,12 +108,28 @@ namespace Kermalis.PokemonBattleEngineClient
         protected override void OnActionsReady(PBETurnAction[] acts)
         {
             BattleView.AddMessage($"Waiting for {Team.OpposingTeam.TrainerName}...", messageLog: false);
-            _client.Send(new PBEActionsResponsePacket(acts));
+            Send(new PBEActionsResponsePacket(acts));
         }
         protected override void OnSwitchesReady()
         {
-            BattleView.AddMessage($"Waiting for {(Team.OpposingTeam.SwitchInsRequired > 0 ? Team.OpposingTeam.TrainerName : "server")}...", messageLog: false);
-            _client.Send(new PBESwitchInResponsePacket(Switches));
+            BattleView.AddMessage($"Waiting for {(Team.OpposingTeam.SwitchInsRequired > 0 ? Team.OpposingTeam.TrainerName : "host")}...", messageLog: false);
+            Send(new PBESwitchInResponsePacket(Switches));
+        }
+
+        private void Send(IPBEPacket packet)
+        {
+            if (_client.IsConnected)
+            {
+                _client.Send(packet);
+            }
+        }
+
+        public override void Dispose()
+        {
+            _client.Dispose();
+            _client.Disconnected -= OnDisconnected;
+            _client.Error -= OnError;
+            _client.PacketReceived -= OnPacketReceived;
         }
     }
 }

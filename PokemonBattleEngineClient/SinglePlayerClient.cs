@@ -41,11 +41,24 @@ namespace Kermalis.PokemonBattleEngineClient
 
         protected override void OnActionsReady(PBETurnAction[] acts)
         {
-            new Thread(() => PBEBattle.SelectActionsIfValid(Team, acts)) { Name = "Battle Thread" }.Start();
+            if (!Battle.IsDisposed)
+            {
+                new Thread(() => PBEBattle.SelectActionsIfValid(Team, acts)) { Name = "Battle Thread" }.Start();
+            }
         }
         protected override void OnSwitchesReady()
         {
-            new Thread(() => PBEBattle.SelectSwitchesIfValid(Team, Switches)) { Name = "Battle Thread" }.Start();
+            if (!Battle.IsDisposed)
+            {
+                new Thread(() => PBEBattle.SelectSwitchesIfValid(Team, Switches)) { Name = "Battle Thread" }.Start();
+            }
+        }
+
+        public override void Dispose()
+        {
+            Battle.Dispose();
+            Battle.OnNewEvent -= SinglePlayerBattle_OnNewEvent;
+            Battle.OnStateChanged -= SinglePlayerBattle_OnStateChanged;
         }
     }
 }

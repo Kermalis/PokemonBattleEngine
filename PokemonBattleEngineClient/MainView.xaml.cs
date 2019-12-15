@@ -102,7 +102,7 @@ namespace Kermalis.PokemonBattleEngineClient
             Add(new SinglePlayerClient(PBEBattleFormat.Double, team1Shell, "May", team2Shell, "Champion Steven"));
         }
 
-        // TODO: Removing battles
+        // TODO: Removing battles (with disposing)
         private void Add(BattleClient client)
         {
             _battles.Add(client);

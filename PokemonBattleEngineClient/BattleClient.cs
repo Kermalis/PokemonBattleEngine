@@ -11,7 +11,7 @@ using System.Threading;
 
 namespace Kermalis.PokemonBattleEngineClient
 {
-    internal abstract class BattleClient
+    internal abstract class BattleClient : IDisposable
     {
         protected const int WaitMilliseconds = 2000;
         protected enum ClientMode : byte
@@ -90,6 +90,8 @@ namespace Kermalis.PokemonBattleEngineClient
         }
         protected abstract void OnSwitchesReady();
 
+        public abstract void Dispose();
+
         #region Automatic packet processing
 
         private int _currentPacket = -1;
@@ -117,6 +119,7 @@ namespace Kermalis.PokemonBattleEngineClient
                     Thread.Sleep(WaitMilliseconds);
                 }
             }
+            // TODO: Not perfect; if StartPacketThread locks first while we are here, the thread will simply end
             lock (_packetThreadLockObj)
             {
                 _packetThread = null;
@@ -1534,13 +1537,16 @@ namespace Kermalis.PokemonBattleEngineClient
                         }
                         case ClientMode.SinglePlayer:
                         {
-                            if (arp.Team.Id == BattleId)
+                            if (!Battle.IsDisposed)
                             {
-                                ActionsLoop(true);
-                            }
-                            else
-                            {
-                                new Thread(() => PBEBattle.SelectActionsIfValid(arp.Team, PBEAI.CreateActions(arp.Team))) { Name = "Battle Thread" }.Start();
+                                if (arp.Team.Id == BattleId)
+                                {
+                                    ActionsLoop(true);
+                                }
+                                else
+                                {
+                                    new Thread(() => PBEBattle.SelectActionsIfValid(arp.Team, PBEAI.CreateActions(arp.Team))) { Name = "Battle Thread" }.Start();
+                                }
                             }
                             break;
                         }
@@ -1591,14 +1597,17 @@ namespace Kermalis.PokemonBattleEngineClient
                         }
                         case ClientMode.SinglePlayer:
                         {
-                            if (sirp.Team.Id == BattleId)
+                            if (!Battle.IsDisposed)
                             {
-                                switchesRequired = sirp.Amount;
-                                SwitchesLoop(true);
-                            }
-                            else
-                            {
-                                new Thread(() => PBEBattle.SelectSwitchesIfValid(sirp.Team, PBEAI.CreateSwitches(sirp.Team))) { Name = "Battle Thread" }.Start();
+                                if (sirp.Team.Id == BattleId)
+                                {
+                                    switchesRequired = sirp.Amount;
+                                    SwitchesLoop(true);
+                                }
+                                else
+                                {
+                                    new Thread(() => PBEBattle.SelectSwitchesIfValid(sirp.Team, PBEAI.CreateSwitches(sirp.Team))) { Name = "Battle Thread" }.Start();
+                                }
                             }
                         }
                         break;

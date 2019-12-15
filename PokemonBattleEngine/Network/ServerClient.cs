@@ -16,7 +16,7 @@ namespace Kermalis.PokemonBattleEngine.Network
         public IPEndPoint IP { get; }
         public bool IsConnected { get; internal set; }
 
-        public EventHandler<IPBEPacket> MessageReceived;
+        public EventHandler<IPBEPacket> PacketReceived;
 
         internal PBEServerClient(Socket socket, PBEEncryption encryption)
         {
@@ -39,9 +39,9 @@ namespace Kermalis.PokemonBattleEngine.Network
             PBENetworkUtils.Send(data, Socket);
         }
 
-        internal void FireMessageReceived(IPBEPacket packet)
+        internal void FirePacketReceived(IPBEPacket packet)
         {
-            MessageReceived?.Invoke(this, packet);
+            PacketReceived?.Invoke(this, packet);
         }
     }
 }

@@ -91,14 +91,11 @@ namespace Kermalis.PokemonBattleEngineServer
                             }
                         }
                         // Alert all players that this new player joined (including him/herself)
-                        if (rp.Client != null)
+                        bool isMe = rp == player;
+                        rp.Send(new PBEPlayerJoinedPacket(isMe, player.BattleId, player.TrainerName));
+                        if (!rp.WaitForResponse() && (isMe || rp.BattleId < 2))
                         {
-                            bool isMe = rp == player;
-                            rp.Send(new PBEPlayerJoinedPacket(isMe, player.BattleId, player.TrainerName));
-                            if (!rp.WaitForResponse() && (isMe || rp.BattleId < 2))
-                            {
-                                return;
-                            }
+                            return;
                         }
                     }
 
@@ -212,7 +209,7 @@ namespace Kermalis.PokemonBattleEngineServer
             _state = ServerState.WaitingForPlayers;
             _resetEvent.Set();
         }
-        public void PartySubmitted(Player player)
+        public void PartySubmitted(Player player, PBETeamShell teamShell)
         {
             if (_state != ServerState.WaitingForParties)
             {
@@ -224,7 +221,23 @@ namespace Kermalis.PokemonBattleEngineServer
                 {
                     return;
                 }
-                PBEBattle.CreateTeamParty(_battle.Teams[player.BattleId], player.TeamShell, player.TrainerName);
+                foreach (PBEPokemonShell shell in teamShell)
+                {
+                    try
+                    {
+                        // Not currently necessary, but it would be necessary eventually because PBEMovesetBuilder cannot check if a moveset "makes sense" for the method the Pokémon was obtained in
+                        // Eventually we would probably want to store that sort of information in PBEPokemonShell
+                        PBELegalityChecker.MoveLegalityCheck(shell.Moveset);
+                    }
+                    catch (Exception e)
+                    {
+                        Console.WriteLine($"Illegal moveset received from {player.TrainerName}");
+                        Console.WriteLine(e.Message);
+                        CancelMatch();
+                        return;
+                    }
+                }
+                PBEBattle.CreateTeamParty(_battle.Teams[player.BattleId], teamShell, player.TrainerName);
             }
         }
         public void ActionsSubmitted(Player player, IList<PBETurnAction> actions)
@@ -278,25 +291,6 @@ namespace Kermalis.PokemonBattleEngineServer
                 case PBEBattleState.ReadyToBegin:
                 {
                     _resetEvent.Reset();
-                    foreach (Player player in _battlers)
-                    {
-                        foreach (PBEPokemonShell shell in player.TeamShell)
-                        {
-                            try
-                            {
-                                // Not currently necessary, but it would be necessary eventually because PBEMovesetBuilder cannot check if a moveset "makes sense" for the method the Pokémon was obtained in
-                                // Eventually we would probably want to store that sort of information in PBEPokemonShell
-                                PBELegalityChecker.MoveLegalityCheck(shell.Moveset);
-                            }
-                            catch (Exception e)
-                            {
-                                Console.WriteLine($"Illegal moveset received from {player.TrainerName}");
-                                Console.WriteLine(e.Message);
-                                CancelMatch();
-                                return;
-                            }
-                        }
-                    }
                     Console.WriteLine("Battle starting!");
                     new Thread(battle.Begin) { Name = "Battle Thread" }.Start();
                     break;
@@ -333,13 +327,10 @@ namespace Kermalis.PokemonBattleEngineServer
                 }
                 foreach (Player player in _readyPlayers.Values.Except(new[] { teamOwner }))
                 {
-                    if (player.Client != null)
+                    player.Send(hiddenInfo);
+                    if (!player.WaitForResponse() && player.BattleId < 2)
                     {
-                        player.Send(hiddenInfo);
-                        if (!player.WaitForResponse() && player.BattleId < 2)
-                        {
-                            return;
-                        }
+                        return;
                     }
                 }
             }
@@ -430,11 +421,8 @@ namespace Kermalis.PokemonBattleEngineServer
                     }
                     foreach (Player player in _readyPlayers.Values.Except(_battlers))
                     {
-                        if (player.Client != null)
-                        {
-                            player.Send(spectators);
-                            player.WaitForResponse();
-                        }
+                        player.Send(spectators);
+                        player.WaitForResponse();
                     }
                     break;
                 }
@@ -452,7 +440,7 @@ namespace Kermalis.PokemonBattleEngineServer
                 {
                     _state = ServerState.WaitingForSwitchIns;
                     _spectatorPackets.Add(packet);
-                    SendTo(_readyPlayers.Values.ToArray(), packet);
+                    SendToAll(packet);
                     _resetEvent.Set();
                     break;
                 }
@@ -461,13 +449,10 @@ namespace Kermalis.PokemonBattleEngineServer
                     _spectatorPackets.Add(packet);
                     foreach (Player player in _readyPlayers.Values.ToArray())
                     {
-                        if (player.Client != null)
+                        player.Send(packet);
+                        if (!player.WaitForResponse() && player.BattleId < 2)
                         {
-                            player.Send(packet);
-                            if (!player.WaitForResponse() && player.BattleId < 2)
-                            {
-                                return;
-                            }
+                            return;
                         }
                     }
                     break;
@@ -488,7 +473,7 @@ namespace Kermalis.PokemonBattleEngineServer
         }
         private void SendToAll(IPBEPacket packet)
         {
-            _server.SendToAll(packet);
+            SendTo(_readyPlayers.Values.ToArray(), packet);
         }
     }
 }

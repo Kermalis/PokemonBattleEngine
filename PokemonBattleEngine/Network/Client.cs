@@ -36,9 +36,12 @@ namespace Kermalis.PokemonBattleEngine.Network
         private PBEEncryption _encryption;
         private byte[] _buffer;
 
-        public event EventHandler<IPBEPacket> MessageReceived;
+        public IPEndPoint RemoteIP { get; private set; }
+        public bool IsConnected { get; private set; }
+
         public event EventHandler Disconnected;
         public event EventHandler<Exception> Error;
+        public event EventHandler<IPBEPacket> PacketReceived;
 
         public bool Connect(IPEndPoint ip, int millisecondsTimeout, PBEEncryption encryption = null)
         {
@@ -58,6 +61,8 @@ namespace Kermalis.PokemonBattleEngine.Network
             {
                 if (_socket.BeginConnect(ip, null, null).AsyncWaitHandle.WaitOne(millisecondsTimeout))
                 {
+                    IsConnected = true;
+                    RemoteIP = ip;
                     _encryption = encryption;
                     BeginReceive();
                     return true;
@@ -70,31 +75,33 @@ namespace Kermalis.PokemonBattleEngine.Network
             Disconnect(false);
             return false;
         }
-        public void Disconnect(bool notifyOnDisconnect)
+        public void Disconnect(bool notify)
         {
-            if (_socket == null)
+            if (IsConnected)
             {
-                return;
-            }
-            try
-            {
-                _socket.Shutdown(SocketShutdown.Both);
-            }
-            catch (Exception ex)
-            {
-                NotifyError(ex);
-            }
-            _socket.Dispose();
-            _socket = null;
-            if (notifyOnDisconnect)
-            {
-                Disconnected?.Invoke(this, EventArgs.Empty);
+                IsConnected = false;
+                RemoteIP = null;
+                _encryption = null;
+                try
+                {
+                    _socket.Shutdown(SocketShutdown.Both);
+                }
+                catch (Exception ex)
+                {
+                    NotifyError(ex);
+                }
+                _socket.Dispose();
+                _socket = null;
+                if (notify)
+                {
+                    Disconnected?.Invoke(this, EventArgs.Empty);
+                }
             }
         }
 
         public void Send(IPBEPacket packet)
         {
-            if (_socket == null)
+            if (!IsConnected)
             {
                 throw new InvalidOperationException("Socket not connected.");
             }
@@ -116,54 +123,60 @@ namespace Kermalis.PokemonBattleEngine.Network
         }
         private void OnReceiveLength(IAsyncResult ar)
         {
-            try
+            if (IsConnected)
             {
-                if (_socket.Poll(0, SelectMode.SelectRead) && _socket.Available <= 0)
+                try
                 {
-                    Disconnect(true);
-                }
-                else
-                {
-                    ushort dataLength = (ushort)(_buffer[0] | (_buffer[1] << 8));
-                    if (dataLength <= 0)
+                    if (_socket.Poll(0, SelectMode.SelectRead) && _socket.Available <= 0)
                     {
                         Disconnect(true);
                     }
                     else
                     {
-                        _socket.BeginReceive(_buffer = new byte[dataLength], 0, dataLength, SocketFlags.None, OnReceiveData, null);
+                        ushort dataLength = (ushort)(_buffer[0] | (_buffer[1] << 8));
+                        if (dataLength <= 0)
+                        {
+                            Disconnect(true);
+                        }
+                        else
+                        {
+                            _socket.BeginReceive(_buffer = new byte[dataLength], 0, dataLength, SocketFlags.None, OnReceiveData, null);
+                        }
                     }
                 }
-            }
-            catch (Exception ex)
-            {
-                NotifyError(ex);
-                Disconnect(true);
+                catch (Exception ex)
+                {
+                    NotifyError(ex);
+                    Disconnect(true);
+                }
             }
         }
         private void OnReceiveData(IAsyncResult ar)
         {
-            try
+            if (IsConnected)
             {
-                if (_socket.Poll(0, SelectMode.SelectRead) && _socket.Available <= 0)
+                try
                 {
+                    if (_socket.Poll(0, SelectMode.SelectRead) && _socket.Available <= 0)
+                    {
+                        Disconnect(true);
+                    }
+                    else
+                    {
+                        byte[] data = _buffer;
+                        if (_encryption != null)
+                        {
+                            data = _encryption.Decrypt(data);
+                        }
+                        PacketReceived?.Invoke(this, PBEPacketProcessor.CreatePacket(Battle, data));
+                        BeginReceive();
+                    }
+                }
+                catch (Exception ex)
+                {
+                    NotifyError(ex);
                     Disconnect(true);
                 }
-                else
-                {
-                    byte[] data = _buffer;
-                    if (_encryption != null)
-                    {
-                        data = _encryption.Decrypt(data);
-                    }
-                    MessageReceived?.Invoke(this, PBEPacketProcessor.CreatePacket(Battle, data));
-                    BeginReceive();
-                }
-            }
-            catch (Exception ex)
-            {
-                NotifyError(ex);
-                Disconnect(true);
             }
         }
 

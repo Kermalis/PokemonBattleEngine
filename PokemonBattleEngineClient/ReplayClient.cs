@@ -21,5 +21,10 @@ namespace Kermalis.PokemonBattleEngineClient
         {
             throw new NotImplementedException();
         }
+
+        public override void Dispose()
+        {
+            Battle.Dispose();
+        }
     }
 }
