@@ -2807,6 +2807,15 @@ namespace Kermalis.PokemonBattleEngine.Data
                 )
             },
             {
+                PBEMove.StoredPower,
+                new PBEMoveData
+                (
+                    PBEType.Psychic, PBEMoveCategory.Special, 0, 2, 20, 100,
+                    PBEMoveEffect.Hit, 0, PBEMoveTarget.SingleSurrounding,
+                    PBEMoveFlag.AffectedByMirrorMove | PBEMoveFlag.AffectedByProtect
+                )
+            },
+            {
                 PBEMove.StormThrow,
                 new PBEMoveData
                 (

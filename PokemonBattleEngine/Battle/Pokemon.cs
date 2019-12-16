@@ -511,7 +511,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
             AccuracyChange = 0;
             EvasionChange = 0;
         }
-        /// <summary>For use with <see cref="PBEMove.Punishment"/>.</summary>
+        /// <summary>For use with <see cref="PBEMove.Punishment"/> and <see cref="PBEMove.StoredPower"/>.</summary>
         public int GetPositiveStatTotal()
         {
             int total = 0;

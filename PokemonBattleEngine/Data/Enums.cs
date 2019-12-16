@@ -2718,7 +2718,7 @@ namespace Kermalis.PokemonBattleEngine.Data
         //Stockpile = 254,
         Stomp = 23,
         StoneEdge = 444,
-        //StoredPower = 500,
+        StoredPower = 500,
         StormThrow = 480,
         Strength = 70,
         StringShot = 81,

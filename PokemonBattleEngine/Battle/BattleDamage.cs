@@ -119,9 +119,8 @@ namespace Kermalis.PokemonBattleEngine.Battle
         private double CalculateBasePower(PBEPokemon user, PBEPokemon[] targets, PBEMove move, PBEType moveType)
         {
             PBEMoveData mData = PBEMoveData.Data[move];
-            double basePower = mData.Power;
-
-            // Moves with variable base power
+            // Get move's base power
+            double basePower;
             switch (move)
             {
                 case PBEMove.CrushGrip:
@@ -134,7 +133,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                 case PBEMove.Eruption:
                 case PBEMove.WaterSpout:
                 {
-                    basePower = Math.Max(1, 150 * user.HP / user.MaxHP);
+                    basePower = Math.Max(1, mData.Power * user.HP / user.MaxHP);
                     break;
                 }
                 case PBEMove.Flail:
@@ -285,6 +284,16 @@ namespace Kermalis.PokemonBattleEngine.Battle
                 case PBEMove.Return:
                 {
                     basePower = Math.Max(1, user.Friendship / 2.5);
+                    break;
+                }
+                case PBEMove.StoredPower:
+                {
+                    basePower = mData.Power + (20 * user.GetPositiveStatTotal());
+                    break;
+                }
+                default:
+                {
+                    basePower = mData.Power;
                     break;
                 }
             }
