@@ -582,6 +582,15 @@ namespace Kermalis.PokemonBattleEngineDiscord
                             }
                             break;
                         }
+                        case PBEAbility.Simple:
+                        {
+                            switch (ap.AbilityAction)
+                            {
+                                case PBEAbilityAction.Changed: message = "{0} acquired {2}!"; break;
+                                default: throw new ArgumentOutOfRangeException(nameof(ap.AbilityAction));
+                            }
+                            break;
+                        }
                         case PBEAbility.SlowStart:
                         {
                             switch (ap.AbilityAction)

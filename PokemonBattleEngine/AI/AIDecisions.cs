@@ -543,6 +543,7 @@ namespace Kermalis.PokemonBattleEngine.AI
                                     case PBEMoveEffect.SeismicToss:
                                     case PBEMoveEffect.Selfdestruct:
                                     case PBEMoveEffect.SetDamage:
+                                    case PBEMoveEffect.SimpleBeam:
                                     case PBEMoveEffect.Snore:
                                     case PBEMoveEffect.Soak:
                                     case PBEMoveEffect.Spikes:

@@ -2227,6 +2227,7 @@ namespace Kermalis.PokemonBattleEngine.Data
         SeismicToss,
         Selfdestruct,
         SetDamage,
+        SimpleBeam,
         Sleep,
         Snore,
         Soak,
@@ -2387,7 +2388,7 @@ namespace Kermalis.PokemonBattleEngine.Data
         Endeavor = 283,
         //Endure = 203, // TODO: Blocked by Metronome
         EnergyBall = 412,
-        //Entrainment = 494,
+        //Entrainment = 494, // TODO: Does abilities activate? (Slow Start, Intimidate, etc)
         Eruption = 284,
         Explosion = 153,
         Extrasensory = 326,
@@ -2676,7 +2677,7 @@ namespace Kermalis.PokemonBattleEngine.Data
         ShockWave = 351,
         SignalBeam = 324,
         SilverWind = 318,
-        //SimpleBeam = 493,
+        SimpleBeam = 493,
         Sing = 47,
         //Sketch = 166, // TODO: Blocked by Metronome
         //SkillSwap = 285,

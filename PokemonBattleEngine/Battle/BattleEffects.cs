@@ -1204,6 +1204,11 @@ namespace Kermalis.PokemonBattleEngine.Battle
                         Ef_SetDamage(user, targets, move, effectParam);
                         break;
                     }
+                    case PBEMoveEffect.SimpleBeam:
+                    {
+                        Ef_SimpleBeam(user, targets, move);
+                        break;
+                    }
                     case PBEMoveEffect.Sleep:
                     {
                         Ef_TryForceStatus1(user, targets, move, PBEStatus1.Asleep);
@@ -1871,6 +1876,14 @@ namespace Kermalis.PokemonBattleEngine.Battle
             {
                 BroadcastStatus2(user, user, PBEStatus2.PowerTrick, PBEStatusAction.Ended);
             }
+        }
+        private void SetAbility(PBEPokemon user, PBEPokemon target, PBEAbility ability)
+        {
+            BroadcastAbility(target, user, ability, PBEAbilityAction.Changed);
+            CastformCherrimCheck(target);
+            IllusionBreak(target, user);
+            target.SlowStart_HinderTurnsLeft = 0;
+            target.SpeedBoost_AbleToSpeedBoostThisTurn = false;
         }
         private PBEResult ApplyStatus1IfPossible(PBEPokemon user, PBEPokemon target, PBEStatus1 status, bool broadcastResult)
         {
@@ -3364,11 +3377,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                         }
                         else
                         {
-                            BroadcastAbility(target, user, PBEAbility.None, PBEAbilityAction.Changed);
-                            CastformCherrimCheck(target);
-                            IllusionBreak(target, user);
-                            target.SlowStart_HinderTurnsLeft = 0;
-                            target.SpeedBoost_AbleToSpeedBoostThisTurn = false;
+                            SetAbility(user, target, PBEAbility.None);
                         }
                     }
                 }
@@ -3456,6 +3465,33 @@ namespace Kermalis.PokemonBattleEngine.Battle
                         user.AccuracyChange = target.AccuracyChange;
                         user.EvasionChange = target.EvasionChange;
                         BroadcastPsychUp(user, target);
+                    }
+                }
+            }
+            RecordExecutedMove(user, move);
+        }
+        private void Ef_SimpleBeam(PBEPokemon user, PBEPokemon[] targets, PBEMove move)
+        {
+            BroadcastMoveUsed(user, move);
+            PPReduce(user, move);
+            if (targets.Length == 0)
+            {
+                BroadcastMoveResult(user, user, PBEResult.NoTarget);
+            }
+            else
+            {
+                foreach (PBEPokemon target in targets)
+                {
+                    if (!MissCheck(user, target, move))
+                    {
+                        if (target.Ability == PBEAbility.Multitype || target.Ability == PBEAbility.Simple || target.Ability == PBEAbility.Truant)
+                        {
+                            BroadcastMoveResult(user, target, PBEResult.Ineffective_Ability);
+                        }
+                        else
+                        {
+                            SetAbility(user, target, PBEAbility.Simple);
+                        }
                     }
                 }
             }
