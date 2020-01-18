@@ -26,8 +26,6 @@ namespace PokemonBattleEngineClient.Android
 		
 		public static void UpdateIdValues()
 		{
-			global::Avalonia.Android.Resource.String.ApplicationName = global::PokemonBattleEngineClient.Android.Resource.String.ApplicationName;
-			global::Avalonia.Android.Resource.String.Hello = global::PokemonBattleEngineClient.Android.Resource.String.Hello;
 		}
 		
 		public partial class Attribute

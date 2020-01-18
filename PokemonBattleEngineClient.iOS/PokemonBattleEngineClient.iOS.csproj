@@ -113,7 +113,7 @@
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="Avalonia.iOS">
-      <Version>0.8.999-cibuild0003925-beta</Version>
+      <Version>0.9.1</Version>
     </PackageReference>
     <Reference Include="System.Xml" />
     <Reference Include="System.Core" />

@@ -99,7 +99,7 @@
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Xml" />
     <PackageReference Include="Avalonia.Android">
-      <Version>0.8.999-cibuild0003925-beta</Version>
+      <Version>0.9.1</Version>
     </PackageReference>
     <PackageReference Include="System.Reactive" Version="4.1.6" />
     <PackageReference Include="System.Runtime.CompilerServices.Unsafe" Version="4.5.2" />
