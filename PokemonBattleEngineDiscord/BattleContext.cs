@@ -182,7 +182,7 @@ namespace Kermalis.PokemonBattleEngineDiscord
         private async void Forfeit(SocketUser user)
         {
             _activeBattles.Remove(this);
-            await CreateAndSendEmbedAsync($"{user.Username} has forfeited the match.");
+            await CreateAndSendEmbedAsync(string.Format("{0} has forfeited the match.", user.Username));
         }
 
         private static void AddStatChanges(PBEPokemon pkmn, StringBuilder sb)
@@ -790,7 +790,7 @@ namespace Kermalis.PokemonBattleEngineDiscord
                 case PBEMoveCritPacket mcp:
                 {
                     PBEPokemon victim = mcp.VictimTeam.TryGetPokemon(mcp.Victim);
-                    await context.CreateAndSendEmbedAsync("A critical hit on {0}!", NameForTrainer(victim));
+                    await context.CreateAndSendEmbedAsync(string.Format("A critical hit on {0}!", NameForTrainer(victim)));
                     break;
                 }
                 case PBEMoveMissedPacket mmp:
