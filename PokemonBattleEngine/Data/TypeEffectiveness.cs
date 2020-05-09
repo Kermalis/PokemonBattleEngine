@@ -435,8 +435,7 @@ namespace Kermalis.PokemonBattleEngine.Data
             }
             bool scrappy = user.Ability == PBEAbility.Scrappy,
                 miracleEye = false; // TODO
-            damageMultiplier = GetEffectiveness(moveType, useKnownInfo ? target.KnownType1 : target.Type1, scrappy: scrappy, miracleEye: miracleEye);
-            damageMultiplier *= GetEffectiveness(moveType, useKnownInfo ? target.KnownType2 : target.Type2, scrappy: scrappy, miracleEye: miracleEye);
+            damageMultiplier = GetEffectiveness(moveType, useKnownInfo ? target.KnownType1 : target.Type1, useKnownInfo ? target.KnownType2 : target.Type2, scrappy: scrappy, miracleEye: miracleEye);
             if (damageMultiplier <= 0) // (-infinity, 0]
             {
                 damageMultiplier = 0;
@@ -475,8 +474,7 @@ namespace Kermalis.PokemonBattleEngine.Data
             }
 
             PBEType moveType = user.GetMoveType(PBEMove.ThunderWave);
-            double d = _table[moveType][useKnownInfo ? target.KnownType1 : target.Type1];
-            d *= _table[moveType][useKnownInfo ? target.KnownType2 : target.Type2];
+            double d = GetEffectiveness(moveType, useKnownInfo ? target.KnownType1 : target.Type1, useKnownInfo ? target.KnownType2 : target.Type2);
             if (d <= 0)
             {
                 return PBEResult.Ineffective_Type;
@@ -501,6 +499,25 @@ namespace Kermalis.PokemonBattleEngine.Data
                 return 1.0;
             }
             return _table[attackingType][defendingType];
+        }
+        public static double GetEffectiveness(PBEType attackingType, PBEType defendingType1, PBEType defendingType2, bool scrappy = false, bool miracleEye = false)
+        {
+            if (attackingType >= PBEType.MAX)
+            {
+                throw new ArgumentOutOfRangeException(nameof(attackingType));
+            }
+            if (defendingType1 >= PBEType.MAX)
+            {
+                throw new ArgumentOutOfRangeException(nameof(defendingType1));
+            }
+            if (defendingType2 >= PBEType.MAX)
+            {
+                throw new ArgumentOutOfRangeException(nameof(defendingType2));
+            }
+
+            double d = GetEffectiveness(attackingType, defendingType1, scrappy: scrappy, miracleEye: miracleEye);
+            d *= GetEffectiveness(attackingType, defendingType2, scrappy: scrappy, miracleEye: miracleEye);
+            return d;
         }
         public static double GetStealthRockMultiplier(PBEType type1, PBEType type2)
         {
