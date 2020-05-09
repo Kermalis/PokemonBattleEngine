@@ -101,20 +101,6 @@ namespace Kermalis.PokemonBattleEngine.Battle
             }
             return healAmt;
         }
-        private bool TypeCheck(PBEPokemon user, PBEPokemon target, PBEType moveType, out PBEResult result, out double damageMultiplier, bool statusMove = false)
-        {
-            result = target.IsAffectedByMove(user, moveType, out damageMultiplier, statusMove: statusMove);
-            if (result == PBEResult.Ineffective_Ability)
-            {
-                BroadcastAbility(target, target, target.Ability, PBEAbilityAction.Damage);
-            }
-            if (result != PBEResult.NotVeryEffective_Type && result != PBEResult.Success && result != PBEResult.SuperEffective_Type)
-            {
-                BroadcastMoveResult(user, target, result);
-                return false;
-            }
-            return true;
-        }
 
         private double CalculateBasePower(PBEPokemon user, PBEPokemon[] targets, PBEMove move, PBEType moveType)
         {

@@ -569,6 +569,10 @@ namespace Kermalis.PokemonBattleEngine.Battle
                         default: return PBEMoveData.Data[PBEMove.Judgment].Type;
                     }
                 }
+                case PBEMove.Struggle:
+                {
+                    return PBEType.None;
+                }
                 case PBEMove.TechnoBlast:
                 {
                     switch (Item)
@@ -654,54 +658,6 @@ namespace Kermalis.PokemonBattleEngine.Battle
         public bool CanSwitchOut()
         {
             return TempLockedMove == PBEMove.None;
-        }
-        // TODO: Make something separate for status moves (thunder wave/glare)
-        public PBEResult IsAffectedByMove(PBEPokemon moveUser, PBEType moveType, out double damageMultiplier, bool useKnownInfo = false, bool statusMove = false)
-        {
-            if (moveUser == null)
-            {
-                throw new ArgumentNullException(nameof(moveUser));
-            }
-            if (moveType >= PBEType.MAX)
-            {
-                throw new ArgumentOutOfRangeException(nameof(moveType));
-            }
-            PBEResult result;
-            if (moveType == PBEType.Ground)
-            {
-                result = IsGrounded(moveUser, useKnownInfo: useKnownInfo);
-                if (result != PBEResult.Success)
-                {
-                    damageMultiplier = 0;
-                    return result;
-                }
-            }
-            damageMultiplier = PBEPokemonData.TypeEffectiveness[moveType][useKnownInfo ? KnownType1 : Type1];
-            damageMultiplier *= PBEPokemonData.TypeEffectiveness[moveType][useKnownInfo ? KnownType2 : Type2];
-            if (damageMultiplier <= 0) // (-infinity, 0]
-            {
-                damageMultiplier = 0;
-                return PBEResult.Ineffective_Type;
-            }
-            else if (damageMultiplier < 1) // (0, 1)
-            {
-                result = PBEResult.NotVeryEffective_Type;
-            }
-            else if (damageMultiplier == 1) // [1, 1]
-            {
-                result = PBEResult.Success;
-            }
-            else // (1, infinity)
-            {
-                return PBEResult.SuperEffective_Type;
-            }
-            PBEAbility kAbility = useKnownInfo ? KnownAbility : Ability;
-            if (!statusMove && !moveUser.HasCancellingAbility() && kAbility == PBEAbility.WonderGuard)
-            {
-                damageMultiplier = 0;
-                result = PBEResult.Ineffective_Ability;
-            }
-            return result;
         }
         public PBEResult IsAttractionPossible(PBEPokemon causer, bool useKnownInfo = false, bool ignoreCurrentStatus = false)
         {

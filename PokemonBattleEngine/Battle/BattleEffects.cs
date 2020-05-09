@@ -30,11 +30,8 @@ namespace Kermalis.PokemonBattleEngine.Battle
                 }
                 if (pkmn.Team.TeamStatus.HasFlag(PBETeamStatus.StealthRock))
                 {
-                    double effectiveness = 0.125;
-                    effectiveness *= PBEPokemonData.TypeEffectiveness[PBEType.Rock][pkmn.Type1];
-                    effectiveness *= PBEPokemonData.TypeEffectiveness[PBEType.Rock][pkmn.Type2];
                     BroadcastTeamStatus(pkmn.Team, PBETeamStatus.StealthRock, PBETeamStatusAction.Damage, pkmn);
-                    DealDamage(pkmn, pkmn, (int)(pkmn.MaxHP * effectiveness), true, ignoreSturdy: true);
+                    DealDamage(pkmn, pkmn, (int)(pkmn.MaxHP * PBETypeEffectiveness.GetStealthRockMultiplier(pkmn.Type1, pkmn.Type2)), true, ignoreSturdy: true);
                     if (FaintCheck(pkmn))
                     {
                         continue;
@@ -1548,6 +1545,20 @@ namespace Kermalis.PokemonBattleEngine.Battle
             BroadcastMoveMissed(user, target);
             return true;
         }
+        private bool AttackTypeCheck(PBEPokemon user, PBEPokemon target, PBEType moveType, out PBEResult result, out double damageMultiplier)
+        {
+            result = PBETypeEffectiveness.IsAffectedByAttack(user, target, moveType, out damageMultiplier);
+            if (result == PBEResult.Ineffective_Ability)
+            {
+                BroadcastAbility(target, target, target.Ability, PBEAbilityAction.Damage);
+            }
+            if (result != PBEResult.NotVeryEffective_Type && result != PBEResult.Success && result != PBEResult.SuperEffective_Type)
+            {
+                BroadcastMoveResult(user, target, result);
+                return false;
+            }
+            return true;
+        }
         private bool CritCheck(PBEPokemon user, PBEPokemon target, PBEMove move)
         {
             if (((target.Ability == PBEAbility.BattleArmor || target.Ability == PBEAbility.ShellArmor) && !user.HasCancellingAbility())
@@ -2160,7 +2171,6 @@ namespace Kermalis.PokemonBattleEngine.Battle
         }
 
         private void BasicHit(PBEPokemon user, PBEPokemon[] targets, PBEMove move,
-            PBEType? overridingMoveType = null,
             Func<int, int?> recoilFunc = null,
             Func<PBEPokemon, PBEResult> beforeDoingDamage = null,
             Action<PBEPokemon> beforePostHit = null,
@@ -2170,14 +2180,13 @@ namespace Kermalis.PokemonBattleEngine.Battle
             byte hit = 0;
             int totalDamageDealt = 0;
             bool lifeOrbDamage = false;
-            // Struggle sets overridingMoveType to PBEType.None
-            PBEType moveType = overridingMoveType ?? user.GetMoveType(move);
+            PBEType moveType = user.GetMoveType(move);
             double basePower = CalculateBasePower(user, targets, move, moveType);
             foreach (PBEPokemon target in targets)
             {
                 if (!MissCheck(user, target, move))
                 {
-                    if (TypeCheck(user, target, moveType, out PBEResult result, out double damageMultiplier))
+                    if (AttackTypeCheck(user, target, moveType, out PBEResult result, out double damageMultiplier))
                     {
                         // Brick Break destroys Light Screen and Reflect before doing damage
                         // Dream Eater checks for sleep before doing damage
@@ -2242,7 +2251,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                 {
                     if (!MissCheck(user, target, move))
                     {
-                        if (TypeCheck(user, target, moveType, out PBEResult _, out double _))
+                        if (AttackTypeCheck(user, target, moveType, out PBEResult _, out double _))
                         {
                             // Damage func is run and the output is dealt to target
                             DealDamage(user, target, damageFunc.Invoke(target), false);
@@ -2279,10 +2288,16 @@ namespace Kermalis.PokemonBattleEngine.Battle
                 {
                     if (!MissCheck(user, target, move))
                     {
-                        if (TypeCheck(user, target, user.GetMoveType(move), out PBEResult _, out double _, statusMove: true)) // Paralysis, Normalize
+                        if (move == PBEMove.ThunderWave)
                         {
-                            ApplyStatus1IfPossible(user, target, status, true);
+                            PBEResult result = PBETypeEffectiveness.ThunderWaveTypeCheck(user, target);
+                            if (result != PBEResult.Success)
+                            {
+                                BroadcastMoveResult(user, target, result);
+                                continue;
+                            }
                         }
+                        ApplyStatus1IfPossible(user, target, status, true);
                     }
                 }
             }
@@ -2865,7 +2880,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                 {
                     return user.MaxHP / 4;
                 }
-                BasicHit(user, targets, move, overridingMoveType: PBEType.None, recoilFunc: RecoilFunc);
+                BasicHit(user, targets, move, recoilFunc: RecoilFunc);
             }
             RecordExecutedMove(user, move);
         }

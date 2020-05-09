@@ -22,6 +22,7 @@ namespace Kermalis.PokemonBattleEngineDiscord
         {
             new Dictionary<PBEType, Emote>
             {
+                { PBEType.None, Emote.Parse("<:A_Normal:589220296586690620>") },
                 { PBEType.Bug, Emote.Parse("<:A_Bug:589220293814517764>") },
                 { PBEType.Dark, Emote.Parse("<:A_Dark:589220294070108172>") },
                 { PBEType.Dragon, Emote.Parse("<:A_Dragon:589220295517143048>") },
@@ -42,6 +43,7 @@ namespace Kermalis.PokemonBattleEngineDiscord
             },
             new Dictionary<PBEType, Emote>
             {
+                { PBEType.None, Emote.Parse("<:B_Normal:589220295672463485>") },
                 { PBEType.Bug, Emote.Parse("<:B_Bug:589220295592902667>") },
                 { PBEType.Dark, Emote.Parse("<:B_Dark:589220295286718496>") },
                 { PBEType.Dragon, Emote.Parse("<:B_Dragon:589220295517143250>") },
@@ -62,6 +64,7 @@ namespace Kermalis.PokemonBattleEngineDiscord
             },
             new Dictionary<PBEType, Emote>
             {
+                { PBEType.None, Emote.Parse("<:C_Normal:589220295865270292>") },
                 { PBEType.Bug, Emote.Parse("<:C_Bug:589220295429324812>") },
                 { PBEType.Dark, Emote.Parse("<:C_Dark:589220295911538708>") },
                 { PBEType.Dragon, Emote.Parse("<:C_Dragon:589220295840104448>") },
@@ -82,6 +85,7 @@ namespace Kermalis.PokemonBattleEngineDiscord
             },
             new Dictionary<PBEType, Emote>
             {
+                { PBEType.None, Emote.Parse("<:D_Normal:589220471615258626>") },
                 { PBEType.Bug, Emote.Parse("<:D_Bug:589220471065542685>") },
                 { PBEType.Dark, Emote.Parse("<:D_Dark:589220471816454173>") },
                 { PBEType.Dragon, Emote.Parse("<:D_Dragon:589220471845683271>") },

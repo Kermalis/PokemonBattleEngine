@@ -1272,7 +1272,7 @@ namespace Kermalis.PokemonBattleEngine.Data
         /// <summary>In a sandstorm, the Pokémon takes no damage from the sandstorm and gets a 20% evasion boost.</summary>
         SandVeil = 8,
         SapSipper = 157, // TODO
-        Scrappy = 113, // TODO
+        Scrappy = 113,
         SereneGrace = 32, // TODO
         ShadowTag = 23, // TODO
         ShedSkin = 61,

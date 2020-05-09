@@ -160,7 +160,7 @@ namespace Kermalis.PokemonBattleEngine.AI
                                             // TODO: Check items
                                             // TODO: Stat changes and accuracy (even thunder/guillotine accuracy)
                                             // TODO: Check base power specifically against hp remaining (include spread move damage reduction)
-                                            target.IsAffectedByMove(user, moveType, out double damageMultiplier, useKnownInfo: true);
+                                            PBETypeEffectiveness.IsAffectedByAttack(user, target, moveType, out double damageMultiplier, useKnownInfo: true);
                                             if (damageMultiplier <= 0) // (-infinity, 0.0] Ineffective
                                             {
                                                 score += target.Team == team ? 0 : -60;
@@ -366,8 +366,8 @@ namespace Kermalis.PokemonBattleEngine.AI
                                     {
                                         foreach (PBEPokemon target in targets)
                                         {
-                                            // TODO: Effectiveness with thunder wave/glare
-                                            if (target.IsParalysisPossible(user, useKnownInfo: true) == PBEResult.Success)
+                                            bool tw = move != PBEMove.ThunderWave ? true : PBETypeEffectiveness.ThunderWaveTypeCheck(user, target, useKnownInfo: true) == PBEResult.Success;
+                                            if (tw && target.IsParalysisPossible(user, useKnownInfo: true) == PBEResult.Success)
                                             {
                                                 score += target.Team == team ? -20 : +40;
                                             }
