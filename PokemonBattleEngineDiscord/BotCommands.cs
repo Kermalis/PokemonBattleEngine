@@ -185,6 +185,49 @@ namespace Kermalis.PokemonBattleEngineDiscord
                         case PBEGenderRatio.M0_F0: ratio = "Genderless Species"; break;
                         default: throw new ArgumentOutOfRangeException(nameof(pData.GenderRatio));
                     }
+                    string weaknesses = string.Empty,
+                        resistances = string.Empty,
+                        immunities = string.Empty;
+                    for (PBEType atk = PBEType.None + 1; atk < PBEType.MAX; atk++)
+                    {
+                        double d = PBETypeEffectiveness.GetEffectiveness(atk, pData.Type1, pData.Type2);
+                        if (d <= 0)
+                        {
+                            if (immunities != string.Empty)
+                            {
+                                immunities += ' ';
+                            }
+                            immunities += Utils.TypeEmotes[atk];
+                        }
+                        else if (d < 1)
+                        {
+                            if (resistances != string.Empty)
+                            {
+                                resistances += ' ';
+                            }
+                            resistances += Utils.TypeEmotes[atk];
+                        }
+                        if (d > 1)
+                        {
+                            if (weaknesses != string.Empty)
+                            {
+                                weaknesses += ' ';
+                            }
+                            weaknesses += Utils.TypeEmotes[atk];
+                        }
+                    }
+                    if (weaknesses == string.Empty)
+                    {
+                        weaknesses = "No Weaknesses";
+                    }
+                    if (resistances == string.Empty)
+                    {
+                        resistances = "No Resistances";
+                    }
+                    if (immunities == string.Empty)
+                    {
+                        immunities = "No Immunities";
+                    }
 
                     EmbedBuilder embed = new EmbedBuilder()
                         .WithAuthor(Context.User)
@@ -202,6 +245,9 @@ namespace Kermalis.PokemonBattleEngineDiscord
                         .AddField("Special Attack", pData.BaseStats[3], true)
                         .AddField("Special Defense", pData.BaseStats[4], true)
                         .AddField("Speed", pData.BaseStats[5], true)
+                        .AddField("Type Weaknesses", weaknesses, true)
+                        .AddField("Type Resistances", resistances, true)
+                        .AddField("Type Immunities", immunities, true)
                         .WithImageUrl(Utils.GetPokemonSprite(species, PBEUtils.RandomShiny(), PBEUtils.RandomGender(pData.GenderRatio), false, false));
                     await Context.Channel.SendMessageAsync(string.Empty, embed: embed.Build());
                 }
