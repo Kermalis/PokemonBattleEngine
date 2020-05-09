@@ -281,7 +281,7 @@ namespace Kermalis.PokemonBattleEngineDiscord
             }
             if (pkmn.Moves.Contains(PBEMove.HiddenPower))
             {
-                sb.AppendLine($"**{PBELocalizedString.GetMoveName(PBEMove.HiddenPower).English}:** {PBELocalizedString.GetTypeName(pkmn.IndividualValues.HiddenPowerType).English}:{pkmn.IndividualValues.HiddenPowerBasePower}");
+                sb.AppendLine($"**{PBELocalizedString.GetMoveName(PBEMove.HiddenPower).English}:** {PBELocalizedString.GetTypeName(pkmn.IndividualValues.HiddenPowerType).English}|{pkmn.IndividualValues.HiddenPowerBasePower}");
             }
             sb.Append("**Moves:** ");
             for (int i = 0; i < PBESettings.DefaultNumMoves; i++)

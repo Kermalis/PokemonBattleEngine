@@ -248,7 +248,7 @@ namespace Kermalis.PokemonBattleEngineClient.Infrastructure
                 }
                 if (pkmn.Moves.Contains(PBEMove.HiddenPower))
                 {
-                    sb.AppendLine($"{PBELocalizedString.GetMoveName(PBEMove.HiddenPower).ToString()}: {PBELocalizedString.GetTypeName(pkmn.IndividualValues.HiddenPowerType).ToString()}:{pkmn.IndividualValues.HiddenPowerBasePower}");
+                    sb.AppendLine($"{PBELocalizedString.GetMoveName(PBEMove.HiddenPower).ToString()}: {PBELocalizedString.GetTypeName(pkmn.IndividualValues.HiddenPowerType).ToString()}|{pkmn.IndividualValues.HiddenPowerBasePower}");
                 }
                 sb.Append("Moves: ");
                 for (int i = 0; i < pkmn.Team.Battle.Settings.NumMoves; i++)

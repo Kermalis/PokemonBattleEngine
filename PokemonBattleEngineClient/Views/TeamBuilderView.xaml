@@ -123,7 +123,7 @@
         </ItemsControl>
         <StackPanel Grid.Row="1" Grid.Column="2" Orientation="Horizontal">
           <Image Stretch="None" HorizontalAlignment="Left" Source="{Binding Shell.IndividualValues.HiddenPowerType, Converter={x:Static infrastructure:ObjectToTextBitmapConverter.Instance}, ConverterParameter=MenuWhite, Mode=OneWay}"/>
-          <Image Stretch="None" HorizontalAlignment="Left" Source="{Binding Source=':', Converter={x:Static infrastructure:ObjectToTextBitmapConverter.Instance}, ConverterParameter=MenuWhite, Mode=OneWay}"/>
+          <Image Stretch="None" HorizontalAlignment="Left" Source="{Binding Source='|', Converter={x:Static infrastructure:ObjectToTextBitmapConverter.Instance}, ConverterParameter=MenuWhite, Mode=OneWay}"/>
           <Image Stretch="None" HorizontalAlignment="Left" Source="{Binding Shell.IndividualValues.HiddenPowerBasePower, Converter={x:Static infrastructure:ObjectToTextBitmapConverter.Instance}, ConverterParameter=MenuWhite, Mode=OneWay}"/>
         </StackPanel>
         <Image Grid.Row="2" Grid.Column="0" Stretch="None" HorizontalAlignment="Left" Source="{Binding Source='Moves:&#x0a;&#x0a;PP-Ups:', Converter={x:Static infrastructure:ObjectToTextBitmapConverter.Instance}, ConverterParameter=MenuWhite, Mode=OneWay}"/>

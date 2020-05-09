@@ -1059,7 +1059,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
             }
             if (Moves.Contains(PBEMove.HiddenPower))
             {
-                sb.AppendLine($"{PBELocalizedString.GetMoveName(PBEMove.HiddenPower).English}: {PBELocalizedString.GetTypeName(IndividualValues.HiddenPowerType).English}:{IndividualValues.HiddenPowerBasePower}");
+                sb.AppendLine($"{PBELocalizedString.GetMoveName(PBEMove.HiddenPower).English}: {PBELocalizedString.GetTypeName(IndividualValues.HiddenPowerType).English}|{IndividualValues.HiddenPowerBasePower}");
             }
             sb.Append("Moves: ");
             for (int i = 0; i < Team.Battle.Settings.NumMoves; i++)
