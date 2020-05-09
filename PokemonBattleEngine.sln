@@ -15,10 +15,6 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PokemonBattleEngineExtras",
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PokemonBattleEngineClient.Desktop", "PokemonBattleEngineClient.Desktop\PokemonBattleEngineClient.Desktop.csproj", "{CEDCFABE-658C-42AB-BCE2-A96A7B17410E}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PokemonBattleEngineClient.iOS", "PokemonBattleEngineClient.iOS\PokemonBattleEngineClient.iOS.csproj", "{57E0455D-D565-44BB-B069-EE1AA20F8337}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PokemonBattleEngineClient.Android", "PokemonBattleEngineClient.Android\PokemonBattleEngineClient.Android.csproj", "{29132311-1848-4FD6-AE0C-4FF841151BD3}"
-EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PokemonBattleEngineTests", "PokemonBattleEngineTests\PokemonBattleEngineTests.csproj", "{2B15A32D-C213-4C60-981A-350E1569E5DA}"
 EndProject
 Global
