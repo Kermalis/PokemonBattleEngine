@@ -407,7 +407,6 @@ namespace Kermalis.PokemonBattleEngine.Data
             }
         };
 
-        // TODO: Freeze-Dry does bonus to Water even with Normalize
         public static PBEResult IsAffectedByAttack(PBEPokemon user, PBEPokemon target, PBEType moveType, out double damageMultiplier, bool useKnownInfo = false)
         {
             if (user == null)

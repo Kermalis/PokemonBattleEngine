@@ -802,12 +802,12 @@ namespace Kermalis.PokemonBattleEngine.Battle
                     }
                     case PBEMoveEffect.Dig:
                     {
-                        Ef_Dig(user, targets, move, requestedTargets);
+                        ChargeMove(user, targets, move, requestedTargets, PBEStatus2.Underground);
                         break;
                     }
                     case PBEMoveEffect.Dive:
                     {
-                        Ef_Dive(user, targets, move, requestedTargets);
+                        ChargeMove(user, targets, move, requestedTargets, PBEStatus2.Underwater);
                         break;
                     }
                     case PBEMoveEffect.Endeavor:
@@ -827,7 +827,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                     }
                     case PBEMoveEffect.Fly:
                     {
-                        Ef_Fly(user, targets, move, requestedTargets);
+                        ChargeMove(user, targets, move, requestedTargets, PBEStatus2.Airborne);
                         break;
                     }
                     case PBEMoveEffect.FocusEnergy:
@@ -2273,6 +2273,37 @@ namespace Kermalis.PokemonBattleEngine.Battle
             }
             DoPostAttackedEffects(user, true);
         }
+        private void ChargeMove(PBEPokemon user, PBEPokemon[] targets, PBEMove move, PBETurnTarget requestedTargets, PBEStatus2 status2)
+        {
+            BroadcastMoveUsed(user, move);
+        top:
+            if (user.Status2.HasFlag(status2))
+            {
+                BroadcastMoveLock(user, PBEMove.None, PBETurnTarget.None, PBEMoveLockType.Temporary);
+                user.Status2 &= ~status2;
+                BroadcastStatus2(user, user, status2, PBEStatusAction.Ended);
+                if (targets.Length == 0)
+                {
+                    BroadcastMoveResult(user, user, PBEResult.NoTarget);
+                }
+                else
+                {
+                    BasicHit(user, targets, move);
+                }
+                RecordExecutedMove(user, move); // Should only count as the last used move if it finishes charging
+            }
+            else
+            {
+                PPReduce(user, move);
+                BroadcastMoveLock(user, move, requestedTargets, PBEMoveLockType.Temporary);
+                user.Status2 |= status2;
+                BroadcastStatus2(user, user, status2, PBEStatusAction.Added);
+                if (PowerHerbCheck(user))
+                {
+                    goto top;
+                }
+            }
+        }
 
         private void Ef_TryForceStatus1(PBEPokemon user, PBEPokemon[] targets, PBEMove move, PBEStatus1 status)
         {
@@ -2665,99 +2696,6 @@ namespace Kermalis.PokemonBattleEngine.Battle
                     return PBEResult.Success;
                 }
                 BasicHit(user, targets, move, beforeDoingDamage: BeforeDoingDamage);
-            }
-            RecordExecutedMove(user, move);
-        }
-        private void Ef_Dig(PBEPokemon user, PBEPokemon[] targets, PBEMove move, PBETurnTarget requestedTargets)
-        {
-            BroadcastMoveUsed(user, move);
-        top:
-            if (user.Status2.HasFlag(PBEStatus2.Underground))
-            {
-                BroadcastMoveLock(user, PBEMove.None, PBETurnTarget.None, PBEMoveLockType.Temporary);
-                user.Status2 &= ~PBEStatus2.Underground;
-                BroadcastStatus2(user, user, PBEStatus2.Underground, PBEStatusAction.Ended);
-                if (targets.Length == 0)
-                {
-                    BroadcastMoveResult(user, user, PBEResult.NoTarget);
-                }
-                else
-                {
-                    BasicHit(user, targets, move);
-                }
-            }
-            else
-            {
-                PPReduce(user, move);
-                BroadcastMoveLock(user, move, requestedTargets, PBEMoveLockType.Temporary);
-                user.Status2 |= PBEStatus2.Underground;
-                BroadcastStatus2(user, user, PBEStatus2.Underground, PBEStatusAction.Added);
-                if (PowerHerbCheck(user))
-                {
-                    goto top;
-                }
-            }
-            RecordExecutedMove(user, move);
-        }
-        private void Ef_Dive(PBEPokemon user, PBEPokemon[] targets, PBEMove move, PBETurnTarget requestedTargets)
-        {
-            BroadcastMoveUsed(user, move);
-        top:
-            if (user.Status2.HasFlag(PBEStatus2.Underwater))
-            {
-                BroadcastMoveLock(user, PBEMove.None, PBETurnTarget.None, PBEMoveLockType.Temporary);
-                user.Status2 &= ~PBEStatus2.Underwater;
-                BroadcastStatus2(user, user, PBEStatus2.Underwater, PBEStatusAction.Ended);
-                if (targets.Length == 0)
-                {
-                    BroadcastMoveResult(user, user, PBEResult.NoTarget);
-                }
-                else
-                {
-                    BasicHit(user, targets, move);
-                }
-            }
-            else
-            {
-                PPReduce(user, move);
-                BroadcastMoveLock(user, move, requestedTargets, PBEMoveLockType.Temporary);
-                user.Status2 |= PBEStatus2.Underwater;
-                BroadcastStatus2(user, user, PBEStatus2.Underwater, PBEStatusAction.Added);
-                if (PowerHerbCheck(user))
-                {
-                    goto top;
-                }
-            }
-            RecordExecutedMove(user, move);
-        }
-        private void Ef_Fly(PBEPokemon user, PBEPokemon[] targets, PBEMove move, PBETurnTarget requestedTargets)
-        {
-            BroadcastMoveUsed(user, move);
-        top:
-            if (user.Status2.HasFlag(PBEStatus2.Airborne))
-            {
-                BroadcastMoveLock(user, PBEMove.None, PBETurnTarget.None, PBEMoveLockType.Temporary);
-                user.Status2 &= ~PBEStatus2.Airborne;
-                BroadcastStatus2(user, user, PBEStatus2.Airborne, PBEStatusAction.Ended);
-                if (targets.Length == 0)
-                {
-                    BroadcastMoveResult(user, user, PBEResult.NoTarget);
-                }
-                else
-                {
-                    BasicHit(user, targets, move);
-                }
-            }
-            else
-            {
-                PPReduce(user, move);
-                BroadcastMoveLock(user, move, requestedTargets, PBEMoveLockType.Temporary);
-                user.Status2 |= PBEStatus2.Airborne;
-                BroadcastStatus2(user, user, PBEStatus2.Airborne, PBEStatusAction.Added);
-                if (PowerHerbCheck(user))
-                {
-                    goto top;
-                }
             }
             RecordExecutedMove(user, move);
         }
