@@ -11,8 +11,9 @@ namespace Kermalis.PokemonBattleEngineDiscord
     internal static class Utils
     {
         public const string URL = "https://github.com/Kermalis/PokemonBattleEngine";
-        public static Dictionary<PBEType, Color> TypeToColor { get; } = new Dictionary<PBEType, Color>
+        public static readonly Dictionary<PBEType, Color> TypeColors = new Dictionary<PBEType, Color>
         {
+            { PBEType.None, new Color(173, 165, 148) },
             { PBEType.Bug, new Color(173, 189, 31) },
             { PBEType.Dark, new Color(115, 90, 74) },
             { PBEType.Dragon, new Color(123, 99, 231) },
@@ -31,6 +32,27 @@ namespace Kermalis.PokemonBattleEngineDiscord
             { PBEType.Steel, new Color(173, 173, 198) },
             { PBEType.Water, new Color(57, 156, 255) }
         };
+        public static readonly Dictionary<PBEType, Emote> TypeEmotes = new Dictionary<PBEType, Emote>
+        {
+            { PBEType.None, Emote.Parse("<:Normal:708768400167665755>") },
+            { PBEType.Bug, Emote.Parse("<:Bug:708768296731934751>") },
+            { PBEType.Dark, Emote.Parse("<:Dark:708768299248386109>") },
+            { PBEType.Dragon, Emote.Parse("<:Dragon:708768299420483675>") },
+            { PBEType.Electric, Emote.Parse("<:Electric:708768297792831549>") },
+            { PBEType.Fighting, Emote.Parse("<:Fighting:708768297386246154>") },
+            { PBEType.Fire, Emote.Parse("<:Fire:708768299319820369>") },
+            { PBEType.Flying, Emote.Parse("<:Flying:708768299252711535>") },
+            { PBEType.Ghost, Emote.Parse("<:Ghost:708768299231739964>") },
+            { PBEType.Grass, Emote.Parse("<:Grass:708768299319558164>") },
+            { PBEType.Ground, Emote.Parse("<:Ground:708768298829086822>") },
+            { PBEType.Ice, Emote.Parse("<:Ice:708768398104068158>") },
+            { PBEType.Normal, Emote.Parse("<:Normal:708768400167665755>") },
+            { PBEType.Poison, Emote.Parse("<:Poison:708768399928590337>") },
+            { PBEType.Psychic, Emote.Parse("<:Psychic:708768399161032725>") },
+            { PBEType.Rock, Emote.Parse("<:Rock:708768399311765577>") },
+            { PBEType.Steel, Emote.Parse("<:Steel:708768399383330867>") },
+            { PBEType.Water, Emote.Parse("<:Water:708768402356830268>") }
+        };
 
         // https://stackoverflow.com/a/3722337
         public static Color Blend(this Color color, Color backColor, double depth = 0.5)
@@ -42,10 +64,10 @@ namespace Kermalis.PokemonBattleEngineDiscord
         }
         public static Color GetColor(PBEType type1, PBEType type2)
         {
-            Color color = TypeToColor[type1];
+            Color color = TypeColors[type1];
             if (type2 != PBEType.None)
             {
-                color = color.Blend(TypeToColor[type2]);
+                color = color.Blend(TypeColors[type2]);
             }
             return color;
         }
@@ -81,7 +103,7 @@ namespace Kermalis.PokemonBattleEngineDiscord
             }
             else
             {
-                bool result = false;
+                value = false;
                 var webRequest = WebRequest.Create(url);
                 webRequest.Timeout = 2000;
                 webRequest.Method = "HEAD";
@@ -89,7 +111,7 @@ namespace Kermalis.PokemonBattleEngineDiscord
                 try
                 {
                     response = (HttpWebResponse)webRequest.GetResponse();
-                    result = true;
+                    value = true;
                 }
                 catch { }
                 finally
@@ -99,8 +121,8 @@ namespace Kermalis.PokemonBattleEngineDiscord
                         response.Close();
                     }
                 }
-                _urlCache.Add(url, result);
-                return result;
+                _urlCache.Add(url, value);
+                return value;
             }
         }
         public static string GetPokemonSprite(PBEPokemon pokemon)

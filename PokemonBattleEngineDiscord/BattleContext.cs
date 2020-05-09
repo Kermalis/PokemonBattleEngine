@@ -18,27 +18,6 @@ namespace Kermalis.PokemonBattleEngineDiscord
         private static readonly Emoji _switchEmoji = new Emoji("😼");
         private static readonly Emoji _confirmationEmoji = new Emoji("👍");
         private static readonly PBEMove[] _suggestedMoves = Enum.GetValues(typeof(PBEMove)).Cast<PBEMove>().Except(new[] { PBEMove.None, PBEMove.MAX }).ToArray();
-        private static readonly Dictionary<PBEType, Emote> _typeEmotes = new Dictionary<PBEType, Emote>
-        {
-            { PBEType.None, Emote.Parse("<:Normal:708768400167665755>") },
-            { PBEType.Bug, Emote.Parse("<:Bug:708768296731934751>") },
-            { PBEType.Dark, Emote.Parse("<:Dark:708768299248386109>") },
-            { PBEType.Dragon, Emote.Parse("<:Dragon:708768299420483675>") },
-            { PBEType.Electric, Emote.Parse("<:Electric:708768297792831549>") },
-            { PBEType.Fighting, Emote.Parse("<:Fighting:708768297386246154>") },
-            { PBEType.Fire, Emote.Parse("<:Fire:708768299319820369>") },
-            { PBEType.Flying, Emote.Parse("<:Flying:708768299252711535>") },
-            { PBEType.Ghost, Emote.Parse("<:Ghost:708768299231739964>") },
-            { PBEType.Grass, Emote.Parse("<:Grass:708768299319558164>") },
-            { PBEType.Ground, Emote.Parse("<:Ground:708768298829086822>") },
-            { PBEType.Ice, Emote.Parse("<:Ice:708768398104068158>") },
-            { PBEType.Normal, Emote.Parse("<:Normal:708768400167665755>") },
-            { PBEType.Poison, Emote.Parse("<:Poison:708768399928590337>") },
-            { PBEType.Psychic, Emote.Parse("<:Psychic:708768399161032725>") },
-            { PBEType.Rock, Emote.Parse("<:Rock:708768399311765577>") },
-            { PBEType.Steel, Emote.Parse("<:Steel:708768399383330867>") },
-            { PBEType.Water, Emote.Parse("<:Water:708768402356830268>") }
-        };
         private static readonly Dictionary<PBEType, Emote>[] _moveEmotes = new Dictionary<PBEType, Emote>[4]
         {
             new Dictionary<PBEType, Emote>
@@ -252,10 +231,10 @@ namespace Kermalis.PokemonBattleEngineDiscord
             var sb = new StringBuilder();
             sb.AppendLine($"{pkmn.Nickname}/{pkmn.Species} {pkmn.GenderSymbol} Lv.{pkmn.Level}");
             sb.AppendLine($"**HP:** {pkmn.HP}/{pkmn.MaxHP} ({pkmn.HPPercentage:P2})");
-            sb.Append($"**Types:** {_typeEmotes[pkmn.Type1]}");
+            sb.Append($"**Types:** {Utils.TypeEmotes[pkmn.Type1]}");
             if (pkmn.Type2 != PBEType.None)
             {
-                sb.Append($" {_typeEmotes[pkmn.Type2]}");
+                sb.Append($" {Utils.TypeEmotes[pkmn.Type2]}");
             }
             sb.AppendLine();
             if (pkmn.Status1 != PBEStatus1.None)
@@ -302,7 +281,7 @@ namespace Kermalis.PokemonBattleEngineDiscord
             }
             if (pkmn.Moves.Contains(PBEMove.HiddenPower))
             {
-                sb.AppendLine($"**{PBELocalizedString.GetMoveName(PBEMove.HiddenPower).English}:** {PBELocalizedString.GetTypeName(pkmn.IndividualValues.HiddenPowerType).English}|{pkmn.IndividualValues.HiddenPowerBasePower}");
+                sb.AppendLine($"**{PBELocalizedString.GetMoveName(PBEMove.HiddenPower).English}:** {Utils.TypeEmotes[pkmn.IndividualValues.HiddenPowerType]}|{pkmn.IndividualValues.HiddenPowerBasePower}");
             }
             sb.Append("**Moves:** ");
             for (int i = 0; i < PBESettings.DefaultNumMoves; i++)
@@ -314,7 +293,7 @@ namespace Kermalis.PokemonBattleEngineDiscord
                 {
                     sb.Append(", ");
                 }
-                sb.Append($"{_typeEmotes[moveType]} {PBELocalizedString.GetMoveName(slot.Move).English}");
+                sb.Append($"{Utils.TypeEmotes[moveType]} {PBELocalizedString.GetMoveName(slot.Move).English}");
                 if (move != PBEMove.None)
                 {
                     sb.Append($" ({slot.PP}/{slot.MaxPP})");
@@ -337,7 +316,7 @@ namespace Kermalis.PokemonBattleEngineDiscord
                 }
                 else
                 {
-                    sb.Append($"{_typeEmotes[moveType]} ");
+                    sb.Append($"{Utils.TypeEmotes[moveType]} ");
                 }
                 sb.Append(PBELocalizedString.GetMoveName(move).English);
             }
@@ -348,10 +327,10 @@ namespace Kermalis.PokemonBattleEngineDiscord
             var sb = new StringBuilder();
             sb.AppendLine($"{pkmn.Team.TrainerName}'s {pkmn.KnownNickname}/{pkmn.KnownSpecies} {(pkmn.Status2.HasFlag(PBEStatus2.Transformed) ? pkmn.GenderSymbol : pkmn.KnownGenderSymbol)} Lv.{pkmn.Level}");
             sb.AppendLine($"**HP:** {pkmn.HPPercentage:P2}");
-            sb.Append($"**Known types:** {_typeEmotes[pkmn.KnownType1]}");
+            sb.Append($"**Known types:** {Utils.TypeEmotes[pkmn.KnownType1]}");
             if (pkmn.KnownType2 != PBEType.None)
             {
-                sb.Append($" {_typeEmotes[pkmn.KnownType2]}");
+                sb.Append($" {Utils.TypeEmotes[pkmn.KnownType2]}");
             }
             sb.AppendLine();
             if (pkmn.Status1 != PBEStatus1.None)
@@ -404,7 +383,7 @@ namespace Kermalis.PokemonBattleEngineDiscord
                 {
                     sb.Append(", ");
                 }
-                sb.Append(move == PBEMove.MAX ? "???" : $"{_typeEmotes[pkmn.GetMoveType(move, useKnownInfo: true)]} {PBELocalizedString.GetMoveName(move).English}");
+                sb.Append(move == PBEMove.MAX ? "???" : $"{Utils.TypeEmotes[pkmn.GetMoveType(move, useKnownInfo: true)]} {PBELocalizedString.GetMoveName(move).English}");
                 if (move != PBEMove.None && move != PBEMove.MAX)
                 {
                     sb.Append($" ({pp}{(maxPP == 0 ? ")" : $"/{maxPP})")}");

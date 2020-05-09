@@ -87,7 +87,7 @@ namespace Kermalis.PokemonBattleEngineDiscord
                     PBEItemData iData = PBEItemData.Data[item];
                     EmbedBuilder embed = new EmbedBuilder()
                         .WithAuthor(Context.User)
-                        .WithColor(iData.NaturalGiftType == PBEType.None ? Utils.RandomColor() : Utils.TypeToColor[iData.NaturalGiftType])
+                        .WithColor(iData.NaturalGiftType == PBEType.None ? Utils.RandomColor() : Utils.TypeColors[iData.NaturalGiftType])
                         .WithTitle(PBELocalizedString.GetItemName(item).English)
                         .WithUrl(Utils.URL)
                         .WithDescription(PBELocalizedString.GetItemDescription(item).English.Replace('\n', ' '));
@@ -101,7 +101,7 @@ namespace Kermalis.PokemonBattleEngineDiscord
                     }
                     if (iData.NaturalGiftType != PBEType.None)
                     {
-                        embed.AddField("Natural Gift Type", iData.NaturalGiftType, true);
+                        embed.AddField("Natural Gift Type", Utils.TypeEmotes[iData.NaturalGiftType], true);
                     }
                     await Context.Channel.SendMessageAsync(string.Empty, embed: embed.Build());
                 }
@@ -127,11 +127,11 @@ namespace Kermalis.PokemonBattleEngineDiscord
                     PBEMoveData mData = PBEMoveData.Data[move];
                     EmbedBuilder embed = new EmbedBuilder()
                         .WithAuthor(Context.User)
-                        .WithColor(Utils.TypeToColor[mData.Type])
+                        .WithColor(Utils.TypeColors[mData.Type])
                         .WithTitle(PBELocalizedString.GetMoveName(move).English)
                         .WithUrl(Utils.URL)
                         .WithDescription(PBELocalizedString.GetMoveDescription(move).English.Replace('\n', ' '))
-                        .AddField("Type", mData.Type, true)
+                        .AddField("Type", Utils.TypeEmotes[mData.Type], true)
                         .AddField("Category", mData.Category, true)
                         .AddField("Priority", mData.Priority, true)
                         .AddField("PP", Math.Max(1, mData.PPTier * PBESettings.DefaultPPMultiplier), true)
@@ -168,10 +168,10 @@ namespace Kermalis.PokemonBattleEngineDiscord
                 {
                     PBESpecies species = nSpecies.Value;
                     var pData = PBEPokemonData.GetData(species);
-                    string types = pData.Type1.ToString();
+                    string types = $"{Utils.TypeEmotes[pData.Type1]}";
                     if (pData.Type2 != PBEType.None)
                     {
-                        types += ", " + pData.Type2.ToString();
+                        types += $" {Utils.TypeEmotes[pData.Type2]}";
                     }
                     string ratio;
                     switch (pData.GenderRatio)
@@ -206,6 +206,124 @@ namespace Kermalis.PokemonBattleEngineDiscord
                     await Context.Channel.SendMessageAsync(string.Empty, embed: embed.Build());
                 }
             }
+        }
+
+        [Group("type")]
+        public sealed class TypeCommands : ModuleBase<SocketCommandContext>
+        {
+            private const string _tableStart = "⬛";
+            private const string _offense = "🗡️";
+            private const string _defense = "🛡️";
+
+            private const string _ineffective = "❌";
+            private const string _notVeryEffective = "♿";
+            private const string _effective = "✅";
+            private const string _superEffective = "💥";
+
+            [Command("info")]
+            [Alias("data, effectiveness, weaknesses")]
+            public async Task Info([Remainder] string typeName)
+            {
+                PBEType? nType = PBELocalizedString.GetTypeByName(typeName);
+                if (!nType.HasValue || nType.Value == PBEType.None)
+                {
+                    await Context.Channel.SendMessageAsync($"{Context.User.Mention} Invalid type!");
+                }
+                else
+                {
+                    PBEType type = nType.Value;
+                    string description = $"{_tableStart}{_tableStart}";
+                    // Build columns
+                    for (PBEType other = PBEType.None + 1; other < PBEType.MAX; other++)
+                    {
+                        description += $"|{Utils.TypeEmotes[other]}";
+                    }
+                    // Build rows
+                    for (int i = 0; i < 2; i++)
+                    {
+                        bool doOffense = i == 0;
+                        description += $"\n{(doOffense ? _offense : _defense)}{Utils.TypeEmotes[type]}";
+                        for (PBEType other = PBEType.None + 1; other < PBEType.MAX; other++)
+                        {
+                            double d = PBETypeEffectiveness.GetEffectiveness(doOffense ? type : other, doOffense ? other : type);
+                            string s;
+                            if (d <= 0) // (-infinity, 0]
+                            {
+                                s = _ineffective;
+                            }
+                            else if (d < 1) // (0, 1)
+                            {
+                                s = _notVeryEffective;
+                            }
+                            else if (d == 1) // [1, 1]
+                            {
+                                s = _effective;
+                            }
+                            else // (1, infinity)
+                            {
+                                s = _superEffective;
+                            }
+                            description += $"|{s}";
+                        }
+                    }
+
+                    EmbedBuilder embed = new EmbedBuilder()
+                    .WithAuthor(Context.User)
+                    .WithColor(Utils.TypeColors[type])
+                    .WithTitle(PBELocalizedString.GetTypeName(type).English)
+                    .WithUrl(Utils.URL)
+                    .WithDescription(description);
+                    await Context.Channel.SendMessageAsync(string.Empty, embed: embed.Build());
+                }
+            }
+
+            // BROKEN CUZ DISCORD CUTS OFF THE TABLE EVEN THOUGH YOU CAN SEND THE ENTIRE MESSAGE IN A CODE BLOCK
+            /*[Command("chart")]
+            [Alias("table")]
+            public async Task Chart()
+            {
+                string description = _tableStart;
+                // Build columns
+                for (PBEType def = PBEType.None + 1; def < PBEType.MAX; def++)
+                {
+                    description += $"|{Utils.TypeEmotes[def]}";
+                }
+                // Build rows
+                for (PBEType atk = PBEType.None + 1; atk < PBEType.MAX; atk++)
+                {
+                    description += $"\n{Utils.TypeEmotes[atk]}";
+                    for (PBEType def = PBEType.None + 1; def < PBEType.MAX; def++)
+                    {
+                        double d = PBETypeEffectiveness.GetEffectiveness(atk, def);
+                        string s;
+                        if (d <= 0) // (-infinity, 0]
+                        {
+                            s = _ineffective;
+                        }
+                        else if (d < 1) // (0, 1)
+                        {
+                            s = _notVeryEffective;
+                        }
+                        else if (d == 1) // [1, 1]
+                        {
+                            s = _effective;
+                        }
+                        else // (1, infinity)
+                        {
+                            s = _superEffective;
+                        }
+                        description += $"|{s}";
+                    }
+                }
+
+                EmbedBuilder embed = new EmbedBuilder()
+                    .WithAuthor(Context.User)
+                    .WithColor(Utils.RandomColor())
+                    .WithTitle("Type Chart")
+                    .WithUrl(Utils.URL)
+                    .WithDescription(description);
+                await Context.Channel.SendMessageAsync(string.Empty, embed: embed.Build());
+            }*/
         }
     }
 }
