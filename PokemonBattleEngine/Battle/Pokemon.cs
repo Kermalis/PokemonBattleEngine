@@ -534,7 +534,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
         /// <summary>Gets the type that a move will become when used by this Pokémon.</summary>
         /// <param name="move">The move to check.</param>
         /// <exception cref="ArgumentOutOfRangeException">Thrown when <paramref name="move"/> is invalid.</exception>
-        public PBEType GetMoveType(PBEMove move)
+        public PBEType GetMoveType(PBEMove move, bool useKnownInfo = false)
         {
             if (move == PBEMove.None || move >= PBEMove.MAX || !Enum.IsDefined(typeof(PBEMove), move))
             {
@@ -544,11 +544,11 @@ namespace Kermalis.PokemonBattleEngine.Battle
             {
                 case PBEMove.HiddenPower:
                 {
-                    return IndividualValues.HiddenPowerType;
+                    return useKnownInfo ? PBEType.None : IndividualValues.HiddenPowerType;
                 }
                 case PBEMove.Judgment:
                 {
-                    switch (Item)
+                    switch (useKnownInfo ? KnownItem : Item)
                     {
                         case PBEItem.DracoPlate: return PBEType.Dragon;
                         case PBEItem.DreadPlate: return PBEType.Dark;
@@ -575,7 +575,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                 }
                 case PBEMove.TechnoBlast:
                 {
-                    switch (Item)
+                    switch (useKnownInfo ? KnownItem : Item)
                     {
                         case PBEItem.BurnDrive: return PBEType.Fire;
                         case PBEItem.ChillDrive: return PBEType.Ice;
@@ -600,7 +600,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                 }
                 default:
                 {
-                    if (Ability == PBEAbility.Normalize)
+                    if ((useKnownInfo ? KnownAbility : Ability) == PBEAbility.Normalize)
                     {
                         return PBEType.Normal;
                     }
