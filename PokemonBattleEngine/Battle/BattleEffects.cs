@@ -834,7 +834,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                     }
                     case PBEMoveEffect.GastroAcid:
                     {
-                        Ef_GastroAcid(user, targets, move);
+                        Ef_SetAbility(user, targets, move, PBEAbility.None, false);
                         break;
                     }
                     case PBEMoveEffect.Growth:
@@ -1205,7 +1205,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                     }
                     case PBEMoveEffect.SimpleBeam:
                     {
-                        Ef_SimpleBeam(user, targets, move);
+                        Ef_SetAbility(user, targets, move, PBEAbility.Simple, true);
                         break;
                     }
                     case PBEMoveEffect.Sleep:
@@ -1301,6 +1301,11 @@ namespace Kermalis.PokemonBattleEngine.Battle
                     case PBEMoveEffect.WideGuard:
                     {
                         Ef_TryForceTeamStatus(user, move, PBETeamStatus.WideGuard);
+                        break;
+                    }
+                    case PBEMoveEffect.WorrySeed:
+                    {
+                        Ef_SetAbility(user, targets, move, PBEAbility.Insomnia, true);
                         break;
                     }
                     default: throw new ArgumentOutOfRangeException(nameof(effect));
@@ -1899,8 +1904,9 @@ namespace Kermalis.PokemonBattleEngine.Battle
         private void SetAbility(PBEPokemon user, PBEPokemon target, PBEAbility ability)
         {
             BroadcastAbilityReplaced(target, ability);
-            CastformCherrimCheck(target);
-            IllusionBreak(target, user);
+            CastformCherrimCheck(target); // Verified: Castform/Cherrim before Insomnia
+            IllusionBreak(target, user); // Verified: Illusion before Insomnia
+            AntiStatusAbilityCheck(target);
             target.SlowStart_HinderTurnsLeft = 0;
             target.SpeedBoost_AbleToSpeedBoostThisTurn = false;
         }
@@ -2690,6 +2696,38 @@ namespace Kermalis.PokemonBattleEngine.Battle
             RecordExecutedMove(user, move);
         }
 
+        private void Ef_SetAbility(PBEPokemon user, PBEPokemon[] targets, PBEMove move, PBEAbility ability, bool blockedByTruant)
+        {
+            BroadcastMoveUsed(user, move);
+            PPReduce(user, move);
+            if (targets.Length == 0)
+            {
+                BroadcastMoveResult(user, user, PBEResult.NoTarget);
+            }
+            else
+            {
+                foreach (PBEPokemon target in targets)
+                {
+                    if (!MissCheck(user, target, move))
+                    {
+                        if (target.Ability == ability)
+                        {
+                            BroadcastMoveResult(user, target, PBEResult.InvalidConditions);
+                        }
+                        else if (target.Ability == PBEAbility.Multitype || (blockedByTruant && target.Ability == PBEAbility.Truant))
+                        {
+                            BroadcastMoveResult(user, target, PBEResult.Ineffective_Ability);
+                        }
+                        else
+                        {
+                            SetAbility(user, target, ability);
+                        }
+                    }
+                }
+            }
+            RecordExecutedMove(user, move);
+        }
+
         private void Ef_BrickBreak(PBEPokemon user, PBEPokemon[] targets, PBEMove move)
         {
             BroadcastMoveUsed(user, move);
@@ -3332,37 +3370,6 @@ namespace Kermalis.PokemonBattleEngine.Battle
             }
             RecordExecutedMove(user, move);
         }
-        private void Ef_GastroAcid(PBEPokemon user, PBEPokemon[] targets, PBEMove move)
-        {
-            BroadcastMoveUsed(user, move);
-            PPReduce(user, move);
-            if (targets.Length == 0)
-            {
-                BroadcastMoveResult(user, user, PBEResult.NoTarget);
-            }
-            else
-            {
-                foreach (PBEPokemon target in targets)
-                {
-                    if (!MissCheck(user, target, move))
-                    {
-                        if (target.Ability == PBEAbility.None)
-                        {
-                            BroadcastMoveResult(user, target, PBEResult.InvalidConditions);
-                        }
-                        else if (target.Ability == PBEAbility.Multitype)
-                        {
-                            BroadcastMoveResult(user, target, PBEResult.Ineffective_Ability);
-                        }
-                        else
-                        {
-                            SetAbility(user, target, PBEAbility.None);
-                        }
-                    }
-                }
-            }
-            RecordExecutedMove(user, move);
-        }
         private void Ef_Haze(PBEPokemon user, PBEMove move)
         {
             BroadcastMoveUsed(user, move);
@@ -3449,37 +3456,6 @@ namespace Kermalis.PokemonBattleEngine.Battle
             }
             RecordExecutedMove(user, move);
         }
-        private void Ef_SimpleBeam(PBEPokemon user, PBEPokemon[] targets, PBEMove move)
-        {
-            BroadcastMoveUsed(user, move);
-            PPReduce(user, move);
-            if (targets.Length == 0)
-            {
-                BroadcastMoveResult(user, user, PBEResult.NoTarget);
-            }
-            else
-            {
-                foreach (PBEPokemon target in targets)
-                {
-                    if (!MissCheck(user, target, move))
-                    {
-                        if (target.Ability == PBEAbility.Simple)
-                        {
-                            BroadcastMoveResult(user, target, PBEResult.InvalidConditions);
-                        }
-                        else if (target.Ability == PBEAbility.Multitype || target.Ability == PBEAbility.Truant)
-                        {
-                            BroadcastMoveResult(user, target, PBEResult.Ineffective_Ability);
-                        }
-                        else
-                        {
-                            SetAbility(user, target, PBEAbility.Simple);
-                        }
-                    }
-                }
-            }
-            RecordExecutedMove(user, move);
-        }
         private void Ef_Soak(PBEPokemon user, PBEPokemon[] targets, PBEMove move)
         {
             BroadcastMoveUsed(user, move);
@@ -3521,6 +3497,13 @@ namespace Kermalis.PokemonBattleEngine.Battle
             }
             RecordExecutedMove(user, move);
         }
+        private void Ef_Teleport(PBEPokemon user, PBEMove move)
+        {
+            BroadcastMoveUsed(user, move);
+            PPReduce(user, move);
+            BroadcastMoveResult(user, user, PBEResult.InvalidConditions);
+            RecordExecutedMove(user, move);
+        }
         private void Ef_Whirlwind(PBEPokemon user, PBEPokemon[] targets, PBEMove move)
         {
             BroadcastMoveUsed(user, move);
@@ -3547,13 +3530,6 @@ namespace Kermalis.PokemonBattleEngine.Battle
                     }
                 }
             }
-            RecordExecutedMove(user, move);
-        }
-        private void Ef_Teleport(PBEPokemon user, PBEMove move)
-        {
-            BroadcastMoveUsed(user, move);
-            PPReduce(user, move);
-            BroadcastMoveResult(user, user, PBEResult.InvalidConditions);
             RecordExecutedMove(user, move);
         }
     }

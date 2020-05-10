@@ -557,6 +557,7 @@ namespace Kermalis.PokemonBattleEngine.AI
                                     case PBEMoveEffect.TrickRoom:
                                     case PBEMoveEffect.Whirlwind:
                                     case PBEMoveEffect.WideGuard:
+                                    case PBEMoveEffect.WorrySeed:
                                     {
                                         // TODO Moves
                                         break;

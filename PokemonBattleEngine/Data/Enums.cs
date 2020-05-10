@@ -2244,7 +2244,8 @@ namespace Kermalis.PokemonBattleEngine.Data
         Transform,
         TrickRoom,
         Whirlwind,
-        WideGuard
+        WideGuard,
+        WorrySeed
     }
     public enum PBEMove : ushort
     {
@@ -2801,7 +2802,7 @@ namespace Kermalis.PokemonBattleEngine.Data
         //WonderRoom = 472,
         WoodHammer = 452,
         WorkUp = 526,
-        //WorrySeed = 388,
+        WorrySeed = 388,
         //Wrap = 35,
         WringOut = 378,
         XScissor = 404,

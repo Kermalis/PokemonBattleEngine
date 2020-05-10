@@ -3374,6 +3374,15 @@ namespace Kermalis.PokemonBattleEngine.Data
                 )
             },
             {
+                PBEMove.WorrySeed,
+                new PBEMoveData
+                (
+                    PBEType.Grass, PBEMoveCategory.Status, 0, 2, 0, 100,
+                    PBEMoveEffect.WorrySeed, 0, PBEMoveTarget.SingleSurrounding,
+                    PBEMoveFlag.AffectedByMagicCoat | PBEMoveFlag.AffectedByMirrorMove | PBEMoveFlag.AffectedByProtect
+                )
+            },
+            {
                 PBEMove.WringOut,
                 new PBEMoveData
                 (

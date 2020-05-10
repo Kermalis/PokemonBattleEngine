@@ -765,7 +765,7 @@ namespace Kermalis.PokemonBattleEngineExtras
             PBEMove.StringShot,
             PBEMove.Tailwind,
             (PBEMove)356, // Gravity
-            (PBEMove)388, // WorrySeed
+            PBEMove.WorrySeed,
             (PBEMove)277, // MagicCoat
             (PBEMove)272, // RolePlay
             (PBEMove)215, // HealBell
@@ -1002,7 +1002,7 @@ namespace Kermalis.PokemonBattleEngineExtras
             new PBEMove[15] // Nacrene City
             {
                 PBEMove.GastroAcid,
-                (PBEMove)388, // WorrySeed
+                PBEMove.WorrySeed,
                 (PBEMove)180, // Spite
                 (PBEMove)495, // AfterYou
                 PBEMove.HelpingHand,
