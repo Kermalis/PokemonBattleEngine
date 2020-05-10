@@ -433,7 +433,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                 }
             }
             bool scrappy = user.Ability == PBEAbility.Scrappy,
-                miracleEye = false; // TODO
+                miracleEye = target.Status2.HasFlag(PBEStatus2.MiracleEye);
             damageMultiplier = GetEffectiveness(moveType, useKnownInfo ? target.KnownType1 : target.Type1, useKnownInfo ? target.KnownType2 : target.Type2, scrappy: scrappy, miracleEye: miracleEye);
             if (damageMultiplier <= 0) // (-infinity, 0]
             {

@@ -802,12 +802,12 @@ namespace Kermalis.PokemonBattleEngine.Battle
                     }
                     case PBEMoveEffect.Dig:
                     {
-                        ChargeMove(user, targets, move, requestedTargets, PBEStatus2.Underground);
+                        SemiInvulnerableChargeMove(user, targets, move, requestedTargets, PBEStatus2.Underground);
                         break;
                     }
                     case PBEMoveEffect.Dive:
                     {
-                        ChargeMove(user, targets, move, requestedTargets, PBEStatus2.Underwater);
+                        SemiInvulnerableChargeMove(user, targets, move, requestedTargets, PBEStatus2.Underwater);
                         break;
                     }
                     case PBEMoveEffect.Endeavor:
@@ -827,7 +827,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                     }
                     case PBEMoveEffect.Fly:
                     {
-                        ChargeMove(user, targets, move, requestedTargets, PBEStatus2.Airborne);
+                        SemiInvulnerableChargeMove(user, targets, move, requestedTargets, PBEStatus2.Airborne);
                         break;
                     }
                     case PBEMoveEffect.FocusEnergy:
@@ -1044,6 +1044,11 @@ namespace Kermalis.PokemonBattleEngine.Battle
                     case PBEMoveEffect.Metronome:
                     {
                         Ef_Metronome(user, move);
+                        break;
+                    }
+                    case PBEMoveEffect.MiracleEye:
+                    {
+                        Ef_TryForceStatus2(user, targets, move, PBEStatus2.MiracleEye);
                         break;
                     }
                     case PBEMoveEffect.Moonlight:
@@ -1496,7 +1501,9 @@ namespace Kermalis.PokemonBattleEngine.Battle
             {
                 return false;
             }
-            chance *= (target.Ability == PBEAbility.Unaware ? 1.0 : GetStatChangeModifier(user.AccuracyChange, true)) / (user.Ability == PBEAbility.Unaware ? 1.0 : GetStatChangeModifier(target.EvasionChange, true));
+            double accuracy = target.Ability == PBEAbility.Unaware ? 1 : GetStatChangeModifier(user.AccuracyChange, true);
+            double evasion = user.Ability == PBEAbility.Unaware ? 1 : GetStatChangeModifier(target.Status2.HasFlag(PBEStatus2.MiracleEye) ? Math.Min((sbyte)0, target.EvasionChange) : target.EvasionChange, true);
+            chance *= accuracy / evasion;
             if (user.Ability == PBEAbility.Compoundeyes)
             {
                 chance *= 1.3;
@@ -2030,6 +2037,20 @@ namespace Kermalis.PokemonBattleEngine.Battle
                     }
                     break;
                 }
+                case PBEStatus2.MiracleEye:
+                {
+                    if (!target.Status2.HasFlag(PBEStatus2.MiracleEye))
+                    {
+                        target.Status2 |= PBEStatus2.MiracleEye;
+                        BroadcastStatus2(target, user, PBEStatus2.MiracleEye, PBEStatusAction.Added);
+                        result = PBEResult.Success;
+                    }
+                    else
+                    {
+                        result = PBEResult.Ineffective_Status;
+                    }
+                    break;
+                }
                 case PBEStatus2.PowerTrick:
                 {
                     target.Status2 |= PBEStatus2.PowerTrick;
@@ -2273,7 +2294,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
             }
             DoPostAttackedEffects(user, true);
         }
-        private void ChargeMove(PBEPokemon user, PBEPokemon[] targets, PBEMove move, PBETurnTarget requestedTargets, PBEStatus2 status2)
+        private void SemiInvulnerableChargeMove(PBEPokemon user, PBEPokemon[] targets, PBEMove move, PBETurnTarget requestedTargets, PBEStatus2 status2)
         {
             BroadcastMoveUsed(user, move);
         top:

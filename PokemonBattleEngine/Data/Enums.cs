@@ -267,16 +267,15 @@ namespace Kermalis.PokemonBattleEngine.Data
         /// <summary>The Pokémon is seeded and HP will be stolen at the end of each turn.</summary>
         LeechSeed = 1 << 7,
         MagnetRise = 1 << 8,
+        MiracleEye = 1 << 9,
         /// <summary>The Pokémon's <see cref="PBEStat.Attack"/> and <see cref="PBEStat.Defense"/> are switched.</summary>
-        PowerTrick = 1 << 9,
+        PowerTrick = 1 << 10,
         /// <summary>The Pokémon is protected from moves this turn.</summary>
-        Protected = 1 << 10,
+        Protected = 1 << 11,
         /// <summary>The Pokémon is under the effect of <see cref="PBEMove.FocusEnergy"/> or <see cref="PBEItem.LansatBerry"/> and has a higher chance of landing critical hits.</summary>
-        Pumped = 1 << 11,
+        Pumped = 1 << 12,
         /// <summary>The Pokémon is behind a substitute that will take damage on behalf of the Pokémon and prevent most moves from affecting the Pokémon.</summary>
-        Substitute = 1 << 12,
-        /// <summary>The Pokémon is unable to use the same move two times in a row.</summary>
-        Tormented = 1 << 13, // TODO
+        Substitute = 1 << 13,
         /// <summary>The Pokémon is transformed into another Pokémon.</summary>
         Transformed = 1 << 14,
         /// <summary>The Pokémon is underground. A move will miss against the Pokémon unless it has <see cref="PBEMoveFlag.HitsUnderground"/> or either Pokémon has <see cref="PBEAbility.NoGuard"/>.
@@ -2196,6 +2195,7 @@ namespace Kermalis.PokemonBattleEngine.Data
         LuckyChant,
         MagnetRise,
         Metronome,
+        MiracleEye,
         Moonlight,
         Nothing,
         OneHitKnockout,
@@ -2551,7 +2551,7 @@ namespace Kermalis.PokemonBattleEngine.Data
         //Mimic = 102, // TODO: Blocked by Metronome
         //MindReader = 170,
         Minimize = 107,
-        //MiracleEye = 357,
+        MiracleEye = 357,
         //MirrorCoat = 243, // TODO: Blocked by Metronome
         //MirrorMove = 119, // TODO: Blocked by Metronome
         MirrorShot = 429,

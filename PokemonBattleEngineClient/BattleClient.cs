@@ -1164,6 +1164,15 @@ namespace Kermalis.PokemonBattleEngineClient
                             }
                             break;
                         }
+                        case PBEStatus2.MiracleEye:
+                        {
+                            switch (s2p.StatusAction)
+                            {
+                                case PBEStatusAction.Added: message = "{0} was identified!"; break;
+                                default: throw new ArgumentOutOfRangeException(nameof(s2p.StatusAction));
+                            }
+                            break;
+                        }
                         case PBEStatus2.PowerTrick:
                         {
                             switch (s2p.StatusAction)

@@ -1826,6 +1826,15 @@ namespace Kermalis.PokemonBattleEngine.Data
                 )
             },
             {
+                PBEMove.MiracleEye,
+                new PBEMoveData
+                (
+                    PBEType.Psychic, PBEMoveCategory.Status, 0, 8, 0, 0,
+                    PBEMoveEffect.MiracleEye, 0, PBEMoveTarget.SingleSurrounding,
+                    PBEMoveFlag.AffectedByMagicCoat | PBEMoveFlag.AffectedByMirrorMove | PBEMoveFlag.AffectedByProtect
+                )
+            },
+            {
                 PBEMove.MirrorShot,
                 new PBEMoveData
                 (
