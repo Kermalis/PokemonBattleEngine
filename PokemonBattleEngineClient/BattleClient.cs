@@ -276,6 +276,7 @@ namespace Kermalis.PokemonBattleEngineClient
                         case PBEAbility.IronBarbs:
                         case PBEAbility.Justified:
                         case PBEAbility.Levitate:
+                        case PBEAbility.Mummy:
                         case PBEAbility.Rattled:
                         case PBEAbility.RoughSkin:
                         case PBEAbility.SolarPower:
@@ -328,34 +329,6 @@ namespace Kermalis.PokemonBattleEngineClient
                             }
                             break;
                         }
-                        case PBEAbility.Mummy:
-                        {
-                            switch (ap.AbilityAction)
-                            {
-                                case PBEAbilityAction.Changed: message = "{0}'s Ability became {2}!"; break;
-                                case PBEAbilityAction.Damage: message = "{0}'s {2} activated!"; break;
-                                default: throw new ArgumentOutOfRangeException(nameof(ap.AbilityAction));
-                            }
-                            break;
-                        }
-                        case PBEAbility.None:
-                        {
-                            switch (ap.AbilityAction)
-                            {
-                                case PBEAbilityAction.Changed: message = "{0}'s Ability was suppressed!"; break;
-                                default: throw new ArgumentOutOfRangeException(nameof(ap.AbilityAction));
-                            }
-                            break;
-                        }
-                        case PBEAbility.Simple:
-                        {
-                            switch (ap.AbilityAction)
-                            {
-                                case PBEAbilityAction.Changed: message = "{0} acquired {2}!"; break;
-                                default: throw new ArgumentOutOfRangeException(nameof(ap.AbilityAction));
-                            }
-                            break;
-                        }
                         case PBEAbility.SlowStart:
                         {
                             switch (ap.AbilityAction)
@@ -386,7 +359,31 @@ namespace Kermalis.PokemonBattleEngineClient
                         }
                         default: throw new ArgumentOutOfRangeException(nameof(ap.Ability));
                     }
-                    BattleView.AddMessage(string.Format(message, NameForTrainer(abilityOwner, true), NameForTrainer(pokemon2, true), PBELocalizedString.GetAbilityName(ap.Ability).ToString()));
+                    BattleView.AddMessage(string.Format(message, NameForTrainer(abilityOwner, true), NameForTrainer(pokemon2, true), PBELocalizedString.GetAbilityName(ap.Ability)));
+                    return false;
+                }
+                case PBEAbilityReplacedPacket arp:
+                {
+                    PBEPokemon abilityOwner = arp.AbilityOwnerTeam.TryGetPokemon(arp.AbilityOwner);
+                    if (_mode != ClientMode.SinglePlayer)
+                    {
+                        abilityOwner.Ability = abilityOwner.KnownAbility = arp.NewAbility;
+                    }
+                    string message;
+                    switch (arp.NewAbility)
+                    {
+                        case PBEAbility.None:
+                        {
+                            message = "{0}'s {1} was suppressed!";
+                            break;
+                        }
+                        default:
+                        {
+                            message = "{0}'s {1} was changed to {2}!";
+                            break;
+                        }
+                    }
+                    BattleView.AddMessage(string.Format(message, NameForTrainer(abilityOwner, true), arp.OldAbility.HasValue ? PBELocalizedString.GetAbilityName(arp.OldAbility.Value).ToString() : "Ability", PBELocalizedString.GetAbilityName(arp.NewAbility)));
                     return false;
                 }
                 case PBEBattleStatusPacket bsp:
@@ -588,7 +585,7 @@ namespace Kermalis.PokemonBattleEngineClient
                         }
                         default: throw new ArgumentOutOfRangeException(nameof(ip.Item));
                     }
-                    BattleView.AddMessage(string.Format(message, NameForTrainer(itemHolder, itemHolderCaps), NameForTrainer(pokemon2, pokemon2Caps), PBELocalizedString.GetItemName(ip.Item).ToString()));
+                    BattleView.AddMessage(string.Format(message, NameForTrainer(itemHolder, itemHolderCaps), NameForTrainer(pokemon2, pokemon2Caps), PBELocalizedString.GetItemName(ip.Item)));
                     return false;
                 }
                 case PBEMoveCritPacket mcp:
@@ -650,12 +647,12 @@ namespace Kermalis.PokemonBattleEngineClient
                         case PBEResult.Ineffective_Ability: message = "{1} is protected by its Ability!"; break;
                         case PBEResult.Ineffective_Gender: message = "It doesn't affect {2}..."; break;
                         case PBEResult.Ineffective_Level: message = "{1} is protected by its level!"; break;
-                        case PBEResult.Ineffective_MagnetRise: message = $"{{1}} is protected by {PBELocalizedString.GetMoveName(PBEMove.MagnetRise).ToString()}!"; break;
-                        case PBEResult.Ineffective_Safeguard: message = $"{{1}} is protected by {PBELocalizedString.GetMoveName(PBEMove.Safeguard).ToString()}!"; break;
+                        case PBEResult.Ineffective_MagnetRise: message = $"{{1}} is protected by {PBELocalizedString.GetMoveName(PBEMove.MagnetRise)}!"; break;
+                        case PBEResult.Ineffective_Safeguard: message = $"{{1}} is protected by {PBELocalizedString.GetMoveName(PBEMove.Safeguard)}!"; break;
                         case PBEResult.Ineffective_Stat:
                         case PBEResult.Ineffective_Status:
                         case PBEResult.InvalidConditions: message = "But it failed!"; break;
-                        case PBEResult.Ineffective_Substitute: message = $"{{1}} is protected by {PBELocalizedString.GetMoveName(PBEMove.Substitute).ToString()}!"; break;
+                        case PBEResult.Ineffective_Substitute: message = $"{{1}} is protected by {PBELocalizedString.GetMoveName(PBEMove.Substitute)}!"; break;
                         case PBEResult.Ineffective_Type: message = "{1} is protected by its Type!"; break;
                         case PBEResult.NoTarget: message = "But there was no target..."; break;
                         case PBEResult.NotVeryEffective_Type: message = "It's not very effective on {2}..."; break;
@@ -672,7 +669,7 @@ namespace Kermalis.PokemonBattleEngineClient
                     {
                         moveUser.KnownMoves[PBEMove.MAX].Move = mup.Move;
                     }
-                    BattleView.AddMessage(string.Format("{0} used {1}!", NameForTrainer(moveUser, true), PBELocalizedString.GetMoveName(mup.Move).ToString()));
+                    BattleView.AddMessage(string.Format("{0} used {1}!", NameForTrainer(moveUser, true), PBELocalizedString.GetMoveName(mup.Move)));
                     return false;
                 }
                 case PBEPkmnFaintedPacket pfap:
@@ -1277,7 +1274,7 @@ namespace Kermalis.PokemonBattleEngineClient
                             default: throw new ArgumentOutOfRangeException(nameof(tsp.TeamStatusAction));
                         }
                     }
-                    PBEPokemon damageVictim = tsp.Team.TryGetPokemon(tsp.DamageVictim);
+                    PBEPokemon damageVictim = tsp.DamageVictim.HasValue ? tsp.Team.TryGetPokemon(tsp.DamageVictim.Value) : null;
                     string message;
                     bool damageVictimCaps = false;
                     switch (tsp.TeamStatus)
@@ -1486,7 +1483,7 @@ namespace Kermalis.PokemonBattleEngineClient
                         case PBEWeatherAction.CausedDamage: break;
                         default: throw new ArgumentOutOfRangeException(nameof(wp.WeatherAction));
                     }
-                    PBEPokemon damageVictim = wp.HasDamageVictim ? wp.DamageVictimTeam.TryGetPokemon(wp.DamageVictim.Value) : null;
+                    PBEPokemon damageVictim = wp.DamageVictim.HasValue ? wp.DamageVictimTeam.TryGetPokemon(wp.DamageVictim.Value) : null;
                     string message;
                     switch (wp.Weather)
                     {

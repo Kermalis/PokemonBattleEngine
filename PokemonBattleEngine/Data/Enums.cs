@@ -323,24 +323,22 @@ namespace Kermalis.PokemonBattleEngine.Data
     {
         /// <summary>The ability is first announced.</summary>
         Announced = 0,
-        /// <summary>The ability was changed.</summary>
-        Changed = 1,
         /// <summary>The ability caused a Pokémon to change its appearance.</summary>
-        ChangedAppearance = 2,
+        ChangedAppearance = 1,
         /// <summary>The ability changed a Pokémon's stats.</summary>
-        ChangedStats = 3,
+        ChangedStats = 2,
         /// <summary>The ability changed a Pokémon's <see cref="PBEStatus1"/> or <see cref="PBEStatus2"/>.</summary>
-        ChangedStatus = 4,
+        ChangedStatus = 3,
         /// <summary>The ability was involved with damage.</summary>
-        Damage = 5,
+        Damage = 4,
         /// <summary>The ability prevented a Pokémon from being inflicted with a <see cref="PBEStatus1"/> or <see cref="PBEStatus2"/>.</summary>
-        PreventedStatus = 6,
+        PreventedStatus = 5,
         /// <summary>The ability restored a Pokémon's HP.</summary>
-        RestoredHP = 7,
+        RestoredHP = 6,
         /// <summary><see cref="PBEAbility.SlowStart"/> ended.</summary>
-        SlowStart_Ended = 8,
+        SlowStart_Ended = 7,
         /// <summary>The ability was involved with weather.</summary>
-        Weather = 9
+        Weather = 8
     }
     /// <summary>Represents an action regarding a <see cref="PBEItem"/>.</summary>
     public enum PBEItemAction : byte

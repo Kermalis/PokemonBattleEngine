@@ -10,31 +10,36 @@ namespace Kermalis.PokemonBattleEngine.Battle
         public delegate void BattleEvent(PBEBattle battle, IPBEPacket packet);
         public event BattleEvent OnNewEvent;
 
+        private void Broadcast(IPBEPacket packet)
+        {
+            Events.Add(packet);
+            OnNewEvent?.Invoke(this, packet);
+        }
+
         private void BroadcastAbility(PBEPokemon abilityOwner, PBEPokemon pokemon2, PBEAbility ability, PBEAbilityAction abilityAction)
         {
             abilityOwner.Ability = ability;
             abilityOwner.KnownAbility = ability;
-            var p = new PBEAbilityPacket(abilityOwner, pokemon2, ability, abilityAction);
-            Events.Add(p);
-            OnNewEvent?.Invoke(this, p);
+            Broadcast(new PBEAbilityPacket(abilityOwner, pokemon2, ability, abilityAction));
+        }
+        private void BroadcastAbilityReplaced(PBEPokemon abilityOwner, PBEAbility newAbility)
+        {
+            PBEAbility? oldAbility = newAbility == PBEAbility.None ? (PBEAbility?)null : abilityOwner.Ability; // Gastro Acid does not reveal previous ability
+            abilityOwner.Ability = newAbility;
+            abilityOwner.KnownAbility = newAbility;
+            Broadcast(new PBEAbilityReplacedPacket(abilityOwner, oldAbility, newAbility));
         }
         private void BroadcastBattleStatus(PBEBattleStatus battleStatus, PBEBattleStatusAction battleStatusAction)
         {
-            var p = new PBEBattleStatusPacket(battleStatus, battleStatusAction);
-            Events.Add(p);
-            OnNewEvent?.Invoke(this, p);
+            Broadcast(new PBEBattleStatusPacket(battleStatus, battleStatusAction));
         }
         private void BroadcastHaze()
         {
-            var p = new PBEHazePacket();
-            Events.Add(p);
-            OnNewEvent?.Invoke(this, p);
+            Broadcast(new PBEHazePacket());
         }
         private void BroadcastIllusion(PBEPokemon pokemon)
         {
-            var p = new PBEIllusionPacket(pokemon);
-            Events.Add(p);
-            OnNewEvent?.Invoke(this, p);
+            Broadcast(new PBEIllusionPacket(pokemon));
         }
         private void BroadcastItem(PBEPokemon itemHolder, PBEPokemon pokemon2, PBEItem item, PBEItemAction itemAction)
         {
@@ -53,15 +58,11 @@ namespace Kermalis.PokemonBattleEngine.Battle
                     break;
                 }
             }
-            var p = new PBEItemPacket(itemHolder, pokemon2, item, itemAction);
-            Events.Add(p);
-            OnNewEvent?.Invoke(this, p);
+            Broadcast(new PBEItemPacket(itemHolder, pokemon2, item, itemAction));
         }
         private void BroadcastMoveCrit(PBEPokemon victim)
         {
-            var p = new PBEMoveCritPacket(victim);
-            Events.Add(p);
-            OnNewEvent?.Invoke(this, p);
+            Broadcast(new PBEMoveCritPacket(victim));
         }
         private void BroadcastMoveLock(PBEPokemon moveUser, PBEMove lockedMove, PBETurnTarget lockedTargets, PBEMoveLockType moveLockType)
         {
@@ -80,27 +81,19 @@ namespace Kermalis.PokemonBattleEngine.Battle
                 }
                 default: throw new ArgumentOutOfRangeException(nameof(moveLockType));
             }
-            var p = new PBEMoveLockPacket(moveUser, lockedMove, lockedTargets, moveLockType);
-            Events.Add(p);
-            OnNewEvent?.Invoke(this, p);
+            Broadcast(new PBEMoveLockPacket(moveUser, lockedMove, lockedTargets, moveLockType));
         }
         private void BroadcastMoveMissed(PBEPokemon moveUser, PBEPokemon pokemon2)
         {
-            var p = new PBEMoveMissedPacket(moveUser, pokemon2);
-            Events.Add(p);
-            OnNewEvent?.Invoke(this, p);
+            Broadcast(new PBEMoveMissedPacket(moveUser, pokemon2));
         }
         private void BroadcastMovePPChanged(PBEPokemon moveUser, PBEMove move, int amountReduced)
         {
-            var p = new PBEMovePPChangedPacket(moveUser, move, amountReduced);
-            Events.Add(p);
-            OnNewEvent?.Invoke(this, p);
+            Broadcast(new PBEMovePPChangedPacket(moveUser, move, amountReduced));
         }
         private void BroadcastMoveResult(PBEPokemon moveUser, PBEPokemon pokemon2, PBEResult result)
         {
-            var p = new PBEMoveResultPacket(moveUser, pokemon2, result);
-            Events.Add(p);
-            OnNewEvent?.Invoke(this, p);
+            Broadcast(new PBEMoveResultPacket(moveUser, pokemon2, result));
         }
         private void BroadcastMoveUsed(PBEPokemon moveUser, PBEMove move)
         {
@@ -114,15 +107,11 @@ namespace Kermalis.PokemonBattleEngine.Battle
             {
                 reveal = false;
             }
-            var p = new PBEMoveUsedPacket(moveUser, move, reveal);
-            Events.Add(p);
-            OnNewEvent?.Invoke(this, p);
+            Broadcast(new PBEMoveUsedPacket(moveUser, move, reveal));
         }
         private void BroadcastPkmnFainted(PBEPokemon pokemon, PBEFieldPosition oldPosition)
         {
-            var p = new PBEPkmnFaintedPacket(pokemon, oldPosition);
-            Events.Add(p);
-            OnNewEvent?.Invoke(this, p);
+            Broadcast(new PBEPkmnFaintedPacket(pokemon, oldPosition));
         }
         private void BroadcastPkmnFormChanged(PBEPokemon pokemon, PBESpecies newSpecies, PBEAbility newAbility, PBEAbility newKnownAbility)
         {
@@ -142,119 +131,81 @@ namespace Kermalis.PokemonBattleEngine.Battle
             double weight = pData.Weight;
             pokemon.Weight = weight;
             pokemon.KnownWeight = weight;
-            var p = new PBEPkmnFormChangedPacket(pokemon);
-            Events.Add(p);
-            OnNewEvent?.Invoke(this, p);
+            Broadcast(new PBEPkmnFormChangedPacket(pokemon));
         }
         private void BroadcastPkmnHPChanged(PBEPokemon pokemon, ushort oldHP, double oldHPPercentage)
         {
-            var p = new PBEPkmnHPChangedPacket(pokemon, oldHP, oldHPPercentage);
-            Events.Add(p);
-            OnNewEvent?.Invoke(this, p);
+            Broadcast(new PBEPkmnHPChangedPacket(pokemon, oldHP, oldHPPercentage));
         }
         private void BroadcastPkmnStatChanged(PBEPokemon pokemon, PBEStat stat, sbyte oldValue, sbyte newValue)
         {
-            var p = new PBEPkmnStatChangedPacket(pokemon, stat, oldValue, newValue);
-            Events.Add(p);
-            OnNewEvent?.Invoke(this, p);
+            Broadcast(new PBEPkmnStatChangedPacket(pokemon, stat, oldValue, newValue));
         }
         private void BroadcastPkmnSwitchIn(PBETeam team, PBEPkmnSwitchInPacket.PBESwitchInInfo[] switchIns, PBEPokemon forcedByPokemon = null)
         {
-            var p = new PBEPkmnSwitchInPacket(team, switchIns, forcedByPokemon);
-            Events.Add(p);
-            OnNewEvent?.Invoke(this, p);
+            Broadcast(new PBEPkmnSwitchInPacket(team, switchIns, forcedByPokemon));
         }
         private void BroadcastPkmnSwitchOut(PBEPokemon pokemon, PBEPokemon disguisedAsPokemon, PBEFieldPosition oldPosition, PBEPokemon forcedByPokemon = null)
         {
-            var p = new PBEPkmnSwitchOutPacket(pokemon, disguisedAsPokemon, oldPosition, forcedByPokemon);
-            Events.Add(p);
-            OnNewEvent?.Invoke(this, p);
+            Broadcast(new PBEPkmnSwitchOutPacket(pokemon, disguisedAsPokemon, oldPosition, forcedByPokemon));
         }
         private void BroadcastPsychUp(PBEPokemon user, PBEPokemon target)
         {
-            var p = new PBEPsychUpPacket(user, target);
-            Events.Add(p);
-            OnNewEvent?.Invoke(this, p);
+            Broadcast(new PBEPsychUpPacket(user, target));
         }
 
         private void BroadcastDraggedOut(PBEPokemon pokemon)
         {
-            var p = new PBESpecialMessagePacket(PBESpecialMessage.DraggedOut, pokemon);
-            Events.Add(p);
-            OnNewEvent?.Invoke(this, p);
+            Broadcast(new PBESpecialMessagePacket(PBESpecialMessage.DraggedOut, pokemon));
         }
         private void BroadcastEndure(PBEPokemon pokemon)
         {
-            var p = new PBESpecialMessagePacket(PBESpecialMessage.Endure, pokemon);
-            Events.Add(p);
-            OnNewEvent?.Invoke(this, p);
+            Broadcast(new PBESpecialMessagePacket(PBESpecialMessage.Endure, pokemon));
         }
         private void BroadcastHPDrained(PBEPokemon pokemon)
         {
-            var p = new PBESpecialMessagePacket(PBESpecialMessage.HPDrained, pokemon);
-            Events.Add(p);
-            OnNewEvent?.Invoke(this, p);
+            Broadcast(new PBESpecialMessagePacket(PBESpecialMessage.HPDrained, pokemon));
         }
         private void BroadcastMagnitude(byte magnitude)
         {
-            var p = new PBESpecialMessagePacket(PBESpecialMessage.Magnitude, magnitude);
-            Events.Add(p);
-            OnNewEvent?.Invoke(this, p);
+            Broadcast(new PBESpecialMessagePacket(PBESpecialMessage.Magnitude, magnitude));
         }
         private void BroadcastNothingHappened()
         {
-            var p = new PBESpecialMessagePacket(PBESpecialMessage.NothingHappened);
-            Events.Add(p);
-            OnNewEvent?.Invoke(this, p);
+            Broadcast(new PBESpecialMessagePacket(PBESpecialMessage.NothingHappened));
         }
         private void BroadcastOneHitKnockout()
         {
-            var p = new PBESpecialMessagePacket(PBESpecialMessage.OneHitKnockout);
-            Events.Add(p);
-            OnNewEvent?.Invoke(this, p);
+            Broadcast(new PBESpecialMessagePacket(PBESpecialMessage.OneHitKnockout));
         }
         private void BroadcastPainSplit(PBEPokemon user, PBEPokemon target)
         {
-            var p = new PBESpecialMessagePacket(PBESpecialMessage.PainSplit, user, target);
-            Events.Add(p);
-            OnNewEvent?.Invoke(this, p);
+            Broadcast(new PBESpecialMessagePacket(PBESpecialMessage.PainSplit, user, target));
         }
         private void BroadcastRecoil(PBEPokemon pokemon)
         {
-            var p = new PBESpecialMessagePacket(PBESpecialMessage.Recoil, pokemon);
-            Events.Add(p);
-            OnNewEvent?.Invoke(this, p);
+            Broadcast(new PBESpecialMessagePacket(PBESpecialMessage.Recoil, pokemon));
         }
         private void BroadcastStruggle(PBEPokemon pokemon)
         {
-            var p = new PBESpecialMessagePacket(PBESpecialMessage.Struggle, pokemon);
-            Events.Add(p);
-            OnNewEvent?.Invoke(this, p);
+            Broadcast(new PBESpecialMessagePacket(PBESpecialMessage.Struggle, pokemon));
         }
 
         private void BroadcastStatus1(PBEPokemon status1Receiver, PBEPokemon pokemon2, PBEStatus1 status1, PBEStatusAction statusAction)
         {
-            var p = new PBEStatus1Packet(status1Receiver, pokemon2, status1, statusAction);
-            Events.Add(p);
-            OnNewEvent?.Invoke(this, p);
+            Broadcast(new PBEStatus1Packet(status1Receiver, pokemon2, status1, statusAction));
         }
         private void BroadcastStatus2(PBEPokemon status2Receiver, PBEPokemon pokemon2, PBEStatus2 status2, PBEStatusAction statusAction)
         {
-            var p = new PBEStatus2Packet(status2Receiver, pokemon2, status2, statusAction);
-            Events.Add(p);
-            OnNewEvent?.Invoke(this, p);
+            Broadcast(new PBEStatus2Packet(status2Receiver, pokemon2, status2, statusAction));
         }
         private void BroadcastTeamStatus(PBETeam team, PBETeamStatus teamStatus, PBETeamStatusAction teamStatusAction, PBEPokemon damageVictim = null)
         {
-            var p = new PBETeamStatusPacket(team, teamStatus, teamStatusAction, damageVictim);
-            Events.Add(p);
-            OnNewEvent?.Invoke(this, p);
+            Broadcast(new PBETeamStatusPacket(team, teamStatus, teamStatusAction, damageVictim));
         }
         private void BroadcastTransform(PBEPokemon user, PBEPokemon target)
         {
-            var p = new PBETransformPacket(user, target);
-            Events.Add(p);
-            OnNewEvent?.Invoke(this, p);
+            Broadcast(new PBETransformPacket(user, target));
         }
         private void BroadcastTypeChanged(PBEPokemon pokemon, PBEType type1, PBEType type2)
         {
@@ -262,51 +213,35 @@ namespace Kermalis.PokemonBattleEngine.Battle
             pokemon.KnownType1 = type1;
             pokemon.Type2 = type2;
             pokemon.KnownType2 = type2;
-            var p = new PBETypeChangedPacket(pokemon, type1, type2);
-            Events.Add(p);
-            OnNewEvent?.Invoke(this, p);
+            Broadcast(new PBETypeChangedPacket(pokemon, type1, type2));
         }
         private void BroadcastWeather(PBEWeather weather, PBEWeatherAction weatherAction, PBEPokemon damageVictim = null)
         {
-            var p = new PBEWeatherPacket(weather, weatherAction, damageVictim);
-            Events.Add(p);
-            OnNewEvent?.Invoke(this, p);
+            Broadcast(new PBEWeatherPacket(weather, weatherAction, damageVictim));
         }
         private void BroadcastActionsRequest(PBETeam team)
         {
-            var p = new PBEActionsRequestPacket(team);
-            Events.Add(p);
-            OnNewEvent?.Invoke(this, p);
+            Broadcast(new PBEActionsRequestPacket(team));
         }
         private void BroadcastAutoCenter(PBEPokemon pokemon1, PBEFieldPosition pokemon1OldPosition, PBEPokemon pokemon2, PBEFieldPosition pokemon2OldPosition)
         {
-            var p = new PBEAutoCenterPacket(pokemon1, pokemon1OldPosition, pokemon2, pokemon2OldPosition);
-            Events.Add(p);
-            OnNewEvent?.Invoke(this, p);
+            Broadcast(new PBEAutoCenterPacket(pokemon1, pokemon1OldPosition, pokemon2, pokemon2OldPosition));
         }
         private void BroadcastTeam(PBETeam team)
         {
-            var p = new PBETeamPacket(team);
-            Events.Add(p);
-            OnNewEvent?.Invoke(this, p);
+            Broadcast(new PBETeamPacket(team));
         }
         private void BroadcastSwitchInRequest(PBETeam team)
         {
-            var p = new PBESwitchInRequestPacket(team);
-            Events.Add(p);
-            OnNewEvent?.Invoke(this, p);
+            Broadcast(new PBESwitchInRequestPacket(team));
         }
         private void BroadcastTurnBegan()
         {
-            var p = new PBETurnBeganPacket(TurnNumber);
-            Events.Add(p);
-            OnNewEvent?.Invoke(this, p);
+            Broadcast(new PBETurnBeganPacket(TurnNumber));
         }
         private void BroadcastWinner(PBETeam winningTeam)
         {
-            var p = new PBEWinnerPacket(winningTeam);
-            Events.Add(p);
-            OnNewEvent?.Invoke(this, p);
+            Broadcast(new PBEWinnerPacket(winningTeam));
         }
 
 
@@ -439,6 +374,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                         case PBEAbility.IronBarbs:
                         case PBEAbility.Justified:
                         case PBEAbility.Levitate:
+                        case PBEAbility.Mummy:
                         case PBEAbility.Rattled:
                         case PBEAbility.RoughSkin:
                         case PBEAbility.SolarPower:
@@ -491,34 +427,6 @@ namespace Kermalis.PokemonBattleEngine.Battle
                             }
                             break;
                         }
-                        case PBEAbility.Mummy:
-                        {
-                            switch (ap.AbilityAction)
-                            {
-                                case PBEAbilityAction.Changed: message = "{0}'s Ability became {2}!"; break;
-                                case PBEAbilityAction.Damage: message = "{0}'s {2} activated!"; break;
-                                default: throw new ArgumentOutOfRangeException(nameof(ap.AbilityAction));
-                            }
-                            break;
-                        }
-                        case PBEAbility.None:
-                        {
-                            switch (ap.AbilityAction)
-                            {
-                                case PBEAbilityAction.Changed: message = "{0}'s Ability was suppressed!"; break;
-                                default: throw new ArgumentOutOfRangeException(nameof(ap.AbilityAction));
-                            }
-                            break;
-                        }
-                        case PBEAbility.Simple:
-                        {
-                            switch (ap.AbilityAction)
-                            {
-                                case PBEAbilityAction.Changed: message = "{0} acquired {2}!"; break;
-                                default: throw new ArgumentOutOfRangeException(nameof(ap.AbilityAction));
-                            }
-                            break;
-                        }
                         case PBEAbility.SlowStart:
                         {
                             switch (ap.AbilityAction)
@@ -550,6 +458,26 @@ namespace Kermalis.PokemonBattleEngine.Battle
                         default: throw new ArgumentOutOfRangeException(nameof(ap.Ability));
                     }
                     Console.WriteLine(message, NameForTrainer(abilityOwner), NameForTrainer(pokemon2), PBELocalizedString.GetAbilityName(ap.Ability).English);
+                    break;
+                }
+                case PBEAbilityReplacedPacket arp:
+                {
+                    PBEPokemon abilityOwner = arp.AbilityOwnerTeam.TryGetPokemon(arp.AbilityOwner);
+                    string message;
+                    switch (arp.NewAbility)
+                    {
+                        case PBEAbility.None:
+                        {
+                            message = "{0}'s {1} was suppressed!";
+                            break;
+                        }
+                        default:
+                        {
+                            message = "{0}'s {1} was changed to {2}!";
+                            break;
+                        }
+                    }
+                    Console.WriteLine(message, NameForTrainer(abilityOwner), arp.OldAbility.HasValue ? PBELocalizedString.GetAbilityName(arp.OldAbility.Value).English : "Ability", PBELocalizedString.GetAbilityName(arp.NewAbility).English);
                     break;
                 }
                 case PBEBattleStatusPacket bsp:
@@ -1189,7 +1117,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                 }
                 case PBETeamStatusPacket tsp:
                 {
-                    PBEPokemon damageVictim = tsp.Team.TryGetPokemon(tsp.DamageVictim);
+                    PBEPokemon damageVictim = tsp.DamageVictim.HasValue ? tsp.Team.TryGetPokemon(tsp.DamageVictim.Value) : null;
                     string message;
                     switch (tsp.TeamStatus)
                     {
@@ -1304,7 +1232,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                 }
                 case PBEWeatherPacket wp:
                 {
-                    PBEPokemon damageVictim = wp.HasDamageVictim ? wp.DamageVictimTeam.TryGetPokemon(wp.DamageVictim.Value) : null;
+                    PBEPokemon damageVictim = wp.DamageVictim.HasValue ? wp.DamageVictimTeam.TryGetPokemon(wp.DamageVictim.Value) : null;
                     string message;
                     switch (wp.Weather)
                     {

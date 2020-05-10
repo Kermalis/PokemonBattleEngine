@@ -1,0 +1,48 @@
+﻿using Kermalis.EndianBinaryIO;
+using Kermalis.PokemonBattleEngine.Battle;
+using Kermalis.PokemonBattleEngine.Data;
+using System.Collections.ObjectModel;
+using System.IO;
+
+namespace Kermalis.PokemonBattleEngine.Packets
+{
+    public sealed class PBEAbilityReplacedPacket : IPBEPacket
+    {
+        public const ushort Code = 0x2C;
+        public ReadOnlyCollection<byte> Data { get; }
+
+        public PBEFieldPosition AbilityOwner { get; }
+        public PBETeam AbilityOwnerTeam { get; }
+        public PBEAbility? OldAbility { get; }
+        public PBEAbility NewAbility { get; }
+
+        internal PBEAbilityReplacedPacket(PBEPokemon abilityOwner, PBEAbility? oldAbility, PBEAbility newAbility)
+        {
+            using (var ms = new MemoryStream())
+            using (var w = new EndianBinaryWriter(ms, encoding: EncodingType.UTF16))
+            {
+                w.Write(Code);
+                w.Write(AbilityOwner = abilityOwner.FieldPosition);
+                w.Write((AbilityOwnerTeam = abilityOwner.Team).Id);
+                w.Write(oldAbility.HasValue);
+                if (oldAbility.HasValue)
+                {
+                    w.Write((OldAbility = oldAbility).Value);
+                }
+                w.Write(NewAbility = newAbility);
+                Data = new ReadOnlyCollection<byte>(ms.ToArray());
+            }
+        }
+        internal PBEAbilityReplacedPacket(byte[] data, EndianBinaryReader r, PBEBattle battle)
+        {
+            Data = new ReadOnlyCollection<byte>(data);
+            AbilityOwner = r.ReadEnum<PBEFieldPosition>();
+            AbilityOwnerTeam = battle.Teams[r.ReadByte()];
+            if (r.ReadBoolean())
+            {
+                OldAbility = r.ReadEnum<PBEAbility>();
+            }
+            NewAbility = r.ReadEnum<PBEAbility>();
+        }
+    }
+}

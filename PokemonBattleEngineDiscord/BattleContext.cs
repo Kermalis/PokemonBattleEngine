@@ -521,6 +521,7 @@ namespace Kermalis.PokemonBattleEngineDiscord
                         case PBEAbility.IronBarbs:
                         case PBEAbility.Justified:
                         case PBEAbility.Levitate:
+                        case PBEAbility.Mummy:
                         case PBEAbility.Rattled:
                         case PBEAbility.RoughSkin:
                         case PBEAbility.SolarPower:
@@ -573,34 +574,6 @@ namespace Kermalis.PokemonBattleEngineDiscord
                             }
                             break;
                         }
-                        case PBEAbility.Mummy:
-                        {
-                            switch (ap.AbilityAction)
-                            {
-                                case PBEAbilityAction.Changed: message = "{0}'s Ability became {2}!"; break;
-                                case PBEAbilityAction.Damage: message = "{0}'s {2} activated!"; break;
-                                default: throw new ArgumentOutOfRangeException(nameof(ap.AbilityAction));
-                            }
-                            break;
-                        }
-                        case PBEAbility.None:
-                        {
-                            switch (ap.AbilityAction)
-                            {
-                                case PBEAbilityAction.Changed: message = "{0}'s Ability was suppressed!"; break;
-                                default: throw new ArgumentOutOfRangeException(nameof(ap.AbilityAction));
-                            }
-                            break;
-                        }
-                        case PBEAbility.Simple:
-                        {
-                            switch (ap.AbilityAction)
-                            {
-                                case PBEAbilityAction.Changed: message = "{0} acquired {2}!"; break;
-                                default: throw new ArgumentOutOfRangeException(nameof(ap.AbilityAction));
-                            }
-                            break;
-                        }
                         case PBEAbility.SlowStart:
                         {
                             switch (ap.AbilityAction)
@@ -632,6 +605,26 @@ namespace Kermalis.PokemonBattleEngineDiscord
                         default: throw new ArgumentOutOfRangeException(nameof(ap.Ability));
                     }
                     await context.CreateAndSendEmbedAsync(string.Format(message, NameForTrainer(abilityOwner), NameForTrainer(pokemon2), PBELocalizedString.GetAbilityName(ap.Ability).English), pkmn: abilityOwner);
+                    break;
+                }
+                case PBEAbilityReplacedPacket arp:
+                {
+                    PBEPokemon abilityOwner = arp.AbilityOwnerTeam.TryGetPokemon(arp.AbilityOwner);
+                    string message;
+                    switch (arp.NewAbility)
+                    {
+                        case PBEAbility.None:
+                        {
+                            message = "{0}'s {1} was suppressed!";
+                            break;
+                        }
+                        default:
+                        {
+                            message = "{0}'s {1} was changed to {2}!";
+                            break;
+                        }
+                    }
+                    await context.CreateAndSendEmbedAsync(string.Format(message, NameForTrainer(abilityOwner), arp.OldAbility.HasValue ? PBELocalizedString.GetAbilityName(arp.OldAbility.Value).English : "Ability", PBELocalizedString.GetAbilityName(arp.NewAbility).English), pkmn: abilityOwner);
                     break;
                 }
                 case PBEBattleStatusPacket bsp:
@@ -1260,7 +1253,7 @@ namespace Kermalis.PokemonBattleEngineDiscord
                 }
                 case PBETeamStatusPacket tsp:
                 {
-                    PBEPokemon damageVictim = tsp.Team.TryGetPokemon(tsp.DamageVictim);
+                    PBEPokemon damageVictim = tsp.DamageVictim.HasValue ? tsp.Team.TryGetPokemon(tsp.DamageVictim.Value) : null;
                     string message;
                     switch (tsp.TeamStatus)
                     {
@@ -1375,7 +1368,7 @@ namespace Kermalis.PokemonBattleEngineDiscord
                 }
                 case PBEWeatherPacket wp:
                 {
-                    PBEPokemon damageVictim = wp.HasDamageVictim ? wp.DamageVictimTeam.TryGetPokemon(wp.DamageVictim.Value) : null;
+                    PBEPokemon damageVictim = wp.DamageVictim.HasValue ? wp.DamageVictimTeam.TryGetPokemon(wp.DamageVictim.Value) : null;
                     string message;
                     switch (wp.Weather)
                     {

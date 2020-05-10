@@ -68,6 +68,7 @@ namespace Kermalis.PokemonBattleEngine.Packets
                     case PBEPkmnFormChangedPacket.Code: return new PBEPkmnFormChangedPacket(data, r, battle);
                     case PBEAutoCenterPacket.Code: return new PBEAutoCenterPacket(data, r, battle);
                     case PBETypeChangedPacket.Code: return new PBETypeChangedPacket(data, r, battle);
+                    case PBEAbilityReplacedPacket.Code: return new PBEAbilityReplacedPacket(data, r, battle);
                     default: throw new InvalidDataException();
                 }
             }

@@ -14,7 +14,8 @@ namespace Kermalis.PokemonBattleEngine.Battle
 
         private void DoSwitchInEffects(IEnumerable<PBEPokemon> battlers, PBEPokemon forcedInBy = null)
         {
-            foreach (PBEPokemon pkmn in GetActingOrder(battlers, true))
+            PBEPokemon[] order = GetActingOrder(battlers, true);
+            foreach (PBEPokemon pkmn in order)
             {
                 bool grounded = pkmn.IsGrounded(forcedInBy) == PBEResult.Success;
                 // Verified: (Spikes/StealthRock/ToxicSpikes in the order they were applied) before ability
@@ -70,7 +71,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                     case PBEAbility.CloudNine:
                     {
                         BroadcastAbility(pkmn, pkmn, pkmn.Ability, PBEAbilityAction.Weather);
-                        CastformCherrimCheckAll();
+                        CastformCherrimCheck(order);
                         break;
                     }
                     case PBEAbility.Download:
@@ -202,8 +203,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                     if (user.HP > 0 && victim.Ability == PBEAbility.Mummy && user.Ability != PBEAbility.Multitype && user.Ability != PBEAbility.Mummy && user.Ability != PBEAbility.ZenMode)
                     {
                         BroadcastAbility(victim, user, PBEAbility.Mummy, PBEAbilityAction.Damage);
-                        BroadcastAbility(user, victim, PBEAbility.Mummy, PBEAbilityAction.Changed);
-                        CastformCherrimCheck(user);
+                        SetAbility(victim, user, PBEAbility.Mummy);
                     }
                     if (user.HP > 0 && (victim.Ability == PBEAbility.IronBarbs || victim.Ability == PBEAbility.RoughSkin))
                     {
@@ -345,10 +345,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                     PBEWeather w = Weather;
                     Weather = PBEWeather.None;
                     BroadcastWeather(w, PBEWeatherAction.Ended);
-                    foreach (PBEPokemon pkmn in order)
-                    {
-                        CastformCherrimCheck(pkmn);
-                    }
+                    CastformCherrimCheck(order);
                 }
                 else if (ShouldDoWeatherEffects())
                 {
@@ -1647,7 +1644,11 @@ namespace Kermalis.PokemonBattleEngine.Battle
 
         private void CastformCherrimCheckAll()
         {
-            foreach (PBEPokemon pkmn in GetActingOrder(ActiveBattlers, true))
+            CastformCherrimCheck(GetActingOrder(ActiveBattlers, true));
+        }
+        private void CastformCherrimCheck(PBEPokemon[] order)
+        {
+            foreach (PBEPokemon pkmn in order)
             {
                 CastformCherrimCheck(pkmn);
             }
@@ -1897,7 +1898,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
         }
         private void SetAbility(PBEPokemon user, PBEPokemon target, PBEAbility ability)
         {
-            BroadcastAbility(target, user, ability, PBEAbilityAction.Changed);
+            BroadcastAbilityReplaced(target, ability);
             CastformCherrimCheck(target);
             IllusionBreak(target, user);
             target.SlowStart_HinderTurnsLeft = 0;
@@ -3345,7 +3346,11 @@ namespace Kermalis.PokemonBattleEngine.Battle
                 {
                     if (!MissCheck(user, target, move))
                     {
-                        if (target.Ability == PBEAbility.Multitype || target.Ability == PBEAbility.None)
+                        if (target.Ability == PBEAbility.None)
+                        {
+                            BroadcastMoveResult(user, target, PBEResult.InvalidConditions);
+                        }
+                        else if (target.Ability == PBEAbility.Multitype)
                         {
                             BroadcastMoveResult(user, target, PBEResult.Ineffective_Ability);
                         }
@@ -3458,7 +3463,11 @@ namespace Kermalis.PokemonBattleEngine.Battle
                 {
                     if (!MissCheck(user, target, move))
                     {
-                        if (target.Ability == PBEAbility.Multitype || target.Ability == PBEAbility.Simple || target.Ability == PBEAbility.Truant)
+                        if (target.Ability == PBEAbility.Simple)
+                        {
+                            BroadcastMoveResult(user, target, PBEResult.InvalidConditions);
+                        }
+                        else if (target.Ability == PBEAbility.Multitype || target.Ability == PBEAbility.Truant)
                         {
                             BroadcastMoveResult(user, target, PBEResult.Ineffective_Ability);
                         }
