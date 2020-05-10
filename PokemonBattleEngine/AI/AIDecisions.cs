@@ -532,6 +532,7 @@ namespace Kermalis.PokemonBattleEngine.AI
                                     case PBEMoveEffect.HPDrain__RequireSleep:
                                     case PBEMoveEffect.MagnetRise:
                                     case PBEMoveEffect.Metronome:
+                                    case PBEMoveEffect.MiracleEye:
                                     case PBEMoveEffect.OneHitKnockout:
                                     case PBEMoveEffect.PainSplit:
                                     case PBEMoveEffect.PowerTrick:
