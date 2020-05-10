@@ -987,11 +987,11 @@ namespace Kermalis.PokemonBattleEngine.Battle
             sb.AppendLine($"Status1: {Status1}");
             if (Status1 == PBEStatus1.Asleep)
             {
-                sb.AppendLine($"Sleep turns: {Status1Counter}/{SleepTurns}");
+                sb.AppendLine($"Asleep turns: {Status1Counter}/{SleepTurns}");
             }
             else if (Status1 == PBEStatus1.BadlyPoisoned)
             {
-                sb.AppendLine($"Toxic Counter: {Status1Counter}");
+                sb.AppendLine($"Toxic counter: {Status1Counter}");
             }
             sb.AppendLine($"Status2: {Status2}");
             if (Status2.HasFlag(PBEStatus2.Confused))

@@ -53,6 +53,15 @@ namespace Kermalis.PokemonBattleEngineDiscord
             { PBEType.Steel, Emote.Parse("<:Steel:708768399383330867>") },
             { PBEType.Water, Emote.Parse("<:Water:708768402356830268>") }
         };
+        public static readonly Dictionary<PBEStatus1, Emote> Status1Emotes = new Dictionary<PBEStatus1, Emote>
+        {
+            { PBEStatus1.Asleep, Emote.Parse("<:Asleep:708841651690537030>") },
+            { PBEStatus1.BadlyPoisoned, Emote.Parse("<:BadlyPoisoned:708841652151910400>") },
+            { PBEStatus1.Burned, Emote.Parse("<:Burned:708841651711246442>") },
+            { PBEStatus1.Frozen, Emote.Parse("<:Frozen:708841651359186995>") },
+            { PBEStatus1.Paralyzed, Emote.Parse("<:Paralyzed:708841651568771093>") },
+            { PBEStatus1.Poisoned, Emote.Parse("<:Poisoned:708841651787005962>") }
+        };
 
         // https://stackoverflow.com/a/3722337
         public static Color Blend(this Color color, Color backColor, double depth = 0.5)

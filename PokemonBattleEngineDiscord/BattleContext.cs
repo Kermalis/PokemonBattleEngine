@@ -239,17 +239,17 @@ namespace Kermalis.PokemonBattleEngineDiscord
             sb.AppendLine();
             if (pkmn.Status1 != PBEStatus1.None)
             {
-                sb.AppendLine($"**Main status:** {pkmn.Status1}");
+                sb.AppendLine($"**Main status:** {Utils.Status1Emotes[pkmn.Status1]}");
             }
             if (pkmn.FieldPosition != PBEFieldPosition.None)
             {
                 if (pkmn.Status1 == PBEStatus1.Asleep)
                 {
-                    sb.AppendLine($"**Sleep turns:** {pkmn.Status1Counter}");
+                    sb.AppendLine($"**{Utils.Status1Emotes[PBEStatus1.Asleep]} turns:** {pkmn.Status1Counter}");
                 }
                 else if (pkmn.Status1 == PBEStatus1.BadlyPoisoned)
                 {
-                    sb.AppendLine($"**Toxic Counter:** {pkmn.Status1Counter}");
+                    sb.AppendLine($"**{Utils.Status1Emotes[PBEStatus1.BadlyPoisoned]} counter:** {pkmn.Status1Counter}");
                 }
                 if (pkmn.Status2 != PBEStatus2.None)
                 {
@@ -335,15 +335,15 @@ namespace Kermalis.PokemonBattleEngineDiscord
             sb.AppendLine();
             if (pkmn.Status1 != PBEStatus1.None)
             {
-                sb.AppendLine($"**Main status:** {pkmn.Status1}");
-            }
-            if (pkmn.Status1 == PBEStatus1.Asleep)
-            {
-                sb.AppendLine($"**Sleep turns:** {pkmn.Status1Counter}");
-            }
-            else if (pkmn.Status1 == PBEStatus1.BadlyPoisoned)
-            {
-                sb.AppendLine($"**Toxic Counter:** {pkmn.Status1Counter}");
+                sb.AppendLine($"**Main status:** {Utils.Status1Emotes[pkmn.Status1]}");
+                if (pkmn.Status1 == PBEStatus1.Asleep)
+                {
+                    sb.AppendLine($"**{Utils.Status1Emotes[PBEStatus1.Asleep]} turns:** {pkmn.Status1Counter}");
+                }
+                else if (pkmn.Status1 == PBEStatus1.BadlyPoisoned)
+                {
+                    sb.AppendLine($"**{Utils.Status1Emotes[PBEStatus1.BadlyPoisoned]} counter:** {pkmn.Status1Counter}");
+                }
             }
             PBEStatus2 cleanStatus2 = pkmn.Status2;
             cleanStatus2 &= ~PBEStatus2.Disguised;
@@ -1031,17 +1031,6 @@ namespace Kermalis.PokemonBattleEngineDiscord
                             }
                             break;
                         }
-                        case PBEStatus1.Poisoned:
-                        {
-                            switch (s1p.StatusAction)
-                            {
-                                case PBEStatusAction.Added: message = "{0} was poisoned!"; break;
-                                case PBEStatusAction.Cured: message = "{0} was cured of its poisoning."; break;
-                                case PBEStatusAction.Damage: message = "{0} was hurt by poison!"; break;
-                                default: throw new ArgumentOutOfRangeException(nameof(s1p.StatusAction));
-                            }
-                            break;
-                        }
                         case PBEStatus1.Burned:
                         {
                             switch (s1p.StatusAction)
@@ -1072,6 +1061,17 @@ namespace Kermalis.PokemonBattleEngineDiscord
                                 case PBEStatusAction.Added: message = "{0} is paralyzed! It may be unable to move!"; break;
                                 case PBEStatusAction.CausedImmobility: message = "{0} is paralyzed! It can't move!"; break;
                                 case PBEStatusAction.Cured: message = "{0} was cured of paralysis."; break;
+                                default: throw new ArgumentOutOfRangeException(nameof(s1p.StatusAction));
+                            }
+                            break;
+                        }
+                        case PBEStatus1.Poisoned:
+                        {
+                            switch (s1p.StatusAction)
+                            {
+                                case PBEStatusAction.Added: message = "{0} was poisoned!"; break;
+                                case PBEStatusAction.Cured: message = "{0} was cured of its poisoning."; break;
+                                case PBEStatusAction.Damage: message = "{0} was hurt by poison!"; break;
                                 default: throw new ArgumentOutOfRangeException(nameof(s1p.StatusAction));
                             }
                             break;

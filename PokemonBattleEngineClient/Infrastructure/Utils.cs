@@ -132,10 +132,10 @@ namespace Kermalis.PokemonBattleEngineClient.Infrastructure
             {
                 sb.AppendLine($"{pkmn.KnownNickname}/{pkmn.KnownSpecies} {(pkmn.Status2.HasFlag(PBEStatus2.Transformed) ? pkmn.GenderSymbol : pkmn.KnownGenderSymbol)} Lv.{pkmn.Level}");
                 sb.AppendLine($"HP: {pkmn.HPPercentage:P2}");
-                sb.Append($"Known types: {PBELocalizedString.GetTypeName(pkmn.KnownType1).ToString()}");
+                sb.Append($"Known types: {PBELocalizedString.GetTypeName(pkmn.KnownType1)}");
                 if (pkmn.KnownType2 != PBEType.None)
                 {
-                    sb.Append($"/{PBELocalizedString.GetTypeName(pkmn.KnownType2).ToString()}");
+                    sb.Append($"/{PBELocalizedString.GetTypeName(pkmn.KnownType2)}");
                 }
                 sb.AppendLine();
                 if (pkmn.FieldPosition != PBEFieldPosition.None)
@@ -145,6 +145,14 @@ namespace Kermalis.PokemonBattleEngineClient.Infrastructure
                 if (pkmn.Status1 != PBEStatus1.None)
                 {
                     sb.AppendLine($"Main status: {pkmn.Status1}");
+                    if (pkmn.Status1 == PBEStatus1.Asleep)
+                    {
+                        sb.AppendLine($"**Asleep turns:** {pkmn.Status1Counter}");
+                    }
+                    else if (pkmn.Status1 == PBEStatus1.BadlyPoisoned)
+                    {
+                        sb.AppendLine($"**Toxic counter:** {pkmn.Status1Counter}");
+                    }
                 }
                 if (pkmn.FieldPosition != PBEFieldPosition.None)
                 {
@@ -180,7 +188,7 @@ namespace Kermalis.PokemonBattleEngineClient.Infrastructure
                 }
                 else
                 {
-                    sb.AppendLine($"Known ability: {PBELocalizedString.GetAbilityName(pkmn.KnownAbility).ToString()}");
+                    sb.AppendLine($"Known ability: {PBELocalizedString.GetAbilityName(pkmn.KnownAbility)}");
                 }
                 sb.AppendLine($"Known item: {(pkmn.KnownItem == (PBEItem)ushort.MaxValue ? "???" : PBELocalizedString.GetItemName(pkmn.KnownItem).ToString())}");
                 sb.Append("Known moves: ");
@@ -205,10 +213,10 @@ namespace Kermalis.PokemonBattleEngineClient.Infrastructure
             {
                 sb.AppendLine($"{pkmn.Nickname}/{pkmn.Species} {pkmn.GenderSymbol} Lv.{pkmn.Level}");
                 sb.AppendLine($"HP: {pkmn.HP}/{pkmn.MaxHP} ({pkmn.HPPercentage:P2})");
-                sb.Append($"Types: {PBELocalizedString.GetTypeName(pkmn.Type1).ToString()}");
+                sb.Append($"Types: {PBELocalizedString.GetTypeName(pkmn.Type1)}");
                 if (pkmn.Type2 != PBEType.None)
                 {
-                    sb.Append($"/{PBELocalizedString.GetTypeName(pkmn.Type2).ToString()}");
+                    sb.Append($"/{PBELocalizedString.GetTypeName(pkmn.Type2)}");
                 }
                 sb.AppendLine();
                 if (pkmn.FieldPosition != PBEFieldPosition.None)
@@ -218,6 +226,14 @@ namespace Kermalis.PokemonBattleEngineClient.Infrastructure
                 if (pkmn.Status1 != PBEStatus1.None)
                 {
                     sb.AppendLine($"Main status: {pkmn.Status1}");
+                    if (pkmn.Status1 == PBEStatus1.Asleep)
+                    {
+                        sb.AppendLine($"**Asleep turns:** {pkmn.Status1Counter}");
+                    }
+                    else if (pkmn.Status1 == PBEStatus1.BadlyPoisoned)
+                    {
+                        sb.AppendLine($"**Toxic counter:** {pkmn.Status1Counter}");
+                    }
                 }
                 if (pkmn.FieldPosition != PBEFieldPosition.None && pkmn.Status2 != PBEStatus2.None)
                 {
@@ -240,15 +256,15 @@ namespace Kermalis.PokemonBattleEngineClient.Infrastructure
                 {
                     AddStatChanges();
                 }
-                sb.AppendLine($"Ability: {PBELocalizedString.GetAbilityName(pkmn.Ability).ToString()}");
-                sb.AppendLine($"Item: {PBELocalizedString.GetItemName(pkmn.Item).ToString()}");
+                sb.AppendLine($"Ability: {PBELocalizedString.GetAbilityName(pkmn.Ability)}");
+                sb.AppendLine($"Item: {PBELocalizedString.GetItemName(pkmn.Item)}");
                 if (pkmn.Moves.Contains(PBEMove.Frustration) || pkmn.Moves.Contains(PBEMove.Return))
                 {
                     sb.AppendLine($"Friendship: {pkmn.Friendship} ({pkmn.Friendship / (double)byte.MaxValue:P2})");
                 }
                 if (pkmn.Moves.Contains(PBEMove.HiddenPower))
                 {
-                    sb.AppendLine($"{PBELocalizedString.GetMoveName(PBEMove.HiddenPower).ToString()}: {PBELocalizedString.GetTypeName(pkmn.IndividualValues.HiddenPowerType).ToString()}|{pkmn.IndividualValues.HiddenPowerBasePower}");
+                    sb.AppendLine($"{PBELocalizedString.GetMoveName(PBEMove.HiddenPower)}: {PBELocalizedString.GetTypeName(pkmn.IndividualValues.HiddenPowerType)}|{pkmn.IndividualValues.HiddenPowerBasePower}");
                 }
                 sb.Append("Moves: ");
                 for (int i = 0; i < pkmn.Team.Battle.Settings.NumMoves; i++)

@@ -973,17 +973,6 @@ namespace Kermalis.PokemonBattleEngineClient
                             }
                             break;
                         }
-                        case PBEStatus1.Poisoned:
-                        {
-                            switch (s1p.StatusAction)
-                            {
-                                case PBEStatusAction.Added: message = "{0} was poisoned!"; break;
-                                case PBEStatusAction.Cured: message = "{0} was cured of its poisoning."; break;
-                                case PBEStatusAction.Damage: message = "{0} was hurt by poison!"; break;
-                                default: throw new ArgumentOutOfRangeException(nameof(s1p.StatusAction));
-                            }
-                            break;
-                        }
                         case PBEStatus1.Burned:
                         {
                             switch (s1p.StatusAction)
@@ -1014,6 +1003,17 @@ namespace Kermalis.PokemonBattleEngineClient
                                 case PBEStatusAction.Added: message = "{0} is paralyzed! It may be unable to move!"; break;
                                 case PBEStatusAction.CausedImmobility: message = "{0} is paralyzed! It can't move!"; break;
                                 case PBEStatusAction.Cured: message = "{0} was cured of paralysis."; break;
+                                default: throw new ArgumentOutOfRangeException(nameof(s1p.StatusAction));
+                            }
+                            break;
+                        }
+                        case PBEStatus1.Poisoned:
+                        {
+                            switch (s1p.StatusAction)
+                            {
+                                case PBEStatusAction.Added: message = "{0} was poisoned!"; break;
+                                case PBEStatusAction.Cured: message = "{0} was cured of its poisoning."; break;
+                                case PBEStatusAction.Damage: message = "{0} was hurt by poison!"; break;
                                 default: throw new ArgumentOutOfRangeException(nameof(s1p.StatusAction));
                             }
                             break;
