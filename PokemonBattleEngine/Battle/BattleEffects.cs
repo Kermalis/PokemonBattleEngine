@@ -15,6 +15,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
         private void DoSwitchInEffects(IEnumerable<PBEPokemon> battlers, PBEPokemon forcedInBy = null)
         {
             PBEPokemon[] order = GetActingOrder(battlers, true);
+
             foreach (PBEPokemon pkmn in order)
             {
                 bool grounded = pkmn.IsGrounded(forcedInBy) == PBEResult.Success;
@@ -63,103 +64,11 @@ namespace Kermalis.PokemonBattleEngine.Battle
                     }
                 }
 
-                CastformCherrimCheck(pkmn);
-                AntiStatusAbilityCheck(pkmn);
-                switch (pkmn.Ability)
-                {
-                    case PBEAbility.AirLock:
-                    case PBEAbility.CloudNine:
-                    {
-                        BroadcastAbility(pkmn, pkmn, pkmn.Ability, PBEAbilityAction.Weather);
-                        CastformCherrimCheck(order);
-                        break;
-                    }
-                    case PBEAbility.Download:
-                    {
-                        PBEPokemon[] oppActive = pkmn.Team.OpposingTeam.ActiveBattlers;
-                        if (oppActive.Length != 0)
-                        {
-                            PBEStat stat = oppActive.Average(p => p.Defense * GetStatChangeModifier(p.DefenseChange, false))
-                                < oppActive.Average(p => p.SpDefense * GetStatChangeModifier(p.SpDefenseChange, false))
-                                ? PBEStat.Attack : PBEStat.SpAttack;
-                            if (pkmn.GetStatChange(stat) < Settings.MaxStatChange)
-                            {
-                                BroadcastAbility(pkmn, pkmn, PBEAbility.Download, PBEAbilityAction.ChangedStats);
-                                ApplyStatChange(pkmn, pkmn, stat, +1);
-                            }
-                        }
-                        break;
-                    }
-                    case PBEAbility.Drizzle:
-                    {
-                        if (Weather != PBEWeather.Rain || WeatherCounter != 0)
-                        {
-                            BroadcastAbility(pkmn, pkmn, pkmn.Ability, PBEAbilityAction.Weather);
-                            Weather = PBEWeather.Rain;
-                            WeatherCounter = 0;
-                            BroadcastWeather(PBEWeather.Rain, PBEWeatherAction.Added);
-                        }
-                        break;
-                    }
-                    case PBEAbility.Drought:
-                    {
-                        if (Weather != PBEWeather.HarshSunlight || WeatherCounter != 0)
-                        {
-                            BroadcastAbility(pkmn, pkmn, pkmn.Ability, PBEAbilityAction.Weather);
-                            Weather = PBEWeather.HarshSunlight;
-                            WeatherCounter = 0;
-                            BroadcastWeather(PBEWeather.HarshSunlight, PBEWeatherAction.Added);
-                        }
-                        break;
-                    }
-                    case PBEAbility.Imposter:
-                    {
-                        PBEFieldPosition targetPos = GetPositionAcross(BattleFormat, pkmn.FieldPosition);
-                        PBEPokemon target = pkmn.Team.OpposingTeam.TryGetPokemon(targetPos);
-                        if (target != null && pkmn.IsTransformPossible(target) == PBEResult.Success)
-                        {
-                            BroadcastAbility(pkmn, target, pkmn.Ability, PBEAbilityAction.ChangedAppearance);
-                            DoTransform(pkmn, target);
-                        }
-                        break;
-                    }
-                    case PBEAbility.MoldBreaker:
-                    case PBEAbility.Teravolt:
-                    case PBEAbility.Turboblaze:
-                    {
-                        BroadcastAbility(pkmn, pkmn, pkmn.Ability, PBEAbilityAction.Announced);
-                        break;
-                    }
-                    case PBEAbility.SandStream:
-                    {
-                        if (Weather != PBEWeather.Sandstorm || WeatherCounter != 0)
-                        {
-                            BroadcastAbility(pkmn, pkmn, pkmn.Ability, PBEAbilityAction.Weather);
-                            Weather = PBEWeather.Sandstorm;
-                            WeatherCounter = 0;
-                            BroadcastWeather(PBEWeather.Sandstorm, PBEWeatherAction.Added);
-                        }
-                        break;
-                    }
-                    case PBEAbility.SlowStart:
-                    {
-                        pkmn.SlowStart_HinderTurnsLeft = 5;
-                        BroadcastAbility(pkmn, pkmn, PBEAbility.SlowStart, PBEAbilityAction.Announced);
-                        break;
-                    }
-                    case PBEAbility.SnowWarning:
-                    {
-                        if (Weather != PBEWeather.Hailstorm || WeatherCounter != 0)
-                        {
-                            BroadcastAbility(pkmn, pkmn, pkmn.Ability, PBEAbilityAction.Weather);
-                            Weather = PBEWeather.Hailstorm;
-                            WeatherCounter = 0;
-                            BroadcastWeather(PBEWeather.Hailstorm, PBEWeatherAction.Added);
-                        }
-                        break;
-                    }
-                }
+                ActivateAbility(pkmn, true);
             }
+
+            // Verified: Castform/Cherrim transformation goes last. Even if multiple weather abilities activate, they will not change until every ability has been activated
+            CastformCherrimCheck(order);
         }
         /// <summary>Does effects that take place after hitting such as substitute breaking, rough skin, and victim eating its berry.</summary>
         /// <param name="user">The Pokémon who used <paramref name="move"/>.</param>
@@ -812,6 +721,11 @@ namespace Kermalis.PokemonBattleEngine.Battle
                         Ef_Endeavor(user, targets, move);
                         break;
                     }
+                    case PBEMoveEffect.Entrainment:
+                    {
+                        Ef_Entrainment(user, targets, move);
+                        break;
+                    }
                     case PBEMoveEffect.FinalGambit:
                     {
                         Ef_FinalGambit(user, targets, move);
@@ -834,7 +748,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                     }
                     case PBEMoveEffect.GastroAcid:
                     {
-                        Ef_SetAbility(user, targets, move, PBEAbility.None, false);
+                        Ef_SetOtherAbility(user, targets, move, PBEAbility.None, false);
                         break;
                     }
                     case PBEMoveEffect.Growth:
@@ -1178,6 +1092,11 @@ namespace Kermalis.PokemonBattleEngine.Battle
                         Ef_RestoreTargetHP(user, targets, move, effectParam);
                         break;
                     }
+                    case PBEMoveEffect.RolePlay:
+                    {
+                        Ef_RolePlay(user, targets, move);
+                        break;
+                    }
                     case PBEMoveEffect.Safeguard:
                     {
                         Ef_TryForceTeamStatus(user, move, PBETeamStatus.Safeguard);
@@ -1205,7 +1124,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                     }
                     case PBEMoveEffect.SimpleBeam:
                     {
-                        Ef_SetAbility(user, targets, move, PBEAbility.Simple, true);
+                        Ef_SetOtherAbility(user, targets, move, PBEAbility.Simple, true);
                         break;
                     }
                     case PBEMoveEffect.Sleep:
@@ -1305,7 +1224,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                     }
                     case PBEMoveEffect.WorrySeed:
                     {
-                        Ef_SetAbility(user, targets, move, PBEAbility.Insomnia, true);
+                        Ef_SetOtherAbility(user, targets, move, PBEAbility.Insomnia, true);
                         break;
                     }
                     default: throw new ArgumentOutOfRangeException(nameof(effect));
@@ -1647,6 +1566,103 @@ namespace Kermalis.PokemonBattleEngine.Battle
             return false;
         }
 
+        private void ActivateAbility(PBEPokemon pkmn, bool switchIn)
+        {
+            if (!switchIn)
+            {
+                CastformCherrimCheck(pkmn); // Switch-Ins check this after all Pokémon are sent out
+            }
+            AntiStatusAbilityCheck(pkmn);
+            switch (pkmn.Ability)
+            {
+                case PBEAbility.AirLock:
+                case PBEAbility.CloudNine:
+                {
+                    if (switchIn)
+                    {
+                        BroadcastAbility(pkmn, pkmn, pkmn.Ability, PBEAbilityAction.Weather);
+                        CastformCherrimCheckAll();
+                    }
+                    break;
+                }
+                case PBEAbility.Download:
+                {
+                    PBEPokemon[] oppActive = pkmn.Team.OpposingTeam.ActiveBattlers;
+                    if (oppActive.Length != 0)
+                    {
+                        PBEStat stat = oppActive.Average(p => p.Defense * GetStatChangeModifier(p.DefenseChange, false))
+                                < oppActive.Average(p => p.SpDefense * GetStatChangeModifier(p.SpDefenseChange, false))
+                                ? PBEStat.Attack : PBEStat.SpAttack;
+                        if (pkmn.GetStatChange(stat) < Settings.MaxStatChange)
+                        {
+                            BroadcastAbility(pkmn, pkmn, PBEAbility.Download, PBEAbilityAction.ChangedStats);
+                            ApplyStatChange(pkmn, pkmn, stat, +1);
+                        }
+                    }
+                    break;
+                }
+                case PBEAbility.Drizzle:
+                {
+                    if (Weather != PBEWeather.Rain || WeatherCounter != 0)
+                    {
+                        BroadcastAbility(pkmn, pkmn, pkmn.Ability, PBEAbilityAction.Weather);
+                        SetWeather(PBEWeather.Rain, 0, switchIn);
+                    }
+                    break;
+                }
+                case PBEAbility.Drought:
+                {
+                    if (Weather != PBEWeather.HarshSunlight || WeatherCounter != 0)
+                    {
+                        BroadcastAbility(pkmn, pkmn, pkmn.Ability, PBEAbilityAction.Weather);
+                        SetWeather(PBEWeather.HarshSunlight, 0, switchIn);
+                    }
+                    break;
+                }
+                case PBEAbility.Imposter:
+                {
+                    PBEFieldPosition targetPos = GetPositionAcross(BattleFormat, pkmn.FieldPosition);
+                    PBEPokemon target = pkmn.Team.OpposingTeam.TryGetPokemon(targetPos);
+                    if (target != null && pkmn.IsTransformPossible(target) == PBEResult.Success)
+                    {
+                        BroadcastAbility(pkmn, target, pkmn.Ability, PBEAbilityAction.ChangedAppearance);
+                        DoTransform(pkmn, target);
+                    }
+                    break;
+                }
+                case PBEAbility.MoldBreaker:
+                case PBEAbility.Teravolt:
+                case PBEAbility.Turboblaze:
+                {
+                    BroadcastAbility(pkmn, pkmn, pkmn.Ability, PBEAbilityAction.Announced);
+                    break;
+                }
+                case PBEAbility.SandStream:
+                {
+                    if (Weather != PBEWeather.Sandstorm || WeatherCounter != 0)
+                    {
+                        BroadcastAbility(pkmn, pkmn, pkmn.Ability, PBEAbilityAction.Weather);
+                        SetWeather(PBEWeather.Sandstorm, 0, switchIn);
+                    }
+                    break;
+                }
+                case PBEAbility.SlowStart:
+                {
+                    pkmn.SlowStart_HinderTurnsLeft = 5;
+                    BroadcastAbility(pkmn, pkmn, PBEAbility.SlowStart, PBEAbilityAction.Announced);
+                    break;
+                }
+                case PBEAbility.SnowWarning:
+                {
+                    if (Weather != PBEWeather.Hailstorm || WeatherCounter != 0)
+                    {
+                        BroadcastAbility(pkmn, pkmn, pkmn.Ability, PBEAbilityAction.Weather);
+                        SetWeather(PBEWeather.Hailstorm, 0, switchIn);
+                    }
+                    break;
+                }
+            }
+        }
         private void CastformCherrimCheckAll()
         {
             CastformCherrimCheck(GetActingOrder(ActiveBattlers, true));
@@ -1733,8 +1749,6 @@ namespace Kermalis.PokemonBattleEngine.Battle
                 BroadcastAbility(pkmn, breaker, PBEAbility.Illusion, PBEAbilityAction.ChangedAppearance);
             }
         }
-        // TODO: SkillSwap calls this
-        // TODO: Does Trace call this?
         private void AntiStatusAbilityCheck(PBEPokemon pkmn)
         {
             switch (pkmn.Ability)
@@ -1856,6 +1870,43 @@ namespace Kermalis.PokemonBattleEngine.Battle
                 }
             }
         }
+        private void SetAbility(PBEPokemon user, PBEPokemon target, PBEAbility ability)
+        {
+            // This func assumes new ability is different from current
+            PBEAbility oldAbility = target.Ability;
+            BroadcastAbilityReplaced(target, ability);
+
+            switch (oldAbility)
+            {
+                case PBEAbility.Illusion:
+                {
+                    IllusionBreak(target, user);
+                    break;
+                }
+                case PBEAbility.SlowStart:
+                {
+                    target.SlowStart_HinderTurnsLeft = 0;
+                    break;
+                }
+                case PBEAbility.SpeedBoost:
+                {
+                    target.SpeedBoost_AbleToSpeedBoostThisTurn = false;
+                    break;
+                }
+            }
+
+            ActivateAbility(target, true);
+        }
+        private void SetWeather(PBEWeather weather, byte weatherCounter, bool switchIn)
+        {
+            Weather = weather;
+            WeatherCounter = weatherCounter;
+            BroadcastWeather(Weather, PBEWeatherAction.Added);
+            if (!switchIn)
+            {
+                CastformCherrimCheckAll(); // Switch-Ins check this after all Pokémon are sent out
+            }
+        }
 
         private void RecordExecutedMove(PBEPokemon user, PBEMove move)
         {
@@ -1900,15 +1951,6 @@ namespace Kermalis.PokemonBattleEngine.Battle
             {
                 BroadcastStatus2(user, user, PBEStatus2.PowerTrick, PBEStatusAction.Ended);
             }
-        }
-        private void SetAbility(PBEPokemon user, PBEPokemon target, PBEAbility ability)
-        {
-            BroadcastAbilityReplaced(target, ability);
-            CastformCherrimCheck(target); // Verified: Castform/Cherrim before Insomnia
-            IllusionBreak(target, user); // Verified: Illusion before Insomnia
-            AntiStatusAbilityCheck(target);
-            target.SlowStart_HinderTurnsLeft = 0;
-            target.SpeedBoost_AbleToSpeedBoostThisTurn = false;
         }
         private PBEResult ApplyStatus1IfPossible(PBEPokemon user, PBEPokemon target, PBEStatus1 status, bool broadcastResult)
         {
@@ -2604,10 +2646,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                     }
                     default: throw new ArgumentOutOfRangeException(nameof(weather));
                 }
-                Weather = weather;
-                WeatherCounter = (byte)(turns + (user.Item == extensionItem ? itemTurnExtension : 0));
-                BroadcastWeather(Weather, PBEWeatherAction.Added);
-                CastformCherrimCheckAll();
+                SetWeather(weather, (byte)(turns + (user.Item == extensionItem ? itemTurnExtension : 0)), false);
             }
             RecordExecutedMove(user, move);
         }
@@ -2696,7 +2735,74 @@ namespace Kermalis.PokemonBattleEngine.Battle
             RecordExecutedMove(user, move);
         }
 
-        private void Ef_SetAbility(PBEPokemon user, PBEPokemon[] targets, PBEMove move, PBEAbility ability, bool blockedByTruant)
+        private void Ef_Entrainment(PBEPokemon user, PBEPokemon[] targets, PBEMove move)
+        {
+            var blockedUserAbilities = new PBEAbility[] { PBEAbility.FlowerGift, PBEAbility.Forecast, PBEAbility.Illusion,
+                PBEAbility.Imposter, PBEAbility.Trace };
+
+            BroadcastMoveUsed(user, move);
+            PPReduce(user, move);
+            if (targets.Length == 0)
+            {
+                BroadcastMoveResult(user, user, PBEResult.NoTarget);
+            }
+            else
+            {
+                foreach (PBEPokemon target in targets)
+                {
+                    if (!MissCheck(user, target, move))
+                    {
+                        if (target.Ability == user.Ability || blockedUserAbilities.Contains(user.Ability))
+                        {
+                            BroadcastMoveResult(user, target, PBEResult.InvalidConditions);
+                        }
+                        else if (target.Ability == PBEAbility.Multitype || target.Ability == PBEAbility.Truant)
+                        {
+                            BroadcastMoveResult(user, target, PBEResult.Ineffective_Ability);
+                        }
+                        else
+                        {
+                            SetAbility(user, target, user.Ability);
+                            // TODO: #234 - Reveal other Pokémon's Ability
+                        }
+                    }
+                }
+            }
+            RecordExecutedMove(user, move);
+        }
+        private void Ef_RolePlay(PBEPokemon user, PBEPokemon[] targets, PBEMove move)
+        {
+            var blockedUserAbilities = new PBEAbility[] { PBEAbility.Imposter, PBEAbility.Multitype, PBEAbility.ZenMode };
+            var blockedTargetAbilities = new PBEAbility[] { PBEAbility.FlowerGift, PBEAbility.Forecast, PBEAbility.Illusion,
+                PBEAbility.Imposter, PBEAbility.Multitype, PBEAbility.Trace, PBEAbility.WonderGuard, PBEAbility.ZenMode };
+
+            BroadcastMoveUsed(user, move);
+            PPReduce(user, move);
+            if (targets.Length == 0)
+            {
+                BroadcastMoveResult(user, user, PBEResult.NoTarget);
+            }
+            else
+            {
+                foreach (PBEPokemon target in targets)
+                {
+                    if (!MissCheck(user, target, move))
+                    {
+                        if (target.Ability == user.Ability || blockedUserAbilities.Contains(user.Ability) || blockedTargetAbilities.Contains(target.Ability))
+                        {
+                            BroadcastMoveResult(user, target, PBEResult.InvalidConditions);
+                        }
+                        else
+                        {
+                            SetAbility(user, user, target.Ability);
+                            // TODO: #234 - Reveal other Pokémon's Ability
+                        }
+                    }
+                }
+            }
+            RecordExecutedMove(user, move);
+        }
+        private void Ef_SetOtherAbility(PBEPokemon user, PBEPokemon[] targets, PBEMove move, PBEAbility ability, bool blockedByTruant)
         {
             BroadcastMoveUsed(user, move);
             PPReduce(user, move);

@@ -767,7 +767,7 @@ namespace Kermalis.PokemonBattleEngineExtras
             (PBEMove)356, // Gravity
             PBEMove.WorrySeed,
             (PBEMove)277, // MagicCoat
-            (PBEMove)272, // RolePlay
+            PBEMove.RolePlay,
             (PBEMove)215, // HealBell
             PBEMove.LowKick,
             (PBEMove)143, // SkyAttack
@@ -990,7 +990,7 @@ namespace Kermalis.PokemonBattleEngineExtras
                 (PBEMove)282, // KnockOff
                 PBEMove.Synthesis,
                 PBEMove.HeatWave,
-                (PBEMove)272, // RolePlay
+                PBEMove.RolePlay,
                 (PBEMove)215, // HealBell
                 PBEMove.Tailwind,
                 (PBEMove)143, // SkyAttack

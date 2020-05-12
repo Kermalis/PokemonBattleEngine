@@ -1133,7 +1133,7 @@ namespace Kermalis.PokemonBattleEngine.Data
         AirLock = 76,
         Analytic = 148, // TODO
         AngerPoint = 83, // TODO
-        Anticipation = 107, // TODO
+        Anticipation = 107, // TODO (Also, does this activate when given/taken?)
         ArenaTrap = 71, // TODO
         BadDreams = 123, // TODO
         /// <summary>The Pokémon takes no critical hits.</summary>
@@ -1169,9 +1169,9 @@ namespace Kermalis.PokemonBattleEngine.Data
         FlashFire = 18, // TODO
         FlowerGift = 122,
         Forecast = 59,
-        Forewarn = 108, // TODO
+        Forewarn = 108, // TODO (Also, does this activate when given/taken?)
         FriendGuard = 132, // TODO
-        Frisk = 119, // TODO
+        Frisk = 119, // TODO (Also, does this activate when given/taken?)
         Gluttony = 82, // TODO
         /// <summary>The Pokémon's attack is boosted when it is afflicted with a <see cref="PBEStatus1"/> and the damage reduction from <see cref="PBEStatus1.Burned"/> is not applied.</summary>
         Guts = 62,
@@ -1199,7 +1199,7 @@ namespace Kermalis.PokemonBattleEngine.Data
         Infiltrator = 151, // TODO
         InnerFocus = 39,
         Insomnia = 15,
-        Intimidate = 22, // TODO
+        Intimidate = 22, // TODO (Also, does this activate when given/taken?)
         IronBarbs = 160,
         /// <summary>The power of moves with <see cref="PBEMoveFlag.AffectedByIronFist"/> is increased.</summary>
         IronFist = 89,
@@ -1246,7 +1246,7 @@ namespace Kermalis.PokemonBattleEngine.Data
         PoisonPoint = 38,
         PoisonTouch = 143, // TODO
         Prankster = 158,
-        Pressure = 46, // TODO
+        Pressure = 46, // TODO (Also, does this activate when given/taken?)
         /// <summary>The Pokémon's attack is boosted.</summary>
         PurePower = 74,
         QuickFeet = 95,
@@ -1319,7 +1319,7 @@ namespace Kermalis.PokemonBattleEngine.Data
         /// <summary>When the Pokémon has low HP, its Water-type moves get a power boost.</summary>
         Torrent = 67,
         ToxicBoost = 137,
-        Trace = 36, // TODO
+        Trace = 36, // TODO (Also, does this activate when given/taken?)
         Truant = 54, // TODO
         Turboblaze = 163,
         Unaware = 109,
@@ -1335,7 +1335,7 @@ namespace Kermalis.PokemonBattleEngine.Data
         /// <summary>The Pokémon is immune to all damaging moves except for moves that would deal super-effective damage.</summary>
         WonderGuard = 25,
         WonderSkin = 147,
-        ZenMode = 161, // TODO
+        ZenMode = 161, // TODO (Also, does this activate when given/taken?)
         /// <summary>Invalid ability.</summary>
         MAX = 165,
     }
@@ -2147,6 +2147,7 @@ namespace Kermalis.PokemonBattleEngine.Data
         Dig,
         Dive,
         Endeavor,
+        Entrainment,
         FinalGambit,
         Flatter,
         Fly,
@@ -2220,6 +2221,7 @@ namespace Kermalis.PokemonBattleEngine.Data
         Reflect,
         Rest,
         RestoreTargetHP,
+        RolePlay,
         Safeguard,
         Sandstorm,
         SeismicToss,
@@ -2387,7 +2389,7 @@ namespace Kermalis.PokemonBattleEngine.Data
         Endeavor = 283,
         //Endure = 203, // TODO: Blocked by Metronome
         EnergyBall = 412,
-        //Entrainment = 494, // TODO: Does abilities activate? (Slow Start, Intimidate, etc)
+        Entrainment = 494, // TODO: Does abilities activate? (Slow Start, Intimidate, etc)
         Eruption = 284,
         Explosion = 153,
         Extrasensory = 326,
@@ -2642,7 +2644,7 @@ namespace Kermalis.PokemonBattleEngine.Data
         RockThrow = 88,
         RockTomb = 317,
         //RockWrecker = 439,
-        //RolePlay = 272,
+        RolePlay = 272,
         RollingKick = 27,
         //Rollout = 205,
         //Roost = 355,

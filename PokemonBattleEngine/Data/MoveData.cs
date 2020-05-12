@@ -845,6 +845,15 @@ namespace Kermalis.PokemonBattleEngine.Data
                 )
             },
             {
+                PBEMove.Entrainment,
+                new PBEMoveData
+                (
+                    PBEType.Normal, PBEMoveCategory.Status, 0, 3, 0, 100,
+                    PBEMoveEffect.Entrainment, 0, PBEMoveTarget.SingleSurrounding,
+                    PBEMoveFlag.AffectedByMagicCoat | PBEMoveFlag.AffectedByMirrorMove | PBEMoveFlag.AffectedByProtect
+                )
+            },
+            {
                 PBEMove.Eruption,
                 new PBEMoveData
                 (
@@ -2345,6 +2354,15 @@ namespace Kermalis.PokemonBattleEngine.Data
                     PBEType.Rock, PBEMoveCategory.Physical, 0, 2, 50, 80,
                     PBEMoveEffect.Hit__MaybeLowerTarget_SPE_By1, 100, PBEMoveTarget.SingleSurrounding,
                     PBEMoveFlag.AffectedByMirrorMove | PBEMoveFlag.AffectedByProtect
+                )
+            },
+            {
+                PBEMove.RolePlay,
+                new PBEMoveData
+                (
+                    PBEType.Psychic, PBEMoveCategory.Status, 0, 2, 0, 0,
+                    PBEMoveEffect.RolePlay, 0, PBEMoveTarget.SingleSurrounding,
+                    PBEMoveFlag.None
                 )
             },
             {
