@@ -11,44 +11,59 @@ namespace Kermalis.PokemonBattleEngineDiscord
     {
         private class Listener
         {
-            public IUserMessage Message;
-            public IEnumerable<IUserMessage> MessagesToRemoveListenersForOnViableClick;
-            public IEmote Emote;
-            public IEnumerable<IUser> UsersThatWillRunClickFunc;
-            public Func<Task> ClickFunc;
+            public readonly BattleContext BattleContext;
+            public readonly IUserMessage Message;
+            public readonly IEnumerable<IUserMessage> MessagesToRemoveListenersForOnViableClick;
+            public readonly IEmote Emote;
+            public readonly IEnumerable<IUser> UsersThatWillRunClickFunc;
+            public readonly Func<Task> ClickFunc;
+
+            public Listener(BattleContext ctx, IUserMessage msg, IEnumerable<IUserMessage> messages, IEmote emote, IEnumerable<IUser> users, Func<Task> clickFunc)
+            {
+                BattleContext = ctx;
+                Message = msg;
+                MessagesToRemoveListenersForOnViableClick = messages;
+                Emote = emote;
+                UsersThatWillRunClickFunc = users;
+                ClickFunc = clickFunc;
+            }
         }
 
-        private static readonly List<Listener> reactionListeners = new List<Listener>();
+        private static readonly object _reactionListenersLockObj = new object();
+        private static readonly List<Listener> _reactionListeners = new List<Listener>();
 
         public static Task Client_ReactionAdded(Cacheable<IUserMessage, ulong> message, ISocketMessageChannel channel, SocketReaction reaction)
         {
-            lock (reactionListeners)
+            lock (_reactionListenersLockObj)
             {
-                Listener listener = reactionListeners.SingleOrDefault(l => l.Message.Id == reaction.MessageId && reaction.Emote.Equals(l.Emote) && l.UsersThatWillRunClickFunc.Any(u => u.Id == reaction.UserId));
-                if (listener != null)
+                foreach (Listener listener in _reactionListeners)
                 {
-                    foreach (IUserMessage removing in listener.MessagesToRemoveListenersForOnViableClick)
+                    if (listener.Message.Id == reaction.MessageId && reaction.Emote.Equals(listener.Emote) && listener.UsersThatWillRunClickFunc.Any(u => u.Id == reaction.UserId))
                     {
-                        reactionListeners.RemoveAll(l => l.Message.Id == removing.Id);
+                        foreach (IUserMessage removing in listener.MessagesToRemoveListenersForOnViableClick)
+                        {
+                            _reactionListeners.RemoveAll(l => l.Message.Id == removing.Id);
+                        }
+                        listener.ClickFunc.Invoke();
+                        break;
                     }
-                    listener.ClickFunc.Invoke();
                 }
             }
             return Task.CompletedTask;
         }
 
-        public static void AddListener(IUserMessage msg, IEnumerable<IUserMessage> messagesToRemoveListenersForOnViableClick, IEmote emote, IEnumerable<IUser> usersThatWillRunClickFunc, Func<Task> clickFunc)
+        public static void AddListener(BattleContext ctx, IUserMessage msg, IEnumerable<IUserMessage> messagesToRemoveListenersForOnViableClick, IEmote emote, IEnumerable<IUser> usersThatWillRunClickFunc, Func<Task> clickFunc)
         {
-            lock (reactionListeners)
+            lock (_reactionListenersLockObj)
             {
-                reactionListeners.Add(new Listener
-                {
-                    Message = msg,
-                    MessagesToRemoveListenersForOnViableClick = messagesToRemoveListenersForOnViableClick,
-                    Emote = emote,
-                    UsersThatWillRunClickFunc = usersThatWillRunClickFunc,
-                    ClickFunc = clickFunc
-                });
+                _reactionListeners.Add(new Listener(ctx, msg, messagesToRemoveListenersForOnViableClick, emote, usersThatWillRunClickFunc, clickFunc));
+            }
+        }
+        public static void RemoveListeners(BattleContext ctx)
+        {
+            lock (_reactionListenersLockObj)
+            {
+                _reactionListeners.RemoveAll(l => l.BattleContext == ctx);
             }
         }
     }

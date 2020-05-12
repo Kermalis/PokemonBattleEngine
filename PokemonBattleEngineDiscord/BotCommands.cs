@@ -42,19 +42,20 @@ namespace Kermalis.PokemonBattleEngineDiscord
         public sealed class BattleCommands : ModuleBase<SocketCommandContext>
         {
             [Command("challenge")]
-            public async Task Challenge(SocketUser battler1)
+            public async Task Challenge(SocketUser battler2)
             {
-                if (battler1.Id == Context.User.Id)
+                SocketUser battler1 = Context.User;
+                if (battler1.Id == battler2.Id)
                 {
-                    //
-                }
-                else if (BattleContext.GetBattleContext(Context.User) != null)
-                {
-                    await Context.Channel.SendMessageAsync($"{Context.User.Username} is already participating in a battle.");
+                    return;
                 }
                 else if (BattleContext.GetBattleContext(battler1) != null)
                 {
                     await Context.Channel.SendMessageAsync($"{battler1.Username} is already participating in a battle.");
+                }
+                else if (BattleContext.GetBattleContext(battler2) != null)
+                {
+                    await Context.Channel.SendMessageAsync($"{battler2.Username} is already participating in a battle.");
                 }
                 else
                 {
@@ -63,8 +64,19 @@ namespace Kermalis.PokemonBattleEngineDiscord
                     team1Shell = new PBETeamShell(PBESettings.DefaultSettings, PBESettings.DefaultMaxPartySize, true);
                     team2Shell = new PBETeamShell(PBESettings.DefaultSettings, PBESettings.DefaultMaxPartySize, true);
 
-                    var battle = new PBEBattle(PBEBattleFormat.Single, team1Shell, Context.User.Username, team2Shell, battler1.Username);
-                    new BattleContext(battle, Context.User, battler1, Context.Channel);
+                    var battle = new PBEBattle(PBEBattleFormat.Single, team1Shell, battler1.Username, team2Shell, battler2.Username);
+                    new BattleContext(battle, battler1, battler2, Context.Channel);
+                }
+            }
+
+            [Command("forfeit", true)]
+            public async Task Forfeit()
+            {
+                SocketUser sucker = Context.User;
+                var bc = BattleContext.GetBattleContext(sucker);
+                if (bc != null)
+                {
+                    await bc.Forfeit(sucker);
                 }
             }
         }
