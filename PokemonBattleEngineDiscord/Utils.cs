@@ -13,24 +13,24 @@ namespace Kermalis.PokemonBattleEngineDiscord
         public const string URL = "https://github.com/Kermalis/PokemonBattleEngine";
         public static readonly Dictionary<PBEType, Color> TypeColors = new Dictionary<PBEType, Color>
         {
-            { PBEType.None, new Color(173, 165, 148) },
-            { PBEType.Bug, new Color(173, 189, 31) },
-            { PBEType.Dark, new Color(115, 90, 74) },
-            { PBEType.Dragon, new Color(123, 99, 231) },
-            { PBEType.Electric, new Color(255, 198, 49) },
-            { PBEType.Fighting, new Color(165, 82, 57) },
-            { PBEType.Fire, new Color(247, 82, 49) },
-            { PBEType.Flying, new Color(156, 173, 247) },
-            { PBEType.Ghost, new Color(99, 99, 181) },
-            { PBEType.Grass, new Color(123, 206, 82) },
-            { PBEType.Ground, new Color(214, 181, 90) },
-            { PBEType.Ice, new Color(90, 206, 231) },
-            { PBEType.Normal, new Color(173, 165, 148) },
-            { PBEType.Poison, new Color(181, 90, 165) },
-            { PBEType.Psychic, new Color(255, 115, 165) },
-            { PBEType.Rock, new Color(189, 165, 90) },
-            { PBEType.Steel, new Color(173, 173, 198) },
-            { PBEType.Water, new Color(57, 156, 255) }
+            { PBEType.None, new Color(146, 154, 156) },
+            { PBEType.Bug, new Color(162, 212, 56) },
+            { PBEType.Dark, new Color(106, 122, 156) },
+            { PBEType.Dragon, new Color(80, 136, 188) },
+            { PBEType.Electric, new Color(246, 216, 48) },
+            { PBEType.Fighting, new Color(244, 100, 138) },
+            { PBEType.Fire, new Color(255, 152, 56) },
+            { PBEType.Flying, new Color(80, 124, 212) },
+            { PBEType.Ghost, new Color(94, 100, 208) },
+            { PBEType.Grass, new Color(64, 208, 112) },
+            { PBEType.Ground, new Color(232, 130, 68) },
+            { PBEType.Ice, new Color(98, 204, 212) },
+            { PBEType.Normal, new Color(146, 154, 156) },
+            { PBEType.Poison, new Color(188, 82, 232) },
+            { PBEType.Psychic, new Color(255, 136, 130) },
+            { PBEType.Rock, new Color(196, 174, 112) },
+            { PBEType.Steel, new Color(94, 160, 178) },
+            { PBEType.Water, new Color(58, 176, 232) }
         };
         public static readonly Dictionary<PBEType, Emote> TypeEmotes = new Dictionary<PBEType, Emote>
         {
