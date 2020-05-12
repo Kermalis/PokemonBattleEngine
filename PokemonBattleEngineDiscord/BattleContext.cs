@@ -118,6 +118,7 @@ namespace Kermalis.PokemonBattleEngineDiscord
             _battle = battle;
             _battlers = new SocketUser[] { battler0, battler1 };
             _channel = channel;
+            SetEmbedTitle();
 
             battle.OnNewEvent += (b, p) => Battle_OnNewEvent(_activeBattles.Single(a => a._battle == b), p).GetAwaiter().GetResult();
             battle.OnStateChanged += (b) => Battle_OnStateChanged(_activeBattles.Single(a => a._battle == b)).GetAwaiter().GetResult();
@@ -144,17 +145,25 @@ namespace Kermalis.PokemonBattleEngineDiscord
             }
         }
 
-        private async Task<IUserMessage> CreateAndSendEmbedAsync(string embedDescription, string messageText = "", PBEPokemon pkmn = null, bool useUpperImage = false, SocketUser userToSendTo = null)
+        private string _embedTitle; // Mini performance saver
+        private void SetEmbedTitle()
         {
-            string title = $"{_battlers[0].Username} vs {_battlers[1].Username}";
+            _embedTitle = $"{_battlers[0].Username} vs {_battlers[1].Username}";
             if (_battle.TurnNumber > 0)
             {
-                title += $" (Turn {_battle.TurnNumber})";
+                _embedTitle += $" (Turn {_battle.TurnNumber})";
             }
+            if (_battle.Weather != PBEWeather.None)
+            {
+                _embedTitle += $" {Utils.WeatherEmotes[_battle.Weather]}";
+            }
+        }
 
+        private async Task<IUserMessage> CreateAndSendEmbedAsync(string embedDescription, string messageText = "", PBEPokemon pkmn = null, bool useUpperImage = false, SocketUser userToSendTo = null)
+        {
             EmbedBuilder embed = new EmbedBuilder()
                 .WithUrl(Utils.URL)
-                .WithTitle(title)
+                .WithTitle(_embedTitle)
                 .WithDescription(embedDescription);
             if (pkmn == null)
             {
@@ -1369,6 +1378,10 @@ namespace Kermalis.PokemonBattleEngineDiscord
                 case PBEWeatherPacket wp:
                 {
                     PBEPokemon damageVictim = wp.DamageVictim.HasValue ? wp.DamageVictimTeam.TryGetPokemon(wp.DamageVictim.Value) : null;
+                    if (wp.WeatherAction == PBEWeatherAction.Added || wp.WeatherAction == PBEWeatherAction.Ended)
+                    {
+                        context.SetEmbedTitle();
+                    }
                     string message;
                     switch (wp.Weather)
                     {
@@ -1575,14 +1588,10 @@ namespace Kermalis.PokemonBattleEngineDiscord
                 }
                 case PBETurnBeganPacket tbp:
                 {
-                    string message = Separator;
-                    if (context._battle.Weather != PBEWeather.None)
-                    {
-                        message += $"\n**Weather:** {context._battle.Weather}";
-                    }
+                    context.SetEmbedTitle();
                     PBEPokemon team0Pkmn = context._battle.Teams[0].ActiveBattlers[0];
                     PBEPokemon team1Pkmn = context._battle.Teams[1].ActiveBattlers[0];
-                    await context.CreateAndSendEmbedAsync(CustomKnownPokemonToString(team0Pkmn), messageText: message, pkmn: team0Pkmn);
+                    await context.CreateAndSendEmbedAsync(CustomKnownPokemonToString(team0Pkmn), messageText: Separator, pkmn: team0Pkmn);
                     await context.CreateAndSendEmbedAsync(CustomKnownPokemonToString(team1Pkmn), pkmn: team1Pkmn);
                     break;
                 }

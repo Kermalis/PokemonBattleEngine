@@ -62,6 +62,13 @@ namespace Kermalis.PokemonBattleEngineDiscord
             { PBEStatus1.Paralyzed, Emote.Parse("<:Paralyzed:708841651568771093>") },
             { PBEStatus1.Poisoned, Emote.Parse("<:Poisoned:708841651787005962>") }
         };
+        public static readonly Dictionary<PBEWeather, Emote> WeatherEmotes = new Dictionary<PBEWeather, Emote>
+        {
+            { PBEWeather.Hailstorm, Emote.Parse("<a:Hailstorm:709213589612920834>") },
+            { PBEWeather.HarshSunlight, Emote.Parse("<a:HarshSunlight:709213589587755121>") },
+            { PBEWeather.Rain, Emote.Parse("<a:Rain:709213589977694239>") },
+            { PBEWeather.Sandstorm, Emote.Parse("<a:Sandstorm:709213589826830357>") }
+        };
 
         // https://stackoverflow.com/a/3722337
         public static Color Blend(this Color color, Color backColor, double depth = 0.5)
