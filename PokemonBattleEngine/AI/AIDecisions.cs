@@ -185,7 +185,7 @@ namespace Kermalis.PokemonBattleEngine.AI
                                             {
                                                 score += target.Team == team ? -30 : +40;
                                             }
-                                            if (user.HasType(moveType) && damageMultiplier > 0) // STAB
+                                            if (user.ReceivesSTAB(moveType) && damageMultiplier > 0)
                                             {
                                                 score += (user.Ability == PBEAbility.Adaptability ? 7 : 5) * (target.Team == team ? -1 : +1);
                                             }

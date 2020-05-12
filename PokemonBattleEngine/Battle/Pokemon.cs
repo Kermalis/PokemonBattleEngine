@@ -433,6 +433,11 @@ namespace Kermalis.PokemonBattleEngine.Battle
             }
             return ((useKnownInfo ? KnownType1 : Type1) == type) || ((useKnownInfo ? KnownType2 : Type2) == type);
         }
+        public bool ReceivesSTAB(PBEType type, bool useKnownInfo = false)
+        {
+            // type ArgumentOutOfRangeException will happen in HasType()
+            return type == PBEType.None ? false : HasType(type, useKnownInfo: useKnownInfo);
+        }
         public bool HasCancellingAbility(bool useKnownInfo = false)
         {
             PBEAbility kAbility = useKnownInfo ? KnownAbility : Ability;

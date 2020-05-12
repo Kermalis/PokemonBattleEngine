@@ -951,7 +951,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                     break;
                 }
             }
-            if (user.HasType(moveType))
+            if (user.ReceivesSTAB(moveType))
             {
                 if (user.Ability == PBEAbility.Adaptability)
                 {
