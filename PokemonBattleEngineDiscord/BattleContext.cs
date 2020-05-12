@@ -297,15 +297,18 @@ namespace Kermalis.PokemonBattleEngineDiscord
             {
                 PBEBattleMoveset.PBEBattleMovesetSlot slot = pkmn.Moves[i];
                 PBEMove move = slot.Move;
-                PBEType moveType = pkmn.GetMoveType(move);
-                if (i > 0)
-                {
-                    sb.Append(", ");
-                }
-                sb.Append($"{Utils.TypeEmotes[moveType]} {PBELocalizedString.GetMoveName(slot.Move).English}");
                 if (move != PBEMove.None)
                 {
-                    sb.Append($" ({slot.PP}/{slot.MaxPP})");
+                    PBEType moveType = pkmn.GetMoveType(move);
+                    if (i > 0)
+                    {
+                        sb.Append(", ");
+                    }
+                    sb.Append($"{Utils.TypeEmotes[moveType]} {PBELocalizedString.GetMoveName(slot.Move).English}");
+                    if (move != PBEMove.None)
+                    {
+                        sb.Append($" ({slot.PP}/{slot.MaxPP})");
+                    }
                 }
             }
             sb.AppendLine();
@@ -386,16 +389,19 @@ namespace Kermalis.PokemonBattleEngineDiscord
             {
                 PBEBattleMoveset.PBEBattleMovesetSlot slot = pkmn.KnownMoves[i];
                 PBEMove move = slot.Move;
-                int pp = slot.PP;
-                int maxPP = slot.MaxPP;
-                if (i > 0)
+                if (move != PBEMove.None)
                 {
-                    sb.Append(", ");
-                }
-                sb.Append(move == PBEMove.MAX ? "???" : $"{Utils.TypeEmotes[pkmn.GetMoveType(move, useKnownInfo: true)]} {PBELocalizedString.GetMoveName(move).English}");
-                if (move != PBEMove.None && move != PBEMove.MAX)
-                {
-                    sb.Append($" ({pp}{(maxPP == 0 ? ")" : $"/{maxPP})")}");
+                    int pp = slot.PP;
+                    int maxPP = slot.MaxPP;
+                    if (i > 0)
+                    {
+                        sb.Append(", ");
+                    }
+                    sb.Append(move == PBEMove.MAX ? "???" : $"{Utils.TypeEmotes[pkmn.GetMoveType(move, useKnownInfo: true)]} {PBELocalizedString.GetMoveName(move).English}");
+                    if (move != PBEMove.MAX)
+                    {
+                        sb.Append($" ({pp}{(maxPP == 0 ? ")" : $"/{maxPP})")}");
+                    }
                 }
             }
             return sb.ToString();
