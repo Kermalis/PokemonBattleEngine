@@ -523,6 +523,7 @@ namespace Kermalis.PokemonBattleEngine.AI
                                     case PBEMoveEffect.Conversion:
                                     case PBEMoveEffect.Curse:
                                     case PBEMoveEffect.Endeavor:
+                                    case PBEMoveEffect.Entrainment:
                                     case PBEMoveEffect.FinalGambit:
                                     case PBEMoveEffect.FocusEnergy:
                                     case PBEMoveEffect.GastroAcid:
@@ -540,6 +541,7 @@ namespace Kermalis.PokemonBattleEngine.AI
                                     case PBEMoveEffect.PsychUp:
                                     case PBEMoveEffect.Psywave:
                                     case PBEMoveEffect.RainDance:
+                                    case PBEMoveEffect.RolePlay:
                                     case PBEMoveEffect.Sandstorm:
                                     case PBEMoveEffect.SeismicToss:
                                     case PBEMoveEffect.Selfdestruct:
