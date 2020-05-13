@@ -476,6 +476,72 @@ namespace Kermalis.PokemonBattleEngine.Battle
             }
             return list.ToArray();
         }
+        public PBEStat[] GetNegativeStats()
+        {
+            var list = new List<PBEStat>(7);
+            if (AttackChange < 0)
+            {
+                list.Add(PBEStat.Attack);
+            }
+            if (DefenseChange < 0)
+            {
+                list.Add(PBEStat.Defense);
+            }
+            if (SpAttackChange < 0)
+            {
+                list.Add(PBEStat.SpAttack);
+            }
+            if (SpDefenseChange < 0)
+            {
+                list.Add(PBEStat.SpDefense);
+            }
+            if (SpeedChange < 0)
+            {
+                list.Add(PBEStat.Speed);
+            }
+            if (AccuracyChange < 0)
+            {
+                list.Add(PBEStat.Accuracy);
+            }
+            if (EvasionChange < 0)
+            {
+                list.Add(PBEStat.Evasion);
+            }
+            return list.ToArray();
+        }
+        public PBEStat[] GetPositiveStats()
+        {
+            var list = new List>PBEStat>(7);
+            if (AttackChange > 0)
+            {
+                list.Add(PBEStat.Attack);
+            }
+            if (DefenseChange > 0)
+            {
+                list.Add(PBEStat.Defense);
+            }
+            if (SpAttackChange > 0)
+            {
+                list.Add(PBEStat.SpAttack);
+            }
+            if (SpDefenseChange > 0)
+            {
+                list.Add(PBEStat.SpDefense);
+            }
+            if (SpeedChange > 0)
+            {
+                list.Add(PBEStat.Speed);
+            }
+            if (AccuracyChange > 0)
+            {
+                list.Add(PBEStat.Accuracy);
+            }
+            if (EvasionChange > 0)
+            {
+                list.Add(PBEStat.Evasion);
+            }
+            return list.ToArray();
+        }
         public sbyte GetStatChange(PBEStat stat)
         {
             switch (stat)

@@ -1882,6 +1882,22 @@ namespace Kermalis.PokemonBattleEngine.Battle
             }
             AntiStatusAbilityCheck(target);
         }
+        // TODO: Use & add packet handlers
+        private void WhiteHerbCheck(PBEPokemon pkmn)
+        {
+            if (pkmn.Item == PBEItem.WhiteHerb)
+            {
+                PBEStat[] negStats = pkmn.GetNegativeStats();
+                if (negStats.Length > 0)
+                {
+                    foreach (PBEStat s in negStats)
+                    {
+                        pkmn.SetStatChange(s, 0);
+                    }
+                    BroadcastItem(pkmn, pkmn, PBEItem.WhiteHerb, PBEItemAction.Consumed);
+                }
+            }
+        }
         private bool PowerHerbCheck(PBEPokemon pkmn)
         {
             if (pkmn.Item == PBEItem.PowerHerb)
