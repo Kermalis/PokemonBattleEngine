@@ -511,7 +511,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
         }
         public PBEStat[] GetPositiveStats()
         {
-            var list = new List>PBEStat>(7);
+            var list = new List<PBEStat>(7);
             if (AttackChange > 0)
             {
                 list.Add(PBEStat.Attack);
