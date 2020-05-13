@@ -1133,7 +1133,7 @@ namespace Kermalis.PokemonBattleEngine.Data
         AirLock = 76,
         Analytic = 148, // TODO
         AngerPoint = 83, // TODO
-        Anticipation = 107, // TODO (Also, does this activate when given/taken?)
+        Anticipation = 107,
         ArenaTrap = 71, // TODO
         BadDreams = 123,
         /// <summary>The Pokémon takes no critical hits.</summary>

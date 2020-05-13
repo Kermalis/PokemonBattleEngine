@@ -1592,6 +1592,35 @@ namespace Kermalis.PokemonBattleEngine.Battle
                     }
                     break;
                 }
+                case PBEAbility.Anticipation:
+                {
+                    PBEPokemon[] oppActive = pkmn.Team.OpposingTeam.ActiveBattlers;
+                    if (oppActive.Length != 0)
+                    {
+                        foreach (PBEPokemon opponent in oppActive)
+                        {
+                            foreach (PBEBattleMoveset.PBEBattleMovesetSlot moveSlot in opponent.Moves)
+                            {
+                                PBEMove move = moveSlot.Move;
+                                if (move != PBEMove.None)
+                                {
+                                    PBEMoveData mData = PBEMoveData.Data[move];
+                                    if (mData.Category != PBEMoveCategory.Status)
+                                    {
+                                        double d = PBETypeEffectiveness.GetEffectiveness(mData.Type, pkmn.Type1, pkmn.Type2);
+                                        if (d > 1)
+                                        {
+                                            BroadcastAbility(pkmn, pkmn, PBEAbility.Anticipation, PBEAbilityAction.Announced);
+                                            goto bottomAnticipation;
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                    bottomAnticipation:
+                    break;
+                }
                 case PBEAbility.Download:
                 {
                     PBEPokemon[] oppActive = pkmn.Team.OpposingTeam.ActiveBattlers;

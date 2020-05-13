@@ -288,6 +288,15 @@ namespace Kermalis.PokemonBattleEngine.Battle
                             }
                             break;
                         }
+                        case PBEAbility.Anticipation:
+                        {
+                            switch (ap.AbilityAction)
+                            {
+                                case PBEAbilityAction.Announced: message = "{0}'s {2} made it shudder!"; break;
+                                default: throw new ArgumentOutOfRangeException(nameof(ap.AbilityAction));
+                            }
+                            break;
+                        }
                         case PBEAbility.BadDreams:
                         {
                             switch (ap.AbilityAction)
