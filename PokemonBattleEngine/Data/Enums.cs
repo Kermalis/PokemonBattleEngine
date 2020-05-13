@@ -1135,7 +1135,7 @@ namespace Kermalis.PokemonBattleEngine.Data
         AngerPoint = 83, // TODO
         Anticipation = 107, // TODO (Also, does this activate when given/taken?)
         ArenaTrap = 71, // TODO
-        BadDreams = 123, // TODO
+        BadDreams = 123,
         /// <summary>The Pokémon takes no critical hits.</summary>
         BattleArmor = 4,
         BigPecks = 145, // TODO

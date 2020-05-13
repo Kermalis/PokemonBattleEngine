@@ -177,6 +177,8 @@ namespace Kermalis.PokemonBattleEngineClient
                     {
                         abilityOwner.Ability = abilityOwner.KnownAbility = ap.Ability;
                     }
+                    bool abilityOwnerCaps = true,
+                            pokemon2Caps = true;
                     string message;
                     switch (ap.Ability)
                     {
@@ -186,6 +188,15 @@ namespace Kermalis.PokemonBattleEngineClient
                             switch (ap.AbilityAction)
                             {
                                 case PBEAbilityAction.Weather: message = "{0}'s {2} causes the effects of weather to disappear!"; break;
+                                default: throw new ArgumentOutOfRangeException(nameof(ap.AbilityAction));
+                            }
+                            break;
+                        }
+                        case PBEAbility.BadDreams:
+                        {
+                            switch (ap.AbilityAction)
+                            {
+                                case PBEAbilityAction.Damage: message = "{1} is tormented by {0}'s {2}!"; abilityOwnerCaps = false; break;
                                 default: throw new ArgumentOutOfRangeException(nameof(ap.AbilityAction));
                             }
                             break;
@@ -359,7 +370,7 @@ namespace Kermalis.PokemonBattleEngineClient
                         }
                         default: throw new ArgumentOutOfRangeException(nameof(ap.Ability));
                     }
-                    BattleView.AddMessage(string.Format(message, NameForTrainer(abilityOwner, true), NameForTrainer(pokemon2, true), PBELocalizedString.GetAbilityName(ap.Ability)));
+                    BattleView.AddMessage(string.Format(message, NameForTrainer(abilityOwner, abilityOwnerCaps), NameForTrainer(pokemon2, pokemon2Caps), PBELocalizedString.GetAbilityName(ap.Ability)));
                     return false;
                 }
                 case PBEAbilityReplacedPacket arp:

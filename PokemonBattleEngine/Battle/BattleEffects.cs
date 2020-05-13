@@ -496,13 +496,27 @@ namespace Kermalis.PokemonBattleEngine.Battle
                 }
             }
 
-            // Verified: Moody/SlowStart/SpeedBoost before Orbs
+            // Verified: BadDreams/Moody/SlowStart/SpeedBoost before Orbs, but activate together
             foreach (PBEPokemon pkmn in order)
             {
                 if (pkmn.HP > 0)
                 {
+                    // Ability before Orb
                     switch (pkmn.Ability)
                     {
+                        case PBEAbility.BadDreams:
+                        {
+                            foreach (PBEPokemon victim in GetRuntimeSurrounding(pkmn, false, true).Where(p => p.Status1 == PBEStatus1.Asleep))
+                            {
+                                BroadcastAbility(pkmn, victim, PBEAbility.BadDreams, PBEAbilityAction.Damage);
+                                DealDamage(pkmn, victim, pkmn.MaxHP / 8, true);
+                                if (!FaintCheck(victim))
+                                {
+                                    HealingBerryCheck(victim);
+                                }
+                            }
+                            break;
+                        }
                         case PBEAbility.Moody:
                         {
                             PBEStat[] statsThatCanGoUp = _moodyStats.Where(s => pkmn.GetStatChange(s) < Settings.MaxStatChange).ToArray();
@@ -549,14 +563,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                             break;
                         }
                     }
-                }
-            }
-
-            // Orbs
-            foreach (PBEPokemon pkmn in order)
-            {
-                if (pkmn.HP > 0)
-                {
+                    // Orb
                     switch (pkmn.Item)
                     {
                         case PBEItem.FlameOrb:

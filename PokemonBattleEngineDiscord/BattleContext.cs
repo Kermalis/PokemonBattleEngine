@@ -516,6 +516,15 @@ namespace Kermalis.PokemonBattleEngineDiscord
                             }
                             break;
                         }
+                        case PBEAbility.BadDreams:
+                        {
+                            switch (ap.AbilityAction)
+                            {
+                                case PBEAbilityAction.Damage: message = "{1} is tormented by {0}'s {2}!"; break;
+                                default: throw new ArgumentOutOfRangeException(nameof(ap.AbilityAction));
+                            }
+                            break;
+                        }
                         case PBEAbility.CuteCharm:
                         case PBEAbility.EffectSpore:
                         case PBEAbility.FlameBody:
