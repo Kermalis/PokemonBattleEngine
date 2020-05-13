@@ -534,6 +534,16 @@ namespace Kermalis.PokemonBattleEngineDiscord
                             }
                             break;
                         }
+                        case PBEAbility.ClearBody:
+                        case PBEAbility.WhiteSmoke:
+                        {
+                            switch (ap.AbilityAction)
+                            {
+                                case PBEAbilityAction.Stats: message = "{0}'s {2} prevents stat reduction!"; break;
+                                default: throw new ArgumentOutOfRangeException(nameof(ap.AbilityAction));
+                            }
+                            break;
+                        }
                         case PBEAbility.CuteCharm:
                         case PBEAbility.EffectSpore:
                         case PBEAbility.FlameBody:
@@ -553,7 +563,7 @@ namespace Kermalis.PokemonBattleEngineDiscord
                         {
                             switch (ap.AbilityAction)
                             {
-                                case PBEAbilityAction.ChangedStats: message = "{0}'s {2} activated!"; break;
+                                case PBEAbilityAction.Stats: message = "{0}'s {2} activated!"; break;
                                 default: throw new ArgumentOutOfRangeException(nameof(ap.AbilityAction));
                             }
                             break;
@@ -668,7 +678,7 @@ namespace Kermalis.PokemonBattleEngineDiscord
                         {
                             switch (ap.AbilityAction)
                             {
-                                case PBEAbilityAction.ChangedStats: message = "{0}'s {2} activated!"; break;
+                                case PBEAbilityAction.Stats: message = "{0}'s {2} activated!"; break;
                                 default: throw new ArgumentOutOfRangeException(nameof(ap.AbilityAction));
                             }
                             break;

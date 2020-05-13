@@ -529,7 +529,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                             PBEStat? downStat = statsThatCanGoDown.Count == 0 ? (PBEStat?)null : statsThatCanGoDown.RandomElement();
                             if (upStat.HasValue || downStat.HasValue)
                             {
-                                BroadcastAbility(pkmn, pkmn, pkmn.Ability, PBEAbilityAction.ChangedStats);
+                                BroadcastAbility(pkmn, pkmn, pkmn.Ability, PBEAbilityAction.Stats);
                                 if (upStat.HasValue)
                                 {
                                     ApplyStatChange(pkmn, pkmn, upStat.Value, +2);
@@ -557,7 +557,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                         {
                             if (pkmn.SpeedBoost_AbleToSpeedBoostThisTurn && pkmn.SpeedChange < Settings.MaxStatChange)
                             {
-                                BroadcastAbility(pkmn, pkmn, pkmn.Ability, PBEAbilityAction.ChangedStats);
+                                BroadcastAbility(pkmn, pkmn, pkmn.Ability, PBEAbilityAction.Stats);
                                 ApplyStatChange(pkmn, pkmn, PBEStat.Speed, +1);
                             }
                             break;
@@ -1280,7 +1280,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                 BroadcastStatus2(user, user, PBEStatus2.Flinching, PBEStatusAction.CausedImmobility);
                 if (user.Ability == PBEAbility.Steadfast && user.SpeedChange < Settings.MaxStatChange)
                 {
-                    BroadcastAbility(user, user, PBEAbility.Steadfast, PBEAbilityAction.ChangedStats);
+                    BroadcastAbility(user, user, PBEAbility.Steadfast, PBEAbilityAction.Stats);
                     ApplyStatChange(user, user, PBEStat.Speed, +1);
                 }
                 return true;
@@ -1618,7 +1618,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                             }
                         }
                     }
-                    bottomAnticipation:
+                bottomAnticipation:
                     break;
                 }
                 case PBEAbility.Download:
@@ -1631,7 +1631,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                                 ? PBEStat.Attack : PBEStat.SpAttack;
                         if (pkmn.GetStatChange(stat) < Settings.MaxStatChange)
                         {
-                            BroadcastAbility(pkmn, pkmn, PBEAbility.Download, PBEAbilityAction.ChangedStats);
+                            BroadcastAbility(pkmn, pkmn, PBEAbility.Download, PBEAbilityAction.Stats);
                             ApplyStatChange(pkmn, pkmn, stat, +1);
                         }
                     }
@@ -2210,13 +2210,26 @@ namespace Kermalis.PokemonBattleEngine.Battle
             }
             return result;
         }
-        private void ApplyStatChange(PBEPokemon user, PBEPokemon target, PBEStat stat, int change)
+        private void ApplyStatChange(PBEPokemon user, PBEPokemon target, PBEStat stat, int change, bool isSecondaryEffect = false)
         {
             // Verified: Contrary/Simple are silent
             if (!user.HasCancellingAbility())
             {
                 switch (target.Ability)
                 {
+                    case PBEAbility.ClearBody:
+                    case PBEAbility.WhiteSmoke:
+                    {
+                        if (change < 0 && user != target)
+                        {
+                            if (!isSecondaryEffect)
+                            {
+                                BroadcastAbility(target, user, target.Ability, PBEAbilityAction.Stats);
+                            }
+                            return;
+                        }
+                        break;
+                    }
                     case PBEAbility.Contrary: change *= -1; break;
                     case PBEAbility.Simple: change *= 2; break;
                 }
@@ -2224,7 +2237,11 @@ namespace Kermalis.PokemonBattleEngine.Battle
 
             sbyte oldValue = target.GetStatChange(stat);
             sbyte newValue = target.SetStatChange(stat, oldValue + change);
-            BroadcastPkmnStatChanged(target, stat, oldValue, newValue);
+            // Do not broadcast "could not be lowered!" for Mud-Slap, etc
+            if (!isSecondaryEffect || oldValue != newValue)
+            {
+                BroadcastPkmnStatChanged(target, stat, oldValue, newValue);
+            }
         }
 
         private PBEPkmnSwitchInPacket.PBESwitchInInfo CreateSwitchInInfo(PBEPokemon pkmn)
@@ -2742,7 +2759,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                     {
                         for (int i = 0; i < stats.Length; i++)
                         {
-                            ApplyStatChange(user, target, stats[i], changes[i]);
+                            ApplyStatChange(user, target, stats[i], changes[i], isSecondaryEffect: true);
                         }
                     }
                 }
@@ -2766,7 +2783,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                     {
                         for (int i = 0; i < stats.Length; i++)
                         {
-                            ApplyStatChange(user, user, stats[i], changes[i]);
+                            ApplyStatChange(user, user, stats[i], changes[i], isSecondaryEffect: true);
                         }
                     }
                 }

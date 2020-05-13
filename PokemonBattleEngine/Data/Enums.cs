@@ -325,18 +325,18 @@ namespace Kermalis.PokemonBattleEngine.Data
         Announced = 0,
         /// <summary>The ability caused a Pokémon to change its appearance.</summary>
         ChangedAppearance = 1,
-        /// <summary>The ability changed a Pokémon's stats.</summary>
-        ChangedStats = 2,
         /// <summary>The ability changed a Pokémon's <see cref="PBEStatus1"/> or <see cref="PBEStatus2"/>.</summary>
-        ChangedStatus = 3,
+        ChangedStatus = 2,
         /// <summary>The ability was involved with damage.</summary>
-        Damage = 4,
+        Damage = 3,
         /// <summary>The ability prevented a Pokémon from being inflicted with a <see cref="PBEStatus1"/> or <see cref="PBEStatus2"/>.</summary>
-        PreventedStatus = 5,
+        PreventedStatus = 4,
         /// <summary>The ability restored a Pokémon's HP.</summary>
-        RestoredHP = 6,
+        RestoredHP = 5,
         /// <summary><see cref="PBEAbility.SlowStart"/> ended.</summary>
-        SlowStart_Ended = 7,
+        SlowStart_Ended = 6,
+        /// <summary>The ability was involved with stats.</summary>
+        Stats = 7,
         /// <summary>The ability was involved with weather.</summary>
         Weather = 8
     }
@@ -1143,7 +1143,7 @@ namespace Kermalis.PokemonBattleEngine.Data
         Blaze = 66,
         /// <summary>The Pokémon gets a speed boost in harsh sunlight.</summary>
         Chlorophyll = 34,
-        ClearBody = 29, // TODO
+        ClearBody = 29,
         CloudNine = 13,
         ColorChange = 16, // TODO
         /// <summary>The Pokémon accuracy is boosted.</summary>
@@ -1331,7 +1331,7 @@ namespace Kermalis.PokemonBattleEngine.Data
         WaterAbsorb = 11, // TODO
         WaterVeil = 41,
         WeakArmor = 133,
-        WhiteSmoke = 73, // TODO
+        WhiteSmoke = 73,
         /// <summary>The Pokémon is immune to all damaging moves except for moves that would deal super-effective damage.</summary>
         WonderGuard = 25,
         WonderSkin = 147,
