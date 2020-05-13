@@ -1148,7 +1148,7 @@ namespace Kermalis.PokemonBattleEngine.Data
         ColorChange = 16, // TODO
         /// <summary>The Pokémon accuracy is boosted.</summary>
         Compoundeyes = 14,
-        Contrary = 126, // TODO
+        Contrary = 126,
         CursedBody = 130, // TODO
         CuteCharm = 56,
         Damp = 6, // TODO

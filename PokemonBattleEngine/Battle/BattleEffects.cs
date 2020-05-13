@@ -2212,10 +2212,14 @@ namespace Kermalis.PokemonBattleEngine.Battle
         }
         private void ApplyStatChange(PBEPokemon user, PBEPokemon target, PBEStat stat, int change)
         {
-            // Verified: Simple is silent
-            if (target.Ability == PBEAbility.Simple && !user.HasCancellingAbility())
+            // Verified: Contrary/Simple are silent
+            if (!user.HasCancellingAbility())
             {
-                change *= 2;
+                switch (target.Ability)
+                {
+                    case PBEAbility.Contrary: change *= -1; break;
+                    case PBEAbility.Simple: change *= 2; break;
+                }
             }
 
             sbyte oldValue = target.GetStatChange(stat);
