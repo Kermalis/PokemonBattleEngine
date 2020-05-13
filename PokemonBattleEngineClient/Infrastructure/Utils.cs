@@ -147,11 +147,11 @@ namespace Kermalis.PokemonBattleEngineClient.Infrastructure
                     sb.AppendLine($"Main status: {pkmn.Status1}");
                     if (pkmn.Status1 == PBEStatus1.Asleep)
                     {
-                        sb.AppendLine($"**Asleep turns:** {pkmn.Status1Counter}");
+                        sb.AppendLine($"Asleep turns: {pkmn.Status1Counter}");
                     }
                     else if (pkmn.Status1 == PBEStatus1.BadlyPoisoned)
                     {
-                        sb.AppendLine($"**Toxic counter:** {pkmn.Status1Counter}");
+                        sb.AppendLine($"Toxic counter: {pkmn.Status1Counter}");
                     }
                 }
                 if (pkmn.FieldPosition != PBEFieldPosition.None)
@@ -228,11 +228,11 @@ namespace Kermalis.PokemonBattleEngineClient.Infrastructure
                     sb.AppendLine($"Main status: {pkmn.Status1}");
                     if (pkmn.Status1 == PBEStatus1.Asleep)
                     {
-                        sb.AppendLine($"**Asleep turns:** {pkmn.Status1Counter}");
+                        sb.AppendLine($"Asleep turns: {pkmn.Status1Counter}");
                     }
                     else if (pkmn.Status1 == PBEStatus1.BadlyPoisoned)
                     {
-                        sb.AppendLine($"**Toxic counter:** {pkmn.Status1Counter}");
+                        sb.AppendLine($"Toxic counter: {pkmn.Status1Counter}");
                     }
                 }
                 if (pkmn.FieldPosition != PBEFieldPosition.None && pkmn.Status2 != PBEStatus2.None)
