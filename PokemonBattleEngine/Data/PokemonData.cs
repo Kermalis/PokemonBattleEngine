@@ -53,6 +53,11 @@ namespace Kermalis.PokemonBattleEngine.Data
             }
             return Type1 == type || Type2 == type;
         }
+        public bool ReceivesSTAB(PBEType type)
+        {
+            // type ArgumentOutOfRangeException will happen in HasType()
+            return type == PBEType.None ? false : HasType(type);
+        }
 
         #region Database Querying
 
