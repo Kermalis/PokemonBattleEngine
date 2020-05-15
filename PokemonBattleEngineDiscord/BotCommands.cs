@@ -97,9 +97,18 @@ namespace Kermalis.PokemonBattleEngineDiscord
                 {
                     PBEItem item = nItem.Value;
                     PBEItemData iData = PBEItemData.Data[item];
+                    Color color;
+                    if (PBEBerryData.Data.TryGetValue(item, out PBEBerryData bData))
+                    {
+                        color = Utils.TypeColors[bData.NaturalGiftType];
+                    }
+                    else
+                    {
+                        color = Utils.RandomColor();
+                    }
                     EmbedBuilder embed = new EmbedBuilder()
                         .WithAuthor(Context.User)
-                        .WithColor(iData.NaturalGiftType == PBEType.None ? Utils.RandomColor() : Utils.TypeColors[iData.NaturalGiftType])
+                        .WithColor(color)
                         .WithTitle(PBELocalizedString.GetItemName(item).English)
                         .WithUrl(Utils.URL)
                         .WithDescription(PBELocalizedString.GetItemDescription(item).English.Replace('\n', ' '));
@@ -107,13 +116,30 @@ namespace Kermalis.PokemonBattleEngineDiscord
                     {
                         embed.AddField("Fling Power", iData.FlingPower, true);
                     }
-                    if (iData.NaturalGiftPower > 0)
+                    if (bData != null)
                     {
-                        embed.AddField("Natural Gift Power", iData.NaturalGiftPower, true);
-                    }
-                    if (iData.NaturalGiftType != PBEType.None)
-                    {
-                        embed.AddField("Natural Gift Type", Utils.TypeEmotes[iData.NaturalGiftType], true);
+                        embed.AddField("Natural Gift Power", bData.NaturalGiftPower, true);
+                        embed.AddField("Natural Gift Type", Utils.TypeEmotes[bData.NaturalGiftType], true);
+                        if (bData.Bitterness > 0)
+                        {
+                            embed.AddField("Bitterness", bData.Bitterness, true);
+                        }
+                        if (bData.Dryness > 0)
+                        {
+                            embed.AddField("Dryness", bData.Dryness, true);
+                        }
+                        if (bData.Sourness > 0)
+                        {
+                            embed.AddField("Sourness", bData.Sourness, true);
+                        }
+                        if (bData.Spicyness > 0)
+                        {
+                            embed.AddField("Spicyness", bData.Spicyness, true);
+                        }
+                        if (bData.Sweetness > 0)
+                        {
+                            embed.AddField("Sweetness", bData.Sweetness, true);
+                        }
                     }
                     await Context.Channel.SendMessageAsync(string.Empty, embed: embed.Build());
                 }

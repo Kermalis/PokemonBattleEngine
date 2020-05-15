@@ -550,6 +550,15 @@ namespace Kermalis.PokemonBattleEngine.Data
         /// <summary>Invalid nature.</summary>
         MAX = 25
     }
+    public enum PBEFlavor : byte
+    {
+        Bitter = 3,
+        Dry = 2,
+        Sour = 1,
+        Spicy = 0,
+        Sweet = 4,
+        MAX = 5
+    }
     /// <summary>Represents a specific Pokémon's held item.</summary>
     public enum PBEItem : ushort
     {

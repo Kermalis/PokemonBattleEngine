@@ -343,16 +343,16 @@ namespace Kermalis.PokemonBattleEngine.Battle
             PBESettings settings = Team.Battle.Settings;
             if (calculateHP)
             {
-                ushort hp = PBEPokemonData.CalculateStat(PBEStat.HP, species, nature, evs[PBEStat.HP].Value, ivs[PBEStat.HP].Value, level, settings);
+                ushort hp = PBEDataUtils.CalculateStat(PBEStat.HP, species, nature, evs[PBEStat.HP].Value, ivs[PBEStat.HP].Value, level, settings);
                 MaxHP = hp;
                 HP = hp;
                 HPPercentage = 1d;
             }
-            Attack = PBEPokemonData.CalculateStat(PBEStat.Attack, species, nature, evs[PBEStat.Attack].Value, ivs[PBEStat.Attack].Value, level, settings);
-            Defense = PBEPokemonData.CalculateStat(PBEStat.Defense, species, nature, evs[PBEStat.Defense].Value, ivs[PBEStat.Defense].Value, level, settings);
-            SpAttack = PBEPokemonData.CalculateStat(PBEStat.SpAttack, species, nature, evs[PBEStat.SpAttack].Value, ivs[PBEStat.SpAttack].Value, level, settings);
-            SpDefense = PBEPokemonData.CalculateStat(PBEStat.SpDefense, species, nature, evs[PBEStat.SpDefense].Value, ivs[PBEStat.SpDefense].Value, level, settings);
-            Speed = PBEPokemonData.CalculateStat(PBEStat.Speed, species, nature, evs[PBEStat.Speed].Value, ivs[PBEStat.Speed].Value, level, settings);
+            Attack = PBEDataUtils.CalculateStat(PBEStat.Attack, species, nature, evs[PBEStat.Attack].Value, ivs[PBEStat.Attack].Value, level, settings);
+            Defense = PBEDataUtils.CalculateStat(PBEStat.Defense, species, nature, evs[PBEStat.Defense].Value, ivs[PBEStat.Defense].Value, level, settings);
+            SpAttack = PBEDataUtils.CalculateStat(PBEStat.SpAttack, species, nature, evs[PBEStat.SpAttack].Value, ivs[PBEStat.SpAttack].Value, level, settings);
+            SpDefense = PBEDataUtils.CalculateStat(PBEStat.SpDefense, species, nature, evs[PBEStat.SpDefense].Value, ivs[PBEStat.SpDefense].Value, level, settings);
+            Speed = PBEDataUtils.CalculateStat(PBEStat.Speed, species, nature, evs[PBEStat.Speed].Value, ivs[PBEStat.Speed].Value, level, settings);
         }
         /// <summary>Transforms into <paramref name="target"/> and sets <see cref="PBEStatus2.Transformed"/>.</summary>
         /// <param name="target">The Pokémon to transform into.</param>
