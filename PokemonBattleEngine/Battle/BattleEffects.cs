@@ -3289,8 +3289,10 @@ namespace Kermalis.PokemonBattleEngine.Battle
                     }
                     else
                     {
-                        HealDamage(user, restoreAmt);
-                        BroadcastHPDrained(target);
+                        if (HealDamage(user, restoreAmt) > 0)
+                        {
+                            BroadcastHPDrained(target);
+                        }
                     }
                 }
                 BasicHit(user, targets, move, beforeDoingDamage: BeforeDoingDamage, afterPostHit: AfterPostHit);
