@@ -566,7 +566,7 @@ namespace Kermalis.PokemonBattleEngine.Data
         None = 0,
         AbsorbBulb = 545, // TODO
         AdamantOrb = 135,
-        AguavBerry = 162, // TODO
+        AguavBerry = 162,
         AirBalloon = 541, // TODO
         /// <summary>No effect.</summary>
         AmuletCoin = 223,
@@ -713,7 +713,7 @@ namespace Kermalis.PokemonBattleEngine.Data
         /// <summary>No effect.</summary>
         FavoredMail = 138,
         FightingGem = 553,
-        FigyBerry = 159, // TODO
+        FigyBerry = 159,
         FireGem = 548,
         /// <summary>No effect.</summary>
         FireStone = 82,
@@ -783,7 +783,7 @@ namespace Kermalis.PokemonBattleEngine.Data
         HPUp = 45,
         /// <summary>No effect.</summary>
         HyperPotion = 25,
-        IapapaBerry = 163, // TODO
+        IapapaBerry = 163,
         IceGem = 552,
         /// <summary>No effect.</summary>
         IceHeal = 20,
@@ -837,7 +837,7 @@ namespace Kermalis.PokemonBattleEngine.Data
         /// <summary>No effect.</summary>
         Magmarizer = 323,
         Magnet = 242,
-        MagoBerry = 161, // TODO
+        MagoBerry = 161,
         MagostBerry = 176, // TODO
         /// <summary>No effect.</summary>
         MasterBall = 1,
@@ -887,7 +887,7 @@ namespace Kermalis.PokemonBattleEngine.Data
         OldAmber = 103,
         /// <summary>No effect.</summary>
         OldGateau = 54,
-        OranBerry = 155, // TODO
+        OranBerry = 155,
         /// <summary>No effect.</summary>
         OvalStone = 110,
         PamtreBerry = 180, // TODO
@@ -1101,7 +1101,7 @@ namespace Kermalis.PokemonBattleEngine.Data
         /// <summary>No effect.</summary>
         WhiteFlute = 69,
         WideLens = 265,
-        WikiBerry = 160, // TODO
+        WikiBerry = 160,
         WiseGlasses = 267,
         /// <summary>No effect.</summary>
         WhtApricorn = 490,

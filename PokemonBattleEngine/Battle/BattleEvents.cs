@@ -541,6 +541,21 @@ namespace Kermalis.PokemonBattleEngine.Battle
                     string message;
                     switch (ip.Item)
                     {
+                        case PBEItem.AguavBerry:
+                        case PBEItem.FigyBerry:
+                        case PBEItem.IapapaBerry:
+                        case PBEItem.MagoBerry:
+                        case PBEItem.OranBerry:
+                        case PBEItem.SitrusBerry:
+                        case PBEItem.WikiBerry:
+                        {
+                            switch (ip.ItemAction)
+                            {
+                                case PBEItemAction.Consumed: message = "{0} restored its health using its {2}!"; break;
+                                default: throw new ArgumentOutOfRangeException(nameof(ip.ItemAction));
+                            }
+                            break;
+                        }
                         case PBEItem.BugGem:
                         case PBEItem.DarkGem:
                         case PBEItem.DragonGem:
@@ -644,15 +659,6 @@ namespace Kermalis.PokemonBattleEngine.Battle
                             switch (ip.ItemAction)
                             {
                                 case PBEItemAction.Damage: message = "{1} was hurt by the {2}!"; break;
-                                default: throw new ArgumentOutOfRangeException(nameof(ip.ItemAction));
-                            }
-                            break;
-                        }
-                        case PBEItem.SitrusBerry:
-                        {
-                            switch (ip.ItemAction)
-                            {
-                                case PBEItemAction.Consumed: message = "{0} restored its health using its {2}!"; break;
                                 default: throw new ArgumentOutOfRangeException(nameof(ip.ItemAction));
                             }
                             break;

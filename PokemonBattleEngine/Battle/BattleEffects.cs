@@ -28,7 +28,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                     {
                         continue;
                     }
-                    HealingBerryCheck(pkmn);
+                    HealingBerryCheck(pkmn, forcedInBy);
                 }
                 if (pkmn.Team.TeamStatus.HasFlag(PBETeamStatus.StealthRock))
                 {
@@ -38,7 +38,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                     {
                         continue;
                     }
-                    HealingBerryCheck(pkmn);
+                    HealingBerryCheck(pkmn, forcedInBy);
                 }
                 if (grounded && pkmn.Team.TeamStatus.HasFlag(PBETeamStatus.ToxicSpikes))
                 {
@@ -210,20 +210,28 @@ namespace Kermalis.PokemonBattleEngine.Battle
 
             if (victim.HP > 0)
             {
-                HealingBerryCheck(victim); // Verified: Berry after Rough Skin (for victim)
+                // Verified: Berry after Rough Skin (for victim)
+                // Verified: Own Tempo will be ignored if hit, and will not cure until the move is complete
+                HealingBerryCheck(victim, user);
             }
 
             // TODO: King's Rock, Stench, etc
             // TODO?: Cell Battery
         }
+        private void DoPostAttackedTargetEffects(PBEPokemon victim, bool ignoreColorChange = false)
+        {
+            // TODO: Color Change
+            if (victim.HP > 0)
+            {
+                AntiStatusAbilityCheck(victim); // Heal a status that was given with the user's Mold Breaker (confusion berries)
+            }
+        }
         /// <summary>Does effects that take place after an attack is completely done such as recoil and life orb.</summary>
         /// <param name="user">The Pokémon who used the attack.</param>
         /// <param name="ignoreLifeOrb">Whether <see cref="PBEItem.LifeOrb"/> should damage the user or not.</param>
         /// <param name="recoilDamage">The amount of recoil damage <paramref name="user"/> will take.</param>
-        private void DoPostAttackedEffects(PBEPokemon user, bool ignoreLifeOrb, int? recoilDamage = null)
+        private void DoPostAttackedUserEffects(PBEPokemon user, bool ignoreLifeOrb, int? recoilDamage = null)
         {
-            // TODO: Color Change
-
             if (user.HP > 0 && recoilDamage.HasValue)
             {
                 BroadcastRecoil(user);
@@ -1292,7 +1300,8 @@ namespace Kermalis.PokemonBattleEngine.Battle
                 if (user.ConfusionCounter > user.ConfusionTurns)
                 {
                     user.Status2 &= ~PBEStatus2.Confused;
-                    user.ConfusionCounter = user.ConfusionTurns = 0;
+                    user.ConfusionCounter = 0;
+                    user.ConfusionTurns = 0;
                     BroadcastStatus2(user, user, PBEStatus2.Confused, PBEStatusAction.Ended);
                 }
                 else
@@ -1850,7 +1859,8 @@ namespace Kermalis.PokemonBattleEngine.Battle
                     if (pkmn.Status2.HasFlag(PBEStatus2.Confused))
                     {
                         pkmn.Status2 &= ~PBEStatus2.Confused;
-                        pkmn.ConfusionCounter = pkmn.ConfusionTurns = 0;
+                        pkmn.ConfusionCounter = 0;
+                        pkmn.ConfusionTurns = 0;
                         BroadcastAbility(pkmn, pkmn, pkmn.Ability, PBEAbilityAction.ChangedStatus);
                         BroadcastStatus2(pkmn, pkmn, PBEStatus2.Confused, PBEStatusAction.Cured);
                     }
@@ -1867,6 +1877,14 @@ namespace Kermalis.PokemonBattleEngine.Battle
                     break;
                 }
             }
+        }
+        private void CauseConfusion(PBEPokemon target, PBEPokemon other)
+        {
+            target.Status2 |= PBEStatus2.Confused;
+            target.ConfusionCounter = 0;
+            target.ConfusionTurns = (byte)PBEUtils.RandomInt(Settings.ConfusionMinTurns, Settings.ConfusionMaxTurns);
+            BroadcastStatus2(target, other, PBEStatus2.Confused, PBEStatusAction.Added);
+            AntiStatusAbilityCheck(target);
         }
         private void CauseInfatuation(PBEPokemon target, PBEPokemon other)
         {
@@ -1907,18 +1925,62 @@ namespace Kermalis.PokemonBattleEngine.Battle
             }
             return false;
         }
-        private void HealingBerryCheck(PBEPokemon pkmn)
+        private void HealingBerryCheck(PBEPokemon pkmn, PBEPokemon forcedToEatBy = null)
         {
-            switch (pkmn.Item)
+            void DoConfuseBerry(PBEFlavor flavor)
             {
-                case PBEItem.SitrusBerry:
+                BroadcastItem(pkmn, pkmn, pkmn.Item, PBEItemAction.Consumed);
+                HealDamage(pkmn, pkmn.MaxHP / 8);
+                // Verified: Ignores Safeguard & Substitute, but not Own Tempo
+                // Mold Breaker etc actually affect whether Own Tempo is ignored, which is what forcedToEatBy is for
+                // I verified each of the times the Pokémon eats to check if Mold Breaker affected the outcome
+                if (pkmn.Nature.GetRelationshipToFlavor(flavor) < 0 && pkmn.IsConfusionPossible(forcedToEatBy, ignoreSubstitute: true, ignoreSafeguard: true) == PBEResult.Success)
                 {
-                    if (pkmn.HP <= pkmn.MaxHP / 2)
+                    CauseConfusion(pkmn, pkmn);
+                }
+            }
+
+            if (pkmn.HP <= pkmn.MaxHP / 2)
+            {
+                switch (pkmn.Item)
+                {
+                    case PBEItem.AguavBerry:
+                    {
+                        DoConfuseBerry(PBEFlavor.Bitter);
+                        break;
+                    }
+                    case PBEItem.FigyBerry:
+                    {
+                        DoConfuseBerry(PBEFlavor.Spicy);
+                        break;
+                    }
+                    case PBEItem.IapapaBerry:
+                    {
+                        DoConfuseBerry(PBEFlavor.Sour);
+                        break;
+                    }
+                    case PBEItem.MagoBerry:
+                    {
+                        DoConfuseBerry(PBEFlavor.Sweet);
+                        break;
+                    }
+                    case PBEItem.OranBerry:
+                    {
+                        BroadcastItem(pkmn, pkmn, PBEItem.OranBerry, PBEItemAction.Consumed);
+                        HealDamage(pkmn, 10);
+                        break;
+                    }
+                    case PBEItem.SitrusBerry:
                     {
                         BroadcastItem(pkmn, pkmn, PBEItem.SitrusBerry, PBEItemAction.Consumed);
                         HealDamage(pkmn, pkmn.MaxHP / 4);
+                        break;
                     }
-                    break;
+                    case PBEItem.WikiBerry:
+                    {
+                        DoConfuseBerry(PBEFlavor.Dry);
+                        break;
+                    }
                 }
             }
         }
@@ -2057,10 +2119,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                     result = target.IsConfusionPossible(user);
                     if (result == PBEResult.Success)
                     {
-                        target.Status2 |= PBEStatus2.Confused;
-                        target.ConfusionTurns = (byte)PBEUtils.RandomInt(Settings.ConfusionMinTurns, Settings.ConfusionMaxTurns);
-                        BroadcastStatus2(target, user, PBEStatus2.Confused, PBEStatusAction.Added);
-                        AntiStatusAbilityCheck(target);
+                        CauseConfusion(target, user);
                     }
                     break;
                 }
@@ -2364,6 +2423,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                             DoPostHitEffects(user, target, move, moveType);
                             // HP-draining moves restore HP after post-hit effects
                             afterPostHit?.Invoke(target, damageDealt);
+                            DoPostAttackedTargetEffects(target, ignoreColorChange: moveType == PBEType.None);
                         }
                     }
                 }
@@ -2378,7 +2438,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                     FaintCheck(target);
                 }
             }
-            DoPostAttackedEffects(user, !lifeOrbDamage, recoilFunc?.Invoke(totalDamageDealt));
+            DoPostAttackedUserEffects(user, !lifeOrbDamage, recoilDamage: recoilFunc?.Invoke(totalDamageDealt));
         }
         private void FixedDamageHit(PBEPokemon user, PBEPokemon[] targets, PBEMove move, Func<PBEPokemon, int> damageFunc,
             Func<PBEPokemon, PBEResult> beforeMissCheck = null,
@@ -2401,6 +2461,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
 
                             hit++;
                             DoPostHitEffects(user, target, move, moveType);
+                            DoPostAttackedTargetEffects(target); // TODO: Does Color Change activate for these (if not hitting substitute)?
                         }
                     }
                 }
@@ -2414,7 +2475,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                     FaintCheck(target);
                 }
             }
-            DoPostAttackedEffects(user, true);
+            //DoPostAttackedUserEffects(user, true); // Do we need this?
         }
         private void SemiInvulnerableChargeMove(PBEPokemon user, PBEPokemon[] targets, PBEMove move, PBETurnTarget requestedTargets, PBEStatus2 status2)
         {
@@ -3348,23 +3409,23 @@ namespace Kermalis.PokemonBattleEngine.Battle
                             int hp = total / 2;
                             foreach (PBEPokemon pkmn in new PBEPokemon[] { user, target })
                             {
-                                if (hp >= pkmn.HP)
+                                if (hp > pkmn.HP)
                                 {
                                     HealDamage(pkmn, hp - pkmn.HP);
                                 }
-                                else
+                                else if (hp < pkmn.HP)
                                 {
                                     DealDamage(user, pkmn, pkmn.HP - hp, true);
-                                    HealingBerryCheck(pkmn);
-                                    // Verified: Sitrus is activated but no illusion breaking
-                                    // TODO: Check if color change activates
                                 }
                             }
                             BroadcastPainSplit(user, target);
+                            HealingBerryCheck(user);
+                            HealingBerryCheck(target, user); // Verified: Berry is activated but no illusion breaking
+                            DoPostAttackedTargetEffects(target, ignoreColorChange: true);
                         }
                     }
                 }
-                DoPostAttackedEffects(user, true);
+                //DoPostAttackedUserEffects(user, true); // Do we need this?
             }
             RecordExecutedMove(user, move);
         }
