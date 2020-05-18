@@ -841,6 +841,46 @@ namespace Kermalis.PokemonBattleEngine.Data
                 }
             }
         }
+        public const byte DefaultHiddenPowerMax = 70;
+        private byte _hiddenPowerMax = DefaultHiddenPowerMax;
+        /// <summary>The maximum base power of <see cref="PBEMove.HiddenPower"/>.</summary>
+        public byte HiddenPowerMax
+        {
+            get => _hiddenPowerMax;
+            set
+            {
+                ReadOnlyCheck();
+                if (_hiddenPowerMax != value)
+                {
+                    if (value < _hiddenPowerMin)
+                    {
+                        throw new ArgumentOutOfRangeException(nameof(value), $"{nameof(HiddenPowerMax)} must be at least {nameof(HiddenPowerMin)} ({_hiddenPowerMin}).");
+                    }
+                    _hiddenPowerMax = value;
+                    OnPropertyChanged(nameof(HiddenPowerMax));
+                }
+            }
+        }
+        public const byte DefaultHiddenPowerMin = 30;
+        private byte _hiddenPowerMin = DefaultHiddenPowerMin;
+        /// <summary>The minimum base power of <see cref="PBEMove.HiddenPower"/>.</summary>
+        public byte HiddenPowerMin
+        {
+            get => _hiddenPowerMin;
+            set
+            {
+                ReadOnlyCheck();
+                if (_hiddenPowerMin != value)
+                {
+                    if (value == 0 || value > _hiddenPowerMax)
+                    {
+                        throw new ArgumentOutOfRangeException(nameof(value), $"{nameof(HiddenPowerMin)} must be at least 1 and cannot exceed {nameof(HiddenPowerMax)} ({_hiddenPowerMax}).");
+                    }
+                    _hiddenPowerMin = value;
+                    OnPropertyChanged(nameof(HiddenPowerMin));
+                }
+            }
+        }
 
         /// <summary>Creates a new <see cref="PBESettings"/> object where every setting is pre-set to the values used in official games.</summary>
         public PBESettings() { }
@@ -904,6 +944,8 @@ namespace Kermalis.PokemonBattleEngine.Data
             SmoothRockTurnExtension = other._smoothRockTurnExtension;
             SunTurns = other._sunTurns;
             HeatRockTurnExtension = other._heatRockTurnExtension;
+            HiddenPowerMax = other._hiddenPowerMax;
+            HiddenPowerMin = other._hiddenPowerMin;
         }
         internal PBESettings(EndianBinaryReader r)
         {
@@ -1038,7 +1080,9 @@ namespace Kermalis.PokemonBattleEngine.Data
                     && other._sandstormDamageDenominator.Equals(_sandstormDamageDenominator)
                     && other._smoothRockTurnExtension.Equals(_smoothRockTurnExtension)
                     && other._sunTurns.Equals(_sunTurns)
-                    && other._heatRockTurnExtension.Equals(_heatRockTurnExtension);
+                    && other._heatRockTurnExtension.Equals(_heatRockTurnExtension)
+                    && other._hiddenPowerMax.Equals(_hiddenPowerMax)
+                    && other._hiddenPowerMin.Equals(_hiddenPowerMin);
             }
             else
             {
@@ -1086,7 +1130,9 @@ namespace Kermalis.PokemonBattleEngine.Data
             SandstormDamageDenominator,
             SmoothRockTurnExtension,
             SunTurns,
-            HeatRockTurnExtension
+            HeatRockTurnExtension,
+            HiddenPowerMax,
+            HiddenPowerMin
         }
 
         /// <summary>Converts this <see cref="PBESettings"/> object into a unique code <see cref="string"/>.</summary>
@@ -1336,6 +1382,18 @@ namespace Kermalis.PokemonBattleEngine.Data
                     w.Write(_heatRockTurnExtension);
                     numChanged++;
                 }
+                if (_hiddenPowerMax != DefaultHiddenPowerMax)
+                {
+                    w.Write(PBESettingID.HiddenPowerMax);
+                    w.Write(_hiddenPowerMax);
+                    numChanged++;
+                }
+                if (_hiddenPowerMin != DefaultHiddenPowerMin)
+                {
+                    w.Write(PBESettingID.HiddenPowerMin);
+                    w.Write(_hiddenPowerMin);
+                    numChanged++;
+                }
                 data = ms.ToArray();
             }
             byte[] ret = new byte[data.Length + 2];
@@ -1390,6 +1448,8 @@ namespace Kermalis.PokemonBattleEngine.Data
                     case PBESettingID.SmoothRockTurnExtension: SmoothRockTurnExtension = r.ReadByte(); break;
                     case PBESettingID.SunTurns: SunTurns = r.ReadByte(); break;
                     case PBESettingID.HeatRockTurnExtension: HeatRockTurnExtension = r.ReadByte(); break;
+                    case PBESettingID.HiddenPowerMax: HiddenPowerMax = r.ReadByte(); break;
+                    case PBESettingID.HiddenPowerMin: HiddenPowerMin = r.ReadByte(); break;
                     default: throw new InvalidDataException();
                 }
             }

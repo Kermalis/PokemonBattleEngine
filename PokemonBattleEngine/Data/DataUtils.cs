@@ -174,16 +174,16 @@ namespace Kermalis.PokemonBattleEngine.Data
                 f = spDefenseIV & 1;
             return _hiddenPowerTypes[(((1 << 0) * a) + ((1 << 1) * b) + ((1 << 2) * c) + ((1 << 3) * d) + ((1 << 4) * e) + ((1 << 5) * f)) * (_hiddenPowerTypes.Length - 1) / ((1 << 6) - 1)];
         }
-        public static byte GetHiddenPowerBasePower(byte hpIV, byte attackIV, byte defenseIV, byte spAttackIV, byte spDefenseIV, byte speedIV)
+        public static byte GetHiddenPowerBasePower(byte hpIV, byte attackIV, byte defenseIV, byte spAttackIV, byte spDefenseIV, byte speedIV, PBESettings settings)
         {
-            const byte mininumBasePower = 30,
-                maximumBasePower = 70;
             int a = (hpIV & 2) == 2 ? 1 : 0,
                 b = (attackIV & 2) == 2 ? 1 : 0,
                 c = (defenseIV & 2) == 2 ? 1 : 0,
                 d = (speedIV & 2) == 2 ? 1 : 0,
                 e = (spAttackIV & 2) == 2 ? 1 : 0,
                 f = (spDefenseIV & 2) == 2 ? 1 : 0;
+            byte mininumBasePower = settings.HiddenPowerMin,
+                maximumBasePower = settings.HiddenPowerMax;
             return (byte)(((((1 << 0) * a) + ((1 << 1) * b) + ((1 << 2) * c) + ((1 << 3) * d) + ((1 << 4) * e) + ((1 << 5) * f)) * (maximumBasePower - mininumBasePower) / ((1 << 6) - 1)) + mininumBasePower);
         }
     }
