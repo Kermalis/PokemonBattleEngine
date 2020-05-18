@@ -2133,9 +2133,7 @@ namespace Kermalis.PokemonBattleEngine.Data
         /// <summary>The user makes contact with the target, causing it to take damage from the target's <see cref="PBEAbility.IronBarbs"/>, <see cref="PBEAbility.RoughSkin"/>, and <see cref="PBEItem.RockyHelmet"/>.</summary>
         MakesContact = 1 << 13,
         /// <summary>The move is blocked by <see cref="PBEAbility.Soundproof"/>.</summary>
-        SoundBased = 1 << 14,
-        /// <summary>The move does not consume a held gem.</summary>
-        UnaffectedByGems = 1 << 15
+        SoundBased = 1 << 14
     }
     public enum PBEMoveEffect : byte
     {

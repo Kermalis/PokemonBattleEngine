@@ -285,7 +285,6 @@ namespace Kermalis.PokemonBattleEngine.Battle
             }
 
             // Ability/Item-specific power boosts
-            bool canUseGems = !mData.Flags.HasFlag(PBEMoveFlag.UnaffectedByGems);
             switch (moveType)
             {
                 case PBEType.Bug:
@@ -304,11 +303,8 @@ namespace Kermalis.PokemonBattleEngine.Battle
                         }
                         case PBEItem.BugGem:
                         {
-                            if (canUseGems)
-                            {
-                                BroadcastItem(user, user, PBEItem.BugGem, PBEItemAction.Consumed);
-                                basePower *= 1.5;
-                            }
+                            BroadcastItem(user, user, PBEItem.BugGem, PBEItemAction.Consumed);
+                            basePower *= 1.5;
                             break;
                         }
                     }
@@ -326,11 +322,8 @@ namespace Kermalis.PokemonBattleEngine.Battle
                         }
                         case PBEItem.DarkGem:
                         {
-                            if (canUseGems)
-                            {
-                                BroadcastItem(user, user, PBEItem.DarkGem, PBEItemAction.Consumed);
-                                basePower *= 1.5;
-                            }
+                            BroadcastItem(user, user, PBEItem.DarkGem, PBEItemAction.Consumed);
+                            basePower *= 1.5;
                             break;
                         }
                     }
@@ -372,11 +365,8 @@ namespace Kermalis.PokemonBattleEngine.Battle
                         }
                         case PBEItem.DragonGem:
                         {
-                            if (canUseGems)
-                            {
-                                BroadcastItem(user, user, PBEItem.DragonGem, PBEItemAction.Consumed);
-                                basePower *= 1.5;
-                            }
+                            BroadcastItem(user, user, PBEItem.DragonGem, PBEItemAction.Consumed);
+                            basePower *= 1.5;
                             break;
                         }
                     }
@@ -394,11 +384,8 @@ namespace Kermalis.PokemonBattleEngine.Battle
                         }
                         case PBEItem.ElectricGem:
                         {
-                            if (canUseGems)
-                            {
-                                BroadcastItem(user, user, PBEItem.ElectricGem, PBEItemAction.Consumed);
-                                basePower *= 1.5;
-                            }
+                            BroadcastItem(user, user, PBEItem.ElectricGem, PBEItemAction.Consumed);
+                            basePower *= 1.5;
                             break;
                         }
                     }
@@ -416,11 +403,8 @@ namespace Kermalis.PokemonBattleEngine.Battle
                         }
                         case PBEItem.FightingGem:
                         {
-                            if (canUseGems)
-                            {
-                                BroadcastItem(user, user, PBEItem.FightingGem, PBEItemAction.Consumed);
-                                basePower *= 1.5;
-                            }
+                            BroadcastItem(user, user, PBEItem.FightingGem, PBEItemAction.Consumed);
+                            basePower *= 1.5;
                             break;
                         }
                     }
@@ -438,11 +422,8 @@ namespace Kermalis.PokemonBattleEngine.Battle
                         }
                         case PBEItem.FireGem:
                         {
-                            if (canUseGems)
-                            {
-                                BroadcastItem(user, user, PBEItem.FireGem, PBEItemAction.Consumed);
-                                basePower *= 1.5;
-                            }
+                            BroadcastItem(user, user, PBEItem.FireGem, PBEItemAction.Consumed);
+                            basePower *= 1.5;
                             break;
                         }
                     }
@@ -460,11 +441,8 @@ namespace Kermalis.PokemonBattleEngine.Battle
                         }
                         case PBEItem.FlyingGem:
                         {
-                            if (canUseGems)
-                            {
-                                BroadcastItem(user, user, PBEItem.FlyingGem, PBEItemAction.Consumed);
-                                basePower *= 1.5;
-                            }
+                            BroadcastItem(user, user, PBEItem.FlyingGem, PBEItemAction.Consumed);
+                            basePower *= 1.5;
                             break;
                         }
                     }
@@ -490,11 +468,8 @@ namespace Kermalis.PokemonBattleEngine.Battle
                         }
                         case PBEItem.GhostGem:
                         {
-                            if (canUseGems)
-                            {
-                                BroadcastItem(user, user, PBEItem.GhostGem, PBEItemAction.Consumed);
-                                basePower *= 1.5;
-                            }
+                            BroadcastItem(user, user, PBEItem.GhostGem, PBEItemAction.Consumed);
+                            basePower *= 1.5;
                             break;
                         }
                     }
@@ -513,11 +488,8 @@ namespace Kermalis.PokemonBattleEngine.Battle
                         }
                         case PBEItem.GrassGem:
                         {
-                            if (canUseGems)
-                            {
-                                BroadcastItem(user, user, PBEItem.GrassGem, PBEItemAction.Consumed);
-                                basePower *= 1.5;
-                            }
+                            BroadcastItem(user, user, PBEItem.GrassGem, PBEItemAction.Consumed);
+                            basePower *= 1.5;
                             break;
                         }
                     }
@@ -535,11 +507,8 @@ namespace Kermalis.PokemonBattleEngine.Battle
                         }
                         case PBEItem.GroundGem:
                         {
-                            if (canUseGems)
-                            {
-                                BroadcastItem(user, user, PBEItem.GroundGem, PBEItemAction.Consumed);
-                                basePower *= 1.5;
-                            }
+                            BroadcastItem(user, user, PBEItem.GroundGem, PBEItemAction.Consumed);
+                            basePower *= 1.5;
                             break;
                         }
                     }
@@ -557,11 +526,8 @@ namespace Kermalis.PokemonBattleEngine.Battle
                         }
                         case PBEItem.IceGem:
                         {
-                            if (canUseGems)
-                            {
-                                BroadcastItem(user, user, PBEItem.IceGem, PBEItemAction.Consumed);
-                                basePower *= 1.5;
-                            }
+                            BroadcastItem(user, user, PBEItem.IceGem, PBEItemAction.Consumed);
+                            basePower *= 1.5;
                             break;
                         }
                     }
@@ -582,11 +548,8 @@ namespace Kermalis.PokemonBattleEngine.Battle
                         }
                         case PBEItem.NormalGem:
                         {
-                            if (canUseGems)
-                            {
-                                BroadcastItem(user, user, PBEItem.NormalGem, PBEItemAction.Consumed);
-                                basePower *= 1.5;
-                            }
+                            BroadcastItem(user, user, PBEItem.NormalGem, PBEItemAction.Consumed);
+                            basePower *= 1.5;
                             break;
                         }
                     }
@@ -604,11 +567,8 @@ namespace Kermalis.PokemonBattleEngine.Battle
                         }
                         case PBEItem.PoisonGem:
                         {
-                            if (canUseGems)
-                            {
-                                BroadcastItem(user, user, PBEItem.PoisonGem, PBEItemAction.Consumed);
-                                basePower *= 1.5;
-                            }
+                            BroadcastItem(user, user, PBEItem.PoisonGem, PBEItemAction.Consumed);
+                            basePower *= 1.5;
                             break;
                         }
                     }
@@ -627,11 +587,8 @@ namespace Kermalis.PokemonBattleEngine.Battle
                         }
                         case PBEItem.PsychicGem:
                         {
-                            if (canUseGems)
-                            {
-                                BroadcastItem(user, user, PBEItem.PsychicGem, PBEItemAction.Consumed);
-                                basePower *= 1.5;
-                            }
+                            BroadcastItem(user, user, PBEItem.PsychicGem, PBEItemAction.Consumed);
+                            basePower *= 1.5;
                             break;
                         }
                     }
@@ -650,11 +607,8 @@ namespace Kermalis.PokemonBattleEngine.Battle
                         }
                         case PBEItem.RockGem:
                         {
-                            if (canUseGems)
-                            {
-                                BroadcastItem(user, user, PBEItem.RockGem, PBEItemAction.Consumed);
-                                basePower *= 1.5;
-                            }
+                            BroadcastItem(user, user, PBEItem.RockGem, PBEItemAction.Consumed);
+                            basePower *= 1.5;
                             break;
                         }
                     }
@@ -680,11 +634,8 @@ namespace Kermalis.PokemonBattleEngine.Battle
                         }
                         case PBEItem.SteelGem:
                         {
-                            if (canUseGems)
-                            {
-                                BroadcastItem(user, user, PBEItem.SteelGem, PBEItemAction.Consumed);
-                                basePower *= 1.5;
-                            }
+                            BroadcastItem(user, user, PBEItem.SteelGem, PBEItemAction.Consumed);
+                            basePower *= 1.5;
                             break;
                         }
                     }
@@ -712,11 +663,8 @@ namespace Kermalis.PokemonBattleEngine.Battle
                         }
                         case PBEItem.WaterGem:
                         {
-                            if (canUseGems)
-                            {
-                                BroadcastItem(user, user, PBEItem.WaterGem, PBEItemAction.Consumed);
-                                basePower *= 1.5;
-                            }
+                            BroadcastItem(user, user, PBEItem.WaterGem, PBEItemAction.Consumed);
+                            basePower *= 1.5;
                             break;
                         }
                     }
