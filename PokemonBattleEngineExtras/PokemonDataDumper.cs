@@ -429,7 +429,7 @@ namespace Kermalis.PokemonBattleEngineExtras
             PBEMove.Toxic,
             PBEMove.Hail,
             PBEMove.BulkUp,
-            (PBEMove)331, // BulletSeed
+            PBEMove.BulletSeed,
             PBEMove.HiddenPower,
             PBEMove.SunnyDay,
             (PBEMove)269, // Taunt
@@ -571,7 +571,7 @@ namespace Kermalis.PokemonBattleEngineExtras
             PBEMove.Toxic,
             PBEMove.Hail,
             PBEMove.BulkUp,
-            (PBEMove)331, // BulletSeed
+            PBEMove.BulletSeed,
             PBEMove.HiddenPower,
             PBEMove.SunnyDay,
             (PBEMove)269, // Taunt

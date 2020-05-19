@@ -625,7 +625,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                     new PBEEventPokemon // Trade for Evolution!
                     (
                         new byte[] { 5 }, PBESpecies.Karrablast, 30, false, PBEGender.MAX, new PBEAbility[] { PBEAbility.ShedSkin, PBEAbility.Swarm }, PBEPokemonShell.AllNatures,
-                        new byte?[] { null, null, null, null, null, null }, new PBEMove[] { /*PBEMove.FuryAttack, */PBEMove.Headbutt/*, PBEMove.FalseSwipe*/, PBEMove.BugBuzz }
+                        new byte?[] { null, null, null, null, null, null }, new PBEMove[] { PBEMove.FuryAttack, PBEMove.Headbutt/*, PBEMove.FalseSwipe*/, PBEMove.BugBuzz }
                     ),
                     new PBEEventPokemon // Summer 2011
                     (
@@ -717,7 +717,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                     new PBEEventPokemon // World championships 2008
                     (
                         new byte[] { 4 }, PBESpecies.Lucario, 30, false, PBEGender.Male, new PBEAbility[] { PBEAbility.InnerFocus }, new PBENature[] { PBENature.Adamant },
-                        new byte?[] { null, null, null, null, null, null }, new PBEMove[] { PBEMove.ForcePalm/*, PBEMove.BoneRush*/, PBEMove.SunnyDay, PBEMove.BlazeKick }
+                        new byte?[] { null, null, null, null, null, null }, new PBEMove[] { PBEMove.ForcePalm, PBEMove.BoneRush, PBEMove.SunnyDay, PBEMove.BlazeKick }
                     ),
                     new PBEEventPokemon // Global Link promotion
                     (
@@ -886,12 +886,12 @@ namespace Kermalis.PokemonBattleEngine.Data
                     new PBEEventPokemon // Cilan's Pansage
                     (
                         new byte[] { 5 }, PBESpecies.Pansage, 1, null, PBEGender.Male, new PBEAbility[] { PBEAbility.Gluttony }, new PBENature[] { PBENature.Brave },
-                        new byte?[] { null, 31, null, null, null, null }, new PBEMove[] { /*PBEMove.BulletSeed, */PBEMove.Bite/*, PBEMove.SolarBeam*/, PBEMove.Dig }
+                        new byte?[] { null, 31, null, null, null, null }, new PBEMove[] { PBEMove.BulletSeed, PBEMove.Bite/*, PBEMove.SolarBeam*/, PBEMove.Dig }
                     ),
                     new PBEEventPokemon // Best Wishes Cilan's Pansage
                     (
                         new byte[] { 5 }, PBESpecies.Pansage, 30, false, PBEGender.Male, new PBEAbility[] { PBEAbility.Gluttony }, new PBENature[] { PBENature.Serious },
-                        new byte?[] { null, null, null, null, null, null }, new PBEMove[] { /*PBEMove.BulletSeed, PBEMove.SolarBeam, */PBEMove.RockTomb, PBEMove.Dig }
+                        new byte?[] { null, null, null, null, null, null }, new PBEMove[] { PBEMove.BulletSeed, /*PBEMove.SolarBeam, */PBEMove.RockTomb, PBEMove.Dig }
                     ),
                     new PBEEventPokemon // Global Link promotion
                     (
