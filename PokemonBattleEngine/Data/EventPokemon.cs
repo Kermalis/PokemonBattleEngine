@@ -88,7 +88,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                     new PBEEventPokemon // 2010 birthday
                     (
                         new byte[] { 5 }, PBESpecies.Audino, 30, false, PBEGender.Female, new PBEAbility[] { PBEAbility.Healer }, new PBENature[] { PBENature.Calm },
-                        new byte?[] { null, null, null, null, null, null }, new PBEMove[] { PBEMove.HealPulse, PBEMove.HelpingHand/*, PBEMove.Refresh, PBEMove.DoubleSlap*/ }
+                        new byte?[] { null, null, null, null, null, null }, new PBEMove[] { PBEMove.HealPulse, PBEMove.HelpingHand/*, PBEMove.Refresh*/, PBEMove.DoubleSlap }
                     ),
                     new PBEEventPokemon // 2011 birthday | 2012 birthday
                     (

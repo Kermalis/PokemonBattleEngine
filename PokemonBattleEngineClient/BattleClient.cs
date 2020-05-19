@@ -933,6 +933,11 @@ namespace Kermalis.PokemonBattleEngineClient
                             message = string.Format("Magnitude {0}!", (byte)smp.Params[0]);
                             break;
                         }
+                        case PBESpecialMessage.MultiHit:
+                        {
+                            message = string.Format("Hit {0} time(s)!", (byte)smp.Params[0]);
+                            break;
+                        }
                         case PBESpecialMessage.NothingHappened:
                         {
                             message = "But nothing happened!";

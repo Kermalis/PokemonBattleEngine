@@ -170,6 +170,10 @@ namespace Kermalis.PokemonBattleEngine.Battle
         {
             Broadcast(new PBESpecialMessagePacket(PBESpecialMessage.Magnitude, magnitude));
         }
+        private void BroadcastMultiHit(byte numHits)
+        {
+            Broadcast(new PBESpecialMessagePacket(PBESpecialMessage.MultiHit, numHits));
+        }
         private void BroadcastNothingHappened()
         {
             Broadcast(new PBESpecialMessagePacket(PBESpecialMessage.NothingHappened));
@@ -861,6 +865,11 @@ namespace Kermalis.PokemonBattleEngine.Battle
                         case PBESpecialMessage.Magnitude:
                         {
                             message = string.Format("Magnitude {0}!", (byte)smp.Params[0]);
+                            break;
+                        }
+                        case PBESpecialMessage.MultiHit:
+                        {
+                            message = string.Format("Hit {0} time(s)!", (byte)smp.Params[0]);
                             break;
                         }
                         case PBESpecialMessage.NothingHappened:

@@ -70,11 +70,6 @@ namespace Kermalis.PokemonBattleEngine.Battle
             // Verified: Castform/Cherrim transformation goes last. Even if multiple weather abilities activate, they will not change until every ability has been activated
             CastformCherrimCheck(order);
         }
-        /// <summary>Does effects that take place after hitting such as substitute breaking, rough skin, and victim eating its berry.</summary>
-        /// <param name="user">The Pokémon who used <paramref name="move"/>.</param>
-        /// <param name="victim">The Pokémon who was affected by <paramref name="move"/>.</param>
-        /// <param name="move">The move <paramref name="user"/> used.</param>
-        /// <param name="moveType">The type that the move was.</param>
         private void DoPostHitEffects(PBEPokemon user, PBEPokemon victim, PBEMove move, PBEType moveType)
         {
             PBEMoveData mData = PBEMoveData.Data[move];
@@ -226,11 +221,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                 AntiStatusAbilityCheck(victim); // Heal a status that was given with the user's Mold Breaker (confusion berries)
             }
         }
-        /// <summary>Does effects that take place after an attack is completely done such as recoil and life orb.</summary>
-        /// <param name="user">The Pokémon who used the attack.</param>
-        /// <param name="ignoreLifeOrb">Whether <see cref="PBEItem.LifeOrb"/> should damage the user or not.</param>
-        /// <param name="recoilDamage">The amount of recoil damage <paramref name="user"/> will take.</param>
-        private void DoPostAttackedUserEffects(PBEPokemon user, bool ignoreLifeOrb, int? recoilDamage = null)
+        private void DoPostAttackedUserEffects(PBEPokemon user, bool doLifeOrb, int? recoilDamage = null)
         {
             if (user.HP > 0 && recoilDamage.HasValue)
             {
@@ -242,7 +233,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                 }
             }
 
-            if (user.HP > 0 && !ignoreLifeOrb && user.Item == PBEItem.LifeOrb)
+            if (user.HP > 0 && doLifeOrb && user.Item == PBEItem.LifeOrb)
             {
                 BroadcastItem(user, user, PBEItem.LifeOrb, PBEItemAction.Damage);
                 DealDamage(user, user, user.MaxHP / 10, true);
@@ -790,6 +781,36 @@ namespace Kermalis.PokemonBattleEngine.Battle
                     case PBEMoveEffect.Hit:
                     {
                         Ef_Hit(user, targets, move);
+                        break;
+                    }
+                    case PBEMoveEffect.Hit__2To5Times:
+                    {
+                        byte numHits;
+                        if (user.Ability == PBEAbility.SkillLink)
+                        {
+                            numHits = 5;
+                        }
+                        else
+                        {
+                            int val = PBEUtils.RandomInt(0, 5);
+                            if (val < 2)
+                            {
+                                numHits = 2;
+                            }
+                            else if (val < 4)
+                            {
+                                numHits = 3;
+                            }
+                            else if (val < 5)
+                            {
+                                numHits = 4;
+                            }
+                            else
+                            {
+                                numHits = 5;
+                            }
+                        }
+                        Ef_MultiHit(user, targets, move, numHits, false);
                         break;
                     }
                     case PBEMoveEffect.Hit__MaybeBurn:
@@ -2372,16 +2393,21 @@ namespace Kermalis.PokemonBattleEngine.Battle
             }
         }
 
+        // Should there be two versions of BasicHit, one for single target and another for multi target?
+        // The games probably have two (some move types like MakesContact/Recoil are guaranteed to be single target), but we might not need two so we can support editing moves/adding moves
+        // Some moves types will need to throw an exception if they bypass the rule, so they do not violate behavior (pickpocket and life orb interaction, for example)
         private void BasicHit(PBEPokemon user, PBEPokemon[] targets, PBEMove move,
             Func<int, int?> recoilFunc = null,
             Func<PBEPokemon, PBEResult> beforeDoingDamage = null,
             Action<PBEPokemon> beforePostHit = null,
             Action<PBEPokemon, ushort> afterPostHit = null,
-            Action beforeTargetsFaint = null)
+            Action beforeTargetsFaint = null,
+            bool hitRegardlessOfUserConciousness = false)
         {
-            byte hit = 0;
+            // TODO: Rocky Helmet tests for user fainting, winner, etc [force battle subway battle flag? or actually do link battles]
+
+            bool hitSomeone = false;
             int totalDamageDealt = 0;
-            bool lifeOrbDamage = false;
             PBEType moveType = user.GetMoveType(move);
             double basePower = CalculateBasePower(user, targets, move, moveType);
             foreach (PBEPokemon target in targets)
@@ -2412,24 +2438,25 @@ namespace Kermalis.PokemonBattleEngine.Battle
                             {
                                 BroadcastMoveCrit(target);
                             }
-                            hit++;
-                            if (!target.Status2.HasFlag(PBEStatus2.Substitute))
-                            {
-                                lifeOrbDamage = true;
-                            }
                             // Target's statuses are assigned and target's stats are changed before post-hit effects
                             // Snore has a chance to flinch
                             beforePostHit?.Invoke(target);
-                            DoPostHitEffects(user, target, move, moveType);
+                            DoPostHitEffects(user, target, move, moveType); // User faints here
                             // HP-draining moves restore HP after post-hit effects
                             afterPostHit?.Invoke(target, damageDealt);
                             DoPostAttackedTargetEffects(target, ignoreColorChange: moveType == PBEType.None);
+                            hitSomeone = true;
+                            // This is not necessary for any official move since no contact moves hit multiple targets, but keeping it here for custom moves
+                            if (!hitRegardlessOfUserConciousness && (user.HP == 0 || user.Status1 == PBEStatus1.Asleep))
+                            {
+                                break;
+                            }
                         }
                     }
                 }
             }
 
-            if (hit > 0)
+            if (hitSomeone)
             {
                 // User's stats change before the targets faint if at least one was hit
                 beforeTargetsFaint?.Invoke();
@@ -2438,13 +2465,18 @@ namespace Kermalis.PokemonBattleEngine.Battle
                     FaintCheck(target);
                 }
             }
-            DoPostAttackedUserEffects(user, !lifeOrbDamage, recoilDamage: recoilFunc?.Invoke(totalDamageDealt));
+            if (user.HP > 0)
+            {
+                DoPostAttackedUserEffects(user, hitSomeone, recoilDamage: recoilFunc?.Invoke(totalDamageDealt));
+            }
+            // Official order: target faints (each target), recoil, Life Orb, user faints/target eats berry (each target), target AntiStatusAbilityCheck() (each target)
         }
+        // None of these moves are multi-target
         private void FixedDamageHit(PBEPokemon user, PBEPokemon[] targets, PBEMove move, Func<PBEPokemon, int> damageFunc,
             Func<PBEPokemon, PBEResult> beforeMissCheck = null,
             Action beforeTargetsFaint = null)
         {
-            byte hit = 0;
+            bool hitSomeone = false;
             PBEType moveType = user.GetMoveType(move);
             foreach (PBEPokemon target in targets)
             {
@@ -2459,14 +2491,19 @@ namespace Kermalis.PokemonBattleEngine.Battle
                             // Damage func is run and the output is dealt to target
                             DealDamage(user, target, damageFunc.Invoke(target), false);
 
-                            hit++;
-                            DoPostHitEffects(user, target, move, moveType);
+                            DoPostHitEffects(user, target, move, moveType); // User faints here
                             DoPostAttackedTargetEffects(target); // TODO: Does Color Change activate for these (if not hitting substitute)?
+                            hitSomeone = true;
+                            // This is not necessary for any official move since no contact moves hit multiple targets, but keeping it here for custom moves
+                            if (user.HP == 0 || user.Status1 == PBEStatus1.Asleep)
+                            {
+                                break;
+                            }
                         }
                     }
                 }
             }
-            if (hit > 0)
+            if (hitSomeone)
             {
                 // "It's a one-hit KO!"
                 beforeTargetsFaint?.Invoke();
@@ -2475,7 +2512,69 @@ namespace Kermalis.PokemonBattleEngine.Battle
                     FaintCheck(target);
                 }
             }
-            //DoPostAttackedUserEffects(user, true); // Do we need this?
+            if (user.HP > 0)
+            {
+                DoPostAttackedUserEffects(user, hitSomeone);
+            }
+            // Official order: target faints, Life Orb, user faints/target eats berry, target AntiStatusAbilityCheck()
+        }
+        // None of these moves are multi-target
+        private void MultiHit(PBEPokemon user, PBEPokemon[] targets, PBEMove move, byte numHits, bool subsequentMissChecks)
+        {
+            bool hitSomeone = false;
+            PBEType moveType = user.GetMoveType(move);
+            double basePower = CalculateBasePower(user, targets, move, moveType); // Verified: Gem boost applies to all hits
+            foreach (PBEPokemon target in targets)
+            {
+                if (!MissCheck(user, target, move))
+                {
+                    if (AttackTypeCheck(user, target, moveType, out PBEResult result, out double damageMultiplier))
+                    {
+                        if (targets.Length > 1)
+                        {
+                            damageMultiplier *= 0.75;
+                        }
+                        byte hit = 0;
+                        for (int hitNumber = 0; hitNumber < numHits; hitNumber++)
+                        {
+                            bool crit = CritCheck(user, target, move);
+                            double curDamageMultiplier = damageMultiplier * CalculateDamageMultiplier(user, target, move, moveType, result, crit);
+                            int damage = (int)(curDamageMultiplier * CalculateDamage(user, target, move, moveType, PBEMoveData.Data[move].Category, basePower, crit));
+                            DealDamage(user, target, damage, false);
+                            if (crit)
+                            {
+                                BroadcastMoveCrit(target);
+                            }
+                            DoPostHitEffects(user, target, move, moveType); // User faints here
+                            hit++;
+                            hitSomeone = true;
+                            if (user.HP == 0 || user.Status1 == PBEStatus1.Asleep || target.HP == 0)
+                            {
+                                break;
+                            }
+                        }
+                        if (result != PBEResult.Success)
+                        {
+                            BroadcastMoveResult(user, target, result);
+                        }
+                        BroadcastMultiHit(hit);
+                        if (!FaintCheck(target))
+                        {
+                            DoPostAttackedTargetEffects(target, ignoreColorChange: moveType == PBEType.None);
+                        }
+                        // This is not necessary for any official move since no contact moves hit multiple targets, but keeping it here for custom moves
+                        if (user.HP == 0 || user.Status1 == PBEStatus1.Asleep)
+                        {
+                            break;
+                        }
+                    }
+                }
+            }
+            if (user.HP > 0)
+            {
+                DoPostAttackedUserEffects(user, hitSomeone);
+            }
+            // Official order: user faints/target eats berry, effectiveness, "Hit 4 times!", target faints, Life Orb, target AntiStatusAbilityCheck()
         }
         private void SemiInvulnerableChargeMove(PBEPokemon user, PBEPokemon[] targets, PBEMove move, PBETurnTarget requestedTargets, PBEStatus2 status2)
         {
@@ -3027,6 +3126,20 @@ namespace Kermalis.PokemonBattleEngine.Battle
             }
             RecordExecutedMove(user, move);
         }
+        private void Ef_MultiHit(PBEPokemon user, PBEPokemon[] targets, PBEMove move, byte numHits, bool subsequentMissChecks)
+        {
+            BroadcastMoveUsed(user, move);
+            PPReduce(user, move);
+            if (targets.Length == 0)
+            {
+                BroadcastMoveResult(user, user, PBEResult.NoTarget);
+            }
+            else
+            {
+                MultiHit(user, targets, move, numHits, subsequentMissChecks); // Doesn't need to be its own func but neater
+            }
+            RecordExecutedMove(user, move);
+        }
         private void Ef_Recoil(PBEPokemon user, PBEPokemon[] targets, PBEMove move, int denominator, PBEStatus1 status1 = PBEStatus1.None, int chanceToInflictStatus1 = 0, PBEStatus2 status2 = PBEStatus2.None, int chanceToInflictStatus2 = 0)
         {
             BroadcastMoveUsed(user, move);
@@ -3074,7 +3187,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
             }
             else
             {
-                BasicHit(user, targets, move);
+                BasicHit(user, targets, move, hitRegardlessOfUserConciousness: true);
             }
             FaintCheck(user);
             RecordExecutedMove(user, move);
@@ -3425,7 +3538,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                         }
                     }
                 }
-                //DoPostAttackedUserEffects(user, true); // Do we need this?
+                //DoPostAttackedUserEffects(user, false); // Do we need this? Life Orb doesn't activate.
             }
             RecordExecutedMove(user, move);
         }

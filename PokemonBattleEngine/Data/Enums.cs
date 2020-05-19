@@ -461,11 +461,12 @@ namespace Kermalis.PokemonBattleEngine.Data
         Endure = 1,
         HPDrained = 2,
         Magnitude = 3,
-        NothingHappened = 4,
-        OneHitKnockout = 5,
-        PainSplit = 6,
-        Recoil = 7,
-        Struggle = 8,
+        MultiHit = 4,
+        NothingHappened = 5,
+        OneHitKnockout = 6,
+        PainSplit = 7,
+        Recoil = 8,
+        Struggle = 9
     }
     public enum PBEMoveLockType : byte
     {
@@ -1288,7 +1289,7 @@ namespace Kermalis.PokemonBattleEngine.Data
         ShieldDust = 19, // TODO
         /// <summary>The Pokémon's stat changes are doubled.</summary>
         Simple = 86,
-        SkillLink = 92, // TODO
+        SkillLink = 92, // TODO: Effect on Triple Kick
         SlowStart = 112,
         /// <summary>The Pokémon deals more damage when landing critical hits.</summary>
         Sniper = 97,
@@ -2165,6 +2166,7 @@ namespace Kermalis.PokemonBattleEngine.Data
         Haze,
         HelpingHand,
         Hit,
+        Hit__2To5Times,
         Hit__MaybeBurn,
         Hit__MaybeBurn__10PercentFlinch,
         Hit__MaybeConfuse,
@@ -2368,7 +2370,7 @@ namespace Kermalis.PokemonBattleEngine.Data
         DoubleEdge = 38,
         //DoubleHit = 458,
         //DoubleKick = 24,
-        //DoubleSlap = 3,
+        DoubleSlap = 3,
         DoubleTeam = 104,
         DracoMeteor = 434,
         DragonBreath = 225,

@@ -40,6 +40,7 @@ namespace Kermalis.PokemonBattleEngine.Packets
                         break;
                     }
                     case PBESpecialMessage.Magnitude:
+                    case PBESpecialMessage.MultiHit:
                     {
                         byte p = (byte)parameters[0];
                         par.Add(p);
@@ -81,6 +82,7 @@ namespace Kermalis.PokemonBattleEngine.Packets
                     break;
                 }
                 case PBESpecialMessage.Magnitude:
+                case PBESpecialMessage.MultiHit:
                 {
                     Params = new ReadOnlyCollection<object>(new object[] { r.ReadByte() });
                     break;
