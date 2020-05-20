@@ -529,7 +529,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                     new PBEEventPokemon // Iris's Haxorus
                     (
                         new byte[] { 5 }, PBESpecies.Haxorus, 59, false, PBEGender.Female, new PBEAbility[] { PBEAbility.MoldBreaker }, new PBENature[] { PBENature.Naive },
-                        new byte?[] { null, null, null, null, null, null }, new PBEMove[] { PBEMove.Earthquake/*, PBEMove.DualChop*/, PBEMove.XScissor, PBEMove.DragonDance }
+                        new byte?[] { null, null, null, null, null, null }, new PBEMove[] { PBEMove.Earthquake, PBEMove.DualChop, PBEMove.XScissor, PBEMove.DragonDance }
                     )
                 })
             },
@@ -641,7 +641,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                     new PBEEventPokemon // Kyurem VS. The Sword of Justice promotion
                     (
                         new byte[] { 5 }, PBESpecies.Keldeo, 15, false, PBEGender.Genderless, new PBEAbility[] { PBEAbility.Justified }, PBEPokemonShell.AllNatures,
-                        new byte?[] { null, null, null, null, null, null }, new PBEMove[] { PBEMove.AquaJet, PBEMove.Leer/*, PBEMove.DoubleKick*/, PBEMove.BubbleBeam }
+                        new byte?[] { null, null, null, null, null, null }, new PBEMove[] { PBEMove.AquaJet, PBEMove.Leer, PBEMove.DoubleKick, PBEMove.BubbleBeam }
                     ),
                     new PBEEventPokemon // Winter 2013
                     (

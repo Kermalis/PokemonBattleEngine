@@ -332,6 +332,15 @@ namespace Kermalis.PokemonBattleEngine.Data
                 )
             },
             {
+                PBEMove.Bonemerang,
+                new PBEMoveData
+                (
+                    PBEType.Ground, PBEMoveCategory.Physical, 0, 2, 50, 90,
+                    PBEMoveEffect.Hit__2Times, 0, PBEMoveTarget.SingleSurrounding,
+                    PBEMoveFlag.AffectedByMirrorMove | PBEMoveFlag.AffectedByProtect
+                )
+            },
+            {
                 PBEMove.BoneRush,
                 new PBEMoveData
                 (
@@ -710,6 +719,24 @@ namespace Kermalis.PokemonBattleEngine.Data
                 )
             },
             {
+                PBEMove.DoubleHit,
+                new PBEMoveData
+                (
+                    PBEType.Normal, PBEMoveCategory.Physical, 0, 2, 35, 90,
+                    PBEMoveEffect.Hit__2Times, 0, PBEMoveTarget.SingleSurrounding,
+                    PBEMoveFlag.AffectedByMirrorMove | PBEMoveFlag.AffectedByProtect | PBEMoveFlag.MakesContact
+                )
+            },
+            {
+                PBEMove.DoubleKick,
+                new PBEMoveData
+                (
+                    PBEType.Fighting, PBEMoveCategory.Physical, 0, 6, 30, 100,
+                    PBEMoveEffect.Hit__2Times, 0, PBEMoveTarget.SingleSurrounding,
+                    PBEMoveFlag.AffectedByMirrorMove | PBEMoveFlag.AffectedByProtect | PBEMoveFlag.MakesContact
+                )
+            },
+            {
                 PBEMove.DoubleSlap,
                 new PBEMoveData
                 (
@@ -824,6 +851,15 @@ namespace Kermalis.PokemonBattleEngine.Data
                     PBEType.Ground, PBEMoveCategory.Physical, 0, 2, 80, 95,
                     PBEMoveEffect.Hit, 0, PBEMoveTarget.SingleSurrounding,
                     PBEMoveFlag.AffectedByMirrorMove | PBEMoveFlag.AffectedByProtect | PBEMoveFlag.HighCritChance | PBEMoveFlag.MakesContact
+                )
+            },
+            {
+                PBEMove.DualChop,
+                new PBEMoveData
+                (
+                    PBEType.Dragon, PBEMoveCategory.Physical, 0, 3, 40, 90,
+                    PBEMoveEffect.Hit__2Times, 0, PBEMoveTarget.SingleSurrounding,
+                    PBEMoveFlag.AffectedByMirrorMove | PBEMoveFlag.AffectedByProtect | PBEMoveFlag.MakesContact
                 )
             },
             {
@@ -1193,6 +1229,15 @@ namespace Kermalis.PokemonBattleEngine.Data
                     PBEType.Poison, PBEMoveCategory.Status, 0, 2, 0, 100,
                     PBEMoveEffect.GastroAcid, 0, PBEMoveTarget.SingleSurrounding,
                     PBEMoveFlag.AffectedByMagicCoat | PBEMoveFlag.AffectedByMirrorMove | PBEMoveFlag.AffectedByProtect
+                )
+            },
+            {
+                PBEMove.GearGrind,
+                new PBEMoveData
+                (
+                    PBEType.Steel, PBEMoveCategory.Physical, 0, 3, 50, 85,
+                    PBEMoveEffect.Hit__2Times, 0, PBEMoveTarget.SingleSurrounding,
+                    PBEMoveFlag.AffectedByMirrorMove | PBEMoveFlag.AffectedByProtect | PBEMoveFlag.MakesContact
                 )
             },
             {
@@ -3317,6 +3362,15 @@ namespace Kermalis.PokemonBattleEngine.Data
                     PBEType.Psychic, PBEMoveCategory.Status, -7, 1, 0, 0,
                     PBEMoveEffect.TrickRoom, 0, PBEMoveTarget.All,
                     PBEMoveFlag.AffectedByMirrorMove
+                )
+            },
+            {
+                PBEMove.Twineedle,
+                new PBEMoveData
+                (
+                    PBEType.Bug, PBEMoveCategory.Physical, 0, 4, 25, 100,
+                    PBEMoveEffect.Hit__2Times__MaybePoison, 20, PBEMoveTarget.SingleSurrounding,
+                    PBEMoveFlag.AffectedByMirrorMove | PBEMoveFlag.AffectedByProtect
                 )
             },
             {

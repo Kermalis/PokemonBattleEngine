@@ -60,7 +60,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                             pkmn.Status1Counter = 1;
                         }
                         BroadcastStatus1(pkmn, pkmn, pkmn.Status1, PBEStatusAction.Added);
-                        AntiStatusAbilityCheck(pkmn);
+                        // Immunity activates in ActivateAbility() below
                     }
                 }
 
@@ -215,10 +215,10 @@ namespace Kermalis.PokemonBattleEngine.Battle
         }
         private void DoPostAttackedTargetEffects(PBEPokemon victim, bool ignoreColorChange = false)
         {
-            // TODO: Color Change
+            // TODO: Color Change (Does Mold Breaker ignore Color Change? I had Mold Breaker when I was testing if Pain Split affected it, so that test may be flawed)
             if (victim.HP > 0)
             {
-                AntiStatusAbilityCheck(victim); // Heal a status that was given with the user's Mold Breaker (confusion berries)
+                AntiStatusAbilityCheck(victim); // Heal a status that was given with the user's Mold Breaker
             }
         }
         private void DoPostAttackedUserEffects(PBEPokemon user, bool doLifeOrb, int? recoilDamage = null)
@@ -783,6 +783,16 @@ namespace Kermalis.PokemonBattleEngine.Battle
                         Ef_Hit(user, targets, move);
                         break;
                     }
+                    case PBEMoveEffect.Hit__2Times:
+                    {
+                        Ef_MultiHit(user, targets, move, 2);
+                        break;
+                    }
+                    case PBEMoveEffect.Hit__2Times__MaybePoison:
+                    {
+                        Ef_MultiHit(user, targets, move, 2, status1: PBEStatus1.Poisoned, chanceToInflictStatus1: effectParam);
+                        break;
+                    }
                     case PBEMoveEffect.Hit__2To5Times:
                     {
                         byte numHits;
@@ -810,7 +820,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                                 numHits = 5;
                             }
                         }
-                        Ef_MultiHit(user, targets, move, numHits, false);
+                        Ef_MultiHit(user, targets, move, numHits);
                         break;
                     }
                     case PBEMoveEffect.Hit__MaybeBurn:
@@ -1792,11 +1802,13 @@ namespace Kermalis.PokemonBattleEngine.Battle
         }
         private void ShayminCheck(PBEPokemon pkmn)
         {
-            if (pkmn.OriginalSpecies == PBESpecies.Shaymin_Sky && pkmn.Species == PBESpecies.Shaymin_Sky && pkmn.Status1 == PBEStatus1.Frozen)
+            // If a Shaymin_Sky is given MagmaArmor and then Frozen, it will change to Shaymin and obtain Shaymin's ability, therefore losing MagmaArmor and as a result will not be cured of its Frozen status.
+            if (pkmn.Species == PBESpecies.Shaymin_Sky && pkmn.OriginalSpecies == PBESpecies.Shaymin_Sky && pkmn.Status1 == PBEStatus1.Frozen)
             {
                 const PBESpecies newSpecies = PBESpecies.Shaymin;
                 pkmn.Shaymin_CannotChangeBackToSkyForm = true;
                 BroadcastPkmnFormChanged(pkmn, newSpecies, PBEPokemonData.GetData(newSpecies).Abilities[0], PBEAbility.MAX);
+                ActivateAbility(pkmn, false);
             }
         }
         private void IllusionBreak(PBEPokemon pkmn, PBEPokemon breaker)
@@ -2087,7 +2099,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                 BroadcastStatus2(user, user, PBEStatus2.PowerTrick, PBEStatusAction.Ended);
             }
         }
-        private PBEResult ApplyStatus1IfPossible(PBEPokemon user, PBEPokemon target, PBEStatus1 status, bool broadcastResult)
+        private PBEResult ApplyStatus1IfPossible(PBEPokemon user, PBEPokemon target, PBEStatus1 status, bool broadcastUnsuccessful)
         {
             PBEResult result;
             switch (status)
@@ -2113,14 +2125,9 @@ namespace Kermalis.PokemonBattleEngine.Battle
                     target.Status1Counter = 0;
                 }
                 BroadcastStatus1(target, user, status, PBEStatusAction.Added);
-                // If a Shaymin_Sky is given MagmaArmor and then Frozen, it will change to Shaymin and obtain Shaymin's ability, therefore losing MagmaArmor and as a result will not be cured of its Frozen status.
-                if (status == PBEStatus1.Frozen)
-                {
-                    ShayminCheck(target);
-                }
-                AntiStatusAbilityCheck(target);
+                ShayminCheck(target);
             }
-            else if (broadcastResult && result != PBEResult.Success)
+            else if (broadcastUnsuccessful)
             {
                 if (result == PBEResult.Ineffective_Ability)
                 {
@@ -2130,7 +2137,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
             }
             return result;
         }
-        private PBEResult ApplyStatus2IfPossible(PBEPokemon user, PBEPokemon target, PBEStatus2 status, bool broadcastResult)
+        private PBEResult ApplyStatus2IfPossible(PBEPokemon user, PBEPokemon target, PBEStatus2 status, bool broadcastUnsuccessful)
         {
             PBEResult result;
             switch (status)
@@ -2296,7 +2303,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                 }
                 default: throw new ArgumentOutOfRangeException(nameof(status));
             }
-            if (broadcastResult && result != PBEResult.Success)
+            if (broadcastUnsuccessful && result != PBEResult.Success)
             {
                 if (result == PBEResult.Ineffective_Ability)
                 {
@@ -2519,7 +2526,9 @@ namespace Kermalis.PokemonBattleEngine.Battle
             // Official order: target faints, Life Orb, user faints/target eats berry, target AntiStatusAbilityCheck()
         }
         // None of these moves are multi-target
-        private void MultiHit(PBEPokemon user, PBEPokemon[] targets, PBEMove move, byte numHits, bool subsequentMissChecks)
+        private void MultiHit(PBEPokemon user, PBEPokemon[] targets, PBEMove move, byte numHits,
+            bool subsequentMissChecks = false,
+            Action<PBEPokemon> beforePostHit = null)
         {
             bool hitSomeone = false;
             PBEType moveType = user.GetMoveType(move);
@@ -2545,6 +2554,8 @@ namespace Kermalis.PokemonBattleEngine.Battle
                             {
                                 BroadcastMoveCrit(target);
                             }
+                            // Twineedle has a chance to poison on each strike
+                            beforePostHit?.Invoke(target);
                             DoPostHitEffects(user, target, move, moveType); // User faints here
                             hit++;
                             hitSomeone = true;
@@ -2560,7 +2571,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                         BroadcastMultiHit(hit);
                         if (!FaintCheck(target))
                         {
-                            DoPostAttackedTargetEffects(target, ignoreColorChange: moveType == PBEType.None);
+                            DoPostAttackedTargetEffects(target, ignoreColorChange: moveType == PBEType.None); // AntiStatusAbilityCheck() in DoPostAttackedTargetEffects()?
                         }
                         // This is not necessary for any official move since no contact moves hit multiple targets, but keeping it here for custom moves
                         if (user.HP == 0 || user.Status1 == PBEStatus1.Asleep)
@@ -2632,6 +2643,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                             }
                         }
                         ApplyStatus1IfPossible(user, target, status, true);
+                        DoPostAttackedTargetEffects(target, ignoreColorChange: true); // Only necessary for AntiStatusCheck() right now
                     }
                 }
             }
@@ -2653,6 +2665,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                     if (!MissCheck(user, target, move))
                     {
                         ApplyStatus2IfPossible(user, target, status, true);
+                        DoPostAttackedTargetEffects(target, ignoreColorChange: true); // Only necessary for AntiStatusCheck() right now
                     }
                 }
             }
@@ -3122,11 +3135,11 @@ namespace Kermalis.PokemonBattleEngine.Battle
                         }
                     }
                 }
-                BasicHit(user, targets, move, beforePostHit: BeforePostHit);
+                BasicHit(user, targets, move, beforePostHit: status1 != PBEStatus1.None || status2 != PBEStatus2.None ? BeforePostHit : (Action<PBEPokemon>)null);
             }
             RecordExecutedMove(user, move);
         }
-        private void Ef_MultiHit(PBEPokemon user, PBEPokemon[] targets, PBEMove move, byte numHits, bool subsequentMissChecks)
+        private void Ef_MultiHit(PBEPokemon user, PBEPokemon[] targets, PBEMove move, byte numHits, bool subsequentMissChecks = false, PBEStatus1 status1 = PBEStatus1.None, int chanceToInflictStatus1 = 0)
         {
             BroadcastMoveUsed(user, move);
             PPReduce(user, move);
@@ -3136,7 +3149,14 @@ namespace Kermalis.PokemonBattleEngine.Battle
             }
             else
             {
-                MultiHit(user, targets, move, numHits, subsequentMissChecks); // Doesn't need to be its own func but neater
+                void BeforePostHit(PBEPokemon target)
+                {
+                    if (target.HP > 0 && PBEUtils.RandomBool(chanceToInflictStatus1, 100))
+                    {
+                        ApplyStatus1IfPossible(user, target, status1, false);
+                    }
+                }
+                MultiHit(user, targets, move, numHits, subsequentMissChecks: subsequentMissChecks, beforePostHit: status1 != PBEStatus1.None ? BeforePostHit : (Action<PBEPokemon>)null); // Doesn't need to be its own func but neater
             }
             RecordExecutedMove(user, move);
         }

@@ -950,7 +950,7 @@ namespace Kermalis.PokemonBattleEngineExtras
                 (PBEMove)450, // BugBite
                 (PBEMove)343, // Covet
                 PBEMove.SuperFang,
-                (PBEMove)530, // DualChop
+                PBEMove.DualChop,
                 PBEMove.SignalBeam,
                 PBEMove.IronHead,
                 PBEMove.SeedBomb,
