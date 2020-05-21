@@ -547,6 +547,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                     switch (ip.Item)
                     {
                         case PBEItem.AguavBerry:
+                        case PBEItem.BerryJuice:
                         case PBEItem.FigyBerry:
                         case PBEItem.IapapaBerry:
                         case PBEItem.MagoBerry:

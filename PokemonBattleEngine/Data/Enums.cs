@@ -584,7 +584,7 @@ namespace Kermalis.PokemonBattleEngine.Data
         /// <summary>No effect.</summary>
         BalmMushroom = 580,
         BelueBerry = 183, // TODO
-        BerryJuice = 43, // TODO
+        BerryJuice = 43,
         /// <summary>No effect.</summary>
         BigMushroom = 87,
         /// <summary>No effect.</summary>

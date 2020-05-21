@@ -1990,6 +1990,11 @@ namespace Kermalis.PokemonBattleEngine.Battle
                     CauseConfusion(pkmn, pkmn);
                 }
             }
+            void DoRegularItem(int hp)
+            {
+                BroadcastItem(pkmn, pkmn, pkmn.Item, PBEItemAction.Consumed);
+                HealDamage(pkmn, hp);
+            }
 
             if (pkmn.HP <= pkmn.MaxHP / 2)
             {
@@ -1998,6 +2003,11 @@ namespace Kermalis.PokemonBattleEngine.Battle
                     case PBEItem.AguavBerry:
                     {
                         DoConfuseBerry(PBEFlavor.Bitter);
+                        break;
+                    }
+                    case PBEItem.BerryJuice:
+                    {
+                        DoRegularItem(20);
                         break;
                     }
                     case PBEItem.FigyBerry:
@@ -2017,14 +2027,12 @@ namespace Kermalis.PokemonBattleEngine.Battle
                     }
                     case PBEItem.OranBerry:
                     {
-                        BroadcastItem(pkmn, pkmn, PBEItem.OranBerry, PBEItemAction.Consumed);
-                        HealDamage(pkmn, 10);
+                        DoRegularItem(10);
                         break;
                     }
                     case PBEItem.SitrusBerry:
                     {
-                        BroadcastItem(pkmn, pkmn, PBEItem.SitrusBerry, PBEItemAction.Consumed);
-                        HealDamage(pkmn, pkmn.MaxHP / 4);
+                        DoRegularItem(pkmn.MaxHP / 4);
                         break;
                     }
                     case PBEItem.WikiBerry:
