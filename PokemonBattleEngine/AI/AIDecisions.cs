@@ -522,6 +522,7 @@ namespace Kermalis.PokemonBattleEngine.AI
                                         }
                                         break;
                                     }
+                                    case PBEMoveEffect.BellyDrum:
                                     case PBEMoveEffect.ChangeTarget_SPATK__IfAttractionPossible:
                                     case PBEMoveEffect.Conversion:
                                     case PBEMoveEffect.Curse:
