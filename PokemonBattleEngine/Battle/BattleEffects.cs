@@ -213,11 +213,15 @@ namespace Kermalis.PokemonBattleEngine.Battle
             // TODO: King's Rock, Stench, etc
             // TODO?: Cell Battery
         }
-        private void DoPostAttackedTargetEffects(PBEPokemon victim, bool ignoreColorChange = false)
+        private void DoPostAttackedTargetEffects(PBEPokemon victim, PBEType colorChangeType = PBEType.None)
         {
-            // TODO: Color Change (Does Mold Breaker ignore Color Change? I had Mold Breaker when I was testing if Pain Split affected it, so that test may be flawed)
             if (victim.HP > 0)
             {
+                if (victim.Ability == PBEAbility.ColorChange && colorChangeType != PBEType.None && !victim.HasType(colorChangeType))
+                {
+                    BroadcastAbility(victim, victim, PBEAbility.ColorChange, PBEAbilityAction.ChangedAppearance);
+                    BroadcastTypeChanged(victim, colorChangeType, PBEType.None);
+                }
                 AntiStatusAbilityCheck(victim); // Heal a status that was given with the user's Mold Breaker
             }
         }
@@ -2451,7 +2455,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                             DoPostHitEffects(user, target, move, moveType); // User faints here
                             // HP-draining moves restore HP after post-hit effects
                             afterPostHit?.Invoke(target, damageDealt);
-                            DoPostAttackedTargetEffects(target, ignoreColorChange: moveType == PBEType.None);
+                            DoPostAttackedTargetEffects(target, colorChangeType: moveType);
                             hitSomeone = true;
                             // This is not necessary for any official move since no contact moves hit multiple targets, but keeping it here for custom moves
                             if (!hitRegardlessOfUserConciousness && (user.HP == 0 || user.Status1 == PBEStatus1.Asleep))
@@ -2499,7 +2503,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                             DealDamage(user, target, damageFunc.Invoke(target), false);
 
                             DoPostHitEffects(user, target, move, moveType); // User faints here
-                            DoPostAttackedTargetEffects(target); // TODO: Does Color Change activate for these (if not hitting substitute)?
+                            DoPostAttackedTargetEffects(target, colorChangeType: moveType);
                             hitSomeone = true;
                             // This is not necessary for any official move since no contact moves hit multiple targets, but keeping it here for custom moves
                             if (user.HP == 0 || user.Status1 == PBEStatus1.Asleep)
@@ -2571,7 +2575,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                         BroadcastMultiHit(hit);
                         if (!FaintCheck(target))
                         {
-                            DoPostAttackedTargetEffects(target, ignoreColorChange: moveType == PBEType.None); // AntiStatusAbilityCheck() in DoPostAttackedTargetEffects()?
+                            DoPostAttackedTargetEffects(target, colorChangeType: moveType); // AntiStatusAbilityCheck() in DoPostAttackedTargetEffects()?
                         }
                         // This is not necessary for any official move since no contact moves hit multiple targets, but keeping it here for custom moves
                         if (user.HP == 0 || user.Status1 == PBEStatus1.Asleep)
@@ -2643,7 +2647,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                             }
                         }
                         ApplyStatus1IfPossible(user, target, status, true);
-                        DoPostAttackedTargetEffects(target, ignoreColorChange: true); // Only necessary for AntiStatusCheck() right now
+                        DoPostAttackedTargetEffects(target); // Only necessary for AntiStatusCheck() right now
                     }
                 }
             }
@@ -2665,7 +2669,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                     if (!MissCheck(user, target, move))
                     {
                         ApplyStatus2IfPossible(user, target, status, true);
-                        DoPostAttackedTargetEffects(target, ignoreColorChange: true); // Only necessary for AntiStatusCheck() right now
+                        DoPostAttackedTargetEffects(target); // Only necessary for AntiStatusCheck() right now
                     }
                 }
             }
@@ -3554,7 +3558,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                             BroadcastPainSplit(user, target);
                             HealingBerryCheck(user);
                             HealingBerryCheck(target, user); // Verified: Berry is activated but no illusion breaking
-                            DoPostAttackedTargetEffects(target, ignoreColorChange: true);
+                            DoPostAttackedTargetEffects(target); // Verified: Color Change is ignored
                         }
                     }
                 }

@@ -220,6 +220,18 @@ namespace Kermalis.PokemonBattleEngineClient
                             }
                             break;
                         }
+                        case PBEAbility.ColorChange:
+                        case PBEAbility.FlowerGift:
+                        case PBEAbility.Forecast:
+                        case PBEAbility.Imposter:
+                        {
+                            switch (ap.AbilityAction)
+                            {
+                                case PBEAbilityAction.ChangedAppearance: message = "{0}'s {2} activated!"; break;
+                                default: throw new ArgumentOutOfRangeException(nameof(ap.AbilityAction));
+                            }
+                            break;
+                        }
                         case PBEAbility.CuteCharm:
                         case PBEAbility.EffectSpore:
                         case PBEAbility.FlameBody:
@@ -252,17 +264,6 @@ namespace Kermalis.PokemonBattleEngineClient
                             switch (ap.AbilityAction)
                             {
                                 case PBEAbilityAction.Weather: message = "{0}'s {2} activated!"; break;
-                                default: throw new ArgumentOutOfRangeException(nameof(ap.AbilityAction));
-                            }
-                            break;
-                        }
-                        case PBEAbility.FlowerGift:
-                        case PBEAbility.Forecast:
-                        case PBEAbility.Imposter:
-                        {
-                            switch (ap.AbilityAction)
-                            {
-                                case PBEAbilityAction.ChangedAppearance: message = "{0}'s {2} activated!"; break;
                                 default: throw new ArgumentOutOfRangeException(nameof(ap.AbilityAction));
                             }
                             break;

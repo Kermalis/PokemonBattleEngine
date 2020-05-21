@@ -1155,7 +1155,7 @@ namespace Kermalis.PokemonBattleEngine.Data
         Chlorophyll = 34,
         ClearBody = 29,
         CloudNine = 13,
-        ColorChange = 16, // TODO
+        ColorChange = 16,
         /// <summary>The Pokémon accuracy is boosted.</summary>
         Compoundeyes = 14,
         Contrary = 126,
