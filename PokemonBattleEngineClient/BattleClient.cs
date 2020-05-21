@@ -1154,6 +1154,7 @@ namespace Kermalis.PokemonBattleEngineClient
                                 case PBEStatusAction.Activated: message = "{0} is in love with {1}!"; break;
                                 case PBEStatusAction.CausedImmobility: message = "{0} is immobilized by love!"; break;
                                 case PBEStatusAction.Cured:
+                                case PBEStatusAction.Ended:
                                 {
                                     if (_mode != ClientMode.SinglePlayer)
                                     {
@@ -1161,14 +1162,6 @@ namespace Kermalis.PokemonBattleEngineClient
                                     }
                                     message = "{0} got over its infatuation.";
                                     break;
-                                }
-                                case PBEStatusAction.Ended:
-                                {
-                                    if (_mode != ClientMode.SinglePlayer)
-                                    {
-                                        status2Receiver.InfatuatedWithPokemon = null;
-                                    }
-                                    return true;
                                 }
                                 default: throw new ArgumentOutOfRangeException(nameof(s2p.StatusAction));
                             }
@@ -1189,6 +1182,31 @@ namespace Kermalis.PokemonBattleEngineClient
                                     break;
                                 }
                                 case PBEStatusAction.Damage: message = "{0}'s health is sapped by Leech Seed!"; break;
+                                default: throw new ArgumentOutOfRangeException(nameof(s2p.StatusAction));
+                            }
+                            break;
+                        }
+                        case PBEStatus2.LockOn:
+                        {
+                            switch (s2p.StatusAction)
+                            {
+                                case PBEStatusAction.Added:
+                                {
+                                    if (_mode != ClientMode.SinglePlayer)
+                                    {
+                                        status2Receiver.LockOnPokemon = pokemon2;
+                                    }
+                                    message = "{0} took aim at {1}!";
+                                    break;
+                                }
+                                case PBEStatusAction.Ended:
+                                {
+                                    if (_mode != ClientMode.SinglePlayer)
+                                    {
+                                        status2Receiver.LockOnPokemon = null;
+                                    }
+                                    return true;
+                                }
                                 default: throw new ArgumentOutOfRangeException(nameof(s2p.StatusAction));
                             }
                             break;

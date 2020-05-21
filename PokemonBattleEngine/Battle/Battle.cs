@@ -402,6 +402,15 @@ namespace Kermalis.PokemonBattleEngine.Battle
                         pkmn.Status2 &= ~PBEStatus2.HelpingHand;
                         BroadcastStatus2(pkmn, pkmn, PBEStatus2.HelpingHand, PBEStatusAction.Ended);
                     }
+                    if (pkmn.Status2.HasFlag(PBEStatus2.LockOn))
+                    {
+                        if (--pkmn.LockOnTurns == 0)
+                        {
+                            pkmn.Status2 &= ~PBEStatus2.LockOn;
+                            pkmn.LockOnPokemon = null;
+                            BroadcastStatus2(pkmn, pkmn, PBEStatus2.LockOn, PBEStatusAction.Ended);
+                        }
+                    }
                     if (pkmn.Status2.HasFlag(PBEStatus2.Protected))
                     {
                         pkmn.Status2 &= ~PBEStatus2.Protected;

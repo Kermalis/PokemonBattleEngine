@@ -1781,6 +1781,15 @@ namespace Kermalis.PokemonBattleEngine.Data
                 )
             },
             {
+                PBEMove.LockOn,
+                new PBEMoveData
+                (
+                    PBEType.Normal, PBEMoveCategory.Status, 0, 1, 0, 0,
+                    PBEMoveEffect.LockOn, 0, PBEMoveTarget.SingleSurrounding,
+                    PBEMoveFlag.AffectedByMirrorMove | PBEMoveFlag.AffectedByProtect
+                )
+            },
+            {
                 PBEMove.LovelyKiss,
                 new PBEMoveData
                 (
@@ -1958,6 +1967,15 @@ namespace Kermalis.PokemonBattleEngine.Data
                     PBEType.Normal, PBEMoveCategory.Status, 0, 2, 0, 0,
                     PBEMoveEffect.RestoreTargetHP, 50, PBEMoveTarget.Self,
                     PBEMoveFlag.AffectedBySnatch
+                )
+            },
+            {
+                PBEMove.MindReader,
+                new PBEMoveData
+                (
+                    PBEType.Normal, PBEMoveCategory.Status, 0, 1, 0, 0,
+                    PBEMoveEffect.LockOn, 0, PBEMoveTarget.SingleSurrounding,
+                    PBEMoveFlag.AffectedByMirrorMove | PBEMoveFlag.AffectedByProtect
                 )
             },
             {

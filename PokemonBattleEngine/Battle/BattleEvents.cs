@@ -1049,8 +1049,8 @@ namespace Kermalis.PokemonBattleEngine.Battle
                                 case PBEStatusAction.Added: message = "{0} fell in love with {1}!"; break;
                                 case PBEStatusAction.Activated: message = "{0} is in love with {1}!"; break;
                                 case PBEStatusAction.CausedImmobility: message = "{0} is immobilized by love!"; break;
-                                case PBEStatusAction.Cured: message = "{0} got over its infatuation."; break;
-                                case PBEStatusAction.Ended: return;
+                                case PBEStatusAction.Cured:
+                                case PBEStatusAction.Ended: message = "{0} got over its infatuation."; break;
                                 default: throw new ArgumentOutOfRangeException(nameof(s2p.StatusAction));
                             }
                             break;
@@ -1061,6 +1061,16 @@ namespace Kermalis.PokemonBattleEngine.Battle
                             {
                                 case PBEStatusAction.Added: message = "{0} was seeded!"; break;
                                 case PBEStatusAction.Damage: message = "{0}'s health is sapped by Leech Seed!"; break;
+                                default: throw new ArgumentOutOfRangeException(nameof(s2p.StatusAction));
+                            }
+                            break;
+                        }
+                        case PBEStatus2.LockOn:
+                        {
+                            switch (s2p.StatusAction)
+                            {
+                                case PBEStatusAction.Added: message = "{0} took aim at {1}!"; break;
+                                case PBEStatusAction.Ended: return;
                                 default: throw new ArgumentOutOfRangeException(nameof(s2p.StatusAction));
                             }
                             break;

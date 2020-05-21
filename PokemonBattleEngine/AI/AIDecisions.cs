@@ -535,6 +535,7 @@ namespace Kermalis.PokemonBattleEngine.AI
                                     case PBEMoveEffect.Haze:
                                     case PBEMoveEffect.HelpingHand:
                                     case PBEMoveEffect.HPDrain__RequireSleep:
+                                    case PBEMoveEffect.LockOn:
                                     case PBEMoveEffect.MagnetRise:
                                     case PBEMoveEffect.Metronome:
                                     case PBEMoveEffect.MiracleEye:

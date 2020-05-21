@@ -987,6 +987,11 @@ namespace Kermalis.PokemonBattleEngine.Battle
                         Ef_TryForceTeamStatus(user, move, PBETeamStatus.LightScreen);
                         break;
                     }
+                    case PBEMoveEffect.LockOn:
+                    {
+                        Ef_TryForceStatus2(user, targets, move, PBEStatus2.LockOn);
+                        break;
+                    }
                     case PBEMoveEffect.LowerTarget_ATK_DEF_By1:
                     {
                         Ef_ChangeTargetStats(user, targets, move, new PBEStat[] { PBEStat.Attack, PBEStat.Defense }, new int[] { -1, -1 });
@@ -1396,6 +1401,10 @@ namespace Kermalis.PokemonBattleEngine.Battle
                 BroadcastTeamStatus(target.Team, PBETeamStatus.WideGuard, PBETeamStatusAction.Damage, target);
                 return true;
             }
+            if (user.Status2.HasFlag(PBEStatus2.LockOn) && user.LockOnPokemon == target)
+            {
+                return false;
+            }
             if (user.Ability == PBEAbility.NoGuard || target.Ability == PBEAbility.NoGuard)
             {
                 return false;
@@ -1612,8 +1621,8 @@ namespace Kermalis.PokemonBattleEngine.Battle
                 ActiveBattlers.Remove(pkmn);
                 PBEFieldPosition oldPos = pkmn.FieldPosition;
                 pkmn.FieldPosition = PBEFieldPosition.None;
-                RemoveInfatuations(pkmn);
                 BroadcastPkmnFainted(pkmn, oldPos);
+                RemoveInfatuationsAndLockOns(pkmn);
                 pkmn.Team.MonFaintedThisTurn = true;
                 TrySetLoser(pkmn);
                 CastformCherrimCheckAll();
@@ -2223,6 +2232,22 @@ namespace Kermalis.PokemonBattleEngine.Battle
                     }
                     break;
                 }
+                case PBEStatus2.LockOn:
+                {
+                    if (!user.Status2.HasFlag(PBEStatus2.LockOn))
+                    {
+                        user.Status2 |= PBEStatus2.LockOn;
+                        user.LockOnPokemon = target;
+                        user.LockOnTurns = 2;
+                        BroadcastStatus2(user, target, PBEStatus2.LockOn, PBEStatusAction.Added);
+                        result = PBEResult.Success;
+                    }
+                    else
+                    {
+                        result = PBEResult.Ineffective_Stat;
+                    }
+                    break;
+                }
                 case PBEStatus2.MagnetRise:
                 {
                     result = target.IsMagnetRisePossible();
@@ -2384,8 +2409,8 @@ namespace Kermalis.PokemonBattleEngine.Battle
             ActiveBattlers.Remove(pkmnLeaving);
             PBEPokemon disguisedAsPokemon = pkmnLeaving.Status2.HasFlag(PBEStatus2.Disguised) ? pkmnLeaving.DisguisedAsPokemon : pkmnLeaving;
             pkmnLeaving.ClearForSwitch();
-            RemoveInfatuations(pkmnLeaving);
             BroadcastPkmnSwitchOut(pkmnLeaving, disguisedAsPokemon, pos, forcedByPkmn);
+            RemoveInfatuationsAndLockOns(pkmnLeaving);
             pkmnComing.FieldPosition = pos;
             ActiveBattlers.Add(pkmnComing);
             BroadcastPkmnSwitchIn(pkmnComing.Team, new[] { CreateSwitchInInfo(pkmnComing) }, forcedByPkmn);
@@ -2396,7 +2421,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
             DoSwitchInEffects(new[] { pkmnComing }, forcedByPkmn);
             CastformCherrimCheckAll();
         }
-        private void RemoveInfatuations(PBEPokemon pkmnLeaving)
+        private void RemoveInfatuationsAndLockOns(PBEPokemon pkmnLeaving)
         {
             foreach (PBEPokemon pkmn in ActiveBattlers)
             {
@@ -2404,7 +2429,14 @@ namespace Kermalis.PokemonBattleEngine.Battle
                 {
                     pkmn.Status2 &= ~PBEStatus2.Infatuated;
                     pkmn.InfatuatedWithPokemon = null;
-                    BroadcastStatus2(pkmn, pkmnLeaving, PBEStatus2.Infatuated, PBEStatusAction.Ended);
+                    BroadcastStatus2(pkmn, pkmn, PBEStatus2.Infatuated, PBEStatusAction.Ended);
+                }
+                if (pkmn.Status2.HasFlag(PBEStatus2.LockOn) && pkmn.LockOnPokemon == pkmnLeaving)
+                {
+                    pkmn.Status2 &= ~PBEStatus2.LockOn;
+                    pkmn.LockOnPokemon = null;
+                    pkmn.LockOnTurns = 0;
+                    BroadcastStatus2(pkmn, pkmn, PBEStatus2.LockOn, PBEStatusAction.Ended);
                 }
             }
         }

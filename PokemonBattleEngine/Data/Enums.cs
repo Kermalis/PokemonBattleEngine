@@ -266,24 +266,25 @@ namespace Kermalis.PokemonBattleEngine.Data
         Infatuated = 1 << 6,
         /// <summary>The Pokémon is seeded and HP will be stolen at the end of each turn.</summary>
         LeechSeed = 1 << 7,
-        MagnetRise = 1 << 8,
-        MiracleEye = 1 << 9,
+        LockOn = 1 << 8,
+        MagnetRise = 1 << 9,
+        MiracleEye = 1 << 10,
         /// <summary>The Pokémon's <see cref="PBEStat.Attack"/> and <see cref="PBEStat.Defense"/> are switched.</summary>
-        PowerTrick = 1 << 10,
+        PowerTrick = 1 << 11,
         /// <summary>The Pokémon is protected from moves this turn.</summary>
-        Protected = 1 << 11,
+        Protected = 1 << 12,
         /// <summary>The Pokémon is under the effect of <see cref="PBEMove.FocusEnergy"/> or <see cref="PBEItem.LansatBerry"/> and has a higher chance of landing critical hits.</summary>
-        Pumped = 1 << 12,
+        Pumped = 1 << 13,
         /// <summary>The Pokémon is behind a substitute that will take damage on behalf of the Pokémon and prevent most moves from affecting the Pokémon.</summary>
-        Substitute = 1 << 13,
+        Substitute = 1 << 14,
         /// <summary>The Pokémon is transformed into another Pokémon.</summary>
-        Transformed = 1 << 14,
+        Transformed = 1 << 15,
         /// <summary>The Pokémon is underground. A move will miss against the Pokémon unless it has <see cref="PBEMoveFlag.HitsUnderground"/> or either Pokémon has <see cref="PBEAbility.NoGuard"/>.
         /// The Pokémon will take double damage from <see cref="PBEMove.Earthquake"/> and <see cref="PBEMove.Magnitude"/>.</summary>
-        Underground = 1 << 15,
+        Underground = 1 << 16,
         /// <summary>The Pokémon is underwater. A move will miss against the Pokémon unless it has <see cref="PBEMoveFlag.HitsUnderwater"/> or either Pokémon has <see cref="PBEAbility.NoGuard"/>.
         /// The Pokémon will take double damage from <see cref="PBEMove.Surf"/> and <see cref="PBEMove.Whirlpool"/>.</summary>
-        Underwater = 1 << 16
+        Underwater = 1 << 17
     }
     /// <summary>Represents a specific <see cref="PBEBattle"/>'s status.</summary>
     [Flags]
@@ -2201,6 +2202,7 @@ namespace Kermalis.PokemonBattleEngine.Data
         HPDrain__RequireSleep,
         LeechSeed,
         LightScreen,
+        LockOn,
         LowerTarget_ATK_DEF_By1,
         LowerTarget_DEF_SPDEF_By1_Raise_ATK_SPATK_SPE_By2,
         LuckyChant,
@@ -2532,7 +2534,7 @@ namespace Kermalis.PokemonBattleEngine.Data
         Leer = 43,
         Lick = 122,
         LightScreen = 113,
-        //LockOn = 199,
+        LockOn = 199,
         LovelyKiss = 142,
         LowKick = 67,
         LowSweep = 490,
@@ -2562,7 +2564,7 @@ namespace Kermalis.PokemonBattleEngine.Data
         Metronome = 118,
         MilkDrink = 208,
         //Mimic = 102, // TODO: Blocked by Metronome
-        //MindReader = 170,
+        MindReader = 170,
         Minimize = 107,
         MiracleEye = 357,
         //MirrorCoat = 243, // TODO: Blocked by Metronome

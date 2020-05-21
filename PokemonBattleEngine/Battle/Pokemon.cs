@@ -123,6 +123,9 @@ namespace Kermalis.PokemonBattleEngine.Battle
         public PBEPokemon InfatuatedWithPokemon { get; set; }
         /// <summary>The amount of turns until <see cref="PBEStatus2.MagnetRise"/> ends.</summary>
         public byte MagnetRiseTurns { get; set; }
+        /// <summary>The Pokémon that <see cref="PBEStatus2.LockOn"/> is bound to.</summary>
+        public PBEPokemon LockOnPokemon { get; set; }
+        public byte LockOnTurns { get; set; }
         /// <summary>The amount of times the Pokémon has successfully used <see cref="PBEMove.Detect"/>, <see cref="PBEMove.Protect"/>, <see cref="PBEMove.QuickGuard"/>, and/or <see cref="PBEMove.WideGuard"/> consecutively.</summary>
         public int Protection_Counter { get; set; }
         /// <summary>The position to return <see cref="PBEStatus2.LeechSeed"/> HP to on <see cref="SeededTeam"/>.</summary>
@@ -309,6 +312,8 @@ namespace Kermalis.PokemonBattleEngine.Battle
             ConfusionCounter = 0;
             ConfusionTurns = 0;
             DisguisedAsPokemon = null;
+            LockOnPokemon = null;
+            LockOnTurns = 0;
             MagnetRiseTurns = 0;
             Protection_Counter = 0;
             SeededPosition = PBEFieldPosition.None;
@@ -1071,15 +1076,22 @@ namespace Kermalis.PokemonBattleEngine.Battle
             }
             if (Status2.HasFlag(PBEStatus2.Disguised))
             {
-                sb.AppendLine($"Disguised as: {DisguisedAsPokemon.Nickname}");
+                sb.AppendLine($"Disguised as: {DisguisedAsPokemon.Team.TrainerName}'s {DisguisedAsPokemon.Nickname}");
             }
-            if (Status2.HasFlag(PBEStatus2.Infatuated))
+            if (Team.Battle.BattleFormat != PBEBattleFormat.Single)
             {
-                sb.AppendLine($"Infatuated with: {InfatuatedWithPokemon.Nickname}");
-            }
-            if (Status2.HasFlag(PBEStatus2.LeechSeed))
-            {
-                sb.AppendLine($"Seeded position: {SeededTeam.TrainerName}'s {SeededPosition}");
+                if (Status2.HasFlag(PBEStatus2.Infatuated))
+                {
+                    sb.AppendLine($"Infatuated with: {InfatuatedWithPokemon.Team.TrainerName}'s {InfatuatedWithPokemon.Nickname}");
+                }
+                if (Status2.HasFlag(PBEStatus2.LeechSeed))
+                {
+                    sb.AppendLine($"Seeded position: {SeededTeam.TrainerName}'s {SeededPosition}");
+                }
+                if (Status2.HasFlag(PBEStatus2.LockOn))
+                {
+                    sb.AppendLine($"Taking aim at: {LockOnPokemon.Team.TrainerName}'s {LockOnPokemon.Nickname}");
+                }
             }
             if (Status2.HasFlag(PBEStatus2.Substitute))
             {
