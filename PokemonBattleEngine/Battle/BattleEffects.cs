@@ -651,6 +651,11 @@ namespace Kermalis.PokemonBattleEngine.Battle
                         Ef_TryForceStatus2(user, targets, move, PBEStatus2.Infatuated);
                         break;
                     }
+                    case PBEMoveEffect.BellyDrum:
+                    {
+                        Ef_BellyDrum(user, targets, move);
+                        break;
+                    }
                     case PBEMoveEffect.BrickBreak:
                     {
                         Ef_BrickBreak(user, targets, move);
@@ -2317,7 +2322,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
             }
             return result;
         }
-        private void ApplyStatChange(PBEPokemon user, PBEPokemon target, PBEStat stat, int change, bool isSecondaryEffect = false)
+        private void ApplyStatChange(PBEPokemon user, PBEPokemon target, PBEStat stat, int change, bool broadcastUnsuccessful = false)
         {
             // Verified: Contrary/Simple are silent
             if (!user.HasCancellingAbility())
@@ -2329,7 +2334,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                     {
                         if (change < 0 && user != target)
                         {
-                            if (!isSecondaryEffect)
+                            if (!broadcastUnsuccessful)
                             {
                                 BroadcastAbility(target, user, target.Ability, PBEAbilityAction.Stats);
                             }
@@ -2345,7 +2350,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
             sbyte oldValue = target.GetStatChange(stat);
             sbyte newValue = target.SetStatChange(stat, oldValue + change);
             // Do not broadcast "could not be lowered!" for Mud-Slap, etc
-            if (!isSecondaryEffect || oldValue != newValue)
+            if (!broadcastUnsuccessful || oldValue != newValue)
             {
                 BroadcastPkmnStatChanged(target, stat, oldValue, newValue);
             }
@@ -2952,7 +2957,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                     {
                         for (int i = 0; i < stats.Length; i++)
                         {
-                            ApplyStatChange(user, target, stats[i], changes[i], isSecondaryEffect: true);
+                            ApplyStatChange(user, target, stats[i], changes[i], broadcastUnsuccessful: true);
                         }
                     }
                 }
@@ -2976,7 +2981,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                     {
                         for (int i = 0; i < stats.Length; i++)
                         {
-                            ApplyStatChange(user, user, stats[i], changes[i], isSecondaryEffect: true);
+                            ApplyStatChange(user, user, stats[i], changes[i], broadcastUnsuccessful: true);
                         }
                     }
                 }
@@ -3632,6 +3637,35 @@ namespace Kermalis.PokemonBattleEngine.Battle
             RecordExecutedMove(user, move);
         }
 
+        private void Ef_BellyDrum(PBEPokemon user, PBEPokemon[] targets, PBEMove move)
+        {
+            BroadcastMoveUsed(user, move);
+            PPReduce(user, move);
+            if (targets.Length == 0)
+            {
+                BroadcastMoveResult(user, user, PBEResult.NoTarget);
+            }
+            else
+            {
+                foreach (PBEPokemon target in targets)
+                {
+                    if (!MissCheck(user, target, move))
+                    {
+                        int requirement = target.MaxHP / 2;
+                        if (target.HP <= requirement)
+                        {
+                            BroadcastMoveResult(user, target, PBEResult.InvalidConditions);
+                        }
+                        else
+                        {
+                            DealDamage(user, target, requirement, true);
+                            ApplyStatChange(user, target, PBEStat.Attack, byte.MaxValue); // Will work for all PBESettings
+                        }
+                    }
+                }
+            }
+            RecordExecutedMove(user, move);
+        }
         private void Ef_Conversion(PBEPokemon user, PBEPokemon[] targets, PBEMove move)
         {
             BroadcastMoveUsed(user, move);

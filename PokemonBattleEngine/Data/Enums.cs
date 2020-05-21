@@ -2139,6 +2139,7 @@ namespace Kermalis.PokemonBattleEngine.Data
     public enum PBEMoveEffect : byte
     {
         Attract,
+        BellyDrum,
         BrickBreak,
         Burn,
         ChangeTarget_ACC,
@@ -2296,7 +2297,7 @@ namespace Kermalis.PokemonBattleEngine.Data
         Barrier = 112,
         //BatonPass = 226,
         //BeatUp = 251,
-        //BellyDrum = 187,
+        BellyDrum = 187,
         //Bestow = 516, // TODO: Blocked by Metronome
         //Bide = 117,
         //Bind = 20,

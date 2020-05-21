@@ -251,6 +251,15 @@ namespace Kermalis.PokemonBattleEngine.Data
                 )
             },
             {
+                PBEMove.BellyDrum,
+                new PBEMoveData
+                (
+                    PBEType.Normal, PBEMoveCategory.Status, 0, 2, 0, 0,
+                    PBEMoveEffect.BellyDrum, 0, PBEMoveTarget.Self,
+                    PBEMoveFlag.AffectedBySnatch
+                )
+            },
+            {
                 PBEMove.Bite,
                 new PBEMoveData
                 (
