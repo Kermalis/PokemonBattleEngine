@@ -54,5 +54,8 @@ namespace Kermalis.PokemonBattleEngineTests
             battle.OnNewEvent -= PBEBattle.ConsoleBattleEventHandler;
             battle.Dispose();
         }
+
+        // Who wins if you use explosion and faint everyone on the field in a double battle?
+        // Who wins if you use Perish Song and everyone faints at the same time? Is it based on who's slowest?
     }
 }
