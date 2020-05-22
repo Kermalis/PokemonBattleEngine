@@ -6,6 +6,7 @@ namespace Kermalis.PokemonBattleEngine.Utils
 {
     public static class PBERandom
     {
+        private static readonly object _randLockObj = new object();
         private static Random _rand = new Random();
 
         internal static bool RandomBool()
@@ -52,7 +53,10 @@ namespace Kermalis.PokemonBattleEngine.Utils
             byte[] bytes = new byte[sizeof(uint)];
             while (scale == uint.MaxValue) // "d" should not be 1.0
             {
-                _rand.NextBytes(bytes);
+                lock (_randLockObj)
+                {
+                    _rand.NextBytes(bytes);
+                }
                 scale = BitConverter.ToUInt32(bytes, 0);
             }
             double d = scale / (double)uint.MaxValue;
@@ -110,7 +114,10 @@ namespace Kermalis.PokemonBattleEngine.Utils
         }
         public static void SetSeed(int seed)
         {
-            _rand = new Random(seed);
+            lock (_randLockObj)
+            {
+                _rand = new Random(seed);
+            }
         }
         /// <summary>Shuffles the items in <paramref name="source"/> using the Fisher-Yates Shuffle algorithm.</summary>
         internal static void Shuffle<T>(this IList<T> source)
