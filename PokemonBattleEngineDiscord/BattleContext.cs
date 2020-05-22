@@ -924,7 +924,7 @@ namespace Kermalis.PokemonBattleEngineDiscord
                 case PBEMoveCritPacket mcp:
                 {
                     PBEPokemon victim = mcp.VictimTeam.TryGetPokemon(mcp.Victim);
-                    await context.CreateAndSendEmbedAsync(string.Format("A critical hit on {0}!", NameForTrainer(victim)));
+                    await context.CreateAndSendEmbedAsync(string.Format("A critical hit on {0}!", NameForTrainer(victim)), pkmn: victim);
                     break;
                 }
                 case PBEMoveMissedPacket mmp:
@@ -1651,11 +1651,6 @@ namespace Kermalis.PokemonBattleEngineDiscord
                     {
                         await Message.AddReactionAsync(Reaction);
                     }
-                    break;
-                }
-                case PBEAutoCenterPacket _: // Currently unused
-                {
-                    await context.CreateAndSendEmbedAsync("The battlers shifted to the center!");
                     break;
                 }
                 case PBESwitchInRequestPacket sirp:
