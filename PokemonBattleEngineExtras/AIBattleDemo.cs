@@ -83,6 +83,9 @@ namespace Kermalis.PokemonBattleEngineExtras
             Console.WriteLine(e.StackTrace);
             Console.SetOut(_oldWriter);
             _writer.Dispose();
+            _battle.OnNewEvent -= PBEBattle.ConsoleBattleEventHandler;
+            _battle.OnNewEvent -= Battle_OnNewEvent;
+            _battle.OnStateChanged -= Battle_OnStateChanged;
             _battle.Dispose();
             Console.WriteLine("Demo battle threw an exception; check \"{0}\" for details.", LogFile);
             Console.ReadKey();
