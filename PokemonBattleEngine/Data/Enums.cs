@@ -574,7 +574,7 @@ namespace Kermalis.PokemonBattleEngine.Data
         AmuletCoin = 223,
         /// <summary>No effect.</summary>
         Antidote = 18,
-        ApicotBerry = 205, // TODO
+        ApicotBerry = 205,
         /// <summary>No effect.</summary>
         ArmorFossil = 104,
         AspearBerry = 153, // TODO
@@ -738,7 +738,7 @@ namespace Kermalis.PokemonBattleEngine.Data
         FullIncense = 316, // TODO
         /// <summary>No effect.</summary>
         FullRestore = 23,
-        GanlonBerry = 202, // TODO
+        GanlonBerry = 202,
         /// <summary>No effect.</summary>
         GeniusWing = 568,
         GhostGem = 560,
@@ -816,7 +816,7 @@ namespace Kermalis.PokemonBattleEngine.Data
         LeppaBerry = 154, // TODO
         /// <summary>No effect.</summary>
         LevelBall = 493,
-        LiechiBerry = 201, // TODO
+        LiechiBerry = 201,
         LifeOrb = 270,
         LightBall = 236,
         LightClay = 269,
@@ -907,7 +907,7 @@ namespace Kermalis.PokemonBattleEngine.Data
         PearlString = 582,
         PechaBerry = 151, // TODO
         PersimBerry = 156, // TODO
-        PetayaBerry = 204, // TODO
+        PetayaBerry = 204,
         PinapBerry = 168, // TODO
         /// <summary>No effect.</summary>
         PinkScarf = 262,
@@ -1018,7 +1018,7 @@ namespace Kermalis.PokemonBattleEngine.Data
         SacredAsh = 44,
         /// <summary>No effect.</summary>
         SafariBall = 5,
-        SalacBerry = 203, // TODO
+        SalacBerry = 203,
         ScopeLens = 232,
         SeaIncense = 254,
         SharpBeak = 244,
@@ -1057,7 +1057,7 @@ namespace Kermalis.PokemonBattleEngine.Data
         StableMulch = 97,
         /// <summary>No effect.</summary>
         Stardust = 90,
-        StarfBerry = 207, // TODO
+        StarfBerry = 207,
         /// <summary>No effect.</summary>
         StarPiece = 91,
         SteelGem = 563,

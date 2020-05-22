@@ -8,7 +8,8 @@ namespace Kermalis.PokemonBattleEngine.Battle
 {
     public sealed partial class PBEBattle
     {
-        private static readonly PBEStat[] _moodyStats = Enum.GetValues(typeof(PBEStat)).Cast<PBEStat>().Except(new[] { PBEStat.HP }).ToArray();
+        private static readonly PBEStat[] _moodyStats = new PBEStat[] { PBEStat.Attack, PBEStat.Defense, PBEStat.SpAttack, PBEStat.SpDefense, PBEStat.Speed, PBEStat.Accuracy, PBEStat.Evasion };
+        private static readonly PBEStat[] _starfBerryStats = new PBEStat[] { PBEStat.Attack, PBEStat.Defense, PBEStat.SpAttack, PBEStat.SpDefense, PBEStat.Speed };
 
         private bool _calledFromOtherMove = false;
 
@@ -28,7 +29,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                     {
                         continue;
                     }
-                    HealingBerryCheck(pkmn, forcedInBy);
+                    LowHPBerryCheck(pkmn, forcedInBy);
                 }
                 if (pkmn.Team.TeamStatus.HasFlag(PBETeamStatus.StealthRock))
                 {
@@ -38,7 +39,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                     {
                         continue;
                     }
-                    HealingBerryCheck(pkmn, forcedInBy);
+                    LowHPBerryCheck(pkmn, forcedInBy);
                 }
                 if (grounded && pkmn.Team.TeamStatus.HasFlag(PBETeamStatus.ToxicSpikes))
                 {
@@ -88,18 +89,18 @@ namespace Kermalis.PokemonBattleEngine.Battle
                 if (victim.HP > 0 && victim.Ability == PBEAbility.Justified && moveType == PBEType.Dark) // Verified: Justified before Rocky Helmet
                 {
                     BroadcastAbility(victim, user, PBEAbility.Justified, PBEAbilityAction.Damage);
-                    ApplyStatChange(victim, victim, PBEStat.Attack, +1);
+                    ApplyStatChangeIfPossible(victim, victim, PBEStat.Attack, +1);
                 }
                 if (victim.HP > 0 && victim.Ability == PBEAbility.Rattled && (moveType == PBEType.Bug || moveType == PBEType.Dark || moveType == PBEType.Ghost)) // Verified: Rattled before Rocky Helmet
                 {
                     BroadcastAbility(victim, user, PBEAbility.Rattled, PBEAbilityAction.Damage);
-                    ApplyStatChange(victim, victim, PBEStat.Speed, +1);
+                    ApplyStatChangeIfPossible(victim, victim, PBEStat.Speed, +1);
                 }
                 if (victim.HP > 0 && victim.Ability == PBEAbility.WeakArmor && mData.Category == PBEMoveCategory.Physical) // Verified: Weak Armor before Rocky Helmet
                 {
                     BroadcastAbility(victim, user, PBEAbility.WeakArmor, PBEAbilityAction.Damage);
-                    ApplyStatChange(victim, victim, PBEStat.Defense, -1);
-                    ApplyStatChange(victim, victim, PBEStat.Speed, +1);
+                    ApplyStatChangeIfPossible(victim, victim, PBEStat.Defense, -1);
+                    ApplyStatChangeIfPossible(victim, victim, PBEStat.Speed, +1);
                 }
 
                 if (mData.Flags.HasFlag(PBEMoveFlag.MakesContact))
@@ -115,7 +116,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                         DealDamage(victim, user, user.MaxHP / 8, true);
                         if (!FaintCheck(user))
                         {
-                            HealingBerryCheck(user);
+                            LowHPBerryCheck(user);
                         }
                     }
                     // Verified: Cute Charm can activate when victim is about to faint
@@ -197,7 +198,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                         DealDamage(victim, user, user.MaxHP / 6, true);
                         if (!FaintCheck(user))
                         {
-                            HealingBerryCheck(user);
+                            LowHPBerryCheck(user);
                         }
                     }
                 }
@@ -207,7 +208,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
             {
                 // Verified: Berry after Rough Skin (for victim)
                 // Verified: Own Tempo will be ignored if hit, and will not cure until the move is complete
-                HealingBerryCheck(victim, user);
+                LowHPBerryCheck(victim, user);
             }
 
             // TODO: King's Rock, Stench, etc
@@ -233,7 +234,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                 DealDamage(user, user, recoilDamage.Value, true, ignoreSturdy: true);
                 if (!FaintCheck(user))
                 {
-                    HealingBerryCheck(user);
+                    LowHPBerryCheck(user);
                 }
             }
 
@@ -285,7 +286,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                                         DealDamage(pkmn, pkmn, pkmn.MaxHP / Settings.HailDamageDenominator, true);
                                         if (!FaintCheck(pkmn))
                                         {
-                                            HealingBerryCheck(pkmn);
+                                            LowHPBerryCheck(pkmn);
                                         }
                                     }
                                     break;
@@ -298,7 +299,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                                         DealDamage(pkmn, pkmn, pkmn.MaxHP / 8, true);
                                         if (!FaintCheck(pkmn))
                                         {
-                                            HealingBerryCheck(pkmn);
+                                            LowHPBerryCheck(pkmn);
                                         }
                                     }
                                     break;
@@ -328,7 +329,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                                         DealDamage(pkmn, pkmn, pkmn.MaxHP / Settings.SandstormDamageDenominator, true);
                                         if (!FaintCheck(pkmn))
                                         {
-                                            HealingBerryCheck(pkmn);
+                                            LowHPBerryCheck(pkmn);
                                         }
                                     }
                                     break;
@@ -418,7 +419,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                         HealDamage(sucker, amtDealt);
                         if (!FaintCheck(pkmn))
                         {
-                            HealingBerryCheck(pkmn);
+                            LowHPBerryCheck(pkmn);
                         }
                     }
                 }
@@ -442,7 +443,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                             DealDamage(pkmn, pkmn, damage, true);
                             if (!FaintCheck(pkmn))
                             {
-                                HealingBerryCheck(pkmn);
+                                LowHPBerryCheck(pkmn);
                             }
                             break;
                         }
@@ -452,7 +453,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                             DealDamage(pkmn, pkmn, pkmn.MaxHP / Settings.PoisonDamageDenominator, true);
                             if (!FaintCheck(pkmn))
                             {
-                                HealingBerryCheck(pkmn);
+                                LowHPBerryCheck(pkmn);
                             }
                             break;
                         }
@@ -463,7 +464,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                             if (!FaintCheck(pkmn))
                             {
                                 pkmn.Status1Counter++;
-                                HealingBerryCheck(pkmn);
+                                LowHPBerryCheck(pkmn);
                             }
                             break;
                         }
@@ -480,7 +481,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                     DealDamage(pkmn, pkmn, pkmn.MaxHP / Settings.CurseDenominator, true);
                     if (!FaintCheck(pkmn))
                     {
-                        HealingBerryCheck(pkmn);
+                        LowHPBerryCheck(pkmn);
                     }
                 }
             }
@@ -515,7 +516,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                                 DealDamage(pkmn, victim, pkmn.MaxHP / 8, true);
                                 if (!FaintCheck(victim))
                                 {
-                                    HealingBerryCheck(victim);
+                                    LowHPBerryCheck(victim);
                                 }
                             }
                             break;
@@ -535,11 +536,11 @@ namespace Kermalis.PokemonBattleEngine.Battle
                                 BroadcastAbility(pkmn, pkmn, pkmn.Ability, PBEAbilityAction.Stats);
                                 if (upStat.HasValue)
                                 {
-                                    ApplyStatChange(pkmn, pkmn, upStat.Value, +2);
+                                    ApplyStatChangeIfPossible(pkmn, pkmn, upStat.Value, +2);
                                 }
                                 if (downStat.HasValue)
                                 {
-                                    ApplyStatChange(pkmn, pkmn, downStat.Value, -1);
+                                    ApplyStatChangeIfPossible(pkmn, pkmn, downStat.Value, -1);
                                 }
                             }
                             break;
@@ -561,7 +562,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                             if (pkmn.SpeedBoost_AbleToSpeedBoostThisTurn && pkmn.SpeedChange < Settings.MaxStatChange)
                             {
                                 BroadcastAbility(pkmn, pkmn, pkmn.Ability, PBEAbilityAction.Stats);
-                                ApplyStatChange(pkmn, pkmn, PBEStat.Speed, +1);
+                                ApplyStatChangeIfPossible(pkmn, pkmn, PBEStat.Speed, +1);
                             }
                             break;
                         }
@@ -1334,7 +1335,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                 if (user.Ability == PBEAbility.Steadfast && user.SpeedChange < Settings.MaxStatChange)
                 {
                     BroadcastAbility(user, user, PBEAbility.Steadfast, PBEAbilityAction.Stats);
-                    ApplyStatChange(user, user, PBEStat.Speed, +1);
+                    ApplyStatChangeIfPossible(user, user, PBEStat.Speed, +1);
                 }
                 return true;
             }
@@ -1359,7 +1360,10 @@ namespace Kermalis.PokemonBattleEngine.Battle
                         DealDamage(user, user, damage, true);
                         if (!FaintCheck(user))
                         {
-                            //HealingBerryCheck(user); // BUG: In generation 5+, confusion damage does not activate these berries
+                            // BUG: In generation 5+, confusion damage does not activate these items
+#if BUGFIX
+                            LowHPBerryCheck(user);
+#endif
                         }
                         return true;
                     }
@@ -1690,7 +1694,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                         if (pkmn.GetStatChange(stat) < Settings.MaxStatChange)
                         {
                             BroadcastAbility(pkmn, pkmn, PBEAbility.Download, PBEAbilityAction.Stats);
-                            ApplyStatChange(pkmn, pkmn, stat, +1);
+                            ApplyStatChangeIfPossible(pkmn, pkmn, stat, +1);
                         }
                     }
                     break;
@@ -1956,7 +1960,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
         {
             if (pkmn.Item == PBEItem.WhiteHerb)
             {
-                PBEStat[] negStats = pkmn.GetNegativeStats();
+                PBEStat[] negStats = pkmn.GetStatsLessThan(0);
                 if (negStats.Length > 0)
                 {
                     foreach (PBEStat s in negStats)
@@ -1976,70 +1980,69 @@ namespace Kermalis.PokemonBattleEngine.Battle
             }
             return false;
         }
-        private void HealingBerryCheck(PBEPokemon pkmn, PBEPokemon forcedToEatBy = null)
+        private void LowHPBerryCheck(PBEPokemon pkmn, PBEPokemon forcedToEatBy = null)
         {
+            forcedToEatBy = forcedToEatBy ?? pkmn;
             void DoConfuseBerry(PBEFlavor flavor)
             {
-                BroadcastItem(pkmn, pkmn, pkmn.Item, PBEItemAction.Consumed);
+                BroadcastItem(pkmn, forcedToEatBy, pkmn.Item, PBEItemAction.Consumed);
                 HealDamage(pkmn, pkmn.MaxHP / 8);
                 // Verified: Ignores Safeguard & Substitute, but not Own Tempo
                 // Mold Breaker etc actually affect whether Own Tempo is ignored, which is what forcedToEatBy is for
                 // I verified each of the times the Pokémon eats to check if Mold Breaker affected the outcome
                 if (pkmn.Nature.GetRelationshipToFlavor(flavor) < 0 && pkmn.IsConfusionPossible(forcedToEatBy, ignoreSubstitute: true, ignoreSafeguard: true) == PBEResult.Success)
                 {
-                    CauseConfusion(pkmn, pkmn);
+                    CauseConfusion(pkmn, forcedToEatBy);
                 }
             }
-            void DoRegularItem(int hp)
+            void DoHealItem(int hp)
             {
-                BroadcastItem(pkmn, pkmn, pkmn.Item, PBEItemAction.Consumed);
+                BroadcastItem(pkmn, forcedToEatBy, pkmn.Item, PBEItemAction.Consumed);
                 HealDamage(pkmn, hp);
             }
+            void DoStatItem(PBEStat stat, int change)
+            {
+                // Verified: Mold Breaker affects Contrary/Simple here, unlike with Belly Drum
+                if (pkmn.IsStatChangePossible(stat, forcedToEatBy, change, out sbyte oldValue, out sbyte newValue) == PBEResult.Success)
+                {
+                    BroadcastItem(pkmn, forcedToEatBy, pkmn.Item, PBEItemAction.Consumed);
+                    SetStatAndBroadcast(pkmn, stat, oldValue, newValue);
+                }
+            }
 
+            if (pkmn.HP <= pkmn.MaxHP / 4)
+            {
+                switch (pkmn.Item)
+                {
+                    case PBEItem.ApicotBerry: DoStatItem(PBEStat.SpDefense, +1); break;
+                    case PBEItem.GanlonBerry: DoStatItem(PBEStat.Defense, +1); break;
+                    case PBEItem.LiechiBerry: DoStatItem(PBEStat.Attack, +1); break;
+                    case PBEItem.PetayaBerry: DoStatItem(PBEStat.SpAttack, +1); break;
+                    case PBEItem.SalacBerry: DoStatItem(PBEStat.Speed, +1); break;
+                    case PBEItem.StarfBerry:
+                    {
+                        // Verified: Starf Berry does not activate for Accuracy or Evasion, or if all other stats are maximized
+                        PBEStat[] statsThatCanGoUp = _starfBerryStats.Where(s => pkmn.GetStatChange(s) < Settings.MaxStatChange).ToArray();
+                        if (statsThatCanGoUp.Length > 0)
+                        {
+                            DoStatItem(statsThatCanGoUp.RandomElement(), +2);
+                        }
+                        break;
+                    }
+                }
+            }
             if (pkmn.HP <= pkmn.MaxHP / 2)
             {
                 switch (pkmn.Item)
                 {
-                    case PBEItem.AguavBerry:
-                    {
-                        DoConfuseBerry(PBEFlavor.Bitter);
-                        break;
-                    }
-                    case PBEItem.BerryJuice:
-                    {
-                        DoRegularItem(20);
-                        break;
-                    }
-                    case PBEItem.FigyBerry:
-                    {
-                        DoConfuseBerry(PBEFlavor.Spicy);
-                        break;
-                    }
-                    case PBEItem.IapapaBerry:
-                    {
-                        DoConfuseBerry(PBEFlavor.Sour);
-                        break;
-                    }
-                    case PBEItem.MagoBerry:
-                    {
-                        DoConfuseBerry(PBEFlavor.Sweet);
-                        break;
-                    }
-                    case PBEItem.OranBerry:
-                    {
-                        DoRegularItem(10);
-                        break;
-                    }
-                    case PBEItem.SitrusBerry:
-                    {
-                        DoRegularItem(pkmn.MaxHP / 4);
-                        break;
-                    }
-                    case PBEItem.WikiBerry:
-                    {
-                        DoConfuseBerry(PBEFlavor.Dry);
-                        break;
-                    }
+                    case PBEItem.AguavBerry: DoConfuseBerry(PBEFlavor.Bitter); break;
+                    case PBEItem.BerryJuice: DoHealItem(20); break;
+                    case PBEItem.FigyBerry: DoConfuseBerry(PBEFlavor.Spicy); break;
+                    case PBEItem.IapapaBerry: DoConfuseBerry(PBEFlavor.Sour); break;
+                    case PBEItem.MagoBerry: DoConfuseBerry(PBEFlavor.Sweet); break;
+                    case PBEItem.OranBerry: DoHealItem(10); break;
+                    case PBEItem.SitrusBerry: DoHealItem(pkmn.MaxHP / 4); break;
+                    case PBEItem.WikiBerry: DoConfuseBerry(PBEFlavor.Dry); break;
                 }
             }
         }
@@ -2186,7 +2189,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                         DealDamage(user, user, user.MaxHP / 2, true);
                         if (!FaintCheck(user))
                         {
-                            HealingBerryCheck(user);
+                            LowHPBerryCheck(user);
                         }
                         result = PBEResult.Success;
                     }
@@ -2327,7 +2330,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                     {
                         int hpRequired = target.MaxHP / 4;
                         DealDamage(user, target, hpRequired, true);
-                        HealingBerryCheck(target);
+                        LowHPBerryCheck(target);
                         target.Status2 |= PBEStatus2.Substitute;
                         target.SubstituteHP = (ushort)hpRequired;
                         BroadcastStatus2(target, user, PBEStatus2.Substitute, PBEStatusAction.Added);
@@ -2355,38 +2358,41 @@ namespace Kermalis.PokemonBattleEngine.Battle
             }
             return result;
         }
-        private void ApplyStatChange(PBEPokemon user, PBEPokemon target, PBEStat stat, int change, bool broadcastUnsuccessful = false)
+        // Our fallen hero, should we change all old references?
+        private void ApplyStatChangeIfPossible(PBEPokemon user, PBEPokemon target, PBEStat stat, int change, bool isSecondaryEffect = false)
         {
-            // Verified: Contrary/Simple are silent
-            if (!user.HasCancellingAbility())
+            PBEResult result = target.IsStatChangePossible(stat, user, change, out sbyte oldValue, out sbyte newValue);
+            bool broadcast;
+            if (result == PBEResult.Success)
             {
-                switch (target.Ability)
+                target.SetStatChange(stat, newValue);
+                broadcast = true;
+            }
+            else
+            {
+                if (result == PBEResult.Ineffective_Ability)
                 {
-                    case PBEAbility.ClearBody:
-                    case PBEAbility.WhiteSmoke:
+                    if (!isSecondaryEffect)
                     {
-                        if (change < 0 && user != target)
-                        {
-                            if (!broadcastUnsuccessful)
-                            {
-                                BroadcastAbility(target, user, target.Ability, PBEAbilityAction.Stats);
-                            }
-                            return;
-                        }
-                        break;
+                        BroadcastAbility(target, user, target.Ability, PBEAbilityAction.Stats);
                     }
-                    case PBEAbility.Contrary: change *= -1; break;
-                    case PBEAbility.Simple: change *= 2; break;
+                    return;
+                }
+                else
+                {
+                    // Do not broadcast "could not be lowered!" for Mud-Slap, etc
+                    broadcast = !isSecondaryEffect;
                 }
             }
-
-            sbyte oldValue = target.GetStatChange(stat);
-            sbyte newValue = target.SetStatChange(stat, oldValue + change);
-            // Do not broadcast "could not be lowered!" for Mud-Slap, etc
-            if (!broadcastUnsuccessful || oldValue != newValue)
+            if (broadcast)
             {
                 BroadcastPkmnStatChanged(target, stat, oldValue, newValue);
             }
+        }
+        private void SetStatAndBroadcast(PBEPokemon pkmn, PBEStat stat, sbyte oldValue, sbyte newValue)
+        {
+            pkmn.SetStatChange(stat, newValue);
+            BroadcastPkmnStatChanged(pkmn, stat, oldValue, newValue);
         }
 
         private PBEPkmnSwitchInPacket.PBESwitchInInfo CreateSwitchInInfo(PBEPokemon pkmn)
@@ -2973,7 +2979,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                         {
                             for (int i = 0; i < stats.Length; i++)
                             {
-                                ApplyStatChange(user, target, stats[i], changes[i]);
+                                ApplyStatChangeIfPossible(user, target, stats[i], changes[i]);
                             }
                         }
                     }
@@ -2997,7 +3003,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                     {
                         for (int i = 0; i < stats.Length; i++)
                         {
-                            ApplyStatChange(user, target, stats[i], changes[i], broadcastUnsuccessful: true);
+                            ApplyStatChangeIfPossible(user, target, stats[i], changes[i], isSecondaryEffect: true);
                         }
                     }
                 }
@@ -3021,7 +3027,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                     {
                         for (int i = 0; i < stats.Length; i++)
                         {
-                            ApplyStatChange(user, user, stats[i], changes[i], broadcastUnsuccessful: true);
+                            ApplyStatChangeIfPossible(user, user, stats[i], changes[i], isSecondaryEffect: true);
                         }
                     }
                 }
@@ -3601,8 +3607,8 @@ namespace Kermalis.PokemonBattleEngine.Battle
                                 }
                             }
                             BroadcastPainSplit(user, target);
-                            HealingBerryCheck(user);
-                            HealingBerryCheck(target, user); // Verified: Berry is activated but no illusion breaking
+                            LowHPBerryCheck(user);
+                            LowHPBerryCheck(target, user); // Verified: Berry is activated but no illusion breaking
                             DoPostAttackedTargetEffects(target); // Verified: Color Change is ignored
                         }
                     }
@@ -3692,14 +3698,23 @@ namespace Kermalis.PokemonBattleEngine.Battle
                     if (!MissCheck(user, target, move))
                     {
                         int requirement = target.MaxHP / 2;
-                        if (target.HP <= requirement)
+                        // BUG: The games do not check if the target has Contrary
+#if !BUGFIX
+                        if (target.HP <= requirement || target.AttackChange == Settings.MaxStatChange)
+#else
+                        if (target.HP <= requirement || target.IsStatChangePossible(PBEStat.Attack, user, byte.MaxValue, out sbyte oldValue, out sbyte newValue) != PBEResult.Success)
+#endif
                         {
                             BroadcastMoveResult(user, target, PBEResult.InvalidConditions);
                         }
                         else
                         {
                             DealDamage(user, target, requirement, true);
-                            ApplyStatChange(user, target, PBEStat.Attack, byte.MaxValue); // Will work for all PBESettings
+#if !BUGFIX
+                            ApplyStatChangeIfPossible(user, target, PBEStat.Attack, byte.MaxValue); // byte.MaxValue will work for all PBESettings
+#else
+                            SetStatAndBroadcast(target, PBEStat.Attack, oldValue, newValue);
+#endif
                         }
                     }
                 }
@@ -3793,9 +3808,9 @@ namespace Kermalis.PokemonBattleEngine.Battle
                         }
                         else
                         {
-                            ApplyStatChange(user, target, PBEStat.Speed, -1);
-                            ApplyStatChange(user, target, PBEStat.Attack, +1);
-                            ApplyStatChange(user, target, PBEStat.Defense, +1);
+                            ApplyStatChangeIfPossible(user, target, PBEStat.Speed, -1);
+                            ApplyStatChangeIfPossible(user, target, PBEStat.Attack, +1);
+                            ApplyStatChangeIfPossible(user, target, PBEStat.Defense, +1);
                         }
                     }
                 }
@@ -3816,7 +3831,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                 {
                     if (!MissCheck(user, target, move))
                     {
-                        ApplyStatChange(user, target, PBEStat.SpAttack, +1);
+                        ApplyStatChangeIfPossible(user, target, PBEStat.SpAttack, +1);
                         ApplyStatus2IfPossible(user, target, PBEStatus2.Confused, true);
                     }
                 }
@@ -3943,7 +3958,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                 {
                     if (!MissCheck(user, target, move))
                     {
-                        ApplyStatChange(user, target, PBEStat.Attack, +2);
+                        ApplyStatChangeIfPossible(user, target, PBEStat.Attack, +2);
                         ApplyStatus2IfPossible(user, target, PBEStatus2.Confused, true);
                     }
                 }

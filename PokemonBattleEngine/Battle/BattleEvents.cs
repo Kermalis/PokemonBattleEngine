@@ -562,6 +562,20 @@ namespace Kermalis.PokemonBattleEngine.Battle
                             }
                             break;
                         }
+                        case PBEItem.ApicotBerry:
+                        case PBEItem.GanlonBerry:
+                        case PBEItem.LiechiBerry:
+                        case PBEItem.PetayaBerry:
+                        case PBEItem.SalacBerry:
+                        case PBEItem.StarfBerry:
+                        {
+                            switch (ip.ItemAction)
+                            {
+                                case PBEItemAction.Consumed: message = "{0} used its {2}!"; break;
+                                default: throw new ArgumentOutOfRangeException(nameof(ip.ItemAction));
+                            }
+                            break;
+                        }
                         case PBEItem.BugGem:
                         case PBEItem.DarkGem:
                         case PBEItem.DragonGem:

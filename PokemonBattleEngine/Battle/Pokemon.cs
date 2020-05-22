@@ -481,67 +481,67 @@ namespace Kermalis.PokemonBattleEngine.Battle
             }
             return list.ToArray();
         }
-        public PBEStat[] GetNegativeStats()
+        public PBEStat[] GetStatsLessThan(int i)
         {
             var list = new List<PBEStat>(7);
-            if (AttackChange < 0)
+            if (AttackChange < i)
             {
                 list.Add(PBEStat.Attack);
             }
-            if (DefenseChange < 0)
+            if (DefenseChange < i)
             {
                 list.Add(PBEStat.Defense);
             }
-            if (SpAttackChange < 0)
+            if (SpAttackChange < i)
             {
                 list.Add(PBEStat.SpAttack);
             }
-            if (SpDefenseChange < 0)
+            if (SpDefenseChange < i)
             {
                 list.Add(PBEStat.SpDefense);
             }
-            if (SpeedChange < 0)
+            if (SpeedChange < i)
             {
                 list.Add(PBEStat.Speed);
             }
-            if (AccuracyChange < 0)
+            if (AccuracyChange < i)
             {
                 list.Add(PBEStat.Accuracy);
             }
-            if (EvasionChange < 0)
+            if (EvasionChange < i)
             {
                 list.Add(PBEStat.Evasion);
             }
             return list.ToArray();
         }
-        public PBEStat[] GetPositiveStats()
+        public PBEStat[] GetStatsGreaterThan(int i)
         {
             var list = new List<PBEStat>(7);
-            if (AttackChange > 0)
+            if (AttackChange > i)
             {
                 list.Add(PBEStat.Attack);
             }
-            if (DefenseChange > 0)
+            if (DefenseChange > i)
             {
                 list.Add(PBEStat.Defense);
             }
-            if (SpAttackChange > 0)
+            if (SpAttackChange > i)
             {
                 list.Add(PBEStat.SpAttack);
             }
-            if (SpDefenseChange > 0)
+            if (SpDefenseChange > i)
             {
                 list.Add(PBEStat.SpDefense);
             }
-            if (SpeedChange > 0)
+            if (SpeedChange > i)
             {
                 list.Add(PBEStat.Speed);
             }
-            if (AccuracyChange > 0)
+            if (AccuracyChange > i)
             {
                 list.Add(PBEStat.Accuracy);
             }
-            if (EvasionChange > 0)
+            if (EvasionChange > i)
             {
                 list.Add(PBEStat.Evasion);
             }
@@ -567,15 +567,49 @@ namespace Kermalis.PokemonBattleEngine.Battle
             sbyte val = (sbyte)PBEUtils.Clamp(value, -maxStatChange, maxStatChange);
             switch (stat)
             {
-                case PBEStat.Accuracy: return AccuracyChange = val;
-                case PBEStat.Attack: return AttackChange = val;
-                case PBEStat.Defense: return DefenseChange = val;
-                case PBEStat.Evasion: return EvasionChange = val;
-                case PBEStat.SpAttack: return SpAttackChange = val;
-                case PBEStat.SpDefense: return SpDefenseChange = val;
-                case PBEStat.Speed: return SpeedChange = val;
+                case PBEStat.Accuracy: AccuracyChange = val; break;
+                case PBEStat.Attack: AttackChange = val; break;
+                case PBEStat.Defense: DefenseChange = val; break;
+                case PBEStat.Evasion: EvasionChange = val; break;
+                case PBEStat.SpAttack: SpAttackChange = val; break;
+                case PBEStat.SpDefense: SpDefenseChange = val; break;
+                case PBEStat.Speed: SpeedChange = val; break;
                 default: throw new ArgumentOutOfRangeException(nameof(stat));
             }
+            return val;
+        }
+        public PBEResult IsStatChangePossible(PBEStat stat, PBEPokemon other, int change, out sbyte oldValue, out sbyte newValue, bool useKnownInfo = false)
+        {
+            oldValue = GetStatChange(stat);
+
+            // Verified: Contrary/Simple are silent
+            if (other?.HasCancellingAbility() != true)
+            {
+                switch (useKnownInfo ? KnownAbility : Ability)
+                {
+                    case PBEAbility.ClearBody:
+                    case PBEAbility.WhiteSmoke:
+                    {
+                        if (change < 0 && other != this)
+                        {
+                            newValue = oldValue;
+                            return PBEResult.Ineffective_Ability;
+                        }
+                        break;
+                    }
+                    case PBEAbility.Contrary: change *= -1; break;
+                    case PBEAbility.Simple: change *= 2; break;
+                }
+            }
+
+            sbyte maxStatChange = Team.Battle.Settings.MaxStatChange;
+            newValue = (sbyte)PBEUtils.Clamp(oldValue + change, -maxStatChange, maxStatChange);
+
+            if (oldValue == newValue)
+            {
+                return PBEResult.Ineffective_Stat;
+            }
+            return PBEResult.Success;
         }
         public void ClearStatChanges()
         {
@@ -590,22 +624,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
         /// <summary>For use with <see cref="PBEMove.Punishment"/> and <see cref="PBEMove.StoredPower"/>.</summary>
         public int GetPositiveStatTotal()
         {
-            int total = 0;
-            void Add(sbyte c)
-            {
-                if (c > 0)
-                {
-                    total += c;
-                }
-            }
-            Add(AttackChange);
-            Add(DefenseChange);
-            Add(SpAttackChange);
-            Add(SpDefenseChange);
-            Add(SpeedChange);
-            Add(AccuracyChange);
-            Add(EvasionChange);
-            return total;
+            return GetStatsGreaterThan(0).Sum(s => GetStatChange(s));
         }
         /// <summary>Gets the type that a move will become when used by this Pokémon.</summary>
         /// <param name="move">The move to check.</param>
