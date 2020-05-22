@@ -1,7 +1,7 @@
 ﻿using Discord;
 using Discord.Commands;
 using Discord.WebSocket;
-using Kermalis.PokemonBattleEngine;
+using Kermalis.PokemonBattleEngine.Utils;
 using Microsoft.Extensions.DependencyInjection;
 using System;
 using System.Reflection;

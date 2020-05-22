@@ -1,4 +1,5 @@
 ﻿using Kermalis.EndianBinaryIO;
+using Kermalis.PokemonBattleEngine.Utils;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using System;
@@ -10,6 +11,7 @@ namespace Kermalis.PokemonBattleEngine.Data
 {
     public sealed class PBEPokemonShell : IDisposable, INotifyPropertyChanged
     {
+        // TODO: Move these to PBEUtils
         public static PBEAlphabeticalList<PBESpecies> AllSpecies { get; } = new PBEAlphabeticalList<PBESpecies>(
             Enum.GetValues(typeof(PBESpecies))
             .Cast<PBESpecies>()
@@ -247,8 +249,8 @@ namespace Kermalis.PokemonBattleEngine.Data
             _canDispose = true;
             _species = species;
             _level = level;
-            _friendship = (byte)PBEUtils.RandomInt(0, byte.MaxValue);
-            _shiny = PBEUtils.RandomShiny();
+            _friendship = (byte)PBERandom.RandomInt(0, byte.MaxValue);
+            _shiny = PBERandom.RandomShiny();
             _nature = AllNatures.RandomElement();
             EffortValues = new PBEEffortValues(Settings, false) { CanDispose = false };
             IndividualValues = new PBEIndividualValues(Settings, true) { CanDispose = false };
@@ -323,7 +325,7 @@ namespace Kermalis.PokemonBattleEngine.Data
             }
             if (oldSpecies == 0 || !SelectableGenders.Contains(_gender))
             {
-                Gender = PBEUtils.RandomGender(_pData.GenderRatio);
+                Gender = PBERandom.RandomGender(_pData.GenderRatio);
             }
             if (oldSpecies == 0 || !SelectableItems.Contains(_item))
             {

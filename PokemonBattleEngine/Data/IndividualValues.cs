@@ -1,4 +1,5 @@
 ﻿using Kermalis.EndianBinaryIO;
+using Kermalis.PokemonBattleEngine.Utils;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using System;
@@ -246,7 +247,7 @@ namespace Kermalis.PokemonBattleEngine.Data
             }
             for (int i = 0; i < 6; i++)
             {
-                _ivs[i].Value = (byte)PBEUtils.RandomInt(0, Settings.MaxIVs);
+                _ivs[i].Value = (byte)PBERandom.RandomInt(0, Settings.MaxIVs);
             }
         }
 

@@ -1,4 +1,5 @@
 ﻿using Kermalis.PokemonBattleEngine.Data;
+using Kermalis.PokemonBattleEngine.Utils;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -267,7 +268,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                             // Randomly select left or right
                             else
                             {
-                                pkmn = PBEUtils.RandomBool() ? oppLeft : oppRight;
+                                pkmn = PBERandom.RandomBool() ? oppLeft : oppRight;
                             }
                         }
                     }
@@ -871,7 +872,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                         {
                             if (pkmn.FieldPosition == PBEFieldPosition.Left || pkmn.FieldPosition == PBEFieldPosition.Right)
                             {
-                                if (PBEUtils.RandomBool())
+                                if (PBERandom.RandomBool())
                                 {
                                     return PBETurnTarget.AllyLeft;
                                 }
@@ -907,7 +908,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                         {
                             if (pkmn.FieldPosition == PBEFieldPosition.Left || pkmn.FieldPosition == PBEFieldPosition.Right)
                             {
-                                if (PBEUtils.RandomBool())
+                                if (PBERandom.RandomBool())
                                 {
                                     return PBETurnTarget.FoeLeft;
                                 }
@@ -1022,7 +1023,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                         {
                             if (pkmn.FieldPosition == PBEFieldPosition.Left)
                             {
-                                if (PBEUtils.RandomBool())
+                                if (PBERandom.RandomBool())
                                 {
                                     return PBETurnTarget.AllyLeft;
                                 }
@@ -1033,7 +1034,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                             }
                             else if (pkmn.FieldPosition == PBEFieldPosition.Center)
                             {
-                                int val = PBEUtils.RandomInt(0, 2);
+                                int val = PBERandom.RandomInt(0, 2);
                                 if (val == 0)
                                 {
                                     return PBETurnTarget.AllyLeft;
@@ -1049,7 +1050,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                             }
                             else if (pkmn.FieldPosition == PBEFieldPosition.Right)
                             {
-                                if (PBEUtils.RandomBool())
+                                if (PBERandom.RandomBool())
                                 {
                                     return PBETurnTarget.AllyCenter;
                                 }
@@ -1071,7 +1072,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                             }
                             else if (pkmn.FieldPosition == PBEFieldPosition.Center)
                             {
-                                if (PBEUtils.RandomBool())
+                                if (PBERandom.RandomBool())
                                 {
                                     return PBETurnTarget.AllyLeft;
                                 }
@@ -1095,7 +1096,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                         {
                             if (pkmn.FieldPosition == PBEFieldPosition.Left)
                             {
-                                if (PBEUtils.RandomBool())
+                                if (PBERandom.RandomBool())
                                 {
                                     return PBETurnTarget.FoeCenter;
                                 }
@@ -1106,7 +1107,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                             }
                             else if (pkmn.FieldPosition == PBEFieldPosition.Center)
                             {
-                                int val = PBEUtils.RandomInt(0, 2);
+                                int val = PBERandom.RandomInt(0, 2);
                                 if (val == 0)
                                 {
                                     return PBETurnTarget.FoeLeft;
@@ -1122,7 +1123,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                             }
                             else if (pkmn.FieldPosition == PBEFieldPosition.Right)
                             {
-                                if (PBEUtils.RandomBool())
+                                if (PBERandom.RandomBool())
                                 {
                                     return PBETurnTarget.FoeLeft;
                                 }
@@ -1140,7 +1141,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                         {
                             if (pkmn.FieldPosition == PBEFieldPosition.Left || pkmn.FieldPosition == PBEFieldPosition.Center || pkmn.FieldPosition == PBEFieldPosition.Right)
                             {
-                                int val = PBEUtils.RandomInt(0, 2);
+                                int val = PBERandom.RandomInt(0, 2);
                                 if (val == 0)
                                 {
                                     return PBETurnTarget.FoeLeft;

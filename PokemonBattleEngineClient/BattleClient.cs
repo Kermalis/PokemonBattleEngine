@@ -1,8 +1,8 @@
-﻿using Kermalis.PokemonBattleEngine;
-using Kermalis.PokemonBattleEngine.AI;
+﻿using Kermalis.PokemonBattleEngine.AI;
 using Kermalis.PokemonBattleEngine.Battle;
 using Kermalis.PokemonBattleEngine.Data;
 using Kermalis.PokemonBattleEngine.Packets;
+using Kermalis.PokemonBattleEngine.Utils;
 using Kermalis.PokemonBattleEngineClient.Views;
 using System;
 using System.Collections.Generic;

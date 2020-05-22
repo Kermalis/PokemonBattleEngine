@@ -1,4 +1,5 @@
 ﻿using Kermalis.EndianBinaryIO;
+using Kermalis.PokemonBattleEngine.Utils;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using System;
@@ -597,7 +598,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                         blacklist.Add(move);
                     }
                     slot.Move = move;
-                    slot.PPUps = (byte)PBEUtils.RandomInt(0, Settings.MaxPPUps);
+                    slot.PPUps = (byte)PBERandom.RandomInt(0, Settings.MaxPPUps);
                 }
             }
             SetEditables();

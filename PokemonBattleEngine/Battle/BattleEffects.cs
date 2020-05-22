@@ -1,5 +1,6 @@
 ﻿using Kermalis.PokemonBattleEngine.Data;
 using Kermalis.PokemonBattleEngine.Packets;
+using Kermalis.PokemonBattleEngine.Utils;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -120,7 +121,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                         }
                     }
                     // Verified: Cute Charm can activate when victim is about to faint
-                    if (user.HP > 0 && victim.Ability == PBEAbility.CuteCharm && user.IsAttractionPossible(victim) == PBEResult.Success && PBEUtils.RandomBool(30, 100))
+                    if (user.HP > 0 && victim.Ability == PBEAbility.CuteCharm && user.IsAttractionPossible(victim) == PBEResult.Success && PBERandom.RandomBool(30, 100))
                     {
                         BroadcastAbility(victim, user, PBEAbility.CuteCharm, PBEAbilityAction.ChangedStatus);
                         CauseInfatuation(user, victim);
@@ -128,7 +129,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                     if (user.HP > 0 && victim.Ability == PBEAbility.EffectSpore && user.Status1 == PBEStatus1.None)
                     {
                         // Spaghetti code taken from the assembly in generation 5 games
-                        int randomNum = PBEUtils.RandomInt(0, 99);
+                        int randomNum = PBERandom.RandomInt(0, 99);
                         if (randomNum < 30)
                         {
                             PBEStatus1 status = PBEStatus1.None;
@@ -170,21 +171,21 @@ namespace Kermalis.PokemonBattleEngine.Battle
                             }
                         }
                     }
-                    if (user.HP > 0 && victim.Ability == PBEAbility.FlameBody && user.IsBurnPossible(victim) == PBEResult.Success && PBEUtils.RandomBool(30, 100))
+                    if (user.HP > 0 && victim.Ability == PBEAbility.FlameBody && user.IsBurnPossible(victim) == PBEResult.Success && PBERandom.RandomBool(30, 100))
                     {
                         BroadcastAbility(victim, user, PBEAbility.FlameBody, PBEAbilityAction.ChangedStatus);
                         user.Status1 = PBEStatus1.Burned;
                         BroadcastStatus1(user, victim, PBEStatus1.Burned, PBEStatusAction.Added);
                         AntiStatusAbilityCheck(user);
                     }
-                    if (user.HP > 0 && victim.Ability == PBEAbility.PoisonPoint && user.IsPoisonPossible(victim) == PBEResult.Success && PBEUtils.RandomBool(30, 100))
+                    if (user.HP > 0 && victim.Ability == PBEAbility.PoisonPoint && user.IsPoisonPossible(victim) == PBEResult.Success && PBERandom.RandomBool(30, 100))
                     {
                         BroadcastAbility(victim, user, PBEAbility.PoisonPoint, PBEAbilityAction.ChangedStatus);
                         user.Status1 = PBEStatus1.Poisoned;
                         BroadcastStatus1(user, victim, PBEStatus1.Poisoned, PBEStatusAction.Added);
                         AntiStatusAbilityCheck(user);
                     }
-                    if (user.HP > 0 && victim.Ability == PBEAbility.Static && user.IsParalysisPossible(victim) == PBEResult.Success && PBEUtils.RandomBool(30, 100))
+                    if (user.HP > 0 && victim.Ability == PBEAbility.Static && user.IsParalysisPossible(victim) == PBEResult.Success && PBERandom.RandomBool(30, 100))
                     {
                         BroadcastAbility(victim, user, PBEAbility.Static, PBEAbilityAction.ChangedStatus);
                         user.Status1 = PBEStatus1.Paralyzed;
@@ -351,7 +352,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                         {
                             foreach (PBEPokemon ally in GetRuntimeSurrounding(pkmn, true, false))
                             {
-                                if (ally.Status1 != PBEStatus1.None && PBEUtils.RandomBool(30, 100))
+                                if (ally.Status1 != PBEStatus1.None && PBERandom.RandomBool(30, 100))
                                 {
                                     BroadcastAbility(pkmn, ally, pkmn.Ability, PBEAbilityAction.ChangedStatus);
                                     PBEStatus1 status1 = ally.Status1;
@@ -363,7 +364,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                         }
                         case PBEAbility.ShedSkin:
                         {
-                            if (pkmn.Status1 != PBEStatus1.None && PBEUtils.RandomBool(30, 100))
+                            if (pkmn.Status1 != PBEStatus1.None && PBERandom.RandomBool(30, 100))
                             {
                                 BroadcastAbility(pkmn, pkmn, pkmn.Ability, PBEAbilityAction.ChangedStatus);
                                 PBEStatus1 status1 = pkmn.Status1;
@@ -812,7 +813,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                         }
                         else
                         {
-                            int val = PBEUtils.RandomInt(0, 5);
+                            int val = PBERandom.RandomInt(0, 5);
                             if (val < 2)
                             {
                                 numHits = 2;
@@ -1317,7 +1318,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
             }
             else if (user.Status1 == PBEStatus1.Frozen)
             {
-                if (mData.Flags.HasFlag(PBEMoveFlag.DefrostsUser) || PBEUtils.RandomBool(20, 100))
+                if (mData.Flags.HasFlag(PBEMoveFlag.DefrostsUser) || PBERandom.RandomBool(20, 100))
                 {
                     user.Status1 = PBEStatus1.None;
                     BroadcastStatus1(user, user, PBEStatus1.Frozen, PBEStatusAction.Ended);
@@ -1353,7 +1354,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                 else
                 {
                     BroadcastStatus2(user, user, PBEStatus2.Confused, PBEStatusAction.Activated);
-                    if (PBEUtils.RandomBool(50, 100))
+                    if (PBERandom.RandomBool(50, 100))
                     {
                         BroadcastStatus2(user, user, PBEStatus2.Confused, PBEStatusAction.Damage);
                         ushort damage = CalculateDamage(user, user, PBEMove.None, PBEType.None, PBEMoveCategory.Physical, 40, false);
@@ -1370,7 +1371,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                 }
             }
             // Verified: Paralysis before Infatuation
-            if (user.Status1 == PBEStatus1.Paralyzed && PBEUtils.RandomBool(25, 100))
+            if (user.Status1 == PBEStatus1.Paralyzed && PBERandom.RandomBool(25, 100))
             {
                 BroadcastStatus1(user, user, PBEStatus1.Paralyzed, PBEStatusAction.CausedImmobility);
                 return true;
@@ -1379,7 +1380,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
             if (user.Status2.HasFlag(PBEStatus2.Infatuated))
             {
                 BroadcastStatus2(user, user.InfatuatedWithPokemon, PBEStatus2.Infatuated, PBEStatusAction.Activated);
-                if (PBEUtils.RandomBool(50, 100))
+                if (PBERandom.RandomBool(50, 100))
                 {
                     BroadcastStatus2(user, user.InfatuatedWithPokemon, PBEStatus2.Infatuated, PBEStatusAction.CausedImmobility);
                     return true;
@@ -1534,7 +1535,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                 chance *= 0.5;
             }
         roll:
-            if (PBEUtils.RandomBool((int)chance, 100))
+            if (PBERandom.RandomBool((int)chance, 100))
             {
                 return false;
             }
@@ -1606,7 +1607,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                         case 3: chance = 33.3; break;
                         default: chance = 50; break;
                     }
-                    return PBEUtils.RandomBool((int)(chance * 100), 100 * 100);
+                    return PBERandom.RandomBool((int)(chance * 100), 100 * 100);
                 }
             }
         }
@@ -1937,7 +1938,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
         {
             target.Status2 |= PBEStatus2.Confused;
             target.ConfusionCounter = 0;
-            target.ConfusionTurns = (byte)PBEUtils.RandomInt(Settings.ConfusionMinTurns, Settings.ConfusionMaxTurns);
+            target.ConfusionTurns = (byte)PBERandom.RandomInt(Settings.ConfusionMinTurns, Settings.ConfusionMaxTurns);
             BroadcastStatus2(target, other, PBEStatus2.Confused, PBEStatusAction.Added);
             AntiStatusAbilityCheck(target);
         }
@@ -2115,7 +2116,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
 
         private void SetSleepTurns(PBEPokemon pkmn, int minTurns, int maxTurns)
         {
-            pkmn.SleepTurns = (byte)(PBEUtils.RandomInt(minTurns, maxTurns) / (pkmn.Ability == PBEAbility.EarlyBird ? 2 : 1));
+            pkmn.SleepTurns = (byte)(PBERandom.RandomInt(minTurns, maxTurns) / (pkmn.Ability == PBEAbility.EarlyBird ? 2 : 1));
         }
         private void DoTransform(PBEPokemon user, PBEPokemon target)
         {
@@ -2295,7 +2296,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                 case PBEStatus2.Protected:
                 {
                     // TODO: If the user goes last, fail
-                    if (PBEUtils.RandomBool(user.GetProtectionChance(), ushort.MaxValue))
+                    if (PBERandom.RandomBool(user.GetProtectionChance(), ushort.MaxValue))
                     {
                         user.Protection_Counter++;
                         user.Status2 |= PBEStatus2.Protected;
@@ -2880,7 +2881,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                 }
                 case PBETeamStatus.WideGuard:
                 {
-                    if (!user.Team.TeamStatus.HasFlag(PBETeamStatus.WideGuard) && PBEUtils.RandomBool(user.GetProtectionChance(), ushort.MaxValue))
+                    if (!user.Team.TeamStatus.HasFlag(PBETeamStatus.WideGuard) && PBERandom.RandomBool(user.GetProtectionChance(), ushort.MaxValue))
                     {
                         user.Protection_Counter++;
                         user.Team.TeamStatus |= PBETeamStatus.WideGuard;
@@ -2999,7 +3000,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
             {
                 void BeforePostHit(PBEPokemon target)
                 {
-                    if (target.HP > 0 && !target.Status2.HasFlag(PBEStatus2.Substitute) && PBEUtils.RandomBool(chanceToChangeStats, 100))
+                    if (target.HP > 0 && !target.Status2.HasFlag(PBEStatus2.Substitute) && PBERandom.RandomBool(chanceToChangeStats, 100))
                     {
                         for (int i = 0; i < stats.Length; i++)
                         {
@@ -3023,7 +3024,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
             {
                 void BeforeTargetsFaint()
                 {
-                    if (user.HP > 0 && PBEUtils.RandomBool(chanceToChangeStats, 100))
+                    if (user.HP > 0 && PBERandom.RandomBool(chanceToChangeStats, 100))
                     {
                         for (int i = 0; i < stats.Length; i++)
                         {
@@ -3180,11 +3181,11 @@ namespace Kermalis.PokemonBattleEngine.Battle
                 {
                     if (target.HP > 0)
                     {
-                        if (status1 != PBEStatus1.None && PBEUtils.RandomBool(chanceToInflictStatus1, 100))
+                        if (status1 != PBEStatus1.None && PBERandom.RandomBool(chanceToInflictStatus1, 100))
                         {
                             ApplyStatus1IfPossible(user, target, status1, false);
                         }
-                        if (status2 != PBEStatus2.None && PBEUtils.RandomBool(chanceToInflictStatus2, 100))
+                        if (status2 != PBEStatus2.None && PBERandom.RandomBool(chanceToInflictStatus2, 100))
                         {
                             ApplyStatus2IfPossible(user, target, status2, false);
                         }
@@ -3206,7 +3207,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
             {
                 void BeforePostHit(PBEPokemon target)
                 {
-                    if (target.HP > 0 && PBEUtils.RandomBool(chanceToInflictStatus1, 100))
+                    if (target.HP > 0 && PBERandom.RandomBool(chanceToInflictStatus1, 100))
                     {
                         ApplyStatus1IfPossible(user, target, status1, false);
                     }
@@ -3233,11 +3234,11 @@ namespace Kermalis.PokemonBattleEngine.Battle
                 {
                     if (target.HP > 0)
                     {
-                        if (status1 != PBEStatus1.None && PBEUtils.RandomBool(chanceToInflictStatus1, 100))
+                        if (status1 != PBEStatus1.None && PBERandom.RandomBool(chanceToInflictStatus1, 100))
                         {
                             ApplyStatus1IfPossible(user, target, status1, false);
                         }
-                        if (status2 != PBEStatus2.None && PBEUtils.RandomBool(chanceToInflictStatus2, 100))
+                        if (status2 != PBEStatus2.None && PBERandom.RandomBool(chanceToInflictStatus2, 100))
                         {
                             ApplyStatus2IfPossible(user, target, status2, false);
                         }
@@ -3283,7 +3284,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
             {
                 void BeforePostHit(PBEPokemon target)
                 {
-                    if (target.HP > 0 && PBEUtils.RandomBool(chanceToFlinch, 100))
+                    if (target.HP > 0 && PBERandom.RandomBool(chanceToFlinch, 100))
                     {
                         ApplyStatus2IfPossible(user, target, PBEStatus2.Flinching, false);
                     }
@@ -3439,7 +3440,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
             {
                 int DamageFunc(PBEPokemon target)
                 {
-                    return user.Level * (PBEUtils.RandomInt(0, 100) + 50) / 100;
+                    return user.Level * (PBERandom.RandomInt(0, 100) + 50) / 100;
                 }
                 FixedDamageHit(user, targets, move, DamageFunc);
             }

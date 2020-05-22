@@ -1,7 +1,7 @@
 ﻿using Avalonia.Controls;
 using Avalonia.Markup.Xaml;
-using Kermalis.PokemonBattleEngine;
 using Kermalis.PokemonBattleEngine.Data;
+using Kermalis.PokemonBattleEngine.Utils;
 using Kermalis.PokemonBattleEngineClient.Infrastructure;
 using Kermalis.PokemonBattleEngineClient.Models;
 using ReactiveUI;
@@ -132,7 +132,7 @@ namespace Kermalis.PokemonBattleEngineClient.Views
         private void AddPartyMember()
         {
             int index = _team.Shell.Count;
-            _team.Shell.Add(PBEUtils.RandomSpecies(), _team.Shell.Settings.MaxLevel);
+            _team.Shell.Add(PBERandom.RandomSpecies(), _team.Shell.Settings.MaxLevel);
             Shell = _team.Shell[index];
         }
         private void RemovePartyMember()

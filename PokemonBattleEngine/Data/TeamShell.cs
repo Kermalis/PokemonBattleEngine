@@ -1,4 +1,5 @@
 ﻿using Kermalis.EndianBinaryIO;
+using Kermalis.PokemonBattleEngine.Utils;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using System;
@@ -89,13 +90,13 @@ namespace Kermalis.PokemonBattleEngine.Data
             _list = new List<PBEPokemonShell>(Settings.MaxPartySize);
             for (int i = 0; i < numPkmnToGenerate; i++)
             {
-                Insert(PBEUtils.RandomSpecies(), setToMaxLevel ? Settings.MaxLevel : PBEUtils.RandomLevel(Settings), false, i);
+                Insert(PBERandom.RandomSpecies(), setToMaxLevel ? Settings.MaxLevel : PBERandom.RandomLevel(Settings), false, i);
             }
         }
 
         private void InsertRandom(bool fireEvent, int index)
         {
-            Insert(PBEUtils.RandomSpecies(), PBEUtils.RandomLevel(Settings), fireEvent, index);
+            Insert(PBERandom.RandomSpecies(), PBERandom.RandomLevel(Settings), fireEvent, index);
         }
         private void Insert(PBESpecies species, byte level, bool fireEvent, int index)
         {

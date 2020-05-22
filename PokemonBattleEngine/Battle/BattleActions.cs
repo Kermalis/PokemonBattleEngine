@@ -1,5 +1,6 @@
 ﻿using Kermalis.EndianBinaryIO;
 using Kermalis.PokemonBattleEngine.Data;
+using Kermalis.PokemonBattleEngine.Utils;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -195,20 +196,20 @@ namespace Kermalis.PokemonBattleEngine.Battle
                                     }
                                     case PBEBattleFormat.Double:
                                     {
-                                        action.FightTargets = PBEUtils.RandomBool() ? PBETurnTarget.FoeLeft : PBETurnTarget.FoeRight;
+                                        action.FightTargets = PBERandom.RandomBool() ? PBETurnTarget.FoeLeft : PBETurnTarget.FoeRight;
                                         break;
                                     }
                                     case PBEBattleFormat.Triple:
                                     {
                                         if (pkmn.FieldPosition == PBEFieldPosition.Left)
                                         {
-                                            action.FightTargets = PBEUtils.RandomBool() ? PBETurnTarget.FoeCenter : PBETurnTarget.FoeRight;
+                                            action.FightTargets = PBERandom.RandomBool() ? PBETurnTarget.FoeCenter : PBETurnTarget.FoeRight;
                                         }
                                         else if (pkmn.FieldPosition == PBEFieldPosition.Center)
                                         {
                                             int r; // Keep randomly picking until a non-fainted foe is selected
                                         roll:
-                                            r = PBEUtils.RandomInt(0, 2);
+                                            r = PBERandom.RandomInt(0, 2);
                                             if (r == 0)
                                             {
                                                 if (team.OpposingTeam.TryGetPokemon(PBEFieldPosition.Left) != null)
@@ -245,7 +246,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                                         }
                                         else
                                         {
-                                            action.FightTargets = PBEUtils.RandomBool() ? PBETurnTarget.FoeLeft : PBETurnTarget.FoeCenter;
+                                            action.FightTargets = PBERandom.RandomBool() ? PBETurnTarget.FoeLeft : PBETurnTarget.FoeCenter;
                                         }
                                         break;
                                     }

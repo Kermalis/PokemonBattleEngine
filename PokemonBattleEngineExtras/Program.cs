@@ -1,4 +1,4 @@
-﻿using Kermalis.PokemonBattleEngine;
+﻿using Kermalis.PokemonBattleEngine.Utils;
 using Microsoft.Data.Sqlite;
 using System;
 

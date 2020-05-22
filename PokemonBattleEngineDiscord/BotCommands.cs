@@ -1,9 +1,9 @@
 ﻿using Discord;
 using Discord.Commands;
 using Discord.WebSocket;
-using Kermalis.PokemonBattleEngine;
 using Kermalis.PokemonBattleEngine.Battle;
 using Kermalis.PokemonBattleEngine.Data;
+using Kermalis.PokemonBattleEngine.Utils;
 using System;
 using System.Linq;
 using System.Threading.Tasks;
@@ -286,7 +286,7 @@ namespace Kermalis.PokemonBattleEngineDiscord
                         .AddField("Type Weaknesses", weaknesses, true)
                         .AddField("Type Resistances", resistances, true)
                         .AddField("Type Immunities", immunities, true)
-                        .WithImageUrl(Utils.GetPokemonSprite(species, PBEUtils.RandomShiny(), PBEUtils.RandomGender(pData.GenderRatio), false, false));
+                        .WithImageUrl(Utils.GetPokemonSprite(species, PBERandom.RandomShiny(), PBERandom.RandomGender(pData.GenderRatio), false, false));
                     await Context.Channel.SendMessageAsync(string.Empty, embed: embed.Build());
                 }
             }

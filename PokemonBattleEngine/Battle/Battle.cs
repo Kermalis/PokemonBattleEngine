@@ -1,5 +1,6 @@
 ﻿using Kermalis.PokemonBattleEngine.Data;
 using Kermalis.PokemonBattleEngine.Packets;
+using Kermalis.PokemonBattleEngine.Utils;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -548,7 +549,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                     int pkmnTiedWith = evaluated.FindIndex(t => t.Speed == speed);
                     if (pkmnTiedWith != -1) // Speed tie - randomly go before or after the Pokémon it tied with
                     {
-                        if (PBEUtils.RandomBool())
+                        if (PBERandom.RandomBool())
                         {
                             if (pkmnTiedWith == evaluated.Count - 1)
                             {
