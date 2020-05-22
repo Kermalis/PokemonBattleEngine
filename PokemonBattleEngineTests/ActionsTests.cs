@@ -3,15 +3,22 @@ using Kermalis.PokemonBattleEngine.Data;
 using Kermalis.PokemonBattleEngine.Utils;
 using System;
 using Xunit;
+using Xunit.Abstractions;
 
 namespace Kermalis.PokemonBattleEngineTests
 {
+    [Collection("Utils")]
     public class ActionsTests
     {
+        public ActionsTests(TestUtils utils, ITestOutputHelper output)
+        {
+            utils.SetOutputHelper(output);
+        }
+
         [Fact]
         public void Basic_Actions_Checks()
         {
-            PBEUtils.CreateDatabaseConnection(string.Empty);
+            PBERandom.SetSeed(0);
             PBESettings settings = PBESettings.DefaultSettings;
 
             var team1Shell = new PBETeamShell(settings, 2, true);
@@ -27,6 +34,7 @@ namespace Kermalis.PokemonBattleEngineTests
             p.Moveset[0].Move = PBEMove.Protect;
 
             var battle = new PBEBattle(PBEBattleFormat.Single, team1Shell, "Team 1", team2Shell, "Team 2");
+            battle.OnNewEvent += PBEBattle.ConsoleBattleEventHandler;
             team1Shell.Dispose();
             team2Shell.Dispose();
             battle.Begin();
@@ -59,7 +67,8 @@ namespace Kermalis.PokemonBattleEngineTests
             // Below two wouldn't work because of battle status lol
             //Assert.False(PBEBattle.SelectSwitchesIfValid(t, s1)); // False because switches were already submitted
             //Assert.False(PBEBattle.SelectSwitchesIfValid(t, Array.Empty<PBESwitchIn>())); // False for 0 despite us now needing 0 additional actions
-
+            
+            battle.OnNewEvent -= PBEBattle.ConsoleBattleEventHandler;
             battle.Dispose();
 
             Assert.Throws<ObjectDisposedException>(() => PBEBattle.SelectActionsIfValid(t, a1)); // Throw for disposed battle
