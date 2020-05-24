@@ -14,7 +14,7 @@ namespace Kermalis.PokemonBattleEngineClient
         private readonly PBETeamShell _teamShell;
 
         public NetworkClient(PBEBattleFormat battleFormat, PBETeamShell teamShell)
-            : base(new PBEBattle(battleFormat, teamShell.Settings), ClientMode.Online)
+            : base(new PBEBattle(PBEBattleTerrain.Plain, battleFormat, teamShell.Settings), ClientMode.Online)
         {
             _teamShell = teamShell;
             _client = new PBEClient { Battle = Battle };

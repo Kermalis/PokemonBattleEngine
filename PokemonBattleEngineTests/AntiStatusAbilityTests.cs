@@ -33,7 +33,7 @@ namespace Kermalis.PokemonBattleEngineTests
             p.Item = PBEItem.None;
             p.Moveset[0].Move = PBEMove.Snore;
 
-            var battle = new PBEBattle(PBEBattleFormat.Single, team1Shell, "Team 1", team2Shell, "Team 2");
+            var battle = new PBEBattle(PBEBattleTerrain.Plain, PBEBattleFormat.Single, team1Shell, "Team 1", team2Shell, "Team 2");
             battle.OnNewEvent += PBEBattle.ConsoleBattleEventHandler;
             team1Shell.Dispose();
             team2Shell.Dispose();

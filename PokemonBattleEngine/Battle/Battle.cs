@@ -26,6 +26,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
         /// <summary>The winner of the battle. null if <see cref="BattleState"/> is not <see cref="PBEBattleState.Ended"/> or the battle resulted in a draw.</summary>
         public PBETeam Winner { get; set; }
 
+        public PBEBattleTerrain BattleTerrain { get; }
         public PBEBattleFormat BattleFormat { get; }
         public PBESettings Settings { get; }
         public PBETeams Teams { get; }
@@ -51,6 +52,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
         }
 
         /// <summary>Creates a new <see cref="PBEBattle"/> object with the specified <see cref="PBEBattleFormat"/> and teams. Each team must have equal settings. The battle's settings are set to a copy of the teams' settings. <see cref="BattleState"/> will be <see cref="PBEBattleState.ReadyToBegin"/>.</summary>
+        /// <param name="battleTerrain">The <see cref="PBEBattleTerrain"/> of the battle.</param>
         /// <param name="battleFormat">The <see cref="PBEBattleFormat"/> of the battle.</param>
         /// <param name="team1Shell">The <see cref="PBETeamShell"/> object to use to create <see cref="Teams"/>[0].</param>
         /// <param name="team1TrainerName">The name of the trainer(s) on <see cref="Teams"/>[0].</param>
@@ -58,8 +60,12 @@ namespace Kermalis.PokemonBattleEngine.Battle
         /// <param name="team2TrainerName">The name of the trainer(s) on <see cref="Teams"/>[1].</param>
         /// <exception cref="ArgumentNullException">Thrown when <paramref name="team1Shell"/> or <paramref name="team2Shell"/> are null.</exception>
         /// <exception cref="ArgumentOutOfRangeException">Thrown when <paramref name="team1Shell"/> and <paramref name="team2Shell"/> have unequal <see cref="PBETeamShell.Settings"/> or when <paramref name="team1TrainerName"/> or <paramref name="team2TrainerName"/> are invalid.</exception>
-        public PBEBattle(PBEBattleFormat battleFormat, PBETeamShell team1Shell, string team1TrainerName, PBETeamShell team2Shell, string team2TrainerName)
+        public PBEBattle(PBEBattleTerrain battleTerrain, PBEBattleFormat battleFormat, PBETeamShell team1Shell, string team1TrainerName, PBETeamShell team2Shell, string team2TrainerName)
         {
+            if (battleTerrain >= PBEBattleTerrain.MAX)
+            {
+                throw new ArgumentOutOfRangeException(nameof(battleTerrain));
+            }
             if (battleFormat >= PBEBattleFormat.MAX)
             {
                 throw new ArgumentOutOfRangeException(nameof(battleFormat));
@@ -92,6 +98,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
             {
                 throw new ArgumentOutOfRangeException(nameof(team1Shell.Settings), "Team settings must be equal to each other.");
             }
+            BattleTerrain = battleTerrain;
             BattleFormat = battleFormat;
             Settings = new PBESettings(team1Shell.Settings);
             Settings.MakeReadOnly();
@@ -99,10 +106,15 @@ namespace Kermalis.PokemonBattleEngine.Battle
             CheckForReadiness();
         }
         /// <summary>Creates a new <see cref="PBEBattle"/> object with the specified <see cref="PBEBattleFormat"/> and a copy of the specified <see cref="PBESettings"/>. <see cref="BattleState"/> will be <see cref="PBEBattleState.WaitingForPlayers"/>.</summary>
+        /// <param name="battleTerrain">The <see cref="PBEBattleTerrain"/> of the battle.</param>
         /// <param name="battleFormat">The <see cref="PBEBattleFormat"/> of the battle.</param>
         /// <param name="settings">The <see cref="PBESettings"/> to copy for the battle to use.</param>
-        public PBEBattle(PBEBattleFormat battleFormat, PBESettings settings)
+        public PBEBattle(PBEBattleTerrain battleTerrain, PBEBattleFormat battleFormat, PBESettings settings)
         {
+            if (battleTerrain >= PBEBattleTerrain.MAX)
+            {
+                throw new ArgumentOutOfRangeException(nameof(battleTerrain));
+            }
             if (battleFormat >= PBEBattleFormat.MAX)
             {
                 throw new ArgumentOutOfRangeException(nameof(battleFormat));
@@ -111,6 +123,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
             {
                 throw new ArgumentNullException(nameof(settings));
             }
+            BattleTerrain = battleTerrain;
             BattleFormat = battleFormat;
             Settings = new PBESettings(settings);
             Settings.MakeReadOnly();

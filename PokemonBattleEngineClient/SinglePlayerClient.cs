@@ -1,6 +1,7 @@
 ﻿using Kermalis.PokemonBattleEngine.Battle;
 using Kermalis.PokemonBattleEngine.Data;
 using Kermalis.PokemonBattleEngine.Packets;
+using Kermalis.PokemonBattleEngine.Utils;
 using System.Threading;
 
 namespace Kermalis.PokemonBattleEngineClient
@@ -8,7 +9,7 @@ namespace Kermalis.PokemonBattleEngineClient
     internal sealed class SinglePlayerClient : BattleClient
     {
         public SinglePlayerClient(PBEBattleFormat battleFormat, PBETeamShell team1Shell, string team1TrainerName, PBETeamShell team2Shell, string team2TrainerName)
-            : base(new PBEBattle(battleFormat, team1Shell, team1TrainerName, team2Shell, team2TrainerName), ClientMode.SinglePlayer)
+            : base(new PBEBattle(PBERandom.RandomBattleTerrain(), battleFormat, team1Shell, team1TrainerName, team2Shell, team2TrainerName), ClientMode.SinglePlayer)
         {
             BattleId = 0;
             Team = Battle.Teams[0];

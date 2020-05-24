@@ -43,6 +43,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                 w.Write(CurrentReplayVersion);
 
                 w.Write(Settings.ToBytes());
+                w.Write(BattleTerrain);
                 w.Write(BattleFormat);
 
                 w.Write(Events.Count);
@@ -91,6 +92,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
 
             Settings = new PBESettings(r);
             Settings.MakeReadOnly();
+            BattleTerrain = r.ReadEnum<PBEBattleTerrain>();
             BattleFormat = r.ReadEnum<PBEBattleFormat>();
             Teams = new PBETeams(this);
 

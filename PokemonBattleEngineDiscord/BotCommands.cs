@@ -64,7 +64,7 @@ namespace Kermalis.PokemonBattleEngineDiscord
                     team1Shell = new PBETeamShell(PBESettings.DefaultSettings, PBESettings.DefaultMaxPartySize, true);
                     team2Shell = new PBETeamShell(PBESettings.DefaultSettings, PBESettings.DefaultMaxPartySize, true);
 
-                    var battle = new PBEBattle(PBEBattleFormat.Single, team1Shell, battler1.Username, team2Shell, battler2.Username);
+                    var battle = new PBEBattle(PBEBattleTerrain.Plain, PBEBattleFormat.Single, team1Shell, battler1.Username, team2Shell, battler2.Username);
                     new BattleContext(battle, battler1, battler2, Context.Channel);
                 }
             }

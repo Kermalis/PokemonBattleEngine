@@ -9,6 +9,10 @@ namespace Kermalis.PokemonBattleEngine.Utils
         private static readonly object _randLockObj = new object();
         private static Random _rand = new Random();
 
+        public static PBEBattleTerrain RandomBattleTerrain()
+        {
+            return (PBEBattleTerrain)RandomInt(0, (int)PBEBattleTerrain.MAX + 1);
+        }
         internal static bool RandomBool()
         {
             return RandomInt(0, 1) == 1;

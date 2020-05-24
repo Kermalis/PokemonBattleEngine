@@ -2,6 +2,7 @@
 using Kermalis.PokemonBattleEngine.Battle;
 using Kermalis.PokemonBattleEngine.Data;
 using Kermalis.PokemonBattleEngine.Packets;
+using Kermalis.PokemonBattleEngine.Utils;
 using System;
 using System.IO;
 using System.Threading;
@@ -57,7 +58,7 @@ namespace Kermalis.PokemonBattleEngineExtras
                 PBECompetitivePokemonShells.Victini_Uber
             };*/
 
-            _battle = new PBEBattle(PBEBattleFormat.Double, team1Shell, "Team 1", team2Shell, "Team 2");
+            _battle = new PBEBattle(PBERandom.RandomBattleTerrain(), PBEBattleFormat.Double, team1Shell, "Team 1", team2Shell, "Team 2");
             _battle.OnNewEvent += PBEBattle.ConsoleBattleEventHandler;
             _battle.OnNewEvent += Battle_OnNewEvent;
             _battle.OnStateChanged += Battle_OnStateChanged;

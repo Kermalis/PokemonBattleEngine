@@ -199,7 +199,7 @@ namespace Kermalis.PokemonBattleEngineServer
                 _battle.OnNewEvent -= BattleEventHandler;
                 _battle.OnStateChanged -= BattleStateHandler;
             }
-            _battle = new PBEBattle(PBEBattleFormat.Double, PBESettings.DefaultSettings);
+            _battle = new PBEBattle(PBEBattleTerrain.Plain, PBEBattleFormat.Double, PBESettings.DefaultSettings);
             _battle.OnNewEvent += PBEBattle.ConsoleBattleEventHandler;
             _battle.OnNewEvent += BattleEventHandler;
             _battle.OnStateChanged += BattleStateHandler;

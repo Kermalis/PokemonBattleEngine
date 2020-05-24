@@ -53,6 +53,19 @@ namespace Kermalis.PokemonBattleEngine.Data
         /// <summary>Evasion.</summary>
         Evasion
     }
+    /// <summary>Represents the battle's terrain.</summary>
+    public enum PBEBattleTerrain : byte
+    {
+        Cave, // Rock, RockSlide, RockThrow
+        Grass, // Grass, SeedBomb, NeedleArm
+        /// <summary>Used for bridges, buildings, and link battles.</summary>
+        Plain, // Normal, TriAttack, BodySlam
+        Puddle, // Ground, MudBomb, MudShot
+        Sand, // Ground, Earthquake, MudSlap
+        Snow, // Ice, Blizzard, Avalanche
+        Water, // Water, HydroPump, WaterPulse
+        MAX
+    }
     /// <summary>Represents the format of a specific battle.</summary>
     public enum PBEBattleFormat : byte
     {
