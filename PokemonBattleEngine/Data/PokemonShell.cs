@@ -252,7 +252,7 @@ namespace Kermalis.PokemonBattleEngine.Data
             _friendship = (byte)PBERandom.RandomInt(0, byte.MaxValue);
             _shiny = PBERandom.RandomShiny();
             _nature = AllNatures.RandomElement();
-            EffortValues = new PBEEffortValues(Settings, false) { CanDispose = false };
+            EffortValues = new PBEEffortValues(Settings, true) { CanDispose = false };
             IndividualValues = new PBEIndividualValues(Settings, true) { CanDispose = false };
             Moveset = new PBEMoveset(_species, _level, Settings, true) { CanDispose = false };
             OnSpeciesChanged(0);
