@@ -31,15 +31,19 @@ namespace Kermalis.PokemonBattleEngineClient.Infrastructure
                 return _renderInterface;
             }
         }
+        private static readonly object _resourceExistsCacheLockObj = new object();
         private static readonly Dictionary<string, bool> _resourceExistsCache = new Dictionary<string, bool>();
         public static bool DoesResourceExist(string resource)
         {
-            if (!_resourceExistsCache.TryGetValue(resource, out bool value))
+            lock (_resourceExistsCacheLockObj)
             {
-                value = Array.IndexOf(_resources, AssemblyPrefix + resource) != -1;
-                _resourceExistsCache.Add(resource, value);
+                if (!_resourceExistsCache.TryGetValue(resource, out bool value))
+                {
+                    value = Array.IndexOf(_resources, AssemblyPrefix + resource) != -1;
+                    _resourceExistsCache.Add(resource, value);
+                }
+                return value;
             }
-            return value;
         }
         public static Stream GetResourceStream(string resource)
         {
