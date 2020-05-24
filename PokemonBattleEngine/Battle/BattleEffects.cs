@@ -1174,6 +1174,11 @@ namespace Kermalis.PokemonBattleEngine.Battle
                         Ef_TryForceWeather(user, move, PBEWeather.Sandstorm);
                         break;
                     }
+                    case PBEMoveEffect.SecretPower:
+                    {
+                        Ef_SecretPower(user, targets, move, effectParam);
+                        break;
+                    }
                     case PBEMoveEffect.SeismicToss:
                     {
                         Ef_SeismicToss(user, targets, move);
@@ -2364,7 +2369,22 @@ namespace Kermalis.PokemonBattleEngine.Battle
             }
             return result;
         }
-        // Our fallen hero, should we change all old references?
+        private PBEResult? ApplyStatus1IfPossible_Chance(PBEPokemon user, PBEPokemon target, PBEStatus1 status, bool broadcastUnsuccessful, int chance)
+        {
+            if (PBERandom.RandomBool(chance, 100))
+            {
+                return ApplyStatus1IfPossible(user, target, status, broadcastUnsuccessful);
+            }
+            return null;
+        }
+        private PBEResult? ApplyStatus2IfPossible_Chance(PBEPokemon user, PBEPokemon target, PBEStatus2 status, bool broadcastUnsuccessful, int chance)
+        {
+            if (PBERandom.RandomBool(chance, 100))
+            {
+                return ApplyStatus2IfPossible(user, target, status, broadcastUnsuccessful);
+            }
+            return null;
+        }
         private void ApplyStatChangeIfPossible(PBEPokemon user, PBEPokemon target, PBEStat stat, int change, bool isSecondaryEffect = false)
         {
             PBEResult result = target.IsStatChangePossible(stat, user, change, out sbyte oldValue, out sbyte newValue);
@@ -3186,13 +3206,13 @@ namespace Kermalis.PokemonBattleEngine.Battle
                 {
                     if (target.HP > 0)
                     {
-                        if (status1 != PBEStatus1.None && PBERandom.RandomBool(chanceToInflictStatus1, 100))
+                        if (status1 != PBEStatus1.None)
                         {
-                            ApplyStatus1IfPossible(user, target, status1, false);
+                            ApplyStatus1IfPossible_Chance(user, target, status1, false, chanceToInflictStatus1);
                         }
-                        if (status2 != PBEStatus2.None && PBERandom.RandomBool(chanceToInflictStatus2, 100))
+                        if (status2 != PBEStatus2.None)
                         {
-                            ApplyStatus2IfPossible(user, target, status2, false);
+                            ApplyStatus2IfPossible_Chance(user, target, status2, false, chanceToInflictStatus2);
                         }
                     }
                 }
@@ -3212,9 +3232,9 @@ namespace Kermalis.PokemonBattleEngine.Battle
             {
                 void BeforePostHit(PBEPokemon target)
                 {
-                    if (target.HP > 0 && PBERandom.RandomBool(chanceToInflictStatus1, 100))
+                    if (target.HP > 0)
                     {
-                        ApplyStatus1IfPossible(user, target, status1, false);
+                        ApplyStatus1IfPossible_Chance(user, target, status1, false, chanceToInflictStatus1);
                     }
                 }
                 MultiHit(user, targets, move, numHits, subsequentMissChecks: subsequentMissChecks, beforePostHit: status1 != PBEStatus1.None ? BeforePostHit : (Action<PBEPokemon>)null); // Doesn't need to be its own func but neater
@@ -3239,17 +3259,49 @@ namespace Kermalis.PokemonBattleEngine.Battle
                 {
                     if (target.HP > 0)
                     {
-                        if (status1 != PBEStatus1.None && PBERandom.RandomBool(chanceToInflictStatus1, 100))
+                        if (status1 != PBEStatus1.None)
                         {
-                            ApplyStatus1IfPossible(user, target, status1, false);
+                            ApplyStatus1IfPossible_Chance(user, target, status1, false, chanceToInflictStatus1);
                         }
-                        if (status2 != PBEStatus2.None && PBERandom.RandomBool(chanceToInflictStatus2, 100))
+                        if (status2 != PBEStatus2.None)
                         {
-                            ApplyStatus2IfPossible(user, target, status2, false);
+                            ApplyStatus2IfPossible_Chance(user, target, status2, false, chanceToInflictStatus2);
                         }
                     }
                 }
                 BasicHit(user, targets, move, recoilFunc: RecoilFunc, beforePostHit: BeforePostHit);
+            }
+            RecordExecutedMove(user, move);
+        }
+        private void Ef_SecretPower(PBEPokemon user, PBEPokemon[] targets, PBEMove move, int secondaryEffectChance)
+        {
+            BroadcastMoveUsed(user, move);
+            PPReduce(user, move);
+            if (targets.Length == 0)
+            {
+                BroadcastMoveResult(user, user, PBEResult.NoTarget);
+            }
+            else
+            {
+                void BeforePostHit(PBEPokemon target)
+                {
+                    // Verified: Ignores Serene Grace, so secondary chance is checked here
+                    if (target.HP > 0 && PBERandom.RandomBool(secondaryEffectChance, 100))
+                    {
+                        switch (BattleTerrain)
+                        {
+                            case PBEBattleTerrain.Cave: ApplyStatus2IfPossible(user, target, PBEStatus2.Flinching, false); break;
+                            case PBEBattleTerrain.Grass: ApplyStatus1IfPossible(user, target, PBEStatus1.Asleep, false); break;
+                            case PBEBattleTerrain.Plain: ApplyStatus1IfPossible(user, target, PBEStatus1.Paralyzed, false); break;
+                            case PBEBattleTerrain.Puddle: ApplyStatChangeIfPossible(user, target, PBEStat.Speed, -1, isSecondaryEffect: true); break;
+                            case PBEBattleTerrain.Sand: ApplyStatChangeIfPossible(user, target, PBEStat.Accuracy, -1, isSecondaryEffect: true); break;
+                            case PBEBattleTerrain.Snow: ApplyStatus1IfPossible(user, target, PBEStatus1.Frozen, false); break;
+                            case PBEBattleTerrain.Water: ApplyStatChangeIfPossible(user, target, PBEStat.Attack, -1, isSecondaryEffect: true); break;
+                            default: throw new ArgumentOutOfRangeException(nameof(BattleTerrain));
+                        }
+                    }
+                }
+                BasicHit(user, targets, move, beforePostHit: BeforePostHit);
             }
             RecordExecutedMove(user, move);
         }
@@ -3289,9 +3341,9 @@ namespace Kermalis.PokemonBattleEngine.Battle
             {
                 void BeforePostHit(PBEPokemon target)
                 {
-                    if (target.HP > 0 && PBERandom.RandomBool(chanceToFlinch, 100))
+                    if (target.HP > 0)
                     {
-                        ApplyStatus2IfPossible(user, target, PBEStatus2.Flinching, false);
+                        ApplyStatus2IfPossible_Chance(user, target, PBEStatus2.Flinching, false, chanceToFlinch);
                     }
                 }
                 BasicHit(user, targets, move, beforePostHit: BeforePostHit);

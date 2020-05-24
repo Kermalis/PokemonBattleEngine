@@ -463,7 +463,7 @@ namespace Kermalis.PokemonBattleEngineExtras
             PBEMove.AerialAce,
             (PBEMove)259, // Torment
             PBEMove.Facade,
-            (PBEMove)290, // SecretPower
+            PBEMove.SecretPower,
             PBEMove.Rest,
             (PBEMove)213, // Attract
             (PBEMove)168, // Thief
@@ -605,7 +605,7 @@ namespace Kermalis.PokemonBattleEngineExtras
             PBEMove.AerialAce,
             (PBEMove)259, // Torment
             PBEMove.Facade,
-            (PBEMove)290, // SecretPower
+            PBEMove.SecretPower,
             PBEMove.Rest,
             (PBEMove)213, // Attract
             (PBEMove)168, // Thief

@@ -155,7 +155,7 @@ namespace Kermalis.PokemonBattleEngine.AI
                                     case PBEMoveEffect.Recoil:
                                     case PBEMoveEffect.Recoil__10PercentBurn:
                                     case PBEMoveEffect.Recoil__10PercentParalyze:
-                                    case PBEMoveEffect.SuckerPunch:
+                                    case PBEMoveEffect.SecretPower:
                                     {
                                         foreach (PBEPokemon target in targets)
                                         {
@@ -370,7 +370,7 @@ namespace Kermalis.PokemonBattleEngine.AI
                                     {
                                         foreach (PBEPokemon target in targets)
                                         {
-                                            bool tw = move != PBEMove.ThunderWave ? true : PBETypeEffectiveness.ThunderWaveTypeCheck(user, target, useKnownInfo: true) == PBEResult.Success;
+                                            bool tw = move != PBEMove.ThunderWave || PBETypeEffectiveness.ThunderWaveTypeCheck(user, target, useKnownInfo: true) == PBEResult.Success;
                                             if (tw && target.IsParalysisPossible(user, useKnownInfo: true) == PBEResult.Success)
                                             {
                                                 score += target.Team == team ? -20 : +40;
@@ -524,6 +524,7 @@ namespace Kermalis.PokemonBattleEngine.AI
                                         break;
                                     }
                                     case PBEMoveEffect.BellyDrum:
+                                    case PBEMoveEffect.Camouflage:
                                     case PBEMoveEffect.ChangeTarget_SPATK__IfAttractionPossible:
                                     case PBEMoveEffect.Conversion:
                                     case PBEMoveEffect.Curse:
@@ -557,6 +558,7 @@ namespace Kermalis.PokemonBattleEngine.AI
                                     case PBEMoveEffect.Soak:
                                     case PBEMoveEffect.Spikes:
                                     case PBEMoveEffect.StealthRock:
+                                    case PBEMoveEffect.SuckerPunch:
                                     case PBEMoveEffect.SunnyDay:
                                     case PBEMoveEffect.SuperFang:
                                     case PBEMoveEffect.Tailwind:
