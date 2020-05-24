@@ -157,6 +157,7 @@ namespace Kermalis.PokemonBattleEngine.AI
                                     case PBEMoveEffect.Recoil__10PercentBurn:
                                     case PBEMoveEffect.Recoil__10PercentParalyze:
                                     case PBEMoveEffect.SecretPower:
+                                    case PBEMoveEffect.ShadowForce:
                                     {
                                         foreach (PBEPokemon target in targets)
                                         {

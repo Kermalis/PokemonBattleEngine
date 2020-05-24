@@ -24,7 +24,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                 // Verified: (Spikes/StealthRock/ToxicSpikes in the order they were applied) before ability
                 if (grounded && pkmn.Team.TeamStatus.HasFlag(PBETeamStatus.Spikes))
                 {
-                    BroadcastTeamStatus(pkmn.Team, PBETeamStatus.Spikes, PBETeamStatusAction.Damage, pkmn);
+                    BroadcastTeamStatus(pkmn.Team, PBETeamStatus.Spikes, PBETeamStatusAction.Damage, damageVictim: pkmn);
                     DealDamage(pkmn, pkmn, (int)(pkmn.MaxHP / (10.0 - (2 * pkmn.Team.SpikeCount))), true, ignoreSturdy: true);
                     if (FaintCheck(pkmn))
                     {
@@ -34,7 +34,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                 }
                 if (pkmn.Team.TeamStatus.HasFlag(PBETeamStatus.StealthRock))
                 {
-                    BroadcastTeamStatus(pkmn.Team, PBETeamStatus.StealthRock, PBETeamStatusAction.Damage, pkmn);
+                    BroadcastTeamStatus(pkmn.Team, PBETeamStatus.StealthRock, PBETeamStatusAction.Damage, damageVictim: pkmn);
                     DealDamage(pkmn, pkmn, (int)(pkmn.MaxHP * PBETypeEffectiveness.GetStealthRockMultiplier(pkmn.Type1, pkmn.Type2)), true, ignoreSturdy: true);
                     if (FaintCheck(pkmn))
                     {
@@ -357,7 +357,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                                     BroadcastAbility(pkmn, ally, pkmn.Ability, PBEAbilityAction.ChangedStatus);
                                     PBEStatus1 status1 = ally.Status1;
                                     ally.Status1 = PBEStatus1.None;
-                                    BroadcastStatus1(ally, pkmn, status1, PBEStatusAction.Cured);
+                                    BroadcastStatus1(ally, pkmn, status1, PBEStatusAction.Cleared);
                                 }
                             }
                             break;
@@ -369,7 +369,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                                 BroadcastAbility(pkmn, pkmn, pkmn.Ability, PBEAbilityAction.ChangedStatus);
                                 PBEStatus1 status1 = pkmn.Status1;
                                 pkmn.Status1 = PBEStatus1.None;
-                                BroadcastStatus1(pkmn, pkmn, status1, PBEStatusAction.Cured);
+                                BroadcastStatus1(pkmn, pkmn, status1, PBEStatusAction.Cleared);
                             }
                             break;
                         }
@@ -626,6 +626,12 @@ namespace Kermalis.PokemonBattleEngine.Battle
                     BroadcastMoveLock(user, PBEMove.None, PBETurnTarget.None, PBEMoveLockType.Temporary);
                     user.Status2 &= ~PBEStatus2.Airborne;
                     BroadcastStatus2(user, user, PBEStatus2.Airborne, PBEStatusAction.Ended);
+                }
+                if (user.Status2.HasFlag(PBEStatus2.ShadowForce))
+                {
+                    BroadcastMoveLock(user, PBEMove.None, PBETurnTarget.None, PBEMoveLockType.Temporary);
+                    user.Status2 &= ~PBEStatus2.ShadowForce;
+                    BroadcastStatus2(user, user, PBEStatus2.ShadowForce, PBEStatusAction.Ended);
                 }
                 if (user.Status2.HasFlag(PBEStatus2.Underground))
                 {
@@ -1200,6 +1206,11 @@ namespace Kermalis.PokemonBattleEngine.Battle
                         Ef_SetDamage(user, targets, move, effectParam);
                         break;
                     }
+                    case PBEMoveEffect.ShadowForce:
+                    {
+                        Ef_ShadowForce(user, targets, move, requestedTargets);
+                        break;
+                    }
                     case PBEMoveEffect.SimpleBeam:
                     {
                         Ef_SetOtherAbility(user, targets, move, PBEAbility.Simple, true);
@@ -1369,7 +1380,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                 }
                 else
                 {
-                    BroadcastStatus2(user, user, PBEStatus2.Confused, PBEStatusAction.Activated);
+                    BroadcastStatus2(user, user, PBEStatus2.Confused, PBEStatusAction.Announced);
                     if (PBERandom.RandomBool(50, 100))
                     {
                         BroadcastStatus2(user, user, PBEStatus2.Confused, PBEStatusAction.Damage);
@@ -1395,7 +1406,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
             // Infatuation
             if (user.Status2.HasFlag(PBEStatus2.Infatuated))
             {
-                BroadcastStatus2(user, user.InfatuatedWithPokemon, PBEStatus2.Infatuated, PBEStatusAction.Activated);
+                BroadcastStatus2(user, user.InfatuatedWithPokemon, PBEStatus2.Infatuated, PBEStatusAction.Announced);
                 if (PBERandom.RandomBool(50, 100))
                 {
                     BroadcastStatus2(user, user.InfatuatedWithPokemon, PBEStatus2.Infatuated, PBEStatusAction.CausedImmobility);
@@ -1414,12 +1425,12 @@ namespace Kermalis.PokemonBattleEngine.Battle
 
             if (target.Status2.HasFlag(PBEStatus2.Protected) && mData.Flags.HasFlag(PBEMoveFlag.AffectedByProtect))
             {
-                BroadcastStatus2(target, user, PBEStatus2.Protected, PBEStatusAction.Activated);
+                BroadcastStatus2(target, user, PBEStatus2.Protected, PBEStatusAction.Damage);
                 return true;
             }
             if (target.Team.TeamStatus.HasFlag(PBETeamStatus.WideGuard) && mData.Category != PBEMoveCategory.Status && PBEMoveData.IsSpreadMove(user.GetMoveTargets(move)))
             {
-                BroadcastTeamStatus(target.Team, PBETeamStatus.WideGuard, PBETeamStatusAction.Damage, target);
+                BroadcastTeamStatus(target.Team, PBETeamStatus.WideGuard, PBETeamStatusAction.Damage, damageVictim: target);
                 return true;
             }
             if (user.Status2.HasFlag(PBEStatus2.LockOn) && user.LockOnPokemon == target)
@@ -1431,6 +1442,10 @@ namespace Kermalis.PokemonBattleEngine.Battle
                 return false;
             }
             if (target.Status2.HasFlag(PBEStatus2.Airborne) && !mData.Flags.HasFlag(PBEMoveFlag.HitsAirborne))
+            {
+                goto miss;
+            }
+            if (target.Status2.HasFlag(PBEStatus2.ShadowForce))
             {
                 goto miss;
             }
@@ -1878,7 +1893,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                         pkmn.Status1 = PBEStatus1.None;
                         pkmn.Status1Counter = 0;
                         BroadcastAbility(pkmn, pkmn, pkmn.Ability, PBEAbilityAction.ChangedStatus);
-                        BroadcastStatus1(pkmn, pkmn, oldStatus1, PBEStatusAction.Cured);
+                        BroadcastStatus1(pkmn, pkmn, oldStatus1, PBEStatusAction.Cleared);
                     }
                     break;
                 }
@@ -1891,7 +1906,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                         pkmn.Status1Counter = 0;
                         pkmn.SleepTurns = 0;
                         BroadcastAbility(pkmn, pkmn, pkmn.Ability, PBEAbilityAction.ChangedStatus);
-                        BroadcastStatus1(pkmn, pkmn, PBEStatus1.Asleep, PBEStatusAction.Cured);
+                        BroadcastStatus1(pkmn, pkmn, PBEStatus1.Asleep, PBEStatusAction.Cleared);
                     }
                     break;
                 }
@@ -1901,7 +1916,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                     {
                         pkmn.Status1 = PBEStatus1.None;
                         BroadcastAbility(pkmn, pkmn, pkmn.Ability, PBEAbilityAction.ChangedStatus);
-                        BroadcastStatus1(pkmn, pkmn, PBEStatus1.Paralyzed, PBEStatusAction.Cured);
+                        BroadcastStatus1(pkmn, pkmn, PBEStatus1.Paralyzed, PBEStatusAction.Cleared);
                     }
                     break;
                 }
@@ -1911,7 +1926,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                     {
                         pkmn.Status1 = PBEStatus1.None;
                         BroadcastAbility(pkmn, pkmn, pkmn.Ability, PBEAbilityAction.ChangedStatus);
-                        BroadcastStatus1(pkmn, pkmn, PBEStatus1.Frozen, PBEStatusAction.Cured);
+                        BroadcastStatus1(pkmn, pkmn, PBEStatus1.Frozen, PBEStatusAction.Cleared);
                     }
                     break;
                 }
@@ -1922,7 +1937,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                         pkmn.Status2 &= ~PBEStatus2.Infatuated;
                         pkmn.InfatuatedWithPokemon = null;
                         BroadcastAbility(pkmn, pkmn, pkmn.Ability, PBEAbilityAction.ChangedStatus);
-                        BroadcastStatus2(pkmn, pkmn, PBEStatus2.Infatuated, PBEStatusAction.Cured);
+                        BroadcastStatus2(pkmn, pkmn, PBEStatus2.Infatuated, PBEStatusAction.Cleared);
                     }
                     break;
                 }
@@ -1934,7 +1949,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                         pkmn.ConfusionCounter = 0;
                         pkmn.ConfusionTurns = 0;
                         BroadcastAbility(pkmn, pkmn, pkmn.Ability, PBEAbilityAction.ChangedStatus);
-                        BroadcastStatus2(pkmn, pkmn, PBEStatus2.Confused, PBEStatusAction.Cured);
+                        BroadcastStatus2(pkmn, pkmn, PBEStatus2.Confused, PBEStatusAction.Cleared);
                     }
                     break;
                 }
@@ -1944,7 +1959,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                     {
                         pkmn.Status1 = PBEStatus1.None;
                         BroadcastAbility(pkmn, pkmn, pkmn.Ability, PBEAbilityAction.ChangedStatus);
-                        BroadcastStatus1(pkmn, pkmn, PBEStatus1.Burned, PBEStatusAction.Cured);
+                        BroadcastStatus1(pkmn, pkmn, PBEStatus1.Burned, PBEStatusAction.Cleared);
                     }
                     break;
                 }
@@ -3178,6 +3193,24 @@ namespace Kermalis.PokemonBattleEngine.Battle
                 }
             }
             SemiInvulnerableChargeMove(user, targets, move, requestedTargets, PBEStatus2.Airborne, beforePostHit: BeforePostHit);
+        }
+        private void Ef_ShadowForce(PBEPokemon user, PBEPokemon[] targets, PBEMove move, PBETurnTarget requestedTargets)
+        {
+            void BeforePostHit(PBEPokemon target)
+            {
+                // TODO: Quick Guard
+                if (target.HP > 0 && target.Status2.HasFlag(PBEStatus2.Protected))
+                {
+                    target.Status2 &= ~PBEStatus2.Protected;
+                    BroadcastStatus2(target, user, PBEStatus2.Protected, PBEStatusAction.Cleared);
+                }
+                if (target.Team.TeamStatus.HasFlag(PBETeamStatus.WideGuard))
+                {
+                    target.Team.TeamStatus &= ~PBETeamStatus.WideGuard;
+                    BroadcastTeamStatus(target.Team, PBETeamStatus.WideGuard, PBETeamStatusAction.Cleared, damageVictim: target);
+                }
+            }
+            SemiInvulnerableChargeMove(user, targets, move, requestedTargets, PBEStatus2.ShadowForce, beforePostHit: BeforePostHit);
         }
 
         private void Ef_BrickBreak(PBEPokemon user, PBEPokemon[] targets, PBEMove move)

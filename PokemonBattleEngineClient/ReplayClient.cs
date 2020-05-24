@@ -8,8 +8,8 @@ namespace Kermalis.PokemonBattleEngineClient
         public ReplayClient(string path)
             : base(PBEBattle.LoadReplay(path), ClientMode.Replay)
         {
-            ShowRawValues0 = true;
-            ShowRawValues1 = true;
+            ShowEverything0 = true;
+            ShowEverything1 = true;
             StartPacketThread();
         }
 

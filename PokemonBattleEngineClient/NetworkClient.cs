@@ -67,8 +67,8 @@ namespace Kermalis.PokemonBattleEngineClient
                         if (id < 2)
                         {
                             Team = Battle.Teams[id];
-                            ShowRawValues0 = id == 0;
-                            ShowRawValues1 = id == 1;
+                            ShowEverything0 = id == 0;
+                            ShowEverything1 = id == 1;
                         }
                     }
                     else

@@ -288,16 +288,17 @@ namespace Kermalis.PokemonBattleEngine.Data
         Protected = 1 << 12,
         /// <summary>The Pokémon is under the effect of <see cref="PBEMove.FocusEnergy"/> or <see cref="PBEItem.LansatBerry"/> and has a higher chance of landing critical hits.</summary>
         Pumped = 1 << 13,
+        ShadowForce = 1 << 14,
         /// <summary>The Pokémon is behind a substitute that will take damage on behalf of the Pokémon and prevent most moves from affecting the Pokémon.</summary>
-        Substitute = 1 << 14,
+        Substitute = 1 << 15,
         /// <summary>The Pokémon is transformed into another Pokémon.</summary>
-        Transformed = 1 << 15,
+        Transformed = 1 << 16,
         /// <summary>The Pokémon is underground. A move will miss against the Pokémon unless it has <see cref="PBEMoveFlag.HitsUnderground"/> or either Pokémon has <see cref="PBEAbility.NoGuard"/>.
         /// The Pokémon will take double damage from <see cref="PBEMove.Earthquake"/> and <see cref="PBEMove.Magnitude"/>.</summary>
-        Underground = 1 << 16,
+        Underground = 1 << 17,
         /// <summary>The Pokémon is underwater. A move will miss against the Pokémon unless it has <see cref="PBEMoveFlag.HitsUnderwater"/> or either Pokémon has <see cref="PBEAbility.NoGuard"/>.
         /// The Pokémon will take double damage from <see cref="PBEMove.Surf"/> and <see cref="PBEMove.Whirlpool"/>.</summary>
-        Underwater = 1 << 17
+        Underwater = 1 << 18
     }
     /// <summary>Represents a specific <see cref="PBEBattle"/>'s status.</summary>
     [Flags]
@@ -369,32 +370,23 @@ namespace Kermalis.PokemonBattleEngine.Data
     /// <summary>Represents an action regarding a <see cref="PBEStatus1"/> or <see cref="PBEStatus2"/>.</summary>
     public enum PBEStatusAction : byte
     {
-        /// <summary>The status activated its main effect.</summary>
-        /// <example>
-        /// <see cref="PBEStatus2.Flinching"/> prevented movement.
-        /// </example>
-        Activated = 0,
         /// <summary>The status was added to a Pokémon.</summary>
-        /// <example>
-        /// The Pokémon became <see cref="PBEStatus1.Paralyzed"/>.
-        /// </example>
-        Added = 1,
+        /// <example>The Pokémon became <see cref="PBEStatus1.Paralyzed"/>.</example>
+        Added = 0,
+        /// <summary>The status activated its main effect.</summary>
+        /// <example><see cref="PBEStatus2.Infatuated"/> states the Pokémon is in love.</example>
+        Announced = 1,
         /// <summary>The status caused a Pokémon to be immobile.</summary>
+        /// <example><see cref="PBEStatus2.Flinching"/> prevented movement.</example>
         CausedImmobility = 2,
         /// <summary>The status was cured from a Pokémon.</summary>
-        /// <example>
-        /// <see cref="PBEAbility.Limber"/> cured a Pokémon of <see cref="PBEStatus1.Paralyzed"/>.
-        /// </example>
-        Cured = 3,
+        /// <example><see cref="PBEAbility.Limber"/> cured a Pokémon of <see cref="PBEStatus1.Paralyzed"/>.</example>
+        Cleared = 3,
         /// <summary>The status was involved with damage.</summary>
-        /// <example>
-        /// A Pokémon's <see cref="PBEStatus2.Substitute"/> took damage.
-        /// </example>
+        /// <example>A Pokémon's <see cref="PBEStatus2.Substitute"/> took damage.</example>
         Damage = 4,
-        /// <summary>The status has ended.</summary>
-        /// <example>
-        /// A Pokémon with <see cref="PBEStatus2.Confused"/> regained its senses.
-        /// </example>
+        /// <summary>The status has ended naturally.</summary>
+        /// <example>A Pokémon with <see cref="PBEStatus2.Confused"/> regained its senses.</example>
         Ended = 5
     }
     public enum PBEBattleStatusAction : byte
@@ -407,24 +399,16 @@ namespace Kermalis.PokemonBattleEngine.Data
     public enum PBETeamStatusAction : byte
     {
         /// <summary>The status was added to a team.</summary>
-        /// <example>
-        /// The team set up <see cref="PBETeamStatus.LightScreen"/>.
-        /// </example>
+        /// <example>A team set up <see cref="PBETeamStatus.LightScreen"/>.</example>
         Added = 0,
-        /// <summary>The status was removed from a team.</summary>
-        /// <example>
-        /// An opponent used <see cref="PBEMove.BrickBreak"/> and destroyed <see cref="PBETeamStatus.Reflect"/>.
-        /// </example>
+        /// <summary>The status was forcefully removed from a team.</summary>
+        /// <example>A Pokémon used <see cref="PBEMove.BrickBreak"/> and destroyed <see cref="PBETeamStatus.Reflect"/>.</example>
         Cleared = 1,
         /// <summary>The status caused a Pokémon to take damage.</summary>
-        /// <example>
-        /// An Pokémon switched in and took damage from <see cref="PBETeamStatus.StealthRock"/>.
-        /// </example>
+        /// <example>A Pokémon switched in and took damage from <see cref="PBETeamStatus.StealthRock"/>.</example>
         Damage = 2,
-        /// <summary>The status ended.</summary>
-        /// <example>
-        /// <see cref="PBETeamStatus.LightScreen"/> wore off.
-        /// </example>
+        /// <summary>The status ended naturally.</summary>
+        /// <example><see cref="PBETeamStatus.LightScreen"/> wore off.</example>
         Ended = 3
     }
     /// <summary>Represents the result of an intention.</summary>
@@ -2257,6 +2241,7 @@ namespace Kermalis.PokemonBattleEngine.Data
         SeismicToss,
         Selfdestruct,
         SetDamage,
+        ShadowForce,
         SimpleBeam,
         Sleep,
         Snore,
@@ -2698,7 +2683,7 @@ namespace Kermalis.PokemonBattleEngine.Data
         Selfdestruct = 120,
         ShadowBall = 247,
         ShadowClaw = 421,
-        //ShadowForce = 467,
+        ShadowForce = 467, // TODO: Destroy Quick Guard
         ShadowPunch = 325,
         ShadowSneak = 425,
         Sharpen = 159,

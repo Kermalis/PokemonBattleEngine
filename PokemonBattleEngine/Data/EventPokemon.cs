@@ -72,7 +72,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                     new PBEEventPokemon // Jewel of Life promotion
                     (
                         new byte[] { 4 }, PBESpecies.Arceus, 100, false, PBEGender.Genderless, new PBEAbility[] { PBEAbility.Multitype }, PBEPokemonShell.AllNatures,
-                        new byte?[] { null, null, null, null, null, null }, new PBEMove[] { PBEMove.Judgment, /*PBEMove.RoarOfTime, */PBEMove.SpacialRend/*, PBEMove.ShadowForce*/ }
+                        new byte?[] { null, null, null, null, null, null }, new PBEMove[] { PBEMove.Judgment, /*PBEMove.RoarOfTime, */PBEMove.SpacialRend, PBEMove.ShadowForce }
                     ),
                     new PBEEventPokemon // Global Link promotion
                     (
@@ -485,7 +485,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                     new PBEEventPokemon // 2013 shiny creation trio
                     (
                         new byte[] { 5 }, PBESpecies.Giratina, 100, true, PBEGender.Genderless, new PBEAbility[] { PBEAbility.Pressure }, PBEPokemonShell.AllNatures,
-                        new byte?[] { null, null, null, null, null, null }, new PBEMove[] { PBEMove.DragonPulse, PBEMove.DragonClaw, PBEMove.AuraSphere/*, PBEMove.ShadowForce*/ }
+                        new byte?[] { null, null, null, null, null, null }, new PBEMove[] { PBEMove.DragonPulse, PBEMove.DragonClaw, PBEMove.AuraSphere, PBEMove.ShadowForce }
                     )
                 })
             },

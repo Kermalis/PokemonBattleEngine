@@ -90,17 +90,18 @@ namespace Kermalis.PokemonBattleEngineClient.Infrastructure
             }
         }
 
-        public static string CustomPokemonToString(PBEPokemon pkmn, bool showRawValues0, bool showRawValues1)
+        public static bool ShouldShowEverything(PBETeam team, bool showEverything0, bool showEverything1)
+        {
+            return (team.Id == 0 && showEverything0) || (team.Id == 1 && showEverything1);
+        }
+
+        public static string CustomPokemonToString(PBEPokemon pkmn, bool showEverything0, bool showEverything1)
         {
             var sb = new StringBuilder();
 
-            bool IsAlly(PBEPokemon p)
-            {
-                return (p.Team.Id == 0 && showRawValues0) || (p.Team.Id == 1 && showRawValues1);
-            }
             string GetTeamNickname(PBEPokemon p)
             {
-                return $"{p.Team.TrainerName}'s {(IsAlly(p) ? p.Nickname : p.KnownNickname)}";
+                return $"{p.Team.TrainerName}'s {(ShouldShowEverything(p.Team, showEverything0, showEverything1) ? p.Nickname : p.KnownNickname)}";
             }
 
             void AddStatChanges()
@@ -179,7 +180,7 @@ namespace Kermalis.PokemonBattleEngineClient.Infrastructure
                 }
             }
 
-            if (!IsAlly(pkmn))
+            if (!ShouldShowEverything(pkmn.Team, showEverything0, showEverything1))
             {
                 sb.AppendLine($"{pkmn.KnownNickname}/{pkmn.KnownSpecies} {(pkmn.Status2.HasFlag(PBEStatus2.Transformed) ? pkmn.GenderSymbol : pkmn.KnownGenderSymbol)} Lv.{pkmn.Level}");
                 sb.AppendLine($"HP: {pkmn.HPPercentage:P2}");

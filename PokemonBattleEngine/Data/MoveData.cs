@@ -2717,6 +2717,15 @@ namespace Kermalis.PokemonBattleEngine.Data
                 )
             },
             {
+                PBEMove.ShadowForce,
+                new PBEMoveData
+                (
+                    PBEType.Ghost, PBEMoveCategory.Physical, 0, 1, 120, 100,
+                    PBEMoveEffect.ShadowForce, 0, PBEMoveTarget.SingleSurrounding,
+                    PBEMoveFlag.AffectedByMirrorMove | PBEMoveFlag.MakesContact
+                )
+            },
+            {
                 PBEMove.ShadowPunch,
                 new PBEMoveData
                 (

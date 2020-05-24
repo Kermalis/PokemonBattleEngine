@@ -223,7 +223,7 @@ namespace Kermalis.PokemonBattleEngineClient.Views
 
                 HPBarView hpView;
                 PokemonView pkmnView;
-                bool backSprite = (pkmn.Team.Id == 0 && _battleView.Client.BattleId != 1) || (pkmn.Team.Id == 1 && _battleView.Client.BattleId == 1);
+                bool backSprite = pkmn.Team.Id == 0 ? _battleView.Client.BattleId != 1 : _battleView.Client.BattleId == 1;
                 if (oldPosition != PBEFieldPosition.None)
                 {
                     hpView = this.FindControl<HPBarView>($"Bar{(backSprite ? 0 : 1)}_{oldPosition}");
@@ -234,9 +234,9 @@ namespace Kermalis.PokemonBattleEngineClient.Views
                 if (pkmn.FieldPosition != PBEFieldPosition.None)
                 {
                     hpView = this.FindControl<HPBarView>($"Bar{(backSprite ? 0 : 1)}_{pkmn.FieldPosition}");
-                    hpView.Update(pkmn, (pkmn.Team.Id == 0 && _battleView.Client.ShowRawValues0) || (pkmn.Team.Id == 1 && _battleView.Client.ShowRawValues1));
+                    hpView.Update(pkmn, (pkmn.Team.Id == 0 && _battleView.Client.ShowEverything0) || (pkmn.Team.Id == 1 && _battleView.Client.ShowEverything1));
                     pkmnView = this.FindControl<PokemonView>($"Battler{(backSprite ? 0 : 1)}_{pkmn.FieldPosition}");
-                    pkmnView.Update(pkmn, backSprite, _battleView.Client.ShowRawValues0, _battleView.Client.ShowRawValues1);
+                    pkmnView.Update(pkmn, backSprite, _battleView.Client.ShowEverything0, _battleView.Client.ShowEverything1);
                 }
             });
         }

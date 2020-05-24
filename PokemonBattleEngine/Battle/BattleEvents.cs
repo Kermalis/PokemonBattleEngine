@@ -931,7 +931,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                             {
                                 case PBEStatusAction.Added: message = "{0} fell asleep!"; break;
                                 case PBEStatusAction.CausedImmobility: message = "{0} is fast asleep."; break;
-                                case PBEStatusAction.Cured:
+                                case PBEStatusAction.Cleared:
                                 case PBEStatusAction.Ended: message = "{0} woke up!"; break;
                                 default: throw new ArgumentOutOfRangeException(nameof(s1p.StatusAction));
                             }
@@ -942,7 +942,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                             switch (s1p.StatusAction)
                             {
                                 case PBEStatusAction.Added: message = "{0} was badly poisoned!"; break;
-                                case PBEStatusAction.Cured: message = "{0} was cured of its poisoning."; break;
+                                case PBEStatusAction.Cleared: message = "{0} was cured of its poisoning."; break;
                                 case PBEStatusAction.Damage: message = "{0} was hurt by poison!"; break;
                                 default: throw new ArgumentOutOfRangeException(nameof(s1p.StatusAction));
                             }
@@ -953,7 +953,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                             switch (s1p.StatusAction)
                             {
                                 case PBEStatusAction.Added: message = "{0} was burned!"; break;
-                                case PBEStatusAction.Cured: message = "{0}'s burn was healed."; break;
+                                case PBEStatusAction.Cleared: message = "{0}'s burn was healed."; break;
                                 case PBEStatusAction.Damage: message = "{0} was hurt by its burn!"; break;
                                 default: throw new ArgumentOutOfRangeException(nameof(s1p.StatusAction));
                             }
@@ -965,7 +965,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                             {
                                 case PBEStatusAction.Added: message = "{0} was frozen solid!"; break;
                                 case PBEStatusAction.CausedImmobility: message = "{0} is frozen solid!"; break;
-                                case PBEStatusAction.Cured:
+                                case PBEStatusAction.Cleared:
                                 case PBEStatusAction.Ended: message = "{0} thawed out!"; break;
                                 default: throw new ArgumentOutOfRangeException(nameof(s1p.StatusAction));
                             }
@@ -977,7 +977,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                             {
                                 case PBEStatusAction.Added: message = "{0} is paralyzed! It may be unable to move!"; break;
                                 case PBEStatusAction.CausedImmobility: message = "{0} is paralyzed! It can't move!"; break;
-                                case PBEStatusAction.Cured: message = "{0} was cured of paralysis."; break;
+                                case PBEStatusAction.Cleared: message = "{0} was cured of paralysis."; break;
                                 default: throw new ArgumentOutOfRangeException(nameof(s1p.StatusAction));
                             }
                             break;
@@ -987,7 +987,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                             switch (s1p.StatusAction)
                             {
                                 case PBEStatusAction.Added: message = "{0} was poisoned!"; break;
-                                case PBEStatusAction.Cured: message = "{0} was cured of its poisoning."; break;
+                                case PBEStatusAction.Cleared: message = "{0} was cured of its poisoning."; break;
                                 case PBEStatusAction.Damage: message = "{0} was hurt by poison!"; break;
                                 default: throw new ArgumentOutOfRangeException(nameof(s1p.StatusAction));
                             }
@@ -1019,9 +1019,9 @@ namespace Kermalis.PokemonBattleEngine.Battle
                         {
                             switch (s2p.StatusAction)
                             {
-                                case PBEStatusAction.Activated: message = "{0} is confused!"; break;
                                 case PBEStatusAction.Added: message = "{0} became confused!"; break;
-                                case PBEStatusAction.Cured:
+                                case PBEStatusAction.Announced: message = "{0} is confused!"; break;
+                                case PBEStatusAction.Cleared:
                                 case PBEStatusAction.Ended: message = "{0} snapped out of its confusion."; break;
                                 case PBEStatusAction.Damage: message = "It hurt itself in its confusion!"; break;
                                 default: throw new ArgumentOutOfRangeException(nameof(s2p.StatusAction));
@@ -1063,9 +1063,9 @@ namespace Kermalis.PokemonBattleEngine.Battle
                             switch (s2p.StatusAction)
                             {
                                 case PBEStatusAction.Added: message = "{0} fell in love with {1}!"; break;
-                                case PBEStatusAction.Activated: message = "{0} is in love with {1}!"; break;
+                                case PBEStatusAction.Announced: message = "{0} is in love with {1}!"; break;
                                 case PBEStatusAction.CausedImmobility: message = "{0} is immobilized by love!"; break;
-                                case PBEStatusAction.Cured:
+                                case PBEStatusAction.Cleared:
                                 case PBEStatusAction.Ended: message = "{0} got over its infatuation."; break;
                                 default: throw new ArgumentOutOfRangeException(nameof(s2p.StatusAction));
                             }
@@ -1124,8 +1124,9 @@ namespace Kermalis.PokemonBattleEngine.Battle
                         {
                             switch (s2p.StatusAction)
                             {
-                                case PBEStatusAction.Activated:
-                                case PBEStatusAction.Added: message = "{0} protected itself!"; break;
+                                case PBEStatusAction.Added:
+                                case PBEStatusAction.Damage: message = "{0} protected itself!"; break;
+                                case PBEStatusAction.Cleared: message = "{1} broke through {0}'s protection!"; break;
                                 case PBEStatusAction.Ended: return;
                                 default: throw new ArgumentOutOfRangeException(nameof(s2p.StatusAction));
                             }
@@ -1136,6 +1137,16 @@ namespace Kermalis.PokemonBattleEngine.Battle
                             switch (s2p.StatusAction)
                             {
                                 case PBEStatusAction.Added: message = "{0} is getting pumped!"; break;
+                                default: throw new ArgumentOutOfRangeException(nameof(s2p.StatusAction));
+                            }
+                            break;
+                        }
+                        case PBEStatus2.ShadowForce:
+                        {
+                            switch (s2p.StatusAction)
+                            {
+                                case PBEStatusAction.Added: message = "{0} vanished instantly!"; break;
+                                case PBEStatusAction.Ended: return;
                                 default: throw new ArgumentOutOfRangeException(nameof(s2p.StatusAction));
                             }
                             break;
@@ -1280,6 +1291,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                             switch (tsp.TeamStatusAction)
                             {
                                 case PBETeamStatusAction.Added: message = "Wide Guard protected {0}'s team!"; break;
+                                case PBETeamStatusAction.Cleared: message = "{0}'s team's Wide Guard was destroyed!"; break;
                                 case PBETeamStatusAction.Damage: message = "Wide Guard protected {1}!"; break;
                                 case PBETeamStatusAction.Ended: return;
                                 default: throw new ArgumentOutOfRangeException(nameof(tsp.TeamStatusAction));

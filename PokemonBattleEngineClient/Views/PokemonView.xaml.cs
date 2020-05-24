@@ -31,9 +31,9 @@ namespace Kermalis.PokemonBattleEngineClient.Views
                 }
             }
         }
-        private bool _showRawValues0;
-        private bool _showRawValues1;
-        public string Description => Utils.CustomPokemonToString(_pokemon, _showRawValues0, _showRawValues1);
+        private bool _showEverything0;
+        private bool _showEverything1;
+        public string Description => Utils.CustomPokemonToString(_pokemon, _showEverything0, _showEverything1);
 
         public PokemonView()
         {
@@ -41,15 +41,28 @@ namespace Kermalis.PokemonBattleEngineClient.Views
             AvaloniaXamlLoader.Load(this);
         }
 
-        public void Update(PBEPokemon pkmn, bool backSprite, bool showRawValues0, bool showRawValues1)
+        public void Update(PBEPokemon pkmn, bool backSprite, bool showEverything0, bool showEverything1)
         {
-            _showRawValues0 = showRawValues0;
-            _showRawValues1 = showRawValues1;
+            _showEverything0 = showEverything0;
+            _showEverything1 = showEverything1;
             _pokemon = pkmn;
 
             Image sprite = this.FindControl<Image>("Sprite");
-            // Fly/Bounce/SkyDrop / Dig / Dive / ShadowForce
-            sprite.Opacity = !_pokemon.Status2.HasFlag(PBEStatus2.Substitute) && (_pokemon.Status2.HasFlag(PBEStatus2.Airborne) || _pokemon.Status2.HasFlag(PBEStatus2.Underground) || _pokemon.Status2.HasFlag(PBEStatus2.Underwater)) ? 0.4 : 1.0;
+            // Bounce/Fly/SkyDrop / Dig / Dive / ShadowForce
+            PBEStatus2 status2 = _pokemon.Status2;
+            double opacity = 1;
+            if (!status2.HasFlag(PBEStatus2.Substitute))
+            {
+                if (Utils.ShouldShowEverything(pkmn.Team, showEverything0, showEverything1) && status2.HasFlag(PBEStatus2.Disguised))
+                {
+                    opacity *= 0.7;
+                }
+                if (status2.HasFlag(PBEStatus2.Airborne) || status2.HasFlag(PBEStatus2.ShadowForce) || status2.HasFlag(PBEStatus2.Underground) || status2.HasFlag(PBEStatus2.Underwater))
+                {
+                    opacity *= 0.4;
+                }
+            }
+            sprite.Opacity = opacity;
             GifImage.SetSourceStream(sprite, Utils.GetPokemonSpriteStream(_pokemon, backSprite));
 
             IsVisible = true;

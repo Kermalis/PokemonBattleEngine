@@ -13,8 +13,8 @@ namespace Kermalis.PokemonBattleEngineClient
         {
             BattleId = 0;
             Team = Battle.Teams[0];
-            ShowRawValues0 = true;
-            ShowRawValues1 = false;
+            ShowEverything0 = true;
+            ShowEverything1 = false;
             Battle.OnNewEvent += SinglePlayerBattle_OnNewEvent;
             Battle.OnStateChanged += SinglePlayerBattle_OnStateChanged;
             new Thread(Battle.Begin) { Name = "Battle Thread" }.Start();
