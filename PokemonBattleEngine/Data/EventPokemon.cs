@@ -763,7 +763,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                     new PBEEventPokemon // Pokémon Center relocation
                     (
                         new byte[] { 5 }, PBESpecies.Magikarp, 99, true, PBEGender.MAX, new PBEAbility[] { PBEAbility.SwiftSwim }, PBEPokemonShell.AllNatures,
-                        new byte?[] { null, null, null, null, null, null }, new PBEMove[] { PBEMove.Flail, PBEMove.HydroPump/*, PBEMove.Bounce*/, PBEMove.Splash }
+                        new byte?[] { null, null, null, null, null, null }, new PBEMove[] { PBEMove.Flail, PBEMove.HydroPump, PBEMove.Bounce, PBEMove.Splash }
                     )
                 })
             },

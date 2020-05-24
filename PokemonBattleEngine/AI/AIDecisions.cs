@@ -116,6 +116,7 @@ namespace Kermalis.PokemonBattleEngine.AI
                                         }
                                         break;
                                     }
+                                    case PBEMoveEffect.Bounce:
                                     case PBEMoveEffect.BrickBreak:
                                     case PBEMoveEffect.Dig:
                                     case PBEMoveEffect.Dive:

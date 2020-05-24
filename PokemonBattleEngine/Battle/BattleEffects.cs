@@ -618,6 +618,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
 
         private void UseMove(PBEPokemon user, PBEMove move, PBETurnTarget requestedTargets)
         {
+            // Cancel the semi-invulnerable move if the user is affected by its status1
             if (!_calledFromOtherMove && PreMoveStatusCheck(user, move))
             {
                 if (user.Status2.HasFlag(PBEStatus2.Airborne))
@@ -656,6 +657,11 @@ namespace Kermalis.PokemonBattleEngine.Battle
                     case PBEMoveEffect.BellyDrum:
                     {
                         Ef_BellyDrum(user, targets, move);
+                        break;
+                    }
+                    case PBEMoveEffect.Bounce:
+                    {
+                        Ef_Bounce(user, targets, move, requestedTargets, effectParam);
                         break;
                     }
                     case PBEMoveEffect.BrickBreak:
@@ -2668,7 +2674,8 @@ namespace Kermalis.PokemonBattleEngine.Battle
             }
             // Official order: user faints/target eats berry, effectiveness, "Hit 4 times!", target faints, Life Orb, target AntiStatusAbilityCheck()
         }
-        private void SemiInvulnerableChargeMove(PBEPokemon user, PBEPokemon[] targets, PBEMove move, PBETurnTarget requestedTargets, PBEStatus2 status2)
+        private void SemiInvulnerableChargeMove(PBEPokemon user, PBEPokemon[] targets, PBEMove move, PBETurnTarget requestedTargets, PBEStatus2 status2,
+            Action<PBEPokemon> beforePostHit = null)
         {
             BroadcastMoveUsed(user, move);
         top:
@@ -2683,7 +2690,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                 }
                 else
                 {
-                    BasicHit(user, targets, move);
+                    BasicHit(user, targets, move, beforePostHit: beforePostHit);
                 }
                 RecordExecutedMove(user, move); // Should only count as the last used move if it finishes charging
             }
@@ -3161,6 +3168,18 @@ namespace Kermalis.PokemonBattleEngine.Battle
             RecordExecutedMove(user, move);
         }
 
+        private void Ef_Bounce(PBEPokemon user, PBEPokemon[] targets, PBEMove move, PBETurnTarget requestedTargets, int chanceToParalyze)
+        {
+            void BeforePostHit(PBEPokemon target)
+            {
+                if (target.HP > 0)
+                {
+                    ApplyStatus1IfPossible_Chance(user, target, PBEStatus1.Paralyzed, false, chanceToParalyze);
+                }
+            }
+            SemiInvulnerableChargeMove(user, targets, move, requestedTargets, PBEStatus2.Airborne, beforePostHit: BeforePostHit);
+        }
+
         private void Ef_BrickBreak(PBEPokemon user, PBEPokemon[] targets, PBEMove move)
         {
             BroadcastMoveUsed(user, move);
@@ -3286,6 +3305,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                 void BeforePostHit(PBEPokemon target)
                 {
                     // Verified: Ignores Serene Grace, so secondary chance is checked here
+                    // Possibly can be considered an oversight, it affects Serene Grace in every generation except for 5
                     if (target.HP > 0 && PBERandom.RandomBool(secondaryEffectChance, 100))
                     {
                         switch (BattleTerrain)

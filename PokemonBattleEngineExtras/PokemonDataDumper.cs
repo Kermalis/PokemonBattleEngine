@@ -707,7 +707,7 @@ namespace Kermalis.PokemonBattleEngineExtras
             PBEMove.IronDefense,
             PBEMove.MagnetRise,
             (PBEMove)387, // LastResort
-            (PBEMove)340, // Bounce
+            PBEMove.Bounce,
             (PBEMove)271, // Trick
             PBEMove.HeatWave,
             (PBEMove)282, // KnockOff
@@ -753,7 +753,7 @@ namespace Kermalis.PokemonBattleEngineExtras
             PBEMove.IronDefense,
             PBEMove.MagnetRise,
             (PBEMove)387, // LastResort
-            (PBEMove)340, // Bounce
+            PBEMove.Bounce,
             (PBEMove)271, // Trick
             PBEMove.HeatWave,
             (PBEMove)282, // KnockOff
@@ -955,7 +955,7 @@ namespace Kermalis.PokemonBattleEngineExtras
                 PBEMove.IronHead,
                 PBEMove.SeedBomb,
                 PBEMove.DrillRun,
-                (PBEMove)340, // Bounce
+                PBEMove.Bounce,
                 PBEMove.LowKick,
                 PBEMove.GunkShot,
                 (PBEMove)253, // Uproar

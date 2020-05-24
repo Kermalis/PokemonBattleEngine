@@ -2154,6 +2154,7 @@ namespace Kermalis.PokemonBattleEngine.Data
     {
         Attract,
         BellyDrum,
+        Bounce,
         BrickBreak,
         Burn,
         Camouflage,
@@ -2329,7 +2330,7 @@ namespace Kermalis.PokemonBattleEngine.Data
         BoneClub = 125,
         Bonemerang = 155,
         BoneRush = 198,
-        //Bounce = 340,
+        Bounce = 340,
         BraveBird = 413,
         BrickBreak = 280,
         Brine = 362,
