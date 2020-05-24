@@ -1,4 +1,7 @@
-﻿using Kermalis.PokemonBattleEngine.Utils;
+﻿using Kermalis.PokemonBattleEngine.Battle;
+using Kermalis.PokemonBattleEngine.Data;
+using Kermalis.PokemonBattleEngine.Packets;
+using Kermalis.PokemonBattleEngine.Utils;
 using System;
 using System.IO;
 using System.Text;
@@ -20,6 +23,22 @@ namespace Kermalis.PokemonBattleEngineTests
             PBEUtils.CreateDatabaseConnection(string.Empty);
         }
 
+        public static bool VerifyMoveResult(PBEBattle battle, PBEPokemon moveUser, PBEPokemon pokemon2, PBEResult result)
+        {
+            foreach (IPBEPacket packet in battle.Events)
+            {
+                if (packet is PBEMoveResultPacket mrp)
+                {
+                    if (mrp.Result == result && mrp.MoveUserTeam.TryGetPokemon(mrp.MoveUser) == moveUser && mrp.Pokemon2Team.TryGetPokemon(mrp.Pokemon2) == pokemon2)
+                    {
+                        return true;
+                    }
+                }
+            }
+            return false;
+        }
+
+        #region Output
         public void SetOutputHelper(ITestOutputHelper output)
         {
             Console.SetOut(new TestOutputConverter(output));
@@ -42,5 +61,6 @@ namespace Kermalis.PokemonBattleEngineTests
                 _output.WriteLine(format, args);
             }
         }
+        #endregion
     }
 }

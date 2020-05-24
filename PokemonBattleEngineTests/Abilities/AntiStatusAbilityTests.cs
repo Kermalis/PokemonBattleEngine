@@ -4,7 +4,7 @@ using Kermalis.PokemonBattleEngine.Utils;
 using Xunit;
 using Xunit.Abstractions;
 
-namespace Kermalis.PokemonBattleEngineTests
+namespace Kermalis.PokemonBattleEngineTests.Abilities
 {
     [Collection("Utils")]
     public class AntiStatusAbilityTests
@@ -15,23 +15,23 @@ namespace Kermalis.PokemonBattleEngineTests
         }
 
         [Fact]
-        public void Immunity_Works_Check()
+        public void Immunity_Works()
         {
             PBERandom.SetSeed(0); // Seed prevents Toxic from missing
             PBESettings settings = PBESettings.DefaultSettings;
 
             var team1Shell = new PBETeamShell(settings, 1, true);
-            PBEPokemonShell p = team1Shell[0];
-            p.Species = PBESpecies.Seviper;
-            p.Item = PBEItem.None;
-            p.Moveset[0].Move = PBEMove.Toxic;
+            PBEPokemonShell ps = team1Shell[0];
+            ps.Species = PBESpecies.Seviper;
+            ps.Item = PBEItem.None;
+            ps.Moveset[0].Move = PBEMove.Toxic;
 
             var team2Shell = new PBETeamShell(settings, 1, true);
-            p = team2Shell[0];
-            p.Species = PBESpecies.Zangoose;
-            p.Ability = PBEAbility.Immunity;
-            p.Item = PBEItem.None;
-            p.Moveset[0].Move = PBEMove.Snore;
+            ps = team2Shell[0];
+            ps.Species = PBESpecies.Zangoose;
+            ps.Ability = PBEAbility.Immunity;
+            ps.Item = PBEItem.None;
+            ps.Moveset[0].Move = PBEMove.Snore;
 
             var battle = new PBEBattle(PBEBattleTerrain.Plain, PBEBattleFormat.Single, team1Shell, "Team 1", team2Shell, "Team 2");
             battle.OnNewEvent += PBEBattle.ConsoleBattleEventHandler;
@@ -47,7 +47,7 @@ namespace Kermalis.PokemonBattleEngineTests
 
             battle.RunTurn();
 
-            Assert.False(battle.Teams[1].Party[0].Status1 == PBEStatus1.BadlyPoisoned);
+            Assert.True(TestUtils.VerifyMoveResult(battle, battle.Teams[0].Party[0], battle.Teams[1].Party[0], PBEResult.Ineffective_Ability));
 
             battle.OnNewEvent -= PBEBattle.ConsoleBattleEventHandler;
             battle.Dispose();

@@ -16,7 +16,7 @@ namespace Kermalis.PokemonBattleEngineTests
         }
 
         [Fact]
-        public void Basic_Actions_Checks()
+        public void Basic_Actions()
         {
             PBERandom.SetSeed(0);
             PBESettings settings = PBESettings.DefaultSettings;
