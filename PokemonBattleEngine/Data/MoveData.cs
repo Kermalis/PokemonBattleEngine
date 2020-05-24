@@ -440,6 +440,15 @@ namespace Kermalis.PokemonBattleEngine.Data
                 )
             },
             {
+                PBEMove.Camouflage,
+                new PBEMoveData
+                (
+                    PBEType.Normal, PBEMoveCategory.Status, 0, 4, 0, 0,
+                    PBEMoveEffect.Camouflage, 0, PBEMoveTarget.Self,
+                    PBEMoveFlag.AffectedBySnatch
+                )
+            },
+            {
                 PBEMove.Captivate,
                 new PBEMoveData
                 (

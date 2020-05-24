@@ -668,6 +668,11 @@ namespace Kermalis.PokemonBattleEngine.Battle
                         Ef_TryForceStatus1(user, targets, move, PBEStatus1.Burned);
                         break;
                     }
+                    case PBEMoveEffect.Camouflage:
+                    {
+                        Ef_Camouflage(user, targets, move);
+                        break;
+                    }
                     case PBEMoveEffect.ChangeTarget_ACC:
                     {
                         Ef_ChangeTargetStats(user, targets, move, new PBEStat[] { PBEStat.Accuracy }, new int[] { effectParam });
@@ -3716,6 +3721,46 @@ namespace Kermalis.PokemonBattleEngine.Battle
 #else
                             SetStatAndBroadcast(target, PBEStat.Attack, oldValue, newValue);
 #endif
+                        }
+                    }
+                }
+            }
+            RecordExecutedMove(user, move);
+        }
+        private void Ef_Camouflage(PBEPokemon user, PBEPokemon[] targets, PBEMove move)
+        {
+            BroadcastMoveUsed(user, move);
+            PPReduce(user, move);
+            if (targets.Length == 0)
+            {
+                BroadcastMoveResult(user, user, PBEResult.NoTarget);
+            }
+            else
+            {
+                foreach (PBEPokemon target in targets)
+                {
+                    if (!MissCheck(user, target, move))
+                    {
+                        PBEType type;
+                        switch (BattleTerrain)
+                        {
+                            case PBEBattleTerrain.Cave: type = PBEType.Rock; break;
+                            case PBEBattleTerrain.Grass: type = PBEType.Grass; break;
+                            case PBEBattleTerrain.Plain: type = PBEType.Normal; break;
+                            case PBEBattleTerrain.Puddle: type = PBEType.Ground; break;
+                            case PBEBattleTerrain.Sand: type = PBEType.Ground; break;
+                            case PBEBattleTerrain.Snow: type = PBEType.Ice; break;
+                            case PBEBattleTerrain.Water: type = PBEType.Water; break;
+                            default: throw new ArgumentOutOfRangeException(nameof(BattleTerrain));
+                        }
+                        // Verified: Works on dual-type, fails on single-type
+                        if (target.Type1 == type && target.Type2 == PBEType.None)
+                        {
+                            BroadcastMoveResult(user, target, PBEResult.InvalidConditions);
+                        }
+                        else
+                        {
+                            BroadcastTypeChanged(target, type, PBEType.None);
                         }
                     }
                 }
