@@ -11,7 +11,7 @@ namespace Kermalis.PokemonBattleEngine.Utils
 
         public static PBEBattleTerrain RandomBattleTerrain()
         {
-            return (PBEBattleTerrain)RandomInt(0, (int)PBEBattleTerrain.MAX + 1);
+            return (PBEBattleTerrain)RandomInt(0, (int)PBEBattleTerrain.MAX - 1);
         }
         internal static bool RandomBool()
         {
