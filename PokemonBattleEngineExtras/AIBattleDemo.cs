@@ -59,6 +59,8 @@ namespace Kermalis.PokemonBattleEngineExtras
             };*/
 
             _battle = new PBEBattle(PBERandom.RandomBattleTerrain(), PBEBattleFormat.Double, team1Shell, "Team 1", team2Shell, "Team 2");
+            team1Shell.Dispose();
+            team2Shell.Dispose();
             _battle.OnNewEvent += PBEBattle.ConsoleBattleEventHandler;
             _battle.OnNewEvent += Battle_OnNewEvent;
             _battle.OnStateChanged += Battle_OnStateChanged;
