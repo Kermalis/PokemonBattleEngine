@@ -155,6 +155,9 @@ namespace Kermalis.PokemonBattleEngineExtras
                             Console.WriteLine(e.Message);
                             Console.WriteLine(e.StackTrace);
                         }
+                        _battle.OnNewEvent -= PBEBattle.ConsoleBattleEventHandler;
+                        _battle.OnNewEvent -= Battle_OnNewEvent;
+                        _battle.OnStateChanged -= Battle_OnStateChanged;
                         _battle.Dispose();
                         Console.WriteLine("Test battle ended. The battle was saved to \"{0}\" and \"{1}\".", LogFile, ReplayFile);
                         Console.ReadKey();
