@@ -3433,9 +3433,10 @@ namespace Kermalis.PokemonBattleEngine.Battle
             {
                 PBEResult BeforeDoingDamage(PBEPokemon target)
                 {
-                    if (target.TurnAction.Decision != PBETurnDecision.Fight
-                        || PBEMoveData.Data[target.TurnAction.FightMove].Category == PBEMoveCategory.Status
-                        || target.HasUsedMoveThisTurn)
+                    if (target.TurnAction == null // Just switched in
+                        || target.HasUsedMoveThisTurn
+                        || target.TurnAction.Decision != PBETurnDecision.Fight
+                        || PBEMoveData.Data[target.TurnAction.FightMove].Category == PBEMoveCategory.Status)
                     {
                         PBEResult result = PBEResult.InvalidConditions;
                         BroadcastMoveResult(user, target, result);
