@@ -9,7 +9,8 @@ namespace Kermalis.PokemonBattleEngine.Utils
     /// <summary>A static class that provides utilities that are used throughout the battle engine.</summary>
     public static class PBEUtils
     {
-        private static SqliteConnection databaseConnection;
+        private static readonly object _databaseConnectLockObj = new object();
+        private static SqliteConnection _databaseConnection;
         private static bool StrCmp(object arg0, object arg1)
         {
             if (Convert.IsDBNull(arg0) || Convert.IsDBNull(arg1))
@@ -31,16 +32,16 @@ namespace Kermalis.PokemonBattleEngine.Utils
             {
                 throw new ArgumentNullException(nameof(databasePath));
             }
-            else if (databaseConnection != null)
+            else if (_databaseConnection != null)
             {
                 throw new InvalidOperationException("Database connection was already created.");
             }
             else
             {
                 SQLitePCL.Batteries_V2.Init();
-                databaseConnection = new SqliteConnection($"Filename={Path.Combine(databasePath, "PokemonBattleEngine.db")};Mode=ReadOnly;");
-                databaseConnection.Open();
-                databaseConnection.CreateFunction("StrCmp", (Func<object, object, bool>)StrCmp);
+                _databaseConnection = new SqliteConnection($"Filename={Path.Combine(databasePath, "PokemonBattleEngine.db")};Mode=ReadOnly;");
+                _databaseConnection.Open();
+                _databaseConnection.CreateFunction("StrCmp", (Func<object, object, bool>)StrCmp);
             }
         }
 
@@ -95,29 +96,32 @@ namespace Kermalis.PokemonBattleEngine.Utils
         // TODO: Keep this internal version and make a public version that only allows operations that retrieve data
         internal static List<T> QueryDatabase<T>(string commandText) where T : new()
         {
-            if (databaseConnection == null)
+            if (_databaseConnection == null)
             {
                 throw new Exception($"You must first call \"{nameof(PBEUtils)}.{nameof(CreateDatabaseConnection)}()\"");
             }
             var list = new List<T>();
             Type type = typeof(T);
-            using (SqliteCommand cmd = databaseConnection.CreateCommand())
+            lock (_databaseConnectLockObj)
             {
-                cmd.CommandText = commandText;
-                using (SqliteDataReader r = cmd.ExecuteReader())
+                using (SqliteCommand cmd = _databaseConnection.CreateCommand())
                 {
-                    while (r.Read())
+                    cmd.CommandText = commandText;
+                    using (SqliteDataReader r = cmd.ExecuteReader())
                     {
-                        T obj = Activator.CreateInstance<T>();
-                        for (int i = 0; i < r.FieldCount; i++)
+                        while (r.Read())
                         {
-                            PropertyInfo property = type.GetProperty(r.GetName(i));
-                            if (property != null)
+                            T obj = Activator.CreateInstance<T>();
+                            for (int i = 0; i < r.FieldCount; i++)
                             {
-                                property.SetValue(obj, Convert.ChangeType(r.GetValue(i), property.PropertyType));
+                                PropertyInfo property = type.GetProperty(r.GetName(i));
+                                if (property != null)
+                                {
+                                    property.SetValue(obj, Convert.ChangeType(r.GetValue(i), property.PropertyType));
+                                }
                             }
+                            list.Add(obj);
                         }
-                        list.Add(obj);
                     }
                 }
             }
