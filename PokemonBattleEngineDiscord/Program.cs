@@ -2,7 +2,6 @@
 using Discord.Commands;
 using Discord.WebSocket;
 using Kermalis.PokemonBattleEngine.Utils;
-using Microsoft.Extensions.DependencyInjection;
 using System;
 using System.Reflection;
 using System.Threading.Tasks;
@@ -13,7 +12,6 @@ namespace Kermalis.PokemonBattleEngineDiscord
     {
         private const char CommandPrefix = '!';
         private DiscordSocketClient _client;
-        private IServiceProvider _services;
         private CommandService _commands;
 
         public static void Main(string[] args)
@@ -24,14 +22,10 @@ namespace Kermalis.PokemonBattleEngineDiscord
         {
             PBEUtils.CreateDatabaseConnection(string.Empty);
 
-            _client = new DiscordSocketClient(new DiscordSocketConfig { WebSocketProvider = Discord.Net.Providers.WS4Net.WS4NetProvider.Instance });
+            _client = new DiscordSocketClient();
 
             _commands = new CommandService(new CommandServiceConfig { DefaultRunMode = RunMode.Async });
-            _services = new ServiceCollection()
-                .AddSingleton(_client)
-                .AddSingleton(_commands)
-                .BuildServiceProvider();
-            await _commands.AddModulesAsync(Assembly.GetEntryAssembly(), _services);
+            await _commands.AddModulesAsync(Assembly.GetEntryAssembly(), null);
 
             _client.Log += LogMessage;
             _client.MessageReceived += CommandMessageReceived;
@@ -53,7 +47,7 @@ namespace Kermalis.PokemonBattleEngineDiscord
                 return;
             }
             var context = new SocketCommandContext(_client, message);
-            IResult result = await _commands.ExecuteAsync(context, argPos, _services);
+            IResult result = await _commands.ExecuteAsync(context, argPos, null);
             if (!result.IsSuccess)
             {
                 Console.WriteLine(result.ErrorReason);

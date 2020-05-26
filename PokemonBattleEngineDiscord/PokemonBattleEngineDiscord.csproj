@@ -12,8 +12,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Discord.Net" Version="2.1.1" />
-    <PackageReference Include="Discord.Net.Providers.WS4Net" Version="2.1.1" />
+    <PackageReference Include="Discord.Net" Version="2.2.0" />
     <ProjectReference Include="..\PokemonBattleEngine\PokemonBattleEngine.csproj" />
   </ItemGroup>
 

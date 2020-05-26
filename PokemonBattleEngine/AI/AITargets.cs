@@ -8,7 +8,7 @@ namespace Kermalis.PokemonBattleEngine.AI
     {
         // TODO: Move these to battle targets and make them public; this file doesn't have to exist
 
-        private static PBETurnTarget GetSpreadMoveTargets(PBEPokemon pkmn, PBEMoveTarget targets)
+        public static PBETurnTarget GetSpreadMoveTargets(PBEPokemon pkmn, PBEMoveTarget targets)
         {
             switch (pkmn.Team.Battle.BattleFormat)
             {
@@ -234,7 +234,7 @@ namespace Kermalis.PokemonBattleEngine.AI
             }
         }
 
-        private static PBETurnTarget[] GetPossibleTargets(PBEPokemon pkmn, PBEMoveTarget targets)
+        public static PBETurnTarget[] GetPossibleTargets(PBEPokemon pkmn, PBEMoveTarget targets)
         {
             switch (pkmn.Team.Battle.BattleFormat)
             {
