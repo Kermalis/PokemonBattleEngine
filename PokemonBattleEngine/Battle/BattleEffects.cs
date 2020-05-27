@@ -2329,14 +2329,13 @@ namespace Kermalis.PokemonBattleEngine.Battle
                     // TODO: If the user goes last, fail
                     if (PBERandom.RandomBool(user.GetProtectionChance(), ushort.MaxValue))
                     {
-                        user.Protection_Counter++;
+                        user.Protection_Used = true;
                         user.Status2 |= PBEStatus2.Protected;
                         BroadcastStatus2(user, user, PBEStatus2.Protected, PBEStatusAction.Added);
                         result = PBEResult.Success;
                     }
                     else
                     {
-                        user.Protection_Counter = 0;
                         result = PBEResult.InvalidConditions;
                     }
                     break;
@@ -2930,14 +2929,13 @@ namespace Kermalis.PokemonBattleEngine.Battle
                 {
                     if (!user.Team.TeamStatus.HasFlag(PBETeamStatus.WideGuard) && PBERandom.RandomBool(user.GetProtectionChance(), ushort.MaxValue))
                     {
-                        user.Protection_Counter++;
+                        user.Protection_Used = true;
                         user.Team.TeamStatus |= PBETeamStatus.WideGuard;
                         BroadcastTeamStatus(user.Team, PBETeamStatus.WideGuard, PBETeamStatusAction.Added);
                         result = PBEResult.Success;
                     }
                     else
                     {
-                        user.Protection_Counter = 0;
                         result = PBEResult.Ineffective_Status;
                     }
                     break;

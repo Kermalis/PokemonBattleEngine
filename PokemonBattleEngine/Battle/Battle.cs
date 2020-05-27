@@ -406,6 +406,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                     pkmn.HasUsedMoveThisTurn = false;
                     pkmn.TurnAction = null;
                     pkmn.SpeedBoost_AbleToSpeedBoostThisTurn = pkmn.Ability == PBEAbility.SpeedBoost;
+
                     if (pkmn.Status2.HasFlag(PBEStatus2.Flinching))
                     {
                         pkmn.Status2 &= ~PBEStatus2.Flinching;
@@ -425,10 +426,19 @@ namespace Kermalis.PokemonBattleEngine.Battle
                             BroadcastStatus2(pkmn, pkmn, PBEStatus2.LockOn, PBEStatusAction.Ended);
                         }
                     }
-                    if (pkmn.Status2.HasFlag(PBEStatus2.Protected))
+                    if (pkmn.Protection_Used)
                     {
-                        pkmn.Status2 &= ~PBEStatus2.Protected;
-                        BroadcastStatus2(pkmn, pkmn, PBEStatus2.Protected, PBEStatusAction.Ended);
+                        pkmn.Protection_Counter++;
+                        pkmn.Protection_Used = false;
+                        if (pkmn.Status2.HasFlag(PBEStatus2.Protected))
+                        {
+                            pkmn.Status2 &= ~PBEStatus2.Protected;
+                            BroadcastStatus2(pkmn, pkmn, PBEStatus2.Protected, PBEStatusAction.Ended);
+                        }
+                    }
+                    else
+                    {
+                        pkmn.Protection_Counter = 0;
                     }
                 }
                 foreach (PBETeam team in Teams)

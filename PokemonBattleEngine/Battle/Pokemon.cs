@@ -129,6 +129,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
         public byte LockOnTurns { get; set; }
         /// <summary>The amount of times the Pokémon has successfully used <see cref="PBEMove.Detect"/>, <see cref="PBEMove.Protect"/>, <see cref="PBEMove.QuickGuard"/>, and/or <see cref="PBEMove.WideGuard"/> consecutively.</summary>
         public int Protection_Counter { get; set; }
+        public bool Protection_Used { get; set; }
         /// <summary>The position to return <see cref="PBEStatus2.LeechSeed"/> HP to on <see cref="SeededTeam"/>.</summary>
         public PBEFieldPosition SeededPosition { get; set; }
         /// <summary>The team responsible for <see cref="PBEStatus2.LeechSeed"/>.</summary>
@@ -317,6 +318,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
             LockOnTurns = 0;
             MagnetRiseTurns = 0;
             Protection_Counter = 0;
+            Protection_Used = false;
             SeededPosition = PBEFieldPosition.None;
             SeededTeam = null;
             SubstituteHP = 0;
