@@ -2093,8 +2093,8 @@ namespace Kermalis.PokemonBattleEngine.Data
         Self,                  // Self (Ex. Growth)
         SelfOrAllySurrounding, // Self or adjacent ally (Ex. Acupressure)
         SingleAllySurrounding, // Adjacent ally (Ex. Helping Hand)
-        SingleNotSelf,         // Single battler except itself (Ex. Dark Pulse)
         SingleFoeSurrounding,  // Single foe surrounding (Ex. Me First)
+        SingleNotSelf,         // Single battler except itself (Ex. Dark Pulse)
         SingleSurrounding,     // Single battler surrounding (Ex. Tackle)
         Varies                 // Possible targets vary (Ex. Curse)
     }
