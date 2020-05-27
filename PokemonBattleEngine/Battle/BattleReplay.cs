@@ -13,14 +13,40 @@ namespace Kermalis.PokemonBattleEngine.Battle
     {
         private const ushort CurrentReplayVersion = 0;
 
+        private string GetDefaultFileName()
+        {
+            // "2020-12-30 23-59-59 - Team 1 vs Team 2.pbereplay"
+            DateTime dt = DateTime.Now;
+            return PBEUtils.ToSafeFileName(new string(string.Format("{0}-{1}-{2} {3}-{4}-{5} - {6} vs {7}", dt.Year, dt.Month, dt.Day, dt.Hour, dt.Minute, dt.Second, Teams[0].TrainerName, Teams[1].TrainerName).Take(200).ToArray())) + ".pbereplay";
+        }
+
         public void SaveReplay()
         {
             if (IsDisposed)
             {
                 throw new ObjectDisposedException(null);
             }
-            // "12-30-2020 11-59-59 PM - Team 1 vs Team 2.pbereplay"
-            SaveReplay(PBEUtils.ToSafeFileName(new string(string.Format("{0} - {1} vs {2}", DateTime.Now.ToLocalTime(), Teams[0].TrainerName, Teams[1].TrainerName).Take(200).ToArray())) + ".pbereplay");
+            if (BattleState != PBEBattleState.Ended)
+            {
+                throw new InvalidOperationException($"{nameof(BattleState)} must be {PBEBattleState.Ended} to save a replay.");
+            }
+            SaveReplay(GetDefaultFileName());
+        }
+        public void SaveReplayToFolder(string path)
+        {
+            if (path == null)
+            {
+                throw new ArgumentNullException(nameof(path));
+            }
+            if (IsDisposed)
+            {
+                throw new ObjectDisposedException(null);
+            }
+            if (BattleState != PBEBattleState.Ended)
+            {
+                throw new InvalidOperationException($"{nameof(BattleState)} must be {PBEBattleState.Ended} to save a replay.");
+            }
+            SaveReplay(Path.Combine(path, GetDefaultFileName()));
         }
         public void SaveReplay(string path)
         {

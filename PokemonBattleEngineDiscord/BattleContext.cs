@@ -204,6 +204,7 @@ namespace Kermalis.PokemonBattleEngineDiscord
             lock (_activeBattlesLockObj)
             {
                 _activeBattles.Remove(this);
+                ReplaySaver.SaveReplay(_battle); // Save battle in the lock so they don't conflict while directory checking
             }
             _battle.Dispose();
             _battle.OnNewEvent -= Battle_OnNewEvent;

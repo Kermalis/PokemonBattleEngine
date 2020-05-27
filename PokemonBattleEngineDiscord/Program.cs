@@ -20,6 +20,8 @@ namespace Kermalis.PokemonBattleEngineDiscord
         }
         private async Task MainAsync(string[] args)
         {
+            ReplaySaver.RemoveOldReplays();
+
             PBEUtils.CreateDatabaseConnection(string.Empty);
 
             _client = new DiscordSocketClient();
