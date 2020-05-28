@@ -3488,11 +3488,14 @@ namespace Kermalis.PokemonBattleEngine.Battle
             }
             else
             {
+                int oldHP = user.HP;
                 int DamageFunc(PBEPokemon target)
                 {
-                    int oldHP = user.HP;
-                    DealDamage(user, user, oldHP, true);
-                    FaintCheck(user);
+                    if (user.HP > 0)
+                    {
+                        DealDamage(user, user, oldHP, true);
+                        FaintCheck(user);
+                    }
                     return oldHP;
                 }
                 FixedDamageHit(user, targets, move, DamageFunc);
