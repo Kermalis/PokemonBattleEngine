@@ -3468,7 +3468,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                 {
                     if (target.HP <= user.HP)
                     {
-                        PBEResult result = PBEResult.Ineffective_Stat;
+                        PBEResult result = PBEResult.InvalidConditions;
                         BroadcastMoveResult(user, target, result);
                         return result;
                     }
