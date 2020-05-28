@@ -3319,7 +3319,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                         }
                     }
                 }
-                BasicHit(user, targets, move, recoilFunc: RecoilFunc, beforePostHit: BeforePostHit);
+                BasicHit(user, targets, move, recoilFunc: RecoilFunc, beforePostHit: status1 != PBEStatus1.None || status2 != PBEStatus2.None ? BeforePostHit : (Action<PBEPokemon>)null);
             }
             RecordExecutedMove(user, move);
         }
@@ -3625,7 +3625,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
             {
                 PBEResult BeforeDoingDamage(PBEPokemon target)
                 {
-                    if (requireSleep && target.Status1 != PBEStatus1.Asleep)
+                    if (target.Status1 != PBEStatus1.Asleep)
                     {
                         PBEResult result = PBEResult.Ineffective_Status;
                         BroadcastMoveResult(user, target, result);
@@ -3657,7 +3657,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                         }
                     }
                 }
-                BasicHit(user, targets, move, beforeDoingDamage: BeforeDoingDamage, afterPostHit: AfterPostHit);
+                BasicHit(user, targets, move, beforeDoingDamage: requireSleep ? BeforeDoingDamage : (Func<PBEPokemon, PBEResult>)null, afterPostHit: AfterPostHit);
             }
             RecordExecutedMove(user, move);
         }
