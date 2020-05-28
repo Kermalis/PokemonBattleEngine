@@ -14,6 +14,7 @@ namespace Kermalis.PokemonBattleEngineDiscord
     internal sealed class BattleContext
     {
         private const string Separator = "**--------------------**";
+        private static readonly Emoji _shinyEmoji = new Emoji("✨");
         private static readonly Emoji _switchEmoji = new Emoji("😼");
         private static readonly Emoji _confirmationEmoji = new Emoji("👍");
         private static readonly PBEMove[] _suggestedMoves = Enum.GetValues(typeof(PBEMove)).Cast<PBEMove>().Except(new[] { PBEMove.None, PBEMove.MAX }).ToArray();
@@ -298,7 +299,7 @@ namespace Kermalis.PokemonBattleEngineDiscord
         private static string CustomPokemonToString(PBEPokemon pkmn, bool addReactionChars)
         {
             var sb = new StringBuilder();
-            sb.AppendLine($"{pkmn.Nickname}/{pkmn.Species} {pkmn.GenderSymbol} Lv.{pkmn.Level}");
+            sb.AppendLine($"{pkmn.Nickname}/{pkmn.Species} {pkmn.GenderSymbol} Lv.{pkmn.Level}{(pkmn.Shiny ? $" {_shinyEmoji}" : string.Empty)}");
             sb.AppendLine($"**HP:** {pkmn.HP}/{pkmn.MaxHP} ({pkmn.HPPercentage:P2})");
             sb.Append($"**Types:** {Utils.TypeEmotes[pkmn.Type1]}");
             if (pkmn.Type2 != PBEType.None)
@@ -397,7 +398,7 @@ namespace Kermalis.PokemonBattleEngineDiscord
         private static string CustomKnownPokemonToString(PBEPokemon pkmn)
         {
             var sb = new StringBuilder();
-            sb.AppendLine($"{pkmn.Team.TrainerName}'s {pkmn.KnownNickname}/{pkmn.KnownSpecies} {(pkmn.Status2.HasFlag(PBEStatus2.Transformed) ? pkmn.GenderSymbol : pkmn.KnownGenderSymbol)} Lv.{pkmn.Level}");
+            sb.AppendLine($"{pkmn.Team.TrainerName}'s {pkmn.KnownNickname}/{pkmn.KnownSpecies} {(pkmn.Status2.HasFlag(PBEStatus2.Transformed) ? pkmn.GenderSymbol : pkmn.KnownGenderSymbol)} Lv.{pkmn.Level}{(pkmn.KnownShiny ? $" {_shinyEmoji}" : string.Empty)}");
             sb.AppendLine($"**HP:** {pkmn.HPPercentage:P2}");
             sb.Append($"**Known types:** {Utils.TypeEmotes[pkmn.KnownType1]}");
             if (pkmn.KnownType2 != PBEType.None)
