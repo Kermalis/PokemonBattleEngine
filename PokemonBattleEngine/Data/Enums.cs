@@ -1278,7 +1278,7 @@ namespace Kermalis.PokemonBattleEngine.Data
         SandVeil = 8,
         SapSipper = 157, // TODO
         Scrappy = 113,
-        SereneGrace = 32, // TODO
+        SereneGrace = 32,
         ShadowTag = 23, // TODO
         ShedSkin = 61,
         SheerForce = 125, // TODO

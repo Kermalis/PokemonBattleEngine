@@ -121,18 +121,20 @@ namespace Kermalis.PokemonBattleEngine.Battle
                         }
                     }
                     // Verified: Cute Charm can activate when victim is about to faint
-                    if (user.HP > 0 && victim.Ability == PBEAbility.CuteCharm && user.IsAttractionPossible(victim) == PBEResult.Success && PBERandom.RandomBool(30, 100))
+                    if (user.HP > 0 && victim.Ability == PBEAbility.CuteCharm && user.IsAttractionPossible(victim) == PBEResult.Success && GetManipulableChance(victim, 30))
                     {
                         BroadcastAbility(victim, user, PBEAbility.CuteCharm, PBEAbilityAction.ChangedStatus);
                         CauseInfatuation(user, victim);
                     }
                     if (user.HP > 0 && victim.Ability == PBEAbility.EffectSpore && user.Status1 == PBEStatus1.None)
                     {
-                        // Spaghetti code taken from the assembly in generation 5 games
-                        int randomNum = PBERandom.RandomInt(0, 99);
-                        if (randomNum < 30)
+                        // Commented in case the Rainbow affects Effect Spore
+                        //int randomNum = PBERandom.RandomInt(0, 99);
+                        if (GetManipulableChance(victim, 30))
                         {
+                            // Spaghetti code taken from the assembly in generation 5 games
                             PBEStatus1 status = PBEStatus1.None;
+                            int randomNum = PBERandom.RandomInt(0, 29);
                             if (randomNum <= 20)
                             {
                                 if (randomNum > 10) // 11-20 (10%)
@@ -171,21 +173,21 @@ namespace Kermalis.PokemonBattleEngine.Battle
                             }
                         }
                     }
-                    if (user.HP > 0 && victim.Ability == PBEAbility.FlameBody && user.IsBurnPossible(victim) == PBEResult.Success && PBERandom.RandomBool(30, 100))
+                    if (user.HP > 0 && victim.Ability == PBEAbility.FlameBody && user.IsBurnPossible(victim) == PBEResult.Success && GetManipulableChance(victim, 30))
                     {
                         BroadcastAbility(victim, user, PBEAbility.FlameBody, PBEAbilityAction.ChangedStatus);
                         user.Status1 = PBEStatus1.Burned;
                         BroadcastStatus1(user, victim, PBEStatus1.Burned, PBEStatusAction.Added);
                         AntiStatusAbilityCheck(user);
                     }
-                    if (user.HP > 0 && victim.Ability == PBEAbility.PoisonPoint && user.IsPoisonPossible(victim) == PBEResult.Success && PBERandom.RandomBool(30, 100))
+                    if (user.HP > 0 && victim.Ability == PBEAbility.PoisonPoint && user.IsPoisonPossible(victim) == PBEResult.Success && GetManipulableChance(victim, 30))
                     {
                         BroadcastAbility(victim, user, PBEAbility.PoisonPoint, PBEAbilityAction.ChangedStatus);
                         user.Status1 = PBEStatus1.Poisoned;
                         BroadcastStatus1(user, victim, PBEStatus1.Poisoned, PBEStatusAction.Added);
                         AntiStatusAbilityCheck(user);
                     }
-                    if (user.HP > 0 && victim.Ability == PBEAbility.Static && user.IsParalysisPossible(victim) == PBEResult.Success && PBERandom.RandomBool(30, 100))
+                    if (user.HP > 0 && victim.Ability == PBEAbility.Static && user.IsParalysisPossible(victim) == PBEResult.Success && GetManipulableChance(victim, 30))
                     {
                         BroadcastAbility(victim, user, PBEAbility.Static, PBEAbilityAction.ChangedStatus);
                         user.Status1 = PBEStatus1.Paralyzed;
@@ -352,7 +354,8 @@ namespace Kermalis.PokemonBattleEngine.Battle
                         {
                             foreach (PBEPokemon ally in GetRuntimeSurrounding(pkmn, true, false))
                             {
-                                if (ally.Status1 != PBEStatus1.None && PBERandom.RandomBool(30, 100))
+                                // TODO: #265
+                                if (ally.Status1 != PBEStatus1.None && GetManipulableChance(pkmn, 30))
                                 {
                                     BroadcastAbility(pkmn, ally, pkmn.Ability, PBEAbilityAction.ChangedStatus);
                                     PBEStatus1 status1 = ally.Status1;
@@ -364,7 +367,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                         }
                         case PBEAbility.ShedSkin:
                         {
-                            if (pkmn.Status1 != PBEStatus1.None && PBERandom.RandomBool(30, 100))
+                            if (pkmn.Status1 != PBEStatus1.None && GetManipulableChance(pkmn, 30))
                             {
                                 BroadcastAbility(pkmn, pkmn, pkmn.Ability, PBEAbilityAction.ChangedStatus);
                                 PBEStatus1 status1 = pkmn.Status1;
@@ -1666,6 +1669,16 @@ namespace Kermalis.PokemonBattleEngine.Battle
             }
             return false;
         }
+        private bool GetManipulableChance(PBEPokemon pkmn, int chance)
+        {
+            // TODO: Does the Rainbow affect abilities activating, such as CuteCharm/Static, Healer/ShedSkin, etc, and which side of the field would they activate from? Victim?
+            // TODO: If it does affect abilities, does it affect Effect Spore? It uses its own weird rng
+            if (pkmn.Ability == PBEAbility.SereneGrace)
+            {
+                chance *= 2;
+            }
+            return PBERandom.RandomBool(chance, 100);
+        }
 
         private void ActivateAbility(PBEPokemon pkmn, bool switchIn)
         {
@@ -2389,22 +2402,6 @@ namespace Kermalis.PokemonBattleEngine.Battle
             }
             return result;
         }
-        private PBEResult? ApplyStatus1IfPossible_Chance(PBEPokemon user, PBEPokemon target, PBEStatus1 status, bool broadcastUnsuccessful, int chance)
-        {
-            if (PBERandom.RandomBool(chance, 100))
-            {
-                return ApplyStatus1IfPossible(user, target, status, broadcastUnsuccessful);
-            }
-            return null;
-        }
-        private PBEResult? ApplyStatus2IfPossible_Chance(PBEPokemon user, PBEPokemon target, PBEStatus2 status, bool broadcastUnsuccessful, int chance)
-        {
-            if (PBERandom.RandomBool(chance, 100))
-            {
-                return ApplyStatus2IfPossible(user, target, status, broadcastUnsuccessful);
-            }
-            return null;
-        }
         private void ApplyStatChangeIfPossible(PBEPokemon user, PBEPokemon target, PBEStat stat, int change, bool isSecondaryEffect = false)
         {
             PBEResult result = target.IsStatChangePossible(stat, user, change, out sbyte oldValue, out sbyte newValue);
@@ -3045,7 +3042,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
             {
                 void BeforePostHit(PBEPokemon target)
                 {
-                    if (target.HP > 0 && !target.Status2.HasFlag(PBEStatus2.Substitute) && PBERandom.RandomBool(chanceToChangeStats, 100))
+                    if (target.HP > 0 && !target.Status2.HasFlag(PBEStatus2.Substitute) && GetManipulableChance(user, chanceToChangeStats))
                     {
                         for (int i = 0; i < stats.Length; i++)
                         {
@@ -3069,7 +3066,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
             {
                 void BeforeTargetsFaint()
                 {
-                    if (user.HP > 0 && PBERandom.RandomBool(chanceToChangeStats, 100))
+                    if (user.HP > 0 && GetManipulableChance(user, chanceToChangeStats))
                     {
                         for (int i = 0; i < stats.Length; i++)
                         {
@@ -3185,9 +3182,9 @@ namespace Kermalis.PokemonBattleEngine.Battle
         {
             void BeforePostHit(PBEPokemon target)
             {
-                if (target.HP > 0)
+                if (target.HP > 0 && GetManipulableChance(user, chanceToParalyze))
                 {
-                    ApplyStatus1IfPossible_Chance(user, target, PBEStatus1.Paralyzed, false, chanceToParalyze);
+                    ApplyStatus1IfPossible(user, target, PBEStatus1.Paralyzed, false);
                 }
             }
             SemiInvulnerableChargeMove(user, targets, move, requestedTargets, PBEStatus2.Airborne, beforePostHit: BeforePostHit);
@@ -3256,13 +3253,13 @@ namespace Kermalis.PokemonBattleEngine.Battle
                 {
                     if (target.HP > 0)
                     {
-                        if (status1 != PBEStatus1.None)
+                        if (status1 != PBEStatus1.None && GetManipulableChance(user, chanceToInflictStatus1))
                         {
-                            ApplyStatus1IfPossible_Chance(user, target, status1, false, chanceToInflictStatus1);
+                            ApplyStatus1IfPossible(user, target, status1, false);
                         }
-                        if (status2 != PBEStatus2.None)
+                        if (status2 != PBEStatus2.None && GetManipulableChance(user, chanceToInflictStatus2))
                         {
-                            ApplyStatus2IfPossible_Chance(user, target, status2, false, chanceToInflictStatus2);
+                            ApplyStatus2IfPossible(user, target, status2, false);
                         }
                     }
                 }
@@ -3282,9 +3279,9 @@ namespace Kermalis.PokemonBattleEngine.Battle
             {
                 void BeforePostHit(PBEPokemon target)
                 {
-                    if (target.HP > 0)
+                    if (target.HP > 0 && GetManipulableChance(user, chanceToInflictStatus1))
                     {
-                        ApplyStatus1IfPossible_Chance(user, target, status1, false, chanceToInflictStatus1);
+                        ApplyStatus1IfPossible(user, target, status1, false);
                     }
                 }
                 MultiHit(user, targets, move, numHits, subsequentMissChecks: subsequentMissChecks, beforePostHit: status1 != PBEStatus1.None ? BeforePostHit : (Action<PBEPokemon>)null); // Doesn't need to be its own func but neater
@@ -3309,13 +3306,13 @@ namespace Kermalis.PokemonBattleEngine.Battle
                 {
                     if (target.HP > 0)
                     {
-                        if (status1 != PBEStatus1.None)
+                        if (status1 != PBEStatus1.None && GetManipulableChance(user, chanceToInflictStatus1))
                         {
-                            ApplyStatus1IfPossible_Chance(user, target, status1, false, chanceToInflictStatus1);
+                            ApplyStatus1IfPossible(user, target, status1, false);
                         }
-                        if (status2 != PBEStatus2.None)
+                        if (status2 != PBEStatus2.None && GetManipulableChance(user, chanceToInflictStatus2))
                         {
-                            ApplyStatus2IfPossible_Chance(user, target, status2, false, chanceToInflictStatus2);
+                            ApplyStatus2IfPossible(user, target, status2, false);
                         }
                     }
                 }
@@ -3335,9 +3332,14 @@ namespace Kermalis.PokemonBattleEngine.Battle
             {
                 void BeforePostHit(PBEPokemon target)
                 {
-                    // Verified: Ignores Serene Grace, so secondary chance is checked here
-                    // Possibly can be considered an oversight, it affects Serene Grace in every generation except for 5
-                    if (target.HP > 0 && PBERandom.RandomBool(secondaryEffectChance, 100))
+                    // BUG: In Generation 5, Secret Power is unaffected by Serene Grace and the Rainbow
+                    if (target.HP > 0 &&
+#if !BUGFIX
+                        PBERandom.RandomBool(secondaryEffectChance, 100)
+#else
+                        GetManipulableChance(user, secondaryEffectChance)
+#endif
+                        )
                     {
                         switch (BattleTerrain)
                         {
@@ -3392,9 +3394,9 @@ namespace Kermalis.PokemonBattleEngine.Battle
             {
                 void BeforePostHit(PBEPokemon target)
                 {
-                    if (target.HP > 0)
+                    if (target.HP > 0 && GetManipulableChance(user, chanceToFlinch))
                     {
-                        ApplyStatus2IfPossible_Chance(user, target, PBEStatus2.Flinching, false, chanceToFlinch);
+                        ApplyStatus2IfPossible(user, target, PBEStatus2.Flinching, false);
                     }
                 }
                 BasicHit(user, targets, move, beforePostHit: BeforePostHit);
