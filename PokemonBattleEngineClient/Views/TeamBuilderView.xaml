@@ -147,10 +147,10 @@
     <StackPanel Orientation="Vertical">
       <StackPanel Orientation="Horizontal">
         <Button Name="AddParty">
-          <Image Source="{Binding Source='Add', Converter={x:Static infrastructure:ObjectToTextBitmapConverter.Instance}, ConverterParameter=MenuBlack, Mode=OneWay}"/>
+          <Image Stretch="None" Source="{Binding Source='Add', Converter={x:Static infrastructure:ObjectToTextBitmapConverter.Instance}, ConverterParameter=MenuBlack, Mode=OneWay}"/>
         </Button>
         <Button Name="RemoveParty">
-          <Image Source="{Binding Source='Remove', Converter={x:Static infrastructure:ObjectToTextBitmapConverter.Instance}, ConverterParameter=MenuBlack, Mode=OneWay}"/>
+          <Image Stretch="None" Source="{Binding Source='Remove', Converter={x:Static infrastructure:ObjectToTextBitmapConverter.Instance}, ConverterParameter=MenuBlack, Mode=OneWay}"/>
         </Button>
       </StackPanel>
       <ListBox Name="Party" Items="{Binding Team.Shell, Mode=OneWay}" SelectedItem="{Binding Shell}" SelectionMode="AlwaysSelected">
@@ -167,14 +167,14 @@
     <StackPanel Orientation="Vertical">
       <StackPanel Orientation="Horizontal">
         <Button Name="AddTeam">
-          <Image Source="{Binding Source='Add', Converter={x:Static infrastructure:ObjectToTextBitmapConverter.Instance}, ConverterParameter=MenuBlack, Mode=OneWay}"/>
+          <Image Stretch="None" Source="{Binding Source='Add', Converter={x:Static infrastructure:ObjectToTextBitmapConverter.Instance}, ConverterParameter=MenuBlack, Mode=OneWay}"/>
         </Button>
         <Button Name="RemoveTeam">
-          <Image Source="{Binding Source='Remove', Converter={x:Static infrastructure:ObjectToTextBitmapConverter.Instance}, ConverterParameter=MenuBlack, Mode=OneWay}"/>
+          <Image Stretch="None" Source="{Binding Source='Remove', Converter={x:Static infrastructure:ObjectToTextBitmapConverter.Instance}, ConverterParameter=MenuBlack, Mode=OneWay}"/>
         </Button>
       </StackPanel>
       <Button Name="SaveTeam">
-        <Image Source="{Binding Source='Save', Converter={x:Static infrastructure:ObjectToTextBitmapConverter.Instance}, ConverterParameter=MenuBlack, Mode=OneWay}"/>
+        <Image Stretch="None" Source="{Binding Source='Save', Converter={x:Static infrastructure:ObjectToTextBitmapConverter.Instance}, ConverterParameter=MenuBlack, Mode=OneWay}"/>
       </Button>
       <ListBox Name="SavedTeams" Items="{Binding Teams, Mode=OneWay}" SelectedItem="{Binding Team}" SelectionMode="AlwaysSelected">
         <ListBox.ItemTemplate>

@@ -5,7 +5,6 @@ using Avalonia.Media.Imaging;
 using Avalonia.Threading;
 using Kermalis.PokemonBattleEngineClient.Infrastructure;
 using System.Collections.ObjectModel;
-using System.ComponentModel;
 using System.Text.RegularExpressions;
 
 namespace Kermalis.PokemonBattleEngineClient.Views

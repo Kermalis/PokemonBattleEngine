@@ -89,7 +89,7 @@ namespace Kermalis.PokemonBattleEngineClient
         }
         private void WatchReplay()
         {
-            Add(new ReplayClient(@"C:\Users\Kermalis\Documents\Development\GitHub\PokemonBattleEngine\PokemonBattleEngineExtras\bin\Debug\netcoreapp2.2\AI Demo Replay.pbereplay"));
+            Add(new ReplayClient(@"C:\Users\Kermalis\Documents\Development\GitHub\PokeI\bin\Release\netcoreapp3.1\AI Final Replay.pbereplay"));
         }
         private void SinglePlayer()
         {
@@ -99,7 +99,7 @@ namespace Kermalis.PokemonBattleEngineClient
             team1Shell = new PBETeamShell(settings, settings.MaxPartySize, true);
             team2Shell = new PBETeamShell(settings, settings.MaxPartySize, true);
 
-            Add(new SinglePlayerClient(PBEBattleFormat.Double, team1Shell, "May", team2Shell, "Champion Steven"));
+            Add(new SinglePlayerClient(PBEBattleFormat.Double, team1Shell, "Dawn", team2Shell, "Champion Cynthia"));
         }
 
         // TODO: Removing battles (with disposing)

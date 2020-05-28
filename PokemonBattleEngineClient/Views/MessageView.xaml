@@ -5,7 +5,7 @@
   <ListBox Name="List" Items="{Binding Messages}" Background="White" BorderThickness="0">
     <ListBox.ItemTemplate>
       <DataTemplate>
-        <Image Source="{Binding Bitmap}" HorizontalAlignment="{Binding Alignment}" RenderOptions.BitmapInterpolationMode="Default" Height="{Binding Height}">
+        <Image Stretch="None" Source="{Binding Bitmap}" HorizontalAlignment="{Binding Alignment}" RenderOptions.BitmapInterpolationMode="Default" Height="{Binding Height}">
           <Image.RenderTransform>
             <ScaleTransform ScaleX="{Binding Scale}" ScaleY="{Binding Scale}"/>
           </Image.RenderTransform>
