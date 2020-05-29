@@ -398,7 +398,7 @@ namespace Kermalis.PokemonBattleEngineDiscord
         private static string CustomKnownPokemonToString(PBEPokemon pkmn)
         {
             var sb = new StringBuilder();
-            sb.AppendLine($"{pkmn.Team.TrainerName}'s {pkmn.KnownNickname}/{pkmn.KnownSpecies} {(pkmn.Status2.HasFlag(PBEStatus2.Transformed) ? pkmn.GenderSymbol : pkmn.KnownGenderSymbol)} Lv.{pkmn.Level}{(pkmn.KnownShiny ? $" {_shinyEmoji}" : string.Empty)}");
+            sb.AppendLine($"{pkmn.Team.TrainerName}'s {pkmn.KnownNickname}/{pkmn.KnownSpecies} {(pkmn.KnownStatus2.HasFlag(PBEStatus2.Transformed) ? pkmn.GenderSymbol : pkmn.KnownGenderSymbol)} Lv.{pkmn.Level}{(pkmn.KnownShiny ? $" {_shinyEmoji}" : string.Empty)}");
             sb.AppendLine($"**HP:** {pkmn.HPPercentage:P2}");
             sb.Append($"**Known types:** {Utils.TypeEmotes[pkmn.KnownType1]}");
             if (pkmn.KnownType2 != PBEType.None)
@@ -418,12 +418,10 @@ namespace Kermalis.PokemonBattleEngineDiscord
                     sb.AppendLine($"**{Utils.Status1Emotes[PBEStatus1.BadlyPoisoned]} counter:** {pkmn.Status1Counter}");
                 }
             }
-            PBEStatus2 cleanStatus2 = pkmn.Status2;
-            cleanStatus2 &= ~PBEStatus2.Disguised;
-            if (cleanStatus2 != PBEStatus2.None)
+            if (pkmn.KnownStatus2 != PBEStatus2.None)
             {
-                sb.AppendLine($"**Volatile status:** {cleanStatus2}");
-                if (cleanStatus2.HasFlag(PBEStatus2.Confused))
+                sb.AppendLine($"**Volatile status:** {pkmn.KnownStatus2}");
+                if (pkmn.KnownStatus2.HasFlag(PBEStatus2.Confused))
                 {
                     sb.AppendLine($"**Confusion turns:** {pkmn.ConfusionCounter}");
                 }
@@ -608,10 +606,9 @@ namespace Kermalis.PokemonBattleEngineDiscord
                         {
                             switch (ap.AbilityAction)
                             {
-                                case PBEAbilityAction.ChangedAppearance: message = "{0}'s illusion wore off!"; break;
+                                case PBEAbilityAction.ChangedAppearance: return;
                                 default: throw new ArgumentOutOfRangeException(nameof(ap.AbilityAction));
                             }
-                            break;
                         }
                         case PBEAbility.Immunity:
                         case PBEAbility.Insomnia:
@@ -725,16 +722,8 @@ namespace Kermalis.PokemonBattleEngineDiscord
                     string message;
                     switch (arp.NewAbility)
                     {
-                        case PBEAbility.None:
-                        {
-                            message = "{0}'s {1} was suppressed!";
-                            break;
-                        }
-                        default:
-                        {
-                            message = "{0}'s {1} was changed to {2}!";
-                            break;
-                        }
+                        case PBEAbility.None: message = "{0}'s {1} was suppressed!"; break;
+                        default: message = "{0}'s {1} was changed to {2}!"; break;
                     }
                     await context.CreateAndSendEmbedAsync(string.Format(message, NameForTrainer(abilityOwner), arp.OldAbility.HasValue ? PBELocalizedString.GetAbilityName(arp.OldAbility.Value).English : "Ability", PBELocalizedString.GetAbilityName(arp.NewAbility).English), pkmn: abilityOwner);
                     break;
@@ -1248,6 +1237,15 @@ namespace Kermalis.PokemonBattleEngineDiscord
                             {
                                 case PBEStatusAction.Added: message = "{1} cut its own HP and laid a curse on {0}!"; break;
                                 case PBEStatusAction.Damage: message = "{0} is afflicted by the curse!"; break;
+                                default: throw new ArgumentOutOfRangeException(nameof(s2p.StatusAction));
+                            }
+                            break;
+                        }
+                        case PBEStatus2.Disguised:
+                        {
+                            switch (s2p.StatusAction)
+                            {
+                                case PBEStatusAction.Ended: message = "{0}'s illusion wore off!"; break;
                                 default: throw new ArgumentOutOfRangeException(nameof(s2p.StatusAction));
                             }
                             break;

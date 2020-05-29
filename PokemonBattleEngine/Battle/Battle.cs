@@ -409,19 +409,16 @@ namespace Kermalis.PokemonBattleEngine.Battle
 
                     if (pkmn.Status2.HasFlag(PBEStatus2.Flinching))
                     {
-                        pkmn.Status2 &= ~PBEStatus2.Flinching;
                         BroadcastStatus2(pkmn, pkmn, PBEStatus2.Flinching, PBEStatusAction.Ended);
                     }
                     if (pkmn.Status2.HasFlag(PBEStatus2.HelpingHand))
                     {
-                        pkmn.Status2 &= ~PBEStatus2.HelpingHand;
                         BroadcastStatus2(pkmn, pkmn, PBEStatus2.HelpingHand, PBEStatusAction.Ended);
                     }
                     if (pkmn.Status2.HasFlag(PBEStatus2.LockOn))
                     {
                         if (--pkmn.LockOnTurns == 0)
                         {
-                            pkmn.Status2 &= ~PBEStatus2.LockOn;
                             pkmn.LockOnPokemon = null;
                             BroadcastStatus2(pkmn, pkmn, PBEStatus2.LockOn, PBEStatusAction.Ended);
                         }
@@ -432,7 +429,6 @@ namespace Kermalis.PokemonBattleEngine.Battle
                         pkmn.Protection_Used = false;
                         if (pkmn.Status2.HasFlag(PBEStatus2.Protected))
                         {
-                            pkmn.Status2 &= ~PBEStatus2.Protected;
                             BroadcastStatus2(pkmn, pkmn, PBEStatus2.Protected, PBEStatusAction.Ended);
                         }
                     }
@@ -445,7 +441,6 @@ namespace Kermalis.PokemonBattleEngine.Battle
                 {
                     if (team.TeamStatus.HasFlag(PBETeamStatus.WideGuard))
                     {
-                        team.TeamStatus &= ~PBETeamStatus.WideGuard;
                         BroadcastTeamStatus(team, PBETeamStatus.WideGuard, PBETeamStatusAction.Ended);
                     }
                 }
@@ -678,7 +673,6 @@ namespace Kermalis.PokemonBattleEngine.Battle
                     team.LightScreenCount--;
                     if (team.LightScreenCount == 0)
                     {
-                        team.TeamStatus &= ~PBETeamStatus.LightScreen;
                         BroadcastTeamStatus(team, PBETeamStatus.LightScreen, PBETeamStatusAction.Ended);
                     }
                 }
@@ -687,7 +681,6 @@ namespace Kermalis.PokemonBattleEngine.Battle
                     team.LuckyChantCount--;
                     if (team.LuckyChantCount == 0)
                     {
-                        team.TeamStatus &= ~PBETeamStatus.LuckyChant;
                         BroadcastTeamStatus(team, PBETeamStatus.LuckyChant, PBETeamStatusAction.Ended);
                     }
                 }
@@ -696,7 +689,6 @@ namespace Kermalis.PokemonBattleEngine.Battle
                     team.ReflectCount--;
                     if (team.ReflectCount == 0)
                     {
-                        team.TeamStatus &= ~PBETeamStatus.Reflect;
                         BroadcastTeamStatus(team, PBETeamStatus.Reflect, PBETeamStatusAction.Ended);
                     }
                 }
@@ -705,7 +697,6 @@ namespace Kermalis.PokemonBattleEngine.Battle
                     team.SafeguardCount--;
                     if (team.SafeguardCount == 0)
                     {
-                        team.TeamStatus &= ~PBETeamStatus.Safeguard;
                         BroadcastTeamStatus(team, PBETeamStatus.Safeguard, PBETeamStatusAction.Ended);
                     }
                 }
@@ -714,7 +705,6 @@ namespace Kermalis.PokemonBattleEngine.Battle
                     team.TailwindCount--;
                     if (team.TailwindCount == 0)
                     {
-                        team.TeamStatus &= ~PBETeamStatus.Tailwind;
                         BroadcastTeamStatus(team, PBETeamStatus.Tailwind, PBETeamStatusAction.Ended);
                     }
                 }
@@ -725,7 +715,6 @@ namespace Kermalis.PokemonBattleEngine.Battle
                 TrickRoomCount--;
                 if (TrickRoomCount == 0)
                 {
-                    BattleStatus &= ~PBEBattleStatus.TrickRoom;
                     BroadcastBattleStatus(PBEBattleStatus.TrickRoom, PBEBattleStatusAction.Ended);
                 }
             }

@@ -282,10 +282,9 @@ namespace Kermalis.PokemonBattleEngineClient
                         {
                             switch (ap.AbilityAction)
                             {
-                                case PBEAbilityAction.ChangedAppearance: message = "{0}'s illusion wore off!"; break;
+                                case PBEAbilityAction.ChangedAppearance: return true;
                                 default: throw new ArgumentOutOfRangeException(nameof(ap.AbilityAction));
                             }
-                            break;
                         }
                         case PBEAbility.Immunity:
                         case PBEAbility.Insomnia:
@@ -403,22 +402,24 @@ namespace Kermalis.PokemonBattleEngineClient
                     string message;
                     switch (arp.NewAbility)
                     {
-                        case PBEAbility.None:
-                        {
-                            message = "{0}'s {1} was suppressed!";
-                            break;
-                        }
-                        default:
-                        {
-                            message = "{0}'s {1} was changed to {2}!";
-                            break;
-                        }
+                        case PBEAbility.None: message = "{0}'s {1} was suppressed!"; break;
+                        default: message = "{0}'s {1} was changed to {2}!"; break;
                     }
                     BattleView.AddMessage(string.Format(message, NameForTrainer(abilityOwner, true), arp.OldAbility.HasValue ? PBELocalizedString.GetAbilityName(arp.OldAbility.Value).ToString() : "Ability", PBELocalizedString.GetAbilityName(arp.NewAbility)));
                     return false;
                 }
                 case PBEBattleStatusPacket bsp:
                 {
+                    if (_mode != ClientMode.SinglePlayer)
+                    {
+                        switch (bsp.BattleStatusAction)
+                        {
+                            case PBEBattleStatusAction.Added: Battle.BattleStatus |= bsp.BattleStatus; break;
+                            case PBEBattleStatusAction.Cleared:
+                            case PBEBattleStatusAction.Ended: Battle.BattleStatus &= ~bsp.BattleStatus; break;
+                            default: throw new ArgumentOutOfRangeException(nameof(bsp.BattleStatusAction));
+                        }
+                    }
                     string message;
                     switch (bsp.BattleStatus)
                     {
@@ -455,7 +456,6 @@ namespace Kermalis.PokemonBattleEngineClient
                     PBEPokemon pokemon = ilp.PokemonTeam.TryGetPokemon(ilp.Pokemon);
                     if (_mode != ClientMode.SinglePlayer)
                     {
-                        pokemon.Status2 &= ~PBEStatus2.Disguised;
                         pokemon.DisguisedAsPokemon = null;
                         pokemon.OriginalAbility = pokemon.Ability = pokemon.KnownAbility = PBEAbility.Illusion;
                         pokemon.Gender = pokemon.KnownGender = ilp.ActualGender;
@@ -466,8 +466,7 @@ namespace Kermalis.PokemonBattleEngineClient
                         pokemon.Type2 = pokemon.KnownType2 = ilp.ActualType2;
                         pokemon.Weight = pokemon.KnownWeight = ilp.ActualWeight;
                     }
-                    BattleView.Field.UpdatePokemon(pokemon);
-                    return false;
+                    return true;
                 }
                 case PBEItemPacket ip:
                 {
@@ -653,18 +652,13 @@ namespace Kermalis.PokemonBattleEngineClient
                         PBEPokemon moveUser = mlp.MoveUserTeam.TryGetPokemon(mlp.MoveUser);
                         switch (mlp.MoveLockType)
                         {
-                            case PBEMoveLockType.ChoiceItem:
-                            {
-                                moveUser.ChoiceLockedMove = mlp.LockedMove;
-                                break;
-                            }
-                            case PBEMoveLockType.Temporary:
-                            {
-                                moveUser.TempLockedMove = mlp.LockedMove;
-                                moveUser.TempLockedTargets = mlp.LockedTargets;
-                                break;
-                            }
+                            case PBEMoveLockType.ChoiceItem: moveUser.ChoiceLockedMove = mlp.LockedMove; break;
+                            case PBEMoveLockType.Temporary: moveUser.TempLockedMove = mlp.LockedMove; break;
                             default: throw new ArgumentOutOfRangeException(nameof(mlp.MoveLockType));
+                        }
+                        if (mlp.LockedTargets.HasValue)
+                        {
+                            moveUser.TempLockedTargets = mlp.LockedTargets.Value;
                         }
                     }
                     return true;
@@ -1088,11 +1082,10 @@ namespace Kermalis.PokemonBattleEngineClient
                             case PBEStatusAction.Added:
                             case PBEStatusAction.Announced:
                             case PBEStatusAction.CausedImmobility:
-                            case PBEStatusAction.Damage: status2Receiver.Status2 |= s2p.Status2; break;
+                            case PBEStatusAction.Damage: status2Receiver.Status2 |= s2p.Status2; status2Receiver.KnownStatus2 |= s2p.Status2; break;
                             case PBEStatusAction.Cleared:
-                            case PBEStatusAction.Ended:
-                                status2Receiver.Status2 &= ~s2p.Status2; break;
-                                throw new ArgumentOutOfRangeException(nameof(s2p.StatusAction));
+                            case PBEStatusAction.Ended: status2Receiver.Status2 &= ~s2p.Status2; status2Receiver.KnownStatus2 &= ~s2p.Status2; break;
+                            default: throw new ArgumentOutOfRangeException(nameof(s2p.StatusAction));
                         }
                     }
                     string message;
@@ -1130,6 +1123,20 @@ namespace Kermalis.PokemonBattleEngineClient
                             {
                                 case PBEStatusAction.Added: message = "{1} cut its own HP and laid a curse on {0}!"; status2ReceiverCaps = false; pokemon2Caps = true; break;
                                 case PBEStatusAction.Damage: message = "{0} is afflicted by the curse!"; break;
+                                default: throw new ArgumentOutOfRangeException(nameof(s2p.StatusAction));
+                            }
+                            break;
+                        }
+                        case PBEStatus2.Disguised:
+                        {
+                            switch (s2p.StatusAction)
+                            {
+                                case PBEStatusAction.Ended:
+                                {
+                                    BattleView.Field.UpdatePokemon(status2Receiver);
+                                    message = "{0}'s illusion wore off!";
+                                    break;
+                                }
                                 default: throw new ArgumentOutOfRangeException(nameof(s2p.StatusAction));
                             }
                             break;
@@ -1309,14 +1316,18 @@ namespace Kermalis.PokemonBattleEngineClient
                         }
                         case PBEStatus2.Transformed:
                         {
-                            if (_mode != ClientMode.SinglePlayer)
-                            {
-                                status2Receiver.Transform(pokemon2);
-                            }
-                            BattleView.Field.UpdatePokemon(status2Receiver);
                             switch (s2p.StatusAction)
                             {
-                                case PBEStatusAction.Added: message = "{0} transformed into {1}!"; break;
+                                case PBEStatusAction.Added:
+                                {
+                                    if (_mode != ClientMode.SinglePlayer)
+                                    {
+                                        status2Receiver.Transform(pokemon2);
+                                    }
+                                    BattleView.Field.UpdatePokemon(status2Receiver);
+                                    message = "{0} transformed into {1}!";
+                                    break;
+                                }
                                 default: throw new ArgumentOutOfRangeException(nameof(s2p.StatusAction));
                             }
                             break;
@@ -1549,7 +1560,7 @@ namespace Kermalis.PokemonBattleEngineClient
                         pokemon.KnownType2 = type2;
                     }
                     string type1Str = PBELocalizedString.GetTypeName(type1).ToString();
-                    BattleView.AddMessage(string.Format("{0} transformed into the {1}", NameForTrainer(pokemon, true), type2 == PBEType.None ? $"{type1Str} type!" : $"{type1Str} and {PBELocalizedString.GetTypeName(type2).ToString()} types!"));
+                    BattleView.AddMessage(string.Format("{0} transformed into the {1}", NameForTrainer(pokemon, true), type2 == PBEType.None ? $"{type1Str} type!" : $"{type1Str} and {PBELocalizedString.GetTypeName(type2)} types!"));
                     return false;
                 }
                 case PBEWeatherPacket wp:

@@ -77,7 +77,7 @@ namespace Kermalis.PokemonBattleEngineClient.Views
                 Bitmap nickname = StringRenderer.Render(pkmn.KnownNickname, "BattleName");
                 ctx.DrawImage(nickname.PlatformImpl, 1.0, new Rect(0, 0, nickname.PixelSize.Width, nickname.PixelSize.Height), new Rect(72 - Math.Max(54, nickname.PixelSize.Width), yOffset, nickname.PixelSize.Width, nickname.PixelSize.Height));
 
-                PBEGender gender = pkmn.Status2.HasFlag(PBEStatus2.Transformed) ? pkmn.Gender : pkmn.KnownGender;
+                PBEGender gender = showRawValues || pkmn.KnownStatus2.HasFlag(PBEStatus2.Transformed) ? pkmn.Gender : pkmn.KnownGender;
                 Bitmap level = StringRenderer.Render($"{(gender == PBEGender.Female ? "♀" : gender == PBEGender.Male ? "♂" : " ")}[LV]{pkmn.Level}", "BattleLevel");
                 ctx.DrawImage(level.PlatformImpl, 1.0, new Rect(0, 0, level.PixelSize.Width, level.PixelSize.Height), new Rect(70, 1 + yOffset, level.PixelSize.Width, level.PixelSize.Height));
 

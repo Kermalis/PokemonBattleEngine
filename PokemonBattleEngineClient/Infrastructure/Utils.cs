@@ -67,7 +67,7 @@ namespace Kermalis.PokemonBattleEngineClient.Infrastructure
         }
         public static Stream GetPokemonSpriteStream(PBEPokemon pokemon, bool backSprite)
         {
-            return GetPokemonSpriteStream(pokemon.KnownSpecies, pokemon.KnownShiny, pokemon.KnownGender, pokemon.Status2.HasFlag(PBEStatus2.Substitute), backSprite);
+            return GetPokemonSpriteStream(pokemon.KnownSpecies, pokemon.KnownShiny, pokemon.KnownGender, pokemon.KnownStatus2.HasFlag(PBEStatus2.Substitute), backSprite);
         }
         public static Stream GetPokemonSpriteStream(PBEPokemonShell shell)
         {
@@ -158,6 +158,7 @@ namespace Kermalis.PokemonBattleEngineClient.Infrastructure
             }
             void AddStatus2(PBEStatus2 status2)
             {
+                status2 &= ~PBEStatus2.Flinching; // Don't show flinching
                 sb.AppendLine($"Volatile status: {status2}");
                 if (status2.HasFlag(PBEStatus2.Disguised))
                 {
@@ -182,7 +183,7 @@ namespace Kermalis.PokemonBattleEngineClient.Infrastructure
 
             if (!ShouldShowEverything(pkmn.Team, showEverything0, showEverything1))
             {
-                sb.AppendLine($"{pkmn.KnownNickname}/{pkmn.KnownSpecies} {(pkmn.Status2.HasFlag(PBEStatus2.Transformed) ? pkmn.GenderSymbol : pkmn.KnownGenderSymbol)} Lv.{pkmn.Level}");
+                sb.AppendLine($"{pkmn.KnownNickname}/{pkmn.KnownSpecies} {(pkmn.KnownStatus2.HasFlag(PBEStatus2.Transformed) ? pkmn.GenderSymbol : pkmn.KnownGenderSymbol)} Lv.{pkmn.Level}");
                 sb.AppendLine($"HP: {pkmn.HPPercentage:P2}");
                 sb.Append($"Known types: {PBELocalizedString.GetTypeName(pkmn.KnownType1)}");
                 if (pkmn.KnownType2 != PBEType.None)
@@ -197,11 +198,9 @@ namespace Kermalis.PokemonBattleEngineClient.Infrastructure
                 AddStatus1();
                 if (pkmn.FieldPosition != PBEFieldPosition.None)
                 {
-                    PBEStatus2 cleanStatus2 = pkmn.Status2;
-                    cleanStatus2 &= ~PBEStatus2.Disguised;
-                    if (cleanStatus2 != PBEStatus2.None)
+                    if (pkmn.KnownStatus2 != PBEStatus2.None)
                     {
-                        AddStatus2(cleanStatus2);
+                        AddStatus2(pkmn.KnownStatus2);
                     }
                 }
                 PBEDataUtils.GetStatRange(PBEStat.HP, pkmn.KnownSpecies, pkmn.Level, pkmn.Team.Battle.Settings, out ushort lowHP, out ushort highHP);

@@ -32,6 +32,13 @@ namespace Kermalis.PokemonBattleEngine.Battle
         }
         private void BroadcastBattleStatus(PBEBattleStatus battleStatus, PBEBattleStatusAction battleStatusAction)
         {
+            switch (battleStatusAction)
+            {
+                case PBEBattleStatusAction.Added: BattleStatus |= battleStatus; break;
+                case PBEBattleStatusAction.Cleared:
+                case PBEBattleStatusAction.Ended: BattleStatus &= ~battleStatus; break;
+                default: throw new ArgumentOutOfRangeException(nameof(battleStatusAction));
+            }
             Broadcast(new PBEBattleStatusPacket(battleStatus, battleStatusAction));
         }
         private void BroadcastHaze()
@@ -65,24 +72,16 @@ namespace Kermalis.PokemonBattleEngine.Battle
         {
             Broadcast(new PBEMoveCritPacket(victim));
         }
-        private void BroadcastMoveLock(PBEPokemon moveUser, PBEMove lockedMove, PBETurnTarget lockedTargets, PBEMoveLockType moveLockType)
+        private void BroadcastMoveLock_ChoiceItem(PBEPokemon moveUser, PBEMove lockedMove)
         {
-            switch (moveLockType)
-            {
-                case PBEMoveLockType.ChoiceItem:
-                {
-                    moveUser.ChoiceLockedMove = lockedMove;
-                    break;
-                }
-                case PBEMoveLockType.Temporary:
-                {
-                    moveUser.TempLockedMove = lockedMove;
-                    moveUser.TempLockedTargets = lockedTargets;
-                    break;
-                }
-                default: throw new ArgumentOutOfRangeException(nameof(moveLockType));
-            }
-            Broadcast(new PBEMoveLockPacket(moveUser, lockedMove, lockedTargets, moveLockType));
+            moveUser.ChoiceLockedMove = lockedMove;
+            Broadcast(new PBEMoveLockPacket(moveUser, PBEMoveLockType.ChoiceItem, lockedMove));
+        }
+        private void BroadcastMoveLock_Temporary(PBEPokemon moveUser, PBEMove lockedMove, PBETurnTarget lockedTargets)
+        {
+            moveUser.TempLockedMove = lockedMove;
+            moveUser.TempLockedTargets = lockedTargets;
+            Broadcast(new PBEMoveLockPacket(moveUser, PBEMoveLockType.Temporary, lockedMove, lockedTargets));
         }
         private void BroadcastMoveMissed(PBEPokemon moveUser, PBEPokemon pokemon2)
         {
@@ -202,10 +201,28 @@ namespace Kermalis.PokemonBattleEngine.Battle
         }
         private void BroadcastStatus2(PBEPokemon status2Receiver, PBEPokemon pokemon2, PBEStatus2 status2, PBEStatusAction statusAction)
         {
+            switch (statusAction)
+            {
+                case PBEStatusAction.Added:
+                case PBEStatusAction.Announced:
+                case PBEStatusAction.CausedImmobility:
+                case PBEStatusAction.Damage: status2Receiver.Status2 |= status2; status2Receiver.KnownStatus2 |= status2; break;
+                case PBEStatusAction.Cleared:
+                case PBEStatusAction.Ended: status2Receiver.Status2 &= ~status2; status2Receiver.KnownStatus2 &= ~status2; break;
+                default: throw new ArgumentOutOfRangeException(nameof(statusAction));
+            }
             Broadcast(new PBEStatus2Packet(status2Receiver, pokemon2, status2, statusAction));
         }
         private void BroadcastTeamStatus(PBETeam team, PBETeamStatus teamStatus, PBETeamStatusAction teamStatusAction, PBEPokemon damageVictim = null)
         {
+            switch (teamStatusAction)
+            {
+                case PBETeamStatusAction.Added:
+                case PBETeamStatusAction.Damage: team.TeamStatus |= teamStatus; break;
+                case PBETeamStatusAction.Cleared:
+                case PBETeamStatusAction.Ended: team.TeamStatus &= ~teamStatus; break;
+                default: throw new ArgumentOutOfRangeException(nameof(teamStatusAction));
+            }
             Broadcast(new PBETeamStatusPacket(team, teamStatus, teamStatusAction, damageVictim));
         }
         private void BroadcastTransform(PBEPokemon user, PBEPokemon target)
@@ -383,10 +400,9 @@ namespace Kermalis.PokemonBattleEngine.Battle
                         {
                             switch (ap.AbilityAction)
                             {
-                                case PBEAbilityAction.ChangedAppearance: message = "{0}'s illusion wore off!"; break;
+                                case PBEAbilityAction.ChangedAppearance: return;
                                 default: throw new ArgumentOutOfRangeException(nameof(ap.AbilityAction));
                             }
-                            break;
                         }
                         case PBEAbility.Immunity:
                         case PBEAbility.Insomnia:
@@ -500,16 +516,8 @@ namespace Kermalis.PokemonBattleEngine.Battle
                     string message;
                     switch (arp.NewAbility)
                     {
-                        case PBEAbility.None:
-                        {
-                            message = "{0}'s {1} was suppressed!";
-                            break;
-                        }
-                        default:
-                        {
-                            message = "{0}'s {1} was changed to {2}!";
-                            break;
-                        }
+                        case PBEAbility.None: message = "{0}'s {1} was suppressed!"; break;
+                        default: message = "{0}'s {1} was changed to {2}!"; break;
                     }
                     Console.WriteLine(message, NameForTrainer(abilityOwner), arp.OldAbility.HasValue ? PBELocalizedString.GetAbilityName(arp.OldAbility.Value).English : "Ability", PBELocalizedString.GetAbilityName(arp.NewAbility).English);
                     break;
@@ -1034,6 +1042,15 @@ namespace Kermalis.PokemonBattleEngine.Battle
                             {
                                 case PBEStatusAction.Added: message = "{1} cut its own HP and laid a curse on {0}!"; break;
                                 case PBEStatusAction.Damage: message = "{0} is afflicted by the curse!"; break;
+                                default: throw new ArgumentOutOfRangeException(nameof(s2p.StatusAction));
+                            }
+                            break;
+                        }
+                        case PBEStatus2.Disguised:
+                        {
+                            switch (s2p.StatusAction)
+                            {
+                                case PBEStatusAction.Ended: message = "{0}'s illusion wore off!"; break;
                                 default: throw new ArgumentOutOfRangeException(nameof(s2p.StatusAction));
                             }
                             break;

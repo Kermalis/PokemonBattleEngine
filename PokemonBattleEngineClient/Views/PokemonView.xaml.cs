@@ -49,11 +49,11 @@ namespace Kermalis.PokemonBattleEngineClient.Views
 
             Image sprite = this.FindControl<Image>("Sprite");
             // Bounce/Fly/SkyDrop / Dig / Dive / ShadowForce
-            PBEStatus2 status2 = _pokemon.Status2;
+            PBEStatus2 status2 = Utils.ShouldShowEverything(pkmn.Team, showEverything0, showEverything1) ? _pokemon.Status2 : _pokemon.KnownStatus2;
             double opacity = 1;
             if (!status2.HasFlag(PBEStatus2.Substitute))
             {
-                if (Utils.ShouldShowEverything(pkmn.Team, showEverything0, showEverything1) && status2.HasFlag(PBEStatus2.Disguised))
+                if (status2.HasFlag(PBEStatus2.Disguised))
                 {
                     opacity *= 0.7;
                 }

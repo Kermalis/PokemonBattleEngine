@@ -143,7 +143,7 @@ namespace Kermalis.PokemonBattleEngineDiscord
         }
         public static string GetPokemonSprite(PBEPokemon pokemon)
         {
-            return GetPokemonSprite(pokemon.KnownSpecies, pokemon.KnownShiny, pokemon.KnownGender, pokemon.Status2.HasFlag(PBEStatus2.Substitute), false);
+            return GetPokemonSprite(pokemon.KnownSpecies, pokemon.KnownShiny, pokemon.KnownGender, pokemon.KnownStatus2.HasFlag(PBEStatus2.Substitute), false);
         }
         public static string GetPokemonSprite(PBESpecies species, bool shiny, PBEGender gender, bool behindSubstitute, bool backSprite)
         {

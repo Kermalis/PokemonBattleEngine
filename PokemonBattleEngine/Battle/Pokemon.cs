@@ -98,6 +98,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
         public PBESpecies KnownSpecies { get; set; }
         public PBEStatus1 Status1 { get; set; }
         public PBEStatus2 Status2 { get; set; }
+        public PBEStatus2 KnownStatus2 { get; set; }
         /// <summary>The Pokémon's first type.</summary>
         public PBEType Type1 { get; set; }
         /// <summary>The first type everyone believes the Pokémon has.</summary>
@@ -362,7 +363,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
             SpDefense = PBEDataUtils.CalculateStat(PBEStat.SpDefense, species, nature, evs[PBEStat.SpDefense].Value, ivs[PBEStat.SpDefense].Value, level, settings);
             Speed = PBEDataUtils.CalculateStat(PBEStat.Speed, species, nature, evs[PBEStat.Speed].Value, ivs[PBEStat.Speed].Value, level, settings);
         }
-        /// <summary>Transforms into <paramref name="target"/> and sets <see cref="PBEStatus2.Transformed"/>.</summary>
+        /// <summary>Copies the <paramref name="target"/>, does not set <see cref="PBEStatus2.Transformed"/>.</summary>
         /// <param name="target">The Pokémon to transform into.</param>
         public void Transform(PBEPokemon target)
         {
@@ -405,12 +406,6 @@ namespace Kermalis.PokemonBattleEngine.Battle
             EvasionChange = target.EvasionChange;
             TransformBackupMoves.Reset(Moves);
             PBEBattleMoveset.DoTransform(this, target);
-            if (!Moves.Contains(ChoiceLockedMove))
-            {
-                ChoiceLockedMove = PBEMove.None;
-            }
-            Status2 |= PBEStatus2.Transformed;
-            Status2 &= ~PBEStatus2.PowerTrick;
         }
         public void UpdateKnownPP(PBEMove move, int amountReduced)
         {
@@ -767,11 +762,12 @@ namespace Kermalis.PokemonBattleEngine.Battle
             {
                 return PBEResult.InvalidConditions;
             }
-            if (!ignoreCurrentStatus && Status2.HasFlag(PBEStatus2.Infatuated))
+            PBEStatus2 kStatus2 = useKnownInfo ? KnownStatus2 : Status2;
+            if (!ignoreCurrentStatus && kStatus2.HasFlag(PBEStatus2.Infatuated))
             {
                 return PBEResult.Ineffective_Status;
             }
-            PBEGender kGender = useKnownInfo && !Status2.HasFlag(PBEStatus2.Transformed) ? KnownGender : Gender;
+            PBEGender kGender = useKnownInfo ? KnownGender : Gender;
             if (kGender == PBEGender.Genderless || causer.Gender == PBEGender.Genderless || kGender == causer.Gender)
             {
                 return PBEResult.Ineffective_Gender;
@@ -785,7 +781,8 @@ namespace Kermalis.PokemonBattleEngine.Battle
         }
         public PBEResult IsBurnPossible(PBEPokemon other, bool useKnownInfo = false, bool ignoreSubstitute = false, bool ignoreCurrentStatus = false, bool ignoreSafeguard = false)
         {
-            if (!ignoreSubstitute && Status2.HasFlag(PBEStatus2.Substitute))
+            PBEStatus2 kStatus2 = useKnownInfo ? KnownStatus2 : Status2;
+            if (!ignoreSubstitute && kStatus2.HasFlag(PBEStatus2.Substitute))
             {
                 return PBEResult.Ineffective_Substitute;
             }
@@ -810,11 +807,12 @@ namespace Kermalis.PokemonBattleEngine.Battle
         }
         public PBEResult IsConfusionPossible(PBEPokemon other, bool useKnownInfo = false, bool ignoreSubstitute = false, bool ignoreCurrentStatus = false, bool ignoreSafeguard = false)
         {
-            if (!ignoreSubstitute && Status2.HasFlag(PBEStatus2.Substitute))
+            PBEStatus2 kStatus2 = useKnownInfo ? KnownStatus2 : Status2;
+            if (!ignoreSubstitute && kStatus2.HasFlag(PBEStatus2.Substitute))
             {
                 return PBEResult.Ineffective_Substitute;
             }
-            if (!ignoreCurrentStatus && Status2.HasFlag(PBEStatus2.Confused))
+            if (!ignoreCurrentStatus && kStatus2.HasFlag(PBEStatus2.Confused))
             {
                 return PBEResult.Ineffective_Status;
             }
@@ -831,7 +829,8 @@ namespace Kermalis.PokemonBattleEngine.Battle
         }
         public PBEResult IsFreezePossible(PBEPokemon other, bool useKnownInfo = false, bool ignoreSubstitute = false, bool ignoreCurrentStatus = false, bool ignoreSafeguard = false)
         {
-            if (!ignoreSubstitute && Status2.HasFlag(PBEStatus2.Substitute))
+            PBEStatus2 kStatus2 = useKnownInfo ? KnownStatus2 : Status2;
+            if (!ignoreSubstitute && kStatus2.HasFlag(PBEStatus2.Substitute))
             {
                 return PBEResult.Ineffective_Substitute;
             }
@@ -856,11 +855,12 @@ namespace Kermalis.PokemonBattleEngine.Battle
         }
         public PBEResult IsFlinchPossible(PBEPokemon other, bool useKnownInfo = false)
         {
-            if (Status2.HasFlag(PBEStatus2.Substitute))
+            PBEStatus2 kStatus2 = useKnownInfo ? KnownStatus2 : Status2;
+            if (kStatus2.HasFlag(PBEStatus2.Substitute))
             {
                 return PBEResult.Ineffective_Substitute;
             }
-            if (Status2.HasFlag(PBEStatus2.Flinching))
+            if (kStatus2.HasFlag(PBEStatus2.Flinching))
             {
                 return PBEResult.Ineffective_Status;
             }
@@ -882,7 +882,8 @@ namespace Kermalis.PokemonBattleEngine.Battle
             {
                 return PBEResult.Ineffective_Ability;
             }
-            if (Status2.HasFlag(PBEStatus2.MagnetRise))
+            PBEStatus2 kStatus2 = useKnownInfo ? KnownStatus2 : Status2;
+            if (kStatus2.HasFlag(PBEStatus2.MagnetRise))
             {
                 return PBEResult.Ineffective_MagnetRise;
             }
@@ -890,11 +891,12 @@ namespace Kermalis.PokemonBattleEngine.Battle
         }
         public PBEResult IsLeechSeedPossible(bool useKnownInfo = false)
         {
-            if (Status2.HasFlag(PBEStatus2.Substitute))
+            PBEStatus2 kStatus2 = useKnownInfo ? KnownStatus2 : Status2;
+            if (kStatus2.HasFlag(PBEStatus2.Substitute))
             {
                 return PBEResult.Ineffective_Substitute;
             }
-            if (Status2.HasFlag(PBEStatus2.LeechSeed))
+            if (kStatus2.HasFlag(PBEStatus2.LeechSeed))
             {
                 return PBEResult.Ineffective_Status;
             }
@@ -904,9 +906,10 @@ namespace Kermalis.PokemonBattleEngine.Battle
             }
             return PBEResult.Success;
         }
-        public PBEResult IsMagnetRisePossible()
+        public PBEResult IsMagnetRisePossible(bool useKnownInfo = false)
         {
-            if (Status2.HasFlag(PBEStatus2.MagnetRise))
+            PBEStatus2 kStatus2 = useKnownInfo ? KnownStatus2 : Status2;
+            if (kStatus2.HasFlag(PBEStatus2.MagnetRise))
             {
                 return PBEResult.Ineffective_Status;
             }
@@ -914,7 +917,8 @@ namespace Kermalis.PokemonBattleEngine.Battle
         }
         public PBEResult IsParalysisPossible(PBEPokemon other, bool useKnownInfo = false, bool ignoreSubstitute = false, bool ignoreCurrentStatus = false, bool ignoreSafeguard = false)
         {
-            if (!ignoreSubstitute && Status2.HasFlag(PBEStatus2.Substitute))
+            PBEStatus2 kStatus2 = useKnownInfo ? KnownStatus2 : Status2;
+            if (!ignoreSubstitute && kStatus2.HasFlag(PBEStatus2.Substitute))
             {
                 return PBEResult.Ineffective_Substitute;
             }
@@ -935,7 +939,8 @@ namespace Kermalis.PokemonBattleEngine.Battle
         }
         public PBEResult IsPoisonPossible(PBEPokemon other, bool useKnownInfo = false, bool ignoreSubstitute = false, bool ignoreCurrentStatus = false, bool ignoreSafeguard = false)
         {
-            if (!ignoreSubstitute && Status2.HasFlag(PBEStatus2.Substitute))
+            PBEStatus2 kStatus2 = useKnownInfo ? KnownStatus2 : Status2;
+            if (!ignoreSubstitute && kStatus2.HasFlag(PBEStatus2.Substitute))
             {
                 return PBEResult.Ineffective_Substitute;
             }
@@ -960,7 +965,8 @@ namespace Kermalis.PokemonBattleEngine.Battle
         }
         public PBEResult IsSleepPossible(PBEPokemon other, bool useKnownInfo = false, bool ignoreSubstitute = false, bool ignoreCurrentStatus = false, bool ignoreSafeguard = false)
         {
-            if (!ignoreSubstitute && Status2.HasFlag(PBEStatus2.Substitute))
+            PBEStatus2 kStatus2 = useKnownInfo ? KnownStatus2 : Status2;
+            if (!ignoreSubstitute && kStatus2.HasFlag(PBEStatus2.Substitute))
             {
                 return PBEResult.Ineffective_Substitute;
             }
@@ -979,9 +985,10 @@ namespace Kermalis.PokemonBattleEngine.Battle
             }
             return PBEResult.Success;
         }
-        public PBEResult IsSubstitutePossible(bool ignoreCurrentStatus = false)
+        public PBEResult IsSubstitutePossible(bool useKnownInfo = false, bool ignoreCurrentStatus = false)
         {
-            if (!ignoreCurrentStatus && Status2.HasFlag(PBEStatus2.Substitute))
+            PBEStatus2 kStatus2 = useKnownInfo ? KnownStatus2 : Status2;
+            if (!ignoreCurrentStatus && kStatus2.HasFlag(PBEStatus2.Substitute))
             {
                 return PBEResult.Ineffective_Status;
             }
@@ -992,18 +999,18 @@ namespace Kermalis.PokemonBattleEngine.Battle
             }
             return PBEResult.Success;
         }
-        // TODO: This leaks PBEStatus2.Disguised to singleplayer/ai, make an argument or KnownStatus2
-        public PBEResult IsTransformPossible(PBEPokemon target)
+        public PBEResult IsTransformPossible(PBEPokemon other, bool useKnownInfo = false)
         {
-            if (target == null)
+            if (other == null)
             {
-                throw new ArgumentNullException(nameof(target));
+                throw new ArgumentNullException(nameof(other));
             }
-            if (target.Status2.HasFlag(PBEStatus2.Substitute))
+            PBEStatus2 kStatus2 = useKnownInfo ? KnownStatus2 : Status2;
+            if (kStatus2.HasFlag(PBEStatus2.Substitute))
             {
                 return PBEResult.Ineffective_Substitute;
             }
-            if (target.Status2.HasFlag(PBEStatus2.Disguised) || Status2.HasFlag(PBEStatus2.Transformed) || target.Status2.HasFlag(PBEStatus2.Transformed))
+            if (kStatus2.HasFlag(PBEStatus2.Disguised) || kStatus2.HasFlag(PBEStatus2.Transformed) || other.Status2.HasFlag(PBEStatus2.Transformed))
             {
                 return PBEResult.Ineffective_Status;
             }
