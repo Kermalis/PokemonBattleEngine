@@ -1678,6 +1678,48 @@ namespace Kermalis.PokemonBattleEngineExtras
 
                 #endregion
 
+                #region Specific Fixes
+
+                // Arceus forms do not have Pokémon data, but I would like to have their types be in the database instead of having checks everywhere
+                {
+                    Pokemon basePkmn = dict[(PBESpecies.Arceus, PBEForm.Arceus)];
+                    void FixArceus(PBEForm form, PBEType type)
+                    {
+                        Pokemon pkmn = AddSpecies((PBESpecies.Arceus, form));
+                        pkmn.HP = basePkmn.HP;
+                        pkmn.Attack = basePkmn.Attack;
+                        pkmn.Defense = basePkmn.Defense;
+                        pkmn.SpAttack = basePkmn.SpAttack;
+                        pkmn.SpDefense = basePkmn.SpDefense;
+                        pkmn.Speed = basePkmn.Speed;
+                        pkmn.Type1 = type;
+                        pkmn.Type2 = basePkmn.Type2;
+                        pkmn.GenderRatio = basePkmn.GenderRatio;
+                        pkmn.Abilities = basePkmn.Abilities;
+                        pkmn.Weight = basePkmn.Weight;
+                        pkmn.Evolutions = basePkmn.Evolutions;
+                        pkmn.PreEvolutions = basePkmn.PreEvolutions;
+                    }
+                    FixArceus(PBEForm.Arceus_Bug, PBEType.Bug);
+                    FixArceus(PBEForm.Arceus_Dark, PBEType.Dark);
+                    FixArceus(PBEForm.Arceus_Dragon, PBEType.Dragon);
+                    FixArceus(PBEForm.Arceus_Electric, PBEType.Electric);
+                    FixArceus(PBEForm.Arceus_Fighting, PBEType.Fighting);
+                    FixArceus(PBEForm.Arceus_Fire, PBEType.Fire);
+                    FixArceus(PBEForm.Arceus_Flying, PBEType.Flying);
+                    FixArceus(PBEForm.Arceus_Ghost, PBEType.Ghost);
+                    FixArceus(PBEForm.Arceus_Grass, PBEType.Grass);
+                    FixArceus(PBEForm.Arceus_Ground, PBEType.Ground);
+                    FixArceus(PBEForm.Arceus_Ice, PBEType.Ice);
+                    FixArceus(PBEForm.Arceus_Poison, PBEType.Poison);
+                    FixArceus(PBEForm.Arceus_Psychic, PBEType.Psychic);
+                    FixArceus(PBEForm.Arceus_Rock, PBEType.Rock);
+                    FixArceus(PBEForm.Arceus_Steel, PBEType.Steel);
+                    FixArceus(PBEForm.Arceus_Water, PBEType.Water);
+                }
+
+                #endregion
+
                 #region Write to Database
 
                 cmd.CommandText = "DROP TABLE IF EXISTS PokemonData";
