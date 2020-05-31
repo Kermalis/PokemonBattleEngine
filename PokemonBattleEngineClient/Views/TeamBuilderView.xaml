@@ -66,7 +66,7 @@
             </ComboBox.ItemTemplate>
           </ComboBox>
           <Image Grid.Row="2" Grid.Column="0" Stretch="None" HorizontalAlignment="Left" Source="{Binding Source='Form:', Converter={x:Static infrastructure:ObjectToTextBitmapConverter.Instance}, ConverterParameter=MenuWhite, Mode=OneWay}" IsVisible="{Binding !!Shell.SelectableForms.Count}"/>
-          <ComboBox Grid.Row="2" Grid.Column="1" Name="Form" Items="{Binding Shell.SelectableForms, Mode=OneWay}" ItemTemplate="{StaticResource FormMenuBlack}" SelectedItem="{Binding Shell.Form}" IsVisible="{Binding !!Shell.SelectableForms.Count}"/>
+          <ComboBox Grid.Row="2" Grid.Column="1" Name="Form" Items="{Binding Shell.SelectableForms, Mode=OneWay}" ItemTemplate="{StaticResource FormMenuBlack}" IsVisible="{Binding !!Shell.SelectableForms.Count}"/>
           <Image Grid.Row="3" Grid.Column="0" Stretch="None" HorizontalAlignment="Left" Source="{Binding Source='Nickname:', Converter={x:Static infrastructure:ObjectToTextBitmapConverter.Instance}, ConverterParameter=MenuWhite, Mode=OneWay}"/>
           <TextBox Grid.Row="3" Grid.Column="1" Text="{Binding Shell.Nickname}"/>
           <Image Grid.Row="4" Grid.Column="0" Stretch="None" HorizontalAlignment="Left" Source="{Binding Source='Level:', Converter={x:Static infrastructure:ObjectToTextBitmapConverter.Instance}, ConverterParameter=MenuWhite, Mode=OneWay}"/>
@@ -78,9 +78,9 @@
           <Image Grid.Row="7" Grid.Column="0" Stretch="None" HorizontalAlignment="Left" Source="{Binding Source='Nature:', Converter={x:Static infrastructure:ObjectToTextBitmapConverter.Instance}, ConverterParameter=MenuWhite, Mode=OneWay}"/>
           <ComboBox Grid.Row="7" Grid.Column="1" Items="{x:Static pbedata:PBEDataUtils.AllNatures}" ItemTemplate="{StaticResource MenuBlack}" SelectedItem="{Binding Shell.Nature}"/>
           <Image Grid.Row="8" Grid.Column="0" Stretch="None" HorizontalAlignment="Left" Source="{Binding Source='Gender:', Converter={x:Static infrastructure:ObjectToTextBitmapConverter.Instance}, ConverterParameter=MenuWhite, Mode=OneWay}"/>
-          <ComboBox Grid.Row="8" Grid.Column="1" Name="Gender" Items="{Binding Shell.SelectableGenders, Mode=OneWay}" ItemTemplate="{StaticResource MenuBlack}" SelectedItem="{Binding Shell.Gender}"/>
+          <ComboBox Grid.Row="8" Grid.Column="1" Name="Gender" Items="{Binding Shell.SelectableGenders, Mode=OneWay}" ItemTemplate="{StaticResource MenuBlack}"/>
           <Image Grid.Row="9" Grid.Column="0" Stretch="None" HorizontalAlignment="Left" Source="{Binding Source='Item:', Converter={x:Static infrastructure:ObjectToTextBitmapConverter.Instance}, ConverterParameter=MenuWhite, Mode=OneWay}"/>
-          <ComboBox Grid.Row="9" Grid.Column="1" Items="{Binding Shell.SelectableItems, Mode=OneWay}" ItemTemplate="{StaticResource MenuBlack}" SelectedItem="{Binding Shell.Item}"/>
+          <ComboBox Grid.Row="9" Grid.Column="1" Name="Item" Items="{Binding Shell.SelectableItems, Mode=OneWay}" ItemTemplate="{StaticResource MenuBlack}"/>
         </Grid>
         <Panel Width="192" Height="192">
           <Image Stretch="None" HorizontalAlignment="Center" VerticalAlignment="Center" RenderOptions.BitmapInterpolationMode="Default" gif:GifImage.SourceStream="{Binding SpriteStream}">

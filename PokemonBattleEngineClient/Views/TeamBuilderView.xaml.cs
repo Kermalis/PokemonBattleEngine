@@ -8,7 +8,6 @@ using System.Collections.ObjectModel;
 using System.Collections.Specialized;
 using System.ComponentModel;
 using System.IO;
-using System.Reactive.Linq;
 
 namespace Kermalis.PokemonBattleEngineClient.Views
 {
@@ -42,8 +41,17 @@ namespace Kermalis.PokemonBattleEngineClient.Views
             {
                 if (_shell != value)
                 {
+                    PBEPokemonShell old = _shell;
+                    if (old != null)
+                    {
+                        old.PropertyChanged -= OnShellPropertyChanged;
+                    }
                     _shell = value;
+                    value.PropertyChanged += OnShellPropertyChanged;
+                    _ignoreComboBoxChanges = true;
                     OnPropertyChanged(nameof(Shell));
+                    _ignoreComboBoxChanges = false;
+                    UpdateComboBoxes(null);
                 }
             }
         }
@@ -66,12 +74,72 @@ namespace Kermalis.PokemonBattleEngineClient.Views
         private readonly Button _addPartyButton;
         private readonly Button _removePartyButton;
         private readonly ListBox _partyListBox;
+        private bool _ignoreComboBoxChanges = false;
         private readonly ComboBox _abilityComboBox;
+        private readonly ComboBox _formComboBox;
+        private readonly ComboBox _genderComboBox;
+        private readonly ComboBox _itemComboBox;
 
-        private IDisposable Test(IObserver<object> thing)
+        private void UpdateComboBoxes(string property)
         {
-            thing.OnNext(PBEAbility.Adaptability);
-            return null;
+            bool all = property == null;
+            bool ability = all;
+            bool form = all;
+            bool gender = all;
+            bool item = all;
+            if (!all)
+            {
+                switch (property)
+                {
+                    case nameof(PBEPokemonShell.Ability): ability = true; break;
+                    case nameof(PBEPokemonShell.Form): form = true; break;
+                    case nameof(PBEPokemonShell.Gender): gender = true; break;
+                    case nameof(PBEPokemonShell.Item): item = true; break;
+                }
+            }
+            if (ability)
+            {
+                _abilityComboBox.SelectedItem = _shell.Ability;
+            }
+            if (form)
+            {
+                _formComboBox.SelectedItem = _shell.Form;
+            }
+            if (gender)
+            {
+                _genderComboBox.SelectedItem = _shell.Gender;
+            }
+            if (item)
+            {
+                _itemComboBox.SelectedItem = _shell.Item;
+            }
+        }
+        private void OnShellPropertyChanged(object sender, PropertyChangedEventArgs e)
+        {
+            UpdateComboBoxes(e.PropertyName);
+        }
+        private void OnComboBoxSelectionChanged(object sender, SelectionChangedEventArgs thing)
+        {
+            if (!_ignoreComboBoxChanges)
+            {
+                var c = (ComboBox)sender;
+                if (c == _abilityComboBox)
+                {
+                    _shell.Ability = (PBEAbility)c.SelectedItem;
+                }
+                else if (c == _formComboBox)
+                {
+                    _shell.Form = (PBEForm)c.SelectedItem;
+                }
+                else if (c == _genderComboBox)
+                {
+                    _shell.Gender = (PBEGender)c.SelectedItem;
+                }
+                else if (c == _itemComboBox)
+                {
+                    _shell.Item = (PBEItem)c.SelectedItem;
+                }
+            }
         }
 
         public TeamBuilderView()
@@ -79,16 +147,21 @@ namespace Kermalis.PokemonBattleEngineClient.Views
             DataContext = this;
             AvaloniaXamlLoader.Load(this);
 
-            _addPartyButton = this.FindControl<Button>("AddParty");
-            //this.FindControl<ComboBox>("Form").bin
-            _removePartyButton = this.FindControl<Button>("RemoveParty");
-            _partyListBox = this.FindControl<ListBox>("Party");
             _abilityComboBox = this.FindControl<ComboBox>("Ability");
-            _abilityComboBox.Bind(ComboBox.SelectedItemProperty, Observable.Create<object>(Test));
+            _abilityComboBox.SelectionChanged += OnComboBoxSelectionChanged;
+            _formComboBox = this.FindControl<ComboBox>("Form");
+            _formComboBox.SelectionChanged += OnVisualChanged;
+            _formComboBox.SelectionChanged += OnComboBoxSelectionChanged;
+            _genderComboBox = this.FindControl<ComboBox>("Gender");
+            _genderComboBox.SelectionChanged += OnVisualChanged;
+            _genderComboBox.SelectionChanged += OnComboBoxSelectionChanged;
+            _itemComboBox = this.FindControl<ComboBox>("Item");
+            _itemComboBox.SelectionChanged += OnComboBoxSelectionChanged;
             this.FindControl<ListBox>("SavedTeams").SelectionChanged += OnSelectedTeamChanged;
             this.FindControl<ComboBox>("Species").SelectionChanged += OnVisualChanged;
-            this.FindControl<ComboBox>("Form").SelectionChanged += OnVisualChanged;
-            this.FindControl<ComboBox>("Gender").SelectionChanged += OnVisualChanged;
+            _addPartyButton = this.FindControl<Button>("AddParty");
+            _removePartyButton = this.FindControl<Button>("RemoveParty");
+            _partyListBox = this.FindControl<ListBox>("Party");
 
             _teamPath = Path.Combine(Utils.WorkingDirectory, "Teams");
             if (Directory.Exists(_teamPath))
