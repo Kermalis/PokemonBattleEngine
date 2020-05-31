@@ -80,21 +80,42 @@ namespace Kermalis.PokemonBattleEngineExtras
                 }
                 // Forms
                 {
-                    void WriteFormTexts(string tableName, PBESpecies species, PBEForm form, int text)
+                    void InsertForm(string tableName, PBESpecies species, PBEForm form, string e, string f, string g, string i, string jkana, string jkanji, string k, string s)
                     {
                         cmd.CommandText = $"INSERT INTO {tableName} VALUES(@0, @1, @2, @3, @4, @5, @6, @7, @8, @9)";
                         cmd.Parameters.AddWithValue("@0", (ushort)species);
                         cmd.Parameters.AddWithValue("@1", (byte)form);
-                        cmd.Parameters.AddWithValue("@2", eng[0][text]);
-                        cmd.Parameters.AddWithValue("@3", fre[0][text]);
-                        cmd.Parameters.AddWithValue("@4", ger[0][text]);
-                        cmd.Parameters.AddWithValue("@5", ita[0][text]);
-                        cmd.Parameters.AddWithValue("@6", jap[0][text]);
-                        cmd.Parameters.AddWithValue("@7", jap[1][text]);
-                        cmd.Parameters.AddWithValue("@8", kor[0][text]);
-                        cmd.Parameters.AddWithValue("@9", spa[0][text]);
+                        cmd.Parameters.AddWithValue("@2", e);
+                        cmd.Parameters.AddWithValue("@3", f);
+                        cmd.Parameters.AddWithValue("@4", g);
+                        cmd.Parameters.AddWithValue("@5", i);
+                        cmd.Parameters.AddWithValue("@6", jkana);
+                        cmd.Parameters.AddWithValue("@7", jkanji);
+                        cmd.Parameters.AddWithValue("@8", k);
+                        cmd.Parameters.AddWithValue("@9", s);
                         cmd.ExecuteNonQuery();
                         cmd.Parameters.Clear();
+                    }
+                    void WriteFormTexts(string tableName, PBESpecies species, PBEForm form, int text)
+                    {
+                        InsertForm(tableName, species, form, eng[0][text], fre[0][text], ger[0][text], ita[0][text], jap[0][text], jap[1][text], kor[0][text], spa[0][text]);
+                    }
+                    void WriteUnown(string tableName, PBEForm form, string letter)
+                    {
+                        InsertForm(tableName, PBESpecies.Unown, form, letter, letter, letter, letter, letter, letter, letter, letter);
+                    }
+                    void WriteArceusGenesect(string tableName, PBESpecies species, PBEForm form, PBEType type)
+                    {
+                        int text = -1;
+                        for (int i = 0; i < Utils.Gen5Types.Length; i++)
+                        {
+                            if (Utils.Gen5Types[i] == type)
+                            {
+                                text = i;
+                                break;
+                            }
+                        }
+                        WriteFormTexts(tableName, species, form, text);
                     }
                     LoadTexts(450);
                     const string tableName = "FormNames";
@@ -102,7 +123,6 @@ namespace Kermalis.PokemonBattleEngineExtras
                     cmd.ExecuteNonQuery();
                     cmd.CommandText = $"CREATE TABLE {tableName}(Species INTEGER, Form INTEGER, English TEXT, French TEXT, German TEXT, Italian TEXT, Japanese_Kana TEXT, Japanese_Kanji TEXT, Korean TEXT, Spanish TEXT)";
                     cmd.ExecuteNonQuery();
-                    WriteFormTexts(tableName, PBESpecies.Unown, PBEForm.Unown_A, 201);
                     WriteFormTexts(tableName, PBESpecies.Castform, PBEForm.Castform, 351);
                     WriteFormTexts(tableName, PBESpecies.Deoxys, PBEForm.Deoxys, 386);
                     WriteFormTexts(tableName, PBESpecies.Burmy, PBEForm.Burmy_Plant, 412);
@@ -113,7 +133,6 @@ namespace Kermalis.PokemonBattleEngineExtras
                     WriteFormTexts(tableName, PBESpecies.Rotom, PBEForm.Rotom, 479);
                     WriteFormTexts(tableName, PBESpecies.Giratina, PBEForm.Giratina, 487);
                     WriteFormTexts(tableName, PBESpecies.Shaymin, PBEForm.Shaymin, 492);
-                    WriteFormTexts(tableName, PBESpecies.Arceus, PBEForm.Arceus, 493);
                     WriteFormTexts(tableName, PBESpecies.Basculin, PBEForm.Basculin_Red, 550);
                     WriteFormTexts(tableName, PBESpecies.Darmanitan, PBEForm.Darmanitan, 555);
                     WriteFormTexts(tableName, PBESpecies.Deerling, PBEForm.Deerling_Spring, 585);
@@ -124,34 +143,6 @@ namespace Kermalis.PokemonBattleEngineExtras
                     WriteFormTexts(tableName, PBESpecies.Kyurem, PBEForm.Kyurem, 646);
                     WriteFormTexts(tableName, PBESpecies.Keldeo, PBEForm.Keldeo, 647);
                     WriteFormTexts(tableName, PBESpecies.Meloetta, PBEForm.Meloetta, 648);
-                    WriteFormTexts(tableName, PBESpecies.Genesect, PBEForm.Genesect, 649);
-                    WriteFormTexts(tableName, PBESpecies.Unown, PBEForm.Unown_B, 651);
-                    WriteFormTexts(tableName, PBESpecies.Unown, PBEForm.Unown_C, 652);
-                    WriteFormTexts(tableName, PBESpecies.Unown, PBEForm.Unown_D, 653);
-                    WriteFormTexts(tableName, PBESpecies.Unown, PBEForm.Unown_E, 654);
-                    WriteFormTexts(tableName, PBESpecies.Unown, PBEForm.Unown_F, 655);
-                    WriteFormTexts(tableName, PBESpecies.Unown, PBEForm.Unown_G, 656);
-                    WriteFormTexts(tableName, PBESpecies.Unown, PBEForm.Unown_H, 657);
-                    WriteFormTexts(tableName, PBESpecies.Unown, PBEForm.Unown_I, 658);
-                    WriteFormTexts(tableName, PBESpecies.Unown, PBEForm.Unown_J, 659);
-                    WriteFormTexts(tableName, PBESpecies.Unown, PBEForm.Unown_K, 660);
-                    WriteFormTexts(tableName, PBESpecies.Unown, PBEForm.Unown_L, 661);
-                    WriteFormTexts(tableName, PBESpecies.Unown, PBEForm.Unown_M, 662);
-                    WriteFormTexts(tableName, PBESpecies.Unown, PBEForm.Unown_N, 663);
-                    WriteFormTexts(tableName, PBESpecies.Unown, PBEForm.Unown_O, 664);
-                    WriteFormTexts(tableName, PBESpecies.Unown, PBEForm.Unown_P, 665);
-                    WriteFormTexts(tableName, PBESpecies.Unown, PBEForm.Unown_Q, 666);
-                    WriteFormTexts(tableName, PBESpecies.Unown, PBEForm.Unown_R, 667);
-                    WriteFormTexts(tableName, PBESpecies.Unown, PBEForm.Unown_S, 668);
-                    WriteFormTexts(tableName, PBESpecies.Unown, PBEForm.Unown_T, 669);
-                    WriteFormTexts(tableName, PBESpecies.Unown, PBEForm.Unown_U, 670);
-                    WriteFormTexts(tableName, PBESpecies.Unown, PBEForm.Unown_V, 671);
-                    WriteFormTexts(tableName, PBESpecies.Unown, PBEForm.Unown_W, 672);
-                    WriteFormTexts(tableName, PBESpecies.Unown, PBEForm.Unown_X, 673);
-                    WriteFormTexts(tableName, PBESpecies.Unown, PBEForm.Unown_Y, 674);
-                    WriteFormTexts(tableName, PBESpecies.Unown, PBEForm.Unown_Z, 675);
-                    WriteFormTexts(tableName, PBESpecies.Unown, PBEForm.Unown_Exclamation, 676);
-                    WriteFormTexts(tableName, PBESpecies.Unown, PBEForm.Unown_Question, 677);
                     WriteFormTexts(tableName, PBESpecies.Castform, PBEForm.Castform_Sunny, 678);
                     WriteFormTexts(tableName, PBESpecies.Castform, PBEForm.Castform_Rainy, 679);
                     WriteFormTexts(tableName, PBESpecies.Castform, PBEForm.Castform_Snowy, 680);
@@ -172,22 +163,6 @@ namespace Kermalis.PokemonBattleEngineExtras
                     WriteFormTexts(tableName, PBESpecies.Rotom, PBEForm.Rotom_Mow, 695);
                     WriteFormTexts(tableName, PBESpecies.Giratina, PBEForm.Giratina_Origin, 696);
                     WriteFormTexts(tableName, PBESpecies.Shaymin, PBEForm.Shaymin_Sky, 697);
-                    WriteFormTexts(tableName, PBESpecies.Arceus, PBEForm.Arceus_Fighting, 698);
-                    WriteFormTexts(tableName, PBESpecies.Arceus, PBEForm.Arceus_Flying, 699);
-                    WriteFormTexts(tableName, PBESpecies.Arceus, PBEForm.Arceus_Poison, 700);
-                    WriteFormTexts(tableName, PBESpecies.Arceus, PBEForm.Arceus_Ground, 701);
-                    WriteFormTexts(tableName, PBESpecies.Arceus, PBEForm.Arceus_Rock, 702);
-                    WriteFormTexts(tableName, PBESpecies.Arceus, PBEForm.Arceus_Bug, 703);
-                    WriteFormTexts(tableName, PBESpecies.Arceus, PBEForm.Arceus_Ghost, 704);
-                    WriteFormTexts(tableName, PBESpecies.Arceus, PBEForm.Arceus_Steel, 705);
-                    WriteFormTexts(tableName, PBESpecies.Arceus, PBEForm.Arceus_Fire, 706);
-                    WriteFormTexts(tableName, PBESpecies.Arceus, PBEForm.Arceus_Water, 707);
-                    WriteFormTexts(tableName, PBESpecies.Arceus, PBEForm.Arceus_Grass, 708);
-                    WriteFormTexts(tableName, PBESpecies.Arceus, PBEForm.Arceus_Electric, 709);
-                    WriteFormTexts(tableName, PBESpecies.Arceus, PBEForm.Arceus_Psychic, 710);
-                    WriteFormTexts(tableName, PBESpecies.Arceus, PBEForm.Arceus_Ice, 711);
-                    WriteFormTexts(tableName, PBESpecies.Arceus, PBEForm.Arceus_Dragon, 712);
-                    WriteFormTexts(tableName, PBESpecies.Arceus, PBEForm.Arceus_Dark, 713);
                     WriteFormTexts(tableName, PBESpecies.Basculin, PBEForm.Basculin_Blue, 714);
                     WriteFormTexts(tableName, PBESpecies.Darmanitan, PBEForm.Darmanitan_Zen, 715);
                     WriteFormTexts(tableName, PBESpecies.Deerling, PBEForm.Deerling_Summer, 716);
@@ -203,10 +178,58 @@ namespace Kermalis.PokemonBattleEngineExtras
                     WriteFormTexts(tableName, PBESpecies.Kyurem, PBEForm.Kyurem_Black, 726);
                     WriteFormTexts(tableName, PBESpecies.Keldeo, PBEForm.Keldeo_Resolute, 727);
                     WriteFormTexts(tableName, PBESpecies.Meloetta, PBEForm.Meloetta_Pirouette, 728);
-                    WriteFormTexts(tableName, PBESpecies.Genesect, PBEForm.Genesect_Douse, 729);
-                    WriteFormTexts(tableName, PBESpecies.Genesect, PBEForm.Genesect_Shock, 730);
-                    WriteFormTexts(tableName, PBESpecies.Genesect, PBEForm.Genesect_Burn, 731);
-                    WriteFormTexts(tableName, PBESpecies.Genesect, PBEForm.Genesect_Chill, 732);
+                    // All Unown forms are called "One Form", all Arceus forms are called "Arceus", and all Genesect forms are called "Genesect", so I'm changing them here
+                    WriteUnown(tableName, PBEForm.Unown_A, "A");
+                    WriteUnown(tableName, PBEForm.Unown_B, "B");
+                    WriteUnown(tableName, PBEForm.Unown_C, "C");
+                    WriteUnown(tableName, PBEForm.Unown_D, "D");
+                    WriteUnown(tableName, PBEForm.Unown_E, "E");
+                    WriteUnown(tableName, PBEForm.Unown_Exclamation, "!");
+                    WriteUnown(tableName, PBEForm.Unown_F, "F");
+                    WriteUnown(tableName, PBEForm.Unown_G, "G");
+                    WriteUnown(tableName, PBEForm.Unown_H, "H");
+                    WriteUnown(tableName, PBEForm.Unown_I, "I");
+                    WriteUnown(tableName, PBEForm.Unown_J, "J");
+                    WriteUnown(tableName, PBEForm.Unown_K, "K");
+                    WriteUnown(tableName, PBEForm.Unown_L, "L");
+                    WriteUnown(tableName, PBEForm.Unown_M, "M");
+                    WriteUnown(tableName, PBEForm.Unown_N, "N");
+                    WriteUnown(tableName, PBEForm.Unown_O, "O");
+                    WriteUnown(tableName, PBEForm.Unown_P, "P");
+                    WriteUnown(tableName, PBEForm.Unown_Q, "Q");
+                    WriteUnown(tableName, PBEForm.Unown_Question, "?");
+                    WriteUnown(tableName, PBEForm.Unown_R, "R");
+                    WriteUnown(tableName, PBEForm.Unown_S, "S");
+                    WriteUnown(tableName, PBEForm.Unown_T, "T");
+                    WriteUnown(tableName, PBEForm.Unown_U, "U");
+                    WriteUnown(tableName, PBEForm.Unown_V, "V");
+                    WriteUnown(tableName, PBEForm.Unown_W, "W");
+                    WriteUnown(tableName, PBEForm.Unown_X, "X");
+                    WriteUnown(tableName, PBEForm.Unown_Y, "Y");
+                    WriteUnown(tableName, PBEForm.Unown_Z, "Z");
+                    LoadTexts(398); // Load types texts
+                    WriteArceusGenesect(tableName, PBESpecies.Arceus, PBEForm.Arceus, PBEType.Normal);
+                    WriteArceusGenesect(tableName, PBESpecies.Arceus, PBEForm.Arceus_Bug, PBEType.Bug);
+                    WriteArceusGenesect(tableName, PBESpecies.Arceus, PBEForm.Arceus_Dark, PBEType.Dark);
+                    WriteArceusGenesect(tableName, PBESpecies.Arceus, PBEForm.Arceus_Dragon, PBEType.Dragon);
+                    WriteArceusGenesect(tableName, PBESpecies.Arceus, PBEForm.Arceus_Electric, PBEType.Electric);
+                    WriteArceusGenesect(tableName, PBESpecies.Arceus, PBEForm.Arceus_Fighting, PBEType.Fighting);
+                    WriteArceusGenesect(tableName, PBESpecies.Arceus, PBEForm.Arceus_Fire, PBEType.Fire);
+                    WriteArceusGenesect(tableName, PBESpecies.Arceus, PBEForm.Arceus_Flying, PBEType.Flying);
+                    WriteArceusGenesect(tableName, PBESpecies.Arceus, PBEForm.Arceus_Ghost, PBEType.Ghost);
+                    WriteArceusGenesect(tableName, PBESpecies.Arceus, PBEForm.Arceus_Grass, PBEType.Grass);
+                    WriteArceusGenesect(tableName, PBESpecies.Arceus, PBEForm.Arceus_Ground, PBEType.Ground);
+                    WriteArceusGenesect(tableName, PBESpecies.Arceus, PBEForm.Arceus_Ice, PBEType.Ice);
+                    WriteArceusGenesect(tableName, PBESpecies.Arceus, PBEForm.Arceus_Poison, PBEType.Poison);
+                    WriteArceusGenesect(tableName, PBESpecies.Arceus, PBEForm.Arceus_Psychic, PBEType.Psychic);
+                    WriteArceusGenesect(tableName, PBESpecies.Arceus, PBEForm.Arceus_Rock, PBEType.Rock);
+                    WriteArceusGenesect(tableName, PBESpecies.Arceus, PBEForm.Arceus_Steel, PBEType.Steel);
+                    WriteArceusGenesect(tableName, PBESpecies.Arceus, PBEForm.Arceus_Water, PBEType.Water);
+                    WriteArceusGenesect(tableName, PBESpecies.Genesect, PBEForm.Genesect, PBEType.Normal);
+                    WriteArceusGenesect(tableName, PBESpecies.Genesect, PBEForm.Genesect_Burn, PBEType.Fire);
+                    WriteArceusGenesect(tableName, PBESpecies.Genesect, PBEForm.Genesect_Chill, PBEType.Ice);
+                    WriteArceusGenesect(tableName, PBESpecies.Genesect, PBEForm.Genesect_Douse, PBEType.Water);
+                    WriteArceusGenesect(tableName, PBESpecies.Genesect, PBEForm.Genesect_Shock, PBEType.Electric);
                 }
                 // Genders (Does not have PBEGender.Genderless)
                 {
