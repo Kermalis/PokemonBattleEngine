@@ -31,6 +31,28 @@ namespace Kermalis.PokemonBattleEngineClient.Infrastructure
                 return _renderInterface;
             }
         }
+
+        static Utils()
+        {
+            void Add(string resource, List<PBESpecies> list)
+            {
+                using (var reader = new StreamReader(GetResourceStream(resource)))
+                {
+                    string line;
+                    while ((line = reader.ReadLine()) != null)
+                    {
+                        if (!Enum.TryParse(line, out PBESpecies species))
+                        {
+                            throw new InvalidDataException($"Failed to parse \"{resource}\"");
+                        }
+                        list.Add(species);
+                    }
+                }
+            }
+            Add("PKMN.FemaleMinispriteLookup.txt", _femaleMinispriteLookup);
+            Add("PKMN.FemaleSpriteLookup.txt", _femaleSpriteLookup);
+        }
+
         private static readonly object _resourceExistsCacheLockObj = new object();
         private static readonly Dictionary<string, bool> _resourceExistsCache = new Dictionary<string, bool>();
         public static bool DoesResourceExist(string resource)
@@ -57,23 +79,31 @@ namespace Kermalis.PokemonBattleEngineClient.Infrastructure
             WorkingDirectory = workingDirectory;
         }
 
-        public static Bitmap GetMinisprite(PBESpecies species, PBEGender gender, bool shiny)
+        private static readonly object _femaleSpriteLookupLockObj = new object();
+        private static readonly List<PBESpecies> _femaleMinispriteLookup = new List<PBESpecies>();
+        private static readonly List<PBESpecies> _femaleSpriteLookup = new List<PBESpecies>();
+        private static bool HasFemaleSprite(PBESpecies species, bool minisprite)
         {
-            ushort speciesID = (ushort)species;
-            uint formID = (uint)species >> 0x10;
-            string sss = speciesID + (formID > 0 ? ("_" + formID) : string.Empty) + (shiny ? "_S" : string.Empty);
-            string genderStr = gender == PBEGender.Female && DoesResourceExist("PKMN.PKMN_" + sss + "_F.png") ? "_F" : string.Empty;
-            return new Bitmap(GetResourceStream("PKMN.PKMN_" + sss + genderStr + ".png"));
+            lock (_femaleSpriteLookupLockObj)
+            {
+                return (minisprite ? _femaleMinispriteLookup : _femaleSpriteLookup).Contains(species);
+            }
+        }
+        public static Bitmap GetMinisprite(PBESpecies species, PBEForm form, PBEGender gender, bool shiny)
+        {
+            string speciesStr = PBEDataUtils.GetNameOfForm(species, form) ?? species.ToString();
+            string genderStr = gender == PBEGender.Female && HasFemaleSprite(species, true) ? "_F" : string.Empty;
+            return new Bitmap(GetResourceStream("PKMN.PKMN_" + speciesStr + (shiny ? "_S" : string.Empty) + genderStr + ".png"));
         }
         public static Stream GetPokemonSpriteStream(PBEPokemon pokemon, bool backSprite)
         {
-            return GetPokemonSpriteStream(pokemon.KnownSpecies, pokemon.KnownShiny, pokemon.KnownGender, pokemon.KnownStatus2.HasFlag(PBEStatus2.Substitute), backSprite);
+            return GetPokemonSpriteStream(pokemon.KnownSpecies, pokemon.KnownForm, pokemon.KnownShiny, pokemon.KnownGender, pokemon.KnownStatus2.HasFlag(PBEStatus2.Substitute), backSprite);
         }
         public static Stream GetPokemonSpriteStream(PBEPokemonShell shell)
         {
-            return GetPokemonSpriteStream(shell.Species, shell.Shiny, shell.Gender, false, false);
+            return GetPokemonSpriteStream(shell.Species, shell.Form, shell.Shiny, shell.Gender, false, false);
         }
-        public static Stream GetPokemonSpriteStream(PBESpecies species, bool shiny, PBEGender gender, bool behindSubstitute, bool backSprite)
+        public static Stream GetPokemonSpriteStream(PBESpecies species, PBEForm form, bool shiny, PBEGender gender, bool behindSubstitute, bool backSprite)
         {
             string orientation = backSprite ? "_B" : "_F";
             if (behindSubstitute)
@@ -82,11 +112,9 @@ namespace Kermalis.PokemonBattleEngineClient.Infrastructure
             }
             else
             {
-                ushort speciesID = (ushort)species;
-                uint formID = (uint)species >> 0x10;
-                string sss = speciesID + (formID > 0 ? ("_" + formID) : string.Empty) + orientation + (shiny ? "_S" : string.Empty);
-                string genderStr = gender == PBEGender.Female && DoesResourceExist("PKMN.PKMN_" + sss + "_F.gif") ? "_F" : string.Empty;
-                return GetResourceStream("PKMN.PKMN_" + sss + genderStr + ".gif");
+                string speciesStr = PBEDataUtils.GetNameOfForm(species, form) ?? species.ToString();
+                string genderStr = gender == PBEGender.Female && HasFemaleSprite(species, false) ? "_F" : string.Empty;
+                return GetResourceStream("PKMN.PKMN_" + speciesStr + orientation + (shiny ? "_S" : string.Empty) + genderStr + ".gif");
             }
         }
 
@@ -94,7 +122,6 @@ namespace Kermalis.PokemonBattleEngineClient.Infrastructure
         {
             return (team.Id == 0 && showEverything0) || (team.Id == 1 && showEverything1);
         }
-
         public static string CustomPokemonToString(PBEPokemon pkmn, bool showEverything0, bool showEverything1)
         {
             var sb = new StringBuilder();
@@ -203,12 +230,12 @@ namespace Kermalis.PokemonBattleEngineClient.Infrastructure
                         AddStatus2(pkmn.KnownStatus2);
                     }
                 }
-                PBEDataUtils.GetStatRange(PBEStat.HP, pkmn.KnownSpecies, pkmn.Level, pkmn.Team.Battle.Settings, out ushort lowHP, out ushort highHP);
-                PBEDataUtils.GetStatRange(PBEStat.Attack, pkmn.KnownSpecies, pkmn.Level, pkmn.Team.Battle.Settings, out ushort lowAttack, out ushort highAttack);
-                PBEDataUtils.GetStatRange(PBEStat.Defense, pkmn.KnownSpecies, pkmn.Level, pkmn.Team.Battle.Settings, out ushort lowDefense, out ushort highDefense);
-                PBEDataUtils.GetStatRange(PBEStat.SpAttack, pkmn.KnownSpecies, pkmn.Level, pkmn.Team.Battle.Settings, out ushort lowSpAttack, out ushort highSpAttack);
-                PBEDataUtils.GetStatRange(PBEStat.SpDefense, pkmn.KnownSpecies, pkmn.Level, pkmn.Team.Battle.Settings, out ushort lowSpDefense, out ushort highSpDefense);
-                PBEDataUtils.GetStatRange(PBEStat.Speed, pkmn.KnownSpecies, pkmn.Level, pkmn.Team.Battle.Settings, out ushort lowSpeed, out ushort highSpeed);
+                PBEDataUtils.GetStatRange(PBEStat.HP, pkmn.KnownSpecies, pkmn.KnownForm, pkmn.Level, pkmn.Team.Battle.Settings, out ushort lowHP, out ushort highHP);
+                PBEDataUtils.GetStatRange(PBEStat.Attack, pkmn.KnownSpecies, pkmn.KnownForm, pkmn.Level, pkmn.Team.Battle.Settings, out ushort lowAttack, out ushort highAttack);
+                PBEDataUtils.GetStatRange(PBEStat.Defense, pkmn.KnownSpecies, pkmn.KnownForm, pkmn.Level, pkmn.Team.Battle.Settings, out ushort lowDefense, out ushort highDefense);
+                PBEDataUtils.GetStatRange(PBEStat.SpAttack, pkmn.KnownSpecies, pkmn.KnownForm, pkmn.Level, pkmn.Team.Battle.Settings, out ushort lowSpAttack, out ushort highSpAttack);
+                PBEDataUtils.GetStatRange(PBEStat.SpDefense, pkmn.KnownSpecies, pkmn.KnownForm, pkmn.Level, pkmn.Team.Battle.Settings, out ushort lowSpDefense, out ushort highSpDefense);
+                PBEDataUtils.GetStatRange(PBEStat.Speed, pkmn.KnownSpecies, pkmn.KnownForm, pkmn.Level, pkmn.Team.Battle.Settings, out ushort lowSpeed, out ushort highSpeed);
                 sb.AppendLine($"Stat range: [HP] {lowHP}-{highHP}, [A] {lowAttack}-{highAttack}, [D] {lowDefense}-{highDefense}, [SA] {lowSpAttack}-{highSpAttack}, [SD] {lowSpDefense}-{highSpDefense}, [S] {lowSpeed}-{highSpeed}, [W] {pkmn.KnownWeight:0.0}");
                 if (pkmn.FieldPosition != PBEFieldPosition.None)
                 {
@@ -216,7 +243,7 @@ namespace Kermalis.PokemonBattleEngineClient.Infrastructure
                 }
                 if (pkmn.KnownAbility == PBEAbility.MAX)
                 {
-                    sb.AppendLine($"Possible abilities: {string.Join(", ", PBEPokemonData.GetData(pkmn.KnownSpecies).Abilities.Select(a => PBELocalizedString.GetAbilityName(a).ToString()))}");
+                    sb.AppendLine($"Possible abilities: {string.Join(", ", PBEPokemonData.GetData(pkmn.KnownSpecies, pkmn.KnownForm).Abilities.Select(a => PBELocalizedString.GetAbilityName(a).ToString()))}");
                 }
                 else
                 {

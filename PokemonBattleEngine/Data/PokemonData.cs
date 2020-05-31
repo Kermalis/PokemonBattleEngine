@@ -1,13 +1,11 @@
 ﻿using Kermalis.PokemonBattleEngine.Utils;
-using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.IO;
 
 namespace Kermalis.PokemonBattleEngine.Data
 {
-    public sealed partial class PBEPokemonData
+    public sealed class PBEPokemonData
     {
         public ReadOnlyCollection<byte> BaseStats { get; }
         public PBEType Type1 { get; }
@@ -23,11 +21,11 @@ namespace Kermalis.PokemonBattleEngine.Data
 
         private PBEPokemonData(byte[] baseStats,
             PBEType type1, PBEType type2, PBEGenderRatio genderRatio, double weight,
-            List<PBESpecies> preEvolutions,
-            List<PBESpecies> evolutions,
-            List<PBEAbility> abilities,
-            List<(PBEMove Move, byte Level, PBEMoveObtainMethod ObtainMethod)> levelUpMoves,
-            List<(PBEMove Move, PBEMoveObtainMethod ObtainMethod)> otherMoves)
+            PBESpecies[] preEvolutions,
+            PBESpecies[] evolutions,
+            PBEAbility[] abilities,
+            (PBEMove Move, byte Level, PBEMoveObtainMethod ObtainMethod)[] levelUpMoves,
+            (PBEMove Move, PBEMoveObtainMethod ObtainMethod)[] otherMoves)
         {
             BaseStats = new ReadOnlyCollection<byte>(baseStats);
             Type1 = type1; Type2 = type2; GenderRatio = genderRatio; Weight = weight;
@@ -57,136 +55,93 @@ namespace Kermalis.PokemonBattleEngine.Data
         public bool ReceivesSTAB(PBEType type)
         {
             // type ArgumentOutOfRangeException will happen in HasType()
-            return type == PBEType.None ? false : HasType(type);
+            return type != PBEType.None && HasType(type);
         }
 
         #region Database Querying
 
         private class SearchResult
         {
-            public uint Id { get; set; }
-            public string Json { get; set; }
+            public ushort Species { get; set; }
+            public byte Form { get; set; }
+            public byte HP { get; set; }
+            public byte Attack { get; set; }
+            public byte Defense { get; set; }
+            public byte SpAttack { get; set; }
+            public byte SpDefense { get; set; }
+            public byte Speed { get; set; }
+            public byte Type1 { get; set; }
+            public byte Type2 { get; set; }
+            public byte GenderRatio { get; set; }
+            public double Weight { get; set; }
+            public string PreEvolutions { get; set; }
+            public string Evolutions { get; set; }
+            public string Abilities { get; set; }
+            public string LevelUpMoves { get; set; }
+            public string OtherMoves { get; set; }
         }
-        public static PBEPokemonData GetData(PBESpecies species)
+        private static readonly char[] _split1Chars = new char[1] { '|' };
+
+        public static PBEPokemonData GetData(PBESpecies species, PBEForm form)
         {
-            if (!Enum.IsDefined(typeof(PBESpecies), species))
+            if (!PBEDataUtils.IsValidForm(species, form, false))
             {
-                throw new ArgumentOutOfRangeException(nameof(species));
+                throw new ArgumentOutOfRangeException(nameof(form));
             }
-            string json = PBEUtils.QueryDatabase<SearchResult>($"SELECT * FROM PokemonData WHERE Id={(uint)species}")[0].Json;
-            using (var reader = new JsonTextReader(new StringReader(json)))
+            List<SearchResult> results = PBEUtils.QueryDatabase<SearchResult>($"SELECT * FROM PokemonData WHERE Species={(ushort)species}");
+            SearchResult result = results[0];
+            foreach (SearchResult r in results)
             {
-                reader.Read(); // {
-                reader.Read(); // "BaseStats":
-                reader.Read(); // [
-                byte[] baseStats = new byte[6];
-                for (int i = 0; i < 6; i++)
+                if (r.Form == (byte)form)
                 {
-                    reader.Read();
-                    baseStats[i] = Convert.ToByte(reader.Value);
+                    result = r;
+                    break;
                 }
-                reader.Read(); // ]
-                reader.Read(); // "Type1":
-                reader.Read();
-                var type1 = (PBEType)Convert.ToByte(reader.Value);
-                reader.Read(); // "Type2":
-                reader.Read();
-                var type2 = (PBEType)Convert.ToByte(reader.Value);
-                reader.Read(); // "GenderRatio":
-                reader.Read();
-                var genderRatio = (PBEGenderRatio)Convert.ToByte(reader.Value);
-                reader.Read(); // "Weight":
-                reader.Read();
-                double weight = Convert.ToDouble(reader.Value);
-                reader.Read(); // "PreEvolutions":
-                reader.Read(); // [
-                var preEvolutions = new List<PBESpecies>();
-                while (true)
-                {
-                    reader.Read();
-                    if (reader.TokenType == JsonToken.Integer)
-                    {
-                        preEvolutions.Add((PBESpecies)Convert.ToUInt32(reader.Value));
-                    }
-                    else if (reader.TokenType == JsonToken.EndArray) // ]
-                    {
-                        break;
-                    }
-                }
-                reader.Read(); // "Evolutions":
-                reader.Read(); // [
-                var evolutions = new List<PBESpecies>();
-                while (true)
-                {
-                    reader.Read();
-                    if (reader.TokenType == JsonToken.Integer)
-                    {
-                        evolutions.Add((PBESpecies)Convert.ToUInt32(reader.Value));
-                    }
-                    else if (reader.TokenType == JsonToken.EndArray) // ]
-                    {
-                        break;
-                    }
-                }
-                reader.Read(); // "Abilities":
-                reader.Read(); // [
-                var abilities = new List<PBEAbility>();
-                while (true)
-                {
-                    reader.Read();
-                    if (reader.TokenType == JsonToken.Integer)
-                    {
-                        abilities.Add((PBEAbility)Convert.ToByte(reader.Value));
-                    }
-                    else if (reader.TokenType == JsonToken.EndArray) // ]
-                    {
-                        break;
-                    }
-                }
-                reader.Read(); // "LevelUpMoves":
-                reader.Read(); // [
-                var levelUpMoves = new List<(PBEMove Move, byte Level, PBEMoveObtainMethod ObtainMethod)>();
-                while (true)
-                {
-                    reader.Read();
-                    if (reader.TokenType == JsonToken.StartArray) // [
-                    {
-                        reader.Read();
-                        var move = (PBEMove)Convert.ToUInt16(reader.Value);
-                        reader.Read();
-                        byte level = Convert.ToByte(reader.Value);
-                        reader.Read();
-                        var method = (PBEMoveObtainMethod)Convert.ToUInt64(reader.Value);
-                        levelUpMoves.Add((move, level, method));
-                        reader.Read(); // ]
-                    }
-                    else if (reader.TokenType == JsonToken.EndArray) // ]
-                    {
-                        break;
-                    }
-                }
-                reader.Read(); // "OtherMoves":
-                reader.Read(); // [
-                var otherMoves = new List<(PBEMove Move, PBEMoveObtainMethod ObtainMethod)>();
-                while (true)
-                {
-                    reader.Read();
-                    if (reader.TokenType == JsonToken.StartArray) // [
-                    {
-                        reader.Read();
-                        var move = (PBEMove)Convert.ToUInt16(reader.Value);
-                        reader.Read();
-                        var method = (PBEMoveObtainMethod)Convert.ToUInt64(reader.Value);
-                        otherMoves.Add((move, method));
-                        reader.Read(); // ]
-                    }
-                    else if (reader.TokenType == JsonToken.EndArray) // ]
-                    {
-                        break;
-                    }
-                }
-                return new PBEPokemonData(baseStats, type1, type2, genderRatio, weight, preEvolutions, evolutions, abilities, levelUpMoves, otherMoves); // TODO: Cache?
             }
+
+            byte[] baseStats = new byte[6] { result.HP, result.Attack, result.Defense, result.SpAttack, result.SpDefense, result.Speed };
+            var type1 = (PBEType)result.Type1;
+            var type2 = (PBEType)result.Type2;
+            var genderRatio = (PBEGenderRatio)result.GenderRatio;
+            double weight = result.Weight;
+
+            string[] split1 = result.PreEvolutions.Split(_split1Chars, StringSplitOptions.RemoveEmptyEntries);
+            var preEvolutions = new PBESpecies[split1.Length];
+            for (int i = 0; i < preEvolutions.Length; i++)
+            {
+                preEvolutions[i] = (PBESpecies)ushort.Parse(split1[i]);
+            }
+
+            split1 = result.Evolutions.Split(_split1Chars, StringSplitOptions.RemoveEmptyEntries);
+            var evolutions = new PBESpecies[split1.Length];
+            for (int i = 0; i < evolutions.Length; i++)
+            {
+                evolutions[i] = (PBESpecies)ushort.Parse(split1[i]);
+            }
+
+            split1 = result.Abilities.Split(_split1Chars, StringSplitOptions.RemoveEmptyEntries);
+            var abilities = new PBEAbility[split1.Length];
+            for (int i = 0; i < abilities.Length; i++)
+            {
+                abilities[i] = (PBEAbility)byte.Parse(split1[i]);
+            }
+
+            split1 = result.LevelUpMoves.Split(_split1Chars, StringSplitOptions.RemoveEmptyEntries);
+            var levelUpMoves = new (PBEMove, byte, PBEMoveObtainMethod)[split1.Length];
+            for (int i = 0; i < levelUpMoves.Length; i++)
+            {
+                string[] split2 = split1[i].Split(',');
+                levelUpMoves[i] = ((PBEMove)ushort.Parse(split2[0]), byte.Parse(split2[1]), (PBEMoveObtainMethod)ulong.Parse(split2[2]));
+            }
+
+            split1 = result.OtherMoves.Split(_split1Chars, StringSplitOptions.RemoveEmptyEntries);
+            var otherMoves = new (PBEMove, PBEMoveObtainMethod)[split1.Length];
+            for (int i = 0; i < otherMoves.Length; i++)
+            {
+                string[] split2 = split1[i].Split(',');
+                otherMoves[i] = ((PBEMove)ushort.Parse(split2[0]), (PBEMoveObtainMethod)ulong.Parse(split2[1]));
+            }
+            return new PBEPokemonData(baseStats, type1, type2, genderRatio, weight, preEvolutions, evolutions, abilities, levelUpMoves, otherMoves); // TODO: Cache
         }
 
         #endregion

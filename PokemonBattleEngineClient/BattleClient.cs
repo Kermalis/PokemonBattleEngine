@@ -746,11 +746,11 @@ namespace Kermalis.PokemonBattleEngineClient
                         pokemon.Speed = pfcp.NewSpeed;
                         pokemon.Ability = pfcp.NewAbility;
                         pokemon.KnownAbility = pfcp.NewKnownAbility;
-                        pokemon.Species = pokemon.KnownSpecies = pfcp.NewSpecies;
+                        pokemon.Form = pokemon.KnownForm = pfcp.NewForm;
                         pokemon.Type1 = pokemon.KnownType1 = pfcp.NewType1;
                         pokemon.Type2 = pokemon.KnownType2 = pfcp.NewType2;
                         pokemon.Weight = pokemon.KnownWeight = pfcp.NewWeight;
-                        if (pfcp.NewSpecies == PBESpecies.Shaymin)
+                        if (pokemon.Species == PBESpecies.Shaymin && pfcp.NewForm == PBEForm.Shaymin)
                         {
                             pokemon.Shaymin_CannotChangeBackToSkyForm = true;
                         }
@@ -859,7 +859,8 @@ namespace Kermalis.PokemonBattleEngineClient
                                     pokemon.KnownNickname = pokemon.DisguisedAsPokemon.Nickname;
                                     pokemon.KnownShiny = pokemon.DisguisedAsPokemon.Shiny;
                                     pokemon.KnownSpecies = pokemon.DisguisedAsPokemon.OriginalSpecies;
-                                    var pData = PBEPokemonData.GetData(pokemon.DisguisedAsPokemon.OriginalSpecies);
+                                    pokemon.KnownForm = pokemon.DisguisedAsPokemon.Form; // TODO: Would it take sky form from a shaymin that reverted?
+                                    var pData = PBEPokemonData.GetData(pokemon.KnownSpecies, pokemon.KnownForm);
                                     pokemon.KnownType1 = pData.Type1;
                                     pokemon.KnownType2 = pData.Type2;
                                 }

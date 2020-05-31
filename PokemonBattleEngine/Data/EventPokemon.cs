@@ -40,27 +40,27 @@ namespace Kermalis.PokemonBattleEngine.Data
                 {
                     new PBEEventPokemon // 5th anniversary egg
                     (
-                        new byte[] { 3 }, PBESpecies.Absol, 5, null, PBEGender.MAX, new PBEAbility[] { PBEAbility.Pressure }, PBEPokemonShell.AllNatures,
+                        new byte[] { 3 }, PBESpecies.Absol, 5, null, PBEGender.MAX, new PBEAbility[] { PBEAbility.Pressure }, PBEDataUtils.AllNatures,
                         new byte?[] { null, null, null, null, null, null }, new PBEMove[] { PBEMove.Scratch, PBEMove.Leer/*, PBEMove.Spite*/, PBEMove.None }
                     ),
                     new PBEEventPokemon // 5th anniversary egg | Pokémon Stamp RS magazine raffle
                     (
-                        new byte[] { 3 }, PBESpecies.Absol, 5, null, PBEGender.MAX, new PBEAbility[] { PBEAbility.Pressure }, PBEPokemonShell.AllNatures,
+                        new byte[] { 3 }, PBESpecies.Absol, 5, null, PBEGender.MAX, new PBEAbility[] { PBEAbility.Pressure }, PBEDataUtils.AllNatures,
                         new byte?[] { null, null, null, null, null, null }, new PBEMove[] { PBEMove.Scratch, PBEMove.Leer/*, PBEMove.Wish*/, PBEMove.None }
                     ),
                     new PBEEventPokemon // Pokémon Box promotion
                     (
-                        new byte[] { 3 }, PBESpecies.Absol, 35, false, PBEGender.MAX, new PBEAbility[] { PBEAbility.Pressure }, PBEPokemonShell.AllNatures,
+                        new byte[] { 3 }, PBESpecies.Absol, 35, false, PBEGender.MAX, new PBEAbility[] { PBEAbility.Pressure }, PBEDataUtils.AllNatures,
                         new byte?[] { null, null, null, null, null, null }, new PBEMove[] { /*PBEMove.RazorWind, */PBEMove.Bite, PBEMove.SwordsDance/*, PBEMove.Spite*/ }
                     ),
                     new PBEEventPokemon // Pokémon Box promotion
                     (
-                        new byte[] { 3 }, PBESpecies.Absol, 35, false, PBEGender.MAX, new PBEAbility[] { PBEAbility.Pressure }, PBEPokemonShell.AllNatures,
+                        new byte[] { 3 }, PBESpecies.Absol, 35, false, PBEGender.MAX, new PBEAbility[] { PBEAbility.Pressure }, PBEDataUtils.AllNatures,
                         new byte?[] { null, null, null, null, null, null }, new PBEMove[] { /*PBEMove.RazorWind, */PBEMove.Bite, PBEMove.SwordsDance/*, PBEMove.Wish*/ }
                     ),
                     new PBEEventPokemon // Journey across America | Party of the decade
                     (
-                        new byte[] { 3 }, PBESpecies.Absol, 70, false, PBEGender.MAX, new PBEAbility[] { PBEAbility.Pressure }, PBEPokemonShell.AllNatures,
+                        new byte[] { 3 }, PBESpecies.Absol, 70, false, PBEGender.MAX, new PBEAbility[] { PBEAbility.Pressure }, PBEDataUtils.AllNatures,
                         new byte?[] { null, null, null, null, null, null }, new PBEMove[] { PBEMove.DoubleTeam, PBEMove.Slash/*, PBEMove.FutureSight, PBEMove.PerishSong*/ }
                     )
                 })
@@ -71,12 +71,12 @@ namespace Kermalis.PokemonBattleEngine.Data
                 {
                     new PBEEventPokemon // Jewel of Life promotion
                     (
-                        new byte[] { 4 }, PBESpecies.Arceus, 100, false, PBEGender.Genderless, new PBEAbility[] { PBEAbility.Multitype }, PBEPokemonShell.AllNatures,
+                        new byte[] { 4 }, PBESpecies.Arceus, 100, false, PBEGender.Genderless, new PBEAbility[] { PBEAbility.Multitype }, PBEDataUtils.AllNatures,
                         new byte?[] { null, null, null, null, null, null }, new PBEMove[] { PBEMove.Judgment, /*PBEMove.RoarOfTime, */PBEMove.SpacialRend, PBEMove.ShadowForce }
                     ),
                     new PBEEventPokemon // Global Link promotion
                     (
-                        new byte[] { 5 }, PBESpecies.Arceus, 100, false, PBEGender.Genderless, new PBEAbility[] { PBEAbility.Multitype }, PBEPokemonShell.AllNatures,
+                        new byte[] { 5 }, PBESpecies.Arceus, 100, false, PBEGender.Genderless, new PBEAbility[] { PBEAbility.Multitype }, PBEDataUtils.AllNatures,
                         new byte?[] { null, null, null, null, null, null }, new PBEMove[] { PBEMove.Recover/*, PBEMove.HyperBeam, PBEMove.PerishSong*/, PBEMove.Judgment }
                     )
                 })
@@ -108,7 +108,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                     ),
                     new PBEEventPokemon // Pokémon Searcher BW promotion
                     (
-                        new byte[] { 5 }, PBESpecies.Axew, 10, false, PBEGender.MAX, new PBEAbility[] { PBEAbility.MoldBreaker }, PBEPokemonShell.AllNatures,
+                        new byte[] { 5 }, PBESpecies.Axew, 10, false, PBEGender.MAX, new PBEAbility[] { PBEAbility.MoldBreaker }, PBEDataUtils.AllNatures,
                         new byte?[] { null, null, null, null, null, null }, new PBEMove[] { PBEMove.DragonRage, PBEMove.Return/*, PBEMove.Endure*/, PBEMove.DragonClaw }
                     ),
                     new PBEEventPokemon // Best Wishes Iris's Axew
@@ -124,7 +124,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                 {
                     new PBEEventPokemon // PCNY
                     (
-                        new byte[] { 3 }, PBESpecies.Azurill, 5, false, PBEGender.MAX, new PBEAbility[] { PBEAbility.HugePower, PBEAbility.ThickFat }, PBEPokemonShell.AllNatures,
+                        new byte[] { 3 }, PBESpecies.Azurill, 5, false, PBEGender.MAX, new PBEAbility[] { PBEAbility.HugePower, PBEAbility.ThickFat }, PBEDataUtils.AllNatures,
                         new byte?[] { null, null, null, null, null, null }, new PBEMove[] { PBEMove.Splash, PBEMove.Charm, PBEMove.None, PBEMove.None }
                     )
                 })
@@ -135,7 +135,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                 {
                     new PBEEventPokemon // Journey across America | Party of the decade
                     (
-                        new byte[] { 3 }, PBESpecies.Blastoise, 70, false, PBEGender.MAX, new PBEAbility[] { PBEAbility.Torrent }, PBEPokemonShell.AllNatures,
+                        new byte[] { 3 }, PBESpecies.Blastoise, 70, false, PBEGender.MAX, new PBEAbility[] { PBEAbility.Torrent }, PBEDataUtils.AllNatures,
                         new byte?[] { null, null, null, null, null, null }, new PBEMove[] { PBEMove.Protect, PBEMove.RainDance/*, PBEMove.SkullBash*/, PBEMove.HydroPump }
                     )
                 })
@@ -146,12 +146,12 @@ namespace Kermalis.PokemonBattleEngine.Data
                 {
                     new PBEEventPokemon // Journey across America | Party of the decade
                     (
-                        new byte[] { 3 }, PBESpecies.Blaziken, 70, false, PBEGender.MAX, new PBEAbility[] { PBEAbility.Blaze }, PBEPokemonShell.AllNatures,
+                        new byte[] { 3 }, PBESpecies.Blaziken, 70, false, PBEGender.MAX, new PBEAbility[] { PBEAbility.Blaze }, PBEDataUtils.AllNatures,
                         new byte?[] { null, null, null, null, null, null }, new PBEMove[] { PBEMove.BlazeKick, PBEMove.Slash/*, PBEMove.MirrorMove*/, PBEMove.SkyUppercut }
                     ),
                     new PBEEventPokemon // Train station
                     (
-                        new byte[] { 5 }, PBESpecies.Blaziken, 50, null, PBEGender.MAX, new PBEAbility[] { PBEAbility.Blaze }, PBEPokemonShell.AllNatures,
+                        new byte[] { 5 }, PBESpecies.Blaziken, 50, null, PBEGender.MAX, new PBEAbility[] { PBEAbility.Blaze }, PBEDataUtils.AllNatures,
                         new byte?[] { null, null, null, null, null, null }, new PBEMove[] { PBEMove.FlareBlitz, /*PBEMove.HiJumpKick, */PBEMove.ThunderPunch, PBEMove.StoneEdge }
                     )
                 })
@@ -162,22 +162,22 @@ namespace Kermalis.PokemonBattleEngine.Data
                 {
                     new PBEEventPokemon // Gather more Pokémon
                     (
-                        new byte[] { 3 }, PBESpecies.Bulbasaur, 10, false, PBEGender.MAX, new PBEAbility[] { PBEAbility.Overgrow }, PBEPokemonShell.AllNatures,
+                        new byte[] { 3 }, PBESpecies.Bulbasaur, 10, false, PBEGender.MAX, new PBEAbility[] { PBEAbility.Overgrow }, PBEDataUtils.AllNatures,
                         new byte?[] { null, null, null, null, null, null }, new PBEMove[] { PBEMove.Tackle, PBEMove.Growl, PBEMove.LeechSeed, PBEMove.VineWhip }
                     ),
                     new PBEEventPokemon // Journey across America
                     (
-                        new byte[] { 3 }, PBESpecies.Bulbasaur, 70, false, PBEGender.MAX, new PBEAbility[] { PBEAbility.Overgrow }, PBEPokemonShell.AllNatures,
+                        new byte[] { 3 }, PBESpecies.Bulbasaur, 70, false, PBEGender.MAX, new PBEAbility[] { PBEAbility.Overgrow }, PBEDataUtils.AllNatures,
                         new byte?[] { null, null, null, null, null, null }, new PBEMove[] { PBEMove.SweetScent, PBEMove.Growth, PBEMove.Synthesis/*, PBEMove.SolarBeam*/ }
                     ),
                     new PBEEventPokemon // Kanto starter egg
                     (
-                        new byte[] { 5 }, PBESpecies.Bulbasaur, 1, null, PBEGender.MAX, new PBEAbility[] { PBEAbility.Overgrow }, PBEPokemonShell.AllNatures,
+                        new byte[] { 5 }, PBESpecies.Bulbasaur, 1, null, PBEGender.MAX, new PBEAbility[] { PBEAbility.Overgrow }, PBEDataUtils.AllNatures,
                         new byte?[] { null, null, 31, null, null, null }, new PBEMove[] { /*PBEMove.FalseSwipe, PBEMove.Block, PBEMove.FrenzyPlant, */PBEMove.WeatherBall }
                     ),
                     new PBEEventPokemon // Global Link promotion
                     (
-                        new byte[] { 5 }, PBESpecies.Bulbasaur, 10, false, PBEGender.Male, new PBEAbility[] { PBEAbility.Chlorophyll }, PBEPokemonShell.AllNatures,
+                        new byte[] { 5 }, PBESpecies.Bulbasaur, 10, false, PBEGender.Male, new PBEAbility[] { PBEAbility.Chlorophyll }, PBEDataUtils.AllNatures,
                         new byte?[] { null, null, null, null, null, null }, new PBEMove[] { PBEMove.Tackle, PBEMove.Growl, PBEMove.LeechSeed, PBEMove.VineWhip }
                     )
                 })
@@ -199,12 +199,12 @@ namespace Kermalis.PokemonBattleEngine.Data
                 {
                     new PBEEventPokemon // PCNY
                     (
-                        new byte[] { 3 }, PBESpecies.Chansey, 5, null, PBEGender.Female, new PBEAbility[] { PBEAbility.NaturalCure, PBEAbility.SereneGrace }, PBEPokemonShell.AllNatures,
+                        new byte[] { 3 }, PBESpecies.Chansey, 5, null, PBEGender.Female, new PBEAbility[] { PBEAbility.NaturalCure, PBEAbility.SereneGrace }, PBEDataUtils.AllNatures,
                         new byte?[] { null, null, null, null, null, null }, new PBEMove[] { PBEMove.SweetScent/*, PBEMove.Wish*/, PBEMove.None, PBEMove.None }
                     ),
                     new PBEEventPokemon // Gather more Pokémon
                     (
-                        new byte[] { 3 }, PBESpecies.Chansey, 10, false, PBEGender.Female, new PBEAbility[] { PBEAbility.NaturalCure, PBEAbility.SereneGrace }, PBEPokemonShell.AllNatures,
+                        new byte[] { 3 }, PBESpecies.Chansey, 10, false, PBEGender.Female, new PBEAbility[] { PBEAbility.NaturalCure, PBEAbility.SereneGrace }, PBEDataUtils.AllNatures,
                         new byte?[] { null, null, null, null, null, null }, new PBEMove[] { PBEMove.Pound, PBEMove.Growl, PBEMove.TailWhip/*, PBEMove.Refresh*/ }
                     )
                 })
@@ -215,7 +215,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                 {
                     new PBEEventPokemon // Journey across America | Top 10 distribution | Party of the decade
                     (
-                        new byte[] { 3 }, PBESpecies.Charizard, 70, false, PBEGender.MAX, new PBEAbility[] { PBEAbility.Blaze }, PBEPokemonShell.AllNatures,
+                        new byte[] { 3 }, PBESpecies.Charizard, 70, false, PBEGender.MAX, new PBEAbility[] { PBEAbility.Blaze }, PBEDataUtils.AllNatures,
                         new byte?[] { null, null, null, null, null, null }, new PBEMove[] { PBEMove.WingAttack, PBEMove.Slash, PBEMove.DragonRage/*, PBEMove.FireSpin*/ }
                     )
                 })
@@ -226,7 +226,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                 {
                     new PBEEventPokemon // Gather more Pokémon
                     (
-                        new byte[] { 3 }, PBESpecies.Charmander, 10, false, PBEGender.MAX, new PBEAbility[] { PBEAbility.Blaze }, PBEPokemonShell.AllNatures,
+                        new byte[] { 3 }, PBESpecies.Charmander, 10, false, PBEGender.MAX, new PBEAbility[] { PBEAbility.Blaze }, PBEDataUtils.AllNatures,
                         new byte?[] { null, null, null, null, null, null }, new PBEMove[] { PBEMove.Scratch, PBEMove.Growl, PBEMove.Ember, PBEMove.None }
                     ),
                     new PBEEventPokemon // 2007 birthday | 2008 birthday | 2009 birthday | 2010 birthday
@@ -236,12 +236,12 @@ namespace Kermalis.PokemonBattleEngine.Data
                     ),
                     new PBEEventPokemon // Kanto starter eggs
                     (
-                        new byte[] { 5 }, PBESpecies.Charmander, 1, null, PBEGender.MAX, new PBEAbility[] { PBEAbility.Blaze }, PBEPokemonShell.AllNatures,
+                        new byte[] { 5 }, PBESpecies.Charmander, 1, null, PBEGender.MAX, new PBEAbility[] { PBEAbility.Blaze }, PBEDataUtils.AllNatures,
                         new byte?[] { null, null, null, null, null, 31 }, new PBEMove[] { /*PBEMove.FalseSwipe, PBEMove.Block, PBEMove.BlastBurn, */PBEMove.Acrobatics }
                     ),
                     new PBEEventPokemon // Global Link promotion
                     (
-                        new byte[] { 5 }, PBESpecies.Charmander, 10, false, PBEGender.Male, new PBEAbility[] { PBEAbility.SolarPower }, PBEPokemonShell.AllNatures,
+                        new byte[] { 5 }, PBESpecies.Charmander, 10, false, PBEGender.Male, new PBEAbility[] { PBEAbility.SolarPower }, PBEDataUtils.AllNatures,
                         new byte?[] { null, null, null, null, null, null }, new PBEMove[] { PBEMove.Scratch, PBEMove.Growl, PBEMove.Ember, PBEMove.SmokeScreen }
                     )
                 })
@@ -257,12 +257,12 @@ namespace Kermalis.PokemonBattleEngine.Data
                     ),
                     new PBEEventPokemon // Global Link promotion
                     (
-                        new byte[] { 5 }, PBESpecies.Chimchar, 10, false, PBEGender.Male, new PBEAbility[] { PBEAbility.IronFist }, PBEPokemonShell.AllNatures,
+                        new byte[] { 5 }, PBESpecies.Chimchar, 10, false, PBEGender.Male, new PBEAbility[] { PBEAbility.IronFist }, PBEDataUtils.AllNatures,
                         new byte?[] { null, null, null, null, null, null }, new PBEMove[] { PBEMove.Scratch, PBEMove.Leer, PBEMove.Ember/*, PBEMove.Taunt*/ }
                     ),
                     new PBEEventPokemon // Global Link promotion
                     (
-                        new byte[] { 5 }, PBESpecies.Chimchar, 10, false, PBEGender.Male, new PBEAbility[] { PBEAbility.IronFist }, PBEPokemonShell.AllNatures,
+                        new byte[] { 5 }, PBESpecies.Chimchar, 10, false, PBEGender.Male, new PBEAbility[] { PBEAbility.IronFist }, PBEDataUtils.AllNatures,
                         new byte?[] { null, null, null, null, null, null }, new PBEMove[] { PBEMove.Leer, PBEMove.Ember/*, PBEMove.Taunt, PBEMove.FakeOut*/ }
                     )
                 })
@@ -273,7 +273,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                 {
                     new PBEEventPokemon // PCNY
                     (
-                        new byte[] { 3 }, PBESpecies.Cradily, 40, false, PBEGender.MAX, new PBEAbility[] { PBEAbility.SuctionCups }, PBEPokemonShell.AllNatures,
+                        new byte[] { 3 }, PBESpecies.Cradily, 40, false, PBEGender.MAX, new PBEAbility[] { PBEAbility.SuctionCups }, PBEDataUtils.AllNatures,
                         new byte?[] { null, null, null, null, null, null }, new PBEMove[] { PBEMove.Acid/*, PBEMove.Ingrain*/, PBEMove.ConfuseRay, PBEMove.Amnesia }
                     )
                 })
@@ -306,7 +306,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                 {
                     new PBEEventPokemon // Pokémon Smash! Cubchoo
                     (
-                        new byte[] { 5 }, PBESpecies.Cubchoo, 15, false, PBEGender.MAX, new PBEAbility[] { PBEAbility.SnowCloak }, PBEPokemonShell.AllNatures,
+                        new byte[] { 5 }, PBESpecies.Cubchoo, 15, false, PBEGender.MAX, new PBEAbility[] { PBEAbility.SnowCloak }, PBEDataUtils.AllNatures,
                         new byte?[] { null, null, null, null, null, null }, new PBEMove[] { PBEMove.PowderSnow, PBEMove.Growl/*, PBEMove.Bide*/, PBEMove.IcyWind }
                     )
                 })
@@ -317,17 +317,17 @@ namespace Kermalis.PokemonBattleEngine.Data
                 {
                     new PBEEventPokemon // The Rise of Darkrai promotion
                     (
-                        new byte[] { 4 }, PBESpecies.Darkrai, 50, false, PBEGender.Genderless, new PBEAbility[] { PBEAbility.BadDreams }, PBEPokemonShell.AllNatures,
+                        new byte[] { 4 }, PBESpecies.Darkrai, 50, false, PBEGender.Genderless, new PBEAbility[] { PBEAbility.BadDreams }, PBEDataUtils.AllNatures,
                         new byte?[] { null, null, null, null, null, null }, new PBEMove[] { /*PBEMove.RoarOfTime, */PBEMove.SpacialRend/*, PBEMove.Nightmare*/, PBEMove.Hypnosis }
                     ),
                     new PBEEventPokemon // Almia Darkrai
                     (
-                        new byte[] { 4 }, PBESpecies.Darkrai, 50, false, PBEGender.Genderless, new PBEAbility[] { PBEAbility.BadDreams }, PBEPokemonShell.AllNatures,
+                        new byte[] { 4 }, PBESpecies.Darkrai, 50, false, PBEGender.Genderless, new PBEAbility[] { PBEAbility.BadDreams }, PBEDataUtils.AllNatures,
                         new byte?[] { null, null, null, null, null, null }, new PBEMove[] { PBEMove.DarkVoid, PBEMove.DarkPulse, PBEMove.ShadowBall, PBEMove.DoubleTeam }
                     ),
                     new PBEEventPokemon // Winter 2010 | Victini movie promotions | Winter 2011 | May 2012
                     (
-                        new byte[] { 5 }, PBESpecies.Darkrai, 50, false, PBEGender.Genderless, new PBEAbility[] { PBEAbility.BadDreams }, PBEPokemonShell.AllNatures,
+                        new byte[] { 5 }, PBESpecies.Darkrai, 50, false, PBEGender.Genderless, new PBEAbility[] { PBEAbility.BadDreams }, PBEDataUtils.AllNatures,
                         new byte?[] { null, null, null, null, null, null }, new PBEMove[] { PBEMove.DarkVoid, PBEMove.OminousWind, PBEMove.FaintAttack/*, PBEMove.Nightmare*/ }
                     )
                 })
@@ -338,7 +338,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                 {
                     new PBEEventPokemon // Year of the dragon
                     (
-                        new byte[] { 5 }, PBESpecies.Deino, 1, true, PBEGender.MAX, new PBEAbility[] { PBEAbility.Hustle }, PBEPokemonShell.AllNatures,
+                        new byte[] { 5 }, PBESpecies.Deino, 1, true, PBEGender.MAX, new PBEAbility[] { PBEAbility.Hustle }, PBEDataUtils.AllNatures,
                         new byte?[] { null, null, null, null, null, null }, new PBEMove[] { PBEMove.Tackle, PBEMove.DragonRage, PBEMove.None, PBEMove.None }
                     )
                 })
@@ -349,7 +349,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                 {
                     new PBEEventPokemon // 2013 shiny creation trio
                     (
-                        new byte[] { 5 }, PBESpecies.Dialga, 100, true, PBEGender.Genderless, new PBEAbility[] { PBEAbility.Pressure }, PBEPokemonShell.AllNatures,
+                        new byte[] { 5 }, PBESpecies.Dialga, 100, true, PBEGender.Genderless, new PBEAbility[] { PBEAbility.Pressure }, PBEDataUtils.AllNatures,
                         new byte?[] { null, null, null, null, null, null }, new PBEMove[] { PBEMove.DragonPulse, PBEMove.DracoMeteor/*, PBEMove.RoarOfTime*/, PBEMove.AuraSphere }
                     )
                 })
@@ -360,7 +360,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                 {
                     new PBEEventPokemon // Year of the dragon
                     (
-                        new byte[] { 5 }, PBESpecies.Druddigon, 1, true, PBEGender.MAX, new PBEAbility[] { PBEAbility.RoughSkin, PBEAbility.SheerForce }, PBEPokemonShell.AllNatures,
+                        new byte[] { 5 }, PBESpecies.Druddigon, 1, true, PBEGender.MAX, new PBEAbility[] { PBEAbility.RoughSkin, PBEAbility.SheerForce }, PBEDataUtils.AllNatures,
                         new byte?[] { null, null, null, null, null, null }, new PBEMove[] { PBEMove.Leer, PBEMove.Scratch, PBEMove.None, PBEMove.None }
                     )
                 })
@@ -392,7 +392,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                 {
                     new PBEEventPokemon // Pokémon Center 15th anniversary
                     (
-                        new byte[] { 5 }, PBESpecies.Emboar, 100, false, PBEGender.Male, new PBEAbility[] { PBEAbility.Blaze }, PBEPokemonShell.AllNatures,
+                        new byte[] { 5 }, PBESpecies.Emboar, 100, false, PBEGender.Male, new PBEAbility[] { PBEAbility.Blaze }, PBEDataUtils.AllNatures,
                         new byte?[] { null, null, null, null, null, null }, new PBEMove[] { PBEMove.FlareBlitz, PBEMove.HammerArm, PBEMove.WildCharge, PBEMove.HeadSmash }
                     )
                 })
@@ -403,7 +403,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                 {
                     new PBEEventPokemon // Pokémon Center 15th anniversary
                     (
-                        new byte[] { 5 }, PBESpecies.Empoleon, 100, false, PBEGender.Male, new PBEAbility[] { PBEAbility.Torrent }, PBEPokemonShell.AllNatures,
+                        new byte[] { 5 }, PBESpecies.Empoleon, 100, false, PBEGender.Male, new PBEAbility[] { PBEAbility.Torrent }, PBEDataUtils.AllNatures,
                         new byte?[] { null, null, null, null, null, null }, new PBEMove[] { PBEMove.HydroPump, PBEMove.IceBeam, PBEMove.AquaJet, PBEMove.GrassKnot }
                     )
                 })
@@ -414,12 +414,12 @@ namespace Kermalis.PokemonBattleEngine.Data
                 {
                     new PBEEventPokemon // Journey across America | Party of the decade
                     (
-                        new byte[] { 3 }, PBESpecies.Espeon, 70, false, PBEGender.MAX, new PBEAbility[] { PBEAbility.Synchronize }, PBEPokemonShell.AllNatures,
+                        new byte[] { 3 }, PBESpecies.Espeon, 70, false, PBEGender.MAX, new PBEAbility[] { PBEAbility.Synchronize }, PBEDataUtils.AllNatures,
                         new byte?[] { null, null, null, null, null, null }, new PBEMove[] { PBEMove.Psybeam, PBEMove.PsychUp, PBEMove.Psychic, PBEMove.MorningSun }
                     ),
                     new PBEEventPokemon // Global Link promotion
                     (
-                        new byte[] { 5 }, PBESpecies.Espeon, 10, false, PBEGender.Male, new PBEAbility[] { PBEAbility.MagicBounce }, PBEPokemonShell.AllNatures,
+                        new byte[] { 5 }, PBESpecies.Espeon, 10, false, PBEGender.Male, new PBEAbility[] { PBEAbility.MagicBounce }, PBEDataUtils.AllNatures,
                         new byte?[] { null, null, null, null, null, null }, new PBEMove[] { PBEMove.TailWhip, PBEMove.Tackle, PBEMove.HelpingHand, PBEMove.SandAttack }
                     )
                 })
@@ -430,7 +430,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                 {
                     new PBEEventPokemon // PCNY
                     (
-                        new byte[] { 3 }, PBESpecies.Farfetchd, 5, null, PBEGender.MAX, new PBEAbility[] { PBEAbility.InnerFocus, PBEAbility.KeenEye }, PBEPokemonShell.AllNatures,
+                        new byte[] { 3 }, PBESpecies.Farfetchd, 5, null, PBEGender.MAX, new PBEAbility[] { PBEAbility.InnerFocus, PBEAbility.KeenEye }, PBEDataUtils.AllNatures,
                         new byte?[] { null, null, null, null, null, null }, new PBEMove[] { /*PBEMove.Yawn, PBEMove.Wish, */PBEMove.None, PBEMove.None }
                     )
                 })
@@ -441,7 +441,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                 {
                     new PBEEventPokemon // Global Link promotion
                     (
-                        new byte[] { 5 }, PBESpecies.Flareon, 10, false, PBEGender.Male, new PBEAbility[] { PBEAbility.Guts }, PBEPokemonShell.AllNatures,
+                        new byte[] { 5 }, PBESpecies.Flareon, 10, false, PBEGender.Male, new PBEAbility[] { PBEAbility.Guts }, PBEDataUtils.AllNatures,
                         new byte?[] { null, null, null, null, null, null }, new PBEMove[] { PBEMove.TailWhip, PBEMove.Tackle, PBEMove.HelpingHand, PBEMove.SandAttack }
                     )
                 })
@@ -452,12 +452,12 @@ namespace Kermalis.PokemonBattleEngine.Data
                 {
                     new PBEEventPokemon // Strongest class
                     (
-                        new byte[] { 5 }, PBESpecies.Garchomp, 100, false, PBEGender.Male, new PBEAbility[] { PBEAbility.SandVeil }, PBEPokemonShell.AllNatures,
+                        new byte[] { 5 }, PBESpecies.Garchomp, 100, false, PBEGender.Male, new PBEAbility[] { PBEAbility.SandVeil }, PBEDataUtils.AllNatures,
                         new byte?[] { null, null, null, null, null, null }, new PBEMove[] { /*PBEMove.Outrage, */PBEMove.Earthquake, PBEMove.SwordsDance, PBEMove.StoneEdge }
                     ),
                     new PBEEventPokemon // Global Link promotion
                     (
-                        new byte[] { 5 }, PBESpecies.Garchomp, 48, false, PBEGender.Male, new PBEAbility[] { PBEAbility.RoughSkin }, PBEPokemonShell.AllNatures,
+                        new byte[] { 5 }, PBESpecies.Garchomp, 48, false, PBEGender.Male, new PBEAbility[] { PBEAbility.RoughSkin }, PBEDataUtils.AllNatures,
                         new byte?[] { null, null, null, null, null, null }, new PBEMove[] { PBEMove.Slash, PBEMove.DragonClaw, PBEMove.Dig, PBEMove.Crunch }
                     )
                 })
@@ -468,7 +468,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                 {
                     new PBEEventPokemon // Plasma Genesect
                     (
-                        new byte[] { 5 }, PBESpecies.Genesect, 50, false, PBEGender.Genderless, new PBEAbility[] { PBEAbility.Download }, PBEPokemonShell.AllNatures,
+                        new byte[] { 5 }, PBESpecies.Genesect, 50, false, PBEGender.Genderless, new PBEAbility[] { PBEAbility.Download }, PBEDataUtils.AllNatures,
                         new byte?[] { null, null, null, null, null, null }, new PBEMove[] { PBEMove.TechnoBlast, PBEMove.MagnetBomb/*, PBEMove.SolarBeam*/, PBEMove.SignalBeam }
                     ),
                     new PBEEventPokemon // Genesect movie promotion
@@ -484,7 +484,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                 {
                     new PBEEventPokemon // 2013 shiny creation trio
                     (
-                        new byte[] { 5 }, PBESpecies.Giratina, 100, true, PBEGender.Genderless, new PBEAbility[] { PBEAbility.Pressure }, PBEPokemonShell.AllNatures,
+                        new byte[] { 5 }, PBESpecies.Giratina, 100, true, PBEGender.Genderless, new PBEAbility[] { PBEAbility.Pressure }, PBEDataUtils.AllNatures,
                         new byte?[] { null, null, null, null, null, null }, new PBEMove[] { PBEMove.DragonPulse, PBEMove.DragonClaw, PBEMove.AuraSphere, PBEMove.ShadowForce }
                     )
                 })
@@ -495,7 +495,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                 {
                     new PBEEventPokemon // Global Link promotion
                     (
-                        new byte[] { 5 }, PBESpecies.Glaceon, 10, false, PBEGender.Male, new PBEAbility[] { PBEAbility.IceBody }, PBEPokemonShell.AllNatures,
+                        new byte[] { 5 }, PBESpecies.Glaceon, 10, false, PBEGender.Male, new PBEAbility[] { PBEAbility.IceBody }, PBEDataUtils.AllNatures,
                         new byte?[] { null, null, null, null, null, null }, new PBEMove[] { PBEMove.TailWhip, PBEMove.Tackle, PBEMove.HelpingHand, PBEMove.SandAttack }
                     )
                 })
@@ -506,7 +506,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                 {
                     new PBEEventPokemon // Victini movies promotion
                     (
-                        new byte[] { 5 }, PBESpecies.Golurk, 70, true, PBEGender.Genderless, new PBEAbility[] { PBEAbility.IronFist }, PBEPokemonShell.AllNatures,
+                        new byte[] { 5 }, PBESpecies.Golurk, 70, true, PBEGender.Genderless, new PBEAbility[] { PBEAbility.IronFist }, PBEDataUtils.AllNatures,
                         new byte?[] { null, null, null, null, null, null }, new PBEMove[] { PBEMove.ShadowPunch/*, PBEMove.HyperBeam, PBEMove.GyroBall*/, PBEMove.HammerArm }
                     )
                 })
@@ -517,7 +517,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                 {
                     new PBEEventPokemon // PCNY
                     (
-                        new byte[] { 3 }, PBESpecies.Gorebyss, 20, false, PBEGender.MAX, new PBEAbility[] { PBEAbility.SwiftSwim }, PBEPokemonShell.AllNatures,
+                        new byte[] { 3 }, PBESpecies.Gorebyss, 20, false, PBEGender.MAX, new PBEAbility[] { PBEAbility.SwiftSwim }, PBEDataUtils.AllNatures,
                         new byte?[] { null, null, null, null, null, null }, new PBEMove[] { /*PBEMove.Whirlpool, */PBEMove.Confusion, PBEMove.Agility, PBEMove.None }
                     )
                 })
@@ -539,7 +539,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                 {
                     new PBEEventPokemon // PCNY
                     (
-                        new byte[] { 3 }, PBESpecies.Huntail, 20, false, PBEGender.MAX, new PBEAbility[] { PBEAbility.SwiftSwim }, PBEPokemonShell.AllNatures,
+                        new byte[] { 3 }, PBESpecies.Huntail, 20, false, PBEGender.MAX, new PBEAbility[] { PBEAbility.SwiftSwim }, PBEDataUtils.AllNatures,
                         new byte?[] { null, null, null, null, null, null }, new PBEMove[] { /*PBEMove.Whirlpool, */PBEMove.Bite, PBEMove.Screech, PBEMove.None }
                     )
                 })
@@ -550,7 +550,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                 {
                     new PBEEventPokemon // Victini movies promotion
                     (
-                        new byte[] { 5 }, PBESpecies.Hydreigon, 70, true, PBEGender.Male, new PBEAbility[] { PBEAbility.Levitate }, PBEPokemonShell.AllNatures,
+                        new byte[] { 5 }, PBESpecies.Hydreigon, 70, true, PBEGender.Male, new PBEAbility[] { PBEAbility.Levitate }, PBEDataUtils.AllNatures,
                         new byte?[] { null, null, null, null, null, null }, new PBEMove[] { PBEMove.HyperVoice, PBEMove.DragonBreath, PBEMove.Flamethrower, PBEMove.FocusBlast }
                     )
                 })
@@ -561,7 +561,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                 {
                     new PBEEventPokemon // Pokémon Center 15th anniversary
                     (
-                        new byte[] { 5 }, PBESpecies.Infernape, 100, false, PBEGender.Male, new PBEAbility[] { PBEAbility.Blaze }, PBEPokemonShell.AllNatures,
+                        new byte[] { 5 }, PBESpecies.Infernape, 100, false, PBEGender.Male, new PBEAbility[] { PBEAbility.Blaze }, PBEDataUtils.AllNatures,
                         new byte?[] { null, null, null, null, null, null }, new PBEMove[] { PBEMove.FireBlast, PBEMove.CloseCombat/*, PBEMove.Uturn*/, PBEMove.GrassKnot }
                     )
                 })
@@ -572,37 +572,37 @@ namespace Kermalis.PokemonBattleEngine.Data
                 {
                     new PBEEventPokemon // Jirachi Wish Maker promotion | Wishmaker Jirachi | Channel Jirachi | 2004 Jirachi | 2005 Jirachi | 2006 Jirachi | 2007 Jirachi | 2008 Jirachi | 2010 (Korea) Jirachi
                     (
-                        new byte[] { 3, 4 }, PBESpecies.Jirachi, 5, null, PBEGender.Genderless, new PBEAbility[] { PBEAbility.SereneGrace }, PBEPokemonShell.AllNatures,
+                        new byte[] { 3, 4 }, PBESpecies.Jirachi, 5, null, PBEGender.Genderless, new PBEAbility[] { PBEAbility.SereneGrace }, PBEDataUtils.AllNatures,
                         new byte?[] { null, null, null, null, null, null }, new PBEMove[] { /*PBEMove.Wish, */PBEMove.Confusion, PBEMove.Rest, PBEMove.None }
                     ),
                     new PBEEventPokemon // PokéPark Jirachi
                     (
-                        new byte[] { 3 }, PBESpecies.Jirachi, 30, false, PBEGender.Genderless, new PBEAbility[] { PBEAbility.SereneGrace }, PBEPokemonShell.AllNatures,
+                        new byte[] { 3 }, PBESpecies.Jirachi, 30, false, PBEGender.Genderless, new PBEAbility[] { PBEAbility.SereneGrace }, PBEDataUtils.AllNatures,
                         new byte?[] { null, null, null, null, null, null }, new PBEMove[] { /*PBEMove.Wish, */PBEMove.Psychic, PBEMove.HelpingHand, PBEMove.Rest }
                     ),
                     new PBEEventPokemon // 2009 Jirachi | 2010 (rest of the world) Jirachi
                     (
-                        new byte[] { 4 }, PBESpecies.Jirachi, 5, false, PBEGender.Genderless, new PBEAbility[] { PBEAbility.SereneGrace }, PBEPokemonShell.AllNatures,
+                        new byte[] { 4 }, PBESpecies.Jirachi, 5, false, PBEGender.Genderless, new PBEAbility[] { PBEAbility.SereneGrace }, PBEDataUtils.AllNatures,
                         new byte?[] { null, null, null, null, null, null }, new PBEMove[] { /*PBEMove.Wish, */PBEMove.Confusion, PBEMove.Rest, PBEMove.DracoMeteor }
                     ),
                     new PBEEventPokemon // Decolora Jirachi
                     (
-                        new byte[] { 5 }, PBESpecies.Jirachi, 50, false, PBEGender.Genderless, new PBEAbility[] { PBEAbility.SereneGrace }, PBEPokemonShell.AllNatures,
+                        new byte[] { 5 }, PBESpecies.Jirachi, 50, false, PBEGender.Genderless, new PBEAbility[] { PBEAbility.SereneGrace }, PBEDataUtils.AllNatures,
                         new byte?[] { null, null, null, null, null, null }, new PBEMove[] { /*PBEMove.HealingWish, */PBEMove.Psychic, PBEMove.Swift, PBEMove.MeteorMash }
                     ),
                     new PBEEventPokemon // Character Fair Jirachi
                     (
-                        new byte[] { 5 }, PBESpecies.Jirachi, 50, false, PBEGender.Genderless, new PBEAbility[] { PBEAbility.SereneGrace }, PBEPokemonShell.AllNatures,
+                        new byte[] { 5 }, PBESpecies.Jirachi, 50, false, PBEGender.Genderless, new PBEAbility[] { PBEAbility.SereneGrace }, PBEDataUtils.AllNatures,
                         new byte?[] { null, null, null, null, null, null }, new PBEMove[] { /*PBEMove.Wish, PBEMove.HealingWish, */PBEMove.CosmicPower, PBEMove.MeteorMash }
                     ),
                     new PBEEventPokemon // 2013 Jirachi
                     (
-                        new byte[] { 5 }, PBESpecies.Jirachi, 50, false, PBEGender.Genderless, new PBEAbility[] { PBEAbility.SereneGrace }, PBEPokemonShell.AllNatures,
+                        new byte[] { 5 }, PBESpecies.Jirachi, 50, false, PBEGender.Genderless, new PBEAbility[] { PBEAbility.SereneGrace }, PBEDataUtils.AllNatures,
                         new byte?[] { null, null, null, null, null, null }, new PBEMove[] { PBEMove.DracoMeteor, PBEMove.MeteorMash/*, PBEMove.Wish, PBEMove.FollowMe*/ }
                     ),
                     new PBEEventPokemon // Chilseok Jirachi
                     (
-                        new byte[] { 5 }, PBESpecies.Jirachi, 50, false, PBEGender.Genderless, new PBEAbility[] { PBEAbility.SereneGrace }, PBEPokemonShell.AllNatures,
+                        new byte[] { 5 }, PBESpecies.Jirachi, 50, false, PBEGender.Genderless, new PBEAbility[] { PBEAbility.SereneGrace }, PBEDataUtils.AllNatures,
                         new byte?[] { null, null, null, null, null, null }, new PBEMove[] { /*PBEMove.Wish, PBEMove.HealingWish, */PBEMove.Swift, PBEMove.Return }
                     )
                 })
@@ -613,7 +613,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                 {
                     new PBEEventPokemon // Global Link promotion
                     (
-                        new byte[] { 5 }, PBESpecies.Jolteon, 10, false, PBEGender.Male, new PBEAbility[] { PBEAbility.QuickFeet }, PBEPokemonShell.AllNatures,
+                        new byte[] { 5 }, PBESpecies.Jolteon, 10, false, PBEGender.Male, new PBEAbility[] { PBEAbility.QuickFeet }, PBEDataUtils.AllNatures,
                         new byte?[] { null, null, null, null, null, null }, new PBEMove[] { PBEMove.TailWhip, PBEMove.Tackle, PBEMove.HelpingHand, PBEMove.SandAttack }
                     )
                 })
@@ -624,12 +624,12 @@ namespace Kermalis.PokemonBattleEngine.Data
                 {
                     new PBEEventPokemon // Trade for Evolution!
                     (
-                        new byte[] { 5 }, PBESpecies.Karrablast, 30, false, PBEGender.MAX, new PBEAbility[] { PBEAbility.ShedSkin, PBEAbility.Swarm }, PBEPokemonShell.AllNatures,
+                        new byte[] { 5 }, PBESpecies.Karrablast, 30, false, PBEGender.MAX, new PBEAbility[] { PBEAbility.ShedSkin, PBEAbility.Swarm }, PBEDataUtils.AllNatures,
                         new byte?[] { null, null, null, null, null, null }, new PBEMove[] { PBEMove.FuryAttack, PBEMove.Headbutt/*, PBEMove.FalseSwipe*/, PBEMove.BugBuzz }
                     ),
                     new PBEEventPokemon // Summer 2011
                     (
-                        new byte[] { 5 }, PBESpecies.Karrablast, 50, false, PBEGender.MAX, new PBEAbility[] { PBEAbility.ShedSkin, PBEAbility.Swarm }, PBEPokemonShell.AllNatures,
+                        new byte[] { 5 }, PBESpecies.Karrablast, 50, false, PBEGender.MAX, new PBEAbility[] { PBEAbility.ShedSkin, PBEAbility.Swarm }, PBEDataUtils.AllNatures,
                         new byte?[] { null, null, null, null, null, null }, new PBEMove[] { PBEMove.Megahorn, PBEMove.TakeDown, PBEMove.XScissor, PBEMove.Flail }
                     )
                 })
@@ -640,12 +640,12 @@ namespace Kermalis.PokemonBattleEngine.Data
                 {
                     new PBEEventPokemon // Kyurem VS. The Sword of Justice promotion
                     (
-                        new byte[] { 5 }, PBESpecies.Keldeo, 15, false, PBEGender.Genderless, new PBEAbility[] { PBEAbility.Justified }, PBEPokemonShell.AllNatures,
+                        new byte[] { 5 }, PBESpecies.Keldeo, 15, false, PBEGender.Genderless, new PBEAbility[] { PBEAbility.Justified }, PBEDataUtils.AllNatures,
                         new byte?[] { null, null, null, null, null, null }, new PBEMove[] { PBEMove.AquaJet, PBEMove.Leer, PBEMove.DoubleKick, PBEMove.BubbleBeam }
                     ),
                     new PBEEventPokemon // Winter 2013
                     (
-                        new byte[] { 5 }, PBESpecies.Keldeo, 50, false, PBEGender.Genderless, new PBEAbility[] { PBEAbility.Justified }, PBEPokemonShell.AllNatures,
+                        new byte[] { 5 }, PBESpecies.Keldeo, 50, false, PBEGender.Genderless, new PBEAbility[] { PBEAbility.Justified }, PBEDataUtils.AllNatures,
                         new byte?[] { null, null, null, null, null, null }, new PBEMove[] { /*PBEMove.SacredSword, */PBEMove.HydroPump, PBEMove.AquaJet, PBEMove.SwordsDance }
                     )
                 })
@@ -656,7 +656,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                 {
                     new PBEEventPokemon // Journey across America | Top 10 distribution | Party of the decade
                     (
-                        new byte[] { 3 }, PBESpecies.Latias, 70, false, PBEGender.Female, new PBEAbility[] { PBEAbility.Levitate }, PBEPokemonShell.AllNatures,
+                        new byte[] { 3 }, PBESpecies.Latias, 70, false, PBEGender.Female, new PBEAbility[] { PBEAbility.Levitate }, PBEDataUtils.AllNatures,
                         new byte?[] { null, null, null, null, null, null }, new PBEMove[] { PBEMove.MistBall, PBEMove.Psychic, PBEMove.Recover, PBEMove.Charm }
                     )
                 })
@@ -667,7 +667,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                 {
                     new PBEEventPokemon // Journey across America | Top 10 distribution | Party of the decade
                     (
-                        new byte[] { 3 }, PBESpecies.Latios, 70, false, PBEGender.Male, new PBEAbility[] { PBEAbility.Levitate }, PBEPokemonShell.AllNatures,
+                        new byte[] { 3 }, PBESpecies.Latios, 70, false, PBEGender.Male, new PBEAbility[] { PBEAbility.Levitate }, PBEDataUtils.AllNatures,
                         new byte?[] { null, null, null, null, null, null }, new PBEMove[] { PBEMove.LusterPurge, PBEMove.Psychic, PBEMove.Recover, PBEMove.DragonDance }
                     )
                 })
@@ -678,7 +678,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                 {
                     new PBEEventPokemon // Global Link promotion
                     (
-                        new byte[] { 5 }, PBESpecies.Leafeon, 10, false, PBEGender.Male, new PBEAbility[] { PBEAbility.Chlorophyll }, PBEPokemonShell.AllNatures,
+                        new byte[] { 5 }, PBESpecies.Leafeon, 10, false, PBEGender.Male, new PBEAbility[] { PBEAbility.Chlorophyll }, PBEDataUtils.AllNatures,
                         new byte?[] { null, null, null, null, null, null }, new PBEMove[] { PBEMove.TailWhip, PBEMove.Tackle, PBEMove.HelpingHand, PBEMove.SandAttack }
                     )
                 })
@@ -700,7 +700,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                 {
                     new PBEEventPokemon // Pokémon Adventure Camp fossil Pokémon
                     (
-                        new byte[] { 5 }, PBESpecies.Lileep, 15, false, PBEGender.MAX, new PBEAbility[] { PBEAbility.SuctionCups }, PBEPokemonShell.AllNatures,
+                        new byte[] { 5 }, PBESpecies.Lileep, 15, false, PBEGender.MAX, new PBEAbility[] { PBEAbility.SuctionCups }, PBEDataUtils.AllNatures,
                         new byte?[] { null, null, null, null, null, null }, new PBEMove[] { PBEMove.Recover, PBEMove.RockSlide, PBEMove.Constrict, PBEMove.Acid }
                     )
                 })
@@ -721,7 +721,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                     ),
                     new PBEEventPokemon // Global Link promotion
                     (
-                        new byte[] { 5 }, PBESpecies.Lucario, 10, false, PBEGender.Male, new PBEAbility[] { PBEAbility.Justified }, PBEPokemonShell.AllNatures,
+                        new byte[] { 5 }, PBESpecies.Lucario, 10, false, PBEGender.Male, new PBEAbility[] { PBEAbility.Justified }, PBEDataUtils.AllNatures,
                         new byte?[] { null, null, null, null, null, null }, new PBEMove[] { PBEMove.Detect, PBEMove.MetalClaw/*, PBEMove.Counter*/, PBEMove.BulletPunch }
                     ),
                     new PBEEventPokemon // Powerful Tag
@@ -762,7 +762,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                     ),
                     new PBEEventPokemon // Pokémon Center relocation
                     (
-                        new byte[] { 5 }, PBESpecies.Magikarp, 99, true, PBEGender.MAX, new PBEAbility[] { PBEAbility.SwiftSwim }, PBEPokemonShell.AllNatures,
+                        new byte[] { 5 }, PBESpecies.Magikarp, 99, true, PBEGender.MAX, new PBEAbility[] { PBEAbility.SwiftSwim }, PBEDataUtils.AllNatures,
                         new byte?[] { null, null, null, null, null, null }, new PBEMove[] { PBEMove.Flail, PBEMove.HydroPump, PBEMove.Bounce, PBEMove.Splash }
                     )
                 })
@@ -773,12 +773,12 @@ namespace Kermalis.PokemonBattleEngine.Data
                 {
                     new PBEEventPokemon // Kyruem VS. The Sword of Justice promotion
                     (
-                        new byte[] { 5 }, PBESpecies.Meloetta, 15, false, PBEGender.Genderless, new PBEAbility[] { PBEAbility.SereneGrace }, PBEPokemonShell.AllNatures,
+                        new byte[] { 5 }, PBESpecies.Meloetta, 15, false, PBEGender.Genderless, new PBEAbility[] { PBEAbility.SereneGrace }, PBEDataUtils.AllNatures,
                         new byte?[] { null, null, null, null, null, null }, new PBEMove[] { /*PBEMove.Round, */PBEMove.QuickAttack, PBEMove.Confusion, PBEMove.None }
                     ),
                     new PBEEventPokemon // Summer 2013
                     (
-                        new byte[] { 5 }, PBESpecies.Meloetta, 50, false, PBEGender.Genderless, new PBEAbility[] { PBEAbility.SereneGrace }, PBEPokemonShell.AllNatures,
+                        new byte[] { 5 }, PBESpecies.Meloetta, 50, false, PBEGender.Genderless, new PBEAbility[] { PBEAbility.SereneGrace }, PBEDataUtils.AllNatures,
                         new byte?[] { null, null, null, null, null, null }, new PBEMove[] { /*PBEMove.Round, */PBEMove.TeeterDance, PBEMove.Psychic, PBEMove.CloseCombat }
                     )
                 })
@@ -789,12 +789,12 @@ namespace Kermalis.PokemonBattleEngine.Data
                 {
                     new PBEEventPokemon // Train station
                     (
-                        new byte[] { 5 }, PBESpecies.Metagross, 50, null, PBEGender.Genderless, new PBEAbility[] { PBEAbility.ClearBody }, PBEPokemonShell.AllNatures,
+                        new byte[] { 5 }, PBESpecies.Metagross, 50, null, PBEGender.Genderless, new PBEAbility[] { PBEAbility.ClearBody }, PBEDataUtils.AllNatures,
                         new byte?[] { null, null, null, null, null, null }, new PBEMove[] { PBEMove.MeteorMash, PBEMove.Earthquake, PBEMove.BulletPunch, PBEMove.HammerArm }
                     ),
                     new PBEEventPokemon // Strongest class
                     (
-                        new byte[] { 5 }, PBESpecies.Metagross, 100, false, PBEGender.Genderless, new PBEAbility[] { PBEAbility.ClearBody }, PBEPokemonShell.AllNatures,
+                        new byte[] { 5 }, PBESpecies.Metagross, 100, false, PBEGender.Genderless, new PBEAbility[] { PBEAbility.ClearBody }, PBEDataUtils.AllNatures,
                         new byte?[] { null, null, null, null, null, null }, new PBEMove[] { PBEMove.BulletPunch, PBEMove.ZenHeadbutt, PBEMove.HammerArm, PBEMove.IcePunch }
                     ),
                     new PBEEventPokemon // World championships 2013
@@ -804,12 +804,12 @@ namespace Kermalis.PokemonBattleEngine.Data
                     ),
                     new PBEEventPokemon // Global Link promotion
                     (
-                        new byte[] { 5 }, PBESpecies.Metagross, 45, false, PBEGender.Genderless, new PBEAbility[] { PBEAbility.LightMetal }, PBEPokemonShell.AllNatures,
+                        new byte[] { 5 }, PBESpecies.Metagross, 45, false, PBEGender.Genderless, new PBEAbility[] { PBEAbility.LightMetal }, PBEDataUtils.AllNatures,
                         new byte?[] { null, null, null, null, null, null }, new PBEMove[] { PBEMove.IronDefense, PBEMove.Agility, PBEMove.HammerArm, PBEMove.DoubleEdge }
                     ),
                     new PBEEventPokemon // Global Link promotion
                     (
-                        new byte[] { 5 }, PBESpecies.Metagross, 45, false, PBEGender.Genderless, new PBEAbility[] { PBEAbility.LightMetal }, PBEPokemonShell.AllNatures,
+                        new byte[] { 5 }, PBESpecies.Metagross, 45, false, PBEGender.Genderless, new PBEAbility[] { PBEAbility.LightMetal }, PBEDataUtils.AllNatures,
                         new byte?[] { null, null, null, null, null, null }, new PBEMove[] { PBEMove.Psychic, PBEMove.MeteorMash, PBEMove.HammerArm, PBEMove.DoubleEdge }
                     ),
                     new PBEEventPokemon // Steven's Metagross
@@ -825,7 +825,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                 {
                     new PBEEventPokemon // Gale of Darkness demo promotion
                     (
-                        new byte[] { 3 }, PBESpecies.Metang, 30, false, PBEGender.Genderless, new PBEAbility[] { PBEAbility.ClearBody }, PBEPokemonShell.AllNatures,
+                        new byte[] { 3 }, PBESpecies.Metang, 30, false, PBEGender.Genderless, new PBEAbility[] { PBEAbility.ClearBody }, PBEDataUtils.AllNatures,
                         new byte?[] { null, null, null, null, null, null }, new PBEMove[] { PBEMove.TakeDown, PBEMove.Confusion, PBEMove.MetalClaw/*, PBEMove.Refresh*/ }
                     )
                 })
@@ -836,12 +836,12 @@ namespace Kermalis.PokemonBattleEngine.Data
                 {
                     new PBEEventPokemon // PokéPark Minun
                     (
-                        new byte[] { 3 }, PBESpecies.Minun, 5, null, PBEGender.MAX, new PBEAbility[] { PBEAbility.Minus }, PBEPokemonShell.AllNatures,
+                        new byte[] { 3 }, PBESpecies.Minun, 5, null, PBEGender.MAX, new PBEAbility[] { PBEAbility.Minus }, PBEDataUtils.AllNatures,
                         new byte?[] { null, null, null, null, null, null }, new PBEMove[] { PBEMove.Growl, PBEMove.ThunderWave/*, PBEMove.MudSport*/, PBEMove.None }
                     ),
                     new PBEEventPokemon // Gather more Pokémon
                     (
-                        new byte[] { 3 }, PBESpecies.Minun, 10, false, PBEGender.MAX, new PBEAbility[] { PBEAbility.Minus }, PBEPokemonShell.AllNatures,
+                        new byte[] { 3 }, PBESpecies.Minun, 10, false, PBEGender.MAX, new PBEAbility[] { PBEAbility.Minus }, PBEDataUtils.AllNatures,
                         new byte?[] { null, null, null, null, null, null }, new PBEMove[] { PBEMove.Growl, PBEMove.ThunderWave, PBEMove.QuickAttack, PBEMove.None }
                     )
                 })
@@ -852,7 +852,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                 {
                     new PBEEventPokemon // Gather more Pokémon
                     (
-                        new byte[] { 3 }, PBESpecies.Misdreavus, 10, false, PBEGender.MAX, new PBEAbility[] { PBEAbility.Levitate }, PBEPokemonShell.AllNatures,
+                        new byte[] { 3 }, PBESpecies.Misdreavus, 10, false, PBEGender.MAX, new PBEAbility[] { PBEAbility.Levitate }, PBEDataUtils.AllNatures,
                         new byte?[] { null, null, null, null, null, null }, new PBEMove[] { PBEMove.Growl, PBEMove.Psywave/*, PBEMove.Spite*/, PBEMove.None }
                     )
                 })
@@ -874,7 +874,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                 {
                     new PBEEventPokemon // 2013 shiny creation trio
                     (
-                        new byte[] { 5 }, PBESpecies.Palkia, 100, true, PBEGender.Genderless, new PBEAbility[] { PBEAbility.Pressure }, PBEPokemonShell.AllNatures,
+                        new byte[] { 5 }, PBESpecies.Palkia, 100, true, PBEGender.Genderless, new PBEAbility[] { PBEAbility.Pressure }, PBEDataUtils.AllNatures,
                         new byte?[] { null, null, null, null, null, null }, new PBEMove[] { PBEMove.HydroPump, PBEMove.DracoMeteor, PBEMove.SpacialRend, PBEMove.AuraSphere }
                     )
                 })
@@ -895,7 +895,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                     ),
                     new PBEEventPokemon // Global Link promotion
                     (
-                        new byte[] { 5 }, PBESpecies.Pansage, 10, false, PBEGender.Male, new PBEAbility[] { PBEAbility.Overgrow }, PBEPokemonShell.AllNatures,
+                        new byte[] { 5 }, PBESpecies.Pansage, 10, false, PBEGender.Male, new PBEAbility[] { PBEAbility.Overgrow }, PBEDataUtils.AllNatures,
                         new byte?[] { null, null, null, null, null, null }, new PBEMove[] { PBEMove.Leer, PBEMove.Lick, PBEMove.VineWhip, PBEMove.LeafStorm }
                     )
                 })
@@ -906,27 +906,27 @@ namespace Kermalis.PokemonBattleEngine.Data
                 {
                     new PBEEventPokemon // 5th anniversary egg | Pokémon Stamp RS magazine raffle
                     (
-                        new byte[] { 3 }, PBESpecies.Pichu, 5, null, PBEGender.MAX, new PBEAbility[] { PBEAbility.Static }, PBEPokemonShell.AllNatures,
+                        new byte[] { 3 }, PBESpecies.Pichu, 5, null, PBEGender.MAX, new PBEAbility[] { PBEAbility.Static }, PBEDataUtils.AllNatures,
                         new byte?[] { null, null, null, null, null, null }, new PBEMove[] { PBEMove.ThunderShock, PBEMove.Charm, PBEMove.TeeterDance, PBEMove.None }
                     ),
                     new PBEEventPokemon // 5th anniversary egg
                     (
-                        new byte[] { 3 }, PBESpecies.Pichu, 5, null, PBEGender.MAX, new PBEAbility[] { PBEAbility.Static }, PBEPokemonShell.AllNatures,
+                        new byte[] { 3 }, PBESpecies.Pichu, 5, null, PBEGender.MAX, new PBEAbility[] { PBEAbility.Static }, PBEDataUtils.AllNatures,
                         new byte?[] { null, null, null, null, null, null }, new PBEMove[] { PBEMove.ThunderShock, PBEMove.Charm/*, PBEMove.Wish*/, PBEMove.None }
                     ),
                     new PBEEventPokemon // Pokémon Box bonus egg
                     (
-                        new byte[] { 3 }, PBESpecies.Pichu, 5, null, PBEGender.MAX, new PBEAbility[] { PBEAbility.Static }, PBEPokemonShell.AllNatures,
+                        new byte[] { 3 }, PBESpecies.Pichu, 5, null, PBEGender.MAX, new PBEAbility[] { PBEAbility.Static }, PBEDataUtils.AllNatures,
                         new byte?[] { null, null, null, null, null, null }, new PBEMove[] { PBEMove.ThunderShock, PBEMove.Charm, PBEMove.Surf, PBEMove.None }
                     ),
                     new PBEEventPokemon // PokéPark Pichu
                     (
-                        new byte[] { 3 }, PBESpecies.Pichu, 5, null, PBEGender.MAX, new PBEAbility[] { PBEAbility.Static }, PBEPokemonShell.AllNatures,
+                        new byte[] { 3 }, PBESpecies.Pichu, 5, null, PBEGender.MAX, new PBEAbility[] { PBEAbility.Static }, PBEDataUtils.AllNatures,
                         new byte?[] { null, null, null, null, null, null }, new PBEMove[] { PBEMove.ThunderShock, PBEMove.Charm/*, PBEMove.FollowMe*/, PBEMove.None }
                     ),
                     new PBEEventPokemon // Red and Green 12th anniversary
                     (
-                        new byte[] { 4 }, PBESpecies.Pichu, 1, null, PBEGender.MAX, new PBEAbility[] { PBEAbility.Static }, PBEPokemonShell.AllNatures,
+                        new byte[] { 4 }, PBESpecies.Pichu, 1, null, PBEGender.MAX, new PBEAbility[] { PBEAbility.Static }, PBEDataUtils.AllNatures,
                         new byte?[] { null, null, null, null, null, null }, new PBEMove[] { PBEMove.VoltTackle, PBEMove.Thunderbolt, PBEMove.GrassKnot, PBEMove.Return }
                     ),
                     new PBEEventPokemon // Jewel of Life promotion
@@ -953,37 +953,37 @@ namespace Kermalis.PokemonBattleEngine.Data
                 {
                     new PBEEventPokemon // PCNY stone promotion
                     (
-                        new byte[] { 3 }, PBESpecies.Pikachu, 50, false, PBEGender.MAX, new PBEAbility[] { PBEAbility.Static }, PBEPokemonShell.AllNatures,
+                        new byte[] { 3 }, PBESpecies.Pikachu, 50, false, PBEGender.MAX, new PBEAbility[] { PBEAbility.Static }, PBEDataUtils.AllNatures,
                         new byte?[] { null, null, null, null, null, null }, new PBEMove[] { PBEMove.Thunderbolt, PBEMove.Agility, PBEMove.Thunder, PBEMove.LightScreen }
                     ),
                     new PBEEventPokemon // All Nippon Airways Pikachu (Gen 3)
                     (
-                        new byte[] { 3 }, PBESpecies.Pikachu, 10, false, PBEGender.MAX, new PBEAbility[] { PBEAbility.Static }, PBEPokemonShell.AllNatures,
+                        new byte[] { 3 }, PBESpecies.Pikachu, 10, false, PBEGender.MAX, new PBEAbility[] { PBEAbility.Static }, PBEDataUtils.AllNatures,
                         new byte?[] { null, null, null, null, null, null }, new PBEMove[] { PBEMove.Fly, PBEMove.ThunderShock, PBEMove.TailWhip, PBEMove.ThunderWave }
                     ),
                     new PBEEventPokemon // Yokohama Pokémon Center opening
                     (
-                        new byte[] { 3 }, PBESpecies.Pikachu, 10, false, PBEGender.MAX, new PBEAbility[] { PBEAbility.Static }, PBEPokemonShell.AllNatures,
+                        new byte[] { 3 }, PBESpecies.Pikachu, 10, false, PBEGender.MAX, new PBEAbility[] { PBEAbility.Static }, PBEDataUtils.AllNatures,
                         new byte?[] { null, null, null, null, null, null }, new PBEMove[] { PBEMove.ThunderShock, PBEMove.Growl, PBEMove.ThunderWave, PBEMove.Surf }
                     ),
                     new PBEEventPokemon // GW Festival | Sapporo Pokémon Center opening
                     (
-                        new byte[] { 3 }, PBESpecies.Pikachu, 10, false, PBEGender.MAX, new PBEAbility[] { PBEAbility.Static }, PBEPokemonShell.AllNatures,
+                        new byte[] { 3 }, PBESpecies.Pikachu, 10, false, PBEGender.MAX, new PBEAbility[] { PBEAbility.Static }, PBEDataUtils.AllNatures,
                         new byte?[] { null, null, null, null, null, null }, new PBEMove[] { PBEMove.Growl, PBEMove.TailWhip, PBEMove.ThunderWave, PBEMove.Fly }
                     ),
                     new PBEEventPokemon // Gather more Pokémon | Colosseum Pikachu
                     (
-                        new byte[] { 3 }, PBESpecies.Pikachu, 10, false, PBEGender.MAX, new PBEAbility[] { PBEAbility.Static }, PBEPokemonShell.AllNatures,
+                        new byte[] { 3 }, PBESpecies.Pikachu, 10, false, PBEGender.MAX, new PBEAbility[] { PBEAbility.Static }, PBEDataUtils.AllNatures,
                         new byte?[] { null, null, null, null, null, null }, new PBEMove[] { PBEMove.ThunderShock, PBEMove.Growl, PBEMove.TailWhip, PBEMove.ThunderWave }
                     ),
                     new PBEEventPokemon // Journey across America | Top 10 distribution
                     (
-                        new byte[] { 3 }, PBESpecies.Pikachu, 70, false, PBEGender.MAX, new PBEAbility[] { PBEAbility.Static }, PBEPokemonShell.AllNatures,
+                        new byte[] { 3 }, PBESpecies.Pikachu, 70, false, PBEGender.MAX, new PBEAbility[] { PBEAbility.Static }, PBEDataUtils.AllNatures,
                         new byte?[] { null, null, null, null, null, null }, new PBEMove[] { PBEMove.Thunderbolt, PBEMove.Agility, PBEMove.Thunder, PBEMove.LightScreen }
                     ),
                     new PBEEventPokemon // Party of the decade
                     (
-                        new byte[] { 3 }, PBESpecies.Pikachu, 70, false, PBEGender.MAX, new PBEAbility[] { PBEAbility.Static }, PBEPokemonShell.AllNatures,
+                        new byte[] { 3 }, PBESpecies.Pikachu, 70, false, PBEGender.MAX, new PBEAbility[] { PBEAbility.Static }, PBEDataUtils.AllNatures,
                         new byte?[] { null, null, null, null, null, null }, new PBEMove[] { PBEMove.Thunderbolt, PBEMove.Thunder, PBEMove.LightScreen, PBEMove.Fly }
                     ),
                     new PBEEventPokemon // Battle Revolution Pikachu
@@ -1033,22 +1033,22 @@ namespace Kermalis.PokemonBattleEngine.Data
                     ),
                     new PBEEventPokemon // All Nippon Airways Pikachu (Gen 5)
                     (
-                        new byte[] { 5 }, PBESpecies.Pikachu, 50, false, PBEGender.MAX, new PBEAbility[] { PBEAbility.Static }, PBEPokemonShell.AllNatures,
+                        new byte[] { 5 }, PBESpecies.Pikachu, 50, false, PBEGender.MAX, new PBEAbility[] { PBEAbility.Static }, PBEDataUtils.AllNatures,
                         new byte?[] { null, null, null, null, null, null }, new PBEMove[] { PBEMove.Fly, PBEMove.IronTail/*, PBEMove.ElectroBall*/, PBEMove.QuickAttack }
                     ),
                     new PBEEventPokemon // Singing Pikachu
                     (
-                        new byte[] { 5 }, PBESpecies.Pikachu, 30, false, PBEGender.Female, new PBEAbility[] { PBEAbility.Lightningrod }, PBEPokemonShell.AllNatures,
+                        new byte[] { 5 }, PBESpecies.Pikachu, 30, false, PBEGender.Female, new PBEAbility[] { PBEAbility.Lightningrod }, PBEDataUtils.AllNatures,
                         new byte?[] { null, null, null, null, null, null }, new PBEMove[] { PBEMove.Sing, PBEMove.TeeterDance/*, PBEMove.Encore, PBEMove.ElectroBall*/ }
                     ),
                     new PBEEventPokemon // ExtremeSpeed Pikachu
                     (
-                        new byte[] { 5 }, PBESpecies.Pikachu, 50, null, PBEGender.Female, new PBEAbility[] { PBEAbility.Static }, PBEPokemonShell.AllNatures,
+                        new byte[] { 5 }, PBESpecies.Pikachu, 50, null, PBEGender.Female, new PBEAbility[] { PBEAbility.Static }, PBEDataUtils.AllNatures,
                         new byte?[] { null, null, null, null, null, null }, new PBEMove[] { PBEMove.ExtremeSpeed, PBEMove.Thunderbolt, PBEMove.GrassKnot, PBEMove.BrickBreak }
                     ),
                     new PBEEventPokemon // Pikachu Festival | Pika Pika Carnival | Summer 2012 Pikachu | Strongest class
                     (
-                        new byte[] { 5 }, PBESpecies.Pikachu, 100, null, PBEGender.Female, new PBEAbility[] { PBEAbility.Static }, PBEPokemonShell.AllNatures,
+                        new byte[] { 5 }, PBESpecies.Pikachu, 100, null, PBEGender.Female, new PBEAbility[] { PBEAbility.Static }, PBEDataUtils.AllNatures,
                         new byte?[] { null, null, null, null, null, null }, new PBEMove[] { PBEMove.Thunder, PBEMove.VoltTackle, PBEMove.GrassKnot, PBEMove.QuickAttack }
                     ),
                     new PBEEventPokemon // World championships 2012
@@ -1058,7 +1058,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                     ),
                     new PBEEventPokemon // Pokémon Center 15th anniversary
                     (
-                        new byte[] { 5 }, PBESpecies.Pikachu, 100, false, PBEGender.Male, new PBEAbility[] { PBEAbility.Lightningrod }, PBEPokemonShell.AllNatures,
+                        new byte[] { 5 }, PBESpecies.Pikachu, 100, false, PBEGender.Male, new PBEAbility[] { PBEAbility.Lightningrod }, PBEDataUtils.AllNatures,
                         new byte?[] { null, null, null, null, null, null }, new PBEMove[] { PBEMove.VoltTackle, PBEMove.QuickAttack/*, PBEMove.Feint, PBEMove.VoltSwitch*/ }
                     ),
                     new PBEEventPokemon // Best Wishes Ash's Pikachu
@@ -1068,7 +1068,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                     ),
                     new PBEEventPokemon // Global Link promotion
                     (
-                        new byte[] { 5 }, PBESpecies.Pikachu, 10, false, PBEGender.Male, new PBEAbility[] { PBEAbility.Lightningrod }, PBEPokemonShell.AllNatures,
+                        new byte[] { 5 }, PBESpecies.Pikachu, 10, false, PBEGender.Male, new PBEAbility[] { PBEAbility.Lightningrod }, PBEDataUtils.AllNatures,
                         new byte?[] { null, null, null, null, null, null }, new PBEMove[] { PBEMove.ThunderShock, PBEMove.TailWhip, PBEMove.ThunderWave, PBEMove.Headbutt }
                     )
                 })
@@ -1079,22 +1079,22 @@ namespace Kermalis.PokemonBattleEngine.Data
                 {
                     new PBEEventPokemon // Pokémon Searcher BW promotion
                     (
-                        new byte[] { 5 }, PBESpecies.Piplup, 15, null, PBEGender.MAX, new PBEAbility[] { PBEAbility.Torrent }, PBEPokemonShell.AllNatures,
+                        new byte[] { 5 }, PBESpecies.Piplup, 15, null, PBEGender.MAX, new PBEAbility[] { PBEAbility.Torrent }, PBEDataUtils.AllNatures,
                         new byte?[] { null, null, null, null, null, null }, new PBEMove[] { PBEMove.HydroPump, PBEMove.FeatherDance/*, PBEMove.WaterSport*/, PBEMove.Peck }
                     ),
                     new PBEEventPokemon // Dawn's Piplup
                     (
-                        new byte[] { 5 }, PBESpecies.Piplup, 15, false, PBEGender.MAX, new PBEAbility[] { PBEAbility.Torrent }, PBEPokemonShell.AllNatures,
+                        new byte[] { 5 }, PBESpecies.Piplup, 15, false, PBEGender.MAX, new PBEAbility[] { PBEAbility.Torrent }, PBEDataUtils.AllNatures,
                         new byte?[] { null, null, null, null, null, null }, new PBEMove[] { PBEMove.Sing/*, PBEMove.Round*/, PBEMove.FeatherDance, PBEMove.Peck }
                     ),
                     new PBEEventPokemon // Global Link promotion
                     (
-                        new byte[] { 5 }, PBESpecies.Piplup, 10, false, PBEGender.Male, new PBEAbility[] { PBEAbility.Defiant }, PBEPokemonShell.AllNatures,
+                        new byte[] { 5 }, PBESpecies.Piplup, 10, false, PBEGender.Male, new PBEAbility[] { PBEAbility.Defiant }, PBEDataUtils.AllNatures,
                         new byte?[] { null, null, null, null, null, null }, new PBEMove[] { PBEMove.Pound, PBEMove.Growl, PBEMove.Bubble, PBEMove.None }
                     ),
                     new PBEEventPokemon // Global Link promotion
                     (
-                        new byte[] { 5 }, PBESpecies.Piplup, 10, false, PBEGender.Male, new PBEAbility[] { PBEAbility.Defiant }, PBEPokemonShell.AllNatures,
+                        new byte[] { 5 }, PBESpecies.Piplup, 10, false, PBEGender.Male, new PBEAbility[] { PBEAbility.Defiant }, PBEDataUtils.AllNatures,
                         new byte?[] { null, null, null, null, null, null }, new PBEMove[] { PBEMove.Pound, PBEMove.Growl, PBEMove.Bubble, PBEMove.FeatherDance }
                     )
                 })
@@ -1105,12 +1105,12 @@ namespace Kermalis.PokemonBattleEngine.Data
                 {
                     new PBEEventPokemon // PokéPark Plusle
                     (
-                        new byte[] { 3 }, PBESpecies.Plusle, 5, null, PBEGender.MAX, new PBEAbility[] { PBEAbility.Plus }, PBEPokemonShell.AllNatures,
+                        new byte[] { 3 }, PBESpecies.Plusle, 5, null, PBEGender.MAX, new PBEAbility[] { PBEAbility.Plus }, PBEDataUtils.AllNatures,
                         new byte?[] { null, null, null, null, null, null }, new PBEMove[] { PBEMove.Growl, PBEMove.ThunderWave/*, PBEMove.WaterSport*/, PBEMove.None }
                     ),
                     new PBEEventPokemon // Gather more Pokémon
                     (
-                        new byte[] { 3 }, PBESpecies.Plusle, 10, false, PBEGender.MAX, new PBEAbility[] { PBEAbility.Plus }, PBEPokemonShell.AllNatures,
+                        new byte[] { 3 }, PBESpecies.Plusle, 10, false, PBEGender.MAX, new PBEAbility[] { PBEAbility.Plus }, PBEDataUtils.AllNatures,
                         new byte?[] { null, null, null, null, null, null }, new PBEMove[] { PBEMove.Growl, PBEMove.ThunderWave, PBEMove.QuickAttack, PBEMove.None }
                     )
                 })
@@ -1132,7 +1132,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                 {
                     new PBEEventPokemon // Egg Pokémon Present
                     (
-                        new byte[] { 3 }, PBESpecies.Poliwag, 5, null, PBEGender.MAX, new PBEAbility[] { PBEAbility.Damp, PBEAbility.WaterAbsorb }, PBEPokemonShell.AllNatures,
+                        new byte[] { 3 }, PBESpecies.Poliwag, 5, null, PBEGender.MAX, new PBEAbility[] { PBEAbility.Damp, PBEAbility.WaterAbsorb }, PBEDataUtils.AllNatures,
                         new byte?[] { null, null, null, null, null, null }, new PBEMove[] { PBEMove.Bubble, PBEMove.SweetKiss, PBEMove.None, PBEMove.None }
                     )
                 })
@@ -1148,12 +1148,12 @@ namespace Kermalis.PokemonBattleEngine.Data
                     ),
                     new PBEEventPokemon // PokéPark Psyduck
                     (
-                        new byte[] { 3 }, PBESpecies.Psyduck, 5, null, PBEGender.MAX, new PBEAbility[] { PBEAbility.CloudNine, PBEAbility.Damp }, PBEPokemonShell.AllNatures,
+                        new byte[] { 3 }, PBESpecies.Psyduck, 5, null, PBEGender.MAX, new PBEAbility[] { PBEAbility.CloudNine, PBEAbility.Damp }, PBEDataUtils.AllNatures,
                         new byte?[] { null, null, null, null, null, null }, new PBEMove[] { /*PBEMove.WaterSport, */PBEMove.Scratch, PBEMove.TailWhip/*, PBEMove.MudSport*/ }
                     ),
                     new PBEEventPokemon // GTS Psyducks
                     (
-                        new byte[] { 4 }, PBESpecies.Psyduck, 1, false, PBEGender.MAX, new PBEAbility[] { PBEAbility.CloudNine, PBEAbility.Damp }, PBEPokemonShell.AllNatures,
+                        new byte[] { 4 }, PBESpecies.Psyduck, 1, false, PBEGender.MAX, new PBEAbility[] { PBEAbility.CloudNine, PBEAbility.Damp }, PBEDataUtils.AllNatures,
                         new byte?[] { null, null, null, null, null, null }, new PBEMove[] { PBEMove.Psychic, PBEMove.ConfuseRay/*, PBEMove.Yawn*/, PBEMove.MudBomb }
                     )
                 })
@@ -1164,7 +1164,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                 {
                     new PBEEventPokemon // Lucario and the Mystery of Mew promotion
                     (
-                        new byte[] { 3 }, PBESpecies.Regirock, 40, false, PBEGender.Genderless, new PBEAbility[] { PBEAbility.ClearBody }, PBEPokemonShell.AllNatures,
+                        new byte[] { 3 }, PBESpecies.Regirock, 40, false, PBEGender.Genderless, new PBEAbility[] { PBEAbility.ClearBody }, PBEDataUtils.AllNatures,
                         new byte?[] { null, null, null, null, null, null }, new PBEMove[] { PBEMove.Curse, PBEMove.Superpower, PBEMove.AncientPower/*, PBEMove.HyperBeam*/ }
                     )
                 })
@@ -1175,7 +1175,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                 {
                     new PBEEventPokemon // Victini movies promotion
                     (
-                        new byte[] { 5 }, PBESpecies.Reshiram, 100, false, PBEGender.Genderless, new PBEAbility[] { PBEAbility.Turboblaze }, PBEPokemonShell.AllNatures,
+                        new byte[] { 5 }, PBESpecies.Reshiram, 100, false, PBEGender.Genderless, new PBEAbility[] { PBEAbility.Turboblaze }, PBEDataUtils.AllNatures,
                         new byte?[] { null, null, null, null, null, null }, new PBEMove[] { PBEMove.BlueFlare/*, PBEMove.FusionFlare, PBEMove.Mist*/, PBEMove.DracoMeteor }
                     )
                 })
@@ -1208,7 +1208,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                 {
                     new PBEEventPokemon // Pokémon Center 15th anniversary
                     (
-                        new byte[] { 5 }, PBESpecies.Samurott, 100, false, PBEGender.Male, new PBEAbility[] { PBEAbility.Torrent }, PBEPokemonShell.AllNatures,
+                        new byte[] { 5 }, PBESpecies.Samurott, 100, false, PBEGender.Male, new PBEAbility[] { PBEAbility.Torrent }, PBEDataUtils.AllNatures,
                         new byte?[] { null, null, null, null, null, null }, new PBEMove[] { PBEMove.HydroPump, PBEMove.IceBeam, PBEMove.Megahorn, PBEMove.Superpower }
                     )
                 })
@@ -1241,7 +1241,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                 {
                     new PBEEventPokemon // Pokémon Center 15th anniversary
                     (
-                        new byte[] { 5 }, PBESpecies.Serperior, 100, false, PBEGender.Male, new PBEAbility[] { PBEAbility.Torrent }, PBEPokemonShell.AllNatures,
+                        new byte[] { 5 }, PBESpecies.Serperior, 100, false, PBEGender.Male, new PBEAbility[] { PBEAbility.Torrent }, PBEDataUtils.AllNatures,
                         new byte?[] { null, null, null, null, null, null }, new PBEMove[] { PBEMove.LeafStorm, PBEMove.Substitute, PBEMove.GigaDrain, PBEMove.LeechSeed }
                     )
                 })
@@ -1252,7 +1252,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                 {
                     new PBEEventPokemon // PCNY Monster Week 1
                     (
-                        new byte[] { 3 }, PBESpecies.Shedinja, 50, false, PBEGender.Genderless, new PBEAbility[] { PBEAbility.WonderGuard }, PBEPokemonShell.AllNatures,
+                        new byte[] { 3 }, PBESpecies.Shedinja, 50, false, PBEGender.Genderless, new PBEAbility[] { PBEAbility.WonderGuard }, PBEDataUtils.AllNatures,
                         new byte?[] { null, null, null, null, null, null }, new PBEMove[] { /*PBEMove.Spite, */PBEMove.ConfuseRay, PBEMove.ShadowBall/*, PBEMove.Grudge*/ }
                     )
                 })
@@ -1263,12 +1263,12 @@ namespace Kermalis.PokemonBattleEngine.Data
                 {
                     new PBEEventPokemon // Trade for Evolution!
                     (
-                        new byte[] { 5 }, PBESpecies.Shelmet, 30, false, PBEGender.MAX, new PBEAbility[] { PBEAbility.Hydration, PBEAbility.ShellArmor }, PBEPokemonShell.AllNatures,
+                        new byte[] { 5 }, PBESpecies.Shelmet, 30, false, PBEGender.MAX, new PBEAbility[] { PBEAbility.Hydration, PBEAbility.ShellArmor }, PBEDataUtils.AllNatures,
                         new byte?[] { null, null, null, null, null, null }, new PBEMove[] { PBEMove.StruggleBug, PBEMove.MegaDrain/*, PBEMove.Yawn*/, PBEMove.Protect }
                     ),
                     new PBEEventPokemon // Summer 2011
                     (
-                        new byte[] { 5 }, PBESpecies.Shelmet, 50, false, PBEGender.MAX, new PBEAbility[] { PBEAbility.Hydration, PBEAbility.ShellArmor }, PBEPokemonShell.AllNatures,
+                        new byte[] { 5 }, PBESpecies.Shelmet, 50, false, PBEGender.MAX, new PBEAbility[] { PBEAbility.Hydration, PBEAbility.ShellArmor }, PBEDataUtils.AllNatures,
                         new byte?[] { null, null, null, null, null, null }, new PBEMove[] { /*PBEMove.Encore, */PBEMove.GigaDrain, PBEMove.BodySlam, PBEMove.BugBuzz }
                     )
                 })
@@ -1279,17 +1279,17 @@ namespace Kermalis.PokemonBattleEngine.Data
                 {
                     new PBEEventPokemon // PokéPark Skitty
                     (
-                        new byte[] { 3 }, PBESpecies.Skitty, 5, null, PBEGender.MAX, new PBEAbility[] { PBEAbility.CuteCharm }, PBEPokemonShell.AllNatures,
+                        new byte[] { 3 }, PBESpecies.Skitty, 5, null, PBEGender.MAX, new PBEAbility[] { PBEAbility.CuteCharm }, PBEDataUtils.AllNatures,
                         new byte?[] { null, null, null, null, null, null }, new PBEMove[] { PBEMove.Growl, PBEMove.Tackle, PBEMove.TailWhip/*, PBEMove.Rollout*/ }
                     ),
                     new PBEEventPokemon // Gather more Pokémon
                     (
-                        new byte[] { 3 }, PBESpecies.Skitty, 10, false, PBEGender.MAX, new PBEAbility[] { PBEAbility.CuteCharm }, PBEPokemonShell.AllNatures,
+                        new byte[] { 3 }, PBESpecies.Skitty, 10, false, PBEGender.MAX, new PBEAbility[] { PBEAbility.CuteCharm }, PBEDataUtils.AllNatures,
                         new byte?[] { null, null, null, null, null, null }, new PBEMove[] { PBEMove.Growl, PBEMove.Tackle, PBEMove.TailWhip, PBEMove.Attract }
                     ),
                     new PBEEventPokemon // Pokémon Box bonus egg
                     (
-                        new byte[] { 3 }, PBESpecies.Skitty, 5, null, PBEGender.MAX, new PBEAbility[] { PBEAbility.CuteCharm }, PBEPokemonShell.AllNatures,
+                        new byte[] { 3 }, PBESpecies.Skitty, 5, null, PBEGender.MAX, new PBEAbility[] { PBEAbility.CuteCharm }, PBEDataUtils.AllNatures,
                         new byte?[] { null, null, null, null, null, null }, new PBEMove[] { PBEMove.Tackle, PBEMove.Growl, PBEMove.TailWhip/*, PBEMove.PayDay*/ }
                     )
                 })
@@ -1300,7 +1300,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                 {
                     new PBEEventPokemon // Gather more Pokémon
                     (
-                        new byte[] { 3 }, PBESpecies.Smeargle, 10, false, PBEGender.MAX, new PBEAbility[] { PBEAbility.OwnTempo }, PBEPokemonShell.AllNatures,
+                        new byte[] { 3 }, PBESpecies.Smeargle, 10, false, PBEGender.MAX, new PBEAbility[] { PBEAbility.OwnTempo }, PBEDataUtils.AllNatures,
                         new byte?[] { null, null, null, null, null, null }, new PBEMove[] { /*PBEMove.Sketch, */PBEMove.None, PBEMove.None, PBEMove.None }
                     ),
                     new PBEEventPokemon // World championships 2013
@@ -1327,17 +1327,17 @@ namespace Kermalis.PokemonBattleEngine.Data
                 {
                     new PBEEventPokemon // Gather more Pokémon
                     (
-                        new byte[] { 3 }, PBESpecies.Squirtle, 10, false, PBEGender.MAX, new PBEAbility[] { PBEAbility.Torrent }, PBEPokemonShell.AllNatures,
+                        new byte[] { 3 }, PBESpecies.Squirtle, 10, false, PBEGender.MAX, new PBEAbility[] { PBEAbility.Torrent }, PBEDataUtils.AllNatures,
                         new byte?[] { null, null, null, null, null, null }, new PBEMove[] { PBEMove.Tackle, PBEMove.TailWhip, PBEMove.Bubble, PBEMove.Withdraw }
                     ),
                     new PBEEventPokemon // Kanto starter egg
                     (
-                        new byte[] { 5 }, PBESpecies.Squirtle, 1, null, PBEGender.MAX, new PBEAbility[] { PBEAbility.Torrent }, PBEPokemonShell.AllNatures,
+                        new byte[] { 5 }, PBESpecies.Squirtle, 1, null, PBEGender.MAX, new PBEAbility[] { PBEAbility.Torrent }, PBEDataUtils.AllNatures,
                         new byte?[] { null, null, null, null, null, null }, new PBEMove[] { /*PBEMove.FalseSwipe, PBEMove.Block, PBEMove.HydroCannon, PBEMove.FollowMe*/ }
                     ),
                     new PBEEventPokemon // Global Link promotion
                     (
-                        new byte[] { 5 }, PBESpecies.Squirtle, 10, false, PBEGender.Male, new PBEAbility[] { PBEAbility.RainDish }, PBEPokemonShell.AllNatures,
+                        new byte[] { 5 }, PBESpecies.Squirtle, 10, false, PBEGender.Male, new PBEAbility[] { PBEAbility.RainDish }, PBEDataUtils.AllNatures,
                         new byte?[] { null, null, null, null, null, null }, new PBEMove[] { PBEMove.Tackle, PBEMove.TailWhip, PBEMove.Bubble, PBEMove.Withdraw }
                     )
                 })
@@ -1348,7 +1348,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                 {
                     new PBEEventPokemon // Milos Island Pokémon
                     (
-                        new byte[] { 5 }, PBESpecies.Thundurus, 70, false, PBEGender.Male, new PBEAbility[] { PBEAbility.Prankster }, PBEPokemonShell.AllNatures,
+                        new byte[] { 5 }, PBESpecies.Thundurus, 70, false, PBEGender.Male, new PBEAbility[] { PBEAbility.Prankster }, PBEDataUtils.AllNatures,
                         new byte?[] { null, null, null, null, null, null }, new PBEMove[] { PBEMove.Thunder, PBEMove.HammerArm, PBEMove.FocusBlast, PBEMove.WildCharge }
                     )
                 })
@@ -1359,7 +1359,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                 {
                     new PBEEventPokemon // Pokémon Adventure Camp fossil Pokémon
                     (
-                        new byte[] { 5 }, PBESpecies.Tirtouga, 15, false, PBEGender.MAX, new PBEAbility[] { PBEAbility.SolidRock, PBEAbility.Sturdy }, PBEPokemonShell.AllNatures,
+                        new byte[] { 5 }, PBESpecies.Tirtouga, 15, false, PBEGender.MAX, new PBEAbility[] { PBEAbility.SolidRock, PBEAbility.Sturdy }, PBEDataUtils.AllNatures,
                         new byte?[] { null, null, null, null, null, null }, new PBEMove[] { PBEMove.Bite, PBEMove.Protect, PBEMove.AquaJet, PBEMove.BodySlam }
                     )
                 })
@@ -1370,12 +1370,12 @@ namespace Kermalis.PokemonBattleEngine.Data
                 {
                     new PBEEventPokemon // Gather more Pokémon
                     (
-                        new byte[] { 3 }, PBESpecies.Torchic, 10, false, PBEGender.MAX, new PBEAbility[] { PBEAbility.Blaze }, PBEPokemonShell.AllNatures,
+                        new byte[] { 3 }, PBESpecies.Torchic, 10, false, PBEGender.MAX, new PBEAbility[] { PBEAbility.Blaze }, PBEDataUtils.AllNatures,
                         new byte?[] { null, null, null, null, null, null }, new PBEMove[] { PBEMove.Scratch, PBEMove.Growl, PBEMove.FocusEnergy, PBEMove.Ember }
                     ),
                     new PBEEventPokemon // Global Link promotion
                     (
-                        new byte[] { 5 }, PBESpecies.Torchic, 10, false, PBEGender.Male, new PBEAbility[] { PBEAbility.SpeedBoost }, PBEPokemonShell.AllNatures,
+                        new byte[] { 5 }, PBESpecies.Torchic, 10, false, PBEGender.Male, new PBEAbility[] { PBEAbility.SpeedBoost }, PBEDataUtils.AllNatures,
                         new byte?[] { null, null, null, null, null, null }, new PBEMove[] { PBEMove.Scratch, PBEMove.Growl, PBEMove.FocusEnergy, PBEMove.Ember }
                     )
                 })
@@ -1386,7 +1386,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                 {
                     new PBEEventPokemon // Milos Island Pokémon
                     (
-                        new byte[] { 5 }, PBESpecies.Tornadus, 70, false, PBEGender.Male, new PBEAbility[] { PBEAbility.Prankster }, PBEPokemonShell.AllNatures,
+                        new byte[] { 5 }, PBESpecies.Tornadus, 70, false, PBEGender.Male, new PBEAbility[] { PBEAbility.Prankster }, PBEDataUtils.AllNatures,
                         new byte?[] { null, null, null, null, null, null }, new PBEMove[] { PBEMove.Hurricane, PBEMove.HammerArm, PBEMove.AirSlash, PBEMove.HiddenPower }
                     )
                 })
@@ -1397,7 +1397,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                 {
                     new PBEEventPokemon // Pokémon Center 15th anniversary
                     (
-                        new byte[] { 5 }, PBESpecies.Torterra, 100, false, PBEGender.Male, new PBEAbility[] { PBEAbility.Overgrow }, PBEPokemonShell.AllNatures,
+                        new byte[] { 5 }, PBESpecies.Torterra, 100, false, PBEGender.Male, new PBEAbility[] { PBEAbility.Overgrow }, PBEDataUtils.AllNatures,
                         new byte?[] { null, null, null, null, null, null }, new PBEMove[] { PBEMove.WoodHammer, PBEMove.Earthquake/*, PBEMove.Outrage*/, PBEMove.StoneEdge }
                     )
                 })
@@ -1408,7 +1408,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                 {
                     new PBEEventPokemon // PCNY
                     (
-                        new byte[] { 3 }, PBESpecies.Tropius, 30, false, PBEGender.MAX, new PBEAbility[] { PBEAbility.Chlorophyll }, PBEPokemonShell.AllNatures,
+                        new byte[] { 3 }, PBESpecies.Tropius, 30, false, PBEGender.MAX, new PBEAbility[] { PBEAbility.Chlorophyll }, PBEDataUtils.AllNatures,
                         new byte?[] { null, null, null, null, null, null }, new PBEMove[] { PBEMove.RazorLeaf, PBEMove.Stomp, PBEMove.SweetScent, PBEMove.Whirlwind }
                     ),
                     new PBEEventPokemon // Pokémon Sunday promotion
@@ -1424,12 +1424,12 @@ namespace Kermalis.PokemonBattleEngine.Data
                 {
                     new PBEEventPokemon // Journey across America | Party of the decade
                     (
-                        new byte[] { 3 }, PBESpecies.Umbreon, 70, false, PBEGender.MAX, new PBEAbility[] { PBEAbility.Synchronize }, PBEPokemonShell.AllNatures,
+                        new byte[] { 3 }, PBESpecies.Umbreon, 70, false, PBEGender.MAX, new PBEAbility[] { PBEAbility.Synchronize }, PBEDataUtils.AllNatures,
                         new byte?[] { null, null, null, null, null, null }, new PBEMove[] { PBEMove.FaintAttack/*, PBEMove.MeanLook*/, PBEMove.Screech, PBEMove.Moonlight }
                     ),
                     new PBEEventPokemon // Global Link promotion
                     (
-                        new byte[] { 5 }, PBESpecies.Umbreon, 10, false, PBEGender.Male, new PBEAbility[] { PBEAbility.InnerFocus }, PBEPokemonShell.AllNatures,
+                        new byte[] { 5 }, PBESpecies.Umbreon, 10, false, PBEGender.Male, new PBEAbility[] { PBEAbility.InnerFocus }, PBEDataUtils.AllNatures,
                         new byte?[] { null, null, null, null, null, null }, new PBEMove[] { PBEMove.TailWhip, PBEMove.Tackle, PBEMove.HelpingHand, PBEMove.SandAttack }
                     )
                 })
@@ -1440,7 +1440,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                 {
                     new PBEEventPokemon // Global Link promotion
                     (
-                        new byte[] { 5 }, PBESpecies.Vaporeon, 10, false, PBEGender.Male, new PBEAbility[] { PBEAbility.Hydration }, PBEPokemonShell.AllNatures,
+                        new byte[] { 5 }, PBESpecies.Vaporeon, 10, false, PBEGender.Male, new PBEAbility[] { PBEAbility.Hydration }, PBEDataUtils.AllNatures,
                         new byte?[] { null, null, null, null, null, null }, new PBEMove[] { PBEMove.TailWhip, PBEMove.Tackle, PBEMove.HelpingHand, PBEMove.SandAttack }
                     )
                 })
@@ -1451,12 +1451,12 @@ namespace Kermalis.PokemonBattleEngine.Data
                 {
                     new PBEEventPokemon // M14 promotion
                     (
-                        new byte[] { 5 }, PBESpecies.Victini, 50, false, PBEGender.Genderless, new PBEAbility[] { PBEAbility.VictoryStar }, PBEPokemonShell.AllNatures,
+                        new byte[] { 5 }, PBESpecies.Victini, 50, false, PBEGender.Genderless, new PBEAbility[] { PBEAbility.VictoryStar }, PBEDataUtils.AllNatures,
                         new byte?[] { null, null, null, null, null, null }, new PBEMove[] { PBEMove.VCreate/*, PBEMove.FusionFlare, PBEMove.FusionBolt*/, PBEMove.SearingShot }
                     ),
                     new PBEEventPokemon // Pokémon Center Tohoku Victini
                     (
-                        new byte[] { 5 }, PBESpecies.Victini, 100, false, PBEGender.Genderless, new PBEAbility[] { PBEAbility.VictoryStar }, PBEPokemonShell.AllNatures,
+                        new byte[] { 5 }, PBESpecies.Victini, 100, false, PBEGender.Genderless, new PBEAbility[] { PBEAbility.VictoryStar }, PBEDataUtils.AllNatures,
                         new byte?[] { null, null, null, null, null, null }, new PBEMove[] { PBEMove.VCreate, PBEMove.BlueFlare, PBEMove.BoltStrike, PBEMove.Glaciate }
                     )
                 })
@@ -1467,12 +1467,12 @@ namespace Kermalis.PokemonBattleEngine.Data
                 {
                     new PBEEventPokemon // Korean Nationals 2012
                     (
-                        new byte[] { 5 }, PBESpecies.Volcarona, 100, true, PBEGender.Male, new PBEAbility[] { PBEAbility.FlameBody }, PBEPokemonShell.AllNatures,
+                        new byte[] { 5 }, PBESpecies.Volcarona, 100, true, PBEGender.Male, new PBEAbility[] { PBEAbility.FlameBody }, PBEDataUtils.AllNatures,
                         new byte?[] { null, null, null, null, null, null }, new PBEMove[] { PBEMove.QuiverDance, PBEMove.BugBuzz, PBEMove.FieryDance, PBEMove.MorningSun }
                     ),
                     new PBEEventPokemon // Alder's Volcarona
                     (
-                        new byte[] { 5 }, PBESpecies.Volcarona, 77, false, PBEGender.Male, new PBEAbility[] { PBEAbility.FlameBody }, PBEPokemonShell.AllNatures,
+                        new byte[] { 5 }, PBESpecies.Volcarona, 77, false, PBEGender.Male, new PBEAbility[] { PBEAbility.FlameBody }, PBEDataUtils.AllNatures,
                         new byte?[] { null, null, null, null, null, null }, new PBEMove[] { PBEMove.BugBuzz, PBEMove.Overheat/*, PBEMove.HyperBeam*/, PBEMove.QuiverDance }
                     )
                 })
@@ -1505,7 +1505,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                 {
                     new PBEEventPokemon // Victini movies promotion
                     (
-                        new byte[] { 5 }, PBESpecies.Zekrom, 100, false, PBEGender.Genderless, new PBEAbility[] { PBEAbility.Teravolt }, PBEPokemonShell.AllNatures,
+                        new byte[] { 5 }, PBESpecies.Zekrom, 100, false, PBEGender.Genderless, new PBEAbility[] { PBEAbility.Teravolt }, PBEDataUtils.AllNatures,
                         new byte?[] { null, null, null, null, null, null }, new PBEMove[] { PBEMove.BoltStrike/*, PBEMove.FusionBolt*/, PBEMove.Haze/*, PBEMove.Outrage*/ }
                     )
                 })

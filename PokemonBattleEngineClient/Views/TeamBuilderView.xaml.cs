@@ -1,15 +1,14 @@
 ﻿using Avalonia.Controls;
 using Avalonia.Markup.Xaml;
 using Kermalis.PokemonBattleEngine.Data;
-using Kermalis.PokemonBattleEngine.Utils;
 using Kermalis.PokemonBattleEngineClient.Infrastructure;
 using Kermalis.PokemonBattleEngineClient.Models;
-using ReactiveUI;
 using System;
 using System.Collections.ObjectModel;
 using System.Collections.Specialized;
 using System.ComponentModel;
 using System.IO;
+using System.Reactive.Linq;
 
 namespace Kermalis.PokemonBattleEngineClient.Views
 {
@@ -67,6 +66,13 @@ namespace Kermalis.PokemonBattleEngineClient.Views
         private readonly Button _addPartyButton;
         private readonly Button _removePartyButton;
         private readonly ListBox _partyListBox;
+        private readonly ComboBox _abilityComboBox;
+
+        private IDisposable Test(IObserver<object> thing)
+        {
+            thing.OnNext(PBEAbility.Adaptability);
+            return null;
+        }
 
         public TeamBuilderView()
         {
@@ -74,17 +80,15 @@ namespace Kermalis.PokemonBattleEngineClient.Views
             AvaloniaXamlLoader.Load(this);
 
             _addPartyButton = this.FindControl<Button>("AddParty");
-            _addPartyButton.Command = ReactiveCommand.Create(AddPartyMember);
+            //this.FindControl<ComboBox>("Form").bin
             _removePartyButton = this.FindControl<Button>("RemoveParty");
-            _removePartyButton.Command = ReactiveCommand.Create(RemovePartyMember);
-            this.FindControl<Button>("AddTeam").Command = ReactiveCommand.Create(AddTeam);
-            this.FindControl<Button>("RemoveTeam").Command = ReactiveCommand.Create(RemoveTeam);
-            this.FindControl<Button>("SaveTeam").Command = ReactiveCommand.Create(SaveTeam);
             _partyListBox = this.FindControl<ListBox>("Party");
+            _abilityComboBox = this.FindControl<ComboBox>("Ability");
+            _abilityComboBox.Bind(ComboBox.SelectedItemProperty, Observable.Create<object>(Test));
             this.FindControl<ListBox>("SavedTeams").SelectionChanged += OnSelectedTeamChanged;
-            this.FindControl<ComboBox>("Species").SelectionChanged += (s, e) => UpdateSprites();
-            this.FindControl<CheckBox>("Shiny").Command = ReactiveCommand.Create(UpdateSprites);
-            this.FindControl<ComboBox>("Gender").SelectionChanged += (s, e) => UpdateSprites();
+            this.FindControl<ComboBox>("Species").SelectionChanged += OnVisualChanged;
+            this.FindControl<ComboBox>("Form").SelectionChanged += OnVisualChanged;
+            this.FindControl<ComboBox>("Gender").SelectionChanged += OnVisualChanged;
 
             _teamPath = Path.Combine(Utils.WorkingDirectory, "Teams");
             if (Directory.Exists(_teamPath))
@@ -108,14 +112,14 @@ namespace Kermalis.PokemonBattleEngineClient.Views
             AddTeam();
         }
 
-        private void AddTeam()
+        public void AddTeam()
         {
             var t = new TeamInfo($"Team {DateTime.Now.Ticks}", new PBETeamShell(new PBESettings(PBESettings.DefaultSettings), 1, true));
             Teams.Add(t);
             Team = t;
             Shell = t.Shell[0];
         }
-        private void RemoveTeam()
+        public void RemoveTeam()
         {
             File.Delete(Path.Combine(_teamPath, $"{_team.Name}.json"));
             TeamInfo old = _team;
@@ -125,17 +129,17 @@ namespace Kermalis.PokemonBattleEngineClient.Views
             }
             Teams.Remove(old);
         }
-        private void SaveTeam()
+        public void SaveTeam()
         {
             _team.Shell.ToJsonFile(Path.Combine(_teamPath, $"{_team.Name}.json"));
         }
-        private void AddPartyMember()
+        public void AddPartyMember()
         {
             int index = _team.Shell.Count;
-            _team.Shell.Add(PBERandom.RandomSpecies(), _team.Shell.Settings.MaxLevel);
+            _team.Shell.AddRandom(true);
             Shell = _team.Shell[index];
         }
-        private void RemovePartyMember()
+        public void RemovePartyMember()
         {
             _team.Shell.Remove(_shell);
         }
@@ -154,7 +158,11 @@ namespace Kermalis.PokemonBattleEngineClient.Views
             OnSelectedTeamSizeChanged(null, null);
             Shell = _team.Shell[0];
         }
-        private void UpdateSprites()
+        private void OnVisualChanged(object sender, SelectionChangedEventArgs e)
+        {
+            UpdateSprites();
+        }
+        public void UpdateSprites()
         {
             SpriteStream = Utils.GetPokemonSpriteStream(_shell);
             // Force redraw of minisprite

@@ -212,9 +212,29 @@ namespace Kermalis.PokemonBattleEngine.Data
                 }
                 if (_species != value)
                 {
-                    PBEPokemonShell.ValidateSpecies(value);
+                    PBEPokemonShell.ValidateSpecies(value, 0);
                     _species = value;
+                    _form = 0;
                     OnPropertyChanged(nameof(Species));
+                    SetAlloweds();
+                }
+            }
+        }
+        private PBEForm _form;
+        public PBEForm Form
+        {
+            get => _form;
+            set
+            {
+                if (IsDisposed)
+                {
+                    throw new ObjectDisposedException(null);
+                }
+                if (_form != value)
+                {
+                    PBEPokemonShell.ValidateSpecies(_species, value);
+                    _form = value;
+                    OnPropertyChanged(nameof(Form));
                     SetAlloweds();
                 }
             }
@@ -268,13 +288,14 @@ namespace Kermalis.PokemonBattleEngine.Data
             }
         }
 
-        internal PBEMoveset(PBESpecies species, byte level, PBESettings settings, EndianBinaryReader r)
+        internal PBEMoveset(PBESpecies species, PBEForm form, byte level, PBESettings settings, EndianBinaryReader r)
         {
             if (r.ReadByte() != settings.NumMoves)
             {
                 throw new InvalidDataException();
             }
             _species = species;
+            _form = form;
             _level = level;
             Settings = settings;
             _list = new List<PBEMovesetSlot>(Settings.NumMoves);
@@ -301,13 +322,14 @@ namespace Kermalis.PokemonBattleEngine.Data
             }
             Settings.PropertyChanged += OnSettingsChanged;
         }
-        internal PBEMoveset(PBESpecies species, byte level, PBESettings settings, JArray jArray)
+        internal PBEMoveset(PBESpecies species, PBEForm form, byte level, PBESettings settings, JArray jArray)
         {
             if (jArray.Count != settings.NumMoves)
             {
                 throw new ArgumentOutOfRangeException(nameof(PBEPokemonShell.Moveset), $"Moveset count must be equal to \"{nameof(settings.NumMoves)}\" ({settings.NumMoves}).");
             }
             _species = species;
+            _form = form;
             _level = level;
             Settings = settings;
             _list = new List<PBEMovesetSlot>(Settings.NumMoves);
@@ -338,6 +360,7 @@ namespace Kermalis.PokemonBattleEngine.Data
         internal PBEMoveset(PBEMoveset other)
         {
             _species = other._species;
+            _form = other._form;
             _level = other._level;
             Settings = other.Settings;
             Settings.PropertyChanged += OnSettingsChanged;
@@ -357,19 +380,21 @@ namespace Kermalis.PokemonBattleEngine.Data
         }
         /// <summary>Creates a new <see cref="PBEMoveset"/> object with the specified traits.</summary>
         /// <param name="species">The species of the Pokémon that this moveset will be built for.</param>
+        /// <param name="form">The form of the Pokémon that this moveset will be built for.</param>
         /// <param name="level">The level of the Pokémon that this moveset will be built for.</param>
         /// <param name="settings">The settings that will be used to evaluate the <see cref="PBEMoveset"/>.</param>
         /// <param name="randomize">True if <see cref="Randomize"/> should be called, False if the move slots use their default values.</param>
-        public PBEMoveset(PBESpecies species, byte level, PBESettings settings, bool randomize)
+        public PBEMoveset(PBESpecies species, PBEForm form, byte level, PBESettings settings, bool randomize)
         {
             if (settings == null)
             {
                 throw new ArgumentNullException(nameof(settings));
             }
+            PBEPokemonShell.ValidateSpecies(species, form);
             PBEPokemonShell.ValidateLevel(level, settings);
             _level = level;
-            PBEPokemonShell.ValidateSpecies(species);
             _species = species;
+            _form = form;
             Settings = settings;
             Settings.PropertyChanged += OnSettingsChanged;
             _canDispose = true;
@@ -467,15 +492,15 @@ namespace Kermalis.PokemonBattleEngine.Data
             }
         }
 
-        private static readonly PBEMove[] secretSwordArray = new PBEMove[1] { PBEMove.SecretSword };
+        private static readonly PBEAlphabeticalList<PBEMove> secretSwordArray = new PBEAlphabeticalList<PBEMove>(new PBEMove[1] { PBEMove.SecretSword });
         private void SetAlloweds()
         {
             // Set alloweds
             int i;
-            PBEMove[] legalMoves = PBELegalityChecker.GetLegalMoves(_species, _level, Settings);
+            PBEMove[] legalMoves = PBELegalityChecker.GetLegalMoves(_species, _form, _level, Settings);
             var allowed = new List<PBEMove>(legalMoves.Length + 1);
             allowed.AddRange(legalMoves);
-            if (_species == PBESpecies.Keldeo_Resolute)
+            if (_species == PBESpecies.Keldeo && _form == PBEForm.Keldeo_Resolute)
             {
                 _list[0].Allowed.Reset(secretSwordArray);
                 allowed.Remove(PBEMove.SecretSword);

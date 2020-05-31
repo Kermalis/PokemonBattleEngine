@@ -96,6 +96,9 @@ namespace Kermalis.PokemonBattleEngine.Battle
         public PBESpecies OriginalSpecies { get; set; }
         /// <summary>The species everyone sees the Pokémon as (affected by transforming, disguising, and form changing).</summary>
         public PBESpecies KnownSpecies { get; set; }
+        public PBEForm Form { get; set; }
+        public PBEForm OriginalForm { get; set; }
+        public PBEForm KnownForm { get; set; }
         public PBEStatus1 Status1 { get; set; }
         public PBEStatus2 Status2 { get; set; }
         public PBEStatus2 KnownStatus2 { get; set; }
@@ -156,7 +159,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
         #region Special Flags
         /// <summary>True if the Pokémon has successfully used <see cref="PBEMove.Minimize"/> which makes it succeptible to double damage from <see cref="PBEMove.Steamroller"/> and <see cref="PBEMove.Stomp"/>.</summary>
         public bool Minimize_Used { get; set; }
-        /// <summary>True if the Pokémon was originally <see cref="PBESpecies.Shaymin_Sky"/> but was <see cref="PBEStatus1.Frozen"/>, therefore forcing it to remain as <see cref="PBESpecies.Shaymin"/> when switching out.</summary>
+        /// <summary>True if the Pokémon was originally <see cref="PBEForm.Shaymin_Sky"/> but was <see cref="PBEStatus1.Frozen"/>, therefore forcing it to remain as <see cref="PBEForm.Shaymin"/> when switching out.</summary>
         public bool Shaymin_CannotChangeBackToSkyForm { get; set; }
         /// <summary>The amount of turns left until a Pokémon with <see cref="PBEAbility.SlowStart"/> loses its hinderance.</summary>
         public byte SlowStart_HinderTurnsLeft { get; set; }
@@ -169,7 +172,8 @@ namespace Kermalis.PokemonBattleEngine.Battle
             Team = team;
             Id = r.ReadByte();
             Species = OriginalSpecies = KnownSpecies = r.ReadEnum<PBESpecies>();
-            var pData = PBEPokemonData.GetData(Species);
+            Form = OriginalForm = KnownForm = r.ReadEnum<PBEForm>();
+            var pData = PBEPokemonData.GetData(Species, Form);
             KnownType1 = Type1 = pData.Type1;
             KnownType2 = Type2 = pData.Type2;
             KnownWeight = Weight = pData.Weight;
@@ -186,7 +190,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
             EffortValues = new PBEEffortValues(Team.Battle.Settings, r);
             IndividualValues = new PBEIndividualValues(Team.Battle.Settings, r);
             SetStats(true);
-            OriginalMoveset = new PBEMoveset(Species, Level, Team.Battle.Settings, r);
+            OriginalMoveset = new PBEMoveset(Species, Form, Level, Team.Battle.Settings, r);
             Moves = new PBEBattleMoveset(OriginalMoveset);
             KnownMoves = new PBEBattleMoveset(Team.Battle.Settings);
             TransformBackupMoves = new PBEBattleMoveset(Team.Battle.Settings);
@@ -197,7 +201,8 @@ namespace Kermalis.PokemonBattleEngine.Battle
             Team = team;
             Id = id;
             Species = OriginalSpecies = KnownSpecies = shell.Species;
-            var pData = PBEPokemonData.GetData(Species);
+            Form = OriginalForm = KnownForm = shell.Form;
+            var pData = PBEPokemonData.GetData(Species, Form);
             KnownType1 = Type1 = pData.Type1;
             KnownType2 = Type2 = pData.Type2;
             KnownWeight = Weight = pData.Weight;
@@ -248,7 +253,8 @@ namespace Kermalis.PokemonBattleEngine.Battle
             KnownNickname = Nickname = info.Nickname;
             KnownShiny = Shiny = info.Shiny;
             KnownSpecies = Species = OriginalSpecies = info.Species;
-            var pData = PBEPokemonData.GetData(KnownSpecies);
+            KnownForm = Form = OriginalForm = info.Form;
+            var pData = PBEPokemonData.GetData(KnownSpecies, KnownForm);
             KnownType1 = Type1 = pData.Type1;
             KnownType2 = Type2 = pData.Type2;
             KnownWeight = Weight = pData.Weight;
@@ -281,15 +287,18 @@ namespace Kermalis.PokemonBattleEngine.Battle
                     break;
                 }
             }
+            Species = KnownSpecies = OriginalSpecies;
             PBEPokemonData pData;
             if (Shaymin_CannotChangeBackToSkyForm)
             {
-                pData = PBEPokemonData.GetData(Species = KnownSpecies = PBESpecies.Shaymin);
+                Form = KnownForm = PBEForm.Shaymin;
+                pData = PBEPokemonData.GetData(PBESpecies.Shaymin, PBEForm.Shaymin);
                 Ability = pData.Abilities[0];
             }
             else
             {
-                pData = PBEPokemonData.GetData(Species = KnownSpecies = OriginalSpecies);
+                Form = KnownForm = OriginalForm;
+                pData = PBEPokemonData.GetData(Species, Form);
                 Ability = OriginalAbility;
             }
             KnownAbility = PBEAbility.MAX;
@@ -345,6 +354,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
         public void SetStats(bool calculateHP)
         {
             PBESpecies species = Species;
+            PBEForm form = Form;
             PBENature nature = Nature;
             PBEEffortValues evs = EffortValues;
             PBEIndividualValues ivs = IndividualValues;
@@ -352,16 +362,16 @@ namespace Kermalis.PokemonBattleEngine.Battle
             PBESettings settings = Team.Battle.Settings;
             if (calculateHP)
             {
-                ushort hp = PBEDataUtils.CalculateStat(PBEStat.HP, species, nature, evs[PBEStat.HP].Value, ivs[PBEStat.HP].Value, level, settings);
+                ushort hp = PBEDataUtils.CalculateStat(PBEStat.HP, species, form, nature, evs[PBEStat.HP].Value, ivs[PBEStat.HP].Value, level, settings);
                 MaxHP = hp;
                 HP = hp;
                 HPPercentage = 1d;
             }
-            Attack = PBEDataUtils.CalculateStat(PBEStat.Attack, species, nature, evs[PBEStat.Attack].Value, ivs[PBEStat.Attack].Value, level, settings);
-            Defense = PBEDataUtils.CalculateStat(PBEStat.Defense, species, nature, evs[PBEStat.Defense].Value, ivs[PBEStat.Defense].Value, level, settings);
-            SpAttack = PBEDataUtils.CalculateStat(PBEStat.SpAttack, species, nature, evs[PBEStat.SpAttack].Value, ivs[PBEStat.SpAttack].Value, level, settings);
-            SpDefense = PBEDataUtils.CalculateStat(PBEStat.SpDefense, species, nature, evs[PBEStat.SpDefense].Value, ivs[PBEStat.SpDefense].Value, level, settings);
-            Speed = PBEDataUtils.CalculateStat(PBEStat.Speed, species, nature, evs[PBEStat.Speed].Value, ivs[PBEStat.Speed].Value, level, settings);
+            Attack = PBEDataUtils.CalculateStat(PBEStat.Attack, species, form, nature, evs[PBEStat.Attack].Value, ivs[PBEStat.Attack].Value, level, settings);
+            Defense = PBEDataUtils.CalculateStat(PBEStat.Defense, species, form, nature, evs[PBEStat.Defense].Value, ivs[PBEStat.Defense].Value, level, settings);
+            SpAttack = PBEDataUtils.CalculateStat(PBEStat.SpAttack, species, form, nature, evs[PBEStat.SpAttack].Value, ivs[PBEStat.SpAttack].Value, level, settings);
+            SpDefense = PBEDataUtils.CalculateStat(PBEStat.SpDefense, species, form, nature, evs[PBEStat.SpDefense].Value, ivs[PBEStat.SpDefense].Value, level, settings);
+            Speed = PBEDataUtils.CalculateStat(PBEStat.Speed, species, form, nature, evs[PBEStat.Speed].Value, ivs[PBEStat.Speed].Value, level, settings);
         }
         /// <summary>Copies the <paramref name="target"/>, does not set <see cref="PBEStatus2.Transformed"/>.</summary>
         /// <param name="target">The Pokémon to transform into.</param>

@@ -1811,62 +1811,61 @@ namespace Kermalis.PokemonBattleEngine.Battle
         }
         private void CastformCherrimCheck(PBEPokemon pkmn)
         {
-            // Castform & Cherrim may be changing form because their ability was swapped or suppressed, so check for the specific ability before setting KnownAbility
-            if (pkmn.OriginalSpecies == PBESpecies.Castform)
+            if (pkmn.Species == PBESpecies.Castform && pkmn.OriginalSpecies == PBESpecies.Castform)
             {
-                PBESpecies newSpecies = PBESpecies.Castform;
+                PBEForm newForm = PBEForm.Castform;
                 if (pkmn.Ability == PBEAbility.Forecast)
                 {
                     if (ShouldDoWeatherEffects())
                     {
                         switch (Weather)
                         {
-                            case PBEWeather.Hailstorm: newSpecies = PBESpecies.Castform_Snowy; break;
-                            case PBEWeather.HarshSunlight: newSpecies = PBESpecies.Castform_Sunny; break;
-                            case PBEWeather.Rain: newSpecies = PBESpecies.Castform_Rainy; break;
+                            case PBEWeather.Hailstorm: newForm = PBEForm.Castform_Snowy; break;
+                            case PBEWeather.HarshSunlight: newForm = PBEForm.Castform_Sunny; break;
+                            case PBEWeather.Rain: newForm = PBEForm.Castform_Rainy; break;
                         }
-                        if (newSpecies != pkmn.Species)
+                        if (newForm != pkmn.Form)
                         {
                             BroadcastAbility(pkmn, pkmn, pkmn.Ability, PBEAbilityAction.ChangedAppearance);
                         }
                     }
                 }
-                if (newSpecies != pkmn.Species)
+                if (newForm != pkmn.Form)
                 {
-                    BroadcastPkmnFormChanged(pkmn, newSpecies, pkmn.Ability, pkmn.KnownAbility);
+                    BroadcastPkmnFormChanged(pkmn, newForm, pkmn.Ability, pkmn.KnownAbility);
                 }
             }
-            else if (pkmn.OriginalSpecies == PBESpecies.Cherrim)
+            else if (pkmn.Species == PBESpecies.Cherrim && pkmn.OriginalSpecies == PBESpecies.Cherrim)
             {
-                PBESpecies newSpecies = PBESpecies.Cherrim;
+                PBEForm newForm = PBEForm.Cherrim;
                 if (pkmn.Ability == PBEAbility.FlowerGift)
                 {
                     if (ShouldDoWeatherEffects())
                     {
                         if (Weather == PBEWeather.HarshSunlight)
                         {
-                            newSpecies = PBESpecies.Cherrim_Sunshine;
+                            newForm = PBEForm.Cherrim_Sunshine;
                         }
-                        if (newSpecies != pkmn.Species)
+                        if (newForm != pkmn.Form)
                         {
                             BroadcastAbility(pkmn, pkmn, pkmn.Ability, PBEAbilityAction.ChangedAppearance);
                         }
                     }
                 }
-                if (newSpecies != pkmn.Species)
+                if (newForm != pkmn.Form)
                 {
-                    BroadcastPkmnFormChanged(pkmn, newSpecies, pkmn.Ability, pkmn.KnownAbility);
+                    BroadcastPkmnFormChanged(pkmn, newForm, pkmn.Ability, pkmn.KnownAbility);
                 }
             }
         }
         private void ShayminCheck(PBEPokemon pkmn)
         {
             // If a Shaymin_Sky is given MagmaArmor and then Frozen, it will change to Shaymin and obtain Shaymin's ability, therefore losing MagmaArmor and as a result will not be cured of its Frozen status.
-            if (pkmn.Species == PBESpecies.Shaymin_Sky && pkmn.OriginalSpecies == PBESpecies.Shaymin_Sky && pkmn.Status1 == PBEStatus1.Frozen)
+            if (pkmn.Species == PBESpecies.Shaymin && pkmn.OriginalSpecies == PBESpecies.Shaymin && pkmn.Form == PBEForm.Shaymin_Sky && pkmn.Status1 == PBEStatus1.Frozen)
             {
-                const PBESpecies newSpecies = PBESpecies.Shaymin;
+                const PBEForm newForm = PBEForm.Shaymin;
                 pkmn.Shaymin_CannotChangeBackToSkyForm = true;
-                BroadcastPkmnFormChanged(pkmn, newSpecies, PBEPokemonData.GetData(newSpecies).Abilities[0], PBEAbility.MAX);
+                BroadcastPkmnFormChanged(pkmn, newForm, PBEPokemonData.GetData(PBESpecies.Shaymin, newForm).Abilities[0], PBEAbility.MAX);
                 ActivateAbility(pkmn, false);
             }
         }
@@ -2422,7 +2421,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
         {
             if (pkmn.Ability == PBEAbility.Illusion)
             {
-                PBEPokemon last = pkmn.Team.Party.Last();
+                PBEPokemon last = pkmn.Team.Party[pkmn.Team.Party.Count - 1];
                 if (last.HP > 0 && last.OriginalSpecies != pkmn.OriginalSpecies)
                 {
                     pkmn.Status2 |= PBEStatus2.Disguised; // No broadcast, not known
@@ -2431,13 +2430,14 @@ namespace Kermalis.PokemonBattleEngine.Battle
                     pkmn.KnownNickname = last.Nickname;
                     pkmn.KnownShiny = last.Shiny;
                     pkmn.KnownSpecies = last.OriginalSpecies;
-                    var pData = PBEPokemonData.GetData(last.OriginalSpecies);
+                    pkmn.KnownForm = last.Form;
+                    var pData = PBEPokemonData.GetData(pkmn.KnownSpecies, pkmn.KnownForm);
                     pkmn.KnownType1 = pData.Type1;
                     pkmn.KnownType2 = pData.Type2;
-                    return new PBEPkmnSwitchInPacket.PBESwitchInInfo(pkmn.Id, last.Id, last.OriginalSpecies, last.Nickname, pkmn.Level, last.Shiny, last.Gender, pkmn.HP, pkmn.MaxHP, pkmn.HPPercentage, pkmn.Status1, pkmn.FieldPosition);
+                    return new PBEPkmnSwitchInPacket.PBESwitchInInfo(pkmn.Id, last.Id, last.OriginalSpecies, last.Form, last.Nickname, pkmn.Level, last.Shiny, last.Gender, pkmn.HP, pkmn.MaxHP, pkmn.HPPercentage, pkmn.Status1, pkmn.FieldPosition);
                 }
             }
-            return new PBEPkmnSwitchInPacket.PBESwitchInInfo(pkmn.Id, pkmn.Id, pkmn.Species, pkmn.Nickname, pkmn.Level, pkmn.Shiny, pkmn.Gender, pkmn.HP, pkmn.MaxHP, pkmn.HPPercentage, pkmn.Status1, pkmn.FieldPosition);
+            return new PBEPkmnSwitchInPacket.PBESwitchInInfo(pkmn.Id, pkmn.Id, pkmn.Species, pkmn.Form, pkmn.Nickname, pkmn.Level, pkmn.Shiny, pkmn.Gender, pkmn.HP, pkmn.MaxHP, pkmn.HPPercentage, pkmn.Status1, pkmn.FieldPosition);
         }
         private void SwitchTwoPokemon(PBEPokemon pkmnLeaving, PBEPokemon pkmnComing, PBEPokemon forcedByPkmn = null)
         {

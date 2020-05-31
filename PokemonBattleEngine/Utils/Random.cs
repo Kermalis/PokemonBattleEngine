@@ -82,39 +82,13 @@ namespace Kermalis.PokemonBattleEngine.Utils
         {
             return RandomBool(8, 65536);
         }
-        /// <summary>Returns a random <see cref="PBESpecies"/> with a random form. All species are weighted equally. Forms that cannot be maintained outside of battle are not considered.</summary>
-        public static PBESpecies RandomSpecies()
+        /// <summary>Returns a random <see cref="PBESpecies"/> with a random <see cref="PBEForm"/>.</summary>
+        public static (PBESpecies, PBEForm) RandomSpecies(bool requireUsableOutsideOfBattle)
         {
-            PBESpecies species = PBEPokemonShell.AllSpeciesBaseForm.RandomElement();
-            int numForms;
-            switch (species)
-            {
-                case PBESpecies.Arceus: numForms = 17; break;
-                case PBESpecies.Basculin_Blue: numForms = 2; break;
-                case PBESpecies.Burmy_Plant: numForms = 3; break;
-                // Castform's alternate forms cannot be used outside of battle
-                // Cherrims's alternate form cannot be used outside of battle
-                // Darmanitan's alternate form cannot be used outside of battle
-                case PBESpecies.Deerling_Autumn: numForms = 4; break;
-                case PBESpecies.Deoxys: numForms = 4; break;
-                case PBESpecies.Gastrodon_East: numForms = 2; break;
-                case PBESpecies.Genesect: numForms = 5; break;
-                case PBESpecies.Giratina: numForms = 2; break;
-                case PBESpecies.Keldeo: numForms = 2; break;
-                case PBESpecies.Kyurem: numForms = 3; break;
-                case PBESpecies.Landorus: numForms = 2; break;
-                // Meloetta's alternate form cannot be used outside of battle
-                case PBESpecies.Rotom: numForms = 6; break;
-                case PBESpecies.Sawsbuck_Autumn: numForms = 4; break;
-                case PBESpecies.Shaymin: numForms = 2; break;
-                case PBESpecies.Shellos_East: numForms = 2; break;
-                case PBESpecies.Thundurus: numForms = 2; break;
-                case PBESpecies.Tornadus: numForms = 2; break;
-                case PBESpecies.Unown_A: numForms = 28; break;
-                case PBESpecies.Wormadam_Plant: numForms = 3; break;
-                default: numForms = 1; break;
-            }
-            return (PBESpecies)(((ushort)species) | (uint)(RandomInt(0, numForms - 1) << 0x10)); // Change form ID to a random form
+            PBESpecies species = PBEDataUtils.AllSpecies.RandomElement();
+            IReadOnlyList<PBEForm> forms = PBEDataUtils.GetForms(species, requireUsableOutsideOfBattle);
+            PBEForm form = forms.Count > 0 ? forms.RandomElement() : 0;
+            return (species, form);
         }
         public static void SetSeed(int seed)
         {

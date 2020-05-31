@@ -17,6 +17,7 @@ namespace Kermalis.PokemonBattleEngine.Packets
             public byte PokemonId { get; }
             public byte DisguisedAsId { get; }
             public PBESpecies Species { get; }
+            public PBEForm Form { get; }
             public string Nickname { get; }
             public byte Level { get; }
             public bool Shiny { get; }
@@ -27,11 +28,12 @@ namespace Kermalis.PokemonBattleEngine.Packets
             public PBEStatus1 Status1 { get; }
             public PBEFieldPosition FieldPosition { get; }
 
-            internal PBESwitchInInfo(byte pkmnId, byte disguisedAsId, PBESpecies species, string nickname, byte level, bool shiny, PBEGender gender, ushort hp, ushort maxHP, double hpPercentage, PBEStatus1 status1, PBEFieldPosition fieldPosition)
+            internal PBESwitchInInfo(byte pkmnId, byte disguisedAsId, PBESpecies species, PBEForm form, string nickname, byte level, bool shiny, PBEGender gender, ushort hp, ushort maxHP, double hpPercentage, PBEStatus1 status1, PBEFieldPosition fieldPosition)
             {
                 PokemonId = pkmnId;
                 DisguisedAsId = disguisedAsId;
                 Species = species;
+                Form = form;
                 Nickname = nickname;
                 Level = level;
                 Shiny = shiny;
@@ -47,6 +49,7 @@ namespace Kermalis.PokemonBattleEngine.Packets
                 PokemonId = r.ReadByte();
                 DisguisedAsId = r.ReadByte();
                 Species = r.ReadEnum<PBESpecies>();
+                Form = r.ReadEnum<PBEForm>();
                 Nickname = r.ReadStringNullTerminated();
                 Level = r.ReadByte();
                 Shiny = r.ReadBoolean();
@@ -63,6 +66,7 @@ namespace Kermalis.PokemonBattleEngine.Packets
                 w.Write(PokemonId);
                 w.Write(DisguisedAsId);
                 w.Write(Species);
+                w.Write(Form);
                 w.Write(Nickname, true);
                 w.Write(Level);
                 w.Write(Shiny);
@@ -129,7 +133,7 @@ namespace Kermalis.PokemonBattleEngine.Packets
             for (int i = 0; i < hiddenSwitchIns.Length; i++)
             {
                 PBESwitchInInfo s = SwitchIns[i];
-                hiddenSwitchIns[i] = new PBESwitchInInfo(byte.MaxValue, byte.MaxValue, s.Species, s.Nickname, s.Level, s.Shiny, s.Gender, ushort.MinValue, ushort.MinValue, s.HPPercentage, s.Status1, s.FieldPosition);
+                hiddenSwitchIns[i] = new PBESwitchInInfo(byte.MaxValue, byte.MaxValue, s.Species, s.Form, s.Nickname, s.Level, s.Shiny, s.Gender, ushort.MinValue, ushort.MinValue, s.HPPercentage, s.Status1, s.FieldPosition);
             }
             return new PBEPkmnSwitchInPacket(Team, hiddenSwitchIns, Forced, ForcedByPokemonPosition, ForcedByPokemonTeam);
         }

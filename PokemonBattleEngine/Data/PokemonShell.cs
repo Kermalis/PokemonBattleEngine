@@ -3,35 +3,12 @@ using Kermalis.PokemonBattleEngine.Utils;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using System;
-using System.Collections.Generic;
 using System.ComponentModel;
-using System.Linq;
 
 namespace Kermalis.PokemonBattleEngine.Data
 {
     public sealed class PBEPokemonShell : IDisposable, INotifyPropertyChanged
     {
-        // TODO: Move these to PBEUtils
-        public static PBEAlphabeticalList<PBESpecies> AllSpecies { get; } = new PBEAlphabeticalList<PBESpecies>(
-            Enum.GetValues(typeof(PBESpecies))
-            .Cast<PBESpecies>()
-            .Except(new[] { PBESpecies.Castform_Rainy, PBESpecies.Castform_Snowy, PBESpecies.Castform_Sunny, PBESpecies.Cherrim_Sunshine, PBESpecies.Darmanitan_Zen, PBESpecies.Meloetta_Pirouette })
-            );
-        public static PBEAlphabeticalList<PBESpecies> AllSpeciesBaseForm { get; } = new PBEAlphabeticalList<PBESpecies>(
-            Enum.GetValues(typeof(PBESpecies))
-            .Cast<PBESpecies>()
-            .Where(s => ((uint)s >> 0x10) == 0)
-            );
-        public static PBEAlphabeticalList<PBENature> AllNatures { get; } = new PBEAlphabeticalList<PBENature>(
-            Enum.GetValues(typeof(PBENature))
-            .Cast<PBENature>()
-            .Except(new[] { PBENature.MAX })
-            );
-        public static PBEAlphabeticalList<PBEItem> AllItems { get; } = new PBEAlphabeticalList<PBEItem>(
-            Enum.GetValues(typeof(PBEItem))
-            .Cast<PBEItem>()
-            );
-
         private void OnPropertyChanged(string property)
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(property));
@@ -42,6 +19,7 @@ namespace Kermalis.PokemonBattleEngine.Data
 
         private PBEPokemonData _pData;
         public PBEAlphabeticalList<PBEAbility> SelectableAbilities { get; } = new PBEAlphabeticalList<PBEAbility>();
+        public PBEAlphabeticalList<PBEForm> SelectableForms { get; } = new PBEAlphabeticalList<PBEForm>();
         public PBEAlphabeticalList<PBEGender> SelectableGenders { get; } = new PBEAlphabeticalList<PBEGender>();
         public PBEAlphabeticalList<PBEItem> SelectableItems { get; } = new PBEAlphabeticalList<PBEItem>();
 
@@ -53,11 +31,28 @@ namespace Kermalis.PokemonBattleEngine.Data
             {
                 if (_species != value)
                 {
-                    ValidateSpecies(value);
-                    PBESpecies old = _species;
+                    ValidateSpecies(value, 0);
+                    PBESpecies oldSpecies = _species;
                     _species = value;
+                    _form = 0;
                     OnPropertyChanged(nameof(Species));
-                    OnSpeciesChanged(old);
+                    OnSpeciesChanged(oldSpecies);
+                    OnPropertyChanged(nameof(Form));
+                }
+            }
+        }
+        private PBEForm _form;
+        public PBEForm Form
+        {
+            get => _form;
+            set
+            {
+                if (_form != value)
+                {
+                    ValidateSpecies(_species, value);
+                    _form = value;
+                    OnPropertyChanged(nameof(Form));
+                    OnFormChanged();
                 }
             }
         }
@@ -180,8 +175,10 @@ namespace Kermalis.PokemonBattleEngine.Data
         {
             Settings = settings;
             PBESpecies species = r.ReadEnum<PBESpecies>();
-            ValidateSpecies(species);
+            PBEForm form = r.ReadEnum<PBEForm>();
+            ValidateSpecies(species, form);
             _species = species;
+            _form = form;
             SetSelectable();
             string nickname = r.ReadStringNullTerminated();
             ValidateNickname(nickname, Settings);
@@ -206,7 +203,7 @@ namespace Kermalis.PokemonBattleEngine.Data
             Settings.PropertyChanged += OnSettingsChanged;
             EffortValues = new PBEEffortValues(Settings, r);
             IndividualValues = new PBEIndividualValues(Settings, r);
-            Moveset = new PBEMoveset(species, level, Settings, r);
+            Moveset = new PBEMoveset(species, form, level, Settings, r);
         }
         internal PBEPokemonShell(PBESettings settings, JToken jToken)
         {
@@ -223,8 +220,18 @@ namespace Kermalis.PokemonBattleEngine.Data
             ValidateNature(nature);
             _nature = nature;
             PBESpecies species = PBELocalizedString.GetSpeciesByName(jToken[nameof(Species)].Value<string>()).Value;
-            ValidateSpecies(species);
+            PBEForm form;
+            if (PBEDataUtils.HasForms(species, true))
+            {
+                form = (PBEForm)Enum.Parse(typeof(PBEForm), jToken[nameof(Form)].Value<string>());
+            }
+            else
+            {
+                form = 0;
+            }
+            ValidateSpecies(species, form);
             _species = species;
+            _form = form;
             SetSelectable();
             PBEAbility ability = PBELocalizedString.GetAbilityByName(jToken[nameof(Ability)].Value<string>()).Value;
             ValidateAbility(ability);
@@ -238,74 +245,46 @@ namespace Kermalis.PokemonBattleEngine.Data
             Settings.PropertyChanged += OnSettingsChanged;
             EffortValues = new PBEEffortValues(Settings, jToken[nameof(EffortValues)]);
             IndividualValues = new PBEIndividualValues(Settings, jToken[nameof(IndividualValues)]);
-            Moveset = new PBEMoveset(species, level, Settings, (JArray)jToken[nameof(Moveset)]);
+            Moveset = new PBEMoveset(species, form, level, Settings, (JArray)jToken[nameof(Moveset)]);
         }
-        public PBEPokemonShell(PBESpecies species, byte level, PBESettings settings)
+        public PBEPokemonShell(PBESpecies species, PBEForm form, byte level, PBESettings settings)
         {
+            ValidateSpecies(species, form);
             ValidateLevel(level, settings);
-            ValidateSpecies(species);
             Settings = settings;
             Settings.PropertyChanged += OnSettingsChanged;
             _canDispose = true;
             _species = species;
+            _form = form;
             _level = level;
             _friendship = (byte)PBERandom.RandomInt(0, byte.MaxValue);
             _shiny = PBERandom.RandomShiny();
-            _nature = AllNatures.RandomElement();
+            _nature = PBEDataUtils.AllNatures.RandomElement();
             EffortValues = new PBEEffortValues(Settings, true) { CanDispose = false };
             IndividualValues = new PBEIndividualValues(Settings, true) { CanDispose = false };
-            Moveset = new PBEMoveset(_species, _level, Settings, true) { CanDispose = false };
+            Moveset = new PBEMoveset(_species, _form, _level, Settings, true) { CanDispose = false };
             OnSpeciesChanged(0);
         }
         private void SetSelectable()
         {
-            _pData = PBEPokemonData.GetData(_species);
+            _pData = PBEPokemonData.GetData(_species, _form);
             SelectableAbilities.Reset(_pData.Abilities);
-            PBEGender[] selectableGenders;
-            switch (_pData.GenderRatio)
+            SelectableForms.Reset(PBEDataUtils.GetForms(_species, true));
+            SelectableGenders.Reset(PBEDataUtils.GetValidGenders(_pData.GenderRatio));
+            SelectableItems.Reset(PBEDataUtils.GetValidItems(_species, _form));
+        }
+        private void OnFormChanged()
+        {
+            SetSelectable();
+            if (!SelectableAbilities.Contains(_ability))
             {
-                case PBEGenderRatio.M0_F0: selectableGenders = new[] { PBEGender.Genderless }; break;
-                case PBEGenderRatio.M1_F0: selectableGenders = new[] { PBEGender.Male }; break;
-                case PBEGenderRatio.M0_F1: selectableGenders = new[] { PBEGender.Female }; break;
-                default: selectableGenders = new[] { PBEGender.Female, PBEGender.Male }; break;
+                Ability = SelectableAbilities.RandomElement();
             }
-            SelectableGenders.Reset(selectableGenders);
-            IEnumerable<PBEItem> selectableItems;
-            switch (_species)
+            if (!SelectableItems.Contains(_item))
             {
-                case PBESpecies.Giratina: selectableItems = AllItems.Except(new[] { PBEItem.GriseousOrb }); break;
-                case PBESpecies.Giratina_Origin: selectableItems = new[] { PBEItem.GriseousOrb }; break;
-                case PBESpecies.Arceus:
-                {
-                    selectableItems = AllItems.Except(new[] { PBEItem.DracoPlate, PBEItem.DreadPlate, PBEItem.EarthPlate, PBEItem.FistPlate,
-                                PBEItem.FlamePlate, PBEItem.IciclePlate, PBEItem.InsectPlate, PBEItem.IronPlate, PBEItem.MeadowPlate, PBEItem.MindPlate, PBEItem.SkyPlate,
-                                PBEItem.SplashPlate, PBEItem.SpookyPlate, PBEItem.StonePlate, PBEItem.ToxicPlate, PBEItem.ZapPlate });
-                    break;
-                }
-                case PBESpecies.Arceus_Bug: selectableItems = new[] { PBEItem.InsectPlate }; break;
-                case PBESpecies.Arceus_Dark: selectableItems = new[] { PBEItem.DreadPlate }; break;
-                case PBESpecies.Arceus_Dragon: selectableItems = new[] { PBEItem.DracoPlate }; break;
-                case PBESpecies.Arceus_Electric: selectableItems = new[] { PBEItem.ZapPlate }; break;
-                case PBESpecies.Arceus_Fighting: selectableItems = new[] { PBEItem.FistPlate }; break;
-                case PBESpecies.Arceus_Fire: selectableItems = new[] { PBEItem.FlamePlate }; break;
-                case PBESpecies.Arceus_Flying: selectableItems = new[] { PBEItem.SkyPlate }; break;
-                case PBESpecies.Arceus_Ghost: selectableItems = new[] { PBEItem.SpookyPlate }; break;
-                case PBESpecies.Arceus_Grass: selectableItems = new[] { PBEItem.MeadowPlate }; break;
-                case PBESpecies.Arceus_Ground: selectableItems = new[] { PBEItem.EarthPlate }; break;
-                case PBESpecies.Arceus_Ice: selectableItems = new[] { PBEItem.IciclePlate }; break;
-                case PBESpecies.Arceus_Poison: selectableItems = new[] { PBEItem.ToxicPlate }; break;
-                case PBESpecies.Arceus_Psychic: selectableItems = new[] { PBEItem.MindPlate }; break;
-                case PBESpecies.Arceus_Rock: selectableItems = new[] { PBEItem.StonePlate }; break;
-                case PBESpecies.Arceus_Steel: selectableItems = new[] { PBEItem.IronPlate }; break;
-                case PBESpecies.Arceus_Water: selectableItems = new[] { PBEItem.SplashPlate }; break;
-                case PBESpecies.Genesect: selectableItems = AllItems.Except(new[] { PBEItem.BurnDrive, PBEItem.ChillDrive, PBEItem.DouseDrive, PBEItem.ShockDrive }); break;
-                case PBESpecies.Genesect_Burn: selectableItems = new[] { PBEItem.BurnDrive }; break;
-                case PBESpecies.Genesect_Chill: selectableItems = new[] { PBEItem.ChillDrive }; break;
-                case PBESpecies.Genesect_Douse: selectableItems = new[] { PBEItem.DouseDrive }; break;
-                case PBESpecies.Genesect_Shock: selectableItems = new[] { PBEItem.ShockDrive }; break;
-                default: selectableItems = AllItems; break;
+                Item = SelectableItems.RandomElement();
             }
-            SelectableItems.Reset(selectableItems);
+            Moveset.Form = _form;
         }
         private void OnSpeciesChanged(PBESpecies oldSpecies)
         {
@@ -334,6 +313,7 @@ namespace Kermalis.PokemonBattleEngine.Data
             if (oldSpecies != 0)
             {
                 Moveset.Species = _species;
+                Moveset.Form = _form;
             }
         }
 
@@ -368,11 +348,11 @@ namespace Kermalis.PokemonBattleEngine.Data
             }
         }
 
-        internal static void ValidateSpecies(PBESpecies value)
+        internal static void ValidateSpecies(PBESpecies species, PBEForm form)
         {
-            if (!AllSpecies.Contains(value))
+            if (!PBEDataUtils.IsValidForm(species, form, true))
             {
-                throw new ArgumentOutOfRangeException(nameof(value));
+                throw new ArgumentOutOfRangeException(nameof(form));
             }
         }
         internal static void ValidateNickname(string value, PBESettings settings)
@@ -402,7 +382,7 @@ namespace Kermalis.PokemonBattleEngine.Data
         }
         internal static void ValidateNature(PBENature value)
         {
-            if (!AllNatures.Contains(value))
+            if (!PBEDataUtils.AllNatures.Contains(value))
             {
                 throw new ArgumentOutOfRangeException(nameof(value));
             }
@@ -425,6 +405,7 @@ namespace Kermalis.PokemonBattleEngine.Data
         internal void ToBytes(EndianBinaryWriter w)
         {
             w.Write(_species);
+            w.Write(_form);
             w.Write(_nickname, true);
             w.Write(_level);
             w.Write(_friendship);
@@ -442,6 +423,11 @@ namespace Kermalis.PokemonBattleEngine.Data
             w.WriteStartObject();
             w.WritePropertyName(nameof(Species));
             w.WriteValue(_species.ToString());
+            if (PBEDataUtils.HasForms(_species, true))
+            {
+                w.WritePropertyName(nameof(Form));
+                w.WriteValue(PBEDataUtils.GetNameOfForm(_species, _form));
+            }
             w.WritePropertyName(nameof(Nickname));
             w.WriteValue(_nickname);
             w.WritePropertyName(nameof(Level));

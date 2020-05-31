@@ -199,6 +199,8 @@ namespace Kermalis.PokemonBattleEngineDiscord
             [Alias("data")]
             public async Task Info([Remainder] string speciesName)
             {
+                // TODO: Split by "," and take form as split[1]
+                // TODO: Add form as (Origin) etc next to species name title
                 PBESpecies? nSpecies = PBELocalizedString.GetSpeciesByName(speciesName);
                 if (!nSpecies.HasValue)
                 {
@@ -207,7 +209,8 @@ namespace Kermalis.PokemonBattleEngineDiscord
                 else
                 {
                     PBESpecies species = nSpecies.Value;
-                    var pData = PBEPokemonData.GetData(species);
+                    PBEForm form = 0;
+                    var pData = PBEPokemonData.GetData(species, form);
                     string types = $"{Utils.TypeEmotes[pData.Type1]}";
                     if (pData.Type2 != PBEType.None)
                     {
@@ -288,7 +291,7 @@ namespace Kermalis.PokemonBattleEngineDiscord
                         .AddField("Type Weaknesses", weaknesses, true)
                         .AddField("Type Resistances", resistances, true)
                         .AddField("Type Immunities", immunities, true)
-                        .WithImageUrl(Utils.GetPokemonSprite(species, PBERandom.RandomShiny(), PBERandom.RandomGender(pData.GenderRatio), false, false));
+                        .WithImageUrl(Utils.GetPokemonSprite(species, form, PBERandom.RandomShiny(), PBERandom.RandomGender(pData.GenderRatio), false, false));
                     await Context.Channel.SendMessageAsync(string.Empty, embed: embed.Build());
                 }
             }

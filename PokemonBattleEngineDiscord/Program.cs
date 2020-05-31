@@ -20,6 +20,7 @@ namespace Kermalis.PokemonBattleEngineDiscord
         }
         private async Task MainAsync(string[] args)
         {
+            Utils.InitFemaleSpriteLookup();
             ReplaySaver.RemoveOldReplays();
 
             PBEUtils.CreateDatabaseConnection(string.Empty);
