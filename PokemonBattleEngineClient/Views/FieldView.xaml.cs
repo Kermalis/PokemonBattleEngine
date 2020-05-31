@@ -53,35 +53,35 @@ namespace Kermalis.PokemonBattleEngineClient.Views
         private BattleView _battleView;
         private static IBrush _hailstormDim, _harshSunlightDim, _rainDim, _sandstormDim;
 
+        internal static void CreateBrushes()
+        {
+            _hailstormDim = new SolidColorBrush(Color.FromUInt32(0x20D0FFFF));
+            _harshSunlightDim = new LinearGradientBrush()
+            {
+                StartPoint = new RelativePoint(0.0, 1.0, RelativeUnit.Relative),
+                EndPoint = new RelativePoint(1.0, 0.0, RelativeUnit.Relative),
+                GradientStops =
+                {
+                    new GradientStop { Color = Color.FromUInt32(0x60FFF0A0), Offset = 0.0 },
+                    new GradientStop { Color = Color.FromUInt32(0x20FFD080), Offset = 1.0 }
+                }
+            };
+            _rainDim = new SolidColorBrush(Color.FromUInt32(0x40000000));
+            _sandstormDim = new LinearGradientBrush()
+            {
+                StartPoint = new RelativePoint(0.0, 0.0, RelativeUnit.Relative),
+                EndPoint = new RelativePoint(0.0, 1.0, RelativeUnit.Relative),
+                GradientStops =
+                {
+                    new GradientStop { Color = Color.FromUInt32(0x40FF7F00), Offset = 0.0 },
+                    new GradientStop { Color = Color.FromUInt32(0x60FFF0A0), Offset = 0.3 },
+                    new GradientStop { Color = Color.FromUInt32(0x30FFC000), Offset = 1.0 }
+                }
+            };
+        }
+
         public FieldView()
         {
-            if (_hailstormDim == null)
-            {
-                _hailstormDim = new SolidColorBrush(Color.FromUInt32(0x20D0FFFF));
-                _harshSunlightDim = new LinearGradientBrush()
-                {
-                    StartPoint = new RelativePoint(0.0, 1.0, RelativeUnit.Relative),
-                    EndPoint = new RelativePoint(1.0, 0.0, RelativeUnit.Relative),
-                    GradientStops =
-                    {
-                        new GradientStop { Color = Color.FromUInt32(0x60FFF0A0), Offset = 0.0 },
-                        new GradientStop { Color = Color.FromUInt32(0x20FFD080), Offset = 1.0 }
-                    }
-                };
-                _rainDim = new SolidColorBrush(Color.FromUInt32(0x40000000));
-                _sandstormDim = new LinearGradientBrush()
-                {
-                    StartPoint = new RelativePoint(0.0, 0.0, RelativeUnit.Relative),
-                    EndPoint = new RelativePoint(0.0, 1.0, RelativeUnit.Relative),
-                    GradientStops =
-                    {
-                        new GradientStop { Color = Color.FromUInt32(0x40FF7F00), Offset = 0.0 },
-                        new GradientStop { Color = Color.FromUInt32(0x60FFF0A0), Offset = 0.3 },
-                        new GradientStop { Color = Color.FromUInt32(0x30FFC000), Offset = 1.0 }
-                    }
-                };
-            }
-
             DataContext = this;
             AvaloniaXamlLoader.Load(this);
         }

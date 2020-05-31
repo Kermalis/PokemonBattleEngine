@@ -2,6 +2,7 @@
 using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.Markup.Xaml;
 using Kermalis.PokemonBattleEngineClient.Models;
+using Kermalis.PokemonBattleEngineClient.Views;
 using System;
 
 namespace Kermalis.PokemonBattleEngineClient
@@ -16,6 +17,8 @@ namespace Kermalis.PokemonBattleEngineClient
         public override void OnFrameworkInitializationCompleted()
         {
             MoveInfo.CreateBrushes();
+            HPBarView.CreateBrushes();
+            FieldView.CreateBrushes();
             switch (ApplicationLifetime)
             {
                 case null: break;

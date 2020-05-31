@@ -3,7 +3,6 @@ using Avalonia.Markup.Xaml;
 using Avalonia.Threading;
 using Kermalis.PokemonBattleEngine.Data;
 using Kermalis.PokemonBattleEngineClient.Views;
-using ReactiveUI;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
@@ -51,11 +50,10 @@ namespace Kermalis.PokemonBattleEngineClient
             _ip = this.FindControl<TextBox>("IP");
             _port = this.FindControl<NumericUpDown>("Port");
             _connect = this.FindControl<Button>("Connect");
-            _connect.Command = ReactiveCommand.Create(Connect);
             _connect.IsEnabled = true;
         }
 
-        private void Connect()
+        public void Connect()
         {
             _connect.IsEnabled = false;
             ConnectText = "Connecting...";
@@ -87,11 +85,11 @@ namespace Kermalis.PokemonBattleEngineClient
                 Name = "Connect Thread"
             }.Start();
         }
-        private void WatchReplay()
+        public void WatchReplay()
         {
             Add(new ReplayClient(@"C:\Users\Kermalis\Documents\Development\GitHub\PokeI\bin\Release\netcoreapp3.1\AI Final Replay.pbereplay"));
         }
-        private void SinglePlayer()
+        public void SinglePlayer()
         {
             PBESettings settings = PBESettings.DefaultSettings;
             PBETeamShell team1Shell, team2Shell;

@@ -37,18 +37,18 @@ namespace Kermalis.PokemonBattleEngineClient.Views
 
         private static SolidColorBrush _greenSides, _greenMid, _yellowSides, _yellowMid, _redSides, _redMid;
 
+        internal static void CreateBrushes()
+        {
+            _greenSides = new SolidColorBrush(0xFF008C29);
+            _greenMid = new SolidColorBrush(0xFF00FF4A);
+            _yellowSides = new SolidColorBrush(0xFF9C6310);
+            _yellowMid = new SolidColorBrush(0xFFF7B500);
+            _redSides = new SolidColorBrush(0xFF942131);
+            _redMid = new SolidColorBrush(0xFFFF3142);
+        }
+
         public HPBarView()
         {
-            if (_greenSides == null)
-            {
-                _greenSides = new SolidColorBrush(0xFF008C29);
-                _greenMid = new SolidColorBrush(0xFF00FF4A);
-                _yellowSides = new SolidColorBrush(0xFF9C6310);
-                _yellowMid = new SolidColorBrush(0xFFF7B500);
-                _redSides = new SolidColorBrush(0xFF942131);
-                _redMid = new SolidColorBrush(0xFFFF3142);
-            }
-
             DataContext = this;
             AvaloniaXamlLoader.Load(this);
         }

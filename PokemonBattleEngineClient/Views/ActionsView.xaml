@@ -51,40 +51,40 @@
           <ColumnDefinition Width="1*"/>
           <ColumnDefinition Width="3*"/>
         </Grid.ColumnDefinitions>
-        <Button Grid.Column="0" Grid.Row="0" IsEnabled="{Binding TargetFoeRightEnabled}" Background="#F75231" BorderBrush="#732108" BorderThickness="4" Command="{Binding SelectTargetCommand}" CommandParameter="FoeRight">
+        <Button Grid.Column="0" Grid.Row="0" IsEnabled="{Binding TargetFoeRightEnabled}" Background="#F75231" BorderBrush="#732108" BorderThickness="4" Command="{Binding SelectTarget}" CommandParameter="FoeRight">
           <Image Stretch="None" Source="{Binding TargetFoeRight.KnownNameWithKnownGender, Converter={x:Static infrastructure:ObjectToTextBitmapConverter.Instance}, Mode=OneWay}"/>
         </Button>
         <Rectangle Grid.Column="0" Grid.Row="1" IsVisible="{Binding TargetLineFoeRightAllyLeftEnabled}" Width="12" Height="24" Stroke="#425294" StrokeThickness="2" Fill="#9CADF7"/>
-        <Button Grid.Column="0" Grid.Row="2" IsEnabled="{Binding TargetAllyLeftEnabled}" Background="#7B63E7" BorderBrush="#4A3994" BorderThickness="4" Command="{Binding SelectTargetCommand}" CommandParameter="AllyLeft">
+        <Button Grid.Column="0" Grid.Row="2" IsEnabled="{Binding TargetAllyLeftEnabled}" Background="#7B63E7" BorderBrush="#4A3994" BorderThickness="4" Command="{Binding SelectTarget}" CommandParameter="AllyLeft">
           <Image Stretch="None" Source="{Binding TargetAllyLeft.NameWithGender, Converter={x:Static infrastructure:ObjectToTextBitmapConverter.Instance}, Mode=OneWay}"/>
         </Button>
         <Rectangle Grid.Column="1" Grid.Row="0" IsVisible="{Binding TargetLineFoeRightFoeCenterEnabled}" Width="48" Height="12" Stroke="#425294" StrokeThickness="2" Fill="#9CADF7"/>
         <Rectangle Grid.Column="1" Grid.Row="2" IsVisible="{Binding TargetLineAllyLeftAllyCenterEnabled}" Width="48" Height="12" Stroke="#425294" StrokeThickness="2" Fill="#9CADF7"/>
-        <Button Grid.Column="2" Grid.Row="0" IsEnabled="{Binding TargetFoeCenterEnabled}" IsVisible="{Binding CenterTargetsVisible}" Background="#F75231" BorderBrush="#732108" BorderThickness="4" Command="{Binding SelectTargetCommand}" CommandParameter="FoeCenter">
+        <Button Grid.Column="2" Grid.Row="0" IsEnabled="{Binding TargetFoeCenterEnabled}" IsVisible="{Binding CenterTargetsVisible}" Background="#F75231" BorderBrush="#732108" BorderThickness="4" Command="{Binding SelectTarget}" CommandParameter="FoeCenter">
           <Image Stretch="None" Source="{Binding TargetFoeCenter.KnownNameWithKnownGender, Converter={x:Static infrastructure:ObjectToTextBitmapConverter.Instance}, Mode=OneWay}"/>
         </Button>
         <Rectangle Grid.Column="2" Grid.Row="1" IsVisible="{Binding TargetLineFoeCenterAllyCenterEnabled}" Width="12" Height="24" Stroke="#425294" StrokeThickness="2" Fill="#9CADF7"/>
-        <Button Grid.Column="2" Grid.Row="2" IsEnabled="{Binding TargetAllyCenterEnabled}" IsVisible="{Binding CenterTargetsVisible}" Background="#7B63E7" BorderBrush="#4A3994" BorderThickness="4" Command="{Binding SelectTargetCommand}" CommandParameter="AllyCenter">
+        <Button Grid.Column="2" Grid.Row="2" IsEnabled="{Binding TargetAllyCenterEnabled}" IsVisible="{Binding CenterTargetsVisible}" Background="#7B63E7" BorderBrush="#4A3994" BorderThickness="4" Command="{Binding SelectTarget}" CommandParameter="AllyCenter">
           <Image Stretch="None" Source="{Binding TargetAllyCenter.NameWithGender, Converter={x:Static infrastructure:ObjectToTextBitmapConverter.Instance}, Mode=OneWay}"/>
         </Button>
         <Rectangle Grid.Column="3" Grid.Row="0" IsVisible="{Binding TargetLineFoeLeftFoeCenterEnabled}" Width="48" Height="12" Stroke="#425294" StrokeThickness="2" Fill="#9CADF7"/>
         <Rectangle Grid.Column="3" Grid.Row="2" IsVisible="{Binding TargetLineAllyRightAllyCenterEnabled}" Width="48" Height="12" Stroke="#425294" StrokeThickness="2" Fill="#9CADF7"/>
-        <Button Grid.Column="4" Grid.Row="0" IsEnabled="{Binding TargetFoeLeftEnabled}" Background="#F75231" BorderBrush="#732108" BorderThickness="4" Command="{Binding SelectTargetCommand}" CommandParameter="FoeLeft">
+        <Button Grid.Column="4" Grid.Row="0" IsEnabled="{Binding TargetFoeLeftEnabled}" Background="#F75231" BorderBrush="#732108" BorderThickness="4" Command="{Binding SelectTarget}" CommandParameter="FoeLeft">
           <Image Stretch="None" Source="{Binding TargetFoeLeft.KnownNameWithKnownGender, Converter={x:Static infrastructure:ObjectToTextBitmapConverter.Instance}, Mode=OneWay}"/>
         </Button>
         <Rectangle Grid.Column="4" Grid.Row="1" IsVisible="{Binding TargetLineFoeLeftAllyRightEnabled}" Width="12" Height="24" Stroke="#425294" StrokeThickness="2" Fill="#9CADF7"/>
-        <Button Grid.Column="4" Grid.Row="2" IsEnabled="{Binding TargetAllyRightEnabled}" Background="#7B63E7" BorderBrush="#4A3994" BorderThickness="4" Command="{Binding SelectTargetCommand}" CommandParameter="AllyRight">
+        <Button Grid.Column="4" Grid.Row="2" IsEnabled="{Binding TargetAllyRightEnabled}" Background="#7B63E7" BorderBrush="#4A3994" BorderThickness="4" Command="{Binding SelectTarget}" CommandParameter="AllyRight">
           <Image Stretch="None" Source="{Binding TargetAllyRight.NameWithGender, Converter={x:Static infrastructure:ObjectToTextBitmapConverter.Instance}, Mode=OneWay}"/>
         </Button>
       </Grid>
       <infrastructure:BetterWrapPanel IsVisible="{Binding PositionsVisible}" Orientation="Horizontal" HorizontalContentAlignment="Center">
-        <Button IsEnabled="{Binding LeftPositionEnabled}" Background="White" BorderBrush="#A2A2A2" BorderThickness="4" Margin="4,*" Command="{Binding SelectPositionCommand}" CommandParameter="Left">
+        <Button IsEnabled="{Binding LeftPositionEnabled}" Background="White" BorderBrush="#A2A2A2" BorderThickness="4" Margin="4,*" Command="{Binding SelectPosition}" CommandParameter="Left">
           <Image Stretch="None" Source="{Binding Source='Left', Converter={x:Static infrastructure:ObjectToTextBitmapConverter.Instance}, ConverterParameter=MenuBlack, Mode=OneWay}"/>
         </Button>
-        <Button IsEnabled="{Binding CenterPositionEnabled}" IsVisible="{Binding CenterTargetsVisible}" Background="White" BorderBrush="#A2A2A2" BorderThickness="4" Margin="4,*" Command="{Binding SelectPositionCommand}" CommandParameter="Center">
+        <Button IsEnabled="{Binding CenterPositionEnabled}" IsVisible="{Binding CenterTargetsVisible}" Background="White" BorderBrush="#A2A2A2" BorderThickness="4" Margin="4,*" Command="{Binding SelectPosition}" CommandParameter="Center">
           <Image Stretch="None" Source="{Binding Source='Center', Converter={x:Static infrastructure:ObjectToTextBitmapConverter.Instance}, ConverterParameter=MenuBlack, Mode=OneWay}"/>
         </Button>
-        <Button IsEnabled="{Binding RightPositionEnabled}" Background="White" BorderBrush="#A2A2A2" BorderThickness="4" Margin="4,*" Command="{Binding SelectPositionCommand}" CommandParameter="Right">
+        <Button IsEnabled="{Binding RightPositionEnabled}" Background="White" BorderBrush="#A2A2A2" BorderThickness="4" Margin="4,*" Command="{Binding SelectPosition}" CommandParameter="Right">
           <Image Stretch="None" Source="{Binding Source='Right', Converter={x:Static infrastructure:ObjectToTextBitmapConverter.Instance}, ConverterParameter=MenuBlack, Mode=OneWay}"/>
         </Button>
       </infrastructure:BetterWrapPanel>

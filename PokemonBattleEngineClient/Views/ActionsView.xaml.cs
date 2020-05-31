@@ -3,10 +3,8 @@ using Avalonia.Markup.Xaml;
 using Kermalis.PokemonBattleEngine.Battle;
 using Kermalis.PokemonBattleEngine.Data;
 using Kermalis.PokemonBattleEngineClient.Models;
-using ReactiveUI;
 using System;
 using System.ComponentModel;
-using System.Reactive;
 
 namespace Kermalis.PokemonBattleEngineClient.Views
 {
@@ -325,9 +323,6 @@ namespace Kermalis.PokemonBattleEngineClient.Views
         private PBETurnTarget _targetAllyLeftResult, _targetAllyCenterResult, _targetAllyRightResult,
             _targetFoeLeftResult, _targetFoeCenterResult, _targetFoeRightResult;
 
-        public ReactiveCommand<string, Unit> SelectTargetCommand { get; }
-        public ReactiveCommand<string, Unit> SelectPositionCommand { get; }
-
         private MoveInfo[] _moves;
         public MoveInfo[] Moves
         {
@@ -413,8 +408,6 @@ namespace Kermalis.PokemonBattleEngineClient.Views
 
         public ActionsView()
         {
-            SelectTargetCommand = ReactiveCommand.Create<string>(SelectTarget);
-            SelectPositionCommand = ReactiveCommand.Create<string>(SelectPosition);
             DataContext = this;
             AvaloniaXamlLoader.Load(this);
         }
@@ -991,7 +984,7 @@ namespace Kermalis.PokemonBattleEngineClient.Views
                 default: throw new ArgumentOutOfRangeException(nameof(BattleView.Client.Battle.BattleFormat));
             }
         }
-        private void SelectTarget(string arg)
+        public void SelectTarget(string arg)
         {
             PBETurnTarget targets;
             switch (arg)
@@ -1008,7 +1001,7 @@ namespace Kermalis.PokemonBattleEngineClient.Views
             Pokemon.TurnAction = new PBETurnAction(Pokemon.Id, _fightMove, targets);
             BattleView.Client.ActionsLoop(false);
         }
-        private void SelectPosition(string arg)
+        public void SelectPosition(string arg)
         {
             var pos = (PBEFieldPosition)Enum.Parse(typeof(PBEFieldPosition), arg);
             BattleView.Client.Switches.Add(new PBESwitchIn(Pokemon.Id, pos));
