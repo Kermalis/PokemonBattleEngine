@@ -50,8 +50,8 @@ namespace Kermalis.PokemonBattleEngineClient.Views
                     value.PropertyChanged += OnShellPropertyChanged;
                     _ignoreComboBoxChanges = true;
                     OnPropertyChanged(nameof(Shell));
-                    _ignoreComboBoxChanges = false;
                     UpdateComboBoxes(null);
+                    _ignoreComboBoxChanges = false;
                 }
             }
         }
@@ -79,6 +79,7 @@ namespace Kermalis.PokemonBattleEngineClient.Views
         private readonly ComboBox _formComboBox;
         private readonly ComboBox _genderComboBox;
         private readonly ComboBox _itemComboBox;
+        private readonly ComboBox _speciesComboBox;
 
         private void UpdateComboBoxes(string property)
         {
@@ -87,6 +88,7 @@ namespace Kermalis.PokemonBattleEngineClient.Views
             bool form = all;
             bool gender = all;
             bool item = all;
+            bool species = all;
             if (!all)
             {
                 switch (property)
@@ -95,6 +97,7 @@ namespace Kermalis.PokemonBattleEngineClient.Views
                     case nameof(PBEPokemonShell.Form): form = true; break;
                     case nameof(PBEPokemonShell.Gender): gender = true; break;
                     case nameof(PBEPokemonShell.Item): item = true; break;
+                    case nameof(PBEPokemonShell.Species): species = true; break;
                 }
             }
             if (ability)
@@ -113,6 +116,10 @@ namespace Kermalis.PokemonBattleEngineClient.Views
             {
                 _itemComboBox.SelectedItem = _shell.Item;
             }
+            if (species)
+            {
+                _speciesComboBox.SelectedItem = _shell.Species;
+            }
         }
         private void OnShellPropertyChanged(object sender, PropertyChangedEventArgs e)
         {
@@ -122,6 +129,7 @@ namespace Kermalis.PokemonBattleEngineClient.Views
         {
             if (!_ignoreComboBoxChanges)
             {
+                _ignoreComboBoxChanges = true;
                 var c = (ComboBox)sender;
                 if (c == _abilityComboBox)
                 {
@@ -139,6 +147,11 @@ namespace Kermalis.PokemonBattleEngineClient.Views
                 {
                     _shell.Item = (PBEItem)c.SelectedItem;
                 }
+                else if (c == _speciesComboBox)
+                {
+                    _shell.Species = (PBESpecies)c.SelectedItem;
+                }
+                _ignoreComboBoxChanges = false;
             }
         }
 
@@ -150,15 +163,17 @@ namespace Kermalis.PokemonBattleEngineClient.Views
             _abilityComboBox = this.FindControl<ComboBox>("Ability");
             _abilityComboBox.SelectionChanged += OnComboBoxSelectionChanged;
             _formComboBox = this.FindControl<ComboBox>("Form");
-            _formComboBox.SelectionChanged += OnVisualChanged;
             _formComboBox.SelectionChanged += OnComboBoxSelectionChanged;
+            _formComboBox.SelectionChanged += OnVisualChanged;
             _genderComboBox = this.FindControl<ComboBox>("Gender");
-            _genderComboBox.SelectionChanged += OnVisualChanged;
             _genderComboBox.SelectionChanged += OnComboBoxSelectionChanged;
+            _genderComboBox.SelectionChanged += OnVisualChanged;
             _itemComboBox = this.FindControl<ComboBox>("Item");
             _itemComboBox.SelectionChanged += OnComboBoxSelectionChanged;
+            _speciesComboBox = this.FindControl<ComboBox>("Species");
+            _speciesComboBox.SelectionChanged += OnComboBoxSelectionChanged;
+            _speciesComboBox.SelectionChanged += OnVisualChanged;
             this.FindControl<ListBox>("SavedTeams").SelectionChanged += OnSelectedTeamChanged;
-            this.FindControl<ComboBox>("Species").SelectionChanged += OnVisualChanged;
             _addPartyButton = this.FindControl<Button>("AddParty");
             _removePartyButton = this.FindControl<Button>("RemoveParty");
             _partyListBox = this.FindControl<ListBox>("Party");

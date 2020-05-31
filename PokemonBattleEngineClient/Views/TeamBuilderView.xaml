@@ -55,7 +55,7 @@
             <Image Stretch="None" Source="{Binding Source='Shiny', Converter={x:Static infrastructure:ObjectToTextBitmapConverter.Instance}, ConverterParameter=MenuWhite, Mode=OneWay}"/>
           </CheckBox>
           <Image Grid.Row="1" Grid.Column="0" Stretch="None" HorizontalAlignment="Left" Source="{Binding Source='Species:', Converter={x:Static infrastructure:ObjectToTextBitmapConverter.Instance}, ConverterParameter=MenuWhite, Mode=OneWay}"/>
-          <ComboBox Grid.Row="1" Grid.Column="1" Name="Species" Items="{x:Static pbedata:PBEDataUtils.AllSpecies}" SelectedItem="{Binding Shell.Species}">
+          <ComboBox Grid.Row="1" Grid.Column="1" Name="Species" Items="{x:Static pbedata:PBEDataUtils.AllSpecies}">
             <ComboBox.ItemTemplate>
               <DataTemplate>
                 <StackPanel Spacing="4" Orientation="Horizontal">
