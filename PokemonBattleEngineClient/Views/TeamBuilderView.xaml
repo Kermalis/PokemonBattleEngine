@@ -25,7 +25,7 @@
         <Image.Source>
           <MultiBinding Converter="{x:Static infrastructure:FormToTextBitmapConverter.Instance}" ConverterParameter="MenuBlack" Mode="OneWay">
             <Binding Path="SelectedItem" ElementName="Species"/>
-            <!--<Binding Path="/"/> Crashes-->
+            <!--<Binding Path="/"/> Crashes, read https://github.com/AvaloniaUI/Avalonia/issues/4067 -->
           </MultiBinding>
         </Image.Source>
       </Image>
