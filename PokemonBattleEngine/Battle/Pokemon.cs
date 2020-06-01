@@ -64,20 +64,22 @@ namespace Kermalis.PokemonBattleEngine.Battle
         public PBEFieldPosition FieldPosition { get; set; }
         /// <summary>The Pokémon's current ability.</summary>
         public PBEAbility Ability { get; set; }
-        /// <summary>The ability the Pokémon had upon entering battle. </summary>
-        public PBEAbility OriginalAbility { get; set; }
         /// <summary>The ability the Pokémon is known to have.</summary>
         public PBEAbility KnownAbility { get; set; }
+        /// <summary>The ability the Pokémon had upon entering battle. </summary>
+        public PBEAbility OriginalAbility { get; set; }
+        /// <summary>The ability the Pokémon will regain upon switching out, fainting, or the battle ending. </summary>
+        public PBEAbility RevertAbility { get; set; }
         /// <summary>The Pokémon's gender.</summary>
         public PBEGender Gender { get; set; }
         /// <summary>The gender the Pokémon looks like (affected by transforming and disguising).</summary>
         public PBEGender KnownGender { get; set; }
         /// <summary>The Pokémon's current item.</summary>
         public PBEItem Item { get; set; }
-        /// <summary>The item the Pokémon had upon entering battle.</summary>
-        public PBEItem OriginalItem { get; set; }
         /// <summary>The item the Pokémon is known to have.</summary>
         public PBEItem KnownItem { get; set; }
+        /// <summary>The item the Pokémon had upon entering battle.</summary>
+        public PBEItem OriginalItem { get; set; }
         /// <summary>The moves the Pokémon currently has.</summary>
         public PBEBattleMoveset Moves { get; }
         /// <summary>The moves the Pokémon is known to have.</summary>
@@ -92,13 +94,14 @@ namespace Kermalis.PokemonBattleEngine.Battle
         public bool KnownShiny { get; set; }
         /// <summary>The current species of the Pokémon (affected by transforming and form changing).</summary>
         public PBESpecies Species { get; set; }
-        /// <summary>The species the Pokémon was upon entering battle.</summary>
-        public PBESpecies OriginalSpecies { get; set; }
         /// <summary>The species everyone sees the Pokémon as (affected by transforming, disguising, and form changing).</summary>
         public PBESpecies KnownSpecies { get; set; }
+        /// <summary>The species the Pokémon was upon entering battle.</summary>
+        public PBESpecies OriginalSpecies { get; set; }
         public PBEForm Form { get; set; }
-        public PBEForm OriginalForm { get; set; }
         public PBEForm KnownForm { get; set; }
+        public PBEForm OriginalForm { get; set; }
+        public PBEForm RevertForm { get; set; }
         public PBEStatus1 Status1 { get; set; }
         public PBEStatus2 Status2 { get; set; }
         public PBEStatus2 KnownStatus2 { get; set; }
@@ -159,8 +162,6 @@ namespace Kermalis.PokemonBattleEngine.Battle
         #region Special Flags
         /// <summary>True if the Pokémon has successfully used <see cref="PBEMove.Minimize"/> which makes it succeptible to double damage from <see cref="PBEMove.Steamroller"/> and <see cref="PBEMove.Stomp"/>.</summary>
         public bool Minimize_Used { get; set; }
-        /// <summary>True if the Pokémon was originally <see cref="PBEForm.Shaymin_Sky"/> but was <see cref="PBEStatus1.Frozen"/>, therefore forcing it to remain as <see cref="PBEForm.Shaymin"/> when switching out.</summary>
-        public bool Shaymin_CannotChangeBackToSkyForm { get; set; }
         /// <summary>The amount of turns left until a Pokémon with <see cref="PBEAbility.SlowStart"/> loses its hinderance.</summary>
         public byte SlowStart_HinderTurnsLeft { get; set; }
         /// <summary>True if the Pokémon was present at the start of the turn, which would allow <see cref="PBEAbility.SpeedBoost"/> to activate.</summary>
@@ -172,7 +173,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
             Team = team;
             Id = r.ReadByte();
             Species = OriginalSpecies = KnownSpecies = r.ReadEnum<PBESpecies>();
-            Form = OriginalForm = KnownForm = r.ReadEnum<PBEForm>();
+            Form = OriginalForm = KnownForm = RevertForm = r.ReadEnum<PBEForm>();
             var pData = PBEPokemonData.GetData(Species, Form);
             KnownType1 = Type1 = pData.Type1;
             KnownType2 = Type2 = pData.Type2;
@@ -181,7 +182,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
             Level = r.ReadByte();
             Friendship = r.ReadByte();
             Shiny = KnownShiny = r.ReadBoolean();
-            Ability = OriginalAbility = r.ReadEnum<PBEAbility>();
+            Ability = OriginalAbility = RevertAbility = r.ReadEnum<PBEAbility>();
             KnownAbility = PBEAbility.MAX;
             Nature = r.ReadEnum<PBENature>();
             Gender = KnownGender = r.ReadEnum<PBEGender>();
@@ -201,7 +202,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
             Team = team;
             Id = id;
             Species = OriginalSpecies = KnownSpecies = shell.Species;
-            Form = OriginalForm = KnownForm = shell.Form;
+            Form = OriginalForm = KnownForm = RevertForm = shell.Form;
             var pData = PBEPokemonData.GetData(Species, Form);
             KnownType1 = Type1 = pData.Type1;
             KnownType2 = Type2 = pData.Type2;
@@ -210,7 +211,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
             Level = shell.Level;
             Friendship = shell.Friendship;
             Shiny = KnownShiny = shell.Shiny;
-            Ability = OriginalAbility = shell.Ability;
+            Ability = OriginalAbility = RevertAbility = shell.Ability;
             KnownAbility = PBEAbility.MAX;
             Nature = shell.Nature;
             Gender = KnownGender = shell.Gender;
@@ -244,7 +245,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
             HPPercentage = info.HPPercentage;
             Status1 = info.Status1;
             Level = info.Level;
-            KnownAbility = Ability = OriginalAbility = PBEAbility.MAX;
+            KnownAbility = Ability = RevertAbility = OriginalAbility = PBEAbility.MAX;
             KnownGender = Gender = info.Gender;
             KnownItem = Item = OriginalItem = (PBEItem)ushort.MaxValue;
             Moves = new PBEBattleMoveset(Team.Battle.Settings);
@@ -253,7 +254,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
             KnownNickname = Nickname = info.Nickname;
             KnownShiny = Shiny = info.Shiny;
             KnownSpecies = Species = OriginalSpecies = info.Species;
-            KnownForm = Form = OriginalForm = info.Form;
+            KnownForm = RevertForm = Form = OriginalForm = info.Form;
             var pData = PBEPokemonData.GetData(KnownSpecies, KnownForm);
             KnownType1 = Type1 = pData.Type1;
             KnownType2 = Type2 = pData.Type2;
@@ -288,19 +289,9 @@ namespace Kermalis.PokemonBattleEngine.Battle
                 }
             }
             Species = KnownSpecies = OriginalSpecies;
-            PBEPokemonData pData;
-            if (Shaymin_CannotChangeBackToSkyForm)
-            {
-                Form = KnownForm = PBEForm.Shaymin;
-                pData = PBEPokemonData.GetData(PBESpecies.Shaymin, PBEForm.Shaymin);
-                Ability = pData.Abilities[0];
-            }
-            else
-            {
-                Form = KnownForm = OriginalForm;
-                pData = PBEPokemonData.GetData(Species, Form);
-                Ability = OriginalAbility;
-            }
+            Form = KnownForm = RevertForm;
+            Ability = KnownAbility = RevertAbility;
+            var pData = PBEPokemonData.GetData(Species, Form);
             KnownAbility = PBEAbility.MAX;
             KnownGender = Gender;
             KnownItem = (PBEItem)ushort.MaxValue;

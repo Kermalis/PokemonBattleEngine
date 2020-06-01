@@ -1832,7 +1832,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                 }
                 if (newForm != pkmn.Form)
                 {
-                    BroadcastPkmnFormChanged(pkmn, newForm, pkmn.Ability, pkmn.KnownAbility);
+                    BroadcastPkmnFormChanged(pkmn, newForm, pkmn.Ability, pkmn.KnownAbility, false);
                 }
             }
             else if (pkmn.Species == PBESpecies.Cherrim && pkmn.OriginalSpecies == PBESpecies.Cherrim)
@@ -1854,7 +1854,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                 }
                 if (newForm != pkmn.Form)
                 {
-                    BroadcastPkmnFormChanged(pkmn, newForm, pkmn.Ability, pkmn.KnownAbility);
+                    BroadcastPkmnFormChanged(pkmn, newForm, pkmn.Ability, pkmn.KnownAbility, false);
                 }
             }
         }
@@ -1864,8 +1864,8 @@ namespace Kermalis.PokemonBattleEngine.Battle
             if (pkmn.Species == PBESpecies.Shaymin && pkmn.OriginalSpecies == PBESpecies.Shaymin && pkmn.Form == PBEForm.Shaymin_Sky && pkmn.Status1 == PBEStatus1.Frozen)
             {
                 const PBEForm newForm = PBEForm.Shaymin;
-                pkmn.Shaymin_CannotChangeBackToSkyForm = true;
-                BroadcastPkmnFormChanged(pkmn, newForm, PBEPokemonData.GetData(PBESpecies.Shaymin, newForm).Abilities[0], PBEAbility.MAX);
+                PBEAbility newAbility = PBEPokemonData.GetData(PBESpecies.Shaymin, newForm).Abilities[0];
+                BroadcastPkmnFormChanged(pkmn, newForm, newAbility, PBEAbility.MAX, true);
                 ActivateAbility(pkmn, false);
             }
         }

@@ -750,9 +750,10 @@ namespace Kermalis.PokemonBattleEngineClient
                         pokemon.Type1 = pokemon.KnownType1 = pfcp.NewType1;
                         pokemon.Type2 = pokemon.KnownType2 = pfcp.NewType2;
                         pokemon.Weight = pokemon.KnownWeight = pfcp.NewWeight;
-                        if (pokemon.Species == PBESpecies.Shaymin && pfcp.NewForm == PBEForm.Shaymin)
+                        if (pfcp.IsRevertForm)
                         {
-                            pokemon.Shaymin_CannotChangeBackToSkyForm = true;
+                            pokemon.RevertForm = pfcp.NewForm;
+                            pokemon.RevertAbility = pfcp.NewAbility; // If it's an opponent, this will be PBEAbility.MAX which is fine
                         }
                     }
                     BattleView.Field.UpdatePokemon(pokemon);
