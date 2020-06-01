@@ -1067,6 +1067,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
         {
             w.Write(Id);
             w.Write(OriginalSpecies);
+            w.Write(OriginalForm);
             w.Write(Nickname, true);
             w.Write(Level);
             w.Write(Friendship);
