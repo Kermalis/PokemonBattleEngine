@@ -457,11 +457,12 @@ namespace Kermalis.PokemonBattleEngineClient
                     if (_mode != ClientMode.SinglePlayer)
                     {
                         pokemon.DisguisedAsPokemon = null;
-                        pokemon.OriginalAbility = pokemon.Ability = pokemon.KnownAbility = PBEAbility.Illusion;
+                        pokemon.Ability = pokemon.KnownAbility = PBEAbility.Illusion;
                         pokemon.Gender = pokemon.KnownGender = ilp.ActualGender;
                         pokemon.Nickname = pokemon.KnownNickname = ilp.ActualNickname;
                         pokemon.Shiny = pokemon.KnownShiny = ilp.ActualShiny;
                         pokemon.OriginalSpecies = pokemon.Species = pokemon.KnownSpecies = ilp.ActualSpecies;
+                        pokemon.Form = pokemon.KnownForm = ilp.ActualForm;
                         pokemon.Type1 = pokemon.KnownType1 = ilp.ActualType1;
                         pokemon.Type2 = pokemon.KnownType2 = ilp.ActualType2;
                         pokemon.Weight = pokemon.KnownWeight = ilp.ActualWeight;
@@ -727,7 +728,7 @@ namespace Kermalis.PokemonBattleEngineClient
                         pokemon.FieldPosition = PBEFieldPosition.None;
                         if (_mode == ClientMode.Online && pfap.PokemonTeam.Id != BattleId)
                         {
-                            pokemon.Team.Remove(pokemon);
+                            PBETeam.Remove(pokemon);
                         }
                     }
                     BattleView.Field.UpdatePokemon(pokemon, pfap.PokemonPosition);
@@ -852,6 +853,7 @@ namespace Kermalis.PokemonBattleEngineClient
                             if (_mode != ClientMode.SinglePlayer)
                             {
                                 pokemon.FieldPosition = info.FieldPosition;
+                                PBETeam.SwitchTwoPokemon(pokemon, info.FieldPosition);
                                 if (info.DisguisedAsId != info.PokemonId)
                                 {
                                     pokemon.Status2 |= PBEStatus2.Disguised;
@@ -860,7 +862,7 @@ namespace Kermalis.PokemonBattleEngineClient
                                     pokemon.KnownNickname = pokemon.DisguisedAsPokemon.Nickname;
                                     pokemon.KnownShiny = pokemon.DisguisedAsPokemon.Shiny;
                                     pokemon.KnownSpecies = pokemon.DisguisedAsPokemon.OriginalSpecies;
-                                    pokemon.KnownForm = pokemon.DisguisedAsPokemon.Form; // TODO: Would it take sky form from a shaymin that reverted?
+                                    pokemon.KnownForm = pokemon.DisguisedAsPokemon.Form;
                                     var pData = PBEPokemonData.GetData(pokemon.KnownSpecies, pokemon.KnownForm);
                                     pokemon.KnownType1 = pData.Type1;
                                     pokemon.KnownType2 = pData.Type2;
@@ -889,8 +891,7 @@ namespace Kermalis.PokemonBattleEngineClient
                     }
                     if (_mode == ClientMode.Online && psop.PokemonTeam.Id != BattleId)
                     {
-                        pokemon.FieldPosition = PBEFieldPosition.None;
-                        pokemon.Team.Remove(pokemon);
+                        PBETeam.Remove(pokemon);
                     }
                     else if (_mode != ClientMode.SinglePlayer)
                     {

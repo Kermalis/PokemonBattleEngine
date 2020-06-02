@@ -69,7 +69,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
 
         public List<PBEPokemon> ActionsRequired { get; } = new List<PBEPokemon>(3); // PBEBattleState.WaitingForActions
         public byte SwitchInsRequired { get; set; } // PBEBattleState.WaitingForSwitchIns
-        public List<PBEPokemon> SwitchInQueue { get; } = new List<PBEPokemon>(3); // PBEBattleState.WaitingForSwitchIns
+        public List<(PBEPokemon, PBEFieldPosition)> SwitchInQueue { get; } = new List<(PBEPokemon, PBEFieldPosition)>(3); // PBEBattleState.WaitingForSwitchIns
 
         public PBETeamStatus TeamStatus { get; set; }
         public byte LightScreenCount { get; set; }
@@ -125,22 +125,76 @@ namespace Kermalis.PokemonBattleEngine.Battle
             return Party.SingleOrDefault(p => p.Id == pkmnId);
         }
 
-        public bool Remove(PBEPokemon pokemon)
+        public static void Remove(PBEPokemon pokemon)
         {
-            if (IsDisposed)
-            {
-                throw new ObjectDisposedException(null);
-            }
             if (pokemon.IsDisposed)
             {
                 throw new ObjectDisposedException(nameof(pokemon));
             }
-            bool b = Party.Remove(pokemon);
-            if (b)
+            PBETeam team = pokemon.Team;
+            if (team.IsDisposed)
             {
-                pokemon.Dispose();
+                throw new ObjectDisposedException(null);
             }
-            return b;
+            team.Party.Remove(pokemon);
+            pokemon.Dispose();
+        }
+        public static void SwitchTwoPokemon(PBEPokemon a, PBEFieldPosition pos)
+        {
+            if (a == null)
+            {
+                throw new ArgumentNullException(nameof(a));
+            }
+            if (a.IsDisposed)
+            {
+                throw new ObjectDisposedException(nameof(a));
+            }
+            if (pos == PBEFieldPosition.None || pos >= PBEFieldPosition.MAX)
+            {
+                throw new ArgumentOutOfRangeException(nameof(pos));
+            }
+            PBETeam team = a.Team;
+            if (team.IsDisposed)
+            {
+                throw new ObjectDisposedException(null);
+            }
+            PBEPokemon b = team.Party[PBEBattleUtils.GetFieldPositionIndex(team.Battle.BattleFormat, pos)];
+            if (a != b)
+            {
+                team.Party.Swap(a, b);
+            }
+        }
+        public static void SwitchTwoPokemon(PBEPokemon a, PBEPokemon b)
+        {
+            if (a != b)
+            {
+                if (a == null)
+                {
+                    throw new ArgumentNullException(nameof(a));
+                }
+                if (b == null)
+                {
+                    throw new ArgumentNullException(nameof(b));
+                }
+                if (a.IsDisposed)
+                {
+                    throw new ObjectDisposedException(nameof(a));
+                }
+                if (b.IsDisposed)
+                {
+                    throw new ObjectDisposedException(nameof(b));
+                }
+                PBETeam team = a.Team;
+                if (team != b.Team)
+                {
+                    throw new ArgumentException(nameof(a.Team));
+                }
+                if (team.IsDisposed)
+                {
+                    throw new ObjectDisposedException(null);
+                }
+                team.Party.Swap(a, b);
+            }
         }
 
         internal void ToBytes(EndianBinaryWriter w)

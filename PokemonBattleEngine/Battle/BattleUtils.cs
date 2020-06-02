@@ -5,6 +5,51 @@ namespace Kermalis.PokemonBattleEngine.Battle
 {
     public static class PBEBattleUtils
     {
+        public static int GetFieldPositionIndex(PBEBattleFormat format, PBEFieldPosition position)
+        {
+            switch (format)
+            {
+                case PBEBattleFormat.Single:
+                {
+                    switch (position)
+                    {
+                        case PBEFieldPosition.Center: return 0;
+                        default: throw new ArgumentOutOfRangeException(nameof(position));
+                    }
+                }
+                case PBEBattleFormat.Double:
+                {
+                    switch (position)
+                    {
+                        case PBEFieldPosition.Left: return 0;
+                        case PBEFieldPosition.Right: return 1;
+                        default: throw new ArgumentOutOfRangeException(nameof(position));
+                    }
+                }
+                case PBEBattleFormat.Triple:
+                {
+                    switch (position)
+                    {
+                        case PBEFieldPosition.Left: return 0;
+                        case PBEFieldPosition.Center: return 1;
+                        case PBEFieldPosition.Right: return 2;
+                        default: throw new ArgumentOutOfRangeException(nameof(position));
+                    }
+                }
+                case PBEBattleFormat.Rotation:
+                {
+                    switch (position)
+                    {
+                        case PBEFieldPosition.Center: return 0;
+                        case PBEFieldPosition.Left: return 1;
+                        case PBEFieldPosition.Right: return 2;
+                        default: throw new ArgumentOutOfRangeException(nameof(position));
+                    }
+                }
+                default: throw new ArgumentOutOfRangeException(nameof(format));
+            }
+        }
+
         public static PBETurnTarget GetSpreadMoveTargets(PBEPokemon pkmn, PBEMoveTarget targets)
         {
             switch (pkmn.Team.Battle.BattleFormat)

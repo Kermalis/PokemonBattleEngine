@@ -327,8 +327,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                         foreach (PBESwitchIn s in switches)
                         {
                             PBEPokemon pkmn = team.TryGetPokemon(s.PokemonId);
-                            pkmn.FieldPosition = s.Position;
-                            team.SwitchInQueue.Add(pkmn);
+                            team.SwitchInQueue.Add((pkmn, s.Position));
                         }
                         if (team.Battle.Teams.All(t => t.SwitchInsRequired == 0))
                         {

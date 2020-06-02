@@ -2421,27 +2421,37 @@ namespace Kermalis.PokemonBattleEngine.Battle
         {
             if (pkmn.Ability == PBEAbility.Illusion)
             {
-                PBEPokemon last = pkmn.Team.Party[pkmn.Team.Party.Count - 1];
-                if (last.HP > 0 && last.OriginalSpecies != pkmn.OriginalSpecies)
+                PBEList<PBEPokemon> party = pkmn.Team.Party;
+                for (int i = party.Count - 1; i >= 0; i--)
                 {
-                    pkmn.Status2 |= PBEStatus2.Disguised; // No broadcast, not known
-                    pkmn.DisguisedAsPokemon = last;
-                    pkmn.KnownGender = last.Gender;
-                    pkmn.KnownNickname = last.Nickname;
-                    pkmn.KnownShiny = last.Shiny;
-                    pkmn.KnownSpecies = last.OriginalSpecies;
-                    pkmn.KnownForm = last.Form;
-                    var pData = PBEPokemonData.GetData(pkmn.KnownSpecies, pkmn.KnownForm);
-                    pkmn.KnownType1 = pData.Type1;
-                    pkmn.KnownType2 = pData.Type2;
-                    return new PBEPkmnSwitchInPacket.PBESwitchInInfo(pkmn.Id, last.Id, last.OriginalSpecies, last.Form, last.Nickname, pkmn.Level, last.Shiny, last.Gender, pkmn.HP, pkmn.MaxHP, pkmn.HPPercentage, pkmn.Status1, pkmn.FieldPosition);
+                    PBEPokemon p = party[i];
+                    if (p.HP > 0)
+                    {
+                        // If this Pokémon is the "last" conscious one, it will go out as itself (loop breaks)
+                        // The only way to disguise as a Pokémon that's on the battlefield is the first turn of a Double/Triple/Rotation battle
+                        if (p.OriginalSpecies != pkmn.OriginalSpecies)
+                        {
+                            pkmn.Status2 |= PBEStatus2.Disguised; // No broadcast, not known
+                            pkmn.DisguisedAsPokemon = p;
+                            pkmn.KnownGender = p.Gender;
+                            pkmn.KnownNickname = p.Nickname;
+                            pkmn.KnownShiny = p.Shiny;
+                            pkmn.KnownSpecies = p.OriginalSpecies;
+                            pkmn.KnownForm = p.Form;
+                            var pData = PBEPokemonData.GetData(pkmn.KnownSpecies, pkmn.KnownForm);
+                            pkmn.KnownType1 = pData.Type1;
+                            pkmn.KnownType2 = pData.Type2;
+                        }
+                        break;
+                    }
                 }
             }
-            return new PBEPkmnSwitchInPacket.PBESwitchInInfo(pkmn.Id, pkmn.Id, pkmn.Species, pkmn.Form, pkmn.Nickname, pkmn.Level, pkmn.Shiny, pkmn.Gender, pkmn.HP, pkmn.MaxHP, pkmn.HPPercentage, pkmn.Status1, pkmn.FieldPosition);
+            return new PBEPkmnSwitchInPacket.PBESwitchInInfo(pkmn);
         }
         private void SwitchTwoPokemon(PBEPokemon pkmnLeaving, PBEPokemon pkmnComing, PBEPokemon forcedByPkmn = null)
         {
             PBEFieldPosition pos = pkmnLeaving.FieldPosition;
+            pkmnLeaving.FieldPosition = PBEFieldPosition.None;
             _turnOrder.Remove(pkmnLeaving);
             ActiveBattlers.Remove(pkmnLeaving);
             PBEPokemon disguisedAsPokemon = pkmnLeaving.Status2.HasFlag(PBEStatus2.Disguised) ? pkmnLeaving.DisguisedAsPokemon : pkmnLeaving;
@@ -2449,8 +2459,10 @@ namespace Kermalis.PokemonBattleEngine.Battle
             BroadcastPkmnSwitchOut(pkmnLeaving, disguisedAsPokemon, pos, forcedByPkmn);
             RemoveInfatuationsAndLockOns(pkmnLeaving);
             pkmnComing.FieldPosition = pos;
+            var switches = new PBEPkmnSwitchInPacket.PBESwitchInInfo[] { CreateSwitchInInfo(pkmnComing) };
+            PBETeam.SwitchTwoPokemon(pkmnLeaving, pkmnComing);
+            BroadcastPkmnSwitchIn(pkmnComing.Team, switches, forcedByPkmn);
             ActiveBattlers.Add(pkmnComing);
-            BroadcastPkmnSwitchIn(pkmnComing.Team, new[] { CreateSwitchInInfo(pkmnComing) }, forcedByPkmn);
             if (forcedByPkmn != null)
             {
                 BroadcastDraggedOut(pkmnComing);
