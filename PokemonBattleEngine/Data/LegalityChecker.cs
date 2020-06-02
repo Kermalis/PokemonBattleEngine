@@ -7,29 +7,33 @@ namespace Kermalis.PokemonBattleEngine.Data
 {
     public static class PBELegalityChecker
     {
-        private static List<(PBESpecies, PBEForm)> GetSpecies(PBESpecies species, PBEForm form)
+        private static List<(PBESpecies, PBEForm)> GetSpecies(PBESpecies species)
         {
             var list = new List<(PBESpecies, PBEForm)>();
-            void Add(PBESpecies s, PBEForm f)
+            void Add(PBESpecies s)
             {
-                foreach (PBESpecies spe in PBEPokemonData.GetData(s, f).PreEvolutions)
+                IReadOnlyList<PBEForm> allForms = PBEDataUtils.GetForms(s, true);
+                if (allForms.Count > 0)
                 {
-                    IReadOnlyList<PBEForm> allForms = PBEDataUtils.GetForms(spe, true);
-                    if (allForms.Count > 0)
+                    foreach (PBEForm form in allForms)
                     {
-                        foreach (PBEForm fo in allForms)
-                        {
-                            Add(spe, fo);
-                        }
-                    }
-                    else
-                    {
-                        Add(spe, 0);
+                        Add2(s, form);
                     }
                 }
-                list.Add((s, f));
+                else
+                {
+                    Add2(s, 0);
+                }
             }
-            Add(species, form);
+            void Add2(PBESpecies s, PBEForm form)
+            {
+                foreach (PBESpecies spe in PBEPokemonData.GetData(s, form).PreEvolutions)
+                {
+                    Add(spe);
+                }
+                list.Add((s, form));
+            }
+            Add(species);
             return list;
         }
 
@@ -40,7 +44,7 @@ namespace Kermalis.PokemonBattleEngine.Data
         {
             PBEPokemonShell.ValidateSpecies(species, form);
             PBEPokemonShell.ValidateLevel(level, settings);
-            List<(PBESpecies, PBEForm)> speciesToStealFrom = GetSpecies(species, form);
+            List<(PBESpecies, PBEForm)> speciesToStealFrom = GetSpecies(species);
 
             var moves = new List<PBEMove>();
             foreach ((PBESpecies spe, PBEForm fo) in speciesToStealFrom)
@@ -70,7 +74,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                 throw new ArgumentNullException(nameof(moveset));
             }
 
-            List<(PBESpecies, PBEForm)> speciesToStealFrom = GetSpecies(moveset.Species, moveset.Form);
+            List<(PBESpecies, PBEForm)> speciesToStealFrom = GetSpecies(moveset.Species);
 
             var levelUp = new List<(PBEMove Move, byte Level, PBEMoveObtainMethod ObtainMethod)>();
             var other = new List<(PBEMove Move, PBEMoveObtainMethod ObtainMethod)>();
