@@ -1076,7 +1076,8 @@ namespace Kermalis.PokemonBattleEngine.Battle
         public override string ToString()
         {
             var sb = new StringBuilder();
-            sb.AppendLine($"{Nickname}/{Species} {GenderSymbol} Lv.{Level}");
+            string formStr = PBEDataUtils.HasForms(Species, false) ? $" ({PBELocalizedString.GetFormName(Species, Form)})" : string.Empty;
+            sb.AppendLine($"{Nickname}/{Species}{formStr} {GenderSymbol} Lv.{Level}");
             sb.AppendLine($"HP: {HP}/{MaxHP} ({HPPercentage:P2})");
             sb.Append($"Types: {PBELocalizedString.GetTypeName(Type1).English}");
             if (Type2 != PBEType.None)
