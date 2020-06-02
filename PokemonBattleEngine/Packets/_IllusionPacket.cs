@@ -17,6 +17,7 @@ namespace Kermalis.PokemonBattleEngine.Packets
         public bool ActualShiny { get; }
         public string ActualNickname { get; }
         public PBESpecies ActualSpecies { get; }
+        public PBEForm ActualForm { get; }
         public PBEType ActualType1 { get; }
         public PBEType ActualType2 { get; }
         public double ActualWeight { get; }
@@ -33,6 +34,7 @@ namespace Kermalis.PokemonBattleEngine.Packets
                 w.Write(ActualNickname = pokemon.Nickname, true);
                 w.Write(ActualShiny = pokemon.Shiny);
                 w.Write(ActualSpecies = pokemon.Species);
+                w.Write(ActualForm = pokemon.Form);
                 w.Write(ActualType1 = pokemon.Type1);
                 w.Write(ActualType2 = pokemon.Type2);
                 w.Write(ActualWeight = pokemon.Weight);
@@ -48,6 +50,7 @@ namespace Kermalis.PokemonBattleEngine.Packets
             ActualNickname = r.ReadStringNullTerminated();
             ActualShiny = r.ReadBoolean();
             ActualSpecies = r.ReadEnum<PBESpecies>();
+            ActualForm = r.ReadEnum<PBEForm>();
             ActualType1 = r.ReadEnum<PBEType>();
             ActualType2 = r.ReadEnum<PBEType>();
             ActualWeight = r.ReadDouble();

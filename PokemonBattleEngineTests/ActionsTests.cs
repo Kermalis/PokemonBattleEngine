@@ -47,7 +47,7 @@ namespace Kermalis.PokemonBattleEngineTests
             Assert.Throws<ArgumentNullException>(() => PBEBattle.SelectActionsIfValid(t, new PBETurnAction[] { null })); // Throw for null elements
             Assert.False(PBEBattle.SelectActionsIfValid(t, new PBETurnAction[] { a, a })); // False for too many actions
             Assert.True(PBEBattle.SelectActionsIfValid(t, a1)); // True for good actions
-            // TODO: bad move, bad targets, bad targets with templockedmove, battle status, bad pkmn id, wrong team pkmn id, duplicate pkmn id, can't switch out but tried, invalid switch mon (null hp pos), duplicate switch mon
+            // TODO: bad field position to switch into, bad move, bad targets, bad targets with templockedmove, battle status, bad pkmn id, wrong team pkmn id, duplicate pkmn id, can't switch out but tried, invalid switch mon (null hp pos), duplicate switch mon
             Assert.False(PBEBattle.SelectActionsIfValid(t, a1)); // False because actions were already submitted
             Assert.False(PBEBattle.SelectActionsIfValid(t, Array.Empty<PBETurnAction>())); // False for 0 despite us now needing 0 additional actions
 

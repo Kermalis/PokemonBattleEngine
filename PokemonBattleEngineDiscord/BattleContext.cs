@@ -299,7 +299,8 @@ namespace Kermalis.PokemonBattleEngineDiscord
         private static string CustomPokemonToString(PBEPokemon pkmn, bool addReactionChars)
         {
             var sb = new StringBuilder();
-            sb.AppendLine($"{pkmn.Nickname}/{pkmn.Species} {pkmn.GenderSymbol} Lv.{pkmn.Level}{(pkmn.Shiny ? $" {_shinyEmoji}" : string.Empty)}");
+            string formStr = PBEDataUtils.HasForms(pkmn.Species, false) ? $" ({PBELocalizedString.GetFormName(pkmn.Species, pkmn.Form)})" : string.Empty;
+            sb.AppendLine($"{pkmn.Nickname}/{pkmn.Species}{formStr} {pkmn.GenderSymbol} Lv.{pkmn.Level}{(pkmn.Shiny ? $" {_shinyEmoji}" : string.Empty)}");
             sb.AppendLine($"**HP:** {pkmn.HP}/{pkmn.MaxHP} ({pkmn.HPPercentage:P2})");
             sb.Append($"**Types:** {Utils.TypeEmotes[pkmn.Type1]}");
             if (pkmn.Type2 != PBEType.None)
@@ -398,7 +399,8 @@ namespace Kermalis.PokemonBattleEngineDiscord
         private static string CustomKnownPokemonToString(PBEPokemon pkmn)
         {
             var sb = new StringBuilder();
-            sb.AppendLine($"{pkmn.Team.TrainerName}'s {pkmn.KnownNickname}/{pkmn.KnownSpecies} {(pkmn.KnownStatus2.HasFlag(PBEStatus2.Transformed) ? pkmn.GenderSymbol : pkmn.KnownGenderSymbol)} Lv.{pkmn.Level}{(pkmn.KnownShiny ? $" {_shinyEmoji}" : string.Empty)}");
+            string formStr = PBEDataUtils.HasForms(pkmn.KnownSpecies, false) ? $" ({PBELocalizedString.GetFormName(pkmn.KnownSpecies, pkmn.KnownForm)})" : string.Empty;
+            sb.AppendLine($"{pkmn.Team.TrainerName}'s {pkmn.KnownNickname}/{pkmn.KnownSpecies}{formStr} {(pkmn.KnownStatus2.HasFlag(PBEStatus2.Transformed) ? pkmn.GenderSymbol : pkmn.KnownGenderSymbol)} Lv.{pkmn.Level}{(pkmn.KnownShiny ? $" {_shinyEmoji}" : string.Empty)}");
             sb.AppendLine($"**HP:** {pkmn.HPPercentage:P2}");
             sb.Append($"**Known types:** {Utils.TypeEmotes[pkmn.KnownType1]}");
             if (pkmn.KnownType2 != PBEType.None)
@@ -426,17 +428,17 @@ namespace Kermalis.PokemonBattleEngineDiscord
                     sb.AppendLine($"**Confusion turns:** {pkmn.ConfusionCounter}");
                 }
             }
-            PBEDataUtils.GetStatRange(PBEStat.HP, pkmn.KnownSpecies, pkmn.Level, pkmn.Team.Battle.Settings, out ushort lowHP, out ushort highHP);
-            PBEDataUtils.GetStatRange(PBEStat.Attack, pkmn.KnownSpecies, pkmn.Level, pkmn.Team.Battle.Settings, out ushort lowAttack, out ushort highAttack);
-            PBEDataUtils.GetStatRange(PBEStat.Defense, pkmn.KnownSpecies, pkmn.Level, pkmn.Team.Battle.Settings, out ushort lowDefense, out ushort highDefense);
-            PBEDataUtils.GetStatRange(PBEStat.SpAttack, pkmn.KnownSpecies, pkmn.Level, pkmn.Team.Battle.Settings, out ushort lowSpAttack, out ushort highSpAttack);
-            PBEDataUtils.GetStatRange(PBEStat.SpDefense, pkmn.KnownSpecies, pkmn.Level, pkmn.Team.Battle.Settings, out ushort lowSpDefense, out ushort highSpDefense);
-            PBEDataUtils.GetStatRange(PBEStat.Speed, pkmn.KnownSpecies, pkmn.Level, pkmn.Team.Battle.Settings, out ushort lowSpeed, out ushort highSpeed);
+            PBEDataUtils.GetStatRange(PBEStat.HP, pkmn.KnownSpecies, pkmn.KnownForm, pkmn.Level, pkmn.Team.Battle.Settings, out ushort lowHP, out ushort highHP);
+            PBEDataUtils.GetStatRange(PBEStat.Attack, pkmn.KnownSpecies, pkmn.KnownForm, pkmn.Level, pkmn.Team.Battle.Settings, out ushort lowAttack, out ushort highAttack);
+            PBEDataUtils.GetStatRange(PBEStat.Defense, pkmn.KnownSpecies, pkmn.KnownForm, pkmn.Level, pkmn.Team.Battle.Settings, out ushort lowDefense, out ushort highDefense);
+            PBEDataUtils.GetStatRange(PBEStat.SpAttack, pkmn.KnownSpecies, pkmn.KnownForm, pkmn.Level, pkmn.Team.Battle.Settings, out ushort lowSpAttack, out ushort highSpAttack);
+            PBEDataUtils.GetStatRange(PBEStat.SpDefense, pkmn.KnownSpecies, pkmn.KnownForm, pkmn.Level, pkmn.Team.Battle.Settings, out ushort lowSpDefense, out ushort highSpDefense);
+            PBEDataUtils.GetStatRange(PBEStat.Speed, pkmn.KnownSpecies, pkmn.KnownForm, pkmn.Level, pkmn.Team.Battle.Settings, out ushort lowSpeed, out ushort highSpeed);
             sb.AppendLine($"**Stat range:** [HP] {lowHP}-{highHP}, [A] {lowAttack}-{highAttack}, [D] {lowDefense}-{highDefense}, [SA] {lowSpAttack}-{highSpAttack}, [SD] {lowSpDefense}-{highSpDefense}, [S] {lowSpeed}-{highSpeed}, [W] {pkmn.KnownWeight:0.0}");
             AddStatChanges(pkmn, sb);
             if (pkmn.KnownAbility == PBEAbility.MAX)
             {
-                sb.AppendLine($"**Possible abilities:** {string.Join(", ", PBEPokemonData.GetData(pkmn.KnownSpecies).Abilities.Select(a => PBELocalizedString.GetAbilityName(a).English))}");
+                sb.AppendLine($"**Possible abilities:** {string.Join(", ", PBEPokemonData.GetData(pkmn.KnownSpecies, pkmn.KnownForm).Abilities.Select(a => PBELocalizedString.GetAbilityName(a).English))}");
             }
             else
             {

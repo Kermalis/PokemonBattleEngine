@@ -15,11 +15,12 @@ namespace Kermalis.PokemonBattleEngine.Data
             public T Key { get; }
             public PBELocalizedString Value { get; }
 
-            public PBEAlphabeticalListEntry(T key)
+            public PBEAlphabeticalListEntry(T key, object parameter)
             {
                 switch (key)
                 {
                     case PBEAbility ability: Value = PBELocalizedString.GetAbilityName(ability); break;
+                    case PBEForm form: Value = PBELocalizedString.GetFormName((PBESpecies)parameter, form); break;
                     case PBEGender gender: Value = PBELocalizedString.GetGenderName(gender); break;
                     case PBEItem item: Value = PBELocalizedString.GetItemName(item); break;
                     case PBEMove move: Value = PBELocalizedString.GetMoveName(move); break;
@@ -63,10 +64,10 @@ namespace Kermalis.PokemonBattleEngine.Data
             _list = Array.Empty<PBEAlphabeticalListEntry>();
             PBELocalizedString.PBECultureChanged += OnCultureChanged;
         }
-        internal PBEAlphabeticalList(IEnumerable<T> collection)
+        internal PBEAlphabeticalList(IEnumerable<T> collection, object parameter = null)
         {
             PBELocalizedString.PBECultureChanged += OnCultureChanged;
-            Reset(collection);
+            Reset(collection, parameter: parameter);
         }
 
         private void OnCultureChanged(CultureInfo oldPBECultureInfo)
@@ -99,7 +100,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                 PBELocalizedString.PBECultureChanged -= OnCultureChanged;
             }
         }
-        internal void Reset(IEnumerable<T> collection)
+        internal void Reset(IEnumerable<T> collection, object parameter = null)
         {
             if (collection == null)
             {
@@ -112,7 +113,7 @@ namespace Kermalis.PokemonBattleEngine.Data
             }
             else
             {
-                _list = collection.Select(t => new PBEAlphabeticalListEntry(t)).ToArray();
+                _list = collection.Select(t => new PBEAlphabeticalListEntry(t, parameter)).ToArray();
             }
             if (old != null && old.Length != _list.Length)
             {

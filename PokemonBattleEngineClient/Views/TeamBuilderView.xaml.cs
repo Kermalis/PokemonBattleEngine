@@ -1,10 +1,8 @@
 ﻿using Avalonia.Controls;
 using Avalonia.Markup.Xaml;
 using Kermalis.PokemonBattleEngine.Data;
-using Kermalis.PokemonBattleEngine.Utils;
 using Kermalis.PokemonBattleEngineClient.Infrastructure;
 using Kermalis.PokemonBattleEngineClient.Models;
-using ReactiveUI;
 using System;
 using System.Collections.ObjectModel;
 using System.Collections.Specialized;
@@ -43,8 +41,17 @@ namespace Kermalis.PokemonBattleEngineClient.Views
             {
                 if (_shell != value)
                 {
+                    PBEPokemonShell old = _shell;
+                    if (old != null)
+                    {
+                        old.PropertyChanged -= OnShellPropertyChanged;
+                    }
                     _shell = value;
+                    value.PropertyChanged += OnShellPropertyChanged;
+                    _ignoreComboBoxChanges = true;
                     OnPropertyChanged(nameof(Shell));
+                    UpdateComboBoxes(null);
+                    _ignoreComboBoxChanges = false;
                 }
             }
         }
@@ -67,24 +74,109 @@ namespace Kermalis.PokemonBattleEngineClient.Views
         private readonly Button _addPartyButton;
         private readonly Button _removePartyButton;
         private readonly ListBox _partyListBox;
+        private bool _ignoreComboBoxChanges = false;
+        private readonly ComboBox _abilityComboBox;
+        private readonly ComboBox _formComboBox;
+        private readonly ComboBox _genderComboBox;
+        private readonly ComboBox _itemComboBox;
+        private readonly ComboBox _speciesComboBox;
+
+        private void UpdateComboBoxes(string property)
+        {
+            bool all = property == null;
+            bool ability = all;
+            bool form = all;
+            bool gender = all;
+            bool item = all;
+            bool species = all;
+            if (!all)
+            {
+                switch (property)
+                {
+                    case nameof(PBEPokemonShell.Ability): ability = true; break;
+                    case nameof(PBEPokemonShell.Form): form = true; break;
+                    case nameof(PBEPokemonShell.Gender): gender = true; break;
+                    case nameof(PBEPokemonShell.Item): item = true; break;
+                    case nameof(PBEPokemonShell.Species): species = true; break;
+                }
+            }
+            if (ability)
+            {
+                _abilityComboBox.SelectedItem = _shell.Ability;
+            }
+            if (form)
+            {
+                _formComboBox.SelectedItem = _shell.Form;
+            }
+            if (gender)
+            {
+                _genderComboBox.SelectedItem = _shell.Gender;
+            }
+            if (item)
+            {
+                _itemComboBox.SelectedItem = _shell.Item;
+            }
+            if (species)
+            {
+                _speciesComboBox.SelectedItem = _shell.Species;
+            }
+        }
+        private void OnShellPropertyChanged(object sender, PropertyChangedEventArgs e)
+        {
+            UpdateComboBoxes(e.PropertyName);
+        }
+        private void OnComboBoxSelectionChanged(object sender, SelectionChangedEventArgs thing)
+        {
+            if (!_ignoreComboBoxChanges)
+            {
+                _ignoreComboBoxChanges = true;
+                var c = (ComboBox)sender;
+                if (c == _abilityComboBox)
+                {
+                    _shell.Ability = (PBEAbility)c.SelectedItem;
+                }
+                else if (c == _formComboBox)
+                {
+                    _shell.Form = (PBEForm)c.SelectedItem;
+                }
+                else if (c == _genderComboBox)
+                {
+                    _shell.Gender = (PBEGender)c.SelectedItem;
+                }
+                else if (c == _itemComboBox)
+                {
+                    _shell.Item = (PBEItem)c.SelectedItem;
+                }
+                else if (c == _speciesComboBox)
+                {
+                    _shell.Species = (PBESpecies)c.SelectedItem;
+                }
+                _ignoreComboBoxChanges = false;
+            }
+        }
 
         public TeamBuilderView()
         {
             DataContext = this;
             AvaloniaXamlLoader.Load(this);
 
-            _addPartyButton = this.FindControl<Button>("AddParty");
-            _addPartyButton.Command = ReactiveCommand.Create(AddPartyMember);
-            _removePartyButton = this.FindControl<Button>("RemoveParty");
-            _removePartyButton.Command = ReactiveCommand.Create(RemovePartyMember);
-            this.FindControl<Button>("AddTeam").Command = ReactiveCommand.Create(AddTeam);
-            this.FindControl<Button>("RemoveTeam").Command = ReactiveCommand.Create(RemoveTeam);
-            this.FindControl<Button>("SaveTeam").Command = ReactiveCommand.Create(SaveTeam);
-            _partyListBox = this.FindControl<ListBox>("Party");
+            _abilityComboBox = this.FindControl<ComboBox>("Ability");
+            _abilityComboBox.SelectionChanged += OnComboBoxSelectionChanged;
+            _formComboBox = this.FindControl<ComboBox>("Form");
+            _formComboBox.SelectionChanged += OnComboBoxSelectionChanged;
+            _formComboBox.SelectionChanged += OnVisualChanged;
+            _genderComboBox = this.FindControl<ComboBox>("Gender");
+            _genderComboBox.SelectionChanged += OnComboBoxSelectionChanged;
+            _genderComboBox.SelectionChanged += OnVisualChanged;
+            _itemComboBox = this.FindControl<ComboBox>("Item");
+            _itemComboBox.SelectionChanged += OnComboBoxSelectionChanged;
+            _speciesComboBox = this.FindControl<ComboBox>("Species");
+            _speciesComboBox.SelectionChanged += OnComboBoxSelectionChanged;
+            _speciesComboBox.SelectionChanged += OnVisualChanged;
             this.FindControl<ListBox>("SavedTeams").SelectionChanged += OnSelectedTeamChanged;
-            this.FindControl<ComboBox>("Species").SelectionChanged += (s, e) => UpdateSprites();
-            this.FindControl<CheckBox>("Shiny").Command = ReactiveCommand.Create(UpdateSprites);
-            this.FindControl<ComboBox>("Gender").SelectionChanged += (s, e) => UpdateSprites();
+            _addPartyButton = this.FindControl<Button>("AddParty");
+            _removePartyButton = this.FindControl<Button>("RemoveParty");
+            _partyListBox = this.FindControl<ListBox>("Party");
 
             _teamPath = Path.Combine(Utils.WorkingDirectory, "Teams");
             if (Directory.Exists(_teamPath))
@@ -108,14 +200,14 @@ namespace Kermalis.PokemonBattleEngineClient.Views
             AddTeam();
         }
 
-        private void AddTeam()
+        public void AddTeam()
         {
             var t = new TeamInfo($"Team {DateTime.Now.Ticks}", new PBETeamShell(new PBESettings(PBESettings.DefaultSettings), 1, true));
             Teams.Add(t);
             Team = t;
             Shell = t.Shell[0];
         }
-        private void RemoveTeam()
+        public void RemoveTeam()
         {
             File.Delete(Path.Combine(_teamPath, $"{_team.Name}.json"));
             TeamInfo old = _team;
@@ -125,17 +217,17 @@ namespace Kermalis.PokemonBattleEngineClient.Views
             }
             Teams.Remove(old);
         }
-        private void SaveTeam()
+        public void SaveTeam()
         {
             _team.Shell.ToJsonFile(Path.Combine(_teamPath, $"{_team.Name}.json"));
         }
-        private void AddPartyMember()
+        public void AddPartyMember()
         {
             int index = _team.Shell.Count;
-            _team.Shell.Add(PBERandom.RandomSpecies(), _team.Shell.Settings.MaxLevel);
+            _team.Shell.AddRandom(true);
             Shell = _team.Shell[index];
         }
-        private void RemovePartyMember()
+        public void RemovePartyMember()
         {
             _team.Shell.Remove(_shell);
         }
@@ -154,7 +246,11 @@ namespace Kermalis.PokemonBattleEngineClient.Views
             OnSelectedTeamSizeChanged(null, null);
             Shell = _team.Shell[0];
         }
-        private void UpdateSprites()
+        private void OnVisualChanged(object sender, SelectionChangedEventArgs e)
+        {
+            UpdateSprites();
+        }
+        public void UpdateSprites()
         {
             SpriteStream = Utils.GetPokemonSpriteStream(_shell);
             // Force redraw of minisprite

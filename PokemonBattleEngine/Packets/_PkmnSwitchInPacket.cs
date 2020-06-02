@@ -17,6 +17,7 @@ namespace Kermalis.PokemonBattleEngine.Packets
             public byte PokemonId { get; }
             public byte DisguisedAsId { get; }
             public PBESpecies Species { get; }
+            public PBEForm Form { get; }
             public string Nickname { get; }
             public byte Level { get; }
             public bool Shiny { get; }
@@ -27,11 +28,12 @@ namespace Kermalis.PokemonBattleEngine.Packets
             public PBEStatus1 Status1 { get; }
             public PBEFieldPosition FieldPosition { get; }
 
-            internal PBESwitchInInfo(byte pkmnId, byte disguisedAsId, PBESpecies species, string nickname, byte level, bool shiny, PBEGender gender, ushort hp, ushort maxHP, double hpPercentage, PBEStatus1 status1, PBEFieldPosition fieldPosition)
+            private PBESwitchInInfo(byte pkmnId, byte disguisedAsId, PBESpecies species, PBEForm form, string nickname, byte level, bool shiny, PBEGender gender, ushort hp, ushort maxHP, double hpPercentage, PBEStatus1 status1, PBEFieldPosition fieldPosition)
             {
                 PokemonId = pkmnId;
                 DisguisedAsId = disguisedAsId;
                 Species = species;
+                Form = form;
                 Nickname = nickname;
                 Level = level;
                 Shiny = shiny;
@@ -42,11 +44,14 @@ namespace Kermalis.PokemonBattleEngine.Packets
                 Status1 = status1;
                 FieldPosition = fieldPosition;
             }
+            internal PBESwitchInInfo(PBEPokemon pkmn)
+                : this(pkmn.Id, pkmn.DisguisedAsPokemon != null ? pkmn.DisguisedAsPokemon.Id : pkmn.Id, pkmn.KnownSpecies, pkmn.KnownForm, pkmn.KnownNickname, pkmn.Level, pkmn.KnownShiny, pkmn.KnownGender, pkmn.HP, pkmn.MaxHP, pkmn.HPPercentage, pkmn.Status1, pkmn.FieldPosition) { }
             internal PBESwitchInInfo(EndianBinaryReader r)
             {
                 PokemonId = r.ReadByte();
                 DisguisedAsId = r.ReadByte();
                 Species = r.ReadEnum<PBESpecies>();
+                Form = r.ReadEnum<PBEForm>();
                 Nickname = r.ReadStringNullTerminated();
                 Level = r.ReadByte();
                 Shiny = r.ReadBoolean();
@@ -58,11 +63,17 @@ namespace Kermalis.PokemonBattleEngine.Packets
                 FieldPosition = r.ReadEnum<PBEFieldPosition>();
             }
 
+            internal PBESwitchInInfo MakeHidden()
+            {
+                return new PBESwitchInInfo(byte.MaxValue, byte.MaxValue, Species, Form, Nickname, Level, Shiny, Gender, ushort.MinValue, ushort.MinValue, HPPercentage, Status1, FieldPosition);
+            }
+
             internal void ToBytes(EndianBinaryWriter w)
             {
                 w.Write(PokemonId);
                 w.Write(DisguisedAsId);
                 w.Write(Species);
+                w.Write(Form);
                 w.Write(Nickname, true);
                 w.Write(Level);
                 w.Write(Shiny);
@@ -128,8 +139,7 @@ namespace Kermalis.PokemonBattleEngine.Packets
             var hiddenSwitchIns = new PBESwitchInInfo[SwitchIns.Count];
             for (int i = 0; i < hiddenSwitchIns.Length; i++)
             {
-                PBESwitchInInfo s = SwitchIns[i];
-                hiddenSwitchIns[i] = new PBESwitchInInfo(byte.MaxValue, byte.MaxValue, s.Species, s.Nickname, s.Level, s.Shiny, s.Gender, ushort.MinValue, ushort.MinValue, s.HPPercentage, s.Status1, s.FieldPosition);
+                hiddenSwitchIns[i] = SwitchIns[i].MakeHidden();
             }
             return new PBEPkmnSwitchInPacket(Team, hiddenSwitchIns, Forced, ForcedByPokemonPosition, ForcedByPokemonTeam);
         }

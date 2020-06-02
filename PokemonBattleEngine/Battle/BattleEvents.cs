@@ -113,15 +113,19 @@ namespace Kermalis.PokemonBattleEngine.Battle
         {
             Broadcast(new PBEPkmnFaintedPacket(pokemon, oldPosition));
         }
-        private void BroadcastPkmnFormChanged(PBEPokemon pokemon, PBESpecies newSpecies, PBEAbility newAbility, PBEAbility newKnownAbility)
+        private void BroadcastPkmnFormChanged(PBEPokemon pokemon, PBEForm newForm, PBEAbility newAbility, PBEAbility newKnownAbility, bool isRevertForm)
         {
             pokemon.Ability = newAbility;
             pokemon.KnownAbility = newKnownAbility;
-            pokemon.Species = newSpecies;
-            pokemon.KnownSpecies = newSpecies;
+            pokemon.Form = newForm;
+            pokemon.KnownForm = newForm;
+            if (isRevertForm)
+            {
+                pokemon.RevertForm = newForm;
+                pokemon.RevertAbility = newAbility;
+            }
             pokemon.SetStats(false);
-            // Verified: PBEStatus2.PowerTrick is not cleared when changing form. Possible gen 4+ bug?
-            var pData = PBEPokemonData.GetData(newSpecies);
+            var pData = PBEPokemonData.GetData(pokemon.Species, newForm);
             PBEType type1 = pData.Type1;
             pokemon.Type1 = type1;
             pokemon.KnownType1 = type1;
@@ -131,7 +135,14 @@ namespace Kermalis.PokemonBattleEngine.Battle
             double weight = pData.Weight;
             pokemon.Weight = weight;
             pokemon.KnownWeight = weight;
-            Broadcast(new PBEPkmnFormChangedPacket(pokemon));
+            Broadcast(new PBEPkmnFormChangedPacket(pokemon, isRevertForm));
+            // BUG: PBEStatus2.PowerTrick is not cleared when changing form in any game
+#if BUGFIX
+            if (pokemon.Status2.HasFlag(PBEStatus2.PowerTrick))
+            {
+                BroadcastStatus2(pokemon, pokemon, PBEStatus2.PowerTrick, PBEStatusAction.Ended);
+            }
+#endif
         }
         private void BroadcastPkmnHPChanged(PBEPokemon pokemon, ushort oldHP, double oldHPPercentage)
         {
@@ -773,7 +784,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                 case PBEPkmnFormChangedPacket pfcp:
                 {
                     PBEPokemon pokemon = pfcp.PokemonTeam.TryGetPokemon(pfcp.Pokemon);
-                    Console.WriteLine("{0} transformed!", NameForTrainer(pokemon));
+                    Console.WriteLine("{0}'s new form is {1}!", NameForTrainer(pokemon), PBELocalizedString.GetFormName(pokemon.Species, pfcp.NewForm).English);
                     break;
                 }
                 case PBEPkmnHPChangedPacket phcp:

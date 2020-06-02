@@ -90,17 +90,18 @@ namespace Kermalis.PokemonBattleEngine.Data
             _list = new List<PBEPokemonShell>(Settings.MaxPartySize);
             for (int i = 0; i < numPkmnToGenerate; i++)
             {
-                Insert(PBERandom.RandomSpecies(), setToMaxLevel ? Settings.MaxLevel : PBERandom.RandomLevel(Settings), false, i);
+                InsertRandom(setToMaxLevel, false, i);
             }
         }
 
-        private void InsertRandom(bool fireEvent, int index)
+        private void InsertRandom(bool setToMaxLevel, bool fireEvent, int index)
         {
-            Insert(PBERandom.RandomSpecies(), PBERandom.RandomLevel(Settings), fireEvent, index);
+            (PBESpecies species, PBEForm form) = PBERandom.RandomSpecies(true);
+            Insert(species, form, setToMaxLevel ? Settings.MaxLevel : PBERandom.RandomLevel(Settings), fireEvent, index);
         }
-        private void Insert(PBESpecies species, byte level, bool fireEvent, int index)
+        private void Insert(PBESpecies species, PBEForm form, byte level, bool fireEvent, int index)
         {
-            InsertWithEvents(fireEvent, new PBEPokemonShell(species, level, Settings) { CanDispose = false }, index);
+            InsertWithEvents(fireEvent, new PBEPokemonShell(species, form, level, Settings) { CanDispose = false }, index);
         }
         private void InsertWithEvents(bool fireEvent, PBEPokemonShell item, int index)
         {
@@ -119,7 +120,7 @@ namespace Kermalis.PokemonBattleEngine.Data
             NotifyCollectionChangedEventArgs e;
             if (_list.Count == 0)
             {
-                InsertRandom(false, 0);
+                InsertRandom(false, false, 0);
                 e = new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Replace, _list[0], item, 0);
             }
             else
@@ -135,7 +136,7 @@ namespace Kermalis.PokemonBattleEngine.Data
         {
             throw new InvalidOperationException($"Party size cannot exceed \"{nameof(Settings.MaxPartySize)}\" ({Settings.MaxPartySize}).");
         }
-        public void AddRandom()
+        public void AddRandom(bool setToMaxLevel)
         {
             if (IsDisposed)
             {
@@ -143,31 +144,31 @@ namespace Kermalis.PokemonBattleEngine.Data
             }
             if (_list.Count < Settings.MaxPartySize)
             {
-                InsertRandom(true, _list.Count);
+                InsertRandom(setToMaxLevel, true, _list.Count);
             }
             else
             {
                 ExceedException();
             }
         }
-        public void Add(PBESpecies species, byte level)
+        public void Add(PBESpecies species, PBEForm form, byte level)
         {
             if (IsDisposed)
             {
                 throw new ObjectDisposedException(null);
             }
-            PBEPokemonShell.ValidateSpecies(species);
+            PBEPokemonShell.ValidateSpecies(species, form, true);
             PBEPokemonShell.ValidateLevel(level, Settings);
             if (_list.Count < Settings.MaxPartySize)
             {
-                Insert(species, level, true, _list.Count);
+                Insert(species, form, level, true, _list.Count);
             }
             else
             {
                 ExceedException();
             }
         }
-        public void InsertRandom(int index)
+        public void InsertRandom(bool setToMaxLevel, int index)
         {
             if (IsDisposed)
             {
@@ -175,24 +176,24 @@ namespace Kermalis.PokemonBattleEngine.Data
             }
             if (_list.Count < Settings.MaxPartySize)
             {
-                InsertRandom(true, index);
+                InsertRandom(setToMaxLevel, true, index);
             }
             else
             {
                 ExceedException();
             }
         }
-        public void Insert(PBESpecies species, byte level, int index)
+        public void Insert(PBESpecies species, PBEForm form, byte level, int index)
         {
             if (IsDisposed)
             {
                 throw new ObjectDisposedException(null);
             }
-            PBEPokemonShell.ValidateSpecies(species);
+            PBEPokemonShell.ValidateSpecies(species, form, true);
             PBEPokemonShell.ValidateLevel(level, Settings);
             if (_list.Count < Settings.MaxPartySize)
             {
-                Insert(species, level, true, index);
+                Insert(species, form, level, true, index);
             }
             else
             {
@@ -211,7 +212,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                 _list[i].CanDispose = true;
             }
             _list.Clear();
-            InsertRandom(false, 0);
+            InsertRandom(false, false, 0);
             if (oldCount != 1)
             {
                 OnPropertyChanged(nameof(Count));

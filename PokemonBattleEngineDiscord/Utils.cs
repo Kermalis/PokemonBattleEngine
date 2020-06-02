@@ -3,6 +3,7 @@ using Kermalis.PokemonBattleEngine.Battle;
 using Kermalis.PokemonBattleEngine.Data;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Net;
 
@@ -11,6 +12,9 @@ namespace Kermalis.PokemonBattleEngineDiscord
     internal static class Utils
     {
         public const string URL = "https://github.com/Kermalis/PokemonBattleEngine";
+        private const string ImageURL = "https://raw.githubusercontent.com/Kermalis/PokemonBattleEngine/master/Shared%20Assets/PKMN/";
+
+        #region Static Collections
         public static readonly Dictionary<PBEType, Color> TypeColors = new Dictionary<PBEType, Color>
         {
             { PBEType.None, new Color(146, 154, 156) },
@@ -69,6 +73,25 @@ namespace Kermalis.PokemonBattleEngineDiscord
             { PBEWeather.Rain, Emote.Parse("<a:Rain:709213589977694239>") },
             { PBEWeather.Sandstorm, Emote.Parse("<a:Sandstorm:709213589826830357>") }
         };
+        #endregion
+
+        public static void InitFemaleSpriteLookup()
+        {
+            const string address = ImageURL + "FemaleSpriteLookup.txt";
+            using (var w = new WebClient())
+            using (var reader = new StringReader(w.DownloadString(address)))
+            {
+                string line;
+                while ((line = reader.ReadLine()) != null)
+                {
+                    if (!Enum.TryParse(line, out PBESpecies species))
+                    {
+                        throw new InvalidDataException($"Failed to parse \"{address}\"");
+                    }
+                    _femaleSpriteLookup.Add(species);
+                }
+            }
+        }
 
         // https://stackoverflow.com/a/3722337
         public static Color Blend(this Color color, Color backColor, double depth = 0.5)
@@ -109,57 +132,31 @@ namespace Kermalis.PokemonBattleEngineDiscord
             return source.ElementAt(_rand.Next(count));
         }
 
-        private static readonly Dictionary<string, bool> _urlCache = new Dictionary<string, bool>();
-        // https://stackoverflow.com/questions/1979915/can-i-check-if-a-file-exists-at-a-url
-        public static bool URLExists(string url)
+        private static readonly object _femaleSpriteLookupLockObj = new object();
+        private static readonly List<PBESpecies> _femaleSpriteLookup = new List<PBESpecies>();
+        private static bool HasFemaleSprite(PBESpecies species)
         {
-            if (_urlCache.TryGetValue(url, out bool value))
+            lock (_femaleSpriteLookupLockObj)
             {
-                return value;
-            }
-            else
-            {
-                value = false;
-                var webRequest = WebRequest.Create(url);
-                webRequest.Timeout = 2000;
-                webRequest.Method = "HEAD";
-                HttpWebResponse response = null;
-                try
-                {
-                    response = (HttpWebResponse)webRequest.GetResponse();
-                    value = true;
-                }
-                catch { }
-                finally
-                {
-                    if (response != null)
-                    {
-                        response.Close();
-                    }
-                }
-                _urlCache.Add(url, value);
-                return value;
+                return _femaleSpriteLookup.Contains(species);
             }
         }
         public static string GetPokemonSprite(PBEPokemon pokemon)
         {
-            return GetPokemonSprite(pokemon.KnownSpecies, pokemon.KnownShiny, pokemon.KnownGender, pokemon.KnownStatus2.HasFlag(PBEStatus2.Substitute), false);
+            return GetPokemonSprite(pokemon.KnownSpecies, pokemon.KnownForm, pokemon.KnownShiny, pokemon.KnownGender, pokemon.KnownStatus2.HasFlag(PBEStatus2.Substitute), false);
         }
-        public static string GetPokemonSprite(PBESpecies species, bool shiny, PBEGender gender, bool behindSubstitute, bool backSprite)
+        public static string GetPokemonSprite(PBESpecies species, PBEForm form, bool shiny, PBEGender gender, bool behindSubstitute, bool backSprite)
         {
-            const string path = "https://raw.githubusercontent.com/Kermalis/PokemonBattleEngine/master/Shared%20Assets/PKMN/";
             string orientation = backSprite ? "_B" : "_F";
             if (behindSubstitute)
             {
-                return path + "STATUS2_Substitute" + orientation + ".gif";
+                return ImageURL + "STATUS2_Substitute" + orientation + ".gif";
             }
             else
             {
-                ushort speciesID = (ushort)species;
-                uint formID = (uint)species >> 0x10;
-                string sss = speciesID + (formID > 0 ? ("_" + formID) : string.Empty) + orientation + (shiny ? "_S" : string.Empty);
-                string genderStr = gender == PBEGender.Female && URLExists(path + "PKMN_" + sss + "_F.gif") ? "_F" : string.Empty;
-                return path + "PKMN_" + sss + genderStr + ".gif";
+                string speciesStr = PBEDataUtils.GetNameOfForm(species, form) ?? species.ToString();
+                string genderStr = gender == PBEGender.Female && HasFemaleSprite(species) ? "_F" : string.Empty;
+                return ImageURL + "PKMN_" + speciesStr + orientation + (shiny ? "_S" : string.Empty) + genderStr + ".gif";
             }
         }
     }

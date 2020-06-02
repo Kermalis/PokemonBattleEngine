@@ -6,6 +6,7 @@ using Kermalis.PokemonBattleEngine.Data;
 using Kermalis.PokemonBattleEngine.Utils;
 using System;
 using System.Linq;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 
 namespace Kermalis.PokemonBattleEngineDiscord
@@ -197,8 +198,22 @@ namespace Kermalis.PokemonBattleEngineDiscord
         {
             [Command("info")]
             [Alias("data")]
-            public async Task Info([Remainder] string speciesName)
+            public async Task Info([Remainder] string input)
             {
+                // Inputs for forms should be like "Giratina (Origin Forme)"
+                Match m = Regex.Match(input, @"^(\S+) \((.+)\)$");
+                string speciesName;
+                string formName;
+                if (m.Success)
+                {
+                    speciesName = m.Groups[1].Value;
+                    formName = m.Groups[2].Value;
+                }
+                else
+                {
+                    speciesName = input;
+                    formName = null;
+                }
                 PBESpecies? nSpecies = PBELocalizedString.GetSpeciesByName(speciesName);
                 if (!nSpecies.HasValue)
                 {
@@ -207,72 +222,82 @@ namespace Kermalis.PokemonBattleEngineDiscord
                 else
                 {
                     PBESpecies species = nSpecies.Value;
-                    var pData = PBEPokemonData.GetData(species);
-                    string types = $"{Utils.TypeEmotes[pData.Type1]}";
-                    if (pData.Type2 != PBEType.None)
+                    speciesName = PBELocalizedString.GetSpeciesName(species).English;
+                    PBEForm? nForm = formName == null ? 0 : PBELocalizedString.GetFormByName(species, formName);
+                    if (!nForm.HasValue)
                     {
-                        types += $" {Utils.TypeEmotes[pData.Type2]}";
+                        await Context.Channel.SendMessageAsync($"{Context.User.Mention} Invalid form for {speciesName}!");
                     }
-                    string ratio;
-                    switch (pData.GenderRatio)
+                    else
                     {
-                        case PBEGenderRatio.M7_F1: ratio = "87.5% Male, 12.5% Female"; break;
-                        case PBEGenderRatio.M3_F1: ratio = "75% Male, 25% Female"; break;
-                        case PBEGenderRatio.M1_F1: ratio = "50% Male, 50% Female"; break;
-                        case PBEGenderRatio.M1_F3: ratio = "25% Male, 75% Female"; break;
-                        case PBEGenderRatio.M0_F1: ratio = "100% Female"; break;
-                        case PBEGenderRatio.M1_F0: ratio = "100% Male"; break;
-                        case PBEGenderRatio.M0_F0: ratio = "Genderless Species"; break;
-                        default: throw new ArgumentOutOfRangeException(nameof(pData.GenderRatio));
-                    }
-                    string weaknesses = string.Empty,
+                        PBEForm form = nForm.Value;
+                        formName = PBEDataUtils.HasForms(species, false) ? $" ({PBELocalizedString.GetFormName(species, form).English})" : string.Empty;
+                        var pData = PBEPokemonData.GetData(species, form);
+                        string types = $"{Utils.TypeEmotes[pData.Type1]}";
+                        if (pData.Type2 != PBEType.None)
+                        {
+                            types += $" {Utils.TypeEmotes[pData.Type2]}";
+                        }
+                        string ratio;
+                        switch (pData.GenderRatio)
+                        {
+                            case PBEGenderRatio.M7_F1: ratio = "87.5% Male, 12.5% Female"; break;
+                            case PBEGenderRatio.M3_F1: ratio = "75% Male, 25% Female"; break;
+                            case PBEGenderRatio.M1_F1: ratio = "50% Male, 50% Female"; break;
+                            case PBEGenderRatio.M1_F3: ratio = "25% Male, 75% Female"; break;
+                            case PBEGenderRatio.M0_F1: ratio = "100% Female"; break;
+                            case PBEGenderRatio.M1_F0: ratio = "100% Male"; break;
+                            case PBEGenderRatio.M0_F0: ratio = "Genderless Species"; break;
+                            default: throw new ArgumentOutOfRangeException(nameof(pData.GenderRatio));
+                        }
+                        string weaknesses = string.Empty,
                         resistances = string.Empty,
                         immunities = string.Empty;
-                    for (PBEType atk = PBEType.None + 1; atk < PBEType.MAX; atk++)
-                    {
-                        double d = PBETypeEffectiveness.GetEffectiveness(atk, pData.Type1, pData.Type2);
-                        if (d <= 0)
+                        for (PBEType atk = PBEType.None + 1; atk < PBEType.MAX; atk++)
                         {
-                            if (immunities != string.Empty)
+                            double d = PBETypeEffectiveness.GetEffectiveness(atk, pData.Type1, pData.Type2);
+                            if (d <= 0)
                             {
-                                immunities += ' ';
+                                if (immunities != string.Empty)
+                                {
+                                    immunities += ' ';
+                                }
+                                immunities += Utils.TypeEmotes[atk];
                             }
-                            immunities += Utils.TypeEmotes[atk];
+                            else if (d < 1)
+                            {
+                                if (resistances != string.Empty)
+                                {
+                                    resistances += ' ';
+                                }
+                                resistances += Utils.TypeEmotes[atk];
+                            }
+                            if (d > 1)
+                            {
+                                if (weaknesses != string.Empty)
+                                {
+                                    weaknesses += ' ';
+                                }
+                                weaknesses += Utils.TypeEmotes[atk];
+                            }
                         }
-                        else if (d < 1)
+                        if (weaknesses == string.Empty)
                         {
-                            if (resistances != string.Empty)
-                            {
-                                resistances += ' ';
-                            }
-                            resistances += Utils.TypeEmotes[atk];
+                            weaknesses = "No Weaknesses";
                         }
-                        if (d > 1)
+                        if (resistances == string.Empty)
                         {
-                            if (weaknesses != string.Empty)
-                            {
-                                weaknesses += ' ';
-                            }
-                            weaknesses += Utils.TypeEmotes[atk];
+                            resistances = "No Resistances";
                         }
-                    }
-                    if (weaknesses == string.Empty)
-                    {
-                        weaknesses = "No Weaknesses";
-                    }
-                    if (resistances == string.Empty)
-                    {
-                        resistances = "No Resistances";
-                    }
-                    if (immunities == string.Empty)
-                    {
-                        immunities = "No Immunities";
-                    }
+                        if (immunities == string.Empty)
+                        {
+                            immunities = "No Immunities";
+                        }
 
-                    EmbedBuilder embed = new EmbedBuilder()
+                        EmbedBuilder embed = new EmbedBuilder()
                         .WithAuthor(Context.User)
                         .WithColor(Utils.GetColor(pData.Type1, pData.Type2))
-                        .WithTitle($"{PBELocalizedString.GetSpeciesName(species).English} - {PBELocalizedString.GetSpeciesCategory(species).English}")
+                        .WithTitle($"{speciesName}{formName} - {PBELocalizedString.GetSpeciesCategory(species).English}")
                         .WithUrl(Utils.URL)
                         .WithDescription(PBELocalizedString.GetSpeciesEntry(species).English.Replace('\n', ' '))
                         .AddField("Types", types, true)
@@ -288,8 +313,9 @@ namespace Kermalis.PokemonBattleEngineDiscord
                         .AddField("Type Weaknesses", weaknesses, true)
                         .AddField("Type Resistances", resistances, true)
                         .AddField("Type Immunities", immunities, true)
-                        .WithImageUrl(Utils.GetPokemonSprite(species, PBERandom.RandomShiny(), PBERandom.RandomGender(pData.GenderRatio), false, false));
-                    await Context.Channel.SendMessageAsync(string.Empty, embed: embed.Build());
+                        .WithImageUrl(Utils.GetPokemonSprite(species, form, PBERandom.RandomShiny(), PBERandom.RandomGender(pData.GenderRatio), false, false));
+                        await Context.Channel.SendMessageAsync(string.Empty, embed: embed.Build());
+                    }
                 }
             }
         }

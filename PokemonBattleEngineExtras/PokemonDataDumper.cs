@@ -2,7 +2,6 @@
 using Kermalis.PokemonBattleEngine.Data;
 using Kermalis.SimpleNARC;
 using Microsoft.Data.Sqlite;
-using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -232,7 +231,7 @@ namespace Kermalis.PokemonBattleEngineExtras
             { 198, PBESpecies.Murkrow },
             { 199, PBESpecies.Slowking },
             { 200, PBESpecies.Misdreavus },
-            { 201, PBESpecies.Unown_A },
+            { 201, PBESpecies.Unown },
             { 202, PBESpecies.Wobbuffet },
             { 203, PBESpecies.Girafarig },
             { 204, PBESpecies.Pineco },
@@ -546,20 +545,20 @@ namespace Kermalis.PokemonBattleEngineExtras
             PBEMove.Selfdestruct,
             (PBEMove)171 // Nightmare
         };
-        private static readonly Dictionary<int, PBESpecies> _gen4SpeciesIndexToPBESpecies = new Dictionary<int, PBESpecies>
+        private static readonly Dictionary<int, (PBESpecies, PBEForm)> _gen4SpeciesIndexToPBESpecies = new Dictionary<int, (PBESpecies, PBEForm)>
         {
-            { 496, PBESpecies.Deoxys_Attack },
-            { 497, PBESpecies.Deoxys_Defense },
-            { 498, PBESpecies.Deoxys_Speed },
-            { 499, PBESpecies.Wormadam_Sandy },
-            { 500, PBESpecies.Wormadam_Trash },
-            { 501, PBESpecies.Giratina_Origin },
-            { 502, PBESpecies.Shaymin_Sky },
-            { 503, PBESpecies.Rotom_Heat },
-            { 504, PBESpecies.Rotom_Wash },
-            { 505, PBESpecies.Rotom_Frost },
-            { 506, PBESpecies.Rotom_Fan },
-            { 507, PBESpecies.Rotom_Mow }
+            { 496, (PBESpecies.Deoxys, PBEForm.Deoxys_Attack) },
+            { 497, (PBESpecies.Deoxys, PBEForm.Deoxys_Defense) },
+            { 498, (PBESpecies.Deoxys, PBEForm.Deoxys_Speed) },
+            { 499, (PBESpecies.Wormadam, PBEForm.Wormadam_Sandy) },
+            { 500, (PBESpecies.Wormadam, PBEForm.Wormadam_Trash) },
+            { 501, (PBESpecies.Giratina, PBEForm.Giratina_Origin) },
+            { 502, (PBESpecies.Shaymin, PBEForm.Shaymin_Sky) },
+            { 503, (PBESpecies.Rotom, PBEForm.Rotom_Heat) },
+            { 504, (PBESpecies.Rotom, PBEForm.Rotom_Wash) },
+            { 505, (PBESpecies.Rotom, PBEForm.Rotom_Frost) },
+            { 506, (PBESpecies.Rotom, PBEForm.Rotom_Fan) },
+            { 507, (PBESpecies.Rotom, PBEForm.Rotom_Mow) }
         };
         private static readonly PBEMove[] _gen4TMHMs = new PBEMove[100]
         {
@@ -775,53 +774,53 @@ namespace Kermalis.PokemonBattleEngineExtras
             (PBEMove)450, // BugBite
             PBEMove.Headbutt
         };
-        private static readonly Dictionary<int, PBESpecies> _bwSpeciesIndexToPBESpecies = new Dictionary<int, PBESpecies>
+        private static readonly Dictionary<int, (PBESpecies, PBEForm)> _bwSpeciesIndexToPBESpecies = new Dictionary<int, (PBESpecies, PBEForm)>
         {
-            { 650, PBESpecies.Deoxys_Attack },
-            { 651, PBESpecies.Deoxys_Defense },
-            { 652, PBESpecies.Deoxys_Speed },
-            { 653, PBESpecies.Wormadam_Sandy },
-            { 654, PBESpecies.Wormadam_Trash },
-            { 655, PBESpecies.Shaymin_Sky },
-            { 656, PBESpecies.Giratina_Origin },
-            { 657, PBESpecies.Rotom_Heat },
-            { 658, PBESpecies.Rotom_Wash },
-            { 659, PBESpecies.Rotom_Frost },
-            { 660, PBESpecies.Rotom_Fan },
-            { 661, PBESpecies.Rotom_Mow },
-            { 662, PBESpecies.Castform_Sunny },
-            { 663, PBESpecies.Castform_Rainy },
-            { 664, PBESpecies.Castform_Snowy },
-            { 665, PBESpecies.Basculin_Red },
-            { 666, PBESpecies.Darmanitan_Zen },
-            { 667, PBESpecies.Meloetta_Pirouette }
+            { 650, (PBESpecies.Deoxys, PBEForm.Deoxys_Attack) },
+            { 651, (PBESpecies.Deoxys, PBEForm.Deoxys_Defense) },
+            { 652, (PBESpecies.Deoxys, PBEForm.Deoxys_Speed) },
+            { 653, (PBESpecies.Wormadam, PBEForm.Wormadam_Sandy) },
+            { 654, (PBESpecies.Wormadam, PBEForm.Wormadam_Trash) },
+            { 655, (PBESpecies.Shaymin, PBEForm.Shaymin_Sky) },
+            { 656, (PBESpecies.Giratina, PBEForm.Giratina_Origin) },
+            { 657, (PBESpecies.Rotom, PBEForm.Rotom_Heat) },
+            { 658, (PBESpecies.Rotom, PBEForm.Rotom_Wash) },
+            { 659, (PBESpecies.Rotom, PBEForm.Rotom_Frost) },
+            { 660, (PBESpecies.Rotom, PBEForm.Rotom_Fan) },
+            { 661, (PBESpecies.Rotom, PBEForm.Rotom_Mow) },
+            { 662, (PBESpecies.Castform, PBEForm.Castform_Sunny) },
+            { 663, (PBESpecies.Castform, PBEForm.Castform_Rainy) },
+            { 664, (PBESpecies.Castform, PBEForm.Castform_Snowy) },
+            { 665, (PBESpecies.Basculin, PBEForm.Basculin_Red) },
+            { 666, (PBESpecies.Darmanitan, PBEForm.Darmanitan_Zen) },
+            { 667, (PBESpecies.Meloetta, PBEForm.Meloetta_Pirouette) }
         };
-        private static readonly Dictionary<int, PBESpecies> _b2w2SpeciesIndexToPBESpecies = new Dictionary<int, PBESpecies>
+        private static readonly Dictionary<int, (PBESpecies, PBEForm)> _b2w2SpeciesIndexToPBESpecies = new Dictionary<int, (PBESpecies, PBEForm)>
         {
-            { 685, PBESpecies.Deoxys_Attack },
-            { 686, PBESpecies.Deoxys_Defense },
-            { 687, PBESpecies.Deoxys_Speed },
-            { 688, PBESpecies.Wormadam_Sandy },
-            { 689, PBESpecies.Wormadam_Trash },
-            { 690, PBESpecies.Shaymin_Sky },
-            { 691, PBESpecies.Giratina_Origin },
-            { 692, PBESpecies.Rotom_Heat },
-            { 693, PBESpecies.Rotom_Wash },
-            { 694, PBESpecies.Rotom_Frost },
-            { 695, PBESpecies.Rotom_Fan },
-            { 696, PBESpecies.Rotom_Mow },
-            { 697, PBESpecies.Castform_Sunny },
-            { 698, PBESpecies.Castform_Rainy },
-            { 699, PBESpecies.Castform_Snowy },
-            { 700, PBESpecies.Basculin_Red },
-            { 701, PBESpecies.Darmanitan_Zen },
-            { 702, PBESpecies.Meloetta_Pirouette },
-            { 703, PBESpecies.Kyurem_White },
-            { 704, PBESpecies.Kyurem_Black },
-            { 705, PBESpecies.Keldeo_Resolute },
-            { 706, PBESpecies.Tornadus_Therian },
-            { 707, PBESpecies.Thundurus_Therian },
-            { 708, PBESpecies.Landorus_Therian }
+            { 685, (PBESpecies.Deoxys, PBEForm.Deoxys_Attack) },
+            { 686, (PBESpecies.Deoxys, PBEForm.Deoxys_Defense) },
+            { 687, (PBESpecies.Deoxys, PBEForm.Deoxys_Speed) },
+            { 688, (PBESpecies.Wormadam, PBEForm.Wormadam_Sandy) },
+            { 689, (PBESpecies.Wormadam, PBEForm.Wormadam_Trash) },
+            { 690, (PBESpecies.Shaymin, PBEForm.Shaymin_Sky) },
+            { 691, (PBESpecies.Giratina, PBEForm.Giratina_Origin) },
+            { 692, (PBESpecies.Rotom, PBEForm.Rotom_Heat) },
+            { 693, (PBESpecies.Rotom, PBEForm.Rotom_Wash) },
+            { 694, (PBESpecies.Rotom, PBEForm.Rotom_Frost) },
+            { 695, (PBESpecies.Rotom, PBEForm.Rotom_Fan) },
+            { 696, (PBESpecies.Rotom, PBEForm.Rotom_Mow) },
+            { 697, (PBESpecies.Castform, PBEForm.Castform_Sunny) },
+            { 698, (PBESpecies.Castform, PBEForm.Castform_Rainy) },
+            { 699, (PBESpecies.Castform, PBEForm.Castform_Snowy) },
+            { 700, (PBESpecies.Basculin, PBEForm.Basculin_Red) },
+            { 701, (PBESpecies.Darmanitan, PBEForm.Darmanitan_Zen) },
+            { 702, (PBESpecies.Meloetta, PBEForm.Meloetta_Pirouette) },
+            { 703, (PBESpecies.Kyurem, PBEForm.Kyurem_White) },
+            { 704, (PBESpecies.Kyurem, PBEForm.Kyurem_Black) },
+            { 705, (PBESpecies.Keldeo, PBEForm.Keldeo_Resolute) },
+            { 706, (PBESpecies.Tornadus, PBEForm.Tornadus_Therian) },
+            { 707, (PBESpecies.Thundurus, PBEForm.Thundurus_Therian) },
+            { 708, (PBESpecies.Landorus, PBEForm.Landorus_Therian) }
         };
         private static readonly PBEMove[] _gen5TMHMs = new PBEMove[101]
         {
@@ -1067,79 +1066,64 @@ namespace Kermalis.PokemonBattleEngineExtras
             {
                 cmd.Transaction = transaction;
 
-                var dict = new Dictionary<PBESpecies, Pokemon>();
-                void AddSpecies(PBESpecies species)
+                var dict = new Dictionary<(PBESpecies, PBEForm), Pokemon>();
+                Pokemon AddSpecies((PBESpecies, PBEForm) key)
                 {
-                    if (!dict.ContainsKey(species))
+                    if (!dict.TryGetValue(key, out Pokemon pkmn))
                     {
-                        dict.Add(species, new Pokemon());
+                        pkmn = new Pokemon();
+                        dict.Add(key, pkmn);
                     }
+                    return pkmn;
                 }
-                void AddLevelUpMove(PBESpecies species, PBEMove move, byte level, PBEMoveObtainMethod flag)
+                void AddLevelUpMove((PBESpecies, PBEForm) key, PBEMove move, byte level, PBEMoveObtainMethod flag)
                 {
-                    AddSpecies(species);
-                    (PBEMove, byte) key = (move, level);
-                    if (dict[species].LevelUpMoves.ContainsKey(key))
+                    Pokemon pkmn = AddSpecies(key);
+                    Dictionary<(PBEMove, byte), PBEMoveObtainMethod> levelUp = pkmn.LevelUpMoves;
+                    (PBEMove, byte) lKey = (move, level);
+                    if (levelUp.ContainsKey(lKey))
                     {
-                        dict[species].LevelUpMoves[key] |= flag;
+                        levelUp[lKey] |= flag;
                     }
                     else
                     {
-                        dict[species].LevelUpMoves.Add(key, flag);
+                        levelUp.Add(lKey, flag);
                     }
                 }
-                void AddOtherMove(PBESpecies species, PBEMove move, PBEMoveObtainMethod flag)
+                void AddOtherMove((PBESpecies, PBEForm) key, PBEMove move, PBEMoveObtainMethod flag)
                 {
-                    AddSpecies(species);
-                    if (dict[species].OtherMoves.ContainsKey(move))
+                    Pokemon pkmn = AddSpecies(key);
+                    Dictionary<PBEMove, PBEMoveObtainMethod> other = pkmn.OtherMoves;
+                    if (other.ContainsKey(move))
                     {
-                        dict[species].OtherMoves[move] |= flag;
+                        other[move] |= flag;
                     }
                     else
                     {
-                        dict[species].OtherMoves.Add(move, flag);
+                        other.Add(move, flag);
                     }
                 }
-                void Merge(params PBESpecies[] species)
+
+                (PBESpecies, PBEForm) GetGen3Key(EndianBinaryReader reader, int sp)
                 {
-                    PBESpecies baseSpecies = species[0];
-                    Pokemon basePkmn = dict[baseSpecies];
-                    foreach (PBESpecies sp in species)
+                    PBESpecies species = _gen3SpeciesIndexToPBESpecies[sp];
+                    PBEForm form = 0;
+                    if (species == PBESpecies.Deoxys)
                     {
-                        AddSpecies(sp);
-                        Pokemon pkmn = dict[sp];
-                        if (pkmn != basePkmn)
+                        if (reader == e)
                         {
-                            if (!_b2w2SpeciesIndexToPBESpecies.ContainsValue(sp)) // If the Pokémon does not have pokedata defined
-                            {
-                                pkmn.HP = basePkmn.HP;
-                                pkmn.Attack = basePkmn.Attack;
-                                pkmn.Defense = basePkmn.Defense;
-                                pkmn.SpAttack = basePkmn.SpAttack;
-                                pkmn.SpDefense = basePkmn.SpDefense;
-                                pkmn.Speed = basePkmn.Speed;
-                                pkmn.Abilities = basePkmn.Abilities;
-                                pkmn.GenderRatio = basePkmn.GenderRatio;
-                                pkmn.Type1 = basePkmn.Type1;
-                                pkmn.Type2 = basePkmn.Type2;
-                                pkmn.Weight = basePkmn.Weight;
-                            }
-                            foreach (KeyValuePair<(PBEMove Move, byte Level), PBEMoveObtainMethod> levelup in pkmn.LevelUpMoves)
-                            {
-                                AddLevelUpMove(baseSpecies, levelup.Key.Move, levelup.Key.Level, levelup.Value);
-                            }
-                            foreach (KeyValuePair<PBEMove, PBEMoveObtainMethod> other in pkmn.OtherMoves)
-                            {
-                                AddOtherMove(baseSpecies, other.Key, other.Value);
-                            }
+                            form = PBEForm.Deoxys_Speed;
+                        }
+                        else if (reader == lg)
+                        {
+                            form = PBEForm.Deoxys_Defense;
+                        }
+                        else if (reader == fr)
+                        {
+                            form = PBEForm.Deoxys_Attack;
                         }
                     }
-                    for (int i = 1; i < species.Length; i++)
-                    {
-                        Pokemon pkmn = dict[species[i]];
-                        pkmn.LevelUpMoves = basePkmn.LevelUpMoves;
-                        pkmn.OtherMoves = basePkmn.OtherMoves;
-                    }
+                    return (species, form);
                 }
 
                 #region Pokémon Data
@@ -1152,15 +1136,14 @@ namespace Kermalis.PokemonBattleEngineExtras
                         // Skip Egg, Bad Egg, and Pokéstar Studios Pokémon
                         if (sp <= 649 || sp >= 685)
                         {
-                            if (!_b2w2SpeciesIndexToPBESpecies.TryGetValue(sp, out PBESpecies species))
+                            if (!_b2w2SpeciesIndexToPBESpecies.TryGetValue(sp, out (PBESpecies, PBEForm) key))
                             {
-                                species = (PBESpecies)sp;
+                                key = ((PBESpecies)sp, 0);
                             }
-                            AddSpecies(species);
+                            Pokemon pkmn = AddSpecies(key);
                             using (var pokedata = new EndianBinaryReader(new MemoryStream(b2w2Pokedata[sp]), Endianness.LittleEndian))
                             using (var evolution = new EndianBinaryReader(new MemoryStream(b2w2Evolution[sp]), Endianness.LittleEndian))
                             {
-                                Pokemon pkmn = dict[species];
                                 // Pokedata
                                 pkmn.HP = pokedata.ReadByte(0x0);
                                 pkmn.Attack = pokedata.ReadByte(0x1);
@@ -1193,8 +1176,8 @@ namespace Kermalis.PokemonBattleEngineExtras
                                     if (method != 0)
                                     {
                                         pkmn.Evolutions.Add(evo);
-                                        AddSpecies(evo);
-                                        dict[evo].PreEvolutions.Add(species);
+                                        Pokemon evoPkmn = AddSpecies((evo, 0));
+                                        evoPkmn.PreEvolutions.Add(key.Item1);
                                     }
                                 }
                             }
@@ -1222,22 +1205,7 @@ namespace Kermalis.PokemonBattleEngineExtras
                         xdCommonRel.BaseStream.Position = 0x29DA8 + (0x124 * sp) + 0xC4;
                         void ReadGBALevelUpMoves(EndianBinaryReader reader, PBEMoveObtainMethod flag)
                         {
-                            PBESpecies species = _gen3SpeciesIndexToPBESpecies[sp];
-                            if (species == PBESpecies.Deoxys)
-                            {
-                                if (reader == e)
-                                {
-                                    species = PBESpecies.Deoxys_Speed;
-                                }
-                                else if (reader == lg)
-                                {
-                                    species = PBESpecies.Deoxys_Defense;
-                                }
-                                else if (reader == fr)
-                                {
-                                    species = PBESpecies.Deoxys_Attack;
-                                }
-                            }
+                            (PBESpecies, PBEForm) key = GetGen3Key(reader, sp);
                             reader.BaseStream.Position = reader.ReadUInt32() - 0x8000000;
                             while (true)
                             {
@@ -1248,7 +1216,7 @@ namespace Kermalis.PokemonBattleEngineExtras
                                 }
                                 else
                                 {
-                                    AddLevelUpMove(species, (PBEMove)(val & 0x1FF), (byte)(val >> 9), flag);
+                                    AddLevelUpMove(key, (PBEMove)(val & 0x1FF), (byte)(val >> 9), flag);
                                 }
                             }
                         }
@@ -1259,7 +1227,7 @@ namespace Kermalis.PokemonBattleEngineExtras
                         ReadGBALevelUpMoves(e, PBEMoveObtainMethod.LevelUp_E);
                         void ReadGCLevelUpMoves(EndianBinaryReader reader, PBEMoveObtainMethod flag)
                         {
-                            PBESpecies species = _gen3SpeciesIndexToPBESpecies[sp];
+                            (PBESpecies, PBEForm) key = GetGen3Key(reader, sp);
                             for (int i = 0; i < 17; i++)
                             {
                                 byte level = reader.ReadByte();
@@ -1271,7 +1239,7 @@ namespace Kermalis.PokemonBattleEngineExtras
                                 }
                                 else
                                 {
-                                    AddLevelUpMove(species, move, level, flag);
+                                    AddLevelUpMove(key, move, level, flag);
                                 }
                             }
                         }
@@ -1289,9 +1257,9 @@ namespace Kermalis.PokemonBattleEngineExtras
                         // 494 is Egg, 495 is Bad Egg
                         if (sp != 494 && sp != 495)
                         {
-                            if (!_gen4SpeciesIndexToPBESpecies.TryGetValue(sp, out PBESpecies species))
+                            if (!_gen4SpeciesIndexToPBESpecies.TryGetValue(sp, out (PBESpecies, PBEForm) key))
                             {
-                                species = (PBESpecies)sp;
+                                key = ((PBESpecies)sp, 0);
                             }
                             void ReadLevelUpMoves(byte[] file, PBEMoveObtainMethod flag)
                             {
@@ -1306,7 +1274,7 @@ namespace Kermalis.PokemonBattleEngineExtras
                                         }
                                         else
                                         {
-                                            AddLevelUpMove(species, (PBEMove)(val & 0x1FF), (byte)(val >> 9), flag);
+                                            AddLevelUpMove(key, (PBEMove)(val & 0x1FF), (byte)(val >> 9), flag);
                                         }
                                     }
                                 }
@@ -1329,9 +1297,9 @@ namespace Kermalis.PokemonBattleEngineExtras
                     {
                         void ReadLevelUpMoves(byte[] file, bool isBW)
                         {
-                            if (!(isBW ? _bwSpeciesIndexToPBESpecies : _b2w2SpeciesIndexToPBESpecies).TryGetValue(sp, out PBESpecies species))
+                            if (!(isBW ? _bwSpeciesIndexToPBESpecies : _b2w2SpeciesIndexToPBESpecies).TryGetValue(sp, out (PBESpecies, PBEForm) key))
                             {
-                                species = (PBESpecies)sp;
+                                key = ((PBESpecies)sp, 0);
                             }
                             using (var reader = new EndianBinaryReader(new MemoryStream(file), Endianness.LittleEndian))
                             {
@@ -1344,7 +1312,7 @@ namespace Kermalis.PokemonBattleEngineExtras
                                     }
                                     else
                                     {
-                                        AddLevelUpMove(species, (PBEMove)val, (byte)(val >> 0x10), isBW ? PBEMoveObtainMethod.LevelUp_BW : PBEMoveObtainMethod.LevelUp_B2W2);
+                                        AddLevelUpMove(key, (PBEMove)val, (byte)(val >> 0x10), isBW ? PBEMoveObtainMethod.LevelUp_BW : PBEMoveObtainMethod.LevelUp_B2W2);
                                     }
                                 }
                             }
@@ -1372,7 +1340,6 @@ namespace Kermalis.PokemonBattleEngineExtras
                     // Gen 2 Unown slots are ignored in gen 3
                     if (sp <= 251 || sp >= 277)
                     {
-                        PBESpecies species = _gen3SpeciesIndexToPBESpecies[sp];
                         // It is the same across all of gen 3, so I will only read one
                         r.BaseStream.Position = 0x1FD0F0 + (8 * sp);
                         s.BaseStream.Position = 0x1FD080 + (8 * sp);
@@ -1387,12 +1354,13 @@ namespace Kermalis.PokemonBattleEngineExtras
                         }
                         void ReadGBATMHM(EndianBinaryReader reader)
                         {
+                            (PBESpecies, PBEForm) key = GetGen3Key(reader, sp);
                             byte[] bytes = reader.ReadBytes(8);
                             for (int i = 0; i < _gen3TMHMs.Length; i++)
                             {
                                 if ((bytes[i / 8] & (1 << (i % 8))) != 0)
                                 {
-                                    AddOtherMove(species, _gen3TMHMs[i], GetFlag(i));
+                                    AddOtherMove(key, _gen3TMHMs[i], GetFlag(i));
                                 }
                             }
                         }
@@ -1403,11 +1371,12 @@ namespace Kermalis.PokemonBattleEngineExtras
                         //ReadGBATMHM(e);
                         void ReadGCTMHM(EndianBinaryReader reader)
                         {
+                            (PBESpecies, PBEForm) key = GetGen3Key(reader, sp);
                             for (int i = 0; i < _gen3TMHMs.Length; i++)
                             {
                                 if (reader.ReadBoolean())
                                 {
-                                    AddOtherMove(species, _gen3TMHMs[i], GetFlag(i));
+                                    AddOtherMove(key, _gen3TMHMs[i], GetFlag(i));
                                 }
                             }
                         }
@@ -1424,9 +1393,9 @@ namespace Kermalis.PokemonBattleEngineExtras
                         // 494 is Egg, 495 is Bad Egg
                         if (sp != 494 && sp != 495)
                         {
-                            if (!_gen4SpeciesIndexToPBESpecies.TryGetValue(sp, out PBESpecies species))
+                            if (!_gen4SpeciesIndexToPBESpecies.TryGetValue(sp, out (PBESpecies, PBEForm) key))
                             {
-                                species = (PBESpecies)sp;
+                                key = ((PBESpecies)sp, 0);
                             }
                             void ReadTMHMMoves(byte[] file, bool isDPPt)
                             {
@@ -1442,7 +1411,7 @@ namespace Kermalis.PokemonBattleEngineExtras
                                             {
                                                 move = isDPPt ? (PBEMove)432 : (PBEMove)250;
                                             }
-                                            AddOtherMove(species, move, i < 92 ? (isDPPt ? PBEMoveObtainMethod.TM_DPPt : PBEMoveObtainMethod.TM_HGSS) : (isDPPt ? PBEMoveObtainMethod.HM_DPPt : PBEMoveObtainMethod.HM_HGSS));
+                                            AddOtherMove(key, move, i < 92 ? (isDPPt ? PBEMoveObtainMethod.TM_DPPt : PBEMoveObtainMethod.TM_HGSS) : (isDPPt ? PBEMoveObtainMethod.HM_DPPt : PBEMoveObtainMethod.HM_HGSS));
                                         }
                                     }
                                 }
@@ -1460,9 +1429,9 @@ namespace Kermalis.PokemonBattleEngineExtras
                     {
                         void ReadTMHMMoves(byte[] file, bool isBW)
                         {
-                            if (!(isBW ? _bwSpeciesIndexToPBESpecies : _b2w2SpeciesIndexToPBESpecies).TryGetValue(sp, out PBESpecies species))
+                            if (!(isBW ? _bwSpeciesIndexToPBESpecies : _b2w2SpeciesIndexToPBESpecies).TryGetValue(sp, out (PBESpecies, PBEForm) key))
                             {
-                                species = (PBESpecies)sp;
+                                key = ((PBESpecies)sp, 0);
                             }
                             using (var reader = new EndianBinaryReader(new MemoryStream(file), Endianness.LittleEndian))
                             {
@@ -1480,7 +1449,7 @@ namespace Kermalis.PokemonBattleEngineExtras
                                         {
                                             flag = PBEMoveObtainMethod.HM_BWB2W2;
                                         }
-                                        AddOtherMove(species, _gen5TMHMs[i], flag);
+                                        AddOtherMove(key, _gen5TMHMs[i], flag);
                                     }
                                 }
                             }
@@ -1508,24 +1477,25 @@ namespace Kermalis.PokemonBattleEngineExtras
                     // Gen 2 Unown slots are ignored in gen 3
                     if (sp <= 251 || sp >= 277)
                     {
-                        PBESpecies species = _gen3SpeciesIndexToPBESpecies[sp];
                         // It is the same in FR and LG, so I will only read one
                         fr.BaseStream.Position = 0x459B7E + (sizeof(ushort) * sp);
                         lg.BaseStream.Position = 0x45959E + (sizeof(ushort) * sp);
                         e.BaseStream.Position = 0x615048 + (sizeof(uint) * sp);
-                        void ReadTutorMoves(uint val, PBEMove[] tutorMoves, PBEMoveObtainMethod flag)
+                        void ReadTutorMoves(EndianBinaryReader reader, PBEMove[] tutorMoves, PBEMoveObtainMethod flag)
                         {
+                            (PBESpecies, PBEForm) key = GetGen3Key(reader, sp);
+                            uint val = reader == e ? reader.ReadUInt32() : reader.ReadUInt16();
                             for (int i = 0; i < tutorMoves.Length; i++)
                             {
                                 if ((val & (1u << i)) != 0)
                                 {
-                                    AddOtherMove(species, tutorMoves[i], flag);
+                                    AddOtherMove(key, tutorMoves[i], flag);
                                 }
                             }
                         }
-                        ReadTutorMoves(fr.ReadUInt16(), _frlgTutorMoves, PBEMoveObtainMethod.MoveTutor_FRLG);
-                        //ReadTutorMoves(lg.ReadUInt16(), frlgTutorMoves, PBEMoveObtainMethod.MoveTutor_FRLG);
-                        ReadTutorMoves(e.ReadUInt32(), _emeraldTutorMoves, PBEMoveObtainMethod.MoveTutor_E);
+                        ReadTutorMoves(fr, _frlgTutorMoves, PBEMoveObtainMethod.MoveTutor_FRLG);
+                        //ReadTutorMoves(lg, frlgTutorMoves, PBEMoveObtainMethod.MoveTutor_FRLG);
+                        ReadTutorMoves(e, _emeraldTutorMoves, PBEMoveObtainMethod.MoveTutor_E);
                     }
                 }
                 // Gen 3 - XD
@@ -1534,13 +1504,13 @@ namespace Kermalis.PokemonBattleEngineExtras
                     // Gen 2 Unown slots are ignored in gen 3
                     if (sp <= 251 || sp >= 277)
                     {
-                        PBESpecies species = _gen3SpeciesIndexToPBESpecies[sp];
+                        (PBESpecies, PBEForm) key = GetGen3Key(xdCommonRel, sp);
                         xdCommonRel.BaseStream.Position = 0x29DA8 + (0x124 * sp) + 0x6E;
                         for (int i = 0; i < _xdTutorMoves.Length; i++)
                         {
                             if (xdCommonRel.ReadBoolean())
                             {
-                                AddOtherMove(species, _xdTutorMoves[i], PBEMoveObtainMethod.MoveTutor_XD);
+                                AddOtherMove(key, _xdTutorMoves[i], PBEMoveObtainMethod.MoveTutor_XD);
                             }
                         }
                     }
@@ -1550,13 +1520,13 @@ namespace Kermalis.PokemonBattleEngineExtras
                 {
                     for (int sp = 1; sp <= 493; sp++)
                     {
-                        var species = (PBESpecies)sp;
+                        (PBESpecies, PBEForm) key = ((PBESpecies)sp, 0);
                         byte[] bytes = pt.ReadBytes(5, 0x3012C + (5 * (sp - 1)));
                         for (int i = 0; i < _ptTutorMoves.Length; i++)
                         {
                             if ((bytes[i / 8] & (1 << (i % 8))) != 0)
                             {
-                                AddOtherMove(species, _ptTutorMoves[i], PBEMoveObtainMethod.MoveTutor_Pt);
+                                AddOtherMove(key, _ptTutorMoves[i], PBEMoveObtainMethod.MoveTutor_Pt);
                             }
                         }
                     }
@@ -1565,13 +1535,13 @@ namespace Kermalis.PokemonBattleEngineExtras
                 {
                     for (int sp = 1; sp <= 505; sp++) // Includes forms but not eggs
                     {
-                        PBESpecies species = sp > 493 ? _gen4SpeciesIndexToPBESpecies[sp + 2] : (PBESpecies)sp;
+                        (PBESpecies, PBEForm) key = sp > 493 ? _gen4SpeciesIndexToPBESpecies[sp + 2] : ((PBESpecies)sp, 0);
                         byte[] bytes = hgss.ReadBytes(8);
                         for (int i = 0; i < _hgssTutorMoves.Length; i++)
                         {
                             if ((bytes[i / 8] & (1 << (i % 8))) != 0)
                             {
-                                AddOtherMove(species, _hgssTutorMoves[i], PBEMoveObtainMethod.MoveTutor_HGSS);
+                                AddOtherMove(key, _hgssTutorMoves[i], PBEMoveObtainMethod.MoveTutor_HGSS);
                             }
                         }
                     }
@@ -1584,24 +1554,24 @@ namespace Kermalis.PokemonBattleEngineExtras
                     {
                         void ReadFreeTutorMoves(EndianBinaryReader reader, bool isBW)
                         {
-                            if (!(isBW ? _bwSpeciesIndexToPBESpecies : _b2w2SpeciesIndexToPBESpecies).TryGetValue(sp, out PBESpecies species))
+                            if (!(isBW ? _bwSpeciesIndexToPBESpecies : _b2w2SpeciesIndexToPBESpecies).TryGetValue(sp, out (PBESpecies, PBEForm) key))
                             {
-                                species = (PBESpecies)sp;
+                                key = ((PBESpecies)sp, 0);
                             }
                             byte val = reader.ReadByte(0x38);
                             for (int i = 0; i < _gen5FreeTutorMoves.Length; i++)
                             {
                                 if ((val & (1 << i)) != 0)
                                 {
-                                    AddOtherMove(species, _gen5FreeTutorMoves[i], isBW ? PBEMoveObtainMethod.MoveTutor_BW : PBEMoveObtainMethod.MoveTutor_B2W2);
+                                    AddOtherMove(key, _gen5FreeTutorMoves[i], isBW ? PBEMoveObtainMethod.MoveTutor_BW : PBEMoveObtainMethod.MoveTutor_B2W2);
                                 }
                             }
                         }
                         void ReadB2W2TutorMoves(EndianBinaryReader reader)
                         {
-                            if (!_b2w2SpeciesIndexToPBESpecies.TryGetValue(sp, out PBESpecies species))
+                            if (!_b2w2SpeciesIndexToPBESpecies.TryGetValue(sp, out (PBESpecies, PBEForm) key))
                             {
-                                species = (PBESpecies)sp;
+                                key = ((PBESpecies)sp, 0);
                             }
                             for (int i = 0; i < _b2w2TutorMoves.Length; i++)
                             {
@@ -1610,7 +1580,7 @@ namespace Kermalis.PokemonBattleEngineExtras
                                 {
                                     if ((val & (1u << j)) != 0)
                                     {
-                                        AddOtherMove(species, _b2w2TutorMoves[i][j], PBEMoveObtainMethod.MoveTutor_B2W2);
+                                        AddOtherMove(key, _b2w2TutorMoves[i][j], PBEMoveObtainMethod.MoveTutor_B2W2);
                                     }
                                 }
                             }
@@ -1672,7 +1642,7 @@ namespace Kermalis.PokemonBattleEngineExtras
                             }
                             else
                             {
-                                AddOtherMove(species, (PBEMove)val, flag);
+                                AddOtherMove((species, 0), (PBEMove)val, flag);
                             }
                         }
                     }
@@ -1696,10 +1666,10 @@ namespace Kermalis.PokemonBattleEngineExtras
                             ushort numEggMoves = reader.ReadUInt16();
                             if (numEggMoves > 0)
                             {
-                                var species = (PBESpecies)sp;
+                                (PBESpecies, PBEForm) key = ((PBESpecies)sp, 0);
                                 for (int i = 0; i < numEggMoves; i++)
                                 {
-                                    AddOtherMove(species, (PBEMove)reader.ReadUInt16(), PBEMoveObtainMethod.EggMove_BWB2W2);
+                                    AddOtherMove(key, (PBEMove)reader.ReadUInt16(), PBEMoveObtainMethod.EggMove_BWB2W2);
                                 }
                             }
                         }
@@ -1710,63 +1680,43 @@ namespace Kermalis.PokemonBattleEngineExtras
 
                 #region Specific Fixes
 
-                Merge(PBESpecies.Unown_A, PBESpecies.Unown_B, PBESpecies.Unown_C, PBESpecies.Unown_D, PBESpecies.Unown_E, PBESpecies.Unown_Exclamation, PBESpecies.Unown_F, PBESpecies.Unown_G, PBESpecies.Unown_H, PBESpecies.Unown_I, PBESpecies.Unown_J, PBESpecies.Unown_K, PBESpecies.Unown_L, PBESpecies.Unown_M, PBESpecies.Unown_N, PBESpecies.Unown_O, PBESpecies.Unown_P, PBESpecies.Unown_Q, PBESpecies.Unown_Question, PBESpecies.Unown_R, PBESpecies.Unown_S, PBESpecies.Unown_T, PBESpecies.Unown_U, PBESpecies.Unown_V, PBESpecies.Unown_W, PBESpecies.Unown_X, PBESpecies.Unown_Y, PBESpecies.Unown_Z);
-                Merge(PBESpecies.Castform, PBESpecies.Castform_Rainy, PBESpecies.Castform_Snowy, PBESpecies.Castform_Sunny);
-                Merge(PBESpecies.Deoxys, PBESpecies.Deoxys_Attack, PBESpecies.Deoxys_Defense, PBESpecies.Deoxys_Speed);
-                Merge(PBESpecies.Burmy_Plant, PBESpecies.Burmy_Sandy, PBESpecies.Burmy_Trash);
-                dict[PBESpecies.Burmy_Sandy].Evolutions.Add(PBESpecies.Wormadam_Sandy);
-                dict[PBESpecies.Burmy_Sandy].Evolutions.Add(PBESpecies.Mothim);
-                dict[PBESpecies.Burmy_Trash].Evolutions.Add(PBESpecies.Wormadam_Trash);
-                dict[PBESpecies.Burmy_Trash].Evolutions.Add(PBESpecies.Mothim);
-                dict[PBESpecies.Wormadam_Sandy].PreEvolutions.Add(PBESpecies.Burmy_Sandy);
-                dict[PBESpecies.Wormadam_Trash].PreEvolutions.Add(PBESpecies.Burmy_Trash);
-                dict[PBESpecies.Mothim].PreEvolutions.Add(PBESpecies.Burmy_Sandy);
-                dict[PBESpecies.Mothim].PreEvolutions.Add(PBESpecies.Burmy_Trash);
-                Merge(PBESpecies.Cherrim, PBESpecies.Cherrim_Sunshine);
-                Merge(PBESpecies.Shellos_East, PBESpecies.Shellos_West);
-                dict[PBESpecies.Shellos_West].Evolutions.Add(PBESpecies.Gastrodon_West);
-                Merge(PBESpecies.Gastrodon_East, PBESpecies.Gastrodon_West);
-                dict[PBESpecies.Gastrodon_West].PreEvolutions.Add(PBESpecies.Shellos_West);
-                Merge(PBESpecies.Rotom, PBESpecies.Rotom_Fan, PBESpecies.Rotom_Frost, PBESpecies.Rotom_Heat, PBESpecies.Rotom_Mow, PBESpecies.Rotom_Wash);
-                Merge(PBESpecies.Giratina, PBESpecies.Giratina_Origin);
-                Merge(PBESpecies.Shaymin, PBESpecies.Shaymin_Sky);
-                Merge(PBESpecies.Arceus, PBESpecies.Arceus_Bug, PBESpecies.Arceus_Dark, PBESpecies.Arceus_Dragon, PBESpecies.Arceus_Electric, PBESpecies.Arceus_Fighting, PBESpecies.Arceus_Fire, PBESpecies.Arceus_Flying, PBESpecies.Arceus_Ghost, PBESpecies.Arceus_Grass, PBESpecies.Arceus_Ground, PBESpecies.Arceus_Ice, PBESpecies.Arceus_Poison, PBESpecies.Arceus_Psychic, PBESpecies.Arceus_Rock, PBESpecies.Arceus_Steel, PBESpecies.Arceus_Water);
-                dict[PBESpecies.Arceus_Bug].Type1 = PBEType.Bug;
-                dict[PBESpecies.Arceus_Dark].Type1 = PBEType.Dark;
-                dict[PBESpecies.Arceus_Dragon].Type1 = PBEType.Dragon;
-                dict[PBESpecies.Arceus_Electric].Type1 = PBEType.Electric;
-                dict[PBESpecies.Arceus_Fighting].Type1 = PBEType.Fighting;
-                dict[PBESpecies.Arceus_Fire].Type1 = PBEType.Fire;
-                dict[PBESpecies.Arceus_Flying].Type1 = PBEType.Flying;
-                dict[PBESpecies.Arceus_Ghost].Type1 = PBEType.Ghost;
-                dict[PBESpecies.Arceus_Grass].Type1 = PBEType.Grass;
-                dict[PBESpecies.Arceus_Ground].Type1 = PBEType.Ground;
-                dict[PBESpecies.Arceus_Ice].Type1 = PBEType.Ice;
-                dict[PBESpecies.Arceus_Poison].Type1 = PBEType.Poison;
-                dict[PBESpecies.Arceus_Psychic].Type1 = PBEType.Psychic;
-                dict[PBESpecies.Arceus_Rock].Type1 = PBEType.Rock;
-                dict[PBESpecies.Arceus_Steel].Type1 = PBEType.Steel;
-                dict[PBESpecies.Arceus_Water].Type1 = PBEType.Water;
-                Merge(PBESpecies.Darmanitan, PBESpecies.Darmanitan_Zen);
-                var allDeerling = new PBESpecies[] { PBESpecies.Deerling_Autumn, PBESpecies.Deerling_Spring, PBESpecies.Deerling_Summer, PBESpecies.Deerling_Winter };
-                var allSawsbuck = new PBESpecies[] { PBESpecies.Sawsbuck_Autumn, PBESpecies.Sawsbuck_Spring, PBESpecies.Sawsbuck_Summer, PBESpecies.Sawsbuck_Winter };
-                Merge(allDeerling);
-                dict[PBESpecies.Deerling_Autumn].Evolutions.AddRange(new[] { PBESpecies.Sawsbuck_Spring, PBESpecies.Sawsbuck_Summer, PBESpecies.Sawsbuck_Winter });
-                dict[PBESpecies.Deerling_Spring].Evolutions.AddRange(allSawsbuck);
-                dict[PBESpecies.Deerling_Summer].Evolutions.AddRange(allSawsbuck);
-                dict[PBESpecies.Deerling_Winter].Evolutions.AddRange(allSawsbuck);
-                Merge(allSawsbuck);
-                dict[PBESpecies.Sawsbuck_Autumn].PreEvolutions.AddRange(new[] { PBESpecies.Deerling_Spring, PBESpecies.Deerling_Summer, PBESpecies.Deerling_Winter });
-                dict[PBESpecies.Sawsbuck_Spring].PreEvolutions.AddRange(allDeerling);
-                dict[PBESpecies.Sawsbuck_Summer].PreEvolutions.AddRange(allDeerling);
-                dict[PBESpecies.Sawsbuck_Winter].PreEvolutions.AddRange(allDeerling);
-                Merge(PBESpecies.Tornadus, PBESpecies.Tornadus_Therian);
-                Merge(PBESpecies.Thundurus, PBESpecies.Thundurus_Therian);
-                Merge(PBESpecies.Landorus, PBESpecies.Landorus_Therian);
-                Merge(PBESpecies.Kyurem, PBESpecies.Kyurem_Black, PBESpecies.Kyurem_White);
-                Merge(PBESpecies.Keldeo, PBESpecies.Keldeo_Resolute);
-                Merge(PBESpecies.Meloetta, PBESpecies.Meloetta_Pirouette);
-                Merge(PBESpecies.Genesect, PBESpecies.Genesect_Burn, PBESpecies.Genesect_Chill, PBESpecies.Genesect_Douse, PBESpecies.Genesect_Shock);
+                // Arceus forms do not have Pokémon data, but I would like to have their types be in the database instead of having checks everywhere
+                {
+                    Pokemon basePkmn = dict[(PBESpecies.Arceus, PBEForm.Arceus)];
+                    void FixArceus(PBEForm form, PBEType type)
+                    {
+                        Pokemon pkmn = AddSpecies((PBESpecies.Arceus, form));
+                        pkmn.HP = basePkmn.HP;
+                        pkmn.Attack = basePkmn.Attack;
+                        pkmn.Defense = basePkmn.Defense;
+                        pkmn.SpAttack = basePkmn.SpAttack;
+                        pkmn.SpDefense = basePkmn.SpDefense;
+                        pkmn.Speed = basePkmn.Speed;
+                        pkmn.Type1 = type;
+                        pkmn.Type2 = basePkmn.Type2;
+                        pkmn.GenderRatio = basePkmn.GenderRatio;
+                        pkmn.Abilities = basePkmn.Abilities;
+                        pkmn.Weight = basePkmn.Weight;
+                        pkmn.Evolutions = basePkmn.Evolutions;
+                        pkmn.PreEvolutions = basePkmn.PreEvolutions;
+                    }
+                    FixArceus(PBEForm.Arceus_Bug, PBEType.Bug);
+                    FixArceus(PBEForm.Arceus_Dark, PBEType.Dark);
+                    FixArceus(PBEForm.Arceus_Dragon, PBEType.Dragon);
+                    FixArceus(PBEForm.Arceus_Electric, PBEType.Electric);
+                    FixArceus(PBEForm.Arceus_Fighting, PBEType.Fighting);
+                    FixArceus(PBEForm.Arceus_Fire, PBEType.Fire);
+                    FixArceus(PBEForm.Arceus_Flying, PBEType.Flying);
+                    FixArceus(PBEForm.Arceus_Ghost, PBEType.Ghost);
+                    FixArceus(PBEForm.Arceus_Grass, PBEType.Grass);
+                    FixArceus(PBEForm.Arceus_Ground, PBEType.Ground);
+                    FixArceus(PBEForm.Arceus_Ice, PBEType.Ice);
+                    FixArceus(PBEForm.Arceus_Poison, PBEType.Poison);
+                    FixArceus(PBEForm.Arceus_Psychic, PBEType.Psychic);
+                    FixArceus(PBEForm.Arceus_Rock, PBEType.Rock);
+                    FixArceus(PBEForm.Arceus_Steel, PBEType.Steel);
+                    FixArceus(PBEForm.Arceus_Water, PBEType.Water);
+                }
 
                 #endregion
 
@@ -1774,87 +1724,68 @@ namespace Kermalis.PokemonBattleEngineExtras
 
                 cmd.CommandText = "DROP TABLE IF EXISTS PokemonData";
                 cmd.ExecuteNonQuery();
-                cmd.CommandText = "CREATE TABLE PokemonData(Id INTEGER PRIMARY KEY, Json TEXT)";
+                cmd.CommandText = "CREATE TABLE PokemonData(Species INTEGER, Form INTEGER"
+                    + ", HP INTEGER, Attack INTEGER, Defense INTEGER, SpAttack INTEGER, SpDefense INTEGER, Speed INTEGER"
+                    + ", Type1 INTEGER, Type2 INTEGER, GenderRatio INTEGER, Weight FLOAT"
+                    + ", PreEvolutions TEXT, Evolutions TEXT, Abilities TEXT, LevelUpMoves TEXT, OtherMoves TEXT"
+                    + ")";
                 cmd.ExecuteNonQuery();
-                cmd.CommandText = "INSERT INTO PokemonData VALUES(@0, @1)";
-                foreach (KeyValuePair<PBESpecies, Pokemon> pkmn in dict)
+                cmd.CommandText = "INSERT INTO PokemonData VALUES(@0, @1, @2, @3, @4, @5, @6, @7, @8, @9, @10, @11, @12, @13, @14, @15, @16)";
+                var list = new List<string>();
+                foreach (KeyValuePair<(PBESpecies, PBEForm), Pokemon> tup in dict)
                 {
-                    var sw = new StringWriter();
-                    using (var writer = new JsonTextWriter(sw))
+                    (PBESpecies species, PBEForm form) = tup.Key;
+                    cmd.Parameters.AddWithValue("@0", (ushort)species);
+                    cmd.Parameters.AddWithValue("@1", (byte)form);
+                    Pokemon pkmn = tup.Value;
+                    cmd.Parameters.AddWithValue("@2", pkmn.HP);
+                    cmd.Parameters.AddWithValue("@3", pkmn.Attack);
+                    cmd.Parameters.AddWithValue("@4", pkmn.Defense);
+                    cmd.Parameters.AddWithValue("@5", pkmn.SpAttack);
+                    cmd.Parameters.AddWithValue("@6", pkmn.SpDefense);
+                    cmd.Parameters.AddWithValue("@7", pkmn.Speed);
+                    cmd.Parameters.AddWithValue("@8", (byte)pkmn.Type1);
+                    cmd.Parameters.AddWithValue("@9", (byte)pkmn.Type2);
+                    cmd.Parameters.AddWithValue("@10", pkmn.GenderRatio);
+                    cmd.Parameters.AddWithValue("@11", pkmn.Weight);
+                    list.Clear();
+                    foreach (PBESpecies sp in pkmn.PreEvolutions)
                     {
-                        writer.WriteStartObject();
-                        writer.WritePropertyName(nameof(PBEPokemonData.BaseStats));
-                        writer.WriteStartArray();
-                        writer.WriteValue(pkmn.Value.HP);
-                        writer.WriteValue(pkmn.Value.Attack);
-                        writer.WriteValue(pkmn.Value.Defense);
-                        writer.WriteValue(pkmn.Value.SpAttack);
-                        writer.WriteValue(pkmn.Value.SpDefense);
-                        writer.WriteValue(pkmn.Value.Speed);
-                        writer.WriteEndArray();
-                        writer.WritePropertyName(nameof(PBEPokemonData.Type1));
-                        writer.WriteValue(pkmn.Value.Type1);
-                        writer.WritePropertyName(nameof(PBEPokemonData.Type2));
-                        writer.WriteValue(pkmn.Value.Type2);
-                        writer.WritePropertyName(nameof(PBEPokemonData.GenderRatio));
-                        writer.WriteValue(pkmn.Value.GenderRatio);
-                        writer.WritePropertyName(nameof(PBEPokemonData.Weight));
-                        writer.WriteValue(pkmn.Value.Weight);
-                        writer.WritePropertyName(nameof(PBEPokemonData.PreEvolutions));
-                        writer.WriteStartArray();
-                        foreach (PBESpecies sp in pkmn.Value.PreEvolutions)
-                        {
-                            writer.WriteValue(sp);
-                        }
-                        writer.WriteEndArray();
-                        writer.WritePropertyName(nameof(PBEPokemonData.Evolutions));
-                        writer.WriteStartArray();
-                        foreach (PBESpecies sp in pkmn.Value.Evolutions)
-                        {
-                            writer.WriteValue(sp);
-                        }
-                        writer.WriteEndArray();
-                        writer.WritePropertyName(nameof(PBEPokemonData.Abilities));
-                        writer.WriteStartArray();
-                        foreach (PBEAbility a in pkmn.Value.Abilities)
-                        {
-                            writer.WriteValue(a);
-                        }
-                        writer.WriteEndArray();
-                        writer.WritePropertyName(nameof(PBEPokemonData.LevelUpMoves));
-                        writer.WriteStartArray();
-                        foreach (KeyValuePair<(PBEMove Move, byte Level), PBEMoveObtainMethod> levelUpMove in pkmn.Value.LevelUpMoves)
-                        {
-                            if (Enum.IsDefined(typeof(PBEMove), levelUpMove.Key.Move))
-                            {
-                                writer.WriteStartArray();
-                                writer.WriteValue(levelUpMove.Key.Move);
-                                writer.WriteValue(levelUpMove.Key.Level);
-                                writer.WriteValue(levelUpMove.Value);
-                                writer.WriteEndArray();
-                            }
-                        }
-                        writer.WriteEndArray();
-                        writer.WritePropertyName(nameof(PBEPokemonData.OtherMoves));
-                        writer.WriteStartArray();
-                        foreach (KeyValuePair<PBEMove, PBEMoveObtainMethod> otherMove in pkmn.Value.OtherMoves)
-                        {
-                            if (Enum.IsDefined(typeof(PBEMove), otherMove.Key))
-                            {
-                                writer.WriteStartArray();
-                                writer.WriteValue(otherMove.Key);
-                                writer.WriteValue(otherMove.Value);
-                                writer.WriteEndArray();
-                            }
-                        }
-                        writer.WriteEndArray();
-                        writer.WriteEndObject();
-
-                        cmd.Parameters.AddWithValue("@0", (uint)pkmn.Key);
-                        cmd.Parameters.AddWithValue("@1", sw.ToString());
-                        cmd.ExecuteNonQuery();
-                        cmd.Parameters.Clear();
+                        list.Add($"{(ushort)sp}");
                     }
+                    cmd.Parameters.AddWithValue("@12", string.Join('|', list));
+                    list.Clear();
+                    foreach (PBESpecies sp in pkmn.Evolutions)
+                    {
+                        list.Add($"{(ushort)sp}");
+                    }
+                    cmd.Parameters.AddWithValue("@13", string.Join('|', list));
+                    list.Clear();
+                    foreach (PBEAbility ab in pkmn.Abilities)
+                    {
+                        list.Add($"{(byte)ab}");
+                    }
+                    cmd.Parameters.AddWithValue("@14", string.Join('|', list));
+                    list.Clear();
+                    foreach (KeyValuePair<(PBEMove Move, byte Level), PBEMoveObtainMethod> levelUpMove in pkmn.LevelUpMoves)
+                    {
+                        if (Enum.IsDefined(typeof(PBEMove), levelUpMove.Key.Move))
+                        {
+                            list.Add($"{(ushort)levelUpMove.Key.Move},{levelUpMove.Key.Level},{(ulong)levelUpMove.Value}");
+                        }
+                    }
+                    cmd.Parameters.AddWithValue("@15", string.Join('|', list));
+                    list.Clear();
+                    foreach (KeyValuePair<PBEMove, PBEMoveObtainMethod> otherMove in pkmn.OtherMoves)
+                    {
+                        if (Enum.IsDefined(typeof(PBEMove), otherMove.Key))
+                        {
+                            list.Add($"{(ushort)otherMove.Key},{(ulong)otherMove.Value}");
+                        }
+                    }
+                    cmd.Parameters.AddWithValue("@16", string.Join('|', list));
+                    cmd.ExecuteNonQuery();
+                    cmd.Parameters.Clear();
                 }
 
                 #endregion

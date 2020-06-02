@@ -7,31 +7,52 @@ namespace Kermalis.PokemonBattleEngine.Data
 {
     public static class PBELegalityChecker
     {
+        private static List<(PBESpecies, PBEForm)> GetSpecies(PBESpecies species)
+        {
+            var list = new List<(PBESpecies, PBEForm)>();
+            void Add(PBESpecies s)
+            {
+                IReadOnlyList<PBEForm> allForms = PBEDataUtils.GetForms(s, true);
+                if (allForms.Count > 0)
+                {
+                    foreach (PBEForm form in allForms)
+                    {
+                        Add2(s, form);
+                    }
+                }
+                else
+                {
+                    Add2(s, 0);
+                }
+            }
+            void Add2(PBESpecies s, PBEForm form)
+            {
+                foreach (PBESpecies spe in PBEPokemonData.GetData(s, form).PreEvolutions)
+                {
+                    Add(spe);
+                }
+                list.Add((s, form));
+            }
+            Add(species);
+            return list;
+        }
+
         // TODO: Include generation?
         // TODO: Sketch
         // TODO: Same goals as MoveLegalityCheck
-        public static PBEMove[] GetLegalMoves(PBESpecies species, byte level, PBESettings settings)
+        public static PBEMove[] GetLegalMoves(PBESpecies species, PBEForm form, byte level, PBESettings settings)
         {
-            PBEPokemonShell.ValidateSpecies(species);
+            PBEPokemonShell.ValidateSpecies(species, form, true);
             PBEPokemonShell.ValidateLevel(level, settings);
-            var evolutionChain = new List<PBESpecies>();
-            void AddPreEvolutions(PBESpecies sp)
-            {
-                foreach (PBESpecies pkmn in PBEPokemonData.GetData(sp).PreEvolutions)
-                {
-                    AddPreEvolutions(pkmn);
-                }
-                evolutionChain.Add(sp);
-            }
-            AddPreEvolutions(species);
+            List<(PBESpecies, PBEForm)> speciesToStealFrom = GetSpecies(species);
 
             var moves = new List<PBEMove>();
-            foreach (PBESpecies pkmn in evolutionChain)
+            foreach ((PBESpecies spe, PBEForm fo) in speciesToStealFrom)
             {
-                var pData = PBEPokemonData.GetData(pkmn);
+                var pData = PBEPokemonData.GetData(spe, fo);
                 moves.AddRange(pData.LevelUpMoves.Where(t => t.Level <= level).Select(t => t.Move));
                 moves.AddRange(pData.OtherMoves.Select(t => t.Move));
-                if (PBEEventPokemon.Events.TryGetValue(pkmn, out ReadOnlyCollection<PBEEventPokemon> events))
+                if (PBEEventPokemon.Events.TryGetValue(spe, out ReadOnlyCollection<PBEEventPokemon> events))
                 {
                     moves.AddRange(events.SelectMany(e => e.Moves));
                 }
@@ -53,23 +74,13 @@ namespace Kermalis.PokemonBattleEngine.Data
                 throw new ArgumentNullException(nameof(moveset));
             }
 
-            // Combine all moves from pre-evolutions
-            var evolutionChain = new List<PBESpecies>();
-            void AddPreEvolutions(PBESpecies sp)
-            {
-                foreach (PBESpecies pkmn in PBEPokemonData.GetData(sp).PreEvolutions)
-                {
-                    AddPreEvolutions(pkmn);
-                }
-                evolutionChain.Add(sp);
-            }
-            AddPreEvolutions(moveset.Species);
+            List<(PBESpecies, PBEForm)> speciesToStealFrom = GetSpecies(moveset.Species);
 
             var levelUp = new List<(PBEMove Move, byte Level, PBEMoveObtainMethod ObtainMethod)>();
             var other = new List<(PBEMove Move, PBEMoveObtainMethod ObtainMethod)>();
-            foreach (PBESpecies pkmn in evolutionChain)
+            foreach ((PBESpecies spe, PBEForm fo) in speciesToStealFrom)
             {
-                var pData = PBEPokemonData.GetData(pkmn);
+                var pData = PBEPokemonData.GetData(spe, fo);
                 levelUp.AddRange(pData.LevelUpMoves.Where(t => t.Level <= moveset.Level));
                 other.AddRange(pData.OtherMoves);
             }

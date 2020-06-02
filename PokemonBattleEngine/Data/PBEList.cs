@@ -105,6 +105,24 @@ namespace Kermalis.PokemonBattleEngine.Data
                 OnCollectionChanged(new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Reset));
             }
         }
+        internal void Swap(T a, T b)
+        {
+            int aIndex = IndexOf(a);
+            if (aIndex == -1)
+            {
+                throw new ArgumentOutOfRangeException(nameof(a));
+            }
+            int bIndex = IndexOf(b);
+            if (bIndex == -1)
+            {
+                throw new ArgumentOutOfRangeException(nameof(b));
+            }
+            _list[aIndex] = b;
+            _list[bIndex] = a;
+            OnPropertyChanged("Item[]");
+            OnCollectionChanged(new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Replace, a, b, bIndex));
+            OnCollectionChanged(new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Replace, b, a, aIndex));
+        }
 
         public bool Contains(T item)
         {

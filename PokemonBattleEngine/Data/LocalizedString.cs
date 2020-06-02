@@ -48,7 +48,7 @@ namespace Kermalis.PokemonBattleEngine.Data
         public string Korean { get; }
         public string Spanish { get; }
 
-        private PBELocalizedString(SearchResult result)
+        private PBELocalizedString(ISearchResult result)
         {
             English = result.English;
             French = result.French;
@@ -96,7 +96,18 @@ namespace Kermalis.PokemonBattleEngine.Data
 
         #region Database Querying
 
-        private class SearchResult
+        private interface ISearchResult
+        {
+            string English { get; set; }
+            string French { get; set; }
+            string German { get; set; }
+            string Italian { get; set; }
+            string Japanese_Kana { get; set; }
+            string Japanese_Kanji { get; set; }
+            string Korean { get; set; }
+            string Spanish { get; set; }
+        }
+        private class SearchResult : ISearchResult
         {
             public uint Id { get; set; }
             public string English { get; set; }
@@ -108,8 +119,23 @@ namespace Kermalis.PokemonBattleEngine.Data
             public string Korean { get; set; }
             public string Spanish { get; set; }
         }
+        private class FormNameSearchResult : ISearchResult
+        {
+            public ushort Species { get; set; }
+            public byte Form { get; set; }
+            public string English { get; set; }
+            public string French { get; set; }
+            public string German { get; set; }
+            public string Italian { get; set; }
+            public string Japanese_Kana { get; set; }
+            public string Japanese_Kanji { get; set; }
+            public string Korean { get; set; }
+            public string Spanish { get; set; }
+        }
         private const string QueryText = "SELECT * FROM {0} WHERE StrCmp(English,'{1}') OR StrCmp(French,'{1}') OR StrCmp(German,'{1}') OR StrCmp(Italian,'{1}') OR StrCmp(Japanese_Kana,'{1}') OR StrCmp(Japanese_Kanji,'{1}') OR StrCmp(Korean,'{1}') OR StrCmp(Spanish,'{1}')";
         private const string QueryId = "SELECT * FROM {0} WHERE Id={1}";
+        private const string QuerySpeciesAndText = "SELECT * FROM {0} WHERE (StrCmp(English,'{1}') OR StrCmp(French,'{1}') OR StrCmp(German,'{1}') OR StrCmp(Italian,'{1}') OR StrCmp(Japanese_Kana,'{1}') OR StrCmp(Japanese_Kanji,'{1}') OR StrCmp(Korean,'{1}') OR StrCmp(Spanish,'{1}')) AND (Species={2})";
+        private const string QuerySpecies = "SELECT * FROM {0} WHERE Species={1} AND Form={2}";
         private static bool GetEnumValue<TEnum>(string value, out TEnum result) where TEnum : struct
         {
             foreach (TEnum v in Enum.GetValues(typeof(TEnum)))
@@ -153,6 +179,25 @@ namespace Kermalis.PokemonBattleEngine.Data
                 throw new ArgumentOutOfRangeException(nameof(ability));
             }
             return new PBELocalizedString(PBEUtils.QueryDatabase<SearchResult>(string.Format(QueryId, "AbilityNames", (byte)ability))[0]);
+        }
+        public static PBEForm? GetFormByName(PBESpecies species, string formName)
+        {
+            PBEForm form;
+            List<FormNameSearchResult> results = PBEUtils.QueryDatabase<FormNameSearchResult>(string.Format(QuerySpeciesAndText, "FormNames", formName, (ushort)species));
+            if (results.Count == 1)
+            {
+                form = (PBEForm)results[0].Form;
+            }
+            else if (!GetEnumValue(formName, out form))
+            {
+                return null;
+            }
+            return form;
+        }
+        public static PBELocalizedString GetFormName(PBESpecies species, PBEForm form)
+        {
+            PBEPokemonShell.ValidateSpecies(species, form, false);
+            return new PBELocalizedString(PBEUtils.QueryDatabase<FormNameSearchResult>(string.Format(QuerySpecies, "FormNames", (ushort)species, (byte)form))[0]);
         }
         public static PBEGender? GetGenderByName(string genderName)
         {
@@ -274,30 +319,27 @@ namespace Kermalis.PokemonBattleEngine.Data
         }
         public static PBELocalizedString GetSpeciesCategory(PBESpecies species)
         {
-            uint speciesId = (ushort)species;
-            if (!Enum.IsDefined(typeof(PBESpecies), speciesId))
+            if (species <= 0 || species >= PBESpecies.MAX)
             {
                 throw new ArgumentOutOfRangeException(nameof(species));
             }
-            return new PBELocalizedString(PBEUtils.QueryDatabase<SearchResult>(string.Format(QueryId, "SpeciesCategories", speciesId))[0]);
+            return new PBELocalizedString(PBEUtils.QueryDatabase<SearchResult>(string.Format(QueryId, "SpeciesCategories", (ushort)species))[0]);
         }
         public static PBELocalizedString GetSpeciesEntry(PBESpecies species)
         {
-            uint speciesId = (ushort)species;
-            if (!Enum.IsDefined(typeof(PBESpecies), speciesId))
+            if (species <= 0 || species >= PBESpecies.MAX)
             {
                 throw new ArgumentOutOfRangeException(nameof(species));
             }
-            return new PBELocalizedString(PBEUtils.QueryDatabase<SearchResult>(string.Format(QueryId, "SpeciesEntries", speciesId))[0]);
+            return new PBELocalizedString(PBEUtils.QueryDatabase<SearchResult>(string.Format(QueryId, "SpeciesEntries", (ushort)species))[0]);
         }
         public static PBELocalizedString GetSpeciesName(PBESpecies species)
         {
-            uint speciesId = (ushort)species;
-            if (!Enum.IsDefined(typeof(PBESpecies), speciesId))
+            if (species <= 0 || species >= PBESpecies.MAX)
             {
                 throw new ArgumentOutOfRangeException(nameof(species));
             }
-            return new PBELocalizedString(PBEUtils.QueryDatabase<SearchResult>(string.Format(QueryId, "SpeciesNames", speciesId))[0]);
+            return new PBELocalizedString(PBEUtils.QueryDatabase<SearchResult>(string.Format(QueryId, "SpeciesNames", (ushort)species))[0]);
         }
         public static PBEStat? GetStatByName(string statName)
         {
