@@ -37,7 +37,7 @@ namespace Kermalis.PokemonBattleEngine.AI
                 // If a Pokémon is forced to struggle, it is best that it just stays in until it faints
                 if (user.IsForcedToStruggle())
                 {
-                    actions[i] = new PBETurnAction(user.Id, PBEMove.Struggle, GetPossibleTargets(user, user.GetMoveTargets(PBEMove.Struggle))[0]);
+                    actions[i] = new PBETurnAction(user.Id, PBEMove.Struggle, PBEBattleUtils.GetPossibleTargets(user, user.GetMoveTargets(PBEMove.Struggle))[0]);
                 }
                 // If a Pokémon has a temp locked move (Dig, Dive, Shadow Force) it must be used
                 else if (user.TempLockedMove != PBEMove.None)
@@ -57,8 +57,8 @@ namespace Kermalis.PokemonBattleEngine.AI
                         PBEType moveType = user.GetMoveType(move);
                         PBEMoveTarget moveTargets = user.GetMoveTargets(move);
                         PBETurnTarget[] possibleTargets = PBEMoveData.IsSpreadMove(moveTargets)
-                            ? new PBETurnTarget[] { GetSpreadMoveTargets(user, moveTargets) }
-                            : GetPossibleTargets(user, moveTargets);
+                            ? new PBETurnTarget[] { PBEBattleUtils.GetSpreadMoveTargets(user, moveTargets) }
+                            : PBEBattleUtils.GetPossibleTargets(user, moveTargets);
                         foreach (PBETurnTarget possibleTarget in possibleTargets)
                         {
                             // TODO: RandomFoeSurrounding (probably just account for the specific effects that use this target type)

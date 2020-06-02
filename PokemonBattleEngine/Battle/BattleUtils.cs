@@ -1,13 +1,10 @@
-﻿using Kermalis.PokemonBattleEngine.Battle;
-using Kermalis.PokemonBattleEngine.Data;
+﻿using Kermalis.PokemonBattleEngine.Data;
 using System;
 
-namespace Kermalis.PokemonBattleEngine.AI
+namespace Kermalis.PokemonBattleEngine.Battle
 {
-    public static partial class PBEAI
+    public static class PBEBattleUtils
     {
-        // TODO: Move these to battle targets and make them public; this file doesn't have to exist
-
         public static PBETurnTarget GetSpreadMoveTargets(PBEPokemon pkmn, PBEMoveTarget targets)
         {
             switch (pkmn.Team.Battle.BattleFormat)
@@ -233,7 +230,6 @@ namespace Kermalis.PokemonBattleEngine.AI
                 default: throw new ArgumentOutOfRangeException(nameof(pkmn.Team.Battle.BattleFormat));
             }
         }
-
         public static PBETurnTarget[] GetPossibleTargets(PBEPokemon pkmn, PBEMoveTarget targets)
         {
             switch (pkmn.Team.Battle.BattleFormat)
