@@ -79,7 +79,7 @@ namespace Kermalis.PokemonBattleEngineDiscord
         {
             const string address = ImageURL + "FemaleSpriteLookup.txt";
             using (var w = new WebClient())
-            using (var reader = new StreamReader(w.DownloadString(address)))
+            using (var reader = new StringReader(w.DownloadString(address)))
             {
                 string line;
                 while ((line = reader.ReadLine()) != null)
@@ -156,7 +156,7 @@ namespace Kermalis.PokemonBattleEngineDiscord
             {
                 string speciesStr = PBEDataUtils.GetNameOfForm(species, form) ?? species.ToString();
                 string genderStr = gender == PBEGender.Female && HasFemaleSprite(species) ? "_F" : string.Empty;
-                return ImageURL + "PKMN.PKMN_" + speciesStr + orientation + (shiny ? "_S" : string.Empty) + genderStr + ".gif";
+                return ImageURL + "PKMN_" + speciesStr + orientation + (shiny ? "_S" : string.Empty) + genderStr + ".gif";
             }
         }
     }
