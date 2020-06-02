@@ -31,7 +31,7 @@ namespace Kermalis.PokemonBattleEngine.Data
             {
                 if (_species != value)
                 {
-                    ValidateSpecies(value, 0);
+                    ValidateSpecies(value, 0, true);
                     PBESpecies oldSpecies = _species;
                     _species = value;
                     _form = 0;
@@ -49,7 +49,7 @@ namespace Kermalis.PokemonBattleEngine.Data
             {
                 if (_form != value)
                 {
-                    ValidateSpecies(_species, value);
+                    ValidateSpecies(_species, value, true);
                     _form = value;
                     OnPropertyChanged(nameof(Form));
                     OnFormChanged();
@@ -176,7 +176,7 @@ namespace Kermalis.PokemonBattleEngine.Data
             Settings = settings;
             PBESpecies species = r.ReadEnum<PBESpecies>();
             PBEForm form = r.ReadEnum<PBEForm>();
-            ValidateSpecies(species, form);
+            ValidateSpecies(species, form, true);
             _species = species;
             _form = form;
             SetSelectable();
@@ -229,7 +229,7 @@ namespace Kermalis.PokemonBattleEngine.Data
             {
                 form = 0;
             }
-            ValidateSpecies(species, form);
+            ValidateSpecies(species, form, true);
             _species = species;
             _form = form;
             SetSelectable();
@@ -249,7 +249,7 @@ namespace Kermalis.PokemonBattleEngine.Data
         }
         public PBEPokemonShell(PBESpecies species, PBEForm form, byte level, PBESettings settings)
         {
-            ValidateSpecies(species, form);
+            ValidateSpecies(species, form, true);
             ValidateLevel(level, settings);
             Settings = settings;
             Settings.PropertyChanged += OnSettingsChanged;
@@ -348,9 +348,9 @@ namespace Kermalis.PokemonBattleEngine.Data
             }
         }
 
-        internal static void ValidateSpecies(PBESpecies species, PBEForm form)
+        internal static void ValidateSpecies(PBESpecies species, PBEForm form, bool requireUsableOutsideOfBattle)
         {
-            if (!PBEDataUtils.IsValidForm(species, form, true))
+            if (!PBEDataUtils.IsValidForm(species, form, requireUsableOutsideOfBattle))
             {
                 throw new ArgumentOutOfRangeException(nameof(form));
             }

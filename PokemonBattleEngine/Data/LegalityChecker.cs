@@ -42,7 +42,7 @@ namespace Kermalis.PokemonBattleEngine.Data
         // TODO: Same goals as MoveLegalityCheck
         public static PBEMove[] GetLegalMoves(PBESpecies species, PBEForm form, byte level, PBESettings settings)
         {
-            PBEPokemonShell.ValidateSpecies(species, form);
+            PBEPokemonShell.ValidateSpecies(species, form, true);
             PBEPokemonShell.ValidateLevel(level, settings);
             List<(PBESpecies, PBEForm)> speciesToStealFrom = GetSpecies(species);
 

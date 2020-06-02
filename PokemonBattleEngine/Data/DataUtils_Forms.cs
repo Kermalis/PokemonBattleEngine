@@ -114,10 +114,7 @@ namespace Kermalis.PokemonBattleEngine.Data
 
         public static string GetNameOfForm(PBESpecies species, PBEForm form)
         {
-            if (!IsValidForm(species, form, false))
-            {
-                throw new ArgumentOutOfRangeException(nameof(form));
-            }
+            PBEPokemonShell.ValidateSpecies(species, form, false);
             switch (species)
             {
                 case PBESpecies.Arceus:
@@ -427,10 +424,7 @@ namespace Kermalis.PokemonBattleEngine.Data
 
         public static IReadOnlyList<PBEItem> GetValidItems(PBESpecies species, PBEForm form)
         {
-            if (!IsValidForm(species, form, false))
-            {
-                throw new ArgumentOutOfRangeException(nameof(form));
-            }
+            PBEPokemonShell.ValidateSpecies(species, form, false);
             switch (species)
             {
                 case PBESpecies.Arceus:

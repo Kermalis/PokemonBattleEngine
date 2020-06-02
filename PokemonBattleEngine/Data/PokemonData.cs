@@ -84,10 +84,7 @@ namespace Kermalis.PokemonBattleEngine.Data
 
         public static PBEPokemonData GetData(PBESpecies species, PBEForm form)
         {
-            if (!PBEDataUtils.IsValidForm(species, form, false))
-            {
-                throw new ArgumentOutOfRangeException(nameof(form));
-            }
+            PBEPokemonShell.ValidateSpecies(species, form, false);
             List<SearchResult> results = PBEUtils.QueryDatabase<SearchResult>($"SELECT * FROM PokemonData WHERE Species={(ushort)species}");
             SearchResult result = results[0];
             foreach (SearchResult r in results)

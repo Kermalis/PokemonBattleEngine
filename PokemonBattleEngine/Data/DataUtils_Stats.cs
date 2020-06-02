@@ -114,7 +114,7 @@ namespace Kermalis.PokemonBattleEngine.Data
             {
                 throw new ArgumentNullException(nameof(settings));
             }
-            PBEPokemonShell.ValidateSpecies(species, form);
+            PBEPokemonShell.ValidateSpecies(species, form, false);
             PBEPokemonShell.ValidateLevel(level, settings);
             if (ivs > settings.MaxIVs)
             {
@@ -144,7 +144,7 @@ namespace Kermalis.PokemonBattleEngine.Data
             {
                 throw new ArgumentNullException(nameof(settings));
             }
-            PBEPokemonShell.ValidateSpecies(species, form);
+            PBEPokemonShell.ValidateSpecies(species, form, false);
             PBEPokemonShell.ValidateLevel(level, settings);
             switch (stat)
             {

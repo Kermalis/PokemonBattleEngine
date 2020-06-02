@@ -196,10 +196,7 @@ namespace Kermalis.PokemonBattleEngine.Data
         }
         public static PBELocalizedString GetFormName(PBESpecies species, PBEForm form)
         {
-            if (!PBEDataUtils.IsValidForm(species, form, false))
-            {
-                throw new ArgumentOutOfRangeException(nameof(form));
-            }
+            PBEPokemonShell.ValidateSpecies(species, form, false);
             return new PBELocalizedString(PBEUtils.QueryDatabase<FormNameSearchResult>(string.Format(QuerySpecies, "FormNames", (ushort)species, (byte)form))[0]);
         }
         public static PBEGender? GetGenderByName(string genderName)

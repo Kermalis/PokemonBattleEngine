@@ -157,7 +157,7 @@ namespace Kermalis.PokemonBattleEngine.Data
             {
                 throw new ObjectDisposedException(null);
             }
-            PBEPokemonShell.ValidateSpecies(species, form);
+            PBEPokemonShell.ValidateSpecies(species, form, true);
             PBEPokemonShell.ValidateLevel(level, Settings);
             if (_list.Count < Settings.MaxPartySize)
             {
@@ -189,7 +189,7 @@ namespace Kermalis.PokemonBattleEngine.Data
             {
                 throw new ObjectDisposedException(null);
             }
-            PBEPokemonShell.ValidateSpecies(species, form);
+            PBEPokemonShell.ValidateSpecies(species, form, true);
             PBEPokemonShell.ValidateLevel(level, Settings);
             if (_list.Count < Settings.MaxPartySize)
             {

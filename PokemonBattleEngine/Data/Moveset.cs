@@ -212,7 +212,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                 }
                 if (_species != value)
                 {
-                    PBEPokemonShell.ValidateSpecies(value, 0);
+                    PBEPokemonShell.ValidateSpecies(value, 0, true);
                     _species = value;
                     _form = 0;
                     OnPropertyChanged(nameof(Species));
@@ -232,7 +232,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                 }
                 if (_form != value)
                 {
-                    PBEPokemonShell.ValidateSpecies(_species, value);
+                    PBEPokemonShell.ValidateSpecies(_species, value, true);
                     _form = value;
                     OnPropertyChanged(nameof(Form));
                     SetAlloweds();
@@ -390,7 +390,7 @@ namespace Kermalis.PokemonBattleEngine.Data
             {
                 throw new ArgumentNullException(nameof(settings));
             }
-            PBEPokemonShell.ValidateSpecies(species, form);
+            PBEPokemonShell.ValidateSpecies(species, form, true);
             PBEPokemonShell.ValidateLevel(level, settings);
             _level = level;
             _species = species;
