@@ -329,6 +329,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                 TransformBackupMoves.SetUnknown();
             }
             Status2 = PBEStatus2.None;
+            KnownStatus2 = PBEStatus2.None;
 
             HasUsedMoveThisTurn = false;
             TurnAction = null;
