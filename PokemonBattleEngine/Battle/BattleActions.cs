@@ -297,6 +297,10 @@ namespace Kermalis.PokemonBattleEngine.Battle
             var verified = new List<PBEPokemon>(team.SwitchInsRequired);
             foreach (PBESwitchIn s in switches)
             {
+                if (s.Position == PBEFieldPosition.None || s.Position >= PBEFieldPosition.MAX)
+                {
+                    return false;
+                }
                 PBEPokemon pkmn = team.TryGetPokemon(s.PokemonId);
                 if (pkmn == null || pkmn.HP == 0 || pkmn.FieldPosition != PBEFieldPosition.None || verified.Contains(pkmn))
                 {

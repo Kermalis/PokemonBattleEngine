@@ -123,7 +123,8 @@ namespace Kermalis.PokemonBattleEngine.Data
         /// <summary>The Pokémon in the center of the field in a Single, Triple, or Rotation battle.</summary>
         Center,
         /// <summary>The Pokémon to a player's right in a Double, Triple, or Rotation battle.</summary>
-        Right
+        Right,
+        MAX
     }
     /// <summary>Represents a <see cref="PBEMove"/>'s targets.</summary>
     [Flags]
