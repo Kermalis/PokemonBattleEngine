@@ -9,7 +9,7 @@ using System.Linq;
 namespace Kermalis.PokemonBattleEngine.AI
 {
     /// <summary>Creates valid decisions for a team in a battle. Decisions may not be valid for custom settings and/or move changes.</summary>
-    public static partial class PBEAI
+    public static class PBEAI
     {
         /// <summary>Creates valid actions for a battle turn for a specific team.</summary>
         /// <param name="team">The team to create actions for.</param>
