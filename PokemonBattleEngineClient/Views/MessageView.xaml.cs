@@ -11,26 +11,26 @@ namespace Kermalis.PokemonBattleEngineClient.Views
 {
     public sealed class MessageView : UserControl
     {
-        public class Message
+        public sealed class Message
         {
             public Bitmap Bitmap { get; }
             public HorizontalAlignment Alignment { get; }
             public double Scale { get; }
             public double Height { get; }
 
-            public Message(string message)
+            internal Message(string message)
             {
                 Bitmap = StringRenderer.Render(message, "MenuBlack");
-                MatchCollection matches = Regex.Matches(message, @"Turn \d{1,}");
-                if (matches.Count == 1 && matches[0].Value == message)
+                Match m = Regex.Match(message, @"^Turn (\d+)$");
+                if (m.Success)
                 {
                     Alignment = HorizontalAlignment.Center;
-                    Scale = 2d;
+                    Scale = 2;
                 }
                 else
                 {
                     Alignment = HorizontalAlignment.Left;
-                    Scale = 1d;
+                    Scale = 1;
                 }
                 Height = Bitmap.PixelSize.Height * Scale;
             }
