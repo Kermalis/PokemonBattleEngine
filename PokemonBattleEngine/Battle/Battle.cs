@@ -133,7 +133,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
         }
         private void CheckForReadiness()
         {
-            if (Teams.All(t => t.NumPkmnAlive > 0))
+            if (Teams.All(t => t.NumConsciousPkmn > 0))
             {
                 switch (BattleFormat)
                 {
@@ -336,7 +336,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
 
             foreach (PBETeam team in Teams)
             {
-                int available = team.NumPkmnAlive - team.NumPkmnOnField;
+                int available = team.NumConsciousPkmn - team.NumPkmnOnField;
                 team.SwitchInsRequired = 0;
                 team.SwitchInQueue.Clear();
                 switch (BattleFormat)
@@ -450,7 +450,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                     team.ActionsRequired.AddRange(team.ActiveBattlers);
                 }
 
-                if (BattleFormat == PBEBattleFormat.Triple && Teams.All(t => t.NumPkmnAlive == 1))
+                if (BattleFormat == PBEBattleFormat.Triple && Teams.All(t => t.NumConsciousPkmn == 1))
                 {
                     PBEPokemon pkmn1 = ActiveBattlers[0],
                         pkmn2 = ActiveBattlers[1];

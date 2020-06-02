@@ -64,7 +64,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
         public PBETeam OpposingTeam { get; internal set; }
 
         public PBEPokemon[] ActiveBattlers => Battle.ActiveBattlers.Where(p => p.Team == this).OrderBy(p => p.FieldPosition).ToArray();
-        public int NumPkmnAlive => Party.Count(p => p.HP > 0);
+        public int NumConsciousPkmn => Party.Count(p => p.HP > 0);
         public int NumPkmnOnField => Party.Count(p => p.FieldPosition != PBEFieldPosition.None);
 
         public List<PBEPokemon> ActionsRequired { get; } = new List<PBEPokemon>(3); // PBEBattleState.WaitingForActions
@@ -169,7 +169,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
             sb.AppendLine($"{TrainerName}'s team:");
             sb.AppendLine($"TeamStatus: {TeamStatus}");
             sb.AppendLine($"NumPkmn: {Party.Count}");
-            sb.AppendLine($"NumPkmnAlive: {NumPkmnAlive}");
+            sb.AppendLine($"NumConsciousPkmn: {NumConsciousPkmn}");
             sb.AppendLine($"NumPkmnOnField: {NumPkmnOnField}");
             return sb.ToString();
         }

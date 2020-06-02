@@ -1639,7 +1639,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
         }
         private void TrySetLoser(PBEPokemon pkmn)
         {
-            if (Winner == null && pkmn.Team.NumPkmnAlive == 0)
+            if (Winner == null && pkmn.Team.NumConsciousPkmn == 0)
             {
                 Winner = pkmn.Team.OpposingTeam;
             }
