@@ -350,9 +350,9 @@ namespace Kermalis.PokemonBattleEngine.Battle
                         }
                         case PBEItem.GriseousOrb:
                         {
-                            if (user.OriginalSpecies == PBESpecies.Giratina && user.OriginalForm == PBEForm.Giratina_Origin)
+                            if (user.OriginalSpecies == PBESpecies.Giratina && user.RevertForm == PBEForm.Giratina_Origin)
                             {
-                                basePower *= 1.2; // Does this boost if transformed?
+                                basePower *= 1.2;
                             }
                             break;
                         }
@@ -455,7 +455,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                     {
                         case PBEItem.GriseousOrb:
                         {
-                            if (user.OriginalSpecies == PBESpecies.Giratina && user.OriginalForm == PBEForm.Giratina_Origin)
+                            if (user.OriginalSpecies == PBESpecies.Giratina && user.RevertForm == PBEForm.Giratina_Origin)
                             {
                                 basePower *= 1.2;
                             }
@@ -994,7 +994,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
             {
                 defense *= 1.5;
             }
-            if (target.Item == PBEItem.Eviolite && PBEPokemonData.GetData(target.OriginalSpecies, target.OriginalForm).Evolutions.Count > 0)
+            if (target.Item == PBEItem.Eviolite && PBEPokemonData.GetData(target.OriginalSpecies, target.RevertForm).Evolutions.Count > 0)
             {
                 defense *= 1.5;
             }
@@ -1064,7 +1064,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
             {
                 spDefense *= 1.5;
             }
-            if (target.Item == PBEItem.Eviolite && PBEPokemonData.GetData(target.OriginalSpecies, target.OriginalForm).Evolutions.Count > 0)
+            if (target.Item == PBEItem.Eviolite && PBEPokemonData.GetData(target.OriginalSpecies, target.RevertForm).Evolutions.Count > 0)
             {
                 spDefense *= 1.5;
             }
