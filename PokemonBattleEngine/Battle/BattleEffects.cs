@@ -1687,6 +1687,9 @@ namespace Kermalis.PokemonBattleEngine.Battle
                     if (switchIn)
                     {
                         BroadcastAbility(pkmn, pkmn, pkmn.Ability, PBEAbilityAction.Weather);
+                    }
+                    else
+                    {
                         CastformCherrimCheckAll();
                     }
                     break;
@@ -1814,20 +1817,17 @@ namespace Kermalis.PokemonBattleEngine.Battle
             if (pkmn.Species == PBESpecies.Castform && pkmn.OriginalSpecies == PBESpecies.Castform)
             {
                 PBEForm newForm = PBEForm.Castform;
-                if (pkmn.Ability == PBEAbility.Forecast)
+                if (pkmn.Ability == PBEAbility.Forecast && ShouldDoWeatherEffects())
                 {
-                    if (ShouldDoWeatherEffects())
+                    switch (Weather)
                     {
-                        switch (Weather)
-                        {
-                            case PBEWeather.Hailstorm: newForm = PBEForm.Castform_Snowy; break;
-                            case PBEWeather.HarshSunlight: newForm = PBEForm.Castform_Sunny; break;
-                            case PBEWeather.Rain: newForm = PBEForm.Castform_Rainy; break;
-                        }
-                        if (newForm != pkmn.Form)
-                        {
-                            BroadcastAbility(pkmn, pkmn, pkmn.Ability, PBEAbilityAction.ChangedAppearance);
-                        }
+                        case PBEWeather.Hailstorm: newForm = PBEForm.Castform_Snowy; break;
+                        case PBEWeather.HarshSunlight: newForm = PBEForm.Castform_Sunny; break;
+                        case PBEWeather.Rain: newForm = PBEForm.Castform_Rainy; break;
+                    }
+                    if (newForm != pkmn.Form)
+                    {
+                        BroadcastAbility(pkmn, pkmn, pkmn.Ability, PBEAbilityAction.ChangedAppearance);
                     }
                 }
                 if (newForm != pkmn.Form)
@@ -1838,18 +1838,15 @@ namespace Kermalis.PokemonBattleEngine.Battle
             else if (pkmn.Species == PBESpecies.Cherrim && pkmn.OriginalSpecies == PBESpecies.Cherrim)
             {
                 PBEForm newForm = PBEForm.Cherrim;
-                if (pkmn.Ability == PBEAbility.FlowerGift)
+                if (pkmn.Ability == PBEAbility.FlowerGift && ShouldDoWeatherEffects())
                 {
-                    if (ShouldDoWeatherEffects())
+                    if (Weather == PBEWeather.HarshSunlight)
                     {
-                        if (Weather == PBEWeather.HarshSunlight)
-                        {
-                            newForm = PBEForm.Cherrim_Sunshine;
-                        }
-                        if (newForm != pkmn.Form)
-                        {
-                            BroadcastAbility(pkmn, pkmn, pkmn.Ability, PBEAbilityAction.ChangedAppearance);
-                        }
+                        newForm = PBEForm.Cherrim_Sunshine;
+                    }
+                    if (newForm != pkmn.Form)
+                    {
+                        BroadcastAbility(pkmn, pkmn, pkmn.Ability, PBEAbilityAction.ChangedAppearance);
                     }
                 }
                 if (newForm != pkmn.Form)
@@ -2102,7 +2099,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                 }
             }
 
-            ActivateAbility(target, true);
+            ActivateAbility(target, false);
         }
         private void SetWeather(PBEWeather weather, byte weatherCounter, bool switchIn)
         {

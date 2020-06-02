@@ -18,6 +18,7 @@ namespace Kermalis.PokemonBattleEngineTests.Abilities
         public void Illusion_Does_Not_Copy_Same_Species()
         {
             #region Setup
+            PBERandom.SetSeed(0);
             PBESettings settings = PBESettings.DefaultSettings;
 
             var team1Shell = new PBETeamShell(settings, 1, true);
@@ -26,7 +27,6 @@ namespace Kermalis.PokemonBattleEngineTests.Abilities
             PBEPokemonShell ps = team2Shell[0];
             ps.Species = PBESpecies.Zoroark;
             ps.Ability = PBEAbility.Illusion;
-            ps.Moveset[0].Move = PBEMove.Snore;
             ps = team2Shell[1];
             ps.Species = PBESpecies.Zoroark;
 
@@ -61,6 +61,7 @@ namespace Kermalis.PokemonBattleEngineTests.Abilities
             PBEPokemonShell ps = team1Shell[0];
             ps.Species = PBESpecies.Happiny;
             ps.Ability = PBEAbility.SereneGrace;
+            ps.Item = PBEItem.None;
             ps.Moveset[0].Move = PBEMove.SecretPower;
             ps.Moveset[1].Move = PBEMove.Snore;
 
@@ -68,13 +69,16 @@ namespace Kermalis.PokemonBattleEngineTests.Abilities
             ps = team2Shell[0];
             ps.Species = PBESpecies.Shaymin;
             ps.Form = PBEForm.Shaymin_Sky;
+            ps.Item = PBEItem.None;
             ps.Moveset[0].Move = PBEMove.Snore;
             ps = team2Shell[1];
             ps.Species = PBESpecies.Zoroark;
             ps.Ability = PBEAbility.Illusion;
+            ps.Item = PBEItem.None;
             ps.Moveset[0].Move = PBEMove.Snore;
             ps = team2Shell[2];
             ps.Species = PBESpecies.Deoxys;
+            ps.Item = PBEItem.None;
             ps.Moveset[0].Move = PBEMove.Snore;
 
             var battle = new PBEBattle(PBEBattleTerrain.Snow, PBEBattleFormat.Single, team1Shell, "Team 1", team2Shell, "Team 2");

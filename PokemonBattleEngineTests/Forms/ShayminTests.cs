@@ -24,6 +24,7 @@ namespace Kermalis.PokemonBattleEngineTests.Forms
             PBEPokemonShell ps = team1Shell[0];
             ps.Species = PBESpecies.Happiny;
             ps.Ability = PBEAbility.SereneGrace;
+            ps.Item = PBEItem.None;
             ps.Moveset[0].Move = PBEMove.SecretPower;
             ps.Moveset[1].Move = PBEMove.Snore;
 
@@ -31,6 +32,7 @@ namespace Kermalis.PokemonBattleEngineTests.Forms
             ps = team2Shell[0];
             ps.Species = PBESpecies.Shaymin;
             ps.Form = PBEForm.Shaymin_Sky;
+            ps.Item = PBEItem.None;
             ps.Moveset[0].Move = PBEMove.Snore;
 
             var battle = new PBEBattle(PBEBattleTerrain.Snow, PBEBattleFormat.Single, team1Shell, "Team 1", team2Shell, "Team 2");
