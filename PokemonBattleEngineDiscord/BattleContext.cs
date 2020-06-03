@@ -107,6 +107,7 @@ namespace Kermalis.PokemonBattleEngineDiscord
         };
         private static readonly object _activeBattlesLockObj = new object();
         private static readonly List<BattleContext> _activeBattles = new List<BattleContext>();
+        private static readonly Dictionary<SocketUser, BattleContext> _activeBattlers = new Dictionary<SocketUser, BattleContext>();
         private static ulong _battleCounter = 1;
 
         private readonly ulong _battleId;
@@ -120,6 +121,8 @@ namespace Kermalis.PokemonBattleEngineDiscord
             lock (_activeBattlesLockObj)
             {
                 _activeBattles.Add(this);
+                _activeBattlers.Add(battler0, this);
+                _activeBattlers.Add(battler1, this);
 
                 _battleId = _battleCounter++;
                 _battle = battle;
@@ -159,30 +162,7 @@ namespace Kermalis.PokemonBattleEngineDiscord
         {
             lock (_activeBattlesLockObj)
             {
-                foreach (BattleContext bc in _activeBattles)
-                {
-                    if (bc.IndexOf(user) != -1)
-                    {
-                        return bc;
-                    }
-                }
-                return null;
-            }
-        }
-        public int IndexOf(SocketUser user)
-        {
-            ulong id = user.Id;
-            if (_battlers[0].Id == id)
-            {
-                return 0;
-            }
-            else if (_battlers[1].Id == id)
-            {
-                return 1;
-            }
-            else
-            {
-                return -1;
+                return _activeBattlers.TryGetValue(user, out BattleContext bc) ? bc : null;
             }
         }
         public async Task Forfeit(SocketUser user)
@@ -205,6 +185,8 @@ namespace Kermalis.PokemonBattleEngineDiscord
             lock (_activeBattlesLockObj)
             {
                 _activeBattles.Remove(this);
+                _activeBattlers.Remove(_battlers[0]);
+                _activeBattlers.Remove(_battlers[1]);
                 if (saveReplay)
                 {
                     ReplaySaver.SaveReplay(_battle, _battleId); // Save battle in the lock so they don't conflict while directory checking
