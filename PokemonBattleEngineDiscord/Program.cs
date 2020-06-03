@@ -32,12 +32,33 @@ namespace Kermalis.PokemonBattleEngineDiscord
 
             _client.Log += LogMessage;
             _client.MessageReceived += CommandMessageReceived;
-            _client.ReactionAdded += ReactionListener.Client_ReactionAdded;
+            _client.ReactionAdded += ReactionListener.OnReactionAdded;
+            _client.ChannelDestroyed += OnChannelDeleted;
+            _client.LeftGuild += OnLeftGuild;
+            _client.UserLeft += OnUserLeft;
 
             await _client.LoginAsync(TokenType.Bot, args[0]); // Token is passed in as args[0]
             await _client.StartAsync();
 
             await Task.Delay(-1);
+        }
+
+        private async Task OnChannelDeleted(SocketChannel arg)
+        {
+            // TODO: Prevent abuse of constant deletions of our stuff
+            await Matchmaking.OnChannelDeleted(arg);
+            BattleContext.OnChannelDeleted(arg);
+        }
+        private Task OnLeftGuild(SocketGuild arg)
+        {
+            Matchmaking.OnLeftGuild(arg);
+            BattleContext.OnLeftGuild(arg);
+            return Task.CompletedTask;
+        }
+        private async Task OnUserLeft(SocketGuildUser arg)
+        {
+            Matchmaking.OnUserLeft(arg);
+            await BattleContext.OnUserLeft(arg);
         }
 
         private async Task CommandMessageReceived(SocketMessage arg)

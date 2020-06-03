@@ -32,7 +32,7 @@ namespace Kermalis.PokemonBattleEngineDiscord
         private static readonly object _reactionListenersLockObj = new object();
         private static readonly List<Listener> _reactionListeners = new List<Listener>();
 
-        public static Task Client_ReactionAdded(Cacheable<IUserMessage, ulong> message, ISocketMessageChannel channel, SocketReaction reaction)
+        public static Task OnReactionAdded(Cacheable<IUserMessage, ulong> message, ISocketMessageChannel channel, SocketReaction reaction)
         {
             lock (_reactionListenersLockObj)
             {

@@ -7,12 +7,14 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace Kermalis.PokemonBattleEngineDiscord
 {
     internal sealed class BattleContext
     {
+        #region Constants
         private const string Separator = "**--------------------**";
         private static readonly Emoji _shinyEmoji = new Emoji("✨");
         private static readonly Emoji _switchEmoji = new Emoji("😼");
@@ -105,18 +107,20 @@ namespace Kermalis.PokemonBattleEngineDiscord
                 { PBEType.Water, Emote.Parse("<:Water4:708768398691139656>") }
             }
         };
+        #endregion
         private static readonly object _activeBattlesLockObj = new object();
         private static readonly List<BattleContext> _activeBattles = new List<BattleContext>();
         private static readonly Dictionary<SocketUser, BattleContext> _activeBattlers = new Dictionary<SocketUser, BattleContext>();
+        private static readonly Dictionary<ITextChannel, BattleContext> _activeChannels = new Dictionary<ITextChannel, BattleContext>();
         private static ulong _battleCounter = 1;
 
-        private readonly ulong _battleId;
+        public readonly ulong BattleId;
         private bool _closed = false;
         private readonly PBEBattle _battle;
         private readonly SocketUser[] _battlers;
-        private readonly ISocketMessageChannel _channel;
+        private ITextChannel _channel;
 
-        public BattleContext(PBEBattle battle, SocketUser battler0, SocketUser battler1, ISocketMessageChannel channel)
+        public BattleContext(PBEBattle battle, SocketUser battler0, SocketUser battler1)
         {
             lock (_activeBattlesLockObj)
             {
@@ -124,22 +128,29 @@ namespace Kermalis.PokemonBattleEngineDiscord
                 _activeBattlers.Add(battler0, this);
                 _activeBattlers.Add(battler1, this);
 
-                _battleId = _battleCounter++;
+                BattleId = _battleCounter++;
                 _battle = battle;
                 _battlers = new SocketUser[] { battler0, battler1 };
-                _channel = channel;
                 SetEmbedTitle();
 
                 battle.OnNewEvent += Battle_OnNewEvent;
                 battle.OnStateChanged += Battle_OnStateChanged;
             }
+        }
+        public async Task Begin(ITextChannel channel)
+        {
+            lock (_activeBattlesLockObj)
+            {
+                _activeChannels.Add(channel, this);
+                _channel = channel;
+            }
             try
             {
-                battle.Begin();
+                new Thread(() => _battle.Begin()).Start();
             }
             catch (Exception ex)
             {
-                CloseWithException(ex);
+                await CloseWithException(ex);
             }
         }
 
@@ -158,6 +169,51 @@ namespace Kermalis.PokemonBattleEngineDiscord
             }
         }
 
+        public static void OnChannelDeleted(SocketChannel channel)
+        {
+            if (channel is ITextChannel c)
+            {
+                lock (_activeBattlesLockObj)
+                {
+                    if (_activeChannels.TryGetValue(c, out BattleContext bc))
+                    {
+                        bc.Close(false);
+                    }
+                }
+            }
+        }
+        public static void OnLeftGuild(SocketGuild guild)
+        {
+            lock (_activeBattlesLockObj)
+            {
+                var toClose = new List<BattleContext>(); // Prevent collection being modified in loop
+                foreach (BattleContext bc in _activeBattles)
+                {
+                    if (bc._channel.Guild.Id == guild.Id)
+                    {
+                        toClose.Add(bc);
+                    }
+                }
+                foreach (BattleContext bc in toClose)
+                {
+                    bc.Close(false);
+                }
+            }
+        }
+        public static Task OnUserLeft(SocketGuildUser user)
+        {
+            async Task Do()
+            {
+                if (_activeBattlers.TryGetValue(user, out BattleContext bc))
+                {
+                    await bc.Forfeit(user);
+                }
+            }
+            lock (_activeBattlesLockObj)
+            {
+                return Do();
+            }
+        }
         public static BattleContext GetBattleContext(SocketUser user)
         {
             lock (_activeBattlesLockObj)
@@ -165,13 +221,14 @@ namespace Kermalis.PokemonBattleEngineDiscord
                 return _activeBattlers.TryGetValue(user, out BattleContext bc) ? bc : null;
             }
         }
+
         public async Task Forfeit(SocketUser user)
         {
             await CloseWithMessage(string.Format("{0} has forfeited the match.", user.Username), ReplaySaver.ShouldSaveForfeits);
         }
         private async Task CloseWithException(Exception ex)
         {
-            Console.WriteLine("Battle #{0} exception:{1}{2}", _battleId, Environment.NewLine, ex);
+            Console.WriteLine("Battle #{0} exception:{1}{2}", BattleId, Environment.NewLine, ex);
             await CloseWithMessage(string.Format("Encountered an error, battle resulted in a draw. Error:\n{0}", ex.Message), false);
         }
         private async Task CloseWithMessage(string message, bool saveReplay)
@@ -187,9 +244,10 @@ namespace Kermalis.PokemonBattleEngineDiscord
                 _activeBattles.Remove(this);
                 _activeBattlers.Remove(_battlers[0]);
                 _activeBattlers.Remove(_battlers[1]);
+                _activeChannels.Remove(_channel);
                 if (saveReplay)
                 {
-                    ReplaySaver.SaveReplay(_battle, _battleId); // Save battle in the lock so they don't conflict while directory checking
+                    ReplaySaver.SaveReplay(_battle, BattleId); // Save battle in the lock so they don't conflict while directory checking
                 }
             }
             _battle.Dispose();
@@ -201,7 +259,7 @@ namespace Kermalis.PokemonBattleEngineDiscord
         private string _embedTitle; // Mini performance saver
         private void SetEmbedTitle()
         {
-            _embedTitle = $"[#{_battleId}] ― {_battlers[0].Username} vs {_battlers[1].Username}";
+            _embedTitle = $"[#{BattleId}] ― {_battlers[0].Username} vs {_battlers[1].Username}";
             if (_battle.TurnNumber > 0)
             {
                 _embedTitle += $" (Turn {_battle.TurnNumber})";
@@ -461,11 +519,11 @@ namespace Kermalis.PokemonBattleEngineDiscord
                 {
                     try
                     {
-                        context._battle.RunTurn();
+                        new Thread(() => context._battle.RunTurn()).Start();
                     }
                     catch (Exception ex)
                     {
-                        context.CloseWithException(ex);
+                        return context.CloseWithException(ex);
                     }
                     break;
                 }

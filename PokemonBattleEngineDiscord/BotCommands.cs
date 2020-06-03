@@ -1,7 +1,6 @@
 ﻿using Discord;
 using Discord.Commands;
 using Discord.WebSocket;
-using Kermalis.PokemonBattleEngine.Battle;
 using Kermalis.PokemonBattleEngine.Data;
 using Kermalis.PokemonBattleEngine.Utils;
 using System;
@@ -39,49 +38,24 @@ namespace Kermalis.PokemonBattleEngineDiscord
             }
         }
 
-        [Group("battle")]
-        public sealed class BattleCommands : ModuleBase<SocketCommandContext>
+        [Command("accept", true)]
+        public async Task AcceptChallenge()
         {
-            [Command("challenge")]
-            public async Task Challenge(SocketUser battler2)
-            {
-                SocketUser battler1 = Context.User;
-                if (battler1.Id == battler2.Id)
-                {
-                    return;
-                }
-                else if (BattleContext.GetBattleContext(battler1) != null)
-                {
-                    await Context.Channel.SendMessageAsync($"{battler1.Username} is already participating in a battle.");
-                }
-                else if (BattleContext.GetBattleContext(battler2) != null)
-                {
-                    await Context.Channel.SendMessageAsync($"{battler2.Username} is already participating in a battle.");
-                }
-                else
-                {
-                    PBETeamShell team1Shell, team2Shell;
-                    // Completely Randomized Pokémon
-                    team1Shell = new PBETeamShell(PBESettings.DefaultSettings, PBESettings.DefaultMaxPartySize, true);
-                    team2Shell = new PBETeamShell(PBESettings.DefaultSettings, PBESettings.DefaultMaxPartySize, true);
+            await Matchmaking.AcceptChallenge(Context);
+        }
 
-                    var battle = new PBEBattle(PBEBattleTerrain.Plain, PBEBattleFormat.Single, team1Shell, battler1.Username, team2Shell, battler2.Username);
-                    team1Shell.Dispose();
-                    team2Shell.Dispose();
-                    new BattleContext(battle, battler1, battler2, Context.Channel);
-                }
-            }
+        [Command("challenge")]
+        [Alias("battle", "fight")]
+        public async Task ChallengeUser(SocketUser battler2)
+        {
+            await Matchmaking.ChallengeUser(Context, battler2);
+        }
 
-            [Command("forfeit", true)]
-            public async Task Forfeit()
-            {
-                SocketUser sucker = Context.User;
-                var bc = BattleContext.GetBattleContext(sucker);
-                if (bc != null)
-                {
-                    await bc.Forfeit(sucker);
-                }
-            }
+        [Command("forfeit", true)]
+        [Alias("giveup", "throwinthetowel")]
+        public async Task Forfeit()
+        {
+            await Matchmaking.Forfeit(Context);
         }
 
         [Group("item")]
