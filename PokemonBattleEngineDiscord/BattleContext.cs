@@ -112,6 +112,7 @@ namespace Kermalis.PokemonBattleEngineDiscord
         private static readonly List<BattleContext> _activeBattles = new List<BattleContext>();
         private static readonly Dictionary<SocketUser, BattleContext> _activeBattlers = new Dictionary<SocketUser, BattleContext>();
         private static readonly Dictionary<ITextChannel, BattleContext> _activeChannels = new Dictionary<ITextChannel, BattleContext>();
+        private static readonly Dictionary<IGuild, List<BattleContext>> _activeGuilds = new Dictionary<IGuild, List<BattleContext>>();
         private static ulong _battleCounter = 1;
 
         public readonly ulong BattleId;
@@ -143,6 +144,13 @@ namespace Kermalis.PokemonBattleEngineDiscord
             {
                 _activeChannels.Add(channel, this);
                 _channel = channel;
+                IGuild guild = channel.Guild;
+                if (!_activeGuilds.TryGetValue(guild, out List<BattleContext> list))
+                {
+                    list = new List<BattleContext>();
+                    _activeGuilds.Add(guild, list);
+                }
+                list.Add(this);
             }
             try
             {
@@ -186,17 +194,13 @@ namespace Kermalis.PokemonBattleEngineDiscord
         {
             lock (_activeBattlesLockObj)
             {
-                var toClose = new List<BattleContext>(); // Prevent collection being modified in loop
-                foreach (BattleContext bc in _activeBattles)
+                if (_activeGuilds.TryGetValue(guild, out List<BattleContext> list))
                 {
-                    if (bc._channel.Guild.Id == guild.Id)
+                    foreach (BattleContext bc in list.ToArray()) // Prevent collection being modified in loop
                     {
-                        toClose.Add(bc);
+                        bc.Close(false);
                     }
-                }
-                foreach (BattleContext bc in toClose)
-                {
-                    bc.Close(false);
+                    _activeGuilds.Remove(guild);
                 }
             }
         }
@@ -245,6 +249,7 @@ namespace Kermalis.PokemonBattleEngineDiscord
                 _activeBattlers.Remove(_battlers[0]);
                 _activeBattlers.Remove(_battlers[1]);
                 _activeChannels.Remove(_channel);
+                _activeGuilds[_channel.Guild].Remove(this);
                 if (saveReplay)
                 {
                     ReplaySaver.SaveReplay(_battle, BattleId); // Save battle in the lock so they don't conflict while directory checking
