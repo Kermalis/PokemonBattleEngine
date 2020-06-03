@@ -45,20 +45,21 @@ namespace Kermalis.PokemonBattleEngineDiscord
         }
 
         [Command("challenge")]
-        [Alias("battle", "fight")]
+        [Alias("battle", "duel", "fight")]
         public async Task ChallengeUser(SocketUser battler2)
         {
             await Matchmaking.ChallengeUser(Context, battler2);
         }
 
         [Command("forfeit", true)]
-        [Alias("giveup", "throwinthetowel")]
+        [Alias("giveup", "surrender", "throwinthetowel")]
         public async Task Forfeit()
         {
             await Matchmaking.Forfeit(Context);
         }
 
         [Group("item")]
+        [Alias("helditem")]
         public sealed class ItemCommands : ModuleBase<SocketCommandContext>
         {
             [Command("info")]
