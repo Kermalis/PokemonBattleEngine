@@ -57,6 +57,7 @@ namespace Kermalis.PokemonBattleEngineDiscord
             lock (_matchmakingLockObj)
             {
                 _category.Remove(guild);
+                _challenges.RemoveAll(c => c.Guild.Id == guild.Id);
             }
         }
         public static void OnUserLeft(SocketGuildUser user)
