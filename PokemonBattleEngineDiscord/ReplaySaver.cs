@@ -7,7 +7,7 @@ namespace Kermalis.PokemonBattleEngineDiscord
 {
     internal static class ReplaySaver
     {
-        private const bool ShouldSaveForfeits = false;
+        public const bool ShouldSaveForfeits = false;
         private const int NumDaysTillRemoval = 30;
         private const string ReplayDirectory = "Replays";
         private const string DateRegexPattern = @"^([0-9]+)\-([0-9]+)\-([0-9]+)$";
@@ -26,18 +26,14 @@ namespace Kermalis.PokemonBattleEngineDiscord
             return string.Format("{0}-{1}-{2}", today.Year, today.Month, today.Day);
         }
 
-        public static void SaveReplay(PBEBattle battle)
+        public static void SaveReplay(PBEBattle battle, ulong battleId)
         {
-            // Battle winner is null if forfeited
-            if (battle.Winner != null || ShouldSaveForfeits)
+            string dir = Path.Combine(ReplayDirectory, GetTodayFolderPath());
+            if (!Directory.Exists(dir))
             {
-                string dir = Path.Combine(ReplayDirectory, GetTodayFolderPath());
-                if (!Directory.Exists(dir))
-                {
-                    Directory.CreateDirectory(dir);
-                }
-                battle.SaveReplayToFolder(dir);
+                Directory.CreateDirectory(dir);
             }
+            battle.SaveReplay(Path.Combine(dir, $"#{battleId} {battle.GetDefaultReplayFileName()}"));
         }
 
         public static void RemoveOldReplays()

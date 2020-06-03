@@ -13,7 +13,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
     {
         private const ushort CurrentReplayVersion = 0;
 
-        private string GetDefaultFileName()
+        public string GetDefaultReplayFileName()
         {
             // "2020-12-30 23-59-59 - Team 1 vs Team 2.pbereplay"
             DateTime dt = DateTime.Now;
@@ -30,7 +30,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
             {
                 throw new InvalidOperationException($"{nameof(BattleState)} must be {PBEBattleState.Ended} to save a replay.");
             }
-            SaveReplay(GetDefaultFileName());
+            SaveReplay(GetDefaultReplayFileName());
         }
         public void SaveReplayToFolder(string path)
         {
@@ -46,7 +46,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
             {
                 throw new InvalidOperationException($"{nameof(BattleState)} must be {PBEBattleState.Ended} to save a replay.");
             }
-            SaveReplay(Path.Combine(path, GetDefaultFileName()));
+            SaveReplay(Path.Combine(path, GetDefaultReplayFileName()));
         }
         public void SaveReplay(string path)
         {

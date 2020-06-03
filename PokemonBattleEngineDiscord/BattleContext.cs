@@ -187,25 +187,28 @@ namespace Kermalis.PokemonBattleEngineDiscord
         }
         public async Task Forfeit(SocketUser user)
         {
-            await CloseWithMessage(string.Format("{0} has forfeited the match.", user.Username));
+            await CloseWithMessage(string.Format("{0} has forfeited the match.", user.Username), ReplaySaver.ShouldSaveForfeits);
         }
         private async Task CloseWithException(Exception ex)
         {
             Console.WriteLine("Battle #{0} exception:{1}{2}", _battleId, Environment.NewLine, ex);
-            await CloseWithMessage(string.Format("Encountered an error, battle resulted in a draw. Error:\n{0}", ex.Message));
+            await CloseWithMessage(string.Format("Encountered an error, battle resulted in a draw. Error:\n{0}", ex.Message), false);
         }
-        private async Task CloseWithMessage(string message)
+        private async Task CloseWithMessage(string message, bool saveReplay)
         {
-            Close();
+            Close(saveReplay);
             await CreateAndSendEmbedAsync(message);
         }
-        private void Close()
+        private void Close(bool saveReplay)
         {
             _closed = true;
             lock (_activeBattlesLockObj)
             {
                 _activeBattles.Remove(this);
-                ReplaySaver.SaveReplay(_battle); // Save battle in the lock so they don't conflict while directory checking
+                if (saveReplay)
+                {
+                    ReplaySaver.SaveReplay(_battle, _battleId); // Save battle in the lock so they don't conflict while directory checking
+                }
             }
             _battle.Dispose();
             _battle.OnNewEvent -= Battle_OnNewEvent;
@@ -486,7 +489,7 @@ namespace Kermalis.PokemonBattleEngineDiscord
                 }
                 case PBEBattleState.Ended:
                 {
-                    context.Close();
+                    context.Close(true);
                     break;
                 }
             }
