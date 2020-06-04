@@ -289,7 +289,7 @@ namespace Kermalis.PokemonBattleEngineDiscord
                 i += count;
             } while (i < str.Length);
         }
-        private async Task<IUserMessage> CreateAndSendEmbedAsync(string embedDescription, string messageText = "", PBEPokemon pkmn = null, bool useUpperImage = false, SocketUser userToSendTo = null)
+        private async Task<IUserMessage> CreateAndSendEmbedAsync(string embedDescription, string messageText = "", PBEPokemon pkmn = null, bool useUpperImage = false, EmbedFieldBuilder[] fields = null, SocketUser userToSendTo = null)
         {
             EmbedBuilder embed = new EmbedBuilder()
                 .WithUrl(Utils.URL)
@@ -312,7 +312,13 @@ namespace Kermalis.PokemonBattleEngineDiscord
                     embed.WithImageUrl(sprite);
                 }
             }
-
+            if (fields != null)
+            {
+                foreach (EmbedFieldBuilder f in fields)
+                {
+                    embed.AddField(f);
+                }
+            }
             if (userToSendTo != null)
             {
                 return await userToSendTo.SendMessageAsync(messageText, embed: embed.Build());
@@ -359,7 +365,7 @@ namespace Kermalis.PokemonBattleEngineDiscord
                 sb.AppendLine($"**Stat changes:** {string.Join(", ", statStrs)}");
             }
         }
-        private static string CustomPokemonToString(PBEPokemon pkmn, bool addReactionChars)
+        private static void CreatePokemonEmbed(PBEPokemon pkmn, bool addReactionChars, out string outStr, out EmbedFieldBuilder[] outFields)
         {
             var sb = new StringBuilder();
             string formStr = PBEDataUtils.HasForms(pkmn.Species, false) ? $" ({PBELocalizedString.GetFormName(pkmn.Species, pkmn.Form)})" : string.Empty;
@@ -417,7 +423,13 @@ namespace Kermalis.PokemonBattleEngineDiscord
             {
                 sb.AppendLine($"**{PBELocalizedString.GetMoveName(PBEMove.HiddenPower).English}:** {Utils.TypeEmotes[pkmn.IndividualValues.HiddenPowerType]}|{pkmn.IndividualValues.HiddenPowerBasePower}");
             }
-            sb.Append("**Moves:** ");
+            outStr = sb.ToString();
+            sb.Clear();
+            outFields = new EmbedFieldBuilder[2];
+            EmbedFieldBuilder field = new EmbedFieldBuilder()
+                .WithName("**Moves:**")
+                .WithIsInline(true);
+            outFields[0] = field;
             for (int i = 0; i < PBESettings.DefaultNumMoves; i++)
             {
                 PBEBattleMoveset.PBEBattleMovesetSlot slot = pkmn.Moves[i];
@@ -425,28 +437,24 @@ namespace Kermalis.PokemonBattleEngineDiscord
                 if (move != PBEMove.None)
                 {
                     PBEType moveType = pkmn.GetMoveType(move);
-                    if (i > 0)
+                    sb.Append($"{Utils.TypeEmotes[moveType]} {PBELocalizedString.GetMoveName(move).English} ({slot.PP}/{slot.MaxPP})");
+                    if (i < PBESettings.DefaultNumMoves - 1)
                     {
-                        sb.Append(", ");
-                    }
-                    sb.Append($"{Utils.TypeEmotes[moveType]} {PBELocalizedString.GetMoveName(slot.Move).English}");
-                    if (move != PBEMove.None)
-                    {
-                        sb.Append($" ({slot.PP}/{slot.MaxPP})");
+                        sb.AppendLine();
                     }
                 }
             }
-            sb.AppendLine();
-            sb.Append("**Usable moves:** ");
+            field.WithValue(sb.ToString());
+            sb.Clear();
+            field = new EmbedFieldBuilder()
+                .WithName("**Usable moves:**")
+                .WithIsInline(true);
+            outFields[1] = field;
             PBEMove[] usableMoves = pkmn.GetUsableMoves();
             for (int i = 0; i < usableMoves.Length; i++)
             {
                 PBEMove move = usableMoves[i];
                 PBEType moveType = pkmn.GetMoveType(move);
-                if (i > 0)
-                {
-                    sb.Append(", ");
-                }
                 if (addReactionChars)
                 {
                     sb.Append($"{_moveEmotes[i][moveType]} ");
@@ -456,10 +464,14 @@ namespace Kermalis.PokemonBattleEngineDiscord
                     sb.Append($"{Utils.TypeEmotes[moveType]} ");
                 }
                 sb.Append(PBELocalizedString.GetMoveName(move).English);
+                if (i < usableMoves.Length - 1)
+                {
+                    sb.AppendLine();
+                }
             }
-            return sb.ToString();
+            field.WithValue(sb.ToString());
         }
-        private static string CustomKnownPokemonToString(PBEPokemon pkmn)
+        private static string CreateKnownPokemonEmbed(PBEPokemon pkmn)
         {
             var sb = new StringBuilder();
             string formStr = PBEDataUtils.HasForms(pkmn.KnownSpecies, false) ? $" ({PBELocalizedString.GetFormName(pkmn.KnownSpecies, pkmn.KnownForm)})" : string.Empty;
@@ -491,12 +503,12 @@ namespace Kermalis.PokemonBattleEngineDiscord
                     sb.AppendLine($"**Confusion turns:** {pkmn.ConfusionCounter}");
                 }
             }
-            PBEDataUtils.GetStatRange(PBEStat.HP, pkmn.KnownSpecies, pkmn.KnownForm, pkmn.Level, pkmn.Team.Battle.Settings, out ushort lowHP, out ushort highHP);
-            PBEDataUtils.GetStatRange(PBEStat.Attack, pkmn.KnownSpecies, pkmn.KnownForm, pkmn.Level, pkmn.Team.Battle.Settings, out ushort lowAttack, out ushort highAttack);
-            PBEDataUtils.GetStatRange(PBEStat.Defense, pkmn.KnownSpecies, pkmn.KnownForm, pkmn.Level, pkmn.Team.Battle.Settings, out ushort lowDefense, out ushort highDefense);
-            PBEDataUtils.GetStatRange(PBEStat.SpAttack, pkmn.KnownSpecies, pkmn.KnownForm, pkmn.Level, pkmn.Team.Battle.Settings, out ushort lowSpAttack, out ushort highSpAttack);
-            PBEDataUtils.GetStatRange(PBEStat.SpDefense, pkmn.KnownSpecies, pkmn.KnownForm, pkmn.Level, pkmn.Team.Battle.Settings, out ushort lowSpDefense, out ushort highSpDefense);
-            PBEDataUtils.GetStatRange(PBEStat.Speed, pkmn.KnownSpecies, pkmn.KnownForm, pkmn.Level, pkmn.Team.Battle.Settings, out ushort lowSpeed, out ushort highSpeed);
+            PBEDataUtils.GetStatRange(PBEStat.HP, pkmn.KnownSpecies, pkmn.KnownForm, pkmn.Level, PBESettings.DefaultSettings, out ushort lowHP, out ushort highHP);
+            PBEDataUtils.GetStatRange(PBEStat.Attack, pkmn.KnownSpecies, pkmn.KnownForm, pkmn.Level, PBESettings.DefaultSettings, out ushort lowAttack, out ushort highAttack);
+            PBEDataUtils.GetStatRange(PBEStat.Defense, pkmn.KnownSpecies, pkmn.KnownForm, pkmn.Level, PBESettings.DefaultSettings, out ushort lowDefense, out ushort highDefense);
+            PBEDataUtils.GetStatRange(PBEStat.SpAttack, pkmn.KnownSpecies, pkmn.KnownForm, pkmn.Level, PBESettings.DefaultSettings, out ushort lowSpAttack, out ushort highSpAttack);
+            PBEDataUtils.GetStatRange(PBEStat.SpDefense, pkmn.KnownSpecies, pkmn.KnownForm, pkmn.Level, PBESettings.DefaultSettings, out ushort lowSpDefense, out ushort highSpDefense);
+            PBEDataUtils.GetStatRange(PBEStat.Speed, pkmn.KnownSpecies, pkmn.KnownForm, pkmn.Level, PBESettings.DefaultSettings, out ushort lowSpeed, out ushort highSpeed);
             sb.AppendLine($"**Stat range:** [HP] {lowHP}-{highHP}, [A] {lowAttack}-{highAttack}, [D] {lowDefense}-{highDefense}, [SA] {lowSpAttack}-{highSpAttack}, [SD] {lowSpDefense}-{highSpDefense}, [S] {lowSpeed}-{highSpeed}, [W] {pkmn.KnownWeight:0.0}");
             AddStatChanges(pkmn, sb);
             if (pkmn.KnownAbility == PBEAbility.MAX)
@@ -509,7 +521,7 @@ namespace Kermalis.PokemonBattleEngineDiscord
             }
             sb.AppendLine($"**Known item:** {(pkmn.KnownItem == (PBEItem)ushort.MaxValue ? "???" : PBELocalizedString.GetItemName(pkmn.KnownItem).English)}");
             sb.Append("**Known moves:** ");
-            for (int i = 0; i < pkmn.Team.Battle.Settings.NumMoves; i++)
+            for (int i = 0; i < PBESettings.DefaultNumMoves; i++)
             {
                 PBEBattleMoveset.PBEBattleMovesetSlot slot = pkmn.KnownMoves[i];
                 PBEMove move = slot.Move;
@@ -521,10 +533,13 @@ namespace Kermalis.PokemonBattleEngineDiscord
                     {
                         sb.Append(", ");
                     }
-                    sb.Append(move == PBEMove.MAX ? "???" : $"{Utils.TypeEmotes[pkmn.GetMoveType(move, useKnownInfo: true)]} {PBELocalizedString.GetMoveName(move).English}");
-                    if (move != PBEMove.MAX)
+                    if (move == PBEMove.MAX)
                     {
-                        sb.Append($" ({pp}{(maxPP == 0 ? ")" : $"/{maxPP})")}");
+                        sb.Append("???");
+                    }
+                    else
+                    {
+                        sb.Append($"{Utils.TypeEmotes[pkmn.GetMoveType(move, useKnownInfo: true)]} {PBELocalizedString.GetMoveName(move).English} ({pp}{(maxPP == 0 ? ")" : $"/{maxPP})")}");
                     }
                 }
             }
@@ -1067,11 +1082,11 @@ namespace Kermalis.PokemonBattleEngineDiscord
                         case +2: message = "rose sharply"; break;
                         default:
                         {
-                            if (change == 0 && pscp.NewValue == -context._battle.Settings.MaxStatChange)
+                            if (change == 0 && pscp.NewValue == -PBESettings.DefaultMaxStatChange)
                             {
                                 message = "won't go lower";
                             }
-                            else if (change == 0 && pscp.NewValue == context._battle.Settings.MaxStatChange)
+                            else if (change == 0 && pscp.NewValue == PBESettings.DefaultMaxStatChange)
                             {
                                 message = "won't go higher";
                             }
@@ -1653,6 +1668,8 @@ namespace Kermalis.PokemonBattleEngineDiscord
                     PBEPokemon mainPkmn = arp.Team.ActionsRequired[0];
                     var allMessages = new List<IUserMessage>(PBESettings.DefaultMaxPartySize);
                     var reactionsToAdd = new List<(IUserMessage Message, IEmote Reaction)>(PBESettings.DefaultMaxPartySize - 1 + PBESettings.DefaultNumMoves); // 5 switch reactions, 4 move reactions
+                    string description;
+                    EmbedFieldBuilder[] fields;
 
                     if (mainPkmn.CanSwitchOut())
                     {
@@ -1666,14 +1683,16 @@ namespace Kermalis.PokemonBattleEngineDiscord
                         for (int i = 0; i < switches.Length; i++)
                         {
                             PBEPokemon switchPkmn = switches[i];
-                            IUserMessage switchMsg = await context.CreateAndSendEmbedAsync(CustomPokemonToString(switchPkmn, false), messageText: i == 0 ? Separator : string.Empty, pkmn: switchPkmn, useUpperImage: true, userToSendTo: user);
+                            CreatePokemonEmbed(switchPkmn, false, out description, out fields);
+                            IUserMessage switchMsg = await context.CreateAndSendEmbedAsync(description, messageText: i == 0 ? Separator : string.Empty, pkmn: switchPkmn, useUpperImage: true, fields: fields, userToSendTo: user);
                             allMessages.Add(switchMsg);
                             reactionsToAdd.Add((switchMsg, _switchEmoji));
                             ReactionListener.AddListener(context, switchMsg, allMessages, _switchEmoji, userArray, () => SwitchReactionClicked(switchMsg, switchPkmn));
                         }
                     }
 
-                    IUserMessage mainMsg = await context.CreateAndSendEmbedAsync($"{CustomPokemonToString(mainPkmn, true)}\nTo check a move: `!move info {PBELocalizedString.GetMoveName(Utils.RandomElement(_suggestedMoves)).English}`", pkmn: mainPkmn, useUpperImage: false, userToSendTo: user);
+                    CreatePokemonEmbed(mainPkmn, true, out description, out fields);
+                    IUserMessage mainMsg = await context.CreateAndSendEmbedAsync($"{description}\nTo check a move: `!move info {PBELocalizedString.GetMoveName(Utils.RandomElement(_suggestedMoves)).English}`", pkmn: mainPkmn, useUpperImage: false, fields: fields, userToSendTo: user);
                     allMessages.Add(mainMsg);
 
                     async Task MoveReactionClicked(PBEMove move)
@@ -1749,10 +1768,13 @@ namespace Kermalis.PokemonBattleEngineDiscord
                         var userArray = new SocketUser[] { user };
                         var allMessages = new IUserMessage[switches.Length];
                         var reactionsToAdd = new (IUserMessage Message, IEmote Reaction)[switches.Length];
+                        string description;
+                        EmbedFieldBuilder[] fields;
                         for (int i = 0; i < switches.Length; i++)
                         {
                             PBEPokemon switchPkmn = switches[i];
-                            IUserMessage switchMsg = await context.CreateAndSendEmbedAsync(CustomPokemonToString(switchPkmn, false), messageText: i == 0 ? Separator : string.Empty, pkmn: switchPkmn, useUpperImage: true, userToSendTo: user);
+                            CreatePokemonEmbed(switchPkmn, false, out description, out fields);
+                            IUserMessage switchMsg = await context.CreateAndSendEmbedAsync(description, messageText: i == 0 ? Separator : string.Empty, pkmn: switchPkmn, useUpperImage: true, fields: fields, userToSendTo: user);
                             allMessages[i] = switchMsg;
                             reactionsToAdd[i] = (switchMsg, _switchEmoji);
                             ReactionListener.AddListener(context, switchMsg, allMessages, _switchEmoji, userArray, () => SwitchReactionClicked(switchMsg, switchPkmn));
@@ -1774,8 +1796,8 @@ namespace Kermalis.PokemonBattleEngineDiscord
                     context.SetEmbedTitle();
                     PBEPokemon team0Pkmn = context._battle.Teams[0].ActiveBattlers[0];
                     PBEPokemon team1Pkmn = context._battle.Teams[1].ActiveBattlers[0];
-                    await context.CreateAndSendEmbedAsync(CustomKnownPokemonToString(team0Pkmn), messageText: Separator, pkmn: team0Pkmn);
-                    await context.CreateAndSendEmbedAsync(CustomKnownPokemonToString(team1Pkmn), pkmn: team1Pkmn);
+                    await context.CreateAndSendEmbedAsync(CreateKnownPokemonEmbed(team0Pkmn), messageText: Separator, pkmn: team0Pkmn);
+                    await context.CreateAndSendEmbedAsync(CreateKnownPokemonEmbed(team1Pkmn), pkmn: team1Pkmn);
                     break;
                 }
                 case PBEWinnerPacket win:
