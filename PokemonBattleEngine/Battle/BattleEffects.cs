@@ -250,7 +250,6 @@ namespace Kermalis.PokemonBattleEngine.Battle
         {
             PBEPokemon[] order = GetActingOrder(ActiveBattlers, true);
             // Verified: Weather stops before doing damage
-            // Verified: Hailstorm/Sandstorm/IceBody/RainDish/SolarPower before all
             if (Weather != PBEWeather.None && WeatherCounter > 0)
             {
                 WeatherCounter--;
@@ -261,80 +260,81 @@ namespace Kermalis.PokemonBattleEngine.Battle
                     BroadcastWeather(w, PBEWeatherAction.Ended);
                     CastformCherrimCheck(order);
                 }
-                else if (ShouldDoWeatherEffects())
+            }
+            // Verified: Hailstorm/Sandstorm/IceBody/RainDish/SolarPower before all
+            if (Weather != PBEWeather.None && ShouldDoWeatherEffects())
+            {
+                foreach (PBEPokemon pkmn in order)
                 {
-                    foreach (PBEPokemon pkmn in order)
+                    if (pkmn.HP > 0)
                     {
-                        if (pkmn.HP > 0)
+                        switch (Weather)
                         {
-                            switch (Weather)
+                            case PBEWeather.Hailstorm:
                             {
-                                case PBEWeather.Hailstorm:
+                                if (pkmn.Ability == PBEAbility.IceBody)
                                 {
-                                    if (pkmn.Ability == PBEAbility.IceBody)
-                                    {
-                                        if (pkmn.HP < pkmn.MaxHP)
-                                        {
-                                            BroadcastAbility(pkmn, pkmn, pkmn.Ability, PBEAbilityAction.RestoredHP);
-                                            HealDamage(pkmn, pkmn.MaxHP / Settings.IceBodyHealDenominator);
-                                        }
-                                    }
-                                    else if (!pkmn.HasType(PBEType.Ice)
-                                        && pkmn.Ability != PBEAbility.Overcoat
-                                        && pkmn.Ability != PBEAbility.SnowCloak)
-                                    {
-                                        BroadcastWeather(PBEWeather.Hailstorm, PBEWeatherAction.CausedDamage, pkmn);
-                                        DealDamage(pkmn, pkmn, pkmn.MaxHP / Settings.HailDamageDenominator, true);
-                                        if (!FaintCheck(pkmn))
-                                        {
-                                            LowHPBerryCheck(pkmn);
-                                        }
-                                    }
-                                    break;
-                                }
-                                case PBEWeather.HarshSunlight:
-                                {
-                                    if (pkmn.Ability == PBEAbility.SolarPower)
-                                    {
-                                        BroadcastAbility(pkmn, pkmn, pkmn.Ability, PBEAbilityAction.Damage);
-                                        DealDamage(pkmn, pkmn, pkmn.MaxHP / 8, true);
-                                        if (!FaintCheck(pkmn))
-                                        {
-                                            LowHPBerryCheck(pkmn);
-                                        }
-                                    }
-                                    break;
-                                }
-                                case PBEWeather.Rain:
-                                {
-                                    if (pkmn.Ability == PBEAbility.RainDish && pkmn.HP < pkmn.MaxHP)
+                                    if (pkmn.HP < pkmn.MaxHP)
                                     {
                                         BroadcastAbility(pkmn, pkmn, pkmn.Ability, PBEAbilityAction.RestoredHP);
-                                        HealDamage(pkmn, pkmn.MaxHP / 16);
+                                        HealDamage(pkmn, pkmn.MaxHP / Settings.IceBodyHealDenominator);
                                     }
-                                    break;
                                 }
-                                case PBEWeather.Sandstorm:
+                                else if (!pkmn.HasType(PBEType.Ice)
+                                    && pkmn.Ability != PBEAbility.Overcoat
+                                    && pkmn.Ability != PBEAbility.SnowCloak)
                                 {
-                                    if (!pkmn.HasType(PBEType.Rock)
-                                        && !pkmn.HasType(PBEType.Ground)
-                                        && !pkmn.HasType(PBEType.Steel)
-                                        && pkmn.Ability != PBEAbility.Overcoat
-                                        && pkmn.Ability != PBEAbility.SandForce
-                                        && pkmn.Ability != PBEAbility.SandRush
-                                        && pkmn.Ability != PBEAbility.SandVeil
-                                        && !pkmn.Status2.HasFlag(PBEStatus2.Underground)
-                                        && !pkmn.Status2.HasFlag(PBEStatus2.Underwater))
+                                    BroadcastWeather(PBEWeather.Hailstorm, PBEWeatherAction.CausedDamage, pkmn);
+                                    DealDamage(pkmn, pkmn, pkmn.MaxHP / Settings.HailDamageDenominator, true);
+                                    if (!FaintCheck(pkmn))
                                     {
-                                        BroadcastWeather(PBEWeather.Sandstorm, PBEWeatherAction.CausedDamage, pkmn);
-                                        DealDamage(pkmn, pkmn, pkmn.MaxHP / Settings.SandstormDamageDenominator, true);
-                                        if (!FaintCheck(pkmn))
-                                        {
-                                            LowHPBerryCheck(pkmn);
-                                        }
+                                        LowHPBerryCheck(pkmn);
                                     }
-                                    break;
                                 }
+                                break;
+                            }
+                            case PBEWeather.HarshSunlight:
+                            {
+                                if (pkmn.Ability == PBEAbility.SolarPower)
+                                {
+                                    BroadcastAbility(pkmn, pkmn, pkmn.Ability, PBEAbilityAction.Damage);
+                                    DealDamage(pkmn, pkmn, pkmn.MaxHP / 8, true);
+                                    if (!FaintCheck(pkmn))
+                                    {
+                                        LowHPBerryCheck(pkmn);
+                                    }
+                                }
+                                break;
+                            }
+                            case PBEWeather.Rain:
+                            {
+                                if (pkmn.Ability == PBEAbility.RainDish && pkmn.HP < pkmn.MaxHP)
+                                {
+                                    BroadcastAbility(pkmn, pkmn, pkmn.Ability, PBEAbilityAction.RestoredHP);
+                                    HealDamage(pkmn, pkmn.MaxHP / 16);
+                                }
+                                break;
+                            }
+                            case PBEWeather.Sandstorm:
+                            {
+                                if (!pkmn.HasType(PBEType.Rock)
+                                    && !pkmn.HasType(PBEType.Ground)
+                                    && !pkmn.HasType(PBEType.Steel)
+                                    && pkmn.Ability != PBEAbility.Overcoat
+                                    && pkmn.Ability != PBEAbility.SandForce
+                                    && pkmn.Ability != PBEAbility.SandRush
+                                    && pkmn.Ability != PBEAbility.SandVeil
+                                    && !pkmn.Status2.HasFlag(PBEStatus2.Underground)
+                                    && !pkmn.Status2.HasFlag(PBEStatus2.Underwater))
+                                {
+                                    BroadcastWeather(PBEWeather.Sandstorm, PBEWeatherAction.CausedDamage, pkmn);
+                                    DealDamage(pkmn, pkmn, pkmn.MaxHP / Settings.SandstormDamageDenominator, true);
+                                    if (!FaintCheck(pkmn))
+                                    {
+                                        LowHPBerryCheck(pkmn);
+                                    }
+                                }
+                                break;
                             }
                         }
                     }
