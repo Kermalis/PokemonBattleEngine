@@ -11,9 +11,10 @@ namespace Kermalis.PokemonBattleEngineDiscord
     internal sealed class ChannelHandler
     {
         private const int NumMinutesUntilChannelDeleted = 60; // 60 is fine for the small userbase now, 15 is probably the target later (add customization)
-        private const string CategoryName = "Pokémon Battles";
+        private const string CategoryName1 = "Ongoing Pokémon Battles";
+        private const string CategoryName2 = "Ended Pokémon Battles";
         private static readonly object _channelHandlerLockObj = new object();
-        private static readonly Dictionary<IGuild, ICategoryChannel> _categoryLookup = new Dictionary<IGuild, ICategoryChannel>(DiscordComparers.GuildComparer);
+        private static readonly Dictionary<IGuild, (ICategoryChannel, ICategoryChannel)> _categoryLookup = new Dictionary<IGuild, (ICategoryChannel, ICategoryChannel)>(DiscordComparers.GuildComparer);
         private static readonly Dictionary<ITextChannel, (DateTime, IUserMessage)> _channelDeletion = new Dictionary<ITextChannel, (DateTime, IUserMessage)>(DiscordComparers.ChannelComparer);
         private static Timer _channelDeletionTimer;
 
@@ -28,10 +29,16 @@ namespace Kermalis.PokemonBattleEngineDiscord
                 else if (channel is ICategoryChannel gc)
                 {
                     IGuild guild = gc.Guild;
-                    if (_categoryLookup.TryGetValue(guild, out ICategoryChannel c) && c.Id == gc.Id)
+                    if (_categoryLookup.TryGetValue(guild, out (ICategoryChannel, ICategoryChannel) tup))
                     {
-                        _categoryLookup.Remove(guild);
-                        await CreateCategory(gc.Guild);
+                        if (tup.Item1.Id == gc.Id)
+                        {
+                            tup.Item1 = await CreateCategory(guild, CategoryName1);
+                        }
+                        else if (tup.Item2.Id == gc.Id)
+                        {
+                            tup.Item2 = await CreateCategory(guild, CategoryName2);
+                        }
                     }
                 }
             }
@@ -56,33 +63,50 @@ namespace Kermalis.PokemonBattleEngineDiscord
             _channelDeletionTimer.Dispose();
         }
 
-        private static Task<ICategoryChannel> CreateCategory(IGuild guild)
+        private static async Task CreateCategories(IGuild guild)
         {
-            return guild.CreateCategoryAsync(CategoryName);
+            if (!_categoryLookup.ContainsKey(guild))
+            {
+                IReadOnlyCollection<ICategoryChannel> all = await guild.GetCategoriesAsync();
+                ICategoryChannel c1 = null, c2 = null;
+                foreach (ICategoryChannel c in all)
+                {
+                    if (c.Name == CategoryName1)
+                    {
+                        c1 = c;
+                        if (c2 != null)
+                        {
+                            break;
+                        }
+                    }
+                    else if (c.Name == CategoryName2)
+                    {
+                        c2 = c;
+                        if (c1 != null)
+                        {
+                            break;
+                        }
+                    }
+                }
+                if (c1 == null)
+                {
+                    c1 = await CreateCategory(guild, CategoryName1);
+                }
+                if (c2 == null)
+                {
+                    c2 = await CreateCategory(guild, CategoryName2);
+                }
+                _categoryLookup.Add(guild, (c1, c2));
+            }
+        }
+        private static Task<ICategoryChannel> CreateCategory(IGuild guild, string name)
+        {
+            return guild.CreateCategoryAsync(name);
         }
         public static async Task<ITextChannel> CreateChannel(IGuild guild, string name)
         {
-            if (!_categoryLookup.TryGetValue(guild, out ICategoryChannel category))
-            {
-                IReadOnlyCollection<ICategoryChannel> all = await guild.GetCategoriesAsync();
-                bool found = false;
-                foreach (ICategoryChannel c in all)
-                {
-                    if (c.Name == CategoryName)
-                    {
-                        category = c;
-                        _categoryLookup.Add(guild, c);
-                        found = true;
-                        break;
-                    }
-                }
-                if (!found)
-                {
-                    category = await CreateCategory(guild);
-                    _categoryLookup.Add(guild, category);
-                }
-            }
-            return await guild.CreateTextChannelAsync(name, func: p => p.CategoryId = category.Id);
+            await CreateCategories(guild);
+            return await guild.CreateTextChannelAsync(name, func: p => p.CategoryId = _categoryLookup[guild].Item1.Id);
         }
 
         private static Embed GetChannelDeletionEmbed(int num)
@@ -154,6 +178,13 @@ namespace Kermalis.PokemonBattleEngineDiscord
             lock (_channelHandlerLockObj)
             {
                 return Do();
+            }
+        }
+        public static Task ChangeCategory(ITextChannel channel)
+        {
+            lock (_channelHandlerLockObj)
+            {
+                return channel.ModifyAsync(p => p.CategoryId = _categoryLookup[channel.Guild].Item2.Id);
             }
         }
     }

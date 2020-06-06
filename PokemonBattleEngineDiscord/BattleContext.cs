@@ -249,7 +249,7 @@ namespace Kermalis.PokemonBattleEngineDiscord
         private async Task CloseNormal(bool saveReplay)
         {
             CloseSilent(saveReplay);
-            //await _channel.ModifyAsync(p => p.Name += "-ended"); // TODO: Move to hidden category
+            await ChannelHandler.ChangeCategory(_channel);
         }
         private void CloseSilent(bool saveReplay)
         {
