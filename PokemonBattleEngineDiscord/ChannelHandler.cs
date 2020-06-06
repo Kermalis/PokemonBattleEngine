@@ -157,6 +157,7 @@ namespace Kermalis.PokemonBattleEngineDiscord
                 {
                     if (_channelDeletion.TryGetValue(c, out (DateTime, IUserMessage) tup))
                     {
+                        _channelDeletion.Remove(c);
                         await tup.Item2.DeleteAsync();
                         await c.SendMessageAsync($"{context.User.Mention} ― This channel will no longer be deleted.");
                     }
