@@ -73,18 +73,22 @@ namespace Kermalis.PokemonBattleEngineDiscord
             IGuild guild = c.Guild;
             _challenges.Remove(c);
 
+            await StartBattle(guild, a, b, a.Username, b.Username, a.Mention, b.Mention);
+        }
+        private static async Task StartBattle(IGuild guild, SocketUser battler1, SocketUser battler2, string team1Name, string team2Name, string team1Mention, string team2Mention)
+        {
             PBETeamShell team1Shell, team2Shell;
             // Completely Randomized Pokémon
             team1Shell = new PBETeamShell(PBESettings.DefaultSettings, 3, true);
             team2Shell = new PBETeamShell(PBESettings.DefaultSettings, 3, true);
 
-            var battle = new PBEBattle(PBEBattleTerrain.Plain, PBEBattleFormat.Single, team1Shell, a.Username, team2Shell, b.Username);
+            var battle = new PBEBattle(PBEBattleTerrain.Plain, PBEBattleFormat.Single, team1Shell, team1Name, team2Shell, team2Name);
             team1Shell.Dispose();
             team2Shell.Dispose();
 
-            var bc = new BattleContext(battle, a, b);
+            var bc = new BattleContext(battle, battler1, battler2);
             ITextChannel channel = await ChannelHandler.CreateChannel(guild, $"battle-{bc.BattleId}");
-            await channel.SendMessageAsync($"**Battle #{bc.BattleId} ― {a.Mention} vs {b.Mention}**");
+            await channel.SendMessageAsync($"**Battle #{bc.BattleId} ― {team1Mention} vs {team2Mention}**");
             await bc.Begin(channel);
         }
 
@@ -123,6 +127,15 @@ namespace Kermalis.PokemonBattleEngineDiscord
             lock (_matchmakingLockObj)
             {
                 return Do();
+            }
+        }
+        public static Task ChallengeAI(SocketCommandContext ctx)
+        {
+            lock (_matchmakingLockObj)
+            {
+                const string AIName = "*PBEAI*";
+                SocketUser a = ctx.User;
+                return StartBattle(ctx.Guild, a, null, a.Username, AIName, a.Mention, AIName);
             }
         }
         public static Task ChallengeUser(SocketCommandContext ctx, SocketUser challengee)

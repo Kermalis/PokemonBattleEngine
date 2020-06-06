@@ -37,6 +37,7 @@ namespace Kermalis.PokemonBattleEngineDiscord
             _client.UserLeft += OnUserLeft;
             _client.Connected += OnConnected;
             _client.Disconnected += OnDisconnected;
+            _client.GuildMemberUpdated += OnGuildMemberUpdated;
 
             await _client.LoginAsync(TokenType.Bot, args[0]); // Token is passed in as args[0]
             await _client.StartAsync();
@@ -76,6 +77,11 @@ namespace Kermalis.PokemonBattleEngineDiscord
         {
             Console.WriteLine(arg);
             ChannelHandler.OnDisconnected();
+            return Task.CompletedTask;
+        }
+        private Task OnGuildMemberUpdated(SocketGuildUser arg1, SocketGuildUser arg2)
+        {
+            BattleContext.OnGuildMemberUpdated(arg2);
             return Task.CompletedTask;
         }
 

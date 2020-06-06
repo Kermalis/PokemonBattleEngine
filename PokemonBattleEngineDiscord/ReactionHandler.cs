@@ -63,8 +63,14 @@ namespace Kermalis.PokemonBattleEngineDiscord
         {
             lock (_reactionListenersLockObj)
             {
-                _reactionListeners.Remove(a);
-                _reactionListeners.Remove(b);
+                if (a != null)
+                {
+                    _reactionListeners.Remove(a);
+                }
+                if (b != null)
+                {
+                    _reactionListeners.Remove(b);
+                }
             }
         }
     }
