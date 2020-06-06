@@ -16,8 +16,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
         public string GetDefaultReplayFileName()
         {
             // "2020-12-30 23-59-59 - Team 1 vs Team 2.pbereplay"
-            DateTime dt = DateTime.Now;
-            return PBEUtils.ToSafeFileName(new string(string.Format("{0}-{1}-{2} {3}-{4}-{5} - {6} vs {7}", dt.Year, dt.Month, dt.Day, dt.Hour, dt.Minute, dt.Second, Teams[0].TrainerName, Teams[1].TrainerName).Take(200).ToArray())) + ".pbereplay";
+            return PBEUtils.ToSafeFileName(new string(string.Format("{0:yyyy-MM-dd HH-mm-ss} - {1} vs {2}", DateTime.Now, Teams[0].TrainerName, Teams[1].TrainerName).Take(200).ToArray())) + ".pbereplay";
         }
 
         public void SaveReplay()
