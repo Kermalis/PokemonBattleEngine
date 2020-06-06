@@ -52,7 +52,7 @@ namespace Kermalis.PokemonBattleEngineDiscord
         }
 
         [Command("forfeit", true)]
-        [Alias("giveup", "surrender", "throwinthetowel")]
+        [Alias("ff", "giveup", "surrender", "throwinthetowel")]
         public async Task Forfeit()
         {
             await Matchmaking.Forfeit(Context);
