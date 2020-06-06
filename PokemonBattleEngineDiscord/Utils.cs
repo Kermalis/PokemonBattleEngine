@@ -75,24 +75,6 @@ namespace Kermalis.PokemonBattleEngineDiscord
         };
         #endregion
 
-        public static void InitFemaleSpriteLookup()
-        {
-            const string address = ImageURL + "FemaleSpriteLookup.txt";
-            using (var w = new WebClient())
-            using (var reader = new StringReader(w.DownloadString(address)))
-            {
-                string line;
-                while ((line = reader.ReadLine()) != null)
-                {
-                    if (!Enum.TryParse(line, out PBESpecies species))
-                    {
-                        throw new InvalidDataException($"Failed to parse \"{address}\"");
-                    }
-                    _femaleSpriteLookup.Add(species);
-                }
-            }
-        }
-
         // https://stackoverflow.com/a/3722337
         public static Color Blend(this Color color, Color backColor, double depth = 0.5)
         {
@@ -134,6 +116,23 @@ namespace Kermalis.PokemonBattleEngineDiscord
 
         private static readonly object _femaleSpriteLookupLockObj = new object();
         private static readonly List<PBESpecies> _femaleSpriteLookup = new List<PBESpecies>();
+        public static void InitFemaleSpriteLookup()
+        {
+            const string address = ImageURL + "FemaleSpriteLookup.txt";
+            using (var w = new WebClient())
+            using (var reader = new StringReader(w.DownloadString(address)))
+            {
+                string line;
+                while ((line = reader.ReadLine()) != null)
+                {
+                    if (!Enum.TryParse(line, out PBESpecies species))
+                    {
+                        throw new InvalidDataException($"Failed to parse \"{address}\"");
+                    }
+                    _femaleSpriteLookup.Add(species);
+                }
+            }
+        }
         private static bool HasFemaleSprite(PBESpecies species)
         {
             lock (_femaleSpriteLookupLockObj)

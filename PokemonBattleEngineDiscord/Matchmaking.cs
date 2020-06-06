@@ -28,35 +28,13 @@ namespace Kermalis.PokemonBattleEngineDiscord
         }
 
         private const int ChallengeMinuteExpiration = 5;
-        private const string CategoryName = "Pokémon Battles";
         private static readonly object _matchmakingLockObj = new object();
         private static readonly List<Challenge> _challenges = new List<Challenge>();
-        private static readonly Dictionary<IGuild, ICategoryChannel> _category = new Dictionary<IGuild, ICategoryChannel>();
 
-        public static Task OnChannelDeleted(SocketChannel channel)
-        {
-            async Task Do()
-            {
-                if (channel is ICategoryChannel gc)
-                {
-                    IGuild guild = gc.Guild;
-                    if (_category.TryGetValue(guild, out ICategoryChannel c) && c.Id == gc.Id)
-                    {
-                        _category.Remove(guild);
-                        await CreateCategory(guild);
-                    }
-                }
-            }
-            lock (_matchmakingLockObj)
-            {
-                return Do();
-            }
-        }
         public static void OnLeftGuild(SocketGuild guild)
         {
             lock (_matchmakingLockObj)
             {
-                _category.Remove(guild);
                 _challenges.RemoveAll(c => c.Guild.Id == guild.Id);
             }
         }
@@ -68,41 +46,9 @@ namespace Kermalis.PokemonBattleEngineDiscord
             }
         }
 
-        private static Task<ICategoryChannel> CreateCategory(IGuild guild)
+        private static async Task PrintParticipating(SocketUser tag, SocketUser participant, ISocketMessageChannel channel)
         {
-            return guild.CreateCategoryAsync(CategoryName);
-        }
-        private static async Task<ITextChannel> CreateChannel(IGuild guild, string name)
-        {
-            if (!_category.TryGetValue(guild, out ICategoryChannel category))
-            {
-                IReadOnlyCollection<ICategoryChannel> all = await guild.GetCategoriesAsync();
-                bool found = false;
-                foreach (ICategoryChannel c in all)
-                {
-                    if (c.Name == CategoryName)
-                    {
-                        category = c;
-                        _category.Add(guild, c);
-                        found = true;
-                        break;
-                    }
-                }
-                if (!found)
-                {
-                    category = await CreateCategory(guild);
-                    _category.Add(guild, category);
-                }
-            }
-            void Properties(TextChannelProperties p)
-            {
-                p.CategoryId = category.Id;
-            }
-            return await guild.CreateTextChannelAsync(name, func: Properties);
-        }
-        private static async Task PrintParticipating(SocketUser user, ISocketMessageChannel channel)
-        {
-            await channel.SendMessageAsync($"{user.Username} is already participating in a battle.");
+            await channel.SendMessageAsync($"{tag.Mention} ― {participant.Username} is already participating in a battle.");
         }
         private static void RemoveOldChallenges()
         {
@@ -137,7 +83,7 @@ namespace Kermalis.PokemonBattleEngineDiscord
             team2Shell.Dispose();
 
             var bc = new BattleContext(battle, a, b);
-            ITextChannel channel = await CreateChannel(guild, $"battle-{bc.BattleId}");
+            ITextChannel channel = await ChannelHandler.CreateChannel(guild, $"battle-{bc.BattleId}");
             await channel.SendMessageAsync($"**Battle #{bc.BattleId} ― {a.Mention} vs {b.Mention}**");
             await bc.Begin(channel);
         }
@@ -165,7 +111,7 @@ namespace Kermalis.PokemonBattleEngineDiscord
                         SocketUser challenger = c.Challenger;
                         if (BattleContext.GetBattleContext(challenger) != null)
                         {
-                            await PrintParticipating(challenger, ctx.Channel);
+                            await PrintParticipating(challengee, challenger, ctx.Channel);
                         }
                         else
                         {
@@ -192,7 +138,7 @@ namespace Kermalis.PokemonBattleEngineDiscord
                 }
                 else if (BattleContext.GetBattleContext(challengee) != null)
                 {
-                    await PrintParticipating(challengee, ctx.Channel);
+                    await PrintParticipating(challenger, challengee, ctx.Channel);
                 }
                 else
                 {

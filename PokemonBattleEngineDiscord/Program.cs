@@ -22,7 +22,6 @@ namespace Kermalis.PokemonBattleEngineDiscord
         {
             Utils.InitFemaleSpriteLookup();
             ReplaySaver.RemoveOldReplays();
-
             PBEUtils.CreateDatabaseConnection(string.Empty);
 
             _client = new DiscordSocketClient();
@@ -32,10 +31,12 @@ namespace Kermalis.PokemonBattleEngineDiscord
 
             _client.Log += LogMessage;
             _client.MessageReceived += CommandMessageReceived;
-            _client.ReactionAdded += ReactionListener.OnReactionAdded;
+            _client.ReactionAdded += OnReactionAdded;
             _client.ChannelDestroyed += OnChannelDeleted;
             _client.LeftGuild += OnLeftGuild;
             _client.UserLeft += OnUserLeft;
+            _client.Connected += OnConnected;
+            _client.Disconnected += OnDisconnected;
 
             await _client.LoginAsync(TokenType.Bot, args[0]); // Token is passed in as args[0]
             await _client.StartAsync();
@@ -43,15 +44,21 @@ namespace Kermalis.PokemonBattleEngineDiscord
             await Task.Delay(-1);
         }
 
+        private Task OnReactionAdded(Cacheable<IUserMessage, ulong> message, ISocketMessageChannel channel, SocketReaction reaction)
+        {
+            ReactionHandler.OnReactionAdded(reaction);
+            return Task.CompletedTask;
+        }
         private async Task OnChannelDeleted(SocketChannel arg)
         {
             // TODO: Prevent abuse of constant deletions of our stuff
-            await Matchmaking.OnChannelDeleted(arg);
+            await ChannelHandler.OnChannelDeleted(arg);
             BattleContext.OnChannelDeleted(arg);
         }
         private Task OnLeftGuild(SocketGuild arg)
         {
             Matchmaking.OnLeftGuild(arg);
+            ChannelHandler.OnLeftGuild(arg);
             BattleContext.OnLeftGuild(arg);
             return Task.CompletedTask;
         }
@@ -59,6 +66,17 @@ namespace Kermalis.PokemonBattleEngineDiscord
         {
             Matchmaking.OnUserLeft(arg);
             await BattleContext.OnUserLeft(arg);
+        }
+        private Task OnConnected()
+        {
+            ChannelHandler.OnConnected();
+            return Task.CompletedTask;
+        }
+        private Task OnDisconnected(Exception arg)
+        {
+            Console.WriteLine(arg);
+            ChannelHandler.OnDisconnected();
+            return Task.CompletedTask;
         }
 
         private async Task CommandMessageReceived(SocketMessage arg)

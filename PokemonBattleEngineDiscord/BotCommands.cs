@@ -51,6 +51,13 @@ namespace Kermalis.PokemonBattleEngineDiscord
             await Matchmaking.ChallengeUser(Context, battler2);
         }
 
+        [Command("dontdelete", true)]
+        [RequireUserPermission(GuildPermission.ManageChannels)]
+        public async Task DontDelete()
+        {
+            await ChannelHandler.DontDelete(Context);
+        }
+
         [Command("forfeit", true)]
         [Alias("ff", "giveup", "surrender", "throwinthetowel")]
         public async Task Forfeit()
