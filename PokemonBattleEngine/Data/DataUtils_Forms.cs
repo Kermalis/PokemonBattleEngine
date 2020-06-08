@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
 
 namespace Kermalis.PokemonBattleEngine.Data
@@ -9,6 +10,27 @@ namespace Kermalis.PokemonBattleEngine.Data
         #region Static Collections
         public static PBEAlphabeticalList<PBEItem> AllItems { get; } = new PBEAlphabeticalList<PBEItem>(Enum.GetValues(typeof(PBEItem)).Cast<PBEItem>());
         public static PBEAlphabeticalList<PBESpecies> AllSpecies { get; } = new PBEAlphabeticalList<PBESpecies>(Enum.GetValues(typeof(PBESpecies)).Cast<PBESpecies>().Except(new[] { PBESpecies.MAX }));
+        public static PBEAlphabeticalList<PBESpecies> FullyEvolvedSpecies { get; } = new PBEAlphabeticalList<PBESpecies>(AllSpecies.Where(s => PBEPokemonData.GetData(s, 0).Evolutions.Count == 0));
+        public static ReadOnlyDictionary<PBEType, PBEItem> TypeToGem { get; } = new ReadOnlyDictionary<PBEType, PBEItem>(new Dictionary<PBEType, PBEItem>()
+        {
+            { PBEType.Bug, PBEItem.BugGem },
+            { PBEType.Dark, PBEItem.DarkGem },
+            { PBEType.Dragon, PBEItem.DragonGem },
+            { PBEType.Electric, PBEItem.ElectricGem },
+            { PBEType.Fighting, PBEItem.FightingGem },
+            { PBEType.Fire, PBEItem.FireGem },
+            { PBEType.Flying, PBEItem.FlyingGem },
+            { PBEType.Ghost, PBEItem.GhostGem },
+            { PBEType.Grass, PBEItem.GrassGem },
+            { PBEType.Ground, PBEItem.GroundGem },
+            { PBEType.Ice, PBEItem.IceGem },
+            { PBEType.Normal, PBEItem.NormalGem },
+            { PBEType.Poison, PBEItem.PoisonGem },
+            { PBEType.Psychic, PBEItem.PsychicGem },
+            { PBEType.Rock, PBEItem.RockGem },
+            { PBEType.Steel, PBEItem.SteelGem },
+            { PBEType.Water, PBEItem.WaterGem }
+        });
         #region Forms
         private static readonly PBEAlphabeticalList<PBEForm> _arceus = new PBEAlphabeticalList<PBEForm>(new[] { PBEForm.Arceus, PBEForm.Arceus_Bug, PBEForm.Arceus_Dark,
             PBEForm.Arceus_Dragon, PBEForm.Arceus_Electric, PBEForm.Arceus_Fighting, PBEForm.Arceus_Fire, PBEForm.Arceus_Flying, PBEForm.Arceus_Ghost, PBEForm.Arceus_Grass,

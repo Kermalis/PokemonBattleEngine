@@ -85,7 +85,11 @@ namespace Kermalis.PokemonBattleEngine.Utils
         /// <summary>Returns a random <see cref="PBESpecies"/> with a random <see cref="PBEForm"/>.</summary>
         public static (PBESpecies, PBEForm) RandomSpecies(bool requireUsableOutsideOfBattle)
         {
-            PBESpecies species = PBEDataUtils.AllSpecies.RandomElement();
+            return PBEDataUtils.AllSpecies.RandomSpecies(requireUsableOutsideOfBattle);
+        }
+        public static (PBESpecies, PBEForm) RandomSpecies(this IReadOnlyList<PBESpecies> eligible, bool requireUsableOutsideOfBattle)
+        {
+            PBESpecies species = eligible.RandomElement();
             IReadOnlyList<PBEForm> forms = PBEDataUtils.GetForms(species, requireUsableOutsideOfBattle);
             PBEForm form = forms.Count > 0 ? forms.RandomElement() : 0;
             return (species, form);
