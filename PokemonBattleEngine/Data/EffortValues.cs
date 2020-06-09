@@ -103,6 +103,37 @@ namespace Kermalis.PokemonBattleEngine.Data
             }
         }
 
+        public byte HP
+        {
+            get => _evs[0].Value;
+            set => _evs[0].Value = value;
+        }
+        public byte Attack
+        {
+            get => _evs[1].Value;
+            set => _evs[1].Value = value;
+        }
+        public byte Defense
+        {
+            get => _evs[2].Value;
+            set => _evs[2].Value = value;
+        }
+        public byte SpAttack
+        {
+            get => _evs[3].Value;
+            set => _evs[3].Value = value;
+        }
+        public byte SpDefense
+        {
+            get => _evs[4].Value;
+            set => _evs[4].Value = value;
+        }
+        public byte Speed
+        {
+            get => _evs[5].Value;
+            set => _evs[5].Value = value;
+        }
+
         internal PBEEffortValues(PBESettings settings, EndianBinaryReader r)
         {
             byte hp = r.ReadByte();
@@ -139,7 +170,7 @@ namespace Kermalis.PokemonBattleEngine.Data
         {
             Settings = other.Settings;
             Settings.PropertyChanged += OnSettingsChanged;
-            CreateEVs(other[PBEStat.HP].Value, other[PBEStat.Attack].Value, other[PBEStat.Defense].Value, other[PBEStat.SpAttack].Value, other[PBEStat.SpDefense].Value, other[PBEStat.Speed].Value);
+            CreateEVs(other.HP, other.Attack, other.Defense, other.SpAttack, other.SpDefense, other.Speed);
         }
         public PBEEffortValues(PBESettings settings, bool randomize)
         {

@@ -102,6 +102,37 @@ namespace Kermalis.PokemonBattleEngine.Data
             }
         }
 
+        public byte HP
+        {
+            get => _ivs[0].Value;
+            set => _ivs[0].Value = value;
+        }
+        public byte Attack
+        {
+            get => _ivs[1].Value;
+            set => _ivs[1].Value = value;
+        }
+        public byte Defense
+        {
+            get => _ivs[2].Value;
+            set => _ivs[2].Value = value;
+        }
+        public byte SpAttack
+        {
+            get => _ivs[3].Value;
+            set => _ivs[3].Value = value;
+        }
+        public byte SpDefense
+        {
+            get => _ivs[4].Value;
+            set => _ivs[4].Value = value;
+        }
+        public byte Speed
+        {
+            get => _ivs[5].Value;
+            set => _ivs[5].Value = value;
+        }
+
         internal PBEIndividualValues(PBESettings settings, EndianBinaryReader r)
         {
             void Validate(byte val)
@@ -156,7 +187,7 @@ namespace Kermalis.PokemonBattleEngine.Data
         {
             Settings = other.Settings;
             Settings.PropertyChanged += OnSettingsChanged;
-            CreateIVs(other[PBEStat.HP].Value, other[PBEStat.Attack].Value, other[PBEStat.Defense].Value, other[PBEStat.SpAttack].Value, other[PBEStat.SpDefense].Value, other[PBEStat.Speed].Value);
+            CreateIVs(other.HP, other.Attack, other.Defense, other.SpAttack, other.SpDefense, other.Speed);
         }
         public PBEIndividualValues(PBESettings settings, bool randomize)
         {
@@ -207,8 +238,8 @@ namespace Kermalis.PokemonBattleEngine.Data
         }
         private void UpdateHiddenPower()
         {
-            HiddenPowerType = PBEDataUtils.GetHiddenPowerType(this[PBEStat.HP].Value, this[PBEStat.Attack].Value, this[PBEStat.Defense].Value, this[PBEStat.SpAttack].Value, this[PBEStat.SpDefense].Value, this[PBEStat.Speed].Value);
-            HiddenPowerBasePower = PBEDataUtils.GetHiddenPowerBasePower(this[PBEStat.HP].Value, this[PBEStat.Attack].Value, this[PBEStat.Defense].Value, this[PBEStat.SpAttack].Value, this[PBEStat.SpDefense].Value, this[PBEStat.Speed].Value, Settings);
+            HiddenPowerType = PBEDataUtils.GetHiddenPowerType(HP, Attack, Defense, SpAttack, SpDefense, Speed);
+            HiddenPowerBasePower = PBEDataUtils.GetHiddenPowerBasePower(HP, Attack, Defense, SpAttack, SpDefense, Speed, Settings);
         }
 
         private bool _canDispose;
@@ -239,6 +270,17 @@ namespace Kermalis.PokemonBattleEngine.Data
             }
         }
 
+        public void Maximize()
+        {
+            if (IsDisposed)
+            {
+                throw new ObjectDisposedException(null);
+            }
+            for (int i = 0; i < 6; i++)
+            {
+                _ivs[i].Value = Settings.MaxIVs;
+            }
+        }
         public void Randomize()
         {
             if (IsDisposed)

@@ -11,7 +11,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
 {
     // TODO: INPC
     /// <summary>Represents a specific Pokémon during a battle.</summary>
-    public sealed class PBEPokemon
+    public sealed class PBEPokemon : IPBEPokemonTypes
     {
         /// <summary>The team this Pokémon belongs to in its battle.</summary>
         public PBETeam Team { get; }
@@ -345,8 +345,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
         }
         public void SetStats(bool calculateHP)
         {
-            PBESpecies species = Species;
-            PBEForm form = Form;
+            var pData = PBEPokemonData.GetData(Species, Form);
             PBENature nature = Nature;
             PBEEffortValues evs = EffortValues;
             PBEIndividualValues ivs = IndividualValues;
@@ -354,16 +353,16 @@ namespace Kermalis.PokemonBattleEngine.Battle
             PBESettings settings = Team.Battle.Settings;
             if (calculateHP)
             {
-                ushort hp = PBEDataUtils.CalculateStat(PBEStat.HP, species, form, nature, evs[PBEStat.HP].Value, ivs[PBEStat.HP].Value, level, settings);
+                ushort hp = PBEDataUtils.CalculateStat(pData, PBEStat.HP, nature, evs.HP, ivs.HP, level, settings);
                 MaxHP = hp;
                 HP = hp;
                 HPPercentage = 1d;
             }
-            Attack = PBEDataUtils.CalculateStat(PBEStat.Attack, species, form, nature, evs[PBEStat.Attack].Value, ivs[PBEStat.Attack].Value, level, settings);
-            Defense = PBEDataUtils.CalculateStat(PBEStat.Defense, species, form, nature, evs[PBEStat.Defense].Value, ivs[PBEStat.Defense].Value, level, settings);
-            SpAttack = PBEDataUtils.CalculateStat(PBEStat.SpAttack, species, form, nature, evs[PBEStat.SpAttack].Value, ivs[PBEStat.SpAttack].Value, level, settings);
-            SpDefense = PBEDataUtils.CalculateStat(PBEStat.SpDefense, species, form, nature, evs[PBEStat.SpDefense].Value, ivs[PBEStat.SpDefense].Value, level, settings);
-            Speed = PBEDataUtils.CalculateStat(PBEStat.Speed, species, form, nature, evs[PBEStat.Speed].Value, ivs[PBEStat.Speed].Value, level, settings);
+            Attack = PBEDataUtils.CalculateStat(pData, PBEStat.Attack, nature, evs.Attack, ivs.Attack, level, settings);
+            Defense = PBEDataUtils.CalculateStat(pData, PBEStat.Defense, nature, evs.Defense, ivs.Defense, level, settings);
+            SpAttack = PBEDataUtils.CalculateStat(pData, PBEStat.SpAttack, nature, evs.SpAttack, ivs.SpAttack, level, settings);
+            SpDefense = PBEDataUtils.CalculateStat(pData, PBEStat.SpDefense, nature, evs.SpDefense, ivs.SpDefense, level, settings);
+            Speed = PBEDataUtils.CalculateStat(pData, PBEStat.Speed, nature, evs.Speed, ivs.Speed, level, settings);
         }
         /// <summary>Copies the <paramref name="target"/>, does not set <see cref="PBEStatus2.Transformed"/>.</summary>
         /// <param name="target">The Pokémon to transform into.</param>
@@ -440,8 +439,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
         }
         public bool ReceivesSTAB(PBEType type, bool useKnownInfo = false)
         {
-            // type ArgumentOutOfRangeException will happen in HasType()
-            return type == PBEType.None ? false : HasType(type, useKnownInfo: useKnownInfo);
+            return type != PBEType.None && HasType(type, useKnownInfo: useKnownInfo);
         }
         public bool HasCancellingAbility(bool useKnownInfo = false)
         {

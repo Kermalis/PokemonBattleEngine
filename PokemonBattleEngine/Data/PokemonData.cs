@@ -5,9 +5,11 @@ using System.Collections.ObjectModel;
 
 namespace Kermalis.PokemonBattleEngine.Data
 {
-    public sealed class PBEPokemonData
+    public sealed class PBEPokemonData : IPBEPokemonTypes
     {
-        public ReadOnlyCollection<byte> BaseStats { get; }
+        public PBESpecies Species { get; }
+        public PBEForm Form { get; }
+        public PBEBaseStats BaseStats { get; }
         public PBEType Type1 { get; }
         public PBEType Type2 { get; }
         public PBEGenderRatio GenderRatio { get; }
@@ -19,7 +21,7 @@ namespace Kermalis.PokemonBattleEngine.Data
         public ReadOnlyCollection<(PBEMove Move, byte Level, PBEMoveObtainMethod ObtainMethod)> LevelUpMoves { get; }
         public ReadOnlyCollection<(PBEMove Move, PBEMoveObtainMethod ObtainMethod)> OtherMoves { get; }
 
-        private PBEPokemonData(byte[] baseStats,
+        private PBEPokemonData(PBESpecies species, PBEForm form, PBEBaseStats baseStats,
             PBEType type1, PBEType type2, PBEGenderRatio genderRatio, double weight,
             PBESpecies[] preEvolutions,
             PBESpecies[] evolutions,
@@ -27,7 +29,7 @@ namespace Kermalis.PokemonBattleEngine.Data
             (PBEMove Move, byte Level, PBEMoveObtainMethod ObtainMethod)[] levelUpMoves,
             (PBEMove Move, PBEMoveObtainMethod ObtainMethod)[] otherMoves)
         {
-            BaseStats = new ReadOnlyCollection<byte>(baseStats);
+            Species = species; Form = form; BaseStats = baseStats;
             Type1 = type1; Type2 = type2; GenderRatio = genderRatio; Weight = weight;
             PreEvolutions = new ReadOnlyCollection<PBESpecies>(preEvolutions);
             Evolutions = new ReadOnlyCollection<PBESpecies>(evolutions);
@@ -43,19 +45,6 @@ namespace Kermalis.PokemonBattleEngine.Data
                 throw new ArgumentOutOfRangeException(nameof(ability));
             }
             return Abilities.Contains(ability);
-        }
-        public bool HasType(PBEType type)
-        {
-            if (type >= PBEType.MAX)
-            {
-                throw new ArgumentOutOfRangeException(nameof(type));
-            }
-            return Type1 == type || Type2 == type;
-        }
-        public bool ReceivesSTAB(PBEType type)
-        {
-            // type ArgumentOutOfRangeException will happen in HasType()
-            return type != PBEType.None && HasType(type);
         }
 
         #region Database Querying
@@ -96,7 +85,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                 }
             }
 
-            byte[] baseStats = new byte[6] { result.HP, result.Attack, result.Defense, result.SpAttack, result.SpDefense, result.Speed };
+            var baseStats = new PBEBaseStats(result.HP, result.Attack, result.Defense, result.SpAttack, result.SpDefense, result.Speed);
             var type1 = (PBEType)result.Type1;
             var type2 = (PBEType)result.Type2;
             var genderRatio = (PBEGenderRatio)result.GenderRatio;
@@ -138,7 +127,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                 string[] split2 = split1[i].Split(',');
                 otherMoves[i] = ((PBEMove)ushort.Parse(split2[0]), (PBEMoveObtainMethod)ulong.Parse(split2[1]));
             }
-            return new PBEPokemonData(baseStats, type1, type2, genderRatio, weight, preEvolutions, evolutions, abilities, levelUpMoves, otherMoves); // TODO: Cache
+            return new PBEPokemonData(species, form, baseStats, type1, type2, genderRatio, weight, preEvolutions, evolutions, abilities, levelUpMoves, otherMoves); // TODO: Cache
         }
 
         #endregion

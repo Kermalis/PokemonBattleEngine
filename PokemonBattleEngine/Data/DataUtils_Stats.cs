@@ -96,25 +96,25 @@ namespace Kermalis.PokemonBattleEngine.Data
             return nature.GetRelationshipToFlavor((PBEFlavor)(stat - 1));
         }
 
-        private static ushort CalcHP(PBESpecies species, PBEForm form, byte evs, byte ivs, byte level)
+        private static ushort CalcHP(PBEPokemonData pData, byte evs, byte ivs, byte level)
         {
-            return (ushort)(species == PBESpecies.Shedinja ? 1 : ((((2 * PBEPokemonData.GetData(species, form).BaseStats[0]) + ivs + (evs / 4)) * level / 100) + level + 10));
+            return (ushort)(pData.Species == PBESpecies.Shedinja ? 1 : ((((2 * pData.BaseStats.HP) + ivs + (evs / 4)) * level / 100) + level + 10));
         }
-        private static ushort CalcOtherStat(PBEStat stat, PBESpecies species, PBEForm form, sbyte statRelationship, byte evs, byte ivs, byte level, PBESettings settings)
+        private static ushort CalcOtherStat(PBEPokemonData pData, PBEStat stat, sbyte statRelationship, byte evs, byte ivs, byte level, PBESettings settings)
         {
             double natureMultiplier = 1 + (statRelationship * settings.NatureStatBoost);
-            return (ushort)(((((2 * PBEPokemonData.GetData(species, form).BaseStats[(int)stat]) + ivs + (evs / 4)) * level / 100) + 5) * natureMultiplier);
+            return (ushort)(((((2 * pData.BaseStats[stat]) + ivs + (evs / 4)) * level / 100) + 5) * natureMultiplier);
         }
-        /// <summary>Calculates a species's stats based on its level, IVs, EVs, and nature.</summary>
-        /// <exception cref="ArgumentNullException">Thrown when <paramref name="settings"/> is null.</exception>
-        /// <exception cref="ArgumentOutOfRangeException">Thrown when <paramref name="species"/>, <paramref name="form"/>, or <paramref name="stat"/> is invalid.</exception>
-        public static ushort CalculateStat(PBEStat stat, PBESpecies species, PBEForm form, PBENature nature, byte evs, byte ivs, byte level, PBESettings settings)
+        public static ushort CalculateStat(PBEPokemonData pData, PBEStat stat, PBENature nature, byte evs, byte ivs, byte level, PBESettings settings)
         {
+            if (pData == null)
+            {
+                throw new ArgumentNullException(nameof(pData));
+            }
             if (settings == null)
             {
                 throw new ArgumentNullException(nameof(settings));
             }
-            PBEPokemonShell.ValidateSpecies(species, form, false);
             PBEPokemonShell.ValidateLevel(level, settings);
             if (ivs > settings.MaxIVs)
             {
@@ -125,7 +125,7 @@ namespace Kermalis.PokemonBattleEngine.Data
             {
                 case PBEStat.HP:
                 {
-                    return CalcHP(species, form, evs, ivs, level);
+                    return CalcHP(pData, evs, ivs, level);
                 }
                 case PBEStat.Attack:
                 case PBEStat.Defense:
@@ -133,25 +133,33 @@ namespace Kermalis.PokemonBattleEngine.Data
                 case PBEStat.SpDefense:
                 case PBEStat.Speed:
                 {
-                    return CalcOtherStat(stat, species, form, nature.GetRelationshipToStat(stat), evs, ivs, level, settings);
+                    return CalcOtherStat(pData, stat, nature.GetRelationshipToStat(stat), evs, ivs, level, settings);
                 }
                 default: throw new ArgumentOutOfRangeException(nameof(stat));
             }
         }
-        public static void GetStatRange(PBEStat stat, PBESpecies species, PBEForm form, byte level, PBESettings settings, out ushort low, out ushort high)
+        public static ushort CalculateStat(PBESpecies species, PBEForm form, PBEStat stat, PBENature nature, byte evs, byte ivs, byte level, PBESettings settings)
         {
+            PBEPokemonShell.ValidateSpecies(species, form, false);
+            return CalculateStat(PBEPokemonData.GetData(species, form), stat, nature, evs, ivs, level, settings);
+        }
+        public static void GetStatRange(PBEPokemonData pData, PBEStat stat, byte level, PBESettings settings, out ushort low, out ushort high)
+        {
+            if (pData == null)
+            {
+                throw new ArgumentNullException(nameof(pData));
+            }
             if (settings == null)
             {
                 throw new ArgumentNullException(nameof(settings));
             }
-            PBEPokemonShell.ValidateSpecies(species, form, false);
             PBEPokemonShell.ValidateLevel(level, settings);
             switch (stat)
             {
                 case PBEStat.HP:
                 {
-                    low = CalcHP(species, form, 0, 0, level);
-                    high = CalcHP(species, form, byte.MaxValue, settings.MaxIVs, level);
+                    low = CalcHP(pData, 0, 0, level);
+                    high = CalcHP(pData, byte.MaxValue, settings.MaxIVs, level);
                     break;
                 }
                 case PBEStat.Attack:
@@ -160,12 +168,17 @@ namespace Kermalis.PokemonBattleEngine.Data
                 case PBEStat.SpDefense:
                 case PBEStat.Speed:
                 {
-                    low = CalcOtherStat(stat, species, form, -1, 0, 0, level, settings);
-                    high = CalcOtherStat(stat, species, form, +1, byte.MaxValue, settings.MaxIVs, level, settings);
+                    low = CalcOtherStat(pData, stat, -1, 0, 0, level, settings);
+                    high = CalcOtherStat(pData, stat, +1, byte.MaxValue, settings.MaxIVs, level, settings);
                     break;
                 }
                 default: throw new ArgumentOutOfRangeException(nameof(stat));
             }
+        }
+        public static void GetStatRange(PBESpecies species, PBEForm form, PBEStat stat, byte level, PBESettings settings, out ushort low, out ushort high)
+        {
+            PBEPokemonShell.ValidateSpecies(species, form, false);
+            GetStatRange(PBEPokemonData.GetData(species, form), stat, level, settings, out low, out high);
         }
 
         public static PBEType GetHiddenPowerType(byte hpIV, byte attackIV, byte defenseIV, byte spAttackIV, byte spDefenseIV, byte speedIV)

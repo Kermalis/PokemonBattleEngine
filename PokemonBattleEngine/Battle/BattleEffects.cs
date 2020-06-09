@@ -1709,7 +1709,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                                     PBEMoveData mData = PBEMoveData.Data[move];
                                     if (mData.Category != PBEMoveCategory.Status)
                                     {
-                                        double d = PBETypeEffectiveness.GetEffectiveness(mData.Type, pkmn.Type1, pkmn.Type2);
+                                        double d = PBETypeEffectiveness.GetEffectiveness(mData.Type, pkmn);
                                         if (d > 1)
                                         {
                                             BroadcastAbility(pkmn, pkmn, PBEAbility.Anticipation, PBEAbilityAction.Announced);
