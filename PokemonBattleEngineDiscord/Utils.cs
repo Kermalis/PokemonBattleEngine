@@ -104,14 +104,14 @@ namespace Kermalis.PokemonBattleEngineDiscord
             _rand.NextBytes(bytes);
             return new Color(bytes[0], bytes[1], bytes[2]);
         }
-        public static T RandomElement<T>(this T[] source)
+        public static T RandomElement<T>(this IReadOnlyList<T> source)
         {
-            int count = source.Length;
+            int count = source.Count;
             if (count < 1)
             {
                 throw new ArgumentOutOfRangeException(nameof(source), $"\"{nameof(source)}\" must have at least one element.");
             }
-            return source.ElementAt(_rand.Next(count));
+            return source[_rand.Next(count)];
         }
 
         private static readonly object _femaleSpriteLookupLockObj = new object();

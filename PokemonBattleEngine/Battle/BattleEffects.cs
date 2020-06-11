@@ -9,9 +9,6 @@ namespace Kermalis.PokemonBattleEngine.Battle
 {
     public sealed partial class PBEBattle
     {
-        private static readonly PBEStat[] _moodyStats = new PBEStat[] { PBEStat.Attack, PBEStat.Defense, PBEStat.SpAttack, PBEStat.SpDefense, PBEStat.Speed, PBEStat.Accuracy, PBEStat.Evasion };
-        private static readonly PBEStat[] _starfBerryStats = new PBEStat[] { PBEStat.Attack, PBEStat.Defense, PBEStat.SpAttack, PBEStat.SpDefense, PBEStat.Speed };
-
         private bool _calledFromOtherMove = false;
 
         private void DoSwitchInEffects(IEnumerable<PBEPokemon> battlers, PBEPokemon forcedInBy = null)
@@ -524,9 +521,9 @@ namespace Kermalis.PokemonBattleEngine.Battle
                         }
                         case PBEAbility.Moody:
                         {
-                            PBEStat[] statsThatCanGoUp = _moodyStats.Where(s => pkmn.GetStatChange(s) < Settings.MaxStatChange).ToArray();
+                            PBEStat[] statsThatCanGoUp = PBEDataUtils.MoodyStats.Where(s => pkmn.GetStatChange(s) < Settings.MaxStatChange).ToArray();
                             PBEStat? upStat = statsThatCanGoUp.Length == 0 ? (PBEStat?)null : statsThatCanGoUp.RandomElement();
-                            var statsThatCanGoDown = _moodyStats.Where(s => pkmn.GetStatChange(s) > -Settings.MaxStatChange).ToList();
+                            var statsThatCanGoDown = PBEDataUtils.MoodyStats.Where(s => pkmn.GetStatChange(s) > -Settings.MaxStatChange).ToList();
                             if (upStat.HasValue)
                             {
                                 statsThatCanGoDown.Remove(upStat.Value);
@@ -2050,7 +2047,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                     case PBEItem.StarfBerry:
                     {
                         // Verified: Starf Berry does not activate for Accuracy or Evasion, or if all other stats are maximized
-                        PBEStat[] statsThatCanGoUp = _starfBerryStats.Where(s => pkmn.GetStatChange(s) < Settings.MaxStatChange).ToArray();
+                        PBEStat[] statsThatCanGoUp = PBEDataUtils.StarfBerryStats.Where(s => pkmn.GetStatChange(s) < Settings.MaxStatChange).ToArray();
                         if (statsThatCanGoUp.Length > 0)
                         {
                             DoStatItem(statsThatCanGoUp.RandomElement(), +2);
@@ -4010,7 +4007,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
             // Record before the called move is recorded
             RecordExecutedMove(user, move);
 
-            PBEMove calledMove = PBEMoveData.Data.Where(t => !t.Value.Flags.HasFlag(PBEMoveFlag.BlockedByMetronome)).Select(t => t.Key).ToArray().RandomElement();
+            PBEMove calledMove = PBEDataUtils.MetronomeMoves.RandomElement();
             _calledFromOtherMove = true;
             UseMove(user, calledMove, GetRandomTargetForMetronome(user, calledMove));
             _calledFromOtherMove = false;

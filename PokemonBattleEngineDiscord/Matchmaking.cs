@@ -174,7 +174,7 @@ namespace Kermalis.PokemonBattleEngineDiscord
                             {
                                 if (ex.DiscordCode == 50007)
                                 {
-                                    await ctx.Channel.SendMessageAsync($"Cannot challenge {challengee.Mention} because their DMs are closed.");
+                                    await ctx.Channel.SendMessageAsync($"{challenger.Mention} ― Cannot challenge {challengee.Mention} because their DMs are closed.");
                                 }
                                 Console.WriteLine("Challenge exception:{0}{1}", Environment.NewLine, ex);
                                 return;

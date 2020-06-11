@@ -39,7 +39,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                     PBEMove old = _move;
                     if (old != value)
                     {
-                        if (!Enum.IsDefined(typeof(PBEMove), value))
+                        if (value >= PBEMove.MAX || !PBEMoveData.IsMoveUsable(value))
                         {
                             throw new ArgumentOutOfRangeException(nameof(value));
                         }
@@ -497,8 +497,8 @@ namespace Kermalis.PokemonBattleEngine.Data
         {
             // Set alloweds
             int i;
-            PBEMove[] legalMoves = PBELegalityChecker.GetLegalMoves(_species, _form, _level, Settings);
-            var allowed = new List<PBEMove>(legalMoves.Length + 1);
+            IReadOnlyCollection<PBEMove> legalMoves = PBELegalityChecker.GetLegalMoves(_species, _form, _level, Settings);
+            var allowed = new List<PBEMove>(legalMoves.Count + 1);
             allowed.AddRange(legalMoves);
             if (_species == PBESpecies.Keldeo && _form == PBEForm.Keldeo_Resolute)
             {

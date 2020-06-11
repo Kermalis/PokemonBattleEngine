@@ -132,7 +132,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
             PBEType type2 = pData.Type2;
             pokemon.Type2 = type2;
             pokemon.KnownType2 = type2;
-            double weight = pData.Weight;
+            double weight = pData.Weight; // TODO: Is weight updated here? Bulbapedia claims in Autotomize's page that it is not
             pokemon.Weight = weight;
             pokemon.KnownWeight = weight;
             Broadcast(new PBEPkmnFormChangedPacket(pokemon, isRevertForm));

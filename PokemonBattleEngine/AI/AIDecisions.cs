@@ -98,6 +98,10 @@ namespace Kermalis.PokemonBattleEngine.AI
                                 score = 0d;
                                 targets.RemoveAll(p => p == null);
                                 PBEMoveData mData = PBEMoveData.Data[move];
+                                if (!mData.IsMoveUsable())
+                                {
+                                    throw new ArgumentOutOfRangeException(nameof(team), $"{move} is not yet implemented in Pokémon Battle Engine.");
+                                }
                                 switch (mData.Effect)
                                 {
                                     case PBEMoveEffect.Attract:

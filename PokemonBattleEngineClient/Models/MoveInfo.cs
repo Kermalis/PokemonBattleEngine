@@ -64,15 +64,15 @@ namespace Kermalis.PokemonBattleEngineClient.Models
                 sb.AppendLine($"Priority: {mData.Priority}");
                 sb.AppendLine($"Power: {(mData.Power == 0 ? "--" : mData.Power.ToString())}");
                 sb.AppendLine($"Accuracy: {(mData.Accuracy == 0 ? "--" : mData.Accuracy.ToString())}");
+                sb.AppendLine($"Targets: {mData.Targets}");
+                sb.AppendLine($"Flags: {mData.Flags}");
                 switch (mData.Effect)
                 {
                     case PBEMoveEffect.Recoil: sb.AppendLine($"Recoil: 1/{mData.EffectParam} damage dealt"); break;
-                    case PBEMoveEffect.Recoil__10PercentBurn: sb.AppendLine("Recoil: 1/3 damage dealt"); break; // TODO: Burn chance
-                    case PBEMoveEffect.Recoil__10PercentParalyze: sb.AppendLine("Recoil: 1/3 damage dealt"); break; // TODO: Paralyze chance
+                    case PBEMoveEffect.Recoil__10PercentBurn: sb.AppendLine($"Recoil: 1/{mData.EffectParam} damage dealt"); break; // TODO: Burn chance
+                    case PBEMoveEffect.Recoil__10PercentParalyze: sb.AppendLine($"Recoil: 1/{mData.EffectParam} damage dealt"); break; // TODO: Paralyze chance
                     case PBEMoveEffect.Struggle: sb.AppendLine("Recoil: 1/4 user's max HP"); break;
                 }
-                sb.AppendLine($"Targets: {mData.Targets}");
-                sb.AppendLine($"Flags: {mData.Flags}");
                 sb.AppendLine();
                 sb.Append(PBELocalizedString.GetMoveDescription(move).ToString().Replace('\n', ' '));
             }

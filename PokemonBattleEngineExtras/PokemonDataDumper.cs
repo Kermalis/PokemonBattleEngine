@@ -29,6 +29,7 @@ namespace Kermalis.PokemonBattleEngineExtras
             public Dictionary<PBEMove, PBEMoveObtainMethod> OtherMoves = new Dictionary<PBEMove, PBEMoveObtainMethod>();
         }
 
+        #region Static Collections
         private static readonly Dictionary<int, PBESpecies> _gen3SpeciesIndexToPBESpecies = new Dictionary<int, PBESpecies>
         {
             { 1, PBESpecies.Bulbasaur },
@@ -420,7 +421,7 @@ namespace Kermalis.PokemonBattleEngineExtras
         };
         private static readonly PBEMove[] _gen3TMHMs = new PBEMove[58]
         {
-            (PBEMove)264, // FocusPunch
+            PBEMove.FocusPunch,
             PBEMove.DragonClaw,
             PBEMove.WaterPulse,
             PBEMove.CalmMind,
@@ -431,17 +432,17 @@ namespace Kermalis.PokemonBattleEngineExtras
             PBEMove.BulletSeed,
             PBEMove.HiddenPower,
             PBEMove.SunnyDay,
-            (PBEMove)269, // Taunt
+            PBEMove.Taunt,
             PBEMove.IceBeam,
             PBEMove.Blizzard,
-            (PBEMove)63, // HyperBeam
+            PBEMove.HyperBeam,
             PBEMove.LightScreen,
             PBEMove.Protect,
             PBEMove.RainDance,
             PBEMove.GigaDrain,
             PBEMove.Safeguard,
             PBEMove.Frustration,
-            (PBEMove)76, // SolarBeam
+            PBEMove.SolarBeam,
             PBEMove.IronTail,
             PBEMove.Thunderbolt,
             PBEMove.Thunder,
@@ -460,15 +461,15 @@ namespace Kermalis.PokemonBattleEngineExtras
             PBEMove.FireBlast,
             PBEMove.RockTomb,
             PBEMove.AerialAce,
-            (PBEMove)259, // Torment
+            PBEMove.Torment,
             PBEMove.Facade,
             PBEMove.SecretPower,
             PBEMove.Rest,
-            (PBEMove)213, // Attract
-            (PBEMove)168, // Thief
+            PBEMove.Attract,
+            PBEMove.Thief,
             PBEMove.SteelWing,
-            (PBEMove)285, // SkillSwap
-            (PBEMove)289, // Snatch
+            PBEMove.SkillSwap,
+            PBEMove.Snatch,
             PBEMove.Overheat,
             PBEMove.Cut,
             PBEMove.Fly,
@@ -486,9 +487,9 @@ namespace Kermalis.PokemonBattleEngineExtras
             PBEMove.MegaKick,
             PBEMove.BodySlam,
             PBEMove.DoubleEdge,
-            (PBEMove)68, // Counter
+            PBEMove.Counter,
             PBEMove.SeismicToss,
-            (PBEMove)102, // Mimic
+            PBEMove.Mimic,
             PBEMove.Metronome,
             PBEMove.Softboiled,
             PBEMove.DreamEater,
@@ -504,9 +505,9 @@ namespace Kermalis.PokemonBattleEngineExtras
             PBEMove.MegaKick,
             PBEMove.BodySlam,
             PBEMove.DoubleEdge,
-            (PBEMove)68, // Counter
+            PBEMove.Counter,
             PBEMove.SeismicToss,
-            (PBEMove)102, // Mimic
+            PBEMove.Mimic,
             PBEMove.Metronome,
             PBEMove.Softboiled,
             PBEMove.DreamEater,
@@ -515,35 +516,35 @@ namespace Kermalis.PokemonBattleEngineExtras
             PBEMove.RockSlide,
             PBEMove.Substitute,
             PBEMove.DynamicPunch,
-            (PBEMove)205, // Rollout
+            PBEMove.Rollout,
             PBEMove.PsychUp,
             PBEMove.Snore,
             PBEMove.IcyWind,
-            (PBEMove)203, // Endure
+            PBEMove.Endure,
             PBEMove.MudSlap,
             PBEMove.IcePunch,
             PBEMove.Swagger,
-            (PBEMove)214, // SleepTalk
+            PBEMove.SleepTalk,
             PBEMove.Swift,
             PBEMove.DefenseCurl,
             PBEMove.ThunderPunch,
             PBEMove.FirePunch,
-            (PBEMove)210 // FuryCutter
+            PBEMove.FuryCutter
         };
         private static readonly PBEMove[] _xdTutorMoves = new PBEMove[12]
         {
             PBEMove.BodySlam,
             PBEMove.DoubleEdge,
             PBEMove.SeismicToss,
-            (PBEMove)102, // Mimic
+            PBEMove.Mimic,
             PBEMove.DreamEater,
             PBEMove.ThunderWave,
             PBEMove.Substitute,
             PBEMove.IcyWind,
             PBEMove.Swagger,
-            (PBEMove)143, // SkyAttack
+            PBEMove.SkyAttack,
             PBEMove.Selfdestruct,
-            (PBEMove)171 // Nightmare
+            PBEMove.Nightmare
         };
         private static readonly Dictionary<int, (PBESpecies, PBEForm)> _gen4SpeciesIndexToPBESpecies = new Dictionary<int, (PBESpecies, PBEForm)>
         {
@@ -562,7 +563,7 @@ namespace Kermalis.PokemonBattleEngineExtras
         };
         private static readonly PBEMove[] _gen4TMHMs = new PBEMove[100]
         {
-            (PBEMove)264, // FocusPunch
+            PBEMove.FocusPunch,
             PBEMove.DragonClaw,
             PBEMove.WaterPulse,
             PBEMove.CalmMind,
@@ -573,17 +574,17 @@ namespace Kermalis.PokemonBattleEngineExtras
             PBEMove.BulletSeed,
             PBEMove.HiddenPower,
             PBEMove.SunnyDay,
-            (PBEMove)269, // Taunt
+            PBEMove.Taunt,
             PBEMove.IceBeam,
             PBEMove.Blizzard,
-            (PBEMove)63, // HyperBeam
+            PBEMove.HyperBeam,
             PBEMove.LightScreen,
             PBEMove.Protect,
             PBEMove.RainDance,
             PBEMove.GigaDrain,
             PBEMove.Safeguard,
             PBEMove.Frustration,
-            (PBEMove)76, // SolarBeam
+            PBEMove.SolarBeam,
             PBEMove.IronTail,
             PBEMove.Thunderbolt,
             PBEMove.Thunder,
@@ -602,40 +603,40 @@ namespace Kermalis.PokemonBattleEngineExtras
             PBEMove.FireBlast,
             PBEMove.RockTomb,
             PBEMove.AerialAce,
-            (PBEMove)259, // Torment
+            PBEMove.Torment,
             PBEMove.Facade,
             PBEMove.SecretPower,
             PBEMove.Rest,
-            (PBEMove)213, // Attract
-            (PBEMove)168, // Thief
+            PBEMove.Attract,
+            PBEMove.Thief,
             PBEMove.SteelWing,
-            (PBEMove)285, // SkillSwap
-            (PBEMove)289, // Snatch
+            PBEMove.SkillSwap,
+            PBEMove.Snatch,
             PBEMove.Overheat,
-            (PBEMove)355, // Roost
+            PBEMove.Roost,
             PBEMove.FocusBlast,
             PBEMove.EnergyBall,
-            (PBEMove)206, // FalseSwipe
+            PBEMove.FalseSwipe,
             PBEMove.Brine,
-            (PBEMove)374, // Fling
+            PBEMove.Fling,
             PBEMove.ChargeBeam,
-            (PBEMove)203, // Endure
+            PBEMove.Endure,
             PBEMove.DragonPulse,
             PBEMove.DrainPunch,
             PBEMove.WillOWisp,
             PBEMove.SilverWind,
-            (PBEMove)373, // Embargo
+            PBEMove.Embargo,
             PBEMove.Explosion,
             PBEMove.ShadowClaw,
-            (PBEMove)371, // Payback
-            (PBEMove)278, // Recycle
-            (PBEMove)416, // GigaImpact
+            PBEMove.Payback,
+            PBEMove.Recycle,
+            PBEMove.GigaImpact,
             PBEMove.RockPolish,
             PBEMove.Flash,
             PBEMove.StoneEdge,
-            (PBEMove)419, // Avalanche
+            PBEMove.Avalanche,
             PBEMove.ThunderWave,
-            (PBEMove)360, // GyroBall
+            PBEMove.GyroBall,
             PBEMove.SwordsDance,
             PBEMove.StealthRock,
             PBEMove.PsychUp,
@@ -643,14 +644,14 @@ namespace Kermalis.PokemonBattleEngineExtras
             PBEMove.DarkPulse,
             PBEMove.RockSlide,
             PBEMove.XScissor,
-            (PBEMove)214, // SleepTalk
-            (PBEMove)363, // NaturalGift
+            PBEMove.SleepTalk,
+            PBEMove.NaturalGift,
             PBEMove.PoisonJab,
             PBEMove.DreamEater,
             PBEMove.GrassKnot,
             PBEMove.Swagger,
-            (PBEMove)365, // Pluck
-            (PBEMove)369, // Uturn
+            PBEMove.Pluck,
+            PBEMove.Uturn,
             PBEMove.Substitute,
             PBEMove.FlashCannon,
             PBEMove.TrickRoom,
@@ -677,9 +678,9 @@ namespace Kermalis.PokemonBattleEngineExtras
         {
             PBEMove.Dive,
             PBEMove.MudSlap,
-            (PBEMove)210, // FuryCutter
+            PBEMove.FuryCutter,
             PBEMove.IcyWind,
-            (PBEMove)205, // Rollout
+            PBEMove.Rollout,
             PBEMove.ThunderPunch,
             PBEMove.FirePunch,
             PBEMove.Superpower,
@@ -689,11 +690,11 @@ namespace Kermalis.PokemonBattleEngineExtras
             PBEMove.OminousWind,
             PBEMove.GastroAcid,
             PBEMove.Snore,
-            (PBEMove)180, // Spite,
+            PBEMove.Spite,
             PBEMove.AirCutter,
             PBEMove.HelpingHand,
             PBEMove.Endeavor,
-            (PBEMove)200, // Outrage
+            PBEMove.Outrage,
             PBEMove.AncientPower,
             PBEMove.Synthesis,
             PBEMove.SignalBeam,
@@ -705,14 +706,14 @@ namespace Kermalis.PokemonBattleEngineExtras
             PBEMove.SeedBomb,
             PBEMove.IronDefense,
             PBEMove.MagnetRise,
-            (PBEMove)387, // LastResort
+            PBEMove.LastResort,
             PBEMove.Bounce,
-            (PBEMove)271, // Trick
+            PBEMove.Trick,
             PBEMove.HeatWave,
-            (PBEMove)282, // KnockOff
+            PBEMove.KnockOff,
             PBEMove.SuckerPunch,
             PBEMove.Swift,
-            (PBEMove)253 // Uproar
+            PBEMove.Uproar
         };
         // These tutor moves are decompressed to memory (ram address 0x022093E0 in HG, 0x022093F0 in SS) on each map load (USA offsets)
         // Each tutor move entry is 0x4 bytes:
@@ -723,9 +724,9 @@ namespace Kermalis.PokemonBattleEngineExtras
         {
             PBEMove.Dive,
             PBEMove.MudSlap,
-            (PBEMove)210, // FuryCutter
+            PBEMove.FuryCutter,
             PBEMove.IcyWind,
-            (PBEMove)205, // Rollout
+            PBEMove.Rollout,
             PBEMove.ThunderPunch,
             PBEMove.FirePunch,
             PBEMove.Superpower,
@@ -735,11 +736,11 @@ namespace Kermalis.PokemonBattleEngineExtras
             PBEMove.OminousWind,
             PBEMove.GastroAcid,
             PBEMove.Snore,
-            (PBEMove)180, // Spite
+            PBEMove.Spite,
             PBEMove.AirCutter,
             PBEMove.HelpingHand,
             PBEMove.Endeavor,
-            (PBEMove)200, // Outrage
+            PBEMove.Outrage,
             PBEMove.AncientPower,
             PBEMove.Synthesis,
             PBEMove.SignalBeam,
@@ -751,27 +752,27 @@ namespace Kermalis.PokemonBattleEngineExtras
             PBEMove.SeedBomb,
             PBEMove.IronDefense,
             PBEMove.MagnetRise,
-            (PBEMove)387, // LastResort
+            PBEMove.LastResort,
             PBEMove.Bounce,
-            (PBEMove)271, // Trick
+            PBEMove.Trick,
             PBEMove.HeatWave,
-            (PBEMove)282, // KnockOff
+            PBEMove.KnockOff,
             PBEMove.SuckerPunch,
             PBEMove.Swift,
-            (PBEMove)253, // Uproar
+            PBEMove.Uproar,
             PBEMove.SuperFang,
             PBEMove.PainSplit,
             PBEMove.StringShot,
             PBEMove.Tailwind,
-            (PBEMove)356, // Gravity
+            PBEMove.Gravity,
             PBEMove.WorrySeed,
-            (PBEMove)277, // MagicCoat
+            PBEMove.MagicCoat,
             PBEMove.RolePlay,
-            (PBEMove)215, // HealBell
+            PBEMove.HealBell,
             PBEMove.LowKick,
-            (PBEMove)143, // SkyAttack
-            (PBEMove)335, // Block
-            (PBEMove)450, // BugBite
+            PBEMove.SkyAttack,
+            PBEMove.Block,
+            PBEMove.BugBite,
             PBEMove.Headbutt
         };
         private static readonly Dictionary<int, (PBESpecies, PBEForm)> _bwSpeciesIndexToPBESpecies = new Dictionary<int, (PBESpecies, PBEForm)>
@@ -835,18 +836,18 @@ namespace Kermalis.PokemonBattleEngineExtras
             PBEMove.Venoshock,
             PBEMove.HiddenPower,
             PBEMove.SunnyDay,
-            (PBEMove)269, // Taunt
+            PBEMove.Taunt,
             PBEMove.IceBeam,
             PBEMove.Blizzard,
-            (PBEMove)63, // HyperBeam
+            PBEMove.HyperBeam,
             PBEMove.LightScreen,
             PBEMove.Protect,
             PBEMove.RainDance,
-            (PBEMove)477, // Telekinesis
+            PBEMove.Telekinesis,
             PBEMove.Safeguard,
             PBEMove.Frustration,
-            (PBEMove)76, // SolarBeam
-            (PBEMove)479, // SmackDown
+            PBEMove.SolarBeam,
+            PBEMove.SmackDown,
             PBEMove.Thunderbolt,
             PBEMove.Thunder,
             PBEMove.Earthquake,
@@ -864,40 +865,40 @@ namespace Kermalis.PokemonBattleEngineExtras
             PBEMove.FireBlast,
             PBEMove.RockTomb,
             PBEMove.AerialAce,
-            (PBEMove)259, // Torment
+            PBEMove.Torment,
             PBEMove.Facade,
             PBEMove.FlameCharge,
             PBEMove.Rest,
-            (PBEMove)213, // Attract
-            (PBEMove)168, // Thief
+            PBEMove.Attract,
+            PBEMove.Thief,
             PBEMove.LowSweep,
-            (PBEMove)496, // Round
-            (PBEMove)497, // EchoedVoice
+            PBEMove.Round,
+            PBEMove.EchoedVoice,
             PBEMove.Overheat,
-            (PBEMove)502, // AllySwitch
+            PBEMove.AllySwitch,
             PBEMove.FocusBlast,
             PBEMove.EnergyBall,
-            (PBEMove)206, // FalseSwipe
+            PBEMove.FalseSwipe,
             PBEMove.Scald,
-            (PBEMove)374, // Fling
+            PBEMove.Fling,
             PBEMove.ChargeBeam,
-            (PBEMove)507, // SkyDrop
-            (PBEMove)510, // Incinerate
-            (PBEMove)511, // Quash
+            PBEMove.SkyDrop,
+            PBEMove.Incinerate,
+            PBEMove.Quash,
             PBEMove.WillOWisp,
             PBEMove.Acrobatics,
-            (PBEMove)373, // Embargo
+            PBEMove.Embargo,
             PBEMove.Explosion,
             PBEMove.ShadowClaw,
-            (PBEMove)371, // Payback
+            PBEMove.Payback,
             PBEMove.Retaliate,
-            (PBEMove)416, // GigaImpact
+            PBEMove.GigaImpact,
             PBEMove.RockPolish,
             PBEMove.Flash,
             PBEMove.StoneEdge,
-            (PBEMove)521, // VoltSwitch
+            PBEMove.VoltSwitch,
             PBEMove.ThunderWave,
-            (PBEMove)360, // GyroBall
+            PBEMove.GyroBall,
             PBEMove.SwordsDance,
             PBEMove.StruggleBug,
             PBEMove.PsychUp,
@@ -905,14 +906,14 @@ namespace Kermalis.PokemonBattleEngineExtras
             PBEMove.FrostBreath,
             PBEMove.RockSlide,
             PBEMove.XScissor,
-            (PBEMove)525, // DragonTail
+            PBEMove.DragonTail,
             PBEMove.WorkUp,
             PBEMove.PoisonJab,
             PBEMove.DreamEater,
             PBEMove.GrassKnot,
             PBEMove.Swagger,
-            (PBEMove)365, // Pluck
-            (PBEMove)369, // Uturn
+            PBEMove.Pluck,
+            PBEMove.Uturn,
             PBEMove.Substitute,
             PBEMove.FlashCannon,
             PBEMove.TrickRoom,
@@ -928,12 +929,12 @@ namespace Kermalis.PokemonBattleEngineExtras
         };
         private static readonly PBEMove[] _gen5FreeTutorMoves = new PBEMove[7]
         {
-            (PBEMove)520, // GrassPledge
-            (PBEMove)519, // FirePledge
-            (PBEMove)518, // WaterPledge
-            (PBEMove)338, // FrenzyPlant
-            (PBEMove)307, // BlastBurn
-            (PBEMove)308, // HydroCannon
+            PBEMove.GrassPledge,
+            PBEMove.FirePledge,
+            PBEMove.WaterPledge,
+            PBEMove.FrenzyPlant,
+            PBEMove.BlastBurn,
+            PBEMove.HydroCannon,
             PBEMove.DracoMeteor
         };
         // These tutor moves are decompressed to memory (ram address 0x021D0B38 in B2, 0x021D0B6C in W2) on each map load (USA offsets)
@@ -946,8 +947,8 @@ namespace Kermalis.PokemonBattleEngineExtras
         {
             new PBEMove[15] // Driftveil City
             {
-                (PBEMove)450, // BugBite
-                (PBEMove)343, // Covet
+                PBEMove.BugBite,
+                PBEMove.Covet,
                 PBEMove.SuperFang,
                 PBEMove.DualChop,
                 PBEMove.SignalBeam,
@@ -957,21 +958,21 @@ namespace Kermalis.PokemonBattleEngineExtras
                 PBEMove.Bounce,
                 PBEMove.LowKick,
                 PBEMove.GunkShot,
-                (PBEMove)253, // Uproar
+                PBEMove.Uproar,
                 PBEMove.ThunderPunch,
                 PBEMove.FirePunch,
                 PBEMove.IcePunch
             },
             new PBEMove[17] // Lentimas Town
             {
-                (PBEMove)277, // MagicCoat
-                (PBEMove)335, // Block
+                PBEMove.MagicCoat,
+                PBEMove.Block,
                 PBEMove.EarthPower,
                 PBEMove.FoulPlay,
-                (PBEMove)356, // Gravity
+                PBEMove.Gravity,
                 PBEMove.MagnetRise,
                 PBEMove.IronDefense,
-                (PBEMove)387, // LastResort
+                PBEMove.LastResort,
                 PBEMove.Superpower,
                 PBEMove.Electroweb,
                 PBEMove.IcyWind,
@@ -984,39 +985,40 @@ namespace Kermalis.PokemonBattleEngineExtras
             },
             new PBEMove[13] // Humilau City
             {
-                (PBEMove)20, // Bind
+                PBEMove.Bind,
                 PBEMove.Snore,
-                (PBEMove)282, // KnockOff
+                PBEMove.KnockOff,
                 PBEMove.Synthesis,
                 PBEMove.HeatWave,
                 PBEMove.RolePlay,
-                (PBEMove)215, // HealBell
+                PBEMove.HealBell,
                 PBEMove.Tailwind,
-                (PBEMove)143, // SkyAttack
+                PBEMove.SkyAttack,
                 PBEMove.PainSplit,
                 PBEMove.GigaDrain,
                 PBEMove.DrainPunch,
-                (PBEMove)355 // Roost
+                PBEMove.Roost
             },
             new PBEMove[15] // Nacrene City
             {
                 PBEMove.GastroAcid,
                 PBEMove.WorrySeed,
-                (PBEMove)180, // Spite
-                (PBEMove)495, // AfterYou
+                PBEMove.Spite,
+                PBEMove.AfterYou,
                 PBEMove.HelpingHand,
-                (PBEMove)271, // Trick
-                (PBEMove)478, // MagicRoom
-                (PBEMove)472, // WonderRoom
+                PBEMove.Trick,
+                PBEMove.MagicRoom,
+                PBEMove.WonderRoom,
                 PBEMove.Endeavor,
-                (PBEMove)200, // Outrage
-                (PBEMove)278, // Recycle
-                (PBEMove)289, // Snatch
+                PBEMove.Outrage,
+                PBEMove.Recycle,
+                PBEMove.Snatch,
                 PBEMove.StealthRock,
-                (PBEMove)214, // SleepTalk
-                (PBEMove)285 // SkillSwap
+                PBEMove.SleepTalk,
+                PBEMove.SkillSwap
             }
         };
+        #endregion
 
         // You must dump everything yourself
         // The GBA ROMs must all be USA v1.0
@@ -1409,7 +1411,7 @@ namespace Kermalis.PokemonBattleEngineExtras
                                             PBEMove move = _gen4TMHMs[i];
                                             if (move == PBEMove.None)
                                             {
-                                                move = isDPPt ? (PBEMove)432 : (PBEMove)250;
+                                                move = isDPPt ? PBEMove.Defog : PBEMove.Whirlpool;
                                             }
                                             AddOtherMove(key, move, i < 92 ? (isDPPt ? PBEMoveObtainMethod.TM_DPPt : PBEMoveObtainMethod.TM_HGSS) : (isDPPt ? PBEMoveObtainMethod.HM_DPPt : PBEMoveObtainMethod.HM_HGSS));
                                         }
@@ -1699,6 +1701,8 @@ namespace Kermalis.PokemonBattleEngineExtras
                         pkmn.Weight = basePkmn.Weight;
                         pkmn.Evolutions = basePkmn.Evolutions;
                         pkmn.PreEvolutions = basePkmn.PreEvolutions;
+                        pkmn.LevelUpMoves = basePkmn.LevelUpMoves;
+                        pkmn.OtherMoves = basePkmn.OtherMoves;
                     }
                     FixArceus(PBEForm.Arceus_Bug, PBEType.Bug);
                     FixArceus(PBEForm.Arceus_Dark, PBEType.Dark);
@@ -1769,19 +1773,13 @@ namespace Kermalis.PokemonBattleEngineExtras
                     list.Clear();
                     foreach (KeyValuePair<(PBEMove Move, byte Level), PBEMoveObtainMethod> levelUpMove in pkmn.LevelUpMoves)
                     {
-                        if (Enum.IsDefined(typeof(PBEMove), levelUpMove.Key.Move))
-                        {
-                            list.Add($"{(ushort)levelUpMove.Key.Move},{levelUpMove.Key.Level},{(ulong)levelUpMove.Value}");
-                        }
+                        list.Add($"{(ushort)levelUpMove.Key.Move},{levelUpMove.Key.Level},{(ulong)levelUpMove.Value}");
                     }
                     cmd.Parameters.AddWithValue("@15", string.Join('|', list));
                     list.Clear();
                     foreach (KeyValuePair<PBEMove, PBEMoveObtainMethod> otherMove in pkmn.OtherMoves)
                     {
-                        if (Enum.IsDefined(typeof(PBEMove), otherMove.Key))
-                        {
-                            list.Add($"{(ushort)otherMove.Key},{(ulong)otherMove.Value}");
-                        }
+                        list.Add($"{(ushort)otherMove.Key},{(ulong)otherMove.Value}");
                     }
                     cmd.Parameters.AddWithValue("@16", string.Join('|', list));
                     cmd.ExecuteNonQuery();

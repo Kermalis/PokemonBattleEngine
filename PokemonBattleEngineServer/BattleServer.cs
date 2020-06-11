@@ -227,7 +227,7 @@ namespace Kermalis.PokemonBattleEngineServer
                     {
                         // Not currently necessary, but it would be necessary eventually because PBEMovesetBuilder cannot check if a moveset "makes sense" for the method the Pokémon was obtained in
                         // Eventually we would probably want to store that sort of information in PBEPokemonShell
-                        PBELegalityChecker.MoveLegalityCheck(shell.Moveset);
+                        //PBELegalityChecker.MoveLegalityCheck(shell.Moveset);
                     }
                     catch (Exception e)
                     {

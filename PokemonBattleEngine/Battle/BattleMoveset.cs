@@ -142,7 +142,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
             {
                 throw new ArgumentNullException(nameof(settings));
             }
-            else if (move >= PBEMove.MAX || !Enum.IsDefined(typeof(PBEMove), move))
+            else if (move >= PBEMove.MAX || !PBEMoveData.IsMoveUsable(move))
             {
                 throw new ArgumentOutOfRangeException(nameof(move));
             }
@@ -161,7 +161,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
             {
                 throw new ArgumentNullException(nameof(settings));
             }
-            else if (move >= PBEMove.MAX || !Enum.IsDefined(typeof(PBEMove), move))
+            else if (move >= PBEMove.MAX || !PBEMoveData.IsMoveUsable(move))
             {
                 throw new ArgumentOutOfRangeException(nameof(move));
             }

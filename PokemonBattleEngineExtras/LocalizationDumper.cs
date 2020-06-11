@@ -259,13 +259,11 @@ namespace Kermalis.PokemonBattleEngineExtras
                 }
                 // Moves
                 {
-                    IEnumerable<PBEMove> allMoves = Enum.GetValues(typeof(PBEMove)).Cast<PBEMove>().Except(new[] { PBEMove.MAX });
                     void WriteAll(string tableName)
                     {
                         CreateTable(tableName);
-                        foreach (PBEMove move in allMoves)
+                        for (ushort i = 0; i < (ushort)PBEMove.MAX; i++)
                         {
-                            ushort i = (ushort)move;
                             WriteTexts(tableName, i, i);
                         }
                     }
@@ -289,7 +287,7 @@ namespace Kermalis.PokemonBattleEngineExtras
                     void WriteAll(string tableName)
                     {
                         CreateTable(tableName);
-                        for (ushort i = 1; i <= 649; i++)
+                        for (ushort i = 1; i < (ushort)PBESpecies.MAX; i++)
                         {
                             WriteTexts(tableName, i, i);
                         }

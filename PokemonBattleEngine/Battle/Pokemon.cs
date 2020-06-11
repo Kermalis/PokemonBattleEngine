@@ -410,7 +410,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
         }
         public void UpdateKnownPP(PBEMove move, int amountReduced)
         {
-            if (move == PBEMove.None || move >= PBEMove.MAX || !Enum.IsDefined(typeof(PBEMove), move))
+            if (move == PBEMove.None || move >= PBEMove.MAX || !PBEMoveData.IsMoveUsable(move))
             {
                 throw new ArgumentOutOfRangeException(nameof(move));
             }
@@ -629,7 +629,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
         /// <exception cref="ArgumentOutOfRangeException">Thrown when <paramref name="move"/> is invalid.</exception>
         public PBEType GetMoveType(PBEMove move, bool useKnownInfo = false)
         {
-            if (move == PBEMove.None || move >= PBEMove.MAX || !Enum.IsDefined(typeof(PBEMove), move))
+            if (move == PBEMove.None || move >= PBEMove.MAX || !PBEMoveData.IsMoveUsable(move))
             {
                 throw new ArgumentOutOfRangeException(nameof(move));
             }
@@ -709,7 +709,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
         /// <exception cref="ArgumentOutOfRangeException">Thrown when <paramref name="move"/> is invalid.</exception>
         public PBEMoveTarget GetMoveTargets(PBEMove move)
         {
-            if (move == PBEMove.None || move >= PBEMove.MAX || !Enum.IsDefined(typeof(PBEMove), move))
+            if (move == PBEMove.None || move >= PBEMove.MAX || !PBEMoveData.IsMoveUsable(move))
             {
                 throw new ArgumentOutOfRangeException(nameof(move));
             }

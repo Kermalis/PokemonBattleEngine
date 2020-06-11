@@ -71,7 +71,7 @@ namespace Kermalis.PokemonBattleEngine.Data
         }
         private static readonly char[] _split1Chars = new char[1] { '|' };
 
-        public static PBEPokemonData GetData(PBESpecies species, PBEForm form)
+        public static PBEPokemonData GetData(PBESpecies species, PBEForm form, bool cache = true)
         {
             PBEPokemonShell.ValidateSpecies(species, form, false);
             List<SearchResult> results = PBEUtils.QueryDatabase<SearchResult>($"SELECT * FROM PokemonData WHERE Species={(ushort)species}");

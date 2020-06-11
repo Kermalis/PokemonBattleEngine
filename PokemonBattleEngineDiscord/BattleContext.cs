@@ -20,7 +20,6 @@ namespace Kermalis.PokemonBattleEngineDiscord
         private static readonly Emoji _shinyEmoji = new Emoji("✨");
         private static readonly Emoji _switchEmoji = new Emoji("😼");
         private static readonly Emoji _confirmationEmoji = new Emoji("👍");
-        private static readonly PBEMove[] _suggestedMoves = Enum.GetValues(typeof(PBEMove)).Cast<PBEMove>().Except(new[] { PBEMove.None, PBEMove.MAX }).ToArray();
         private static readonly Dictionary<PBEType, Emote>[] _moveEmotes = new Dictionary<PBEType, Emote>[4]
         {
             new Dictionary<PBEType, Emote>
@@ -1735,7 +1734,7 @@ namespace Kermalis.PokemonBattleEngineDiscord
                         }
 
                         CreatePokemonEmbed(mainPkmn, true, out description, out fields);
-                        IUserMessage mainMsg = await CreateAndSendEmbedAsync($"{description}\nTo check a move: `!move info {PBELocalizedString.GetMoveName(Utils.RandomElement(_suggestedMoves)).English}`", pkmn: mainPkmn, useUpperImage: false, fields: fields, userToSendTo: user);
+                        IUserMessage mainMsg = await CreateAndSendEmbedAsync($"{description}\nTo check a move: `!move info {PBELocalizedString.GetMoveName(Utils.RandomElement(PBEDataUtils.AllMoves)).English}`", pkmn: mainPkmn, useUpperImage: false, fields: fields, userToSendTo: user);
 
                         async Task MoveReactionClicked(PBEMove move)
                         {

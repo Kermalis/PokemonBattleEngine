@@ -22,7 +22,7 @@ namespace Kermalis.PokemonBattleEngineDiscord
                 PBEAbility? nAbility = PBELocalizedString.GetAbilityByName(abilityName);
                 if (!nAbility.HasValue || nAbility.Value == PBEAbility.None)
                 {
-                    await Context.Channel.SendMessageAsync($"{Context.User.Mention} Invalid ability!");
+                    await Context.Channel.SendMessageAsync($"{Context.User.Mention} ― Invalid ability!");
                 }
                 else
                 {
@@ -83,7 +83,7 @@ namespace Kermalis.PokemonBattleEngineDiscord
                 PBEItem? nItem = PBELocalizedString.GetItemByName(itemName);
                 if (!nItem.HasValue || nItem.Value == PBEItem.None)
                 {
-                    await Context.Channel.SendMessageAsync($"{Context.User.Mention} Invalid item!");
+                    await Context.Channel.SendMessageAsync($"{Context.User.Mention} ― Invalid item!");
                 }
                 else
                 {
@@ -149,16 +149,17 @@ namespace Kermalis.PokemonBattleEngineDiscord
                 PBEMove? nMove = PBELocalizedString.GetMoveByName(moveName);
                 if (!nMove.HasValue || nMove.Value == PBEMove.None)
                 {
-                    await Context.Channel.SendMessageAsync($"{Context.User.Mention} Invalid move!");
+                    await Context.Channel.SendMessageAsync($"{Context.User.Mention} ― Invalid move!");
                 }
                 else
                 {
                     PBEMove move = nMove.Value;
+                    moveName = PBELocalizedString.GetMoveName(move).English;
                     PBEMoveData mData = PBEMoveData.Data[move];
                     EmbedBuilder embed = new EmbedBuilder()
                         .WithAuthor(Context.User)
                         .WithColor(Utils.TypeColors[mData.Type])
-                        .WithTitle(PBELocalizedString.GetMoveName(move).English)
+                        .WithTitle(moveName)
                         .WithUrl(Utils.URL)
                         .WithDescription(PBELocalizedString.GetMoveDescription(move).English.Replace('\n', ' '))
                         .AddField("Type", Utils.TypeEmotes[mData.Type], true)
@@ -166,16 +167,17 @@ namespace Kermalis.PokemonBattleEngineDiscord
                         .AddField("Priority", mData.Priority, true)
                         .AddField("PP", Math.Max(1, mData.PPTier * PBESettings.DefaultPPMultiplier), true)
                         .AddField("Power", mData.Power == 0 ? "--" : mData.Power.ToString(), true)
-                        .AddField("Accuracy", mData.Accuracy == 0 ? "--" : mData.Accuracy.ToString(), true);
+                        .AddField("Accuracy", mData.Accuracy == 0 ? "--" : mData.Accuracy.ToString(), true)
+                        .AddField("Targets", mData.Targets, true)
+                        .AddField("Flags", mData.Flags, true);
                     switch (mData.Effect)
                     {
-                        case PBEMoveEffect.Recoil: embed.AddField("Recoil", $"1/{mData.EffectParam} damage dealt", true); break;
-                        case PBEMoveEffect.Recoil__10PercentBurn: embed.AddField("Recoil", "1/3 damage dealt", true); break; // TODO: Burn chance
-                        case PBEMoveEffect.Recoil__10PercentParalyze: embed.AddField("Recoil", "1/3 damage dealt", true); break; // TODO: Paralyze chance
-                        case PBEMoveEffect.Struggle: embed.AddField("Recoil", "1/4 user's max HP", true); break;
+                        case PBEMoveEffect.Recoil: embed.AddField("Recoil", $"1/{mData.EffectParam} damage dealt"); break;
+                        case PBEMoveEffect.Recoil__10PercentBurn: embed.AddField("Recoil", $"1/{mData.EffectParam} damage dealt"); break; // TODO: Burn chance
+                        case PBEMoveEffect.Recoil__10PercentParalyze: embed.AddField("Recoil", $"1/{mData.EffectParam} damage dealt"); break; // TODO: Paralyze chance
+                        case PBEMoveEffect.Struggle: embed.AddField("Recoil", "1/4 user's max HP"); break;
+                        case PBEMoveEffect.TODOMOVE: embed.AddField("**ATTENTION**", $"{moveName} is not yet implemented in Pokémon Battle Engine"); break;
                     }
-                    embed.AddField("Targets", mData.Targets, true)
-                        .AddField("Flags", mData.Flags, true);
                     await Context.Channel.SendMessageAsync(string.Empty, embed: embed.Build());
                 }
             }
@@ -206,7 +208,7 @@ namespace Kermalis.PokemonBattleEngineDiscord
                 PBESpecies? nSpecies = PBELocalizedString.GetSpeciesByName(speciesName);
                 if (!nSpecies.HasValue)
                 {
-                    await Context.Channel.SendMessageAsync($"{Context.User.Mention} Invalid species!");
+                    await Context.Channel.SendMessageAsync($"{Context.User.Mention} ― Invalid species!");
                 }
                 else
                 {
@@ -215,7 +217,7 @@ namespace Kermalis.PokemonBattleEngineDiscord
                     PBEForm? nForm = formName == null ? 0 : PBELocalizedString.GetFormByName(species, formName);
                     if (!nForm.HasValue)
                     {
-                        await Context.Channel.SendMessageAsync($"{Context.User.Mention} Invalid form for {speciesName}!");
+                        await Context.Channel.SendMessageAsync($"{Context.User.Mention} ― Invalid form for {speciesName}!");
                     }
                     else
                     {
@@ -328,7 +330,7 @@ namespace Kermalis.PokemonBattleEngineDiscord
                 PBEType? nType = PBELocalizedString.GetTypeByName(typeName);
                 if (!nType.HasValue || nType.Value == PBEType.None)
                 {
-                    await Context.Channel.SendMessageAsync($"{Context.User.Mention} Invalid type!");
+                    await Context.Channel.SendMessageAsync($"{Context.User.Mention} ― Invalid type!");
                 }
                 else
                 {

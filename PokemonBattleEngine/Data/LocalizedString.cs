@@ -267,7 +267,7 @@ namespace Kermalis.PokemonBattleEngine.Data
         }
         public static PBELocalizedString GetMoveDescription(PBEMove move)
         {
-            if (move >= PBEMove.MAX || !Enum.IsDefined(typeof(PBEMove), move))
+            if (move >= PBEMove.MAX)
             {
                 throw new ArgumentOutOfRangeException(nameof(move));
             }
@@ -275,7 +275,7 @@ namespace Kermalis.PokemonBattleEngine.Data
         }
         public static PBELocalizedString GetMoveName(PBEMove move)
         {
-            if (move >= PBEMove.MAX || !Enum.IsDefined(typeof(PBEMove), move))
+            if (move >= PBEMove.MAX)
             {
                 throw new ArgumentOutOfRangeException(nameof(move));
             }
