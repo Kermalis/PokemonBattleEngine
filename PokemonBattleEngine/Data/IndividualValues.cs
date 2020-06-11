@@ -270,6 +270,17 @@ namespace Kermalis.PokemonBattleEngine.Data
             }
         }
 
+        public void Clear()
+        {
+            if (IsDisposed)
+            {
+                throw new ObjectDisposedException(null);
+            }
+            for (int i = 0; i < 6; i++)
+            {
+                _ivs[i].Value = 0;
+            }
+        }
         public void Maximize()
         {
             if (IsDisposed)

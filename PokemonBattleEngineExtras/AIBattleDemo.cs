@@ -31,32 +31,13 @@ namespace Kermalis.PokemonBattleEngineExtras
                 return;
             }
 
-            var settings = new PBESettings { NumMoves = 8, MaxPartySize = 10 };
+            PBESettings settings = PBESettings.DefaultSettings;
+            //var settings = new PBESettings { NumMoves = 8, MaxPartySize = 10 };
             PBETeamShell team1Shell, team2Shell;
 
-            // Completely Randomized Pokémon
-            team1Shell = new PBETeamShell(settings, settings.MaxPartySize, true);
-            team2Shell = new PBETeamShell(settings, settings.MaxPartySize, true);
-
-            // Predefined Pokémon
-            /*team0Shell = new PBEPokemonShell[]
-            {
-                PBECompetitivePokemonShells.Zoroark_VGC,
-                PBECompetitivePokemonShells.Volcarona_VGC,
-                PBECompetitivePokemonShells.Vaporeon_VGC,
-                PBECompetitivePokemonShells.Thundurus_VGC,
-                PBECompetitivePokemonShells.Vanilluxe_VGC,
-                PBECompetitivePokemonShells.Chandelure_VGC
-            };
-            team1Shell = new PBEPokemonShell[]
-            {
-                PBECompetitivePokemonShells.Arceus_Uber,
-                PBECompetitivePokemonShells.Darkrai_Uber,
-                PBECompetitivePokemonShells.Kyurem_White_Uber,
-                PBECompetitivePokemonShells.Latias_VGC,
-                PBECompetitivePokemonShells.Metagross_VGC,
-                PBECompetitivePokemonShells.Victini_Uber
-            };*/
+            // Competitively Randomized Pokémon
+            team1Shell = PBERandomTeamGenerator.CreateRandomTeam(settings.MaxPartySize);
+            team2Shell = PBERandomTeamGenerator.CreateRandomTeam(settings.MaxPartySize);
 
             _battle = new PBEBattle(PBERandom.RandomBattleTerrain(), PBEBattleFormat.Double, team1Shell, "Team 1", team2Shell, "Team 2");
             team1Shell.Dispose();

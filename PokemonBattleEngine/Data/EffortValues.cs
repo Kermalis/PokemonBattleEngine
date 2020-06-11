@@ -248,6 +248,29 @@ namespace Kermalis.PokemonBattleEngine.Data
             }
         }
 
+        public void Clear()
+        {
+            if (IsDisposed)
+            {
+                throw new ObjectDisposedException(null);
+            }
+            for (int i = 0; i < 6; i++)
+            {
+                _evs[i].Value = 0;
+            }
+        }
+        public void Equalize()
+        {
+            if (IsDisposed)
+            {
+                throw new ObjectDisposedException(null);
+            }
+            Clear();
+            for (int i = 0; i < 6; i++)
+            {
+                _evs[i].Value = (byte)(Settings.MaxTotalEVs / 6);
+            }
+        }
         public void Randomize()
         {
             if (IsDisposed)

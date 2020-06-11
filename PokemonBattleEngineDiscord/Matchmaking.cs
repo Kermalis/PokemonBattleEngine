@@ -3,6 +3,7 @@ using Discord.Commands;
 using Discord.WebSocket;
 using Kermalis.PokemonBattleEngine.Battle;
 using Kermalis.PokemonBattleEngine.Data;
+using Kermalis.PokemonBattleEngine.Utils;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
@@ -78,9 +79,9 @@ namespace Kermalis.PokemonBattleEngineDiscord
         private static async Task StartBattle(IGuild guild, SocketUser battler1, SocketUser battler2, string team1Name, string team2Name, string team1Mention, string team2Mention)
         {
             PBETeamShell team1Shell, team2Shell;
-            // Completely Randomized Pokémon
-            team1Shell = new PBETeamShell(PBESettings.DefaultSettings, 3, true);
-            team2Shell = new PBETeamShell(PBESettings.DefaultSettings, 3, true);
+            // Competitively Randomized Pokémon
+            team1Shell = PBERandomTeamGenerator.CreateRandomTeam(3);
+            team2Shell = PBERandomTeamGenerator.CreateRandomTeam(3);
 
             var battle = new PBEBattle(PBEBattleTerrain.Plain, PBEBattleFormat.Single, team1Shell, team1Name, team2Shell, team2Name);
             team1Shell.Dispose();

@@ -2,6 +2,7 @@
 using Avalonia.Markup.Xaml;
 using Avalonia.Threading;
 using Kermalis.PokemonBattleEngine.Data;
+using Kermalis.PokemonBattleEngine.Utils;
 using Kermalis.PokemonBattleEngineClient.Views;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -93,9 +94,9 @@ namespace Kermalis.PokemonBattleEngineClient
         {
             PBESettings settings = PBESettings.DefaultSettings;
             PBETeamShell team1Shell, team2Shell;
-            // Completely Randomized Pokémon
-            team1Shell = new PBETeamShell(settings, settings.MaxPartySize, true);
-            team2Shell = new PBETeamShell(settings, settings.MaxPartySize, true);
+            // Competitively Randomized Pokémon
+            team1Shell = PBERandomTeamGenerator.CreateRandomTeam(settings.MaxPartySize);
+            team2Shell = PBERandomTeamGenerator.CreateRandomTeam(settings.MaxPartySize);
 
             Add(new SinglePlayerClient(PBEBattleFormat.Double, team1Shell, "Dawn", team2Shell, "Champion Cynthia"));
         }
