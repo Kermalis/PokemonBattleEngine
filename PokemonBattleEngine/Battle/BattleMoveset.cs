@@ -142,13 +142,13 @@ namespace Kermalis.PokemonBattleEngine.Battle
             {
                 throw new ArgumentNullException(nameof(settings));
             }
-            else if (move >= PBEMove.MAX || !PBEMoveData.IsMoveUsable(move))
-            {
-                throw new ArgumentOutOfRangeException(nameof(move));
-            }
             else if (move == PBEMove.None)
             {
                 return 0;
+            }
+            else if (move >= PBEMove.MAX || !PBEMoveData.IsMoveUsable(move))
+            {
+                throw new ArgumentOutOfRangeException(nameof(move));
             }
             else
             {
@@ -161,13 +161,13 @@ namespace Kermalis.PokemonBattleEngine.Battle
             {
                 throw new ArgumentNullException(nameof(settings));
             }
-            else if (move >= PBEMove.MAX || !PBEMoveData.IsMoveUsable(move))
-            {
-                throw new ArgumentOutOfRangeException(nameof(move));
-            }
             else if (move == PBEMove.None)
             {
                 return 0;
+            }
+            else if (move >= PBEMove.MAX || !PBEMoveData.IsMoveUsable(move))
+            {
+                throw new ArgumentOutOfRangeException(nameof(move));
             }
             else
             {

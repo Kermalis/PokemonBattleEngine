@@ -39,7 +39,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                     PBEMove old = _move;
                     if (old != value)
                     {
-                        if (value >= PBEMove.MAX || !PBEMoveData.IsMoveUsable(value))
+                        if (value >= PBEMove.MAX || (value != PBEMove.None && !PBEMoveData.IsMoveUsable(value)))
                         {
                             throw new ArgumentOutOfRangeException(nameof(value));
                         }
