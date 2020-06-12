@@ -246,7 +246,7 @@ namespace Kermalis.PokemonBattleEngineDiscord
                         immunities = string.Empty;
                         for (PBEType atk = PBEType.None + 1; atk < PBEType.MAX; atk++)
                         {
-                            double d = PBETypeEffectiveness.GetEffectiveness(atk, pData.Type1, pData.Type2);
+                            double d = PBETypeEffectiveness.GetEffectiveness(atk, pData);
                             if (d <= 0)
                             {
                                 if (immunities != string.Empty)

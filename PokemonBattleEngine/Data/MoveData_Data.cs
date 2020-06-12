@@ -1569,7 +1569,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                 new PBEMoveData
                 (
                     PBEType.Normal, PBEMoveCategory.Status, 0, 8, 0, 0,
-                    PBEMoveEffect.TODOMOVE, 0, PBEMoveTarget.SingleSurrounding,
+                    PBEMoveEffect.Foresight, 0, PBEMoveTarget.SingleSurrounding,
                     PBEMoveFlag.AffectedByMagicCoat | PBEMoveFlag.AffectedByMirrorMove | PBEMoveFlag.AffectedByProtect
                 )
             },
@@ -2910,7 +2910,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                 new PBEMoveData
                 (
                     PBEType.Normal, PBEMoveCategory.Status, 0, 8, 0, 0,
-                    PBEMoveEffect.TODOMOVE, 0, PBEMoveTarget.SingleSurrounding,
+                    PBEMoveEffect.Foresight, 0, PBEMoveTarget.SingleSurrounding,
                     PBEMoveFlag.AffectedByMagicCoat | PBEMoveFlag.AffectedByMirrorMove | PBEMoveFlag.AffectedByProtect
                 )
             },

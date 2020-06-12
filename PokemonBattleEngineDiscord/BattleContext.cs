@@ -1388,6 +1388,16 @@ namespace Kermalis.PokemonBattleEngineDiscord
                             }
                             break;
                         }
+                        case PBEStatus2.Identified:
+                        case PBEStatus2.MiracleEye:
+                        {
+                            switch (s2p.StatusAction)
+                            {
+                                case PBEStatusAction.Added: message = "{0} was identified!"; break;
+                                default: throw new ArgumentOutOfRangeException(nameof(s2p.StatusAction));
+                            }
+                            break;
+                        }
                         case PBEStatus2.Infatuated:
                         {
                             switch (s2p.StatusAction)
@@ -1427,15 +1437,6 @@ namespace Kermalis.PokemonBattleEngineDiscord
                             {
                                 case PBEStatusAction.Added: message = "{0} levitated with electromagnetism!"; break;
                                 case PBEStatusAction.Ended: message = "{0}'s electromagnetism wore off!"; break;
-                                default: throw new ArgumentOutOfRangeException(nameof(s2p.StatusAction));
-                            }
-                            break;
-                        }
-                        case PBEStatus2.MiracleEye:
-                        {
-                            switch (s2p.StatusAction)
-                            {
-                                case PBEStatusAction.Added: message = "{0} was identified!"; break;
                                 default: throw new ArgumentOutOfRangeException(nameof(s2p.StatusAction));
                             }
                             break;

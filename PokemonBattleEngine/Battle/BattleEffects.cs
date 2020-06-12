@@ -773,6 +773,11 @@ namespace Kermalis.PokemonBattleEngine.Battle
                         Ef_TryForceStatus2(user, targets, move, PBEStatus2.Pumped);
                         break;
                     }
+                    case PBEMoveEffect.Foresight:
+                    {
+                        Ef_TryForceStatus2(user, targets, move, PBEStatus2.Identified);
+                        break;
+                    }
                     case PBEMoveEffect.GastroAcid:
                     {
                         Ef_SetOtherAbility(user, targets, move, PBEAbility.None, false);
@@ -1516,7 +1521,8 @@ namespace Kermalis.PokemonBattleEngine.Battle
                 return false;
             }
             double accuracy = target.Ability == PBEAbility.Unaware ? 1 : GetStatChangeModifier(user.AccuracyChange, true);
-            double evasion = user.Ability == PBEAbility.Unaware ? 1 : GetStatChangeModifier(target.Status2.HasFlag(PBEStatus2.MiracleEye) ? Math.Min((sbyte)0, target.EvasionChange) : target.EvasionChange, true);
+            bool ignorePositiveEvasion = target.Status2.HasFlag(PBEStatus2.Identified) || target.Status2.HasFlag(PBEStatus2.MiracleEye);
+            double evasion = user.Ability == PBEAbility.Unaware ? 1 : GetStatChangeModifier(ignorePositiveEvasion ? Math.Min((sbyte)0, target.EvasionChange) : target.EvasionChange, true);
             chance *= accuracy / evasion;
             if (user.Ability == PBEAbility.Compoundeyes)
             {
@@ -2248,6 +2254,19 @@ namespace Kermalis.PokemonBattleEngine.Battle
                     }
                     break;
                 }
+                case PBEStatus2.Identified:
+                {
+                    if (!target.Status2.HasFlag(PBEStatus2.Identified))
+                    {
+                        BroadcastStatus2(target, user, PBEStatus2.Identified, PBEStatusAction.Added);
+                        result = PBEResult.Success;
+                    }
+                    else
+                    {
+                        result = PBEResult.Ineffective_Status;
+                    }
+                    break;
+                }
                 case PBEStatus2.Infatuated:
                 {
                     result = target.IsAttractionPossible(user);
@@ -2279,7 +2298,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                     }
                     else
                     {
-                        result = PBEResult.Ineffective_Stat;
+                        result = PBEResult.Ineffective_Status;
                     }
                     break;
                 }

@@ -434,9 +434,9 @@ namespace Kermalis.PokemonBattleEngine.Data
                     return result;
                 }
             }
-            bool scrappy = user.Ability == PBEAbility.Scrappy,
-                miracleEye = target.Status2.HasFlag(PBEStatus2.MiracleEye);
-            damageMultiplier = GetEffectiveness(moveType, useKnownInfo ? target.KnownType1 : target.Type1, useKnownInfo ? target.KnownType2 : target.Type2, scrappy: scrappy, miracleEye: miracleEye);
+            bool ignoreGhost = user.Ability == PBEAbility.Scrappy || target.Status2.HasFlag(PBEStatus2.Identified),
+                ignoreDark = target.Status2.HasFlag(PBEStatus2.MiracleEye);
+            damageMultiplier = GetEffectiveness(moveType, useKnownInfo ? target.KnownType1 : target.Type1, useKnownInfo ? target.KnownType2 : target.Type2, ignoreGhost: ignoreGhost, ignoreDark: ignoreDark);
             if (damageMultiplier <= 0) // (-infinity, 0]
             {
                 damageMultiplier = 0;
@@ -483,7 +483,7 @@ namespace Kermalis.PokemonBattleEngine.Data
             return PBEResult.Success;
         }
 
-        public static double GetEffectiveness(PBEType attackingType, PBEType defendingType, bool scrappy = false, bool miracleEye = false)
+        public static double GetEffectiveness(PBEType attackingType, PBEType defendingType, bool ignoreGhost = false, bool ignoreDark = false)
         {
             if (attackingType >= PBEType.MAX)
             {
@@ -494,26 +494,26 @@ namespace Kermalis.PokemonBattleEngine.Data
                 throw new ArgumentOutOfRangeException(nameof(defendingType));
             }
 
-            if ((scrappy && defendingType == PBEType.Ghost && (attackingType == PBEType.Normal || attackingType == PBEType.Fighting))
-                || (miracleEye && defendingType == PBEType.Dark && attackingType == PBEType.Psychic))
+            double d = _table[attackingType][defendingType];
+            if (d <= 0 && ((ignoreGhost && defendingType == PBEType.Ghost) || (ignoreDark && defendingType == PBEType.Dark)))
             {
-                return 1.0;
+                return 1;
             }
-            return _table[attackingType][defendingType];
-        }
-        public static double GetEffectiveness(PBEType attackingType, PBEType defendingType1, PBEType defendingType2, bool scrappy = false, bool miracleEye = false)
-        {
-            double d = GetEffectiveness(attackingType, defendingType1, scrappy: scrappy, miracleEye: miracleEye);
-            d *= GetEffectiveness(attackingType, defendingType2, scrappy: scrappy, miracleEye: miracleEye);
             return d;
         }
-        public static double GetEffectiveness(PBEType attackingType, IPBEPokemonTypes defendingTypes, bool scrappy = false, bool miracleEye = false)
+        public static double GetEffectiveness(PBEType attackingType, PBEType defendingType1, PBEType defendingType2, bool ignoreGhost = false, bool ignoreDark = false)
+        {
+            double d = GetEffectiveness(attackingType, defendingType1, ignoreGhost: ignoreGhost, ignoreDark: ignoreDark);
+            d *= GetEffectiveness(attackingType, defendingType2, ignoreGhost: ignoreGhost, ignoreDark: ignoreDark);
+            return d;
+        }
+        public static double GetEffectiveness(PBEType attackingType, IPBEPokemonTypes defendingTypes, bool ignoreGhost = false, bool ignoreDark = false)
         {
             if (defendingTypes == null)
             {
                 throw new ArgumentNullException(nameof(defendingTypes));
             }
-            return GetEffectiveness(attackingType, defendingTypes.Type1, defendingTypes.Type2, scrappy: scrappy, miracleEye: miracleEye);
+            return GetEffectiveness(attackingType, defendingTypes.Type1, defendingTypes.Type2, ignoreGhost: ignoreGhost, ignoreDark: ignoreDark);
         }
         public static double GetStealthRockMultiplier(PBEType type1, PBEType type2)
         {

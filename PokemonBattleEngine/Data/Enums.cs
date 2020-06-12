@@ -276,30 +276,31 @@ namespace Kermalis.PokemonBattleEngine.Data
         Flinching = 1 << 4,
         /// <summary>The Pokémon will gain a power boost due to <see cref="PBEMove.HelpingHand"/>.</summary>
         HelpingHand = 1 << 5,
+        Identified = 1 << 6,
         /// <summary>The Pokémon is infatuated with <see cref="PBEPokemon.InfatuatedWithPokemon"/> and may be unable to move this turn.</summary>
-        Infatuated = 1 << 6,
+        Infatuated = 1 << 7,
         /// <summary>The Pokémon is seeded and HP will be stolen at the end of each turn.</summary>
-        LeechSeed = 1 << 7,
-        LockOn = 1 << 8,
-        MagnetRise = 1 << 9,
-        MiracleEye = 1 << 10,
+        LeechSeed = 1 << 8,
+        LockOn = 1 << 9,
+        MagnetRise = 1 << 10,
+        MiracleEye = 1 << 11,
         /// <summary>The Pokémon's <see cref="PBEStat.Attack"/> and <see cref="PBEStat.Defense"/> are switched.</summary>
-        PowerTrick = 1 << 11,
+        PowerTrick = 1 << 12,
         /// <summary>The Pokémon is protected from moves this turn.</summary>
-        Protected = 1 << 12,
+        Protected = 1 << 13,
         /// <summary>The Pokémon is under the effect of <see cref="PBEMove.FocusEnergy"/> or <see cref="PBEItem.LansatBerry"/> and has a higher chance of landing critical hits.</summary>
-        Pumped = 1 << 13,
-        ShadowForce = 1 << 14,
+        Pumped = 1 << 14,
+        ShadowForce = 1 << 15,
         /// <summary>The Pokémon is behind a substitute that will take damage on behalf of the Pokémon and prevent most moves from affecting the Pokémon.</summary>
-        Substitute = 1 << 15,
+        Substitute = 1 << 16,
         /// <summary>The Pokémon is transformed into another Pokémon.</summary>
-        Transformed = 1 << 16,
+        Transformed = 1 << 17,
         /// <summary>The Pokémon is underground. A move will miss against the Pokémon unless it has <see cref="PBEMoveFlag.HitsUnderground"/> or either Pokémon has <see cref="PBEAbility.NoGuard"/>.
         /// The Pokémon will take double damage from <see cref="PBEMove.Earthquake"/> and <see cref="PBEMove.Magnitude"/>.</summary>
-        Underground = 1 << 17,
+        Underground = 1 << 18,
         /// <summary>The Pokémon is underwater. A move will miss against the Pokémon unless it has <see cref="PBEMoveFlag.HitsUnderwater"/> or either Pokémon has <see cref="PBEAbility.NoGuard"/>.
         /// The Pokémon will take double damage from <see cref="PBEMove.Surf"/> and <see cref="PBEMove.Whirlpool"/>.</summary>
-        Underwater = 1 << 18
+        Underwater = 1 << 19
     }
     /// <summary>Represents a specific <see cref="PBEBattle"/>'s status.</summary>
     [Flags]
@@ -2198,6 +2199,7 @@ namespace Kermalis.PokemonBattleEngine.Data
         Flatter,
         Fly,
         FocusEnergy,
+        Foresight,
         GastroAcid,
         Growth,
         Hail,
@@ -2478,7 +2480,7 @@ namespace Kermalis.PokemonBattleEngine.Data
         FocusPunch = 264, // TODO
         FollowMe = 266, // TODO
         ForcePalm = 395,
-        Foresight = 193, // TODO
+        Foresight = 193,
         FoulPlay = 492,
         FreezeShock = 553, // TODO
         FrenzyPlant = 338, // TODO
@@ -2627,7 +2629,7 @@ namespace Kermalis.PokemonBattleEngine.Data
         NightShade = 101,
         NightSlash = 400,
         Octazooka = 190,
-        OdorSleuth = 316, // TODO
+        OdorSleuth = 316,
         OminousWind = 466,
         Outrage = 200, // TODO
         Overheat = 315,
