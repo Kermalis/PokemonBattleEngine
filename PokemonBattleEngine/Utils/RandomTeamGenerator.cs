@@ -91,96 +91,93 @@ namespace Kermalis.PokemonBattleEngine.Utils
 
         private static PBEAbility GetAbility(PBESpecies species, List<PBEMove> moves, PBEPokemonData pData, PBECounter counter, PBETeamDetails teamDs)
         {
+            var abilityPool = new List<PBEAbility>(pData.Abilities);
             PBEAbility ability;
-            int abilityI = 0;
-            bool reject;
             do
             {
-                reject = false;
-                ability = pData.Abilities[abilityI];
-                if (_counterAbilities.Contains(ability))
+                bool reject = false;
+                ability = abilityPool.RandomElement();
+                // Reasons to reject
+                switch (ability)
                 {
-                    reject = counter[ability] == 0;
+                    case PBEAbility.AngerPoint:
+                    case PBEAbility.Gluttony:
+                    case PBEAbility.Moody: reject = true; break;
+                    case PBEAbility.Blaze: reject = counter[PBEType.Fire] == 0; break;
+                    case PBEAbility.Chlorophyll: reject = !moves.Contains(PBEMove.SunnyDay) && !teamDs.HarshSunlight; break;
+                    case PBEAbility.Compoundeyes:
+                    case PBEAbility.NoGuard: reject = counter.Inaccurate == 0; break;
+                    case PBEAbility.Defiant:
+                    case PBEAbility.Moxie: reject = counter[PBEMoveCategory.Physical] == 0 && !moves.Contains(PBEMove.BatonPass); break;
+                    case PBEAbility.Hydration:
+                    case PBEAbility.RainDish:
+                    case PBEAbility.SwiftSwim: reject = !moves.Contains(PBEMove.RainDance) && !teamDs.Rain; break;
+                    case PBEAbility.IceBody:
+                    case PBEAbility.SnowCloak: reject = !teamDs.Hail; break;
+                    // Zangoose
+                    case PBEAbility.Immunity: reject = pData.Abilities.Contains(PBEAbility.ToxicBoost); break;
+                    case PBEAbility.Lightningrod: reject = pData.HasType(PBEType.Ground); break;
+                    // Basculin
+                    case PBEAbility.MoldBreaker: reject = pData.Abilities.Contains(PBEAbility.Adaptability); break;
+                    case PBEAbility.Overgrow: reject = counter[PBEType.Grass] == 0; break;
+                    // Breloom
+                    case PBEAbility.PoisonHeal: reject = pData.Abilities.Contains(PBEAbility.Technician) && counter[PBEAbility.Technician] > 0; break;
+                    case PBEAbility.Prankster: reject = counter[PBEMoveCategory.Status] == 0; break;
+                    case PBEAbility.Reckless:
+                    case PBEAbility.RockHead: reject = counter.Recoil == 0; break;
+                    // Solosis, Duosion, Reuniclus
+                    case PBEAbility.Regenerator: reject = pData.Abilities.Contains(PBEAbility.MagicGuard); break;
+                    case PBEAbility.SandForce:
+                    case PBEAbility.SandRush:
+                    case PBEAbility.SandVeil: reject = !teamDs.Sandstorm; break;
+                    case PBEAbility.SereneGrace: reject = species == PBESpecies.Blissey || species == PBESpecies.Togetic; break;
+                    // Timburr, Gurdurr, Conkeldurr
+                    case PBEAbility.SheerForce: reject = moves.Contains(PBEMove.FakeOut) || (pData.Abilities.Contains(PBEAbility.IronFist) && counter[PBEAbility.IronFist] > counter[PBEAbility.SheerForce]); break;
+                    case PBEAbility.Simple:
+                    case PBEAbility.WeakArmor: reject = counter.SetupCategory == 'N'; break;
+                    case PBEAbility.Sturdy: reject = counter.Recoil > 0 && counter.Recovery == 0; break;
+                    case PBEAbility.Swarm: reject = counter[PBEType.Bug] == 0; break;
+                    // Ambipom, Minccino, Cinccino
+                    case PBEAbility.Technician: reject = pData.Abilities.Contains(PBEAbility.SkillLink) && counter[PBEAbility.SkillLink] >= counter[PBEAbility.Technician]; break;
+                    case PBEAbility.TintedLens: reject = counter.Damage >= counter.DamagingMoves || (counter[PBEMoveCategory.Status] > 2 && counter.SetupCategory == 'N'); break;
+                    case PBEAbility.Torrent: reject = counter[PBEType.Water] == 0; break;
+                    // Clefable
+                    case PBEAbility.Unaware: reject = pData.Abilities.Contains(PBEAbility.MagicGuard) && counter[PBEMoveCategory.Status] < 2; break;
+                    case PBEAbility.Unburden: reject = pData.BaseStats.Speed > 100; break;
+                    // Chinchou, Lanturn
+                    case PBEAbility.WaterAbsorb: reject = pData.Abilities.Contains(PBEAbility.VoltAbsorb); break;
                 }
+                // Reasons to always accept
                 if (!reject)
                 {
-                    switch (ability)
+                    if (_counterAbilities.Contains(ability))
                     {
-                        case PBEAbility.AngerPoint:
-                        case PBEAbility.Gluttony:
-                        case PBEAbility.Moody: reject = true; break;
-                        case PBEAbility.Blaze: reject = counter[PBEType.Fire] == 0; break;
-                        case PBEAbility.Chlorophyll: reject = !moves.Contains(PBEMove.SunnyDay) && !teamDs.HarshSunlight; break;
-                        case PBEAbility.Compoundeyes:
-                        case PBEAbility.NoGuard: reject = counter.Inaccurate == 0; break;
-                        case PBEAbility.Defiant:
-                        case PBEAbility.Moxie: reject = counter[PBEMoveCategory.Physical] == 0 && !moves.Contains(PBEMove.BatonPass); break;
-                        case PBEAbility.Hydration:
-                        case PBEAbility.RainDish:
-                        case PBEAbility.SwiftSwim: reject = !moves.Contains(PBEMove.RainDance) && !teamDs.Rain; break;
-                        case PBEAbility.IceBody:
-                        case PBEAbility.SnowCloak: reject = !teamDs.Hail; break;
-                        // Zangoose
-                        case PBEAbility.Immunity: reject = pData.Abilities.Contains(PBEAbility.ToxicBoost); break;
-                        case PBEAbility.Lightningrod: reject = pData.HasType(PBEType.Ground); break;
-                        // Basculin
-                        case PBEAbility.MoldBreaker: reject = pData.Abilities.Contains(PBEAbility.Adaptability); break;
-                        case PBEAbility.Overgrow: reject = counter[PBEType.Grass] == 0; break;
-                        // Breloom
-                        case PBEAbility.PoisonHeal: reject = pData.Abilities.Contains(PBEAbility.Technician) && counter[PBEAbility.Technician] > 0; break;
-                        case PBEAbility.Prankster: reject = counter[PBEMoveCategory.Status] == 0; break;
-                        case PBEAbility.Reckless:
-                        case PBEAbility.RockHead: reject = counter.Recoil == 0; break;
-                        // Solosis, Duosion, Reuniclus
-                        case PBEAbility.Regenerator: reject = pData.Abilities.Contains(PBEAbility.MagicGuard); break;
-                        case PBEAbility.SandForce:
-                        case PBEAbility.SandRush:
-                        case PBEAbility.SandVeil: reject = !teamDs.Sandstorm; break;
-                        case PBEAbility.SereneGrace: reject = species == PBESpecies.Blissey || species == PBESpecies.Togetic; break;
-                        // Timburr, Gurdurr, Conkeldurr
-                        case PBEAbility.SheerForce: reject = moves.Contains(PBEMove.FakeOut) || (pData.Abilities.Contains(PBEAbility.IronFist) && counter[PBEAbility.IronFist] > counter[PBEAbility.SheerForce]); break;
-                        case PBEAbility.Simple:
-                        case PBEAbility.WeakArmor: reject = counter.SetupCategory == 'N'; break;
-                        case PBEAbility.Sturdy: reject = counter.Recoil > 0 && counter.Recovery == 0; break;
-                        case PBEAbility.Swarm: reject = counter[PBEType.Bug] == 0; break;
-                        // Ambipom, Minccino, Cinccino
-                        case PBEAbility.Technician: reject = (pData.Abilities.Contains(PBEAbility.SkillLink) && counter[PBEAbility.SkillLink] >= counter[PBEAbility.Technician]); break;
-                        case PBEAbility.TintedLens: reject = counter.Damage >= counter.DamagingMoves || (counter[PBEMoveCategory.Status] > 2 && counter.SetupCategory == 'N'); break;
-                        case PBEAbility.Torrent: reject = counter[PBEType.Water] == 0; break;
-                        // Clefable
-                        case PBEAbility.Unaware: reject = pData.Abilities.Contains(PBEAbility.MagicGuard) && counter[PBEMoveCategory.Status] < 2; break;
-                        case PBEAbility.Unburden: reject = pData.BaseStats.Speed > 100; break;
-                        // Chinchou, Lanturn
-                        case PBEAbility.WaterAbsorb: reject = pData.Abilities.Contains(PBEAbility.VoltAbsorb); break;
+                        reject = counter[ability] == 0;
+                        if (!reject) // If we have an ability that the counter says has good moves, use the ability
+                        {
+                            break;
+                        }
+                    }
+                    else if (ability == PBEAbility.Prankster && counter[PBEMoveCategory.Status] > 1)
+                    {
+                        break;
+                    }
+                    else if (ability == PBEAbility.SwiftSwim && moves.Contains(PBEMove.RainDance))
+                    {
+                        break;
+                    }
+                    else if ((ability == PBEAbility.Guts || ability == PBEAbility.QuickFeet) && moves.Contains(PBEMove.Facade))
+                    {
+                        break;
                     }
                 }
-
+                // Ability was rejected
                 if (reject)
                 {
-                    abilityI++;
-                    if (abilityI >= pData.Abilities.Count)
-                    {
-                        break; // KERMALIS: Break out of loop, since all abilities were "rejected", and shell has a random ability
-                    }
+                    ability = PBEAbility.None;
+                    abilityPool.Remove(ability);
                 }
-            } while (reject);
-
-            if (pData.Abilities.Contains(PBEAbility.Guts) && ability != PBEAbility.QuickFeet && moves.Contains(PBEMove.Facade))
-            {
-                ability = PBEAbility.Guts; // Ursaring
-            }
-            else if (pData.Abilities.Contains(PBEAbility.Prankster) && counter[PBEMoveCategory.Status] > 1)
-            {
-                ability = PBEAbility.Prankster;
-            }
-            else if (pData.Abilities.Contains(PBEAbility.QuickFeet) && moves.Contains(PBEMove.Facade))
-            {
-                ability = PBEAbility.QuickFeet;
-            }
-            else if (pData.Abilities.Contains(PBEAbility.SwiftSwim) && moves.Contains(PBEMove.RainDance))
-            {
-                ability = PBEAbility.SwiftSwim;
-            }
+            } while (ability == PBEAbility.None && abilityPool.Count > 0);
             return ability;
         }
         private static PBEItem GetItem(PBESpecies species, PBEForm form, PBEAbility ability, List<PBEMove> moves, PBEPokemonData pData, PBECounter counter, bool isLead)
@@ -1281,7 +1278,11 @@ namespace Kermalis.PokemonBattleEngine.Utils
 
             if (shell.SelectableAbilities.Count > 1)
             {
-                shell.Ability = GetAbility(species, moves, pData, counter, teamDs);
+                PBEAbility a = GetAbility(species, moves, pData, counter, teamDs);
+                if (a != PBEAbility.None)
+                {
+                    shell.Ability = a;
+                }
             }
             if (shell.SelectableItems.Count > 1)
             {
