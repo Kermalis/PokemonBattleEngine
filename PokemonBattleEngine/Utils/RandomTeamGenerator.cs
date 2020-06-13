@@ -174,8 +174,8 @@ namespace Kermalis.PokemonBattleEngine.Utils
                 // Ability was rejected
                 if (reject)
                 {
-                    ability = PBEAbility.None;
                     abilityPool.Remove(ability);
+                    ability = PBEAbility.None;
                 }
             } while (ability == PBEAbility.None && abilityPool.Count > 0);
             return ability;
