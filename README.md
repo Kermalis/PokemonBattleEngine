@@ -12,7 +12,7 @@ Therefore, a custom/modified client cannot do anything more than an ordinary pla
 
 Join our _(new)_ [Discord server](https://discord.gg/Z4Mn9qX) to talk or try out the battle bot!
 
-![Discord Preview](Discord%20Preview.gif)
+![Discord Preview](Discord%20Preview.png)
 
 # Other Features:
 * There are [settings](PokemonBattleEngine/Data/Settings.cs) that you can change, such as having more moves, a higher maximum level, or weaker poison.
