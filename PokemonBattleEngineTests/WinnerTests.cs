@@ -19,43 +19,48 @@ namespace Kermalis.PokemonBattleEngineTests
         [InlineData(PBEMove.Explosion)]
         public void Explosion_User_Loses(PBEMove move)
         {
+            #region Setup
             PBERandom.SetSeed(0);
             PBESettings settings = PBESettings.DefaultSettings;
 
-            var team1Shell = new PBETeamShell(settings, 1, true);
-            PBEPokemonShell p = team1Shell[0];
-            p.Species = PBESpecies.Golem;
-            p.Item = PBEItem.None;
-            p.Moveset[0].Move = move;
+            var p0 = new TestPokemonCollection(1);
+            p0[0] = new TestPokemon(PBESpecies.Golem, 0, 100)
+            {
+                Moveset = new TestMoveset(settings, new[] { move })
+            };
 
-            var team2Shell = new PBETeamShell(settings, 1, true);
-            p = team2Shell[0];
-            p.Species = PBESpecies.Happiny;
-            p.Level = 1;
-            p.Item = PBEItem.None;
-            p.Moveset[0].Move = PBEMove.Snore;
+            var p1 = new TestPokemonCollection(1);
+            p1[0] = new TestPokemon(PBESpecies.Magikarp, 0, 1)
+            {
+                Moveset = new TestMoveset(settings, new[] { PBEMove.Splash })
+            };
 
-            var battle = new PBEBattle(PBEBattleTerrain.Plain, PBEBattleFormat.Single, team1Shell, "Team 1", team2Shell, "Team 2");
+            var battle = new PBEBattle(PBEBattleTerrain.Plain, PBEBattleFormat.Single, new PBETeamInfo(p0, "Team 1"), new PBETeamInfo(p1, "Team 2"), settings);
             battle.OnNewEvent += PBEBattle.ConsoleBattleEventHandler;
-            team1Shell.Dispose();
-            team2Shell.Dispose();
             battle.Begin();
 
-            PBETeam t = battle.Teams[0];
-            Assert.True(PBEBattle.SelectActionsIfValid(t, new[] { new PBETurnAction(t.Party[0].Id, move, PBETurnTarget.FoeCenter) }));
+            PBETeam t0 = battle.Teams[0];
+            PBETeam t1 = battle.Teams[1];
+            PBEBattlePokemon golem = t0.Party[0];
+            PBEBattlePokemon magikarp = t1.Party[0];
+            #endregion
 
-            t = battle.Teams[1];
-            Assert.True(PBEBattle.SelectActionsIfValid(t, new[] { new PBETurnAction(t.Party[0].Id, PBEMove.Snore, PBETurnTarget.FoeCenter) }));
+            #region Use move and check
+            Assert.True(PBEBattle.SelectActionsIfValid(t0, new[] { new PBETurnAction(golem.Id, move, PBETurnTarget.FoeCenter) }));
+            Assert.True(PBEBattle.SelectActionsIfValid(t1, new[] { new PBETurnAction(magikarp.Id, PBEMove.Splash, PBETurnTarget.AllyCenter) }));
 
             battle.RunTurn();
 
             Assert.True(battle.Winner == battle.Teams[1]);
+            #endregion
 
+            #region Cleanup
             battle.OnNewEvent -= PBEBattle.ConsoleBattleEventHandler;
-            battle.Dispose();
+            #endregion
         }
 
         // TODO: Who wins if you use explosion and faint everyone on the field in a double battle?
         // TODO: Who wins if you use Perish Song and everyone faints at the same time? Is it based on who's slowest?
+        // TODO: Final Gambit
     }
 }

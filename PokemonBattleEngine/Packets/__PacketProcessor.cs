@@ -17,10 +17,6 @@ namespace Kermalis.PokemonBattleEngine.Packets
             {
                 throw new ArgumentNullException(nameof(data));
             }
-            if (battle.IsDisposed)
-            {
-                throw new ObjectDisposedException(nameof(battle));
-            }
             if (data.Length < 2)
             {
                 throw new InvalidDataException();
@@ -33,8 +29,8 @@ namespace Kermalis.PokemonBattleEngine.Packets
                     case PBEResponsePacket.Code: return new PBEResponsePacket(data);
                     case PBEPlayerJoinedPacket.Code: return new PBEPlayerJoinedPacket(data, r);
                     case PBEMatchCancelledPacket.Code: return new PBEMatchCancelledPacket(data);
-                    case PBEPartyRequestPacket.Code: return new PBEPartyRequestPacket(data);
-                    case PBEPartyResponsePacket.Code: return new PBEPartyResponsePacket(data, r, battle);
+                    case PBEPartyRequestPacket.Code: return new PBEPartyRequestPacket(data, r);
+                    case PBEPartyResponsePacket.Code: return new PBEPartyResponsePacket(data, r);
                     case PBETeamPacket.Code: return new PBETeamPacket(data, r, battle);
                     case PBEPkmnSwitchInPacket.Code: return new PBEPkmnSwitchInPacket(data, r, battle);
                     case PBEActionsRequestPacket.Code: return new PBEActionsRequestPacket(data, r, battle);
@@ -69,6 +65,7 @@ namespace Kermalis.PokemonBattleEngine.Packets
                     case PBEAutoCenterPacket.Code: return new PBEAutoCenterPacket(data, r, battle);
                     case PBETypeChangedPacket.Code: return new PBETypeChangedPacket(data, r, battle);
                     case PBEAbilityReplacedPacket.Code: return new PBEAbilityReplacedPacket(data, r, battle);
+                    case PBELegalPartyResponsePacket.Code: return new PBELegalPartyResponsePacket(data, r, battle);
                     default: throw new InvalidDataException();
                 }
             }

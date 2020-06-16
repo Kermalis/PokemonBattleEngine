@@ -23,6 +23,7 @@ namespace Kermalis.PokemonBattleEngineServer
             BattleProcessing,    // Battle is running and sending events
             BattleEnded          // Battle ended
         }
+        public bool RequireLegalParties;
         private readonly PBEServer _server;
         private ServerState _state = ServerState.Resetting;
         private PBEBattle _battle;
@@ -31,27 +32,45 @@ namespace Kermalis.PokemonBattleEngineServer
         private readonly Dictionary<PBEServerClient, Player> _readyPlayers = new Dictionary<PBEServerClient, Player>();
         private readonly ManualResetEvent _resetEvent = new ManualResetEvent(true);
 
+        private static void PrintUsage()
+        {
+            Console.WriteLine("Usage:\tPokemonBattleEngineServer.dll {ip} {port} {requireLegalParties}");
+            Console.WriteLine("Example:\tPokemonBattleEngineServer.dll 127.0.0.1 8888 true");
+        }
         public static void Main(string[] args)
         {
-            PBEUtils.CreateDatabaseConnection(string.Empty);
-            new BattleServer(args);
+            if (args.Length != 3)
+            {
+                PrintUsage();
+            }
+            else
+            {
+                PBEUtils.InitEngine(string.Empty);
+                new BattleServer(args);
+            }
         }
         private BattleServer(string[] args)
         {
-            using (_server = new PBEServer())
+            if (!IPAddress.TryParse(args[0], out IPAddress ip)
+                || !ushort.TryParse(args[1], out ushort port)
+                || !bool.TryParse(args[2], out bool requireLegalParties))
             {
-                _server.ClientConnected += OnClientConnected;
-                _server.ClientDisconnected += OnClientDisconnected;
-                _server.ClientRefused += OnClientRefused;
-                _server.Error += OnError;
-                _server.Start(new IPEndPoint(IPAddress.Parse(args[0]), ushort.Parse(args[1])), 100);
-                Console.WriteLine("Server online.");
-                Reset();
-                Thread.Sleep(-1);
-                _server.ClientConnected -= OnClientConnected;
-                _server.ClientDisconnected -= OnClientDisconnected;
-                _server.ClientRefused -= OnClientRefused;
-                _server.Error -= OnError;
+                PrintUsage();
+            }
+            else
+            {
+                using (_server = new PBEServer())
+                {
+                    _server.ClientConnected += OnClientConnected;
+                    _server.ClientDisconnected += OnClientDisconnected;
+                    _server.ClientRefused += OnClientRefused;
+                    _server.Error += OnError; // Events unsubscribe in _server.Dispose()
+                    _server.Start(new IPEndPoint(ip, port), 100);
+                    RequireLegalParties = requireLegalParties;
+                    Console.WriteLine("Server online.");
+                    Reset();
+                    Thread.Sleep(-1);
+                }
             }
         }
         private void OnClientConnected(object sender, PBEServerClient client)
@@ -115,7 +134,7 @@ namespace Kermalis.PokemonBattleEngineServer
                         _state = ServerState.WaitingForParties;
                         Console.WriteLine("Two players connected! Waiting for parties...");
                         _battlers = _readyPlayers.Values.ToArray();
-                        SendTo(_battlers, new PBEPartyRequestPacket());
+                        SendTo(_battlers, new PBEPartyRequestPacket(RequireLegalParties));
                     }
                 }
             })
@@ -187,6 +206,7 @@ namespace Kermalis.PokemonBattleEngineServer
         }
         private void Reset()
         {
+            Console.WriteLine("Resetting...");
             _resetEvent.Reset();
             _state = ServerState.Resetting;
             foreach (Player c in _readyPlayers.Values.ToArray())
@@ -209,7 +229,7 @@ namespace Kermalis.PokemonBattleEngineServer
             _state = ServerState.WaitingForPlayers;
             _resetEvent.Set();
         }
-        public void PartySubmitted(Player player, PBETeamShell teamShell)
+        public void PartySubmitted(Player player, IPBEPokemonCollection party)
         {
             if (_state != ServerState.WaitingForParties)
             {
@@ -221,23 +241,7 @@ namespace Kermalis.PokemonBattleEngineServer
                 {
                     return;
                 }
-                foreach (PBEPokemonShell shell in teamShell)
-                {
-                    try
-                    {
-                        // Not currently necessary, but it would be necessary eventually because PBEMovesetBuilder cannot check if a moveset "makes sense" for the method the Pokémon was obtained in
-                        // Eventually we would probably want to store that sort of information in PBEPokemonShell
-                        //PBELegalityChecker.MoveLegalityCheck(shell.Moveset);
-                    }
-                    catch (Exception e)
-                    {
-                        Console.WriteLine($"Illegal moveset received from {player.TrainerName}");
-                        Console.WriteLine(e.Message);
-                        CancelMatch();
-                        return;
-                    }
-                }
-                PBEBattle.CreateTeamParty(_battle.Teams[player.BattleId], teamShell, player.TrainerName);
+                PBEBattle.CreateTeamParty(_battle.Teams[player.BattleId], new PBETeamInfo(party, player.TrainerName));
             }
         }
         public void ActionsSubmitted(Player player, IList<PBETurnAction> actions)
@@ -253,7 +257,7 @@ namespace Kermalis.PokemonBattleEngineServer
                     return;
                 }
                 PBETeam team = _battle.Teams[player.BattleId];
-                Console.WriteLine($"Received actions from {player.TrainerName}!");
+                Console.WriteLine($"Received actions ({player.BattleId} {player.TrainerName})");
                 if (!PBEBattle.SelectActionsIfValid(team, actions))
                 {
                     Console.WriteLine("Actions are invalid!");
@@ -274,7 +278,7 @@ namespace Kermalis.PokemonBattleEngineServer
                     return;
                 }
                 PBETeam team = _battle.Teams[player.BattleId];
-                Console.WriteLine($"Received switches from {player.TrainerName}!");
+                Console.WriteLine($"Received switches ({player.BattleId} {player.TrainerName})");
                 if (!PBEBattle.SelectSwitchesIfValid(team, switches))
                 {
                     Console.WriteLine("Switches are invalid!");
@@ -288,11 +292,10 @@ namespace Kermalis.PokemonBattleEngineServer
             Console.WriteLine("Battle state changed: {0}", battle.BattleState);
             switch (battle.BattleState)
             {
-                case PBEBattleState.ReadyToBegin:
+                case PBEBattleState.Ended:
                 {
-                    _resetEvent.Reset();
-                    Console.WriteLine("Battle starting!");
-                    new Thread(battle.Begin) { Name = "Battle Thread" }.Start();
+                    _resetEvent.Set();
+                    _state = ServerState.BattleEnded;
                     break;
                 }
                 case PBEBattleState.Processing:
@@ -301,15 +304,21 @@ namespace Kermalis.PokemonBattleEngineServer
                     _state = ServerState.BattleProcessing;
                     break;
                 }
+                case PBEBattleState.ReadyToBegin:
+                {
+                    _resetEvent.Reset();
+                    Console.WriteLine("Battle starting!");
+                    new Thread(battle.Begin) { Name = "Battle Thread" }.Start();
+                    break;
+                }
+                case PBEBattleState.ReadyToRunSwitches:
+                {
+                    new Thread(battle.RunSwitches) { Name = "Battle Thread" }.Start();
+                    break;
+                }
                 case PBEBattleState.ReadyToRunTurn:
                 {
                     new Thread(battle.RunTurn) { Name = "Battle Thread" }.Start();
-                    break;
-                }
-                case PBEBattleState.Ended:
-                {
-                    _resetEvent.Set();
-                    _state = ServerState.BattleEnded;
                     break;
                 }
             }
@@ -462,6 +471,7 @@ namespace Kermalis.PokemonBattleEngineServer
 
         public void DisconnectClient(Player player)
         {
+            Console.WriteLine($"Disconnecting client ({player.BattleId} {player.TrainerName})");
             _server.DisconnectClient(player.Client);
         }
         private void SendTo(IEnumerable<Player> players, IPBEPacket packet)

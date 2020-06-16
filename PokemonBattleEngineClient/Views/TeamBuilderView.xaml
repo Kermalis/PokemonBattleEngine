@@ -51,7 +51,7 @@
             <ColumnDefinition Width="Auto"/>
             <ColumnDefinition Width="Auto"/>
           </Grid.ColumnDefinitions>
-          <CheckBox Grid.Row="0" Grid.Column="0" HorizontalAlignment="Left" Command="{Binding UpdateSprites}" IsChecked="{Binding Shell.Shiny}" IsThreeState="False">
+          <CheckBox Grid.Row="0" Grid.Column="0" HorizontalAlignment="Left" Command="{Binding UpdateSprites}" IsChecked="{Binding Pkmn.Shiny}" IsThreeState="False">
             <Image Stretch="None" Source="{Binding Source='Shiny', Converter={x:Static infrastructure:ObjectToTextBitmapConverter.Instance}, ConverterParameter=MenuWhite, Mode=OneWay}"/>
           </CheckBox>
           <Image Grid.Row="1" Grid.Column="0" Stretch="None" HorizontalAlignment="Left" Source="{Binding Source='Species:', Converter={x:Static infrastructure:ObjectToTextBitmapConverter.Instance}, ConverterParameter=MenuWhite, Mode=OneWay}"/>
@@ -66,24 +66,24 @@
             </ComboBox.ItemTemplate>
           </ComboBox>
           <Image Grid.Row="2" Grid.Column="0" Stretch="None" HorizontalAlignment="Left" Source="{Binding Source='Form:', Converter={x:Static infrastructure:ObjectToTextBitmapConverter.Instance}, ConverterParameter=MenuWhite, Mode=OneWay}" IsVisible="{Binding !!Shell.SelectableForms.Count}"/>
-          <ComboBox Grid.Row="2" Grid.Column="1" Name="Form" Items="{Binding Shell.SelectableForms, Mode=OneWay}" ItemTemplate="{StaticResource FormMenuBlack}" IsVisible="{Binding !!Shell.SelectableForms.Count}"/>
+          <ComboBox Grid.Row="2" Grid.Column="1" Name="Form" Items="{Binding Pkmn.SelectableForms, Mode=OneWay}" ItemTemplate="{StaticResource FormMenuBlack}" IsVisible="{Binding !!Pkmn.SelectableForms.Count}"/>
           <Image Grid.Row="3" Grid.Column="0" Stretch="None" HorizontalAlignment="Left" Source="{Binding Source='Nickname:', Converter={x:Static infrastructure:ObjectToTextBitmapConverter.Instance}, ConverterParameter=MenuWhite, Mode=OneWay}"/>
-          <TextBox Grid.Row="3" Grid.Column="1" Text="{Binding Shell.Nickname}"/>
+          <TextBox Grid.Row="3" Grid.Column="1" Text="{Binding Pkmn.Nickname}"/>
           <Image Grid.Row="4" Grid.Column="0" Stretch="None" HorizontalAlignment="Left" Source="{Binding Source='Level:', Converter={x:Static infrastructure:ObjectToTextBitmapConverter.Instance}, ConverterParameter=MenuWhite, Mode=OneWay}"/>
-          <NumericUpDown Grid.Row="4" Grid.Column="1" Minimum="{Binding Team.Shell.Settings.MinLevel, Mode=OneWay}" Maximum="{Binding Team.Shell.Settings.MaxLevel, Mode=OneWay}" ClipValueToMinMax="true" Value="{Binding Shell.Level}"/>
+          <NumericUpDown Grid.Row="4" Grid.Column="1" Minimum="{Binding Pkmn.Settings.MinLevel, Mode=OneWay}" Maximum="{Binding Pkmn.Settings.MaxLevel, Mode=OneWay}" ClipValueToMinMax="true" Value="{Binding Pkmn.Level}"/>
           <Image Grid.Row="5" Grid.Column="0" Stretch="None" HorizontalAlignment="Left" Source="{Binding Source='Friendship:', Converter={x:Static infrastructure:ObjectToTextBitmapConverter.Instance}, ConverterParameter=MenuWhite, Mode=OneWay}"/>
-          <NumericUpDown Grid.Row="5" Grid.Column="1" Minimum="0" Maximum="255" ClipValueToMinMax="true" Value="{Binding Shell.Friendship}"/>
+          <NumericUpDown Grid.Row="5" Grid.Column="1" Minimum="0" Maximum="255" ClipValueToMinMax="true" Value="{Binding Pkmn.Friendship}"/>
           <Image Grid.Row="6" Grid.Column="0" Stretch="None" HorizontalAlignment="Left" Source="{Binding Source='Ability:', Converter={x:Static infrastructure:ObjectToTextBitmapConverter.Instance}, ConverterParameter=MenuWhite, Mode=OneWay}"/>
-          <ComboBox Grid.Row="6" Grid.Column="1" Name="Ability" Items="{Binding Shell.SelectableAbilities, Mode=OneWay}" ItemTemplate="{StaticResource MenuBlack}"/>
+          <ComboBox Grid.Row="6" Grid.Column="1" Name="Ability" Items="{Binding Pkmn.SelectableAbilities, Mode=OneWay}" ItemTemplate="{StaticResource MenuBlack}"/>
           <Image Grid.Row="7" Grid.Column="0" Stretch="None" HorizontalAlignment="Left" Source="{Binding Source='Nature:', Converter={x:Static infrastructure:ObjectToTextBitmapConverter.Instance}, ConverterParameter=MenuWhite, Mode=OneWay}"/>
-          <ComboBox Grid.Row="7" Grid.Column="1" Items="{x:Static pbedata:PBEDataUtils.AllNatures}" ItemTemplate="{StaticResource MenuBlack}" SelectedItem="{Binding Shell.Nature}"/>
+          <ComboBox Grid.Row="7" Grid.Column="1" Items="{x:Static pbedata:PBEDataUtils.AllNatures}" ItemTemplate="{StaticResource MenuBlack}" SelectedItem="{Binding Pkmn.Nature}"/>
           <Image Grid.Row="8" Grid.Column="0" Stretch="None" HorizontalAlignment="Left" Source="{Binding Source='Gender:', Converter={x:Static infrastructure:ObjectToTextBitmapConverter.Instance}, ConverterParameter=MenuWhite, Mode=OneWay}"/>
-          <ComboBox Grid.Row="8" Grid.Column="1" Name="Gender" Items="{Binding Shell.SelectableGenders, Mode=OneWay}" ItemTemplate="{StaticResource MenuBlack}"/>
+          <ComboBox Grid.Row="8" Grid.Column="1" Name="Gender" Items="{Binding Pkmn.SelectableGenders, Mode=OneWay}" ItemTemplate="{StaticResource MenuBlack}"/>
           <Image Grid.Row="9" Grid.Column="0" Stretch="None" HorizontalAlignment="Left" Source="{Binding Source='Item:', Converter={x:Static infrastructure:ObjectToTextBitmapConverter.Instance}, ConverterParameter=MenuWhite, Mode=OneWay}"/>
-          <ComboBox Grid.Row="9" Grid.Column="1" Name="Item" Items="{Binding Shell.SelectableItems, Mode=OneWay}" ItemTemplate="{StaticResource MenuBlack}"/>
+          <ComboBox Grid.Row="9" Grid.Column="1" Name="Item" Items="{Binding Pkmn.SelectableItems, Mode=OneWay}" ItemTemplate="{StaticResource MenuBlack}"/>
         </Grid>
         <Panel Width="192" Height="192">
-          <Image Stretch="None" HorizontalAlignment="Center" VerticalAlignment="Center" RenderOptions.BitmapInterpolationMode="Default" gif:GifImage.SourceStream="{Binding SpriteStream}">
+          <Image Stretch="None" HorizontalAlignment="Center" VerticalAlignment="Center" RenderOptions.BitmapInterpolationMode="Default" gif:GifImage.SourceUri="{Binding SpriteUri}">
             <Image.RenderTransform>
               <ScaleTransform ScaleX="2" ScaleY="2"/>
             </Image.RenderTransform>
@@ -102,7 +102,7 @@
           <ColumnDefinition Width="Auto"/>
         </Grid.ColumnDefinitions>
         <Image Grid.Row="0" Grid.Column="0" Stretch="None" HorizontalAlignment="Left" Source="{Binding Source='EVs:', Converter={x:Static infrastructure:ObjectToTextBitmapConverter.Instance}, ConverterParameter=MenuWhite, Mode=OneWay}"/>
-        <ItemsControl Grid.Row="0" Grid.Column="1" Items="{Binding Shell.EffortValues, Mode=OneWay}">
+        <ItemsControl Grid.Row="0" Grid.Column="1" Items="{Binding Pkmn.EffortValues, Mode=OneWay}">
           <ItemsControl.ItemsPanel>
             <ItemsPanelTemplate>
               <WrapPanel />
@@ -118,12 +118,12 @@
           </ItemsControl.ItemTemplate>
         </ItemsControl>
         <StackPanel Grid.Row="0" Grid.Column="2" Orientation="Horizontal">
-          <Image Stretch="None" HorizontalAlignment="Left" Source="{Binding Shell.EffortValues.StatTotal, Converter={x:Static infrastructure:ObjectToTextBitmapConverter.Instance}, ConverterParameter=MenuWhite, Mode=OneWay}"/>
+          <Image Stretch="None" HorizontalAlignment="Left" Source="{Binding Pkmn.EffortValues.StatTotal, Converter={x:Static infrastructure:ObjectToTextBitmapConverter.Instance}, ConverterParameter=MenuWhite, Mode=OneWay}"/>
           <Image Stretch="None" HorizontalAlignment="Left" Source="{Binding Source='/', Converter={x:Static infrastructure:ObjectToTextBitmapConverter.Instance}, ConverterParameter=MenuWhite, Mode=OneWay}"/>
-          <Image Stretch="None" HorizontalAlignment="Left" Source="{Binding Team.Shell.Settings.MaxTotalEVs, Converter={x:Static infrastructure:ObjectToTextBitmapConverter.Instance}, ConverterParameter=MenuWhite, Mode=OneWay}"/>
+          <Image Stretch="None" HorizontalAlignment="Left" Source="{Binding Pkmn.Settings.MaxTotalEVs, Converter={x:Static infrastructure:ObjectToTextBitmapConverter.Instance}, ConverterParameter=MenuWhite, Mode=OneWay}"/>
         </StackPanel>
         <Image Grid.Row="1" Grid.Column="0" Stretch="None" HorizontalAlignment="Left" Source="{Binding Source='IVs:', Converter={x:Static infrastructure:ObjectToTextBitmapConverter.Instance}, ConverterParameter=MenuWhite, Mode=OneWay}"/>
-        <ItemsControl Grid.Row="1" Grid.Column="1" Items="{Binding Shell.IndividualValues, Mode=OneWay}">
+        <ItemsControl Grid.Row="1" Grid.Column="1" Items="{Binding Pkmn.IndividualValues, Mode=OneWay}">
           <ItemsControl.ItemsPanel>
             <ItemsPanelTemplate>
               <WrapPanel />
@@ -131,17 +131,17 @@
           </ItemsControl.ItemsPanel>
           <ItemsControl.ItemTemplate>
             <DataTemplate>
-              <NumericUpDown Minimum="0" Maximum="{Binding RelativeSource={RelativeSource AncestorType=views:TeamBuilderView}, Path=Team.Shell.Settings.MaxIVs, Mode=OneWay}" ClipValueToMinMax="True" Value="{Binding Value}"/>
+              <NumericUpDown Minimum="0" Maximum="{Binding RelativeSource={RelativeSource AncestorType=views:TeamBuilderView}, Path=Pkmn.Settings.MaxIVs, Mode=OneWay}" ClipValueToMinMax="True" Value="{Binding Value}"/>
             </DataTemplate>
           </ItemsControl.ItemTemplate>
         </ItemsControl>
         <StackPanel Grid.Row="1" Grid.Column="2" Orientation="Horizontal">
-          <Image Stretch="None" HorizontalAlignment="Left" Source="{Binding Shell.IndividualValues.HiddenPowerType, Converter={x:Static infrastructure:ObjectToTextBitmapConverter.Instance}, ConverterParameter=MenuWhite, Mode=OneWay}"/>
+          <Image Stretch="None" HorizontalAlignment="Left" Source="{Binding Pkmn.IndividualValues.HiddenPowerType, Converter={x:Static infrastructure:ObjectToTextBitmapConverter.Instance}, ConverterParameter=MenuWhite, Mode=OneWay}"/>
           <Image Stretch="None" HorizontalAlignment="Left" Source="{Binding Source='|', Converter={x:Static infrastructure:ObjectToTextBitmapConverter.Instance}, ConverterParameter=MenuWhite, Mode=OneWay}"/>
-          <Image Stretch="None" HorizontalAlignment="Left" Source="{Binding Shell.IndividualValues.HiddenPowerBasePower, Converter={x:Static infrastructure:ObjectToTextBitmapConverter.Instance}, ConverterParameter=MenuWhite, Mode=OneWay}"/>
+          <Image Stretch="None" HorizontalAlignment="Left" Source="{Binding Pkmn.IndividualValues.HiddenPowerBasePower, Converter={x:Static infrastructure:ObjectToTextBitmapConverter.Instance}, ConverterParameter=MenuWhite, Mode=OneWay}"/>
         </StackPanel>
         <Image Grid.Row="2" Grid.Column="0" Stretch="None" HorizontalAlignment="Left" Source="{Binding Source='Moves:&#x0a;&#x0a;PP-Ups:', Converter={x:Static infrastructure:ObjectToTextBitmapConverter.Instance}, ConverterParameter=MenuWhite, Mode=OneWay}"/>
-        <ItemsControl Grid.Row="2" Grid.Column="1" Items="{Binding Shell.Moveset, Mode=OneWay}">
+        <ItemsControl Grid.Row="2" Grid.Column="1" Items="{Binding Pkmn.Moveset, Mode=OneWay}">
           <ItemsControl.ItemsPanel>
             <ItemsPanelTemplate>
               <WrapPanel />
@@ -151,7 +151,7 @@
             <DataTemplate>
               <StackPanel Orientation="Vertical">
                 <ComboBox Items="{Binding Allowed, Mode=OneWay}" ItemTemplate="{StaticResource MenuBlack}" SelectedItem="{Binding Move}" IsEnabled="{Binding IsMoveEditable, Mode=OneWay}"/>
-                <NumericUpDown Minimum="0" Maximum="{Binding RelativeSource={RelativeSource AncestorType=views:TeamBuilderView}, Path=Team.Shell.Settings.MaxPPUps, Mode=OneWay}" ClipValueToMinMax="True" IsEnabled="{Binding IsPPUpsEditable, Mode=OneWay}" Value="{Binding PPUps}"/>
+                <NumericUpDown Minimum="0" Maximum="{Binding RelativeSource={RelativeSource AncestorType=views:TeamBuilderView}, Path=Pkmn.Settings.MaxPPUps, Mode=OneWay}" ClipValueToMinMax="True" IsEnabled="{Binding IsPPUpsEditable, Mode=OneWay}" Value="{Binding PPUps}"/>
               </StackPanel>
             </DataTemplate>
           </ItemsControl.ItemTemplate>
@@ -167,7 +167,7 @@
           <Image Stretch="None" Source="{Binding Source='Remove', Converter={x:Static infrastructure:ObjectToTextBitmapConverter.Instance}, ConverterParameter=MenuBlack, Mode=OneWay}"/>
         </Button>
       </StackPanel>
-      <ListBox Name="Party" Items="{Binding Team.Shell, Mode=OneWay}" SelectedItem="{Binding Shell}" SelectionMode="AlwaysSelected">
+      <ListBox Name="Party" Items="{Binding Team.Party, Mode=OneWay}" SelectedItem="{Binding Pkmn}" SelectionMode="AlwaysSelected">
         <ListBox.ItemTemplate>
           <DataTemplate>
             <StackPanel Spacing="4" Orientation="Horizontal">

@@ -195,6 +195,9 @@ namespace Kermalis.PokemonBattleEngine.Network
         public void Dispose()
         {
             Disconnect(true);
+            Disconnected = null;
+            Error = null;
+            PacketReceived = null;
         }
     }
 }

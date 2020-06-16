@@ -50,7 +50,7 @@ namespace Kermalis.PokemonBattleEngine.Packets
                 Data = new ReadOnlyCollection<byte>(ms.ToArray());
             }
         }
-        internal PBEPkmnFormChangedPacket(PBEPokemon pokemon, bool isRevertForm)
+        internal PBEPkmnFormChangedPacket(PBEBattlePokemon pokemon, bool isRevertForm)
             : this(pokemon.FieldPosition, pokemon.Team, pokemon.Attack, pokemon.Defense, pokemon.SpAttack, pokemon.SpDefense, pokemon.Speed, pokemon.Ability, pokemon.KnownAbility, pokemon.Form, pokemon.Type1, pokemon.Type2, pokemon.Weight, isRevertForm) { }
         internal PBEPkmnFormChangedPacket(byte[] data, EndianBinaryReader r, PBEBattle battle)
         {

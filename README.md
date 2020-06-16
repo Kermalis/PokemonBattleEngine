@@ -4,25 +4,31 @@ Pokémon Battle Engine is a C# library that can emulate Pokémon battles.
 This repository includes the engine library, a Windows/Linux/MacOS/Android/iOS client, a server, a Discord bot, and some extra code to rip data from the official games.
 The engine only emulates Pokémon B2W2 versions, so nothing introduced after generation 5 is included and neither are generation 1/2 exclusive items, event Pokémon, and move compatibility.
 
-![Client Preview](Client_Preview.gif)
+![Client Preview](Client%20Preview.gif)
 
 The engine does not send information a player should not know; information only gets sent to each player/spectator when it is revealed.
 For example, a client has no way of knowing if the opponent has sent out a Pokémon with Illusion, the opponent's nature, stats, Hidden Power damage/type, unused item/moves, etc.
-Therefore, a custom/modified client cannot do anything more than an ordinary player unless it is hosting the battle. A lot of work has been done to prevent any cheating, so if there are any exploits, create an issue please!
+Therefore, a custom/modified client cannot do anything more than an ordinary player unless it is hosting the battle. A lot of work has been done to prevent any cheating.
 
-There are also [settings](PokemonBattleEngine/Data/Settings.cs) that you can change. Have you ever wanted to have level 200 Pokémon or 8 moves? You can do that!
+Join our _(new)_ [Discord server](https://discord.gg/Z4Mn9qX) to talk or try out the battle bot!
 
-Currently, you need to change the settings to be identical for the server and all connected clients for the server to accept parties/actions and for the clients to communicate without crashing.
-This will change in the future as the server will send the settings to all connected clients.
+![Discord Preview](Discord%20Preview.gif)
+
+# Other Features:
+* There are [settings](PokemonBattleEngine/Data/Settings.cs) that you can change, such as having more moves, a higher maximum level, or weaker poison.
+* There are helper classes to build legal Pokémon, as well as require legality for a battle.
+* Alternatively, you can represent the Pokémon in any way you wish, as long as you have the basic info to start the battle. This works well with custom games.
+* You can save battle replays to watch them back in the client or to train a neural network.
+* There is a work-in-progress random team generator inspired by [Pokémon Showdown](https://github.com/smogon/pokemon-showdown)'s which aims to work well with custom settings and moves.
+* The library has classes which automatically use the correct language from the games, meaning you can see the Pokémon's names, items, etc in your language, as long as your language was one supported by Pokémon B2W2.
 
 ----
 # To Do:
-* Triple-battle shifting and Rotation-battles
+* Triple-battle shifting, Multi-battles, Wild-battles, Rotation-battles, and "Bag" items
 * Complete [the Pokémon data dumper](PokemonBattleEngineTesting/PokemonDataDumper.cs)
-* Separate form-specific moves in Pokémon data and instead have legality checker do some work
-* Add lots of items, moves, and volatile statuses (taunt, torment, etc. are volatile statuses)
+* Add the remaining vanilla [abilities](To%20Do%20Abilities.txt), [held items](To%20Do%20Items.txt), and [moves](To%20Do%20Moves.txt)
 * Finish adding all event Pokémon
-* Add previews of Discord and Android/iOS
+* Add previews of the Android/iOS apps
 
 ----
 # PokemonBattleEngine Uses:

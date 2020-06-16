@@ -1,6 +1,7 @@
 ﻿using Avalonia.Controls;
 using Avalonia.Markup.Xaml;
 using Kermalis.PokemonBattleEngine.Data;
+using Kermalis.PokemonBattleEngine.Data.Legality;
 using Kermalis.PokemonBattleEngineClient.Infrastructure;
 using Kermalis.PokemonBattleEngineClient.Models;
 using System;
@@ -19,37 +20,37 @@ namespace Kermalis.PokemonBattleEngineClient.Views
         }
         public new event PropertyChangedEventHandler PropertyChanged;
 
-        private Stream _spriteStream;
-        public Stream SpriteStream
+        private Uri _spriteUri;
+        public Uri SpriteUri
         {
-            get => _spriteStream;
+            get => _spriteUri;
             private set
             {
-                if (_spriteStream != value)
+                if (_spriteUri != value)
                 {
-                    _spriteStream = value;
-                    OnPropertyChanged(nameof(SpriteStream));
+                    _spriteUri = value;
+                    OnPropertyChanged(nameof(SpriteUri));
                 }
             }
         }
 
-        private PBEPokemonShell _shell;
-        public PBEPokemonShell Shell
+        private PBELegalPokemon _pkmn;
+        public PBELegalPokemon Pkmn
         {
-            get => _shell;
+            get => _pkmn;
             set
             {
-                if (_shell != value)
+                if (_pkmn != value)
                 {
-                    PBEPokemonShell old = _shell;
+                    PBELegalPokemon old = _pkmn;
                     if (old != null)
                     {
-                        old.PropertyChanged -= OnShellPropertyChanged;
+                        old.PropertyChanged -= OnPkmnPropertyChanged;
                     }
-                    _shell = value;
-                    value.PropertyChanged += OnShellPropertyChanged;
+                    _pkmn = value;
+                    value.PropertyChanged += OnPkmnPropertyChanged;
                     _ignoreComboBoxChanges = true;
-                    OnPropertyChanged(nameof(Shell));
+                    OnPropertyChanged(nameof(Pkmn));
                     UpdateComboBoxes(null);
                     _ignoreComboBoxChanges = false;
                 }
@@ -93,35 +94,35 @@ namespace Kermalis.PokemonBattleEngineClient.Views
             {
                 switch (property)
                 {
-                    case nameof(PBEPokemonShell.Ability): ability = true; break;
-                    case nameof(PBEPokemonShell.Form): form = true; break;
-                    case nameof(PBEPokemonShell.Gender): gender = true; break;
-                    case nameof(PBEPokemonShell.Item): item = true; break;
-                    case nameof(PBEPokemonShell.Species): species = true; break;
+                    case nameof(PBELegalPokemon.Ability): ability = true; break;
+                    case nameof(PBELegalPokemon.Form): form = true; break;
+                    case nameof(PBELegalPokemon.Gender): gender = true; break;
+                    case nameof(PBELegalPokemon.Item): item = true; break;
+                    case nameof(PBELegalPokemon.Species): species = true; break;
                 }
             }
             if (ability)
             {
-                _abilityComboBox.SelectedItem = _shell.Ability;
+                _abilityComboBox.SelectedItem = _pkmn.Ability;
             }
             if (form)
             {
-                _formComboBox.SelectedItem = _shell.Form;
+                _formComboBox.SelectedItem = _pkmn.Form;
             }
             if (gender)
             {
-                _genderComboBox.SelectedItem = _shell.Gender;
+                _genderComboBox.SelectedItem = _pkmn.Gender;
             }
             if (item)
             {
-                _itemComboBox.SelectedItem = _shell.Item;
+                _itemComboBox.SelectedItem = _pkmn.Item;
             }
             if (species)
             {
-                _speciesComboBox.SelectedItem = _shell.Species;
+                _speciesComboBox.SelectedItem = _pkmn.Species;
             }
         }
-        private void OnShellPropertyChanged(object sender, PropertyChangedEventArgs e)
+        private void OnPkmnPropertyChanged(object sender, PropertyChangedEventArgs e)
         {
             UpdateComboBoxes(e.PropertyName);
         }
@@ -133,23 +134,23 @@ namespace Kermalis.PokemonBattleEngineClient.Views
                 var c = (ComboBox)sender;
                 if (c == _abilityComboBox)
                 {
-                    _shell.Ability = (PBEAbility)c.SelectedItem;
+                    _pkmn.Ability = (PBEAbility)c.SelectedItem;
                 }
                 else if (c == _formComboBox)
                 {
-                    _shell.Form = (PBEForm)c.SelectedItem;
+                    _pkmn.Form = (PBEForm)c.SelectedItem;
                 }
                 else if (c == _genderComboBox)
                 {
-                    _shell.Gender = (PBEGender)c.SelectedItem;
+                    _pkmn.Gender = (PBEGender)c.SelectedItem;
                 }
                 else if (c == _itemComboBox)
                 {
-                    _shell.Item = (PBEItem)c.SelectedItem;
+                    _pkmn.Item = (PBEItem)c.SelectedItem;
                 }
                 else if (c == _speciesComboBox)
                 {
-                    _shell.Species = (PBESpecies)c.SelectedItem;
+                    _pkmn.Species = (PBESpecies)c.SelectedItem;
                 }
                 _ignoreComboBoxChanges = false;
             }
@@ -187,7 +188,7 @@ namespace Kermalis.PokemonBattleEngineClient.Views
                     for (int i = 0; i < files.Length; i++)
                     {
                         string file = files[i];
-                        Teams.Add(new TeamInfo(Path.GetFileNameWithoutExtension(file), new PBETeamShell(file)));
+                        Teams.Add(new TeamInfo(Path.GetFileNameWithoutExtension(file), new PBELegalPokemonCollection(file)));
                     }
                     Team = Teams[0];
                     return;
@@ -202,10 +203,10 @@ namespace Kermalis.PokemonBattleEngineClient.Views
 
         public void AddTeam()
         {
-            var t = new TeamInfo($"Team {DateTime.Now.Ticks}", new PBETeamShell(new PBESettings(PBESettings.DefaultSettings), 1, true));
+            var t = new TeamInfo($"Team {DateTime.Now.Ticks}", new PBELegalPokemonCollection(PBESettings.DefaultSettings, 1, true));
             Teams.Add(t);
             Team = t;
-            Shell = t.Shell[0];
+            Pkmn = t.Party[0];
         }
         public void RemoveTeam()
         {
@@ -219,32 +220,32 @@ namespace Kermalis.PokemonBattleEngineClient.Views
         }
         public void SaveTeam()
         {
-            _team.Shell.ToJsonFile(Path.Combine(_teamPath, $"{_team.Name}.json"));
+            _team.Party.ToJsonFile(Path.Combine(_teamPath, $"{_team.Name}.json"));
         }
         public void AddPartyMember()
         {
-            int index = _team.Shell.Count;
-            _team.Shell.AddRandom(true);
-            Shell = _team.Shell[index];
+            int index = _team.Party.Count;
+            _team.Party.AddRandom(true);
+            Pkmn = _team.Party[index];
         }
         public void RemovePartyMember()
         {
-            _team.Shell.Remove(_shell);
+            _team.Party.Remove(_pkmn);
         }
         private void OnSelectedTeamSizeChanged(object sender, NotifyCollectionChangedEventArgs e)
         {
-            _addPartyButton.IsEnabled = _team.Shell.Count < _team.Shell.Settings.MaxPartySize;
-            _removePartyButton.IsEnabled = _team.Shell.Count > 1;
+            _addPartyButton.IsEnabled = _team.Party.Count < _team.Party.Settings.MaxPartySize;
+            _removePartyButton.IsEnabled = _team.Party.Count > 1;
         }
         private void OnSelectedTeamChanged(object sender, SelectionChangedEventArgs e)
         {
             for (int i = 0; i < e.RemovedItems.Count; i++)
             {
-                ((TeamInfo)e.RemovedItems[i]).Shell.CollectionChanged -= OnSelectedTeamSizeChanged;
+                ((TeamInfo)e.RemovedItems[i]).Party.CollectionChanged -= OnSelectedTeamSizeChanged;
             }
-            _team.Shell.CollectionChanged += OnSelectedTeamSizeChanged;
+            _team.Party.CollectionChanged += OnSelectedTeamSizeChanged;
             OnSelectedTeamSizeChanged(null, null);
-            Shell = _team.Shell[0];
+            Pkmn = _team.Party[0];
         }
         private void OnVisualChanged(object sender, SelectionChangedEventArgs e)
         {
@@ -252,7 +253,7 @@ namespace Kermalis.PokemonBattleEngineClient.Views
         }
         public void UpdateSprites()
         {
-            SpriteStream = Utils.GetPokemonSpriteStream(_shell);
+            SpriteUri = Utils.GetPokemonSpriteUri(_pkmn);
             // Force redraw of minisprite
             if (_partyListBox.ItemContainerGenerator.ContainerFromIndex(_partyListBox.SelectedIndex) is ListBoxItem item)
             {

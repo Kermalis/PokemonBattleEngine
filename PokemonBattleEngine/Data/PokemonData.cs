@@ -1,4 +1,5 @@
-﻿using Kermalis.PokemonBattleEngine.Utils;
+﻿using Kermalis.PokemonBattleEngine.Data.Legality;
+using Kermalis.PokemonBattleEngine.Utils;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -9,7 +10,7 @@ namespace Kermalis.PokemonBattleEngine.Data
     {
         public PBESpecies Species { get; }
         public PBEForm Form { get; }
-        public PBEBaseStats BaseStats { get; }
+        public PBEReadOnlyStatCollection BaseStats { get; }
         public PBEType Type1 { get; }
         public PBEType Type2 { get; }
         public PBEGenderRatio GenderRatio { get; }
@@ -21,7 +22,7 @@ namespace Kermalis.PokemonBattleEngine.Data
         public ReadOnlyCollection<(PBEMove Move, byte Level, PBEMoveObtainMethod ObtainMethod)> LevelUpMoves { get; }
         public ReadOnlyCollection<(PBEMove Move, PBEMoveObtainMethod ObtainMethod)> OtherMoves { get; }
 
-        private PBEPokemonData(PBESpecies species, PBEForm form, PBEBaseStats baseStats,
+        private PBEPokemonData(PBESpecies species, PBEForm form, PBEReadOnlyStatCollection baseStats,
             PBEType type1, PBEType type2, PBEGenderRatio genderRatio, double weight,
             PBESpecies[] preEvolutions,
             PBESpecies[] evolutions,
@@ -49,7 +50,7 @@ namespace Kermalis.PokemonBattleEngine.Data
 
         #region Database Querying
 
-        private class SearchResult
+        private class SearchResult : IPBEStatCollection
         {
             public ushort Species { get; set; }
             public byte Form { get; set; }
@@ -73,7 +74,7 @@ namespace Kermalis.PokemonBattleEngine.Data
 
         public static PBEPokemonData GetData(PBESpecies species, PBEForm form, bool cache = true)
         {
-            PBEPokemonShell.ValidateSpecies(species, form, false);
+            PBELegalityChecker.ValidateSpecies(species, form, false);
             List<SearchResult> results = PBEUtils.QueryDatabase<SearchResult>($"SELECT * FROM PokemonData WHERE Species={(ushort)species}");
             SearchResult result = results[0];
             foreach (SearchResult r in results)
@@ -85,7 +86,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                 }
             }
 
-            var baseStats = new PBEBaseStats(result.HP, result.Attack, result.Defense, result.SpAttack, result.SpDefense, result.Speed);
+            var baseStats = new PBEReadOnlyStatCollection(result);
             var type1 = (PBEType)result.Type1;
             var type2 = (PBEType)result.Type2;
             var genderRatio = (PBEGenderRatio)result.GenderRatio;

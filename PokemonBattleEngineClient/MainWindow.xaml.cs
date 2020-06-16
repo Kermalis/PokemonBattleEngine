@@ -14,5 +14,11 @@ namespace Kermalis.PokemonBattleEngineClient
             theme.TryGetResource("Button", out _);
             AvaloniaXamlLoader.Load(this);
         }
+
+        protected override bool HandleClosing()
+        {
+            this.FindControl<MainView>("Main").HandleClosing();
+            return base.HandleClosing();
+        }
     }
 }

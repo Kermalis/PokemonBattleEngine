@@ -17,7 +17,7 @@ namespace Kermalis.PokemonBattleEngineClient.Views
         }
         public new event PropertyChangedEventHandler PropertyChanged;
 
-        private PBEPokemon _pokemon;
+        private PBEBattlePokemon _pokemon;
         private Point _location;
         public Point Location
         {
@@ -35,19 +35,22 @@ namespace Kermalis.PokemonBattleEngineClient.Views
         private bool _showEverything1;
         public string Description => Utils.CustomPokemonToString(_pokemon, _showEverything0, _showEverything1);
 
+        private readonly Image _sprite;
+
         public PokemonView()
         {
             DataContext = this;
             AvaloniaXamlLoader.Load(this);
+
+            _sprite = this.FindControl<Image>("Sprite");
         }
 
-        public void Update(PBEPokemon pkmn, bool backSprite, bool showEverything0, bool showEverything1)
+        public void Update(PBEBattlePokemon pkmn, bool backSprite, bool showEverything0, bool showEverything1)
         {
             _showEverything0 = showEverything0;
             _showEverything1 = showEverything1;
             _pokemon = pkmn;
 
-            Image sprite = this.FindControl<Image>("Sprite");
             // Bounce/Fly/SkyDrop / Dig / Dive / ShadowForce
             PBEStatus2 status2 = Utils.ShouldShowEverything(pkmn.Team, showEverything0, showEverything1) ? _pokemon.Status2 : _pokemon.KnownStatus2;
             double opacity = 1;
@@ -62,10 +65,8 @@ namespace Kermalis.PokemonBattleEngineClient.Views
                     opacity *= 0.4;
                 }
             }
-            sprite.Opacity = opacity;
-            GifImage.SetSourceStream(sprite, Utils.GetPokemonSpriteStream(_pokemon, backSprite));
-
-            IsVisible = true;
+            _sprite.Opacity = opacity;
+            GifImage.SetSourceUri(_sprite, Utils.GetPokemonSpriteUri(_pokemon, backSprite));
         }
     }
 }

@@ -34,7 +34,7 @@ namespace Kermalis.PokemonBattleEngine.Packets
                 Data = new ReadOnlyCollection<byte>(ms.ToArray());
             }
         }
-        internal PBEAutoCenterPacket(PBEPokemon pokemon1, PBEFieldPosition pokemon1OldPosition, PBEPokemon pokemon2, PBEFieldPosition pokemon2OldPosition)
+        internal PBEAutoCenterPacket(PBEBattlePokemon pokemon1, PBEFieldPosition pokemon1OldPosition, PBEBattlePokemon pokemon2, PBEFieldPosition pokemon2OldPosition)
             : this(pokemon1.Id, pokemon1OldPosition, pokemon1.Team, pokemon2.Id, pokemon2OldPosition, pokemon2.Team) { }
         internal PBEAutoCenterPacket(byte[] data, EndianBinaryReader r, PBEBattle battle)
         {

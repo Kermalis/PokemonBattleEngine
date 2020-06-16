@@ -1053,9 +1053,10 @@ namespace Kermalis.PokemonBattleEngineExtras
         // TODO: Basculin_Blue extra abilities
         // TODO: Pichu & VoltTackle
         // TODO: Egg move logic (currently we only kept the possible egg moves, but no logic that assigns them, so it is incorrect)
-#pragma warning disable CS8321 // Local function is declared but never used
+        // TODO: Shedinja with SwordsDance
         public static void Run(SqliteConnection con)
         {
+#pragma warning disable CS8321 // Local function is declared but never used
             using (var r = new EndianBinaryReader(File.OpenRead(@"../../../\DumpedData\R.gba"), Endianness.LittleEndian))
             using (var s = new EndianBinaryReader(File.OpenRead(@"../../../\DumpedData\S.gba"), Endianness.LittleEndian))
             using (var fr = new EndianBinaryReader(File.OpenRead(@"../../../\DumpedData\FR.gba"), Endianness.LittleEndian))

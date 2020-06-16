@@ -3,6 +3,8 @@ using Kermalis.PokemonBattleEngine.Data;
 using Kermalis.PokemonBattleEngine.Packets;
 using Kermalis.PokemonBattleEngine.Utils;
 using System;
+using System.Collections;
+using System.Collections.Generic;
 using System.IO;
 using System.Text;
 using Xunit;
@@ -20,10 +22,10 @@ namespace Kermalis.PokemonBattleEngineTests
     {
         public TestUtils()
         {
-            PBEUtils.CreateDatabaseConnection(string.Empty);
+            PBEUtils.InitEngine(string.Empty);
         }
 
-        public static bool VerifyMoveResult(PBEBattle battle, PBEPokemon moveUser, PBEPokemon pokemon2, PBEResult result)
+        public static bool VerifyMoveResult(PBEBattle battle, PBEBattlePokemon moveUser, PBEBattlePokemon pokemon2, PBEResult result)
         {
             foreach (IPBEPacket packet in battle.Events)
             {
@@ -62,5 +64,124 @@ namespace Kermalis.PokemonBattleEngineTests
             }
         }
         #endregion
+    }
+
+    public class TestMoveset : IPBEMoveset, IPBEMoveset<TestMoveset.TestMovesetSlot>
+    {
+        public sealed class TestMovesetSlot : IPBEMovesetSlot
+        {
+            public PBEMove Move { get; }
+            public byte PPUps { get; }
+
+            public TestMovesetSlot(PBEMove move, byte ppUps)
+            {
+                Move = move;
+                PPUps = ppUps;
+            }
+        }
+
+        private readonly TestMovesetSlot[] _list;
+        public int Count => _list.Length;
+        public TestMovesetSlot this[int index]
+        {
+            get
+            {
+                if (index >= _list.Length)
+                {
+                    throw new ArgumentOutOfRangeException(nameof(index));
+                }
+                return _list[index];
+            }
+        }
+        IPBEMovesetSlot IReadOnlyList<IPBEMovesetSlot>.this[int index] => this[index];
+
+        public TestMoveset(PBESettings settings, PBEMove[] moves)
+        {
+            int numMoves = settings.NumMoves;
+            _list = new TestMovesetSlot[numMoves];
+            int count = moves.Length;
+            int i = 0;
+            for (; i < count; i++)
+            {
+                _list[i] = new TestMovesetSlot(moves[i], 0);
+            }
+            for (; i < numMoves; i++)
+            {
+                _list[i] = new TestMovesetSlot(PBEMove.None, 0);
+            }
+        }
+
+        public IEnumerator<TestMovesetSlot> GetEnumerator()
+        {
+            for (int i = 0; i < _list.Length; i++)
+            {
+                yield return _list[i];
+            }
+        }
+        IEnumerator<IPBEMovesetSlot> IEnumerable<IPBEMovesetSlot>.GetEnumerator()
+        {
+            return GetEnumerator();
+        }
+        IEnumerator IEnumerable.GetEnumerator()
+        {
+            return GetEnumerator();
+        }
+    }
+    public class TestPokemon : IPBEPokemon
+    {
+        public PBESpecies Species { get; set; }
+        public PBEForm Form { get; set; }
+        public PBEGender Gender { get; set; }
+        public string Nickname { get; set; }
+        public bool Shiny { get; set; }
+        public byte Level { get; set; }
+        public PBEItem Item { get; set; }
+        public byte Friendship { get; set; }
+        public PBEAbility Ability { get; set; }
+        public PBENature Nature { get; set; }
+        public IPBEStatCollection EffortValues { get; set; }
+        public IPBEReadOnlyStatCollection IndividualValues { get; set; }
+        public TestMoveset Moveset { get; set; }
+        IPBEMoveset IPBEPokemon.Moveset => Moveset;
+
+        public TestPokemon(PBESpecies species, PBEForm form, byte level)
+        {
+            Species = species;
+            Form = form;
+            Level = level;
+            Nickname = species.ToString();
+            Gender = PBERandom.RandomGender(PBEPokemonData.GetData(species, form).GenderRatio);
+            EffortValues = new PBEStatCollection(0, 0, 0, 0, 0, 0);
+            IndividualValues = new PBEStatCollection(0, 0, 0, 0, 0, 0);
+        }
+    }
+    public class TestPokemonCollection : IPBEPokemonCollection, IPBEPokemonCollection<TestPokemon>
+    {
+        private readonly TestPokemon[] _list;
+        public int Count => _list.Length;
+        public TestPokemon this[int index]
+        {
+            get => _list[index];
+            set => _list[index] = value;
+        }
+        IPBEPokemon IReadOnlyList<IPBEPokemon>.this[int index] => this[index];
+
+        public TestPokemonCollection(int count)
+        {
+            _list = new TestPokemon[count];
+        }
+
+        IEnumerator IEnumerable.GetEnumerator()
+        {
+            return _list.GetEnumerator();
+        }
+        IEnumerator<IPBEPokemon> IEnumerable<IPBEPokemon>.GetEnumerator()
+        {
+            return GetEnumerator();
+        }
+        public IEnumerator<TestPokemon> GetEnumerator()
+        {
+            return GetEnumerator();
+        }
     }
 }

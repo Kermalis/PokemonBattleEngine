@@ -1,4 +1,5 @@
 ﻿using Avalonia.Data.Converters;
+using Kermalis.PokemonBattleEngine.Battle;
 using Kermalis.PokemonBattleEngine.Data;
 using System;
 using System.Collections.Generic;
@@ -54,18 +55,37 @@ namespace Kermalis.PokemonBattleEngineClient.Infrastructure
         public static SpeciesToMinispriteConverter Instance { get; } = new SpeciesToMinispriteConverter();
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            if (value is PBESpecies species)
+            PBESpecies species;
+            PBEForm form;
+            PBEGender gender;
+            bool shiny;
+            if (value is PBESpecies s)
             {
-                return Utils.GetMinisprite(species, 0, PBEGender.Male, false);
+                species = s;
+                form = 0;
+                gender = PBEGender.Male;
+                shiny = false;
             }
-            else if (value is PBEPokemonShell shell)
+            else if (value is IPBEPokemon pkmn)
             {
-                return Utils.GetMinisprite(shell.Species, shell.Form, shell.Gender, shell.Shiny);
+                species = pkmn.Species;
+                form = pkmn.Form;
+                gender = pkmn.Gender;
+                shiny = pkmn.Shiny;
+            }
+            else if (value is PBEBattlePokemon bpkmn)
+            {
+                bool useKnownInfo = parameter is bool b && b;
+                species = useKnownInfo ? bpkmn.KnownSpecies : bpkmn.OriginalSpecies;
+                form = useKnownInfo ? bpkmn.KnownForm : bpkmn.RevertForm;
+                gender = useKnownInfo ? bpkmn.KnownGender : bpkmn.Gender;
+                shiny = useKnownInfo ? bpkmn.KnownShiny : bpkmn.Shiny;
             }
             else
             {
                 throw new ArgumentException();
             }
+            return Utils.GetMinispriteBitmap(species, form, gender, shiny);
         }
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
         {

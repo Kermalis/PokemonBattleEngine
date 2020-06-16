@@ -409,7 +409,7 @@ namespace Kermalis.PokemonBattleEngine.Data
         };
         #endregion
 
-        public static PBEResult IsAffectedByAttack(PBEPokemon user, PBEPokemon target, PBEType moveType, out double damageMultiplier, bool useKnownInfo = false)
+        public static PBEResult IsAffectedByAttack(PBEBattlePokemon user, PBEBattlePokemon target, PBEType moveType, out double damageMultiplier, bool useKnownInfo = false)
         {
             if (user == null)
             {
@@ -463,7 +463,7 @@ namespace Kermalis.PokemonBattleEngine.Data
             return result;
         }
         /// <summary>Checks if <see cref="PBEMove.ThunderWave"/>'s type affects the target, taking into account <see cref="PBEAbility.Normalize"/>.</summary>
-        public static PBEResult ThunderWaveTypeCheck(PBEPokemon user, PBEPokemon target, bool useKnownInfo = false)
+        public static PBEResult ThunderWaveTypeCheck(PBEBattlePokemon user, PBEBattlePokemon target, bool useKnownInfo = false)
         {
             if (user == null)
             {

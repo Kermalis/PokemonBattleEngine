@@ -3,6 +3,7 @@ using Discord.Commands;
 using Discord.WebSocket;
 using Kermalis.PokemonBattleEngine.Battle;
 using Kermalis.PokemonBattleEngine.Data;
+using Kermalis.PokemonBattleEngine.Data.Legality;
 using Kermalis.PokemonBattleEngine.Utils;
 using System;
 using System.Collections.Generic;
@@ -76,20 +77,18 @@ namespace Kermalis.PokemonBattleEngineDiscord
 
             await StartBattle(guild, a, b, a.Username, b.Username, a.Mention, b.Mention);
         }
-        private static async Task StartBattle(IGuild guild, SocketUser battler1, SocketUser battler2, string team1Name, string team2Name, string team1Mention, string team2Mention)
+        private static async Task StartBattle(IGuild guild, SocketUser battler0, SocketUser battler1, string team0Name, string team1Name, string team0Mention, string team1Mention)
         {
-            PBETeamShell team1Shell, team2Shell;
+            PBELegalPokemonCollection p0, p1;
             // Competitively Randomized Pokémon
-            team1Shell = PBERandomTeamGenerator.CreateRandomTeam(3);
-            team2Shell = PBERandomTeamGenerator.CreateRandomTeam(3);
+            p0 = PBERandomTeamGenerator.CreateRandomTeam(3);
+            p1 = PBERandomTeamGenerator.CreateRandomTeam(3);
 
-            var battle = new PBEBattle(PBEBattleTerrain.Plain, PBEBattleFormat.Single, team1Shell, team1Name, team2Shell, team2Name);
-            team1Shell.Dispose();
-            team2Shell.Dispose();
+            var battle = new PBEBattle(PBEBattleTerrain.Plain, PBEBattleFormat.Single, new PBETeamInfo(p0, team0Name), new PBETeamInfo(p1, team1Name), PBESettings.DefaultSettings);
 
-            var bc = new BattleContext(battle, battler1, battler2);
+            var bc = new BattleContext(battle, battler0, battler1);
             ITextChannel channel = await ChannelHandler.CreateChannel(guild, $"battle-{bc.BattleId}");
-            await channel.SendMessageAsync($"**Battle #{bc.BattleId} ― {team1Mention} vs {team2Mention}**");
+            await channel.SendMessageAsync($"**Battle #{bc.BattleId} ― {team0Mention} vs {team1Mention}**");
             await bc.Begin(channel);
         }
 
@@ -100,7 +99,7 @@ namespace Kermalis.PokemonBattleEngineDiscord
                 RemoveOldChallenges();
 
                 SocketUser challengee = ctx.User;
-                if (BattleContext.GetBattleContext(challengee) != null)
+                if (!(BattleContext.GetBattleContext(challengee) == null))
                 {
                     return;
                 }
@@ -114,7 +113,7 @@ namespace Kermalis.PokemonBattleEngineDiscord
                     else
                     {
                         SocketUser challenger = c.Challenger;
-                        if (BattleContext.GetBattleContext(challenger) != null)
+                        if (!(BattleContext.GetBattleContext(challenger) == null))
                         {
                             await PrintParticipating(challengee, challenger, ctx.Channel);
                         }

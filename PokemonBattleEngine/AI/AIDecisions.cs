@@ -21,19 +21,15 @@ namespace Kermalis.PokemonBattleEngine.AI
             {
                 throw new ArgumentNullException(nameof(team));
             }
-            if (team.IsDisposed)
-            {
-                throw new ObjectDisposedException(nameof(team));
-            }
             if (team.Battle.BattleState != PBEBattleState.WaitingForActions)
             {
                 throw new InvalidOperationException($"{nameof(team.Battle.BattleState)} must be {PBEBattleState.WaitingForActions} to create actions.");
             }
             var actions = new PBETurnAction[team.ActionsRequired.Count];
-            var standBy = new List<PBEPokemon>();
+            var standBy = new List<PBEBattlePokemon>();
             for (int i = 0; i < actions.Length; i++)
             {
-                PBEPokemon user = team.ActionsRequired[i];
+                PBEBattlePokemon user = team.ActionsRequired[i];
                 // If a Pokémon is forced to struggle, it is best that it just stays in until it faints
                 if (user.IsForcedToStruggle())
                 {
@@ -48,7 +44,7 @@ namespace Kermalis.PokemonBattleEngine.AI
                 else
                 {
                     // Gather all options of switching and moves
-                    PBEPokemon[] availableForSwitch = team.Party.Except(standBy).Where(p => p.FieldPosition == PBEFieldPosition.None && p.HP > 0).ToArray();
+                    PBEBattlePokemon[] availableForSwitch = team.Party.Except(standBy).Where(p => p.FieldPosition == PBEFieldPosition.None && p.HP > 0).ToArray();
                     PBEMove[] usableMoves = user.GetUsableMoves();
                     var possibleActions = new List<(PBETurnAction Action, double Score)>();
                     for (int m = 0; m < usableMoves.Length; m++) // Score moves
@@ -63,7 +59,7 @@ namespace Kermalis.PokemonBattleEngine.AI
                         {
                             // TODO: RandomFoeSurrounding (probably just account for the specific effects that use this target type)
                             // TODO: Don't queue up to do the same thing (two trying to afflict the same target when there are multiple targets)
-                            var targets = new List<PBEPokemon>();
+                            var targets = new List<PBEBattlePokemon>();
                             if (possibleTarget.HasFlag(PBETurnTarget.AllyLeft))
                             {
                                 targets.Add(team.TryGetPokemon(PBEFieldPosition.Left));
@@ -106,7 +102,7 @@ namespace Kermalis.PokemonBattleEngine.AI
                                 {
                                     case PBEMoveEffect.Attract:
                                     {
-                                        foreach (PBEPokemon target in targets)
+                                        foreach (PBEBattlePokemon target in targets)
                                         {
                                             // TODO: Destiny knot
                                             if (target.IsAttractionPossible(user, useKnownInfo: true) == PBEResult.Success)
@@ -163,7 +159,7 @@ namespace Kermalis.PokemonBattleEngine.AI
                                     case PBEMoveEffect.SecretPower:
                                     case PBEMoveEffect.ShadowForce:
                                     {
-                                        foreach (PBEPokemon target in targets)
+                                        foreach (PBEBattlePokemon target in targets)
                                         {
                                             // TODO: Favor hitting ally with move if waterabsorb/voltabsorb etc
                                             // TODO: Liquid ooze
@@ -205,7 +201,7 @@ namespace Kermalis.PokemonBattleEngine.AI
                                     }
                                     case PBEMoveEffect.Burn:
                                     {
-                                        foreach (PBEPokemon target in targets)
+                                        foreach (PBEBattlePokemon target in targets)
                                         {
                                             // TODO: Heatproof, physical attacker
                                             if (target.IsBurnPossible(user, useKnownInfo: true) == PBEResult.Success)
@@ -221,7 +217,7 @@ namespace Kermalis.PokemonBattleEngine.AI
                                     }
                                     case PBEMoveEffect.ChangeTarget_ACC:
                                     {
-                                        foreach (PBEPokemon target in targets)
+                                        foreach (PBEBattlePokemon target in targets)
                                         {
                                             ScoreStatChange(user, target, PBEStat.Accuracy, mData.EffectParam, ref score);
                                         }
@@ -229,7 +225,7 @@ namespace Kermalis.PokemonBattleEngine.AI
                                     }
                                     case PBEMoveEffect.ChangeTarget_ATK:
                                     {
-                                        foreach (PBEPokemon target in targets)
+                                        foreach (PBEBattlePokemon target in targets)
                                         {
                                             ScoreStatChange(user, target, PBEStat.Attack, mData.EffectParam, ref score);
                                         }
@@ -237,7 +233,7 @@ namespace Kermalis.PokemonBattleEngine.AI
                                     }
                                     case PBEMoveEffect.ChangeTarget_DEF:
                                     {
-                                        foreach (PBEPokemon target in targets)
+                                        foreach (PBEBattlePokemon target in targets)
                                         {
                                             ScoreStatChange(user, target, PBEStat.Defense, mData.EffectParam, ref score);
                                         }
@@ -245,7 +241,7 @@ namespace Kermalis.PokemonBattleEngine.AI
                                     }
                                     case PBEMoveEffect.ChangeTarget_EVA:
                                     {
-                                        foreach (PBEPokemon target in targets)
+                                        foreach (PBEBattlePokemon target in targets)
                                         {
                                             ScoreStatChange(user, target, PBEStat.Evasion, mData.EffectParam, ref score);
                                         }
@@ -253,7 +249,7 @@ namespace Kermalis.PokemonBattleEngine.AI
                                     }
                                     case PBEMoveEffect.ChangeTarget_SPATK:
                                     {
-                                        foreach (PBEPokemon target in targets)
+                                        foreach (PBEBattlePokemon target in targets)
                                         {
                                             ScoreStatChange(user, target, PBEStat.SpAttack, mData.EffectParam, ref score);
                                         }
@@ -261,7 +257,7 @@ namespace Kermalis.PokemonBattleEngine.AI
                                     }
                                     case PBEMoveEffect.ChangeTarget_SPDEF:
                                     {
-                                        foreach (PBEPokemon target in targets)
+                                        foreach (PBEBattlePokemon target in targets)
                                         {
                                             ScoreStatChange(user, target, PBEStat.SpDefense, mData.EffectParam, ref score);
                                         }
@@ -269,7 +265,7 @@ namespace Kermalis.PokemonBattleEngine.AI
                                     }
                                     case PBEMoveEffect.ChangeTarget_SPE:
                                     {
-                                        foreach (PBEPokemon target in targets)
+                                        foreach (PBEBattlePokemon target in targets)
                                         {
                                             ScoreStatChange(user, target, PBEStat.Speed, mData.EffectParam, ref score);
                                         }
@@ -279,7 +275,7 @@ namespace Kermalis.PokemonBattleEngine.AI
                                     case PBEMoveEffect.Flatter:
                                     case PBEMoveEffect.Swagger:
                                     {
-                                        foreach (PBEPokemon target in targets)
+                                        foreach (PBEBattlePokemon target in targets)
                                         {
                                             // TODO: Only swagger/flatter if the opponent most likely won't use it against you
                                             if (target.IsConfusionPossible(user, useKnownInfo: true) == PBEResult.Success)
@@ -296,7 +292,7 @@ namespace Kermalis.PokemonBattleEngine.AI
                                     case PBEMoveEffect.Growth:
                                     {
                                         int change = team.Battle.WillLeafGuardActivate() ? +2 : +1;
-                                        foreach (PBEPokemon target in targets)
+                                        foreach (PBEBattlePokemon target in targets)
                                         {
                                             ScoreStatChange(user, target, PBEStat.Attack, change, ref score);
                                             ScoreStatChange(user, target, PBEStat.SpAttack, change, ref score);
@@ -305,7 +301,7 @@ namespace Kermalis.PokemonBattleEngine.AI
                                     }
                                     case PBEMoveEffect.LeechSeed:
                                     {
-                                        foreach (PBEPokemon target in targets)
+                                        foreach (PBEBattlePokemon target in targets)
                                         {
                                             if (target.IsLeechSeedPossible(useKnownInfo: true) == PBEResult.Success)
                                             {
@@ -325,7 +321,7 @@ namespace Kermalis.PokemonBattleEngine.AI
                                     }
                                     case PBEMoveEffect.LowerTarget_ATK_DEF_By1:
                                     {
-                                        foreach (PBEPokemon target in targets)
+                                        foreach (PBEBattlePokemon target in targets)
                                         {
                                             ScoreStatChange(user, target, PBEStat.Attack, -1, ref score);
                                             ScoreStatChange(user, target, PBEStat.Defense, -1, ref score);
@@ -334,7 +330,7 @@ namespace Kermalis.PokemonBattleEngine.AI
                                     }
                                     case PBEMoveEffect.LowerTarget_DEF_SPDEF_By1_Raise_ATK_SPATK_SPE_By2:
                                     {
-                                        foreach (PBEPokemon target in targets)
+                                        foreach (PBEBattlePokemon target in targets)
                                         {
                                             ScoreStatChange(user, target, PBEStat.Defense, -1, ref score);
                                             ScoreStatChange(user, target, PBEStat.SpDefense, -1, ref score);
@@ -353,7 +349,7 @@ namespace Kermalis.PokemonBattleEngine.AI
                                     case PBEMoveEffect.Rest:
                                     case PBEMoveEffect.RestoreTargetHP:
                                     {
-                                        foreach (PBEPokemon target in targets)
+                                        foreach (PBEBattlePokemon target in targets)
                                         {
                                             if (target.Team == team)
                                             {
@@ -374,7 +370,7 @@ namespace Kermalis.PokemonBattleEngine.AI
                                     }
                                     case PBEMoveEffect.Paralyze:
                                     {
-                                        foreach (PBEPokemon target in targets)
+                                        foreach (PBEBattlePokemon target in targets)
                                         {
                                             bool tw = move != PBEMove.ThunderWave || PBETypeEffectiveness.ThunderWaveTypeCheck(user, target, useKnownInfo: true) == PBEResult.Success;
                                             if (tw && target.IsParalysisPossible(user, useKnownInfo: true) == PBEResult.Success)
@@ -391,7 +387,7 @@ namespace Kermalis.PokemonBattleEngine.AI
                                     case PBEMoveEffect.Poison:
                                     case PBEMoveEffect.Toxic:
                                     {
-                                        foreach (PBEPokemon target in targets)
+                                        foreach (PBEBattlePokemon target in targets)
                                         {
                                             // TODO: Poison Heal
                                             if (target.IsPoisonPossible(user, useKnownInfo: true) == PBEResult.Success)
@@ -407,7 +403,7 @@ namespace Kermalis.PokemonBattleEngine.AI
                                     }
                                     case PBEMoveEffect.RaiseTarget_ATK_ACC_By1:
                                     {
-                                        foreach (PBEPokemon target in targets)
+                                        foreach (PBEBattlePokemon target in targets)
                                         {
                                             ScoreStatChange(user, target, PBEStat.Attack, +1, ref score);
                                             ScoreStatChange(user, target, PBEStat.Accuracy, +1, ref score);
@@ -416,7 +412,7 @@ namespace Kermalis.PokemonBattleEngine.AI
                                     }
                                     case PBEMoveEffect.RaiseTarget_ATK_DEF_By1:
                                     {
-                                        foreach (PBEPokemon target in targets)
+                                        foreach (PBEBattlePokemon target in targets)
                                         {
                                             ScoreStatChange(user, target, PBEStat.Attack, +1, ref score);
                                             ScoreStatChange(user, target, PBEStat.Defense, +1, ref score);
@@ -425,7 +421,7 @@ namespace Kermalis.PokemonBattleEngine.AI
                                     }
                                     case PBEMoveEffect.RaiseTarget_ATK_DEF_ACC_By1:
                                     {
-                                        foreach (PBEPokemon target in targets)
+                                        foreach (PBEBattlePokemon target in targets)
                                         {
                                             ScoreStatChange(user, target, PBEStat.Attack, +1, ref score);
                                             ScoreStatChange(user, target, PBEStat.Defense, +1, ref score);
@@ -435,7 +431,7 @@ namespace Kermalis.PokemonBattleEngine.AI
                                     }
                                     case PBEMoveEffect.RaiseTarget_ATK_SPATK_By1:
                                     {
-                                        foreach (PBEPokemon target in targets)
+                                        foreach (PBEBattlePokemon target in targets)
                                         {
                                             ScoreStatChange(user, target, PBEStat.Attack, +1, ref score);
                                             ScoreStatChange(user, target, PBEStat.SpAttack, +1, ref score);
@@ -444,7 +440,7 @@ namespace Kermalis.PokemonBattleEngine.AI
                                     }
                                     case PBEMoveEffect.RaiseTarget_ATK_SPE_By1:
                                     {
-                                        foreach (PBEPokemon target in targets)
+                                        foreach (PBEBattlePokemon target in targets)
                                         {
                                             ScoreStatChange(user, target, PBEStat.Attack, +1, ref score);
                                             ScoreStatChange(user, target, PBEStat.Speed, +1, ref score);
@@ -453,7 +449,7 @@ namespace Kermalis.PokemonBattleEngine.AI
                                     }
                                     case PBEMoveEffect.RaiseTarget_DEF_SPDEF_By1:
                                     {
-                                        foreach (PBEPokemon target in targets)
+                                        foreach (PBEBattlePokemon target in targets)
                                         {
                                             ScoreStatChange(user, target, PBEStat.Defense, +1, ref score);
                                             ScoreStatChange(user, target, PBEStat.SpDefense, +1, ref score);
@@ -462,7 +458,7 @@ namespace Kermalis.PokemonBattleEngine.AI
                                     }
                                     case PBEMoveEffect.RaiseTarget_SPATK_SPDEF_By1:
                                     {
-                                        foreach (PBEPokemon target in targets)
+                                        foreach (PBEBattlePokemon target in targets)
                                         {
                                             ScoreStatChange(user, target, PBEStat.SpAttack, +1, ref score);
                                             ScoreStatChange(user, target, PBEStat.SpDefense, +1, ref score);
@@ -471,7 +467,7 @@ namespace Kermalis.PokemonBattleEngine.AI
                                     }
                                     case PBEMoveEffect.RaiseTarget_SPATK_SPDEF_SPE_By1:
                                     {
-                                        foreach (PBEPokemon target in targets)
+                                        foreach (PBEBattlePokemon target in targets)
                                         {
                                             ScoreStatChange(user, target, PBEStat.SpAttack, +1, ref score);
                                             ScoreStatChange(user, target, PBEStat.SpDefense, +1, ref score);
@@ -481,7 +477,7 @@ namespace Kermalis.PokemonBattleEngine.AI
                                     }
                                     case PBEMoveEffect.RaiseTarget_SPE_By2_ATK_By1:
                                     {
-                                        foreach (PBEPokemon target in targets)
+                                        foreach (PBEBattlePokemon target in targets)
                                         {
                                             ScoreStatChange(user, target, PBEStat.Speed, +2, ref score);
                                             ScoreStatChange(user, target, PBEStat.Attack, +1, ref score);
@@ -500,7 +496,7 @@ namespace Kermalis.PokemonBattleEngine.AI
                                     }
                                     case PBEMoveEffect.Sleep:
                                     {
-                                        foreach (PBEPokemon target in targets)
+                                        foreach (PBEBattlePokemon target in targets)
                                         {
                                             // TODO: Bad Dreams
                                             if (target.IsSleepPossible(user, useKnownInfo: true) == PBEResult.Success)
@@ -516,7 +512,7 @@ namespace Kermalis.PokemonBattleEngine.AI
                                     }
                                     case PBEMoveEffect.Substitute:
                                     {
-                                        foreach (PBEPokemon target in targets)
+                                        foreach (PBEBattlePokemon target in targets)
                                         {
                                             if (target.IsSubstitutePossible() == PBEResult.Success)
                                             {
@@ -547,6 +543,7 @@ namespace Kermalis.PokemonBattleEngine.AI
                                     case PBEMoveEffect.MagnetRise:
                                     case PBEMoveEffect.Metronome:
                                     case PBEMoveEffect.MiracleEye:
+                                    case PBEMoveEffect.Nightmare:
                                     case PBEMoveEffect.OneHitKnockout:
                                     case PBEMoveEffect.PainSplit:
                                     case PBEMoveEffect.PowerTrick:
@@ -588,7 +585,7 @@ namespace Kermalis.PokemonBattleEngine.AI
                     {
                         for (int s = 0; s < availableForSwitch.Length; s++) // Score switches
                         {
-                            PBEPokemon switchPkmn = availableForSwitch[s];
+                            PBEBattlePokemon switchPkmn = availableForSwitch[s];
                             // TODO: Entry hazards
                             // TODO: Known moves of active battlers
                             // TODO: Type effectiveness
@@ -625,7 +622,7 @@ namespace Kermalis.PokemonBattleEngine.AI
             return actions;
         }
 
-        private static void ScoreStatChange(PBEPokemon user, PBEPokemon target, PBEStat stat, int change, ref double score)
+        private static void ScoreStatChange(PBEBattlePokemon user, PBEBattlePokemon target, PBEStat stat, int change, ref double score)
         {
             // TODO: Do we need the stat change? Physical vs special vs status users, and base stats/transform stats/power trick stats
             sbyte original = target.GetStatChange(stat);
@@ -656,10 +653,6 @@ namespace Kermalis.PokemonBattleEngine.AI
             {
                 throw new ArgumentNullException(nameof(team));
             }
-            if (team.IsDisposed)
-            {
-                throw new ObjectDisposedException(nameof(team));
-            }
             if (team.Battle.BattleState != PBEBattleState.WaitingForSwitchIns)
             {
                 throw new InvalidOperationException($"{nameof(team.Battle.BattleState)} must be {PBEBattleState.WaitingForSwitchIns} to create switch-ins.");
@@ -668,7 +661,7 @@ namespace Kermalis.PokemonBattleEngine.AI
             {
                 throw new InvalidOperationException($"{nameof(team)} must require switch-ins.");
             }
-            PBEPokemon[] available = team.Party.Where(p => p.FieldPosition == PBEFieldPosition.None && p.HP > 0).ToArray();
+            PBEBattlePokemon[] available = team.Party.Where(p => p.FieldPosition == PBEFieldPosition.None && p.HP > 0).ToArray();
             available.Shuffle();
             var availablePositions = new List<PBEFieldPosition>();
             switch (team.Battle.BattleFormat)

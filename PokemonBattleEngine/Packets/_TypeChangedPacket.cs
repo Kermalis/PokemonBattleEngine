@@ -16,7 +16,7 @@ namespace Kermalis.PokemonBattleEngine.Packets
         public PBEType Type1 { get; }
         public PBEType Type2 { get; }
 
-        internal PBETypeChangedPacket(PBEPokemon pokemon, PBEType type1, PBEType type2)
+        internal PBETypeChangedPacket(PBEBattlePokemon pokemon, PBEType type1, PBEType type2)
         {
             using (var ms = new MemoryStream())
             using (var w = new EndianBinaryWriter(ms, encoding: EncodingType.UTF16))

@@ -3,7 +3,6 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.ComponentModel;
-using System.Globalization;
 using System.Linq;
 
 namespace Kermalis.PokemonBattleEngine.Data
@@ -62,21 +61,12 @@ namespace Kermalis.PokemonBattleEngine.Data
         internal PBEAlphabeticalList()
         {
             _list = Array.Empty<PBEAlphabeticalListEntry>();
-            PBELocalizedString.PBECultureChanged += OnCultureChanged;
         }
         internal PBEAlphabeticalList(IEnumerable<T> collection, object parameter = null)
         {
-            PBELocalizedString.PBECultureChanged += OnCultureChanged;
             Reset(collection, parameter: parameter);
         }
 
-        private void OnCultureChanged(CultureInfo oldPBECultureInfo)
-        {
-            if (!oldPBECultureInfo.TwoLetterISOLanguageName.Equals(PBELocalizedString.PBECulture.TwoLetterISOLanguageName))
-            {
-                Sort(_list);
-            }
-        }
         private void Sort(PBEAlphabeticalListEntry[] old)
         {
             if (old == null || old == _list)
@@ -91,15 +81,6 @@ namespace Kermalis.PokemonBattleEngine.Data
             }
         }
 
-        private bool _isDisposed = false;
-        internal void Dispose()
-        {
-            if (!_isDisposed)
-            {
-                _isDisposed = true;
-                PBELocalizedString.PBECultureChanged -= OnCultureChanged;
-            }
-        }
         internal void Reset(IEnumerable<T> collection, object parameter = null)
         {
             if (collection == null)

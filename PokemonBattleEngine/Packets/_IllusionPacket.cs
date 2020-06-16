@@ -22,7 +22,7 @@ namespace Kermalis.PokemonBattleEngine.Packets
         public PBEType ActualType2 { get; }
         public double ActualWeight { get; }
 
-        internal PBEIllusionPacket(PBEPokemon pokemon)
+        internal PBEIllusionPacket(PBEBattlePokemon pokemon)
         {
             using (var ms = new MemoryStream())
             using (var w = new EndianBinaryWriter(ms, encoding: EncodingType.UTF16))

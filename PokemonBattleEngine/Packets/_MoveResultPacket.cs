@@ -17,7 +17,7 @@ namespace Kermalis.PokemonBattleEngine.Packets
         public PBETeam Pokemon2Team { get; }
         public PBEResult Result { get; }
 
-        internal PBEMoveResultPacket(PBEPokemon moveUser, PBEPokemon pokemon2, PBEResult result)
+        internal PBEMoveResultPacket(PBEBattlePokemon moveUser, PBEBattlePokemon pokemon2, PBEResult result)
         {
             using (var ms = new MemoryStream())
             using (var w = new EndianBinaryWriter(ms, encoding: EncodingType.UTF16))

@@ -17,8 +17,8 @@ namespace Kermalis.PokemonBattleEngineClient
         public override void OnFrameworkInitializationCompleted()
         {
             MoveInfo.CreateBrushes();
-            HPBarView.CreateBrushes();
-            FieldView.CreateBrushes();
+            HPBarView.CreateResources();
+            FieldView.CreateResources();
             switch (ApplicationLifetime)
             {
                 case null: break;

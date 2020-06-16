@@ -14,121 +14,104 @@ namespace Kermalis.PokemonBattleEngineTests.Moves
             utils.SetOutputHelper(output);
         }
 
-        [Fact]
-        public void Camouflage_Works__SingleType()
+        [Theory]
+        [InlineData(PBEBattleTerrain.Cave, PBEType.Rock, PBESpecies.Kecleon)]
+        [InlineData(PBEBattleTerrain.Cave, PBEType.Rock, PBESpecies.Starmie)]
+        [InlineData(PBEBattleTerrain.Grass, PBEType.Grass, PBESpecies.Kecleon)]
+        [InlineData(PBEBattleTerrain.Grass, PBEType.Grass, PBESpecies.Starmie)]
+        [InlineData(PBEBattleTerrain.Plain, PBEType.Normal, PBESpecies.Kecleon)]
+        [InlineData(PBEBattleTerrain.Plain, PBEType.Normal, PBESpecies.Starmie)]
+        [InlineData(PBEBattleTerrain.Puddle, PBEType.Ground, PBESpecies.Kecleon)]
+        [InlineData(PBEBattleTerrain.Puddle, PBEType.Ground, PBESpecies.Starmie)]
+        [InlineData(PBEBattleTerrain.Sand, PBEType.Ground, PBESpecies.Kecleon)]
+        [InlineData(PBEBattleTerrain.Sand, PBEType.Ground, PBESpecies.Starmie)]
+        [InlineData(PBEBattleTerrain.Snow, PBEType.Ice, PBESpecies.Kecleon)]
+        [InlineData(PBEBattleTerrain.Snow, PBEType.Ice, PBESpecies.Starmie)]
+        [InlineData(PBEBattleTerrain.Water, PBEType.Water, PBESpecies.Kecleon)]
+        [InlineData(PBEBattleTerrain.Water, PBEType.Water, PBESpecies.Starmie)]
+        public void Camouflage_Works(PBEBattleTerrain battleTerrain, PBEType expectedType, PBESpecies species)
         {
+            #region Setup
             PBERandom.SetSeed(0);
             PBESettings settings = PBESettings.DefaultSettings;
 
-            var team1Shell = new PBETeamShell(settings, 1, true);
-            PBEPokemonShell ps = team1Shell[0];
-            ps.Species = PBESpecies.Staryu;
-            ps.Item = PBEItem.None;
-            ps.Moveset[0].Move = PBEMove.Camouflage;
+            var p0 = new TestPokemonCollection(1);
+            p0[0] = new TestPokemon(species, 0, 100)
+            {
+                Moveset = new TestMoveset(settings, new[] { PBEMove.Camouflage })
+            };
 
-            var team2Shell = new PBETeamShell(settings, 1, true);
-            ps = team2Shell[0];
-            ps.Species = PBESpecies.Magikarp;
-            ps.Item = PBEItem.None;
-            ps.Moveset[0].Move = PBEMove.Splash;
+            var p1 = new TestPokemonCollection(1);
+            p1[0] = new TestPokemon(PBESpecies.Magikarp, 0, 100)
+            {
+                Moveset = new TestMoveset(settings, new[] { PBEMove.Splash })
+            };
 
-            var battle = new PBEBattle(PBEBattleTerrain.Plain, PBEBattleFormat.Single, team1Shell, "Team 1", team2Shell, "Team 2");
+            var battle = new PBEBattle(battleTerrain, PBEBattleFormat.Single, new PBETeamInfo(p0, "Team 1"), new PBETeamInfo(p1, "Team 2"), settings);
             battle.OnNewEvent += PBEBattle.ConsoleBattleEventHandler;
-            team1Shell.Dispose();
-            team2Shell.Dispose();
             battle.Begin();
 
-            PBETeam t = battle.Teams[0];
-            Assert.True(PBEBattle.SelectActionsIfValid(t, new[] { new PBETurnAction(t.Party[0].Id, PBEMove.Camouflage, PBETurnTarget.AllyCenter) }));
+            PBETeam t0 = battle.Teams[0];
+            PBETeam t1 = battle.Teams[1];
+            PBEBattlePokemon camouflager = t0.Party[0];
+            PBEBattlePokemon magikarp = t1.Party[0];
+            #endregion
 
-            t = battle.Teams[1];
-            Assert.True(PBEBattle.SelectActionsIfValid(t, new[] { new PBETurnAction(t.Party[0].Id, PBEMove.Splash, PBETurnTarget.AllyCenter) })); ;
+            #region Use Camouflage and check
+            Assert.True(PBEBattle.SelectActionsIfValid(t0, new[] { new PBETurnAction(camouflager.Id, PBEMove.Camouflage, PBETurnTarget.AllyCenter) }));
+            Assert.True(PBEBattle.SelectActionsIfValid(t1, new[] { new PBETurnAction(magikarp.Id, PBEMove.Splash, PBETurnTarget.AllyCenter) }));
 
             battle.RunTurn();
 
-            PBEPokemon pkmn = battle.Teams[0].Party[0];
-            Assert.True(pkmn.Type1 == PBEType.Normal && pkmn.Type2 == PBEType.None);
+            Assert.True(camouflager.Type1 == expectedType && camouflager.Type2 == PBEType.None);
+            #endregion
 
+            #region Cleanup
             battle.OnNewEvent -= PBEBattle.ConsoleBattleEventHandler;
-            battle.Dispose();
+            #endregion
         }
 
         [Fact]
         public void Camouflage_Fails()
         {
+            #region Setup
             PBERandom.SetSeed(0);
             PBESettings settings = PBESettings.DefaultSettings;
 
-            var team1Shell = new PBETeamShell(settings, 1, true);
-            PBEPokemonShell ps = team1Shell[0];
-            ps.Species = PBESpecies.Staryu;
-            ps.Item = PBEItem.None;
-            ps.Moveset[0].Move = PBEMove.Camouflage;
+            var p0 = new TestPokemonCollection(1);
+            p0[0] = new TestPokemon(PBESpecies.Staryu, 0, 100)
+            {
+                Moveset = new TestMoveset(settings, new[] { PBEMove.Camouflage })
+            };
 
-            var team2Shell = new PBETeamShell(settings, 1, true);
-            ps = team2Shell[0];
-            ps.Species = PBESpecies.Magikarp;
-            ps.Item = PBEItem.None;
-            ps.Moveset[0].Move = PBEMove.Splash;
+            var p1 = new TestPokemonCollection(1);
+            p1[0] = new TestPokemon(PBESpecies.Magikarp, 0, 100)
+            {
+                Moveset = new TestMoveset(settings, new[] { PBEMove.Splash })
+            };
 
-            var battle = new PBEBattle(PBEBattleTerrain.Water, PBEBattleFormat.Single, team1Shell, "Team 1", team2Shell, "Team 2");
+            var battle = new PBEBattle(PBEBattleTerrain.Water, PBEBattleFormat.Single, new PBETeamInfo(p0, "Team 1"), new PBETeamInfo(p1, "Team 2"), settings);
             battle.OnNewEvent += PBEBattle.ConsoleBattleEventHandler;
-            team1Shell.Dispose();
-            team2Shell.Dispose();
             battle.Begin();
 
-            PBETeam t = battle.Teams[0];
-            Assert.True(PBEBattle.SelectActionsIfValid(t, new[] { new PBETurnAction(t.Party[0].Id, PBEMove.Camouflage, PBETurnTarget.AllyCenter) }));
+            PBETeam t0 = battle.Teams[0];
+            PBETeam t1 = battle.Teams[1];
+            PBEBattlePokemon staryu = t0.Party[0];
+            PBEBattlePokemon magikarp = t1.Party[0];
+            #endregion
 
-            t = battle.Teams[1];
-            Assert.True(PBEBattle.SelectActionsIfValid(t, new[] { new PBETurnAction(t.Party[0].Id, PBEMove.Splash, PBETurnTarget.AllyCenter) })); ;
+            #region Use Camouflage and check
+            Assert.True(PBEBattle.SelectActionsIfValid(t0, new[] { new PBETurnAction(staryu.Id, PBEMove.Camouflage, PBETurnTarget.AllyCenter) }));
+            Assert.True(PBEBattle.SelectActionsIfValid(t1, new[] { new PBETurnAction(magikarp.Id, PBEMove.Splash, PBETurnTarget.AllyCenter) }));
 
             battle.RunTurn();
 
-            PBEPokemon pkmn = battle.Teams[0].Party[0];
-            Assert.True(TestUtils.VerifyMoveResult(battle, pkmn, pkmn, PBEResult.InvalidConditions));
+            Assert.True(TestUtils.VerifyMoveResult(battle, staryu, staryu, PBEResult.InvalidConditions));
+            #endregion
 
+            #region Cleanup
             battle.OnNewEvent -= PBEBattle.ConsoleBattleEventHandler;
-            battle.Dispose();
-        }
-
-        [Fact]
-        public void Camouflage_Works__DualType()
-        {
-            PBERandom.SetSeed(0);
-            PBESettings settings = PBESettings.DefaultSettings;
-
-            var team1Shell = new PBETeamShell(settings, 1, true);
-            PBEPokemonShell ps = team1Shell[0];
-            ps.Species = PBESpecies.Starmie;
-            ps.Item = PBEItem.None;
-            ps.Moveset[0].Move = PBEMove.Camouflage;
-
-            var team2Shell = new PBETeamShell(settings, 1, true);
-            ps = team2Shell[0];
-            ps.Species = PBESpecies.Magikarp;
-            ps.Item = PBEItem.None;
-            ps.Moveset[0].Move = PBEMove.Splash;
-
-            var battle = new PBEBattle(PBEBattleTerrain.Water, PBEBattleFormat.Single, team1Shell, "Team 1", team2Shell, "Team 2");
-            battle.OnNewEvent += PBEBattle.ConsoleBattleEventHandler;
-            team1Shell.Dispose();
-            team2Shell.Dispose();
-            battle.Begin();
-
-            PBETeam t = battle.Teams[0];
-            Assert.True(PBEBattle.SelectActionsIfValid(t, new[] { new PBETurnAction(t.Party[0].Id, PBEMove.Camouflage, PBETurnTarget.AllyCenter) }));
-
-            t = battle.Teams[1];
-            Assert.True(PBEBattle.SelectActionsIfValid(t, new[] { new PBETurnAction(t.Party[0].Id, PBEMove.Splash, PBETurnTarget.AllyCenter) })); ;
-
-            battle.RunTurn();
-
-            PBEPokemon pkmn = battle.Teams[0].Party[0];
-            Assert.True(pkmn.Type1 == PBEType.Water && pkmn.Type2 == PBEType.None);
-
-            battle.OnNewEvent -= PBEBattle.ConsoleBattleEventHandler;
-            battle.Dispose();
+            #endregion
         }
     }
 }

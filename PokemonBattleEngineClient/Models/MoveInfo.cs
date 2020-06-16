@@ -43,7 +43,7 @@ namespace Kermalis.PokemonBattleEngineClient.Models
         public string Description { get; }
         public ReactiveCommand<Unit, Unit> SelectMoveCommand { get; }
 
-        public MoveInfo(PBEPokemon pkmn, PBEMove move, Action<PBEMove> clickAction)
+        public MoveInfo(PBEBattlePokemon pkmn, PBEMove move, Action<PBEMove> clickAction)
         {
             Move = move;
             (SolidColorBrush Brush, SolidColorBrush BorderBrush) ttb = _typeToBrush[pkmn.GetMoveType(move)];

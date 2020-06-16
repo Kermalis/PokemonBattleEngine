@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Kermalis.PokemonBattleEngine.Data.Legality;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -96,6 +97,42 @@ namespace Kermalis.PokemonBattleEngine.Data
             return nature.GetRelationshipToFlavor((PBEFlavor)(stat - 1));
         }
 
+        public static int CalcMaxPP(byte ppTier, byte ppUps, PBESettings settings)
+        {
+            if (settings == null)
+            {
+                throw new ArgumentNullException(nameof(settings));
+            }
+            if (!settings.IsReadOnly)
+            {
+                throw new ArgumentException("Settings must be read-only.", nameof(settings));
+            }
+            return Math.Max(1, (ppTier * settings.PPMultiplier) + (ppTier * ppUps));
+        }
+        public static int CalcMaxPP(PBEMove move, byte ppUps, PBESettings settings)
+        {
+            if (settings == null)
+            {
+                throw new ArgumentNullException(nameof(settings));
+            }
+            if (!settings.IsReadOnly)
+            {
+                throw new ArgumentException("Settings must be read-only.", nameof(settings));
+            }
+            if (move >= PBEMove.MAX)
+            {
+                throw new ArgumentOutOfRangeException(nameof(move));
+            }
+            if (move != PBEMove.None)
+            {
+                return CalcMaxPP(PBEMoveData.Data[move].PPTier, ppUps, settings);
+            }
+            else
+            {
+                return 0;
+            }
+        }
+
         private static ushort CalcHP(PBEPokemonData pData, byte evs, byte ivs, byte level)
         {
             return (ushort)(pData.Species == PBESpecies.Shedinja ? 1 : ((((2 * pData.BaseStats.HP) + ivs + (evs / 4)) * level / 100) + level + 10));
@@ -115,7 +152,11 @@ namespace Kermalis.PokemonBattleEngine.Data
             {
                 throw new ArgumentNullException(nameof(settings));
             }
-            PBEPokemonShell.ValidateLevel(level, settings);
+            if (!settings.IsReadOnly)
+            {
+                throw new ArgumentException("Settings must be read-only.", nameof(settings));
+            }
+            PBELegalityChecker.ValidateLevel(level, settings);
             if (ivs > settings.MaxIVs)
             {
                 throw new ArgumentOutOfRangeException(nameof(ivs));
@@ -140,7 +181,7 @@ namespace Kermalis.PokemonBattleEngine.Data
         }
         public static ushort CalculateStat(PBESpecies species, PBEForm form, PBEStat stat, PBENature nature, byte evs, byte ivs, byte level, PBESettings settings)
         {
-            PBEPokemonShell.ValidateSpecies(species, form, false);
+            PBELegalityChecker.ValidateSpecies(species, form, false);
             return CalculateStat(PBEPokemonData.GetData(species, form), stat, nature, evs, ivs, level, settings);
         }
         public static void GetStatRange(PBEPokemonData pData, PBEStat stat, byte level, PBESettings settings, out ushort low, out ushort high)
@@ -153,7 +194,11 @@ namespace Kermalis.PokemonBattleEngine.Data
             {
                 throw new ArgumentNullException(nameof(settings));
             }
-            PBEPokemonShell.ValidateLevel(level, settings);
+            if (!settings.IsReadOnly)
+            {
+                throw new ArgumentException("Settings must be read-only.", nameof(settings));
+            }
+            PBELegalityChecker.ValidateLevel(level, settings);
             switch (stat)
             {
                 case PBEStat.HP:
@@ -177,7 +222,7 @@ namespace Kermalis.PokemonBattleEngine.Data
         }
         public static void GetStatRange(PBESpecies species, PBEForm form, PBEStat stat, byte level, PBESettings settings, out ushort low, out ushort high)
         {
-            PBEPokemonShell.ValidateSpecies(species, form, false);
+            PBELegalityChecker.ValidateSpecies(species, form, false);
             GetStatRange(PBEPokemonData.GetData(species, form), stat, level, settings, out low, out high);
         }
 
@@ -193,6 +238,14 @@ namespace Kermalis.PokemonBattleEngine.Data
         }
         public static byte GetHiddenPowerBasePower(byte hpIV, byte attackIV, byte defenseIV, byte spAttackIV, byte spDefenseIV, byte speedIV, PBESettings settings)
         {
+            if (settings == null)
+            {
+                throw new ArgumentNullException(nameof(settings));
+            }
+            if (!settings.IsReadOnly)
+            {
+                throw new ArgumentException("Settings must be read-only.", nameof(settings));
+            }
             int a = (hpIV & 2) == 2 ? 1 : 0,
                 b = (attackIV & 2) == 2 ? 1 : 0,
                 c = (defenseIV & 2) == 2 ? 1 : 0,

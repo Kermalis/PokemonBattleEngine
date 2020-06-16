@@ -22,7 +22,7 @@ namespace Kermalis.PokemonBattleEngineDiscord
         {
             Utils.InitFemaleSpriteLookup();
             ReplaySaver.RemoveOldReplays();
-            PBEUtils.CreateDatabaseConnection(string.Empty);
+            PBEUtils.InitEngine(string.Empty);
 
             _client = new DiscordSocketClient();
 

@@ -11,11 +11,11 @@ namespace Kermalis.PokemonBattleEngine.Battle
     {
         private bool _calledFromOtherMove = false;
 
-        private void DoSwitchInEffects(IEnumerable<PBEPokemon> battlers, PBEPokemon forcedInBy = null)
+        private void DoSwitchInEffects(IEnumerable<PBEBattlePokemon> battlers, PBEBattlePokemon forcedInBy = null)
         {
-            PBEPokemon[] order = GetActingOrder(battlers, true);
+            PBEBattlePokemon[] order = GetActingOrder(battlers, true);
 
-            foreach (PBEPokemon pkmn in order)
+            foreach (PBEBattlePokemon pkmn in order)
             {
                 bool grounded = pkmn.IsGrounded(forcedInBy) == PBEResult.Success;
                 // Verified: (Spikes/StealthRock/ToxicSpikes in the order they were applied) before ability
@@ -68,7 +68,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
             // Verified: Castform/Cherrim transformation goes last. Even if multiple weather abilities activate, they will not change until every ability has been activated
             CastformCherrimCheck(order);
         }
-        private void DoPostHitEffects(PBEPokemon user, PBEPokemon victim, PBEMove move, PBEType moveType)
+        private void DoPostHitEffects(PBEBattlePokemon user, PBEBattlePokemon victim, PBEMove move, PBEType moveType)
         {
             PBEMoveData mData = PBEMoveData.Data[move];
 
@@ -212,7 +212,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
             // TODO: King's Rock, Stench, etc
             // TODO?: Cell Battery
         }
-        private void DoPostAttackedTargetEffects(PBEPokemon victim, PBEType colorChangeType = PBEType.None)
+        private void DoPostAttackedTargetEffects(PBEBattlePokemon victim, PBEType colorChangeType = PBEType.None)
         {
             if (victim.HP > 0)
             {
@@ -224,7 +224,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                 AntiStatusAbilityCheck(victim); // Heal a status that was given with the user's Mold Breaker
             }
         }
-        private void DoPostAttackedUserEffects(PBEPokemon user, bool doLifeOrb, int? recoilDamage = null)
+        private void DoPostAttackedUserEffects(PBEBattlePokemon user, bool doLifeOrb, int? recoilDamage = null)
         {
             if (user.HP > 0 && recoilDamage.HasValue)
             {
@@ -245,7 +245,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
         }
         private void DoTurnEndedEffects()
         {
-            PBEPokemon[] order = GetActingOrder(ActiveBattlers, true);
+            PBEBattlePokemon[] order = GetActingOrder(ActiveBattlers, true);
             // Verified: Weather stops before doing damage
             if (Weather != PBEWeather.None && WeatherCounter > 0)
             {
@@ -261,7 +261,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
             // Verified: Hailstorm/Sandstorm/IceBody/RainDish/SolarPower before all
             if (Weather != PBEWeather.None && ShouldDoWeatherEffects())
             {
-                foreach (PBEPokemon pkmn in order)
+                foreach (PBEBattlePokemon pkmn in order)
                 {
                     if (pkmn.HP > 0)
                     {
@@ -339,7 +339,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
             }
 
             // Verified: Healer/ShedSkin/BlackSludge/Leftovers before LeechSeed
-            foreach (PBEPokemon pkmn in order)
+            foreach (PBEBattlePokemon pkmn in order)
             {
                 if (pkmn.HP > 0)
                 {
@@ -347,7 +347,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                     {
                         case PBEAbility.Healer:
                         {
-                            foreach (PBEPokemon ally in GetRuntimeSurrounding(pkmn, true, false))
+                            foreach (PBEBattlePokemon ally in GetRuntimeSurrounding(pkmn, true, false))
                             {
                                 // TODO: #265
                                 if (ally.Status1 != PBEStatus1.None && GetManipulableChance(pkmn, 30))
@@ -356,6 +356,10 @@ namespace Kermalis.PokemonBattleEngine.Battle
                                     PBEStatus1 status1 = ally.Status1;
                                     ally.Status1 = PBEStatus1.None;
                                     BroadcastStatus1(ally, pkmn, status1, PBEStatusAction.Cleared);
+                                    if (status1 == PBEStatus1.Asleep)
+                                    {
+                                        CureNightmare(ally, pkmn);
+                                    }
                                 }
                             }
                             break;
@@ -368,6 +372,10 @@ namespace Kermalis.PokemonBattleEngine.Battle
                                 PBEStatus1 status1 = pkmn.Status1;
                                 pkmn.Status1 = PBEStatus1.None;
                                 BroadcastStatus1(pkmn, pkmn, status1, PBEStatusAction.Cleared);
+                                if (status1 == PBEStatus1.Asleep)
+                                {
+                                    CureNightmare(pkmn, pkmn);
+                                }
                             }
                             break;
                         }
@@ -406,11 +414,11 @@ namespace Kermalis.PokemonBattleEngine.Battle
             }
 
             // Verified: LeechSeed before Status1
-            foreach (PBEPokemon pkmn in order)
+            foreach (PBEBattlePokemon pkmn in order)
             {
                 if (pkmn.HP > 0 && pkmn.Status2.HasFlag(PBEStatus2.LeechSeed))
                 {
-                    PBEPokemon sucker = pkmn.SeededTeam.TryGetPokemon(pkmn.SeededPosition);
+                    PBEBattlePokemon sucker = pkmn.SeededTeam.TryGetPokemon(pkmn.SeededPosition);
                     if (sucker != null)
                     {
                         BroadcastStatus2(pkmn, sucker, PBEStatus2.LeechSeed, PBEStatusAction.Damage);
@@ -425,7 +433,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
             }
 
             // Verified: Status1 before Curse
-            foreach (PBEPokemon pkmn in order)
+            foreach (PBEBattlePokemon pkmn in order)
             {
                 if (pkmn.HP > 0)
                 {
@@ -471,8 +479,22 @@ namespace Kermalis.PokemonBattleEngine.Battle
                 }
             }
 
+            // Verified: Nightmare before Curse, not same loop
+            foreach (PBEBattlePokemon pkmn in order)
+            {
+                if (pkmn.HP > 0 && pkmn.Status2.HasFlag(PBEStatus2.Nightmare))
+                {
+                    BroadcastStatus2(pkmn, pkmn, PBEStatus2.Nightmare, PBEStatusAction.Damage);
+                    DealDamage(pkmn, pkmn, pkmn.MaxHP / 4, true);
+                    if (!FaintCheck(pkmn))
+                    {
+                        LowHPBerryCheck(pkmn);
+                    }
+                }
+            }
+
             // Verified: Curse before MagnetRise
-            foreach (PBEPokemon pkmn in order)
+            foreach (PBEBattlePokemon pkmn in order)
             {
                 if (pkmn.HP > 0 && pkmn.Status2.HasFlag(PBEStatus2.Cursed))
                 {
@@ -485,8 +507,8 @@ namespace Kermalis.PokemonBattleEngine.Battle
                 }
             }
 
-            // Verified: MagnetRise before Moody/SlowStart/SpeedBoost
-            foreach (PBEPokemon pkmn in order)
+            // Verified: MagnetRise before Abilities/Orbs
+            foreach (PBEBattlePokemon pkmn in order)
             {
                 if (pkmn.HP > 0 && pkmn.Status2.HasFlag(PBEStatus2.MagnetRise) && pkmn.MagnetRiseTurns > 0)
                 {
@@ -499,7 +521,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
             }
 
             // Verified: BadDreams/Moody/SlowStart/SpeedBoost before Orbs, but activate together
-            foreach (PBEPokemon pkmn in order)
+            foreach (PBEBattlePokemon pkmn in order)
             {
                 if (pkmn.HP > 0)
                 {
@@ -508,7 +530,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                     {
                         case PBEAbility.BadDreams:
                         {
-                            foreach (PBEPokemon victim in GetRuntimeSurrounding(pkmn, false, true).Where(p => p.Status1 == PBEStatus1.Asleep))
+                            foreach (PBEBattlePokemon victim in GetRuntimeSurrounding(pkmn, false, true).Where(p => p.Status1 == PBEStatus1.Asleep))
                             {
                                 BroadcastAbility(pkmn, victim, PBEAbility.BadDreams, PBEAbilityAction.Damage);
                                 DealDamage(pkmn, victim, pkmn.MaxHP / 8, true);
@@ -596,24 +618,16 @@ namespace Kermalis.PokemonBattleEngine.Battle
 
         public bool ShouldDoWeatherEffects()
         {
-            if (IsDisposed)
-            {
-                throw new ObjectDisposedException(null);
-            }
             // If HP is needed to be above 0, use HPPercentage so clients can continue to use this
             // However, I see no instance of this getting called where an ActiveBattler has 0 hp
             return !ActiveBattlers.Any(p => p.Ability == PBEAbility.AirLock || p.Ability == PBEAbility.CloudNine);
         }
         public bool WillLeafGuardActivate()
         {
-            if (IsDisposed)
-            {
-                throw new ObjectDisposedException(null);
-            }
             return ShouldDoWeatherEffects() && Weather == PBEWeather.HarshSunlight;
         }
 
-        private void UseMove(PBEPokemon user, PBEMove move, PBETurnTarget requestedTargets)
+        private void UseMove(PBEBattlePokemon user, PBEMove move, PBETurnTarget requestedTargets)
         {
             // Cancel the semi-invulnerable move if the user is affected by its status1
             if (!_calledFromOtherMove && PreMoveStatusCheck(user, move))
@@ -642,7 +656,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
             }
             else
             {
-                PBEPokemon[] targets = GetRuntimeTargets(user, requestedTargets, user.GetMoveTargets(move) == PBEMoveTarget.SingleNotSelf);
+                PBEBattlePokemon[] targets = GetRuntimeTargets(user, requestedTargets, user.GetMoveTargets(move) == PBEMoveTarget.SingleNotSelf);
                 PBEMoveData mData = PBEMoveData.Data[move];
                 PBEMoveEffect effect = mData.Effect;
                 int effectParam = mData.EffectParam;
@@ -1044,6 +1058,11 @@ namespace Kermalis.PokemonBattleEngine.Battle
                         Ef_Moonlight(user, move);
                         break;
                     }
+                    case PBEMoveEffect.Nightmare:
+                    {
+                        Ef_TryForceStatus2(user, targets, move, PBEStatus2.Nightmare);
+                        break;
+                    }
                     case PBEMoveEffect.Nothing:
                     {
                         Ef_Nothing(user, move);
@@ -1319,7 +1338,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
             }
         }
 
-        private bool PreMoveStatusCheck(PBEPokemon user, PBEMove move)
+        private bool PreMoveStatusCheck(PBEBattlePokemon user, PBEMove move)
         {
             PBEMoveData mData = PBEMoveData.Data[move];
 
@@ -1334,6 +1353,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                     user.Status1Counter = 0;
                     user.SleepTurns = 0;
                     BroadcastStatus1(user, user, PBEStatus1.Asleep, PBEStatusAction.Ended);
+                    CureNightmare(user, user);
                 }
                 else if (mData.Effect != PBEMoveEffect.Snore)
                 {
@@ -1412,7 +1432,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
             }
             return false;
         }
-        private bool MissCheck(PBEPokemon user, PBEPokemon target, PBEMove move)
+        private bool MissCheck(PBEBattlePokemon user, PBEBattlePokemon target, PBEMove move)
         {
             if (user == target)
             {
@@ -1572,7 +1592,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
             BroadcastMoveMissed(user, target);
             return true;
         }
-        private bool AttackTypeCheck(PBEPokemon user, PBEPokemon target, PBEType moveType, out PBEResult result, out double damageMultiplier)
+        private bool AttackTypeCheck(PBEBattlePokemon user, PBEBattlePokemon target, PBEType moveType, out PBEResult result, out double damageMultiplier)
         {
             result = PBETypeEffectiveness.IsAffectedByAttack(user, target, moveType, out damageMultiplier);
             if (result == PBEResult.Ineffective_Ability)
@@ -1586,7 +1606,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
             }
             return true;
         }
-        private bool CritCheck(PBEPokemon user, PBEPokemon target, PBEMove move)
+        private bool CritCheck(PBEBattlePokemon user, PBEBattlePokemon target, PBEMove move)
         {
             if (((target.Ability == PBEAbility.BattleArmor || target.Ability == PBEAbility.ShellArmor) && !user.HasCancellingAbility())
                 || target.Team.TeamStatus.HasFlag(PBETeamStatus.LuckyChant))
@@ -1640,14 +1660,14 @@ namespace Kermalis.PokemonBattleEngine.Battle
                 }
             }
         }
-        private void TrySetLoser(PBEPokemon pkmn)
+        private void TrySetLoser(PBEBattlePokemon pkmn)
         {
             if (Winner == null && pkmn.Team.NumConsciousPkmn == 0)
             {
                 Winner = pkmn.Team.OpposingTeam;
             }
         }
-        private bool FaintCheck(PBEPokemon pkmn)
+        private bool FaintCheck(PBEBattlePokemon pkmn)
         {
             if (pkmn.HP == 0)
             {
@@ -1664,7 +1684,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
             }
             return false;
         }
-        private bool GetManipulableChance(PBEPokemon pkmn, int chance)
+        private bool GetManipulableChance(PBEBattlePokemon pkmn, int chance)
         {
             // TODO: Does the Rainbow affect abilities activating, such as CuteCharm/Static, Healer/ShedSkin, etc, and which side of the field would they activate from? Victim?
             // TODO: If it does affect abilities, does it affect Effect Spore? It uses its own weird rng
@@ -1675,7 +1695,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
             return PBERandom.RandomBool(chance, 100);
         }
 
-        private void ActivateAbility(PBEPokemon pkmn, bool switchIn)
+        private void ActivateAbility(PBEBattlePokemon pkmn, bool switchIn)
         {
             if (!switchIn)
             {
@@ -1699,10 +1719,10 @@ namespace Kermalis.PokemonBattleEngine.Battle
                 }
                 case PBEAbility.Anticipation:
                 {
-                    PBEPokemon[] oppActive = pkmn.Team.OpposingTeam.ActiveBattlers;
+                    PBEBattlePokemon[] oppActive = pkmn.Team.OpposingTeam.ActiveBattlers;
                     if (oppActive.Length != 0)
                     {
-                        foreach (PBEPokemon opponent in oppActive)
+                        foreach (PBEBattlePokemon opponent in oppActive)
                         {
                             foreach (PBEBattleMoveset.PBEBattleMovesetSlot moveSlot in opponent.Moves)
                             {
@@ -1728,7 +1748,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                 }
                 case PBEAbility.Download:
                 {
-                    PBEPokemon[] oppActive = pkmn.Team.OpposingTeam.ActiveBattlers;
+                    PBEBattlePokemon[] oppActive = pkmn.Team.OpposingTeam.ActiveBattlers;
                     if (oppActive.Length != 0)
                     {
                         PBEStat stat = oppActive.Average(p => p.Defense * GetStatChangeModifier(p.DefenseChange, false))
@@ -1763,7 +1783,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                 case PBEAbility.Imposter:
                 {
                     PBEFieldPosition targetPos = GetPositionAcross(BattleFormat, pkmn.FieldPosition);
-                    PBEPokemon target = pkmn.Team.OpposingTeam.TryGetPokemon(targetPos);
+                    PBEBattlePokemon target = pkmn.Team.OpposingTeam.TryGetPokemon(targetPos);
                     if (target != null && target.IsTransformPossible(pkmn) == PBEResult.Success)
                     {
                         BroadcastAbility(pkmn, target, pkmn.Ability, PBEAbilityAction.ChangedAppearance);
@@ -1808,14 +1828,14 @@ namespace Kermalis.PokemonBattleEngine.Battle
         {
             CastformCherrimCheck(GetActingOrder(ActiveBattlers, true));
         }
-        private void CastformCherrimCheck(PBEPokemon[] order)
+        private void CastformCherrimCheck(PBEBattlePokemon[] order)
         {
-            foreach (PBEPokemon pkmn in order)
+            foreach (PBEBattlePokemon pkmn in order)
             {
                 CastformCherrimCheck(pkmn);
             }
         }
-        private void CastformCherrimCheck(PBEPokemon pkmn)
+        private void CastformCherrimCheck(PBEBattlePokemon pkmn)
         {
             if (pkmn.Species == PBESpecies.Castform && pkmn.OriginalSpecies == PBESpecies.Castform)
             {
@@ -1858,7 +1878,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                 }
             }
         }
-        private void ShayminCheck(PBEPokemon pkmn)
+        private void ShayminCheck(PBEBattlePokemon pkmn)
         {
             // If a Shaymin_Sky is given MagmaArmor and then Frozen, it will change to Shaymin and obtain Shaymin's ability, therefore losing MagmaArmor and as a result will not be cured of its Frozen status.
             if (pkmn.Species == PBESpecies.Shaymin && pkmn.OriginalSpecies == PBESpecies.Shaymin && pkmn.Form == PBEForm.Shaymin_Sky && pkmn.Status1 == PBEStatus1.Frozen)
@@ -1869,7 +1889,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                 ActivateAbility(pkmn, false);
             }
         }
-        private void IllusionBreak(PBEPokemon pkmn, PBEPokemon breaker)
+        private void IllusionBreak(PBEBattlePokemon pkmn, PBEBattlePokemon breaker)
         {
             if (pkmn.Status2.HasFlag(PBEStatus2.Disguised))
             {
@@ -1885,7 +1905,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                 BroadcastStatus2(pkmn, breaker, PBEStatus2.Disguised, PBEStatusAction.Ended);
             }
         }
-        private void AntiStatusAbilityCheck(PBEPokemon pkmn)
+        private void AntiStatusAbilityCheck(PBEBattlePokemon pkmn)
         {
             switch (pkmn.Ability)
             {
@@ -1911,6 +1931,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                         pkmn.SleepTurns = 0;
                         BroadcastAbility(pkmn, pkmn, pkmn.Ability, PBEAbilityAction.ChangedStatus);
                         BroadcastStatus1(pkmn, pkmn, PBEStatus1.Asleep, PBEStatusAction.Cleared);
+                        CureNightmare(pkmn, pkmn);
                     }
                     break;
                 }
@@ -1967,14 +1988,14 @@ namespace Kermalis.PokemonBattleEngine.Battle
                 }
             }
         }
-        private void CauseConfusion(PBEPokemon target, PBEPokemon other)
+        private void CauseConfusion(PBEBattlePokemon target, PBEBattlePokemon other)
         {
             target.ConfusionCounter = 0;
             target.ConfusionTurns = (byte)PBERandom.RandomInt(Settings.ConfusionMinTurns, Settings.ConfusionMaxTurns);
             BroadcastStatus2(target, other, PBEStatus2.Confused, PBEStatusAction.Added);
             AntiStatusAbilityCheck(target);
         }
-        private void CauseInfatuation(PBEPokemon target, PBEPokemon other)
+        private void CauseInfatuation(PBEBattlePokemon target, PBEBattlePokemon other)
         {
             target.InfatuatedWithPokemon = other;
             BroadcastStatus2(target, other, PBEStatus2.Infatuated, PBEStatusAction.Added);
@@ -1987,7 +2008,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
             AntiStatusAbilityCheck(target);
         }
         // TODO: Use & add packet handlers
-        private void WhiteHerbCheck(PBEPokemon pkmn)
+        private void WhiteHerbCheck(PBEBattlePokemon pkmn)
         {
             if (pkmn.Item == PBEItem.WhiteHerb)
             {
@@ -2002,7 +2023,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                 }
             }
         }
-        private bool PowerHerbCheck(PBEPokemon pkmn)
+        private bool PowerHerbCheck(PBEBattlePokemon pkmn)
         {
             if (pkmn.Item == PBEItem.PowerHerb)
             {
@@ -2011,7 +2032,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
             }
             return false;
         }
-        private void LowHPBerryCheck(PBEPokemon pkmn, PBEPokemon forcedToEatBy = null)
+        private void LowHPBerryCheck(PBEBattlePokemon pkmn, PBEBattlePokemon forcedToEatBy = null)
         {
             forcedToEatBy = forcedToEatBy ?? pkmn;
             void DoConfuseBerry(PBEFlavor flavor)
@@ -2077,7 +2098,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                 }
             }
         }
-        private void SetAbility(PBEPokemon user, PBEPokemon target, PBEAbility ability)
+        private void SetAbility(PBEBattlePokemon user, PBEBattlePokemon target, PBEAbility ability)
         {
             // This func assumes new ability is different from current
             PBEAbility oldAbility = target.Ability;
@@ -2115,7 +2136,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
             }
         }
 
-        private void RecordExecutedMove(PBEPokemon user, PBEMove move)
+        private void RecordExecutedMove(PBEBattlePokemon user, PBEMove move)
         {
             user.HasUsedMoveThisTurn = true;
             // Doesn't care if there is a Choice Locked move already. As long as the user knows it, it will become locked. (Metronome calling a move the user knows, Ditto transforming into someone else with transform)
@@ -2128,7 +2149,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                 user.Minimize_Used = true;
             }
         }
-        private void PPReduce(PBEPokemon pkmn, PBEMove move)
+        private void PPReduce(PBEBattlePokemon pkmn, PBEMove move)
         {
             if (!_calledFromOtherMove)
             {
@@ -2144,11 +2165,18 @@ namespace Kermalis.PokemonBattleEngine.Battle
             }
         }
 
-        private void SetSleepTurns(PBEPokemon pkmn, int minTurns, int maxTurns)
+        private void CureNightmare(PBEBattlePokemon wakingUp, PBEBattlePokemon pokemon2)
+        {
+            if (wakingUp.Status2.HasFlag(PBEStatus2.Nightmare))
+            {
+                BroadcastStatus2(wakingUp, pokemon2, PBEStatus2.Nightmare, PBEStatusAction.Ended);
+            }
+        }
+        private void SetSleepTurns(PBEBattlePokemon pkmn, int minTurns, int maxTurns)
         {
             pkmn.SleepTurns = (byte)(PBERandom.RandomInt(minTurns, maxTurns) / (pkmn.Ability == PBEAbility.EarlyBird ? 2 : 1));
         }
-        private void DoTransform(PBEPokemon user, PBEPokemon target)
+        private void DoTransform(PBEBattlePokemon user, PBEBattlePokemon target)
         {
             user.Transform(target);
             BroadcastTransform(user, target);
@@ -2162,7 +2190,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                 BroadcastMoveLock_ChoiceItem(user, PBEMove.None);
             }
         }
-        private PBEResult ApplyStatus1IfPossible(PBEPokemon user, PBEPokemon target, PBEStatus1 status, bool broadcastUnsuccessful)
+        private PBEResult ApplyStatus1IfPossible(PBEBattlePokemon user, PBEBattlePokemon target, PBEStatus1 status, bool broadcastUnsuccessful)
         {
             PBEResult result;
             switch (status)
@@ -2200,7 +2228,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
             }
             return result;
         }
-        private PBEResult ApplyStatus2IfPossible(PBEPokemon user, PBEPokemon target, PBEStatus2 status, bool broadcastUnsuccessful)
+        private PBEResult ApplyStatus2IfPossible(PBEBattlePokemon user, PBEBattlePokemon target, PBEStatus2 status, bool broadcastUnsuccessful)
         {
             PBEResult result;
             switch (status)
@@ -2325,6 +2353,19 @@ namespace Kermalis.PokemonBattleEngine.Battle
                     }
                     break;
                 }
+                case PBEStatus2.Nightmare:
+                {
+                    if (target.Status1 == PBEStatus1.Asleep && !target.Status2.HasFlag(PBEStatus2.Nightmare))
+                    {
+                        BroadcastStatus2(target, user, PBEStatus2.Nightmare, PBEStatusAction.Added);
+                        result = PBEResult.Success;
+                    }
+                    else
+                    {
+                        result = PBEResult.Ineffective_Status;
+                    }
+                    break;
+                }
                 case PBEStatus2.PowerTrick:
                 {
                     target.ApplyPowerTrickChange();
@@ -2394,7 +2435,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
             }
             return result;
         }
-        private void ApplyStatChangeIfPossible(PBEPokemon user, PBEPokemon target, PBEStat stat, int change, bool isSecondaryEffect = false)
+        private void ApplyStatChangeIfPossible(PBEBattlePokemon user, PBEBattlePokemon target, PBEStat stat, int change, bool isSecondaryEffect = false)
         {
             PBEResult result = target.IsStatChangePossible(stat, user, change, out sbyte oldValue, out sbyte newValue);
             bool broadcast;
@@ -2424,20 +2465,20 @@ namespace Kermalis.PokemonBattleEngine.Battle
                 BroadcastPkmnStatChanged(target, stat, oldValue, newValue);
             }
         }
-        private void SetStatAndBroadcast(PBEPokemon pkmn, PBEStat stat, sbyte oldValue, sbyte newValue)
+        private void SetStatAndBroadcast(PBEBattlePokemon pkmn, PBEStat stat, sbyte oldValue, sbyte newValue)
         {
             pkmn.SetStatChange(stat, newValue);
             BroadcastPkmnStatChanged(pkmn, stat, oldValue, newValue);
         }
 
-        private PBEPkmnSwitchInPacket.PBESwitchInInfo CreateSwitchInInfo(PBEPokemon pkmn)
+        private PBEPkmnSwitchInPacket.PBESwitchInInfo CreateSwitchInInfo(PBEBattlePokemon pkmn)
         {
             if (pkmn.Ability == PBEAbility.Illusion)
             {
-                PBEList<PBEPokemon> party = pkmn.Team.Party;
+                PBEList<PBEBattlePokemon> party = pkmn.Team.Party;
                 for (int i = party.Count - 1; i >= 0; i--)
                 {
-                    PBEPokemon p = party[i];
+                    PBEBattlePokemon p = party[i];
                     if (p.HP > 0)
                     {
                         // If this Pokémon is the "last" conscious one, it will go out as itself (loop breaks)
@@ -2461,13 +2502,13 @@ namespace Kermalis.PokemonBattleEngine.Battle
             }
             return new PBEPkmnSwitchInPacket.PBESwitchInInfo(pkmn);
         }
-        private void SwitchTwoPokemon(PBEPokemon pkmnLeaving, PBEPokemon pkmnComing, PBEPokemon forcedByPkmn = null)
+        private void SwitchTwoPokemon(PBEBattlePokemon pkmnLeaving, PBEBattlePokemon pkmnComing, PBEBattlePokemon forcedByPkmn = null)
         {
             PBEFieldPosition pos = pkmnLeaving.FieldPosition;
             pkmnLeaving.FieldPosition = PBEFieldPosition.None;
             _turnOrder.Remove(pkmnLeaving);
             ActiveBattlers.Remove(pkmnLeaving);
-            PBEPokemon disguisedAsPokemon = pkmnLeaving.Status2.HasFlag(PBEStatus2.Disguised) ? pkmnLeaving.DisguisedAsPokemon : pkmnLeaving;
+            PBEBattlePokemon disguisedAsPokemon = pkmnLeaving.Status2.HasFlag(PBEStatus2.Disguised) ? pkmnLeaving.DisguisedAsPokemon : pkmnLeaving;
             pkmnLeaving.ClearForSwitch();
             BroadcastPkmnSwitchOut(pkmnLeaving, disguisedAsPokemon, pos, forcedByPkmn);
             RemoveInfatuationsAndLockOns(pkmnLeaving);
@@ -2483,9 +2524,9 @@ namespace Kermalis.PokemonBattleEngine.Battle
             DoSwitchInEffects(new[] { pkmnComing }, forcedByPkmn);
             CastformCherrimCheckAll();
         }
-        private void RemoveInfatuationsAndLockOns(PBEPokemon pkmnLeaving)
+        private void RemoveInfatuationsAndLockOns(PBEBattlePokemon pkmnLeaving)
         {
-            foreach (PBEPokemon pkmn in ActiveBattlers)
+            foreach (PBEBattlePokemon pkmn in ActiveBattlers)
             {
                 if (pkmn.Status2.HasFlag(PBEStatus2.Infatuated) && pkmn.InfatuatedWithPokemon == pkmnLeaving)
                 {
@@ -2504,11 +2545,11 @@ namespace Kermalis.PokemonBattleEngine.Battle
         // Should there be two versions of BasicHit, one for single target and another for multi target?
         // The games probably have two (some move types like MakesContact/Recoil are guaranteed to be single target), but we might not need two so we can support editing moves/adding moves
         // Some moves types will need to throw an exception if they bypass the rule, so they do not violate behavior (pickpocket and life orb interaction, for example)
-        private void BasicHit(PBEPokemon user, PBEPokemon[] targets, PBEMove move,
+        private void BasicHit(PBEBattlePokemon user, PBEBattlePokemon[] targets, PBEMove move,
             Func<int, int?> recoilFunc = null,
-            Func<PBEPokemon, PBEResult> beforeDoingDamage = null,
-            Action<PBEPokemon> beforePostHit = null,
-            Action<PBEPokemon, ushort> afterPostHit = null,
+            Func<PBEBattlePokemon, PBEResult> beforeDoingDamage = null,
+            Action<PBEBattlePokemon> beforePostHit = null,
+            Action<PBEBattlePokemon, ushort> afterPostHit = null,
             Action beforeTargetsFaint = null,
             bool hitRegardlessOfUserConciousness = false)
         {
@@ -2518,7 +2559,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
             int totalDamageDealt = 0;
             PBEType moveType = user.GetMoveType(move);
             double basePower = CalculateBasePower(user, targets, move, moveType);
-            foreach (PBEPokemon target in targets)
+            foreach (PBEBattlePokemon target in targets)
             {
                 if (!MissCheck(user, target, move))
                 {
@@ -2568,7 +2609,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
             {
                 // User's stats change before the targets faint if at least one was hit
                 beforeTargetsFaint?.Invoke();
-                foreach (PBEPokemon target in targets)
+                foreach (PBEBattlePokemon target in targets)
                 {
                     FaintCheck(target);
                 }
@@ -2580,13 +2621,13 @@ namespace Kermalis.PokemonBattleEngine.Battle
             // Official order: target faints (each target), recoil, Life Orb, user faints/target eats berry (each target), target AntiStatusAbilityCheck() (each target)
         }
         // None of these moves are multi-target
-        private void FixedDamageHit(PBEPokemon user, PBEPokemon[] targets, PBEMove move, Func<PBEPokemon, int> damageFunc,
-            Func<PBEPokemon, PBEResult> beforeMissCheck = null,
+        private void FixedDamageHit(PBEBattlePokemon user, PBEBattlePokemon[] targets, PBEMove move, Func<PBEBattlePokemon, int> damageFunc,
+            Func<PBEBattlePokemon, PBEResult> beforeMissCheck = null,
             Action beforeTargetsFaint = null)
         {
             bool hitSomeone = false;
             PBEType moveType = user.GetMoveType(move);
-            foreach (PBEPokemon target in targets)
+            foreach (PBEBattlePokemon target in targets)
             {
                 // Endeavor fails if the target's HP is <= the user's HP
                 // One hit knockout moves fail if the target's level is > the user's level
@@ -2615,7 +2656,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
             {
                 // "It's a one-hit KO!"
                 beforeTargetsFaint?.Invoke();
-                foreach (PBEPokemon target in targets)
+                foreach (PBEBattlePokemon target in targets)
                 {
                     FaintCheck(target);
                 }
@@ -2627,14 +2668,14 @@ namespace Kermalis.PokemonBattleEngine.Battle
             // Official order: target faints, Life Orb, user faints/target eats berry, target AntiStatusAbilityCheck()
         }
         // None of these moves are multi-target
-        private void MultiHit(PBEPokemon user, PBEPokemon[] targets, PBEMove move, byte numHits,
+        private void MultiHit(PBEBattlePokemon user, PBEBattlePokemon[] targets, PBEMove move, byte numHits,
             bool subsequentMissChecks = false,
-            Action<PBEPokemon> beforePostHit = null)
+            Action<PBEBattlePokemon> beforePostHit = null)
         {
             bool hitSomeone = false;
             PBEType moveType = user.GetMoveType(move);
             double basePower = CalculateBasePower(user, targets, move, moveType); // Verified: Gem boost applies to all hits
-            foreach (PBEPokemon target in targets)
+            foreach (PBEBattlePokemon target in targets)
             {
                 if (!MissCheck(user, target, move))
                 {
@@ -2688,8 +2729,8 @@ namespace Kermalis.PokemonBattleEngine.Battle
             }
             // Official order: user faints/target eats berry, effectiveness, "Hit 4 times!", target faints, Life Orb, target AntiStatusAbilityCheck()
         }
-        private void SemiInvulnerableChargeMove(PBEPokemon user, PBEPokemon[] targets, PBEMove move, PBETurnTarget requestedTargets, PBEStatus2 status2,
-            Action<PBEPokemon> beforePostHit = null)
+        private void SemiInvulnerableChargeMove(PBEBattlePokemon user, PBEBattlePokemon[] targets, PBEMove move, PBETurnTarget requestedTargets, PBEStatus2 status2,
+            Action<PBEBattlePokemon> beforePostHit = null)
         {
             BroadcastMoveUsed(user, move);
         top:
@@ -2719,7 +2760,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
             }
         }
 
-        private void Ef_TryForceStatus1(PBEPokemon user, PBEPokemon[] targets, PBEMove move, PBEStatus1 status)
+        private void Ef_TryForceStatus1(PBEBattlePokemon user, PBEBattlePokemon[] targets, PBEMove move, PBEStatus1 status)
         {
             BroadcastMoveUsed(user, move);
             PPReduce(user, move);
@@ -2729,7 +2770,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
             }
             else
             {
-                foreach (PBEPokemon target in targets)
+                foreach (PBEBattlePokemon target in targets)
                 {
                     if (!MissCheck(user, target, move))
                     {
@@ -2750,7 +2791,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
             RecordExecutedMove(user, move);
             return;
         }
-        private void Ef_TryForceStatus2(PBEPokemon user, PBEPokemon[] targets, PBEMove move, PBEStatus2 status)
+        private void Ef_TryForceStatus2(PBEBattlePokemon user, PBEBattlePokemon[] targets, PBEMove move, PBEStatus2 status)
         {
             BroadcastMoveUsed(user, move);
             PPReduce(user, move);
@@ -2760,7 +2801,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
             }
             else
             {
-                foreach (PBEPokemon target in targets)
+                foreach (PBEBattlePokemon target in targets)
                 {
                     if (!MissCheck(user, target, move))
                     {
@@ -2771,7 +2812,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
             }
             RecordExecutedMove(user, move);
         }
-        private void Ef_TryForceBattleStatus(PBEPokemon user, PBEMove move, PBEBattleStatus status)
+        private void Ef_TryForceBattleStatus(PBEBattlePokemon user, PBEMove move, PBEBattleStatus status)
         {
             BroadcastMoveUsed(user, move);
             PPReduce(user, move);
@@ -2795,7 +2836,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
             }
             RecordExecutedMove(user, move);
         }
-        private void Ef_TryForceTeamStatus(PBEPokemon user, PBEMove move, PBETeamStatus status)
+        private void Ef_TryForceTeamStatus(PBEBattlePokemon user, PBEMove move, PBETeamStatus status)
         {
             PBEResult result;
             BroadcastMoveUsed(user, move);
@@ -2935,7 +2976,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
             }
             RecordExecutedMove(user, move);
         }
-        private void Ef_TryForceWeather(PBEPokemon user, PBEMove move, PBEWeather weather)
+        private void Ef_TryForceWeather(PBEBattlePokemon user, PBEMove move, PBEWeather weather)
         {
             BroadcastMoveUsed(user, move);
             PPReduce(user, move);
@@ -2985,7 +3026,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
             RecordExecutedMove(user, move);
         }
 
-        private void Ef_ChangeTargetStats(PBEPokemon user, PBEPokemon[] targets, PBEMove move, PBEStat[] stats, int[] changes, bool requireAttraction = false)
+        private void Ef_ChangeTargetStats(PBEBattlePokemon user, PBEBattlePokemon[] targets, PBEMove move, PBEStat[] stats, int[] changes, bool requireAttraction = false)
         {
             BroadcastMoveUsed(user, move);
             PPReduce(user, move);
@@ -2995,7 +3036,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
             }
             else
             {
-                foreach (PBEPokemon target in targets)
+                foreach (PBEBattlePokemon target in targets)
                 {
                     if (!MissCheck(user, target, move))
                     {
@@ -3020,7 +3061,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
             }
             RecordExecutedMove(user, move);
         }
-        private void Ef_Hit__MaybeChangeTargetStats(PBEPokemon user, PBEPokemon[] targets, PBEMove move, PBEStat[] stats, int[] changes, int chanceToChangeStats)
+        private void Ef_Hit__MaybeChangeTargetStats(PBEBattlePokemon user, PBEBattlePokemon[] targets, PBEMove move, PBEStat[] stats, int[] changes, int chanceToChangeStats)
         {
             BroadcastMoveUsed(user, move);
             PPReduce(user, move);
@@ -3030,7 +3071,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
             }
             else
             {
-                void BeforePostHit(PBEPokemon target)
+                void BeforePostHit(PBEBattlePokemon target)
                 {
                     if (target.HP > 0 && !target.Status2.HasFlag(PBEStatus2.Substitute) && GetManipulableChance(user, chanceToChangeStats))
                     {
@@ -3044,7 +3085,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
             }
             RecordExecutedMove(user, move);
         }
-        private void Ef_Hit__MaybeChangeUserStats(PBEPokemon user, PBEPokemon[] targets, PBEMove move, PBEStat[] stats, int[] changes, int chanceToChangeStats)
+        private void Ef_Hit__MaybeChangeUserStats(PBEBattlePokemon user, PBEBattlePokemon[] targets, PBEMove move, PBEStat[] stats, int[] changes, int chanceToChangeStats)
         {
             BroadcastMoveUsed(user, move);
             PPReduce(user, move);
@@ -3069,7 +3110,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
             RecordExecutedMove(user, move);
         }
 
-        private void Ef_Entrainment(PBEPokemon user, PBEPokemon[] targets, PBEMove move)
+        private void Ef_Entrainment(PBEBattlePokemon user, PBEBattlePokemon[] targets, PBEMove move)
         {
             var blockedUserAbilities = new PBEAbility[] { PBEAbility.FlowerGift, PBEAbility.Forecast, PBEAbility.Illusion,
                 PBEAbility.Imposter, PBEAbility.Trace };
@@ -3082,7 +3123,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
             }
             else
             {
-                foreach (PBEPokemon target in targets)
+                foreach (PBEBattlePokemon target in targets)
                 {
                     if (!MissCheck(user, target, move))
                     {
@@ -3104,7 +3145,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
             }
             RecordExecutedMove(user, move);
         }
-        private void Ef_RolePlay(PBEPokemon user, PBEPokemon[] targets, PBEMove move)
+        private void Ef_RolePlay(PBEBattlePokemon user, PBEBattlePokemon[] targets, PBEMove move)
         {
             var blockedUserAbilities = new PBEAbility[] { PBEAbility.Imposter, PBEAbility.Multitype, PBEAbility.ZenMode };
             var blockedTargetAbilities = new PBEAbility[] { PBEAbility.FlowerGift, PBEAbility.Forecast, PBEAbility.Illusion,
@@ -3118,7 +3159,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
             }
             else
             {
-                foreach (PBEPokemon target in targets)
+                foreach (PBEBattlePokemon target in targets)
                 {
                     if (!MissCheck(user, target, move))
                     {
@@ -3136,7 +3177,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
             }
             RecordExecutedMove(user, move);
         }
-        private void Ef_SetOtherAbility(PBEPokemon user, PBEPokemon[] targets, PBEMove move, PBEAbility ability, bool blockedByTruant)
+        private void Ef_SetOtherAbility(PBEBattlePokemon user, PBEBattlePokemon[] targets, PBEMove move, PBEAbility ability, bool blockedByTruant)
         {
             BroadcastMoveUsed(user, move);
             PPReduce(user, move);
@@ -3146,7 +3187,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
             }
             else
             {
-                foreach (PBEPokemon target in targets)
+                foreach (PBEBattlePokemon target in targets)
                 {
                     if (!MissCheck(user, target, move))
                     {
@@ -3168,9 +3209,9 @@ namespace Kermalis.PokemonBattleEngine.Battle
             RecordExecutedMove(user, move);
         }
 
-        private void Ef_Bounce(PBEPokemon user, PBEPokemon[] targets, PBEMove move, PBETurnTarget requestedTargets, int chanceToParalyze)
+        private void Ef_Bounce(PBEBattlePokemon user, PBEBattlePokemon[] targets, PBEMove move, PBETurnTarget requestedTargets, int chanceToParalyze)
         {
-            void BeforePostHit(PBEPokemon target)
+            void BeforePostHit(PBEBattlePokemon target)
             {
                 if (target.HP > 0 && GetManipulableChance(user, chanceToParalyze))
                 {
@@ -3179,9 +3220,9 @@ namespace Kermalis.PokemonBattleEngine.Battle
             }
             SemiInvulnerableChargeMove(user, targets, move, requestedTargets, PBEStatus2.Airborne, beforePostHit: BeforePostHit);
         }
-        private void Ef_ShadowForce(PBEPokemon user, PBEPokemon[] targets, PBEMove move, PBETurnTarget requestedTargets)
+        private void Ef_ShadowForce(PBEBattlePokemon user, PBEBattlePokemon[] targets, PBEMove move, PBETurnTarget requestedTargets)
         {
-            void BeforePostHit(PBEPokemon target)
+            void BeforePostHit(PBEBattlePokemon target)
             {
                 // TODO: Quick Guard
                 if (target.HP > 0 && target.Status2.HasFlag(PBEStatus2.Protected))
@@ -3196,7 +3237,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
             SemiInvulnerableChargeMove(user, targets, move, requestedTargets, PBEStatus2.ShadowForce, beforePostHit: BeforePostHit);
         }
 
-        private void Ef_BrickBreak(PBEPokemon user, PBEPokemon[] targets, PBEMove move)
+        private void Ef_BrickBreak(PBEBattlePokemon user, PBEBattlePokemon[] targets, PBEMove move)
         {
             BroadcastMoveUsed(user, move);
             PPReduce(user, move);
@@ -3206,7 +3247,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
             }
             else
             {
-                PBEResult BeforeDoingDamage(PBEPokemon target)
+                PBEResult BeforeDoingDamage(PBEBattlePokemon target)
                 {
                     // Verified: Reflect then Light Screen
                     if (target.Team.TeamStatus.HasFlag(PBETeamStatus.Reflect))
@@ -3225,7 +3266,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
             }
             RecordExecutedMove(user, move);
         }
-        private void Ef_Hit(PBEPokemon user, PBEPokemon[] targets, PBEMove move, PBEStatus1 status1 = PBEStatus1.None, int chanceToInflictStatus1 = 0, PBEStatus2 status2 = PBEStatus2.None, int chanceToInflictStatus2 = 0)
+        private void Ef_Hit(PBEBattlePokemon user, PBEBattlePokemon[] targets, PBEMove move, PBEStatus1 status1 = PBEStatus1.None, int chanceToInflictStatus1 = 0, PBEStatus2 status2 = PBEStatus2.None, int chanceToInflictStatus2 = 0)
         {
             BroadcastMoveUsed(user, move);
             PPReduce(user, move);
@@ -3235,7 +3276,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
             }
             else
             {
-                void BeforePostHit(PBEPokemon target)
+                void BeforePostHit(PBEBattlePokemon target)
                 {
                     if (target.HP > 0)
                     {
@@ -3249,11 +3290,11 @@ namespace Kermalis.PokemonBattleEngine.Battle
                         }
                     }
                 }
-                BasicHit(user, targets, move, beforePostHit: status1 != PBEStatus1.None || status2 != PBEStatus2.None ? BeforePostHit : (Action<PBEPokemon>)null);
+                BasicHit(user, targets, move, beforePostHit: status1 != PBEStatus1.None || status2 != PBEStatus2.None ? BeforePostHit : (Action<PBEBattlePokemon>)null);
             }
             RecordExecutedMove(user, move);
         }
-        private void Ef_MultiHit(PBEPokemon user, PBEPokemon[] targets, PBEMove move, byte numHits, bool subsequentMissChecks = false, PBEStatus1 status1 = PBEStatus1.None, int chanceToInflictStatus1 = 0)
+        private void Ef_MultiHit(PBEBattlePokemon user, PBEBattlePokemon[] targets, PBEMove move, byte numHits, bool subsequentMissChecks = false, PBEStatus1 status1 = PBEStatus1.None, int chanceToInflictStatus1 = 0)
         {
             BroadcastMoveUsed(user, move);
             PPReduce(user, move);
@@ -3263,18 +3304,18 @@ namespace Kermalis.PokemonBattleEngine.Battle
             }
             else
             {
-                void BeforePostHit(PBEPokemon target)
+                void BeforePostHit(PBEBattlePokemon target)
                 {
                     if (target.HP > 0 && GetManipulableChance(user, chanceToInflictStatus1))
                     {
                         ApplyStatus1IfPossible(user, target, status1, false);
                     }
                 }
-                MultiHit(user, targets, move, numHits, subsequentMissChecks: subsequentMissChecks, beforePostHit: status1 != PBEStatus1.None ? BeforePostHit : (Action<PBEPokemon>)null); // Doesn't need to be its own func but neater
+                MultiHit(user, targets, move, numHits, subsequentMissChecks: subsequentMissChecks, beforePostHit: status1 != PBEStatus1.None ? BeforePostHit : (Action<PBEBattlePokemon>)null); // Doesn't need to be its own func but neater
             }
             RecordExecutedMove(user, move);
         }
-        private void Ef_Recoil(PBEPokemon user, PBEPokemon[] targets, PBEMove move, int denominator, PBEStatus1 status1 = PBEStatus1.None, int chanceToInflictStatus1 = 0, PBEStatus2 status2 = PBEStatus2.None, int chanceToInflictStatus2 = 0)
+        private void Ef_Recoil(PBEBattlePokemon user, PBEBattlePokemon[] targets, PBEMove move, int denominator, PBEStatus1 status1 = PBEStatus1.None, int chanceToInflictStatus1 = 0, PBEStatus2 status2 = PBEStatus2.None, int chanceToInflictStatus2 = 0)
         {
             BroadcastMoveUsed(user, move);
             PPReduce(user, move);
@@ -3288,7 +3329,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                 {
                     return user.Ability == PBEAbility.RockHead || totalDamageDealt == 0 ? (int?)null : totalDamageDealt / denominator;
                 }
-                void BeforePostHit(PBEPokemon target)
+                void BeforePostHit(PBEBattlePokemon target)
                 {
                     if (target.HP > 0)
                     {
@@ -3302,11 +3343,11 @@ namespace Kermalis.PokemonBattleEngine.Battle
                         }
                     }
                 }
-                BasicHit(user, targets, move, recoilFunc: RecoilFunc, beforePostHit: status1 != PBEStatus1.None || status2 != PBEStatus2.None ? BeforePostHit : (Action<PBEPokemon>)null);
+                BasicHit(user, targets, move, recoilFunc: RecoilFunc, beforePostHit: status1 != PBEStatus1.None || status2 != PBEStatus2.None ? BeforePostHit : (Action<PBEBattlePokemon>)null);
             }
             RecordExecutedMove(user, move);
         }
-        private void Ef_SecretPower(PBEPokemon user, PBEPokemon[] targets, PBEMove move, int secondaryEffectChance)
+        private void Ef_SecretPower(PBEBattlePokemon user, PBEBattlePokemon[] targets, PBEMove move, int secondaryEffectChance)
         {
             BroadcastMoveUsed(user, move);
             PPReduce(user, move);
@@ -3316,7 +3357,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
             }
             else
             {
-                void BeforePostHit(PBEPokemon target)
+                void BeforePostHit(PBEBattlePokemon target)
                 {
                     // BUG: In Generation 5, Secret Power is unaffected by Serene Grace and the Rainbow
                     if (target.HP > 0 &&
@@ -3344,7 +3385,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
             }
             RecordExecutedMove(user, move);
         }
-        private void Ef_Selfdestruct(PBEPokemon user, PBEPokemon[] targets, PBEMove move)
+        private void Ef_Selfdestruct(PBEBattlePokemon user, PBEBattlePokemon[] targets, PBEMove move)
         {
             // TODO: Damp
             BroadcastMoveUsed(user, move);
@@ -3364,7 +3405,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
             FaintCheck(user);
             RecordExecutedMove(user, move);
         }
-        private void Ef_Snore(PBEPokemon user, PBEPokemon[] targets, PBEMove move, int chanceToFlinch)
+        private void Ef_Snore(PBEBattlePokemon user, PBEBattlePokemon[] targets, PBEMove move, int chanceToFlinch)
         {
             BroadcastMoveUsed(user, move);
             PPReduce(user, move);
@@ -3378,7 +3419,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
             }
             else
             {
-                void BeforePostHit(PBEPokemon target)
+                void BeforePostHit(PBEBattlePokemon target)
                 {
                     if (target.HP > 0 && GetManipulableChance(user, chanceToFlinch))
                     {
@@ -3389,7 +3430,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
             }
             RecordExecutedMove(user, move);
         }
-        private void Ef_Struggle(PBEPokemon user, PBEPokemon[] targets, PBEMove move)
+        private void Ef_Struggle(PBEBattlePokemon user, PBEBattlePokemon[] targets, PBEMove move)
         {
             BroadcastStruggle(user);
             BroadcastMoveUsed(user, move);
@@ -3407,7 +3448,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
             }
             RecordExecutedMove(user, move);
         }
-        private void Ef_SuckerPunch(PBEPokemon user, PBEPokemon[] targets, PBEMove move)
+        private void Ef_SuckerPunch(PBEBattlePokemon user, PBEBattlePokemon[] targets, PBEMove move)
         {
             BroadcastMoveUsed(user, move);
             PPReduce(user, move);
@@ -3417,7 +3458,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
             }
             else
             {
-                PBEResult BeforeDoingDamage(PBEPokemon target)
+                PBEResult BeforeDoingDamage(PBEBattlePokemon target)
                 {
                     if (target.TurnAction == null // Just switched in
                         || target.HasUsedMoveThisTurn
@@ -3438,7 +3479,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
             RecordExecutedMove(user, move);
         }
 
-        private void Ef_Endeavor(PBEPokemon user, PBEPokemon[] targets, PBEMove move)
+        private void Ef_Endeavor(PBEBattlePokemon user, PBEBattlePokemon[] targets, PBEMove move)
         {
             BroadcastMoveUsed(user, move);
             PPReduce(user, move);
@@ -3448,11 +3489,11 @@ namespace Kermalis.PokemonBattleEngine.Battle
             }
             else
             {
-                int DamageFunc(PBEPokemon target)
+                int DamageFunc(PBEBattlePokemon target)
                 {
                     return target.HP - user.HP;
                 }
-                PBEResult BeforeMissCheck(PBEPokemon target)
+                PBEResult BeforeMissCheck(PBEBattlePokemon target)
                 {
                     if (target.HP <= user.HP)
                     {
@@ -3466,7 +3507,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
             }
             RecordExecutedMove(user, move);
         }
-        private void Ef_FinalGambit(PBEPokemon user, PBEPokemon[] targets, PBEMove move)
+        private void Ef_FinalGambit(PBEBattlePokemon user, PBEBattlePokemon[] targets, PBEMove move)
         {
             BroadcastMoveUsed(user, move);
             PPReduce(user, move);
@@ -3477,7 +3518,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
             else
             {
                 int oldHP = user.HP;
-                int DamageFunc(PBEPokemon target)
+                int DamageFunc(PBEBattlePokemon target)
                 {
                     if (user.HP > 0)
                     {
@@ -3490,7 +3531,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
             }
             RecordExecutedMove(user, move);
         }
-        private void Ef_OneHitKnockout(PBEPokemon user, PBEPokemon[] targets, PBEMove move)
+        private void Ef_OneHitKnockout(PBEBattlePokemon user, PBEBattlePokemon[] targets, PBEMove move)
         {
             BroadcastMoveUsed(user, move);
             PPReduce(user, move);
@@ -3500,11 +3541,11 @@ namespace Kermalis.PokemonBattleEngine.Battle
             }
             else
             {
-                int DamageFunc(PBEPokemon target)
+                int DamageFunc(PBEBattlePokemon target)
                 {
                     return target.HP;
                 }
-                PBEResult BeforeMissCheck(PBEPokemon target)
+                PBEResult BeforeMissCheck(PBEBattlePokemon target)
                 {
                     if (target.Level > user.Level)
                     {
@@ -3528,7 +3569,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
             }
             RecordExecutedMove(user, move);
         }
-        private void Ef_Psywave(PBEPokemon user, PBEPokemon[] targets, PBEMove move)
+        private void Ef_Psywave(PBEBattlePokemon user, PBEBattlePokemon[] targets, PBEMove move)
         {
             BroadcastMoveUsed(user, move);
             PPReduce(user, move);
@@ -3538,7 +3579,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
             }
             else
             {
-                int DamageFunc(PBEPokemon target)
+                int DamageFunc(PBEBattlePokemon target)
                 {
                     return user.Level * (PBERandom.RandomInt(0, 100) + 50) / 100;
                 }
@@ -3546,7 +3587,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
             }
             RecordExecutedMove(user, move);
         }
-        private void Ef_SeismicToss(PBEPokemon user, PBEPokemon[] targets, PBEMove move)
+        private void Ef_SeismicToss(PBEBattlePokemon user, PBEBattlePokemon[] targets, PBEMove move)
         {
             BroadcastMoveUsed(user, move);
             PPReduce(user, move);
@@ -3556,7 +3597,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
             }
             else
             {
-                int DamageFunc(PBEPokemon target)
+                int DamageFunc(PBEBattlePokemon target)
                 {
                     return user.Level;
                 }
@@ -3564,7 +3605,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
             }
             RecordExecutedMove(user, move);
         }
-        private void Ef_SetDamage(PBEPokemon user, PBEPokemon[] targets, PBEMove move, int damage)
+        private void Ef_SetDamage(PBEBattlePokemon user, PBEBattlePokemon[] targets, PBEMove move, int damage)
         {
             BroadcastMoveUsed(user, move);
             PPReduce(user, move);
@@ -3574,7 +3615,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
             }
             else
             {
-                int DamageFunc(PBEPokemon target)
+                int DamageFunc(PBEBattlePokemon target)
                 {
                     return damage;
                 }
@@ -3582,7 +3623,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
             }
             RecordExecutedMove(user, move);
         }
-        private void Ef_SuperFang(PBEPokemon user, PBEPokemon[] targets, PBEMove move)
+        private void Ef_SuperFang(PBEBattlePokemon user, PBEBattlePokemon[] targets, PBEMove move)
         {
             BroadcastMoveUsed(user, move);
             PPReduce(user, move);
@@ -3592,7 +3633,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
             }
             else
             {
-                int DamageFunc(PBEPokemon target)
+                int DamageFunc(PBEBattlePokemon target)
                 {
                     return target.HP / 2;
                 }
@@ -3601,7 +3642,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
             RecordExecutedMove(user, move);
         }
 
-        private void Ef_HPDrain(PBEPokemon user, PBEPokemon[] targets, PBEMove move, int percentRestored, bool requireSleep = false)
+        private void Ef_HPDrain(PBEBattlePokemon user, PBEBattlePokemon[] targets, PBEMove move, int percentRestored, bool requireSleep = false)
         {
             BroadcastMoveUsed(user, move);
             PPReduce(user, move);
@@ -3611,7 +3652,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
             }
             else
             {
-                PBEResult BeforeDoingDamage(PBEPokemon target)
+                PBEResult BeforeDoingDamage(PBEBattlePokemon target)
                 {
                     if (target.Status1 != PBEStatus1.Asleep)
                     {
@@ -3624,7 +3665,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                         return PBEResult.Success;
                     }
                 }
-                void AfterPostHit(PBEPokemon target, ushort damageDealt)
+                void AfterPostHit(PBEBattlePokemon target, ushort damageDealt)
                 {
                     int restoreAmt = (int)(damageDealt * (percentRestored / 100.0));
                     if (user.Item == PBEItem.BigRoot)
@@ -3645,11 +3686,11 @@ namespace Kermalis.PokemonBattleEngine.Battle
                         }
                     }
                 }
-                BasicHit(user, targets, move, beforeDoingDamage: requireSleep ? BeforeDoingDamage : (Func<PBEPokemon, PBEResult>)null, afterPostHit: AfterPostHit);
+                BasicHit(user, targets, move, beforeDoingDamage: requireSleep ? BeforeDoingDamage : (Func<PBEBattlePokemon, PBEResult>)null, afterPostHit: AfterPostHit);
             }
             RecordExecutedMove(user, move);
         }
-        private void Ef_Moonlight(PBEPokemon user, PBEMove move)
+        private void Ef_Moonlight(PBEBattlePokemon user, PBEMove move)
         {
             BroadcastMoveUsed(user, move);
             PPReduce(user, move);
@@ -3674,7 +3715,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
             }
             RecordExecutedMove(user, move);
         }
-        private void Ef_PainSplit(PBEPokemon user, PBEPokemon[] targets, PBEMove move)
+        private void Ef_PainSplit(PBEBattlePokemon user, PBEBattlePokemon[] targets, PBEMove move)
         {
             BroadcastMoveUsed(user, move);
             PPReduce(user, move);
@@ -3684,7 +3725,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
             }
             else
             {
-                foreach (PBEPokemon target in targets)
+                foreach (PBEBattlePokemon target in targets)
                 {
                     if (!MissCheck(user, target, move))
                     {
@@ -3696,7 +3737,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                         {
                             int total = user.HP + target.HP;
                             int hp = total / 2;
-                            foreach (PBEPokemon pkmn in new PBEPokemon[] { user, target })
+                            foreach (PBEBattlePokemon pkmn in new PBEBattlePokemon[] { user, target })
                             {
                                 if (hp > pkmn.HP)
                                 {
@@ -3718,7 +3759,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
             }
             RecordExecutedMove(user, move);
         }
-        private void Ef_Rest(PBEPokemon user, PBEMove move)
+        private void Ef_Rest(PBEBattlePokemon user, PBEMove move)
         {
             BroadcastMoveUsed(user, move);
             PPReduce(user, move);
@@ -3752,7 +3793,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
             }
             RecordExecutedMove(user, move);
         }
-        private void Ef_RestoreTargetHP(PBEPokemon user, PBEPokemon[] targets, PBEMove move, int percentRestored)
+        private void Ef_RestoreTargetHP(PBEBattlePokemon user, PBEBattlePokemon[] targets, PBEMove move, int percentRestored)
         {
             BroadcastMoveUsed(user, move);
             PPReduce(user, move);
@@ -3762,7 +3803,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
             }
             else
             {
-                foreach (PBEPokemon target in targets)
+                foreach (PBEBattlePokemon target in targets)
                 {
                     if (!MissCheck(user, target, move))
                     {
@@ -3784,7 +3825,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
             RecordExecutedMove(user, move);
         }
 
-        private void Ef_BellyDrum(PBEPokemon user, PBEPokemon[] targets, PBEMove move)
+        private void Ef_BellyDrum(PBEBattlePokemon user, PBEBattlePokemon[] targets, PBEMove move)
         {
             BroadcastMoveUsed(user, move);
             PPReduce(user, move);
@@ -3794,7 +3835,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
             }
             else
             {
-                foreach (PBEPokemon target in targets)
+                foreach (PBEBattlePokemon target in targets)
                 {
                     if (!MissCheck(user, target, move))
                     {
@@ -3822,7 +3863,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
             }
             RecordExecutedMove(user, move);
         }
-        private void Ef_Camouflage(PBEPokemon user, PBEPokemon[] targets, PBEMove move)
+        private void Ef_Camouflage(PBEBattlePokemon user, PBEBattlePokemon[] targets, PBEMove move)
         {
             BroadcastMoveUsed(user, move);
             PPReduce(user, move);
@@ -3832,7 +3873,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
             }
             else
             {
-                foreach (PBEPokemon target in targets)
+                foreach (PBEBattlePokemon target in targets)
                 {
                     if (!MissCheck(user, target, move))
                     {
@@ -3862,7 +3903,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
             }
             RecordExecutedMove(user, move);
         }
-        private void Ef_Conversion(PBEPokemon user, PBEPokemon[] targets, PBEMove move)
+        private void Ef_Conversion(PBEBattlePokemon user, PBEBattlePokemon[] targets, PBEMove move)
         {
             BroadcastMoveUsed(user, move);
             PPReduce(user, move);
@@ -3872,7 +3913,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
             }
             else
             {
-                foreach (PBEPokemon target in targets)
+                foreach (PBEBattlePokemon target in targets)
                 {
                     if (!MissCheck(user, target, move))
                     {
@@ -3904,7 +3945,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
             }
             RecordExecutedMove(user, move);
         }
-        private void Ef_Curse(PBEPokemon user, PBEPokemon[] targets, PBEMove move)
+        private void Ef_Curse(PBEBattlePokemon user, PBEBattlePokemon[] targets, PBEMove move)
         {
             BroadcastMoveUsed(user, move);
             PPReduce(user, move);
@@ -3928,7 +3969,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                     }
                     else
                     {
-                        foreach (PBEPokemon target in targets)
+                        foreach (PBEBattlePokemon target in targets)
                         {
                             if (!MissCheck(user, target, move))
                             {
@@ -3939,7 +3980,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                 }
                 else
                 {
-                    foreach (PBEPokemon target in targets)
+                    foreach (PBEBattlePokemon target in targets)
                     {
                         if (target.SpeedChange == -Settings.MaxStatChange
                             && target.AttackChange == Settings.MaxStatChange
@@ -3958,7 +3999,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
             }
             RecordExecutedMove(user, move);
         }
-        private void Ef_Flatter(PBEPokemon user, PBEPokemon[] targets, PBEMove move)
+        private void Ef_Flatter(PBEBattlePokemon user, PBEBattlePokemon[] targets, PBEMove move)
         {
             BroadcastMoveUsed(user, move);
             PPReduce(user, move);
@@ -3968,7 +4009,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
             }
             else
             {
-                foreach (PBEPokemon target in targets)
+                foreach (PBEBattlePokemon target in targets)
                 {
                     if (!MissCheck(user, target, move))
                     {
@@ -3979,18 +4020,18 @@ namespace Kermalis.PokemonBattleEngine.Battle
             }
             RecordExecutedMove(user, move);
         }
-        private void Ef_Haze(PBEPokemon user, PBEMove move)
+        private void Ef_Haze(PBEBattlePokemon user, PBEMove move)
         {
             BroadcastMoveUsed(user, move);
             PPReduce(user, move);
-            foreach (PBEPokemon pkmn in ActiveBattlers)
+            foreach (PBEBattlePokemon pkmn in ActiveBattlers)
             {
                 pkmn.ClearStatChanges();
             }
             BroadcastHaze();
             RecordExecutedMove(user, move);
         }
-        private void Ef_HelpingHand(PBEPokemon user, PBEPokemon[] targets, PBEMove move)
+        private void Ef_HelpingHand(PBEBattlePokemon user, PBEBattlePokemon[] targets, PBEMove move)
         {
             BroadcastMoveUsed(user, move);
             PPReduce(user, move);
@@ -4000,7 +4041,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
             }
             else
             {
-                foreach (PBEPokemon target in targets)
+                foreach (PBEBattlePokemon target in targets)
                 {
                     // TODO: When triple battle shifting happens, all moves that can target allies but not the user will have to check if the user targetted itself due to shifting.
                     // For now, I'll put this check here, because this is the only move that will attempt to target the user when the move cannot normally do so (single/rotation battle).
@@ -4019,7 +4060,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
             }
             RecordExecutedMove(user, move);
         }
-        private void Ef_Metronome(PBEPokemon user, PBEMove move)
+        private void Ef_Metronome(PBEBattlePokemon user, PBEMove move)
         {
             BroadcastMoveUsed(user, move);
             PPReduce(user, move);
@@ -4031,14 +4072,14 @@ namespace Kermalis.PokemonBattleEngine.Battle
             UseMove(user, calledMove, GetRandomTargetForMetronome(user, calledMove));
             _calledFromOtherMove = false;
         }
-        private void Ef_Nothing(PBEPokemon user, PBEMove move)
+        private void Ef_Nothing(PBEBattlePokemon user, PBEMove move)
         {
             BroadcastMoveUsed(user, move);
             PPReduce(user, move);
             BroadcastNothingHappened();
             RecordExecutedMove(user, move);
         }
-        private void Ef_PsychUp(PBEPokemon user, PBEPokemon[] targets, PBEMove move)
+        private void Ef_PsychUp(PBEBattlePokemon user, PBEBattlePokemon[] targets, PBEMove move)
         {
             BroadcastMoveUsed(user, move);
             PPReduce(user, move);
@@ -4048,7 +4089,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
             }
             else
             {
-                foreach (PBEPokemon target in targets)
+                foreach (PBEBattlePokemon target in targets)
                 {
                     if (!MissCheck(user, target, move))
                     {
@@ -4065,7 +4106,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
             }
             RecordExecutedMove(user, move);
         }
-        private void Ef_Soak(PBEPokemon user, PBEPokemon[] targets, PBEMove move)
+        private void Ef_Soak(PBEBattlePokemon user, PBEBattlePokemon[] targets, PBEMove move)
         {
             BroadcastMoveUsed(user, move);
             PPReduce(user, move);
@@ -4075,7 +4116,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
             }
             else
             {
-                foreach (PBEPokemon target in targets)
+                foreach (PBEBattlePokemon target in targets)
                 {
                     if (!MissCheck(user, target, move))
                     {
@@ -4085,7 +4126,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
             }
             RecordExecutedMove(user, move);
         }
-        private void Ef_Swagger(PBEPokemon user, PBEPokemon[] targets, PBEMove move)
+        private void Ef_Swagger(PBEBattlePokemon user, PBEBattlePokemon[] targets, PBEMove move)
         {
             BroadcastMoveUsed(user, move);
             PPReduce(user, move);
@@ -4095,7 +4136,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
             }
             else
             {
-                foreach (PBEPokemon target in targets)
+                foreach (PBEBattlePokemon target in targets)
                 {
                     if (!MissCheck(user, target, move))
                     {
@@ -4106,14 +4147,14 @@ namespace Kermalis.PokemonBattleEngine.Battle
             }
             RecordExecutedMove(user, move);
         }
-        private void Ef_Teleport(PBEPokemon user, PBEMove move)
+        private void Ef_Teleport(PBEBattlePokemon user, PBEMove move)
         {
             BroadcastMoveUsed(user, move);
             PPReduce(user, move);
             BroadcastMoveResult(user, user, PBEResult.InvalidConditions);
             RecordExecutedMove(user, move);
         }
-        private void Ef_Whirlwind(PBEPokemon user, PBEPokemon[] targets, PBEMove move)
+        private void Ef_Whirlwind(PBEBattlePokemon user, PBEBattlePokemon[] targets, PBEMove move)
         {
             BroadcastMoveUsed(user, move);
             PPReduce(user, move);
@@ -4123,11 +4164,11 @@ namespace Kermalis.PokemonBattleEngine.Battle
             }
             else
             {
-                foreach (PBEPokemon target in targets)
+                foreach (PBEBattlePokemon target in targets)
                 {
                     if (!MissCheck(user, target, move))
                     {
-                        PBEPokemon[] possibleSwitcheroonies = target.Team.Party.Where(p => p.FieldPosition == PBEFieldPosition.None && p.HP > 0).ToArray();
+                        PBEBattlePokemon[] possibleSwitcheroonies = target.Team.Party.Where(p => p.FieldPosition == PBEFieldPosition.None && p.HP > 0).ToArray();
                         if (possibleSwitcheroonies.Length == 0)
                         {
                             BroadcastMoveResult(user, target, PBEResult.InvalidConditions);

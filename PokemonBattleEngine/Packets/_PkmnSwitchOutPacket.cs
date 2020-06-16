@@ -38,7 +38,7 @@ namespace Kermalis.PokemonBattleEngine.Packets
                 Data = new ReadOnlyCollection<byte>(ms.ToArray());
             }
         }
-        internal PBEPkmnSwitchOutPacket(PBEPokemon pokemon, PBEPokemon disguisedAsPokemon, PBEFieldPosition oldPosition, PBEPokemon forcedByPokemon = null)
+        internal PBEPkmnSwitchOutPacket(PBEBattlePokemon pokemon, PBEBattlePokemon disguisedAsPokemon, PBEFieldPosition oldPosition, PBEBattlePokemon forcedByPokemon = null)
             : this(pokemon.Id, disguisedAsPokemon.Id, oldPosition, pokemon.Team, forcedByPokemon != null, forcedByPokemon?.FieldPosition, forcedByPokemon?.Team) { }
         internal PBEPkmnSwitchOutPacket(byte[] data, EndianBinaryReader r, PBEBattle battle)
         {

@@ -100,36 +100,34 @@ namespace Kermalis.PokemonBattleEngine.Battle
 
         internal PBEBattleMoveset(PBESettings settings)
         {
-            _list = new PBEBattleMovesetSlot[settings.NumMoves];
-            for (int i = 0; i < _list.Length; i++)
+            int count = settings.NumMoves;
+            _list = new PBEBattleMovesetSlot[count];
+            for (int i = 0; i < count; i++)
             {
                 _list[i] = new PBEBattleMovesetSlot();
             }
         }
-        internal PBEBattleMoveset(PBEMoveset moveset)
+        internal PBEBattleMoveset(PBESettings settings, PBEReadOnlyPartyMoveset moveset)
         {
-            _list = new PBEBattleMovesetSlot[moveset.Settings.NumMoves];
-            for (int i = 0; i < _list.Length; i++)
+            int count = moveset.Count;
+            if (count != settings.NumMoves)
             {
-                PBEMoveset.PBEMovesetSlot slot = moveset[i];
+                throw new ArgumentOutOfRangeException(nameof(moveset), $"Moveset count must be equal to \"{nameof(settings.NumMoves)}\" ({settings.NumMoves}).");
+            }
+            _list = new PBEBattleMovesetSlot[count];
+            for (int i = 0; i < count; i++)
+            {
+                PBEReadOnlyPartyMoveset.PBEReadOnlyPartyMovesetSlot slot = moveset[i];
                 PBEMove move = slot.Move;
-                int pp;
-                if (move != PBEMove.None)
-                {
-                    byte tier = PBEMoveData.Data[move].PPTier;
-                    pp = Math.Max(1, (tier * moveset.Settings.PPMultiplier) + (tier * slot.PPUps));
-                }
-                else
-                {
-                    pp = 0;
-                }
+                int pp = PBEDataUtils.CalcMaxPP(move, slot.PPUps, settings);
                 _list[i] = new PBEBattleMovesetSlot(move, pp, pp);
             }
         }
         internal PBEBattleMoveset(PBEBattleMoveset other)
         {
-            _list = new PBEBattleMovesetSlot[other._list.Length];
-            for (int i = 0; i < _list.Length; i++)
+            int count = other._list.Length;
+            _list = new PBEBattleMovesetSlot[count];
+            for (int i = 0; i < count; i++)
             {
                 PBEBattleMovesetSlot oSlot = other._list[i];
                 _list[i] = new PBEBattleMovesetSlot(oSlot.Move, oSlot.PP, oSlot.MaxPP);
@@ -141,6 +139,10 @@ namespace Kermalis.PokemonBattleEngine.Battle
             if (settings == null)
             {
                 throw new ArgumentNullException(nameof(settings));
+            }
+            if (!settings.IsReadOnly)
+            {
+                throw new ArgumentException("Settings must be read-only.", nameof(settings));
             }
             else if (move == PBEMove.None)
             {
@@ -161,6 +163,10 @@ namespace Kermalis.PokemonBattleEngine.Battle
             {
                 throw new ArgumentNullException(nameof(settings));
             }
+            if (!settings.IsReadOnly)
+            {
+                throw new ArgumentException("Settings must be read-only.", nameof(settings));
+            }
             else if (move == PBEMove.None)
             {
                 return 0;
@@ -176,7 +182,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
             }
         }
 
-        internal static void DoTransform(PBEPokemon user, PBEPokemon target)
+        internal static void DoTransform(PBEBattlePokemon user, PBEBattlePokemon target)
         {
             PBEBattleMoveset targetKnownBackup = null;
             if (user.Team != target.Team)

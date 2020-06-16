@@ -16,7 +16,7 @@ namespace Kermalis.PokemonBattleEngine.Packets
         public PBEMove Move { get; }
         public bool Reveal { get; }
 
-        internal PBEMoveUsedPacket(PBEPokemon moveUser, PBEMove move, bool reveal)
+        internal PBEMoveUsedPacket(PBEBattlePokemon moveUser, PBEMove move, bool reveal)
         {
             using (var ms = new MemoryStream())
             using (var w = new EndianBinaryWriter(ms, encoding: EncodingType.UTF16))

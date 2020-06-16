@@ -3,5 +3,5 @@
         xmlns:local="clr-namespace:Kermalis.PokemonBattleEngineClient;assembly=PokemonBattleEngineClient"
         x:Class="Kermalis.PokemonBattleEngineClient.MainWindow"
         MinWidth="896" MinHeight="554" Width="896" Height="554" WindowStartupLocation="CenterScreen" Title="Pokémon Battle Engine">
-  <local:MainView />
+  <local:MainView Name="Main" />
 </Window>

@@ -71,11 +71,15 @@ namespace Kermalis.PokemonBattleEngineClient.Infrastructure
         {
             return _assembly.GetManifestResourceStream(AssemblyPrefix + resource);
         }
+        public static Uri GetResourceUri(string resource)
+        {
+            return new Uri("resm:" + AssemblyPrefix + resource);
+        }
 
         public static string WorkingDirectory { get; private set; }
         public static void SetWorkingDirectory(string workingDirectory)
         {
-            PBEUtils.CreateDatabaseConnection(workingDirectory);
+            PBEUtils.InitEngine(workingDirectory);
             WorkingDirectory = workingDirectory;
         }
 
@@ -89,32 +93,32 @@ namespace Kermalis.PokemonBattleEngineClient.Infrastructure
                 return (minisprite ? _femaleMinispriteLookup : _femaleSpriteLookup).Contains(species);
             }
         }
-        public static Bitmap GetMinisprite(PBESpecies species, PBEForm form, PBEGender gender, bool shiny)
+        public static Bitmap GetMinispriteBitmap(PBESpecies species, PBEForm form, PBEGender gender, bool shiny)
         {
             string speciesStr = PBEDataUtils.GetNameOfForm(species, form) ?? species.ToString();
             string genderStr = gender == PBEGender.Female && HasFemaleSprite(species, true) ? "_F" : string.Empty;
             return new Bitmap(GetResourceStream("PKMN.PKMN_" + speciesStr + (shiny ? "_S" : string.Empty) + genderStr + ".png"));
         }
-        public static Stream GetPokemonSpriteStream(PBEPokemon pokemon, bool backSprite)
+        public static Uri GetPokemonSpriteUri(PBEBattlePokemon pkmn, bool backSprite)
         {
-            return GetPokemonSpriteStream(pokemon.KnownSpecies, pokemon.KnownForm, pokemon.KnownShiny, pokemon.KnownGender, pokemon.KnownStatus2.HasFlag(PBEStatus2.Substitute), backSprite);
+            return GetPokemonSpriteUri(pkmn.KnownSpecies, pkmn.KnownForm, pkmn.KnownShiny, pkmn.KnownGender, pkmn.KnownStatus2.HasFlag(PBEStatus2.Substitute), backSprite);
         }
-        public static Stream GetPokemonSpriteStream(PBEPokemonShell shell)
+        public static Uri GetPokemonSpriteUri(IPBEPokemon pkmn)
         {
-            return GetPokemonSpriteStream(shell.Species, shell.Form, shell.Shiny, shell.Gender, false, false);
+            return GetPokemonSpriteUri(pkmn.Species, pkmn.Form, pkmn.Shiny, pkmn.Gender, false, false);
         }
-        public static Stream GetPokemonSpriteStream(PBESpecies species, PBEForm form, bool shiny, PBEGender gender, bool behindSubstitute, bool backSprite)
+        public static Uri GetPokemonSpriteUri(PBESpecies species, PBEForm form, bool shiny, PBEGender gender, bool behindSubstitute, bool backSprite)
         {
             string orientation = backSprite ? "_B" : "_F";
             if (behindSubstitute)
             {
-                return GetResourceStream("PKMN.STATUS2_Substitute" + orientation + ".gif");
+                return GetResourceUri("PKMN.STATUS2_Substitute" + orientation + ".gif");
             }
             else
             {
                 string speciesStr = PBEDataUtils.GetNameOfForm(species, form) ?? species.ToString();
                 string genderStr = gender == PBEGender.Female && HasFemaleSprite(species, false) ? "_F" : string.Empty;
-                return GetResourceStream("PKMN.PKMN_" + speciesStr + orientation + (shiny ? "_S" : string.Empty) + genderStr + ".gif");
+                return GetResourceUri("PKMN.PKMN_" + speciesStr + orientation + (shiny ? "_S" : string.Empty) + genderStr + ".gif");
             }
         }
 
@@ -122,11 +126,11 @@ namespace Kermalis.PokemonBattleEngineClient.Infrastructure
         {
             return (team.Id == 0 && showEverything0) || (team.Id == 1 && showEverything1);
         }
-        public static string CustomPokemonToString(PBEPokemon pkmn, bool showEverything0, bool showEverything1)
+        public static string CustomPokemonToString(PBEBattlePokemon pkmn, bool showEverything0, bool showEverything1)
         {
             var sb = new StringBuilder();
 
-            string GetTeamNickname(PBEPokemon p)
+            string GetTeamNickname(PBEBattlePokemon p)
             {
                 return $"{p.Team.TrainerName}'s {(ShouldShowEverything(p.Team, showEverything0, showEverything1) ? p.Nickname : p.KnownNickname)}";
             }
@@ -303,7 +307,7 @@ namespace Kermalis.PokemonBattleEngineClient.Infrastructure
                 }
                 if (pkmn.Moves.Contains(PBEMove.HiddenPower))
                 {
-                    sb.AppendLine($"{PBELocalizedString.GetMoveName(PBEMove.HiddenPower)}: {PBELocalizedString.GetTypeName(pkmn.IndividualValues.HiddenPowerType)}|{pkmn.IndividualValues.HiddenPowerBasePower}");
+                    sb.AppendLine($"{PBELocalizedString.GetMoveName(PBEMove.HiddenPower)}: {PBELocalizedString.GetTypeName(pkmn.IndividualValues.GetHiddenPowerType())}|{pkmn.IndividualValues.GetHiddenPowerBasePower(pkmn.Team.Battle.Settings)}");
                 }
                 sb.Append("Moves: ");
                 for (int i = 0; i < pkmn.Team.Battle.Settings.NumMoves; i++)

@@ -17,40 +17,45 @@ namespace Kermalis.PokemonBattleEngineTests.Abilities
         [Fact]
         public void Immunity_Works()
         {
+            #region Setup
             PBERandom.SetSeed(0); // Seed prevents Toxic from missing
             PBESettings settings = PBESettings.DefaultSettings;
 
-            var team1Shell = new PBETeamShell(settings, 1, true);
-            PBEPokemonShell ps = team1Shell[0];
-            ps.Species = PBESpecies.Seviper;
-            ps.Item = PBEItem.None;
-            ps.Moveset[0].Move = PBEMove.Toxic;
+            var p0 = new TestPokemonCollection(1);
+            p0[0] = new TestPokemon(PBESpecies.Seviper, 0, 100)
+            {
+                Moveset = new TestMoveset(settings, new[] { PBEMove.Toxic })
+            };
 
-            var team2Shell = new PBETeamShell(settings, 1, true);
-            ps = team2Shell[0];
-            ps.Species = PBESpecies.Zangoose;
-            ps.Ability = PBEAbility.Immunity;
-            ps.Item = PBEItem.None;
-            ps.Moveset[0].Move = PBEMove.Snore;
+            var p1 = new TestPokemonCollection(1);
+            p1[0] = new TestPokemon(PBESpecies.Zangoose, 0, 100)
+            {
+                Ability = PBEAbility.Immunity,
+                Moveset = new TestMoveset(settings, new[] { PBEMove.Splash })
+            };
 
-            var battle = new PBEBattle(PBEBattleTerrain.Plain, PBEBattleFormat.Single, team1Shell, "Team 1", team2Shell, "Team 2");
+            var battle = new PBEBattle(PBEBattleTerrain.Plain, PBEBattleFormat.Single, new PBETeamInfo(p0, "Team 1"), new PBETeamInfo(p1, "Team 2"), settings);
             battle.OnNewEvent += PBEBattle.ConsoleBattleEventHandler;
-            team1Shell.Dispose();
-            team2Shell.Dispose();
             battle.Begin();
 
-            PBETeam t = battle.Teams[0];
-            Assert.True(PBEBattle.SelectActionsIfValid(t, new[] { new PBETurnAction(t.Party[0].Id, PBEMove.Toxic, PBETurnTarget.FoeCenter) }));
+            PBETeam t0 = battle.Teams[0];
+            PBETeam t1 = battle.Teams[1];
+            PBEBattlePokemon seviper = t0.Party[0];
+            PBEBattlePokemon zangoose = t1.Party[0];
+            #endregion
 
-            t = battle.Teams[1];
-            Assert.True(PBEBattle.SelectActionsIfValid(t, new[] { new PBETurnAction(t.Party[0].Id, PBEMove.Snore, PBETurnTarget.FoeCenter) }));
+            #region Badly Poison Zangoose and check
+            Assert.True(PBEBattle.SelectActionsIfValid(t0, new[] { new PBETurnAction(seviper.Id, PBEMove.Toxic, PBETurnTarget.FoeCenter) }));
+            Assert.True(PBEBattle.SelectActionsIfValid(t1, new[] { new PBETurnAction(zangoose.Id, PBEMove.Splash, PBETurnTarget.AllyCenter) }));
 
             battle.RunTurn();
 
-            Assert.True(TestUtils.VerifyMoveResult(battle, battle.Teams[0].Party[0], battle.Teams[1].Party[0], PBEResult.Ineffective_Ability));
+            Assert.True(TestUtils.VerifyMoveResult(battle, seviper, zangoose, PBEResult.Ineffective_Ability));
+            #endregion
 
+            #region Cleanup
             battle.OnNewEvent -= PBEBattle.ConsoleBattleEventHandler;
-            battle.Dispose();
+            #endregion
         }
     }
 }

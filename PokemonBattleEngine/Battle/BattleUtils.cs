@@ -50,7 +50,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
             }
         }
 
-        public static PBETurnTarget GetSpreadMoveTargets(PBEPokemon pkmn, PBEMoveTarget targets)
+        public static PBETurnTarget GetSpreadMoveTargets(PBEBattlePokemon pkmn, PBEMoveTarget targets)
         {
             switch (pkmn.Team.Battle.BattleFormat)
             {
@@ -275,7 +275,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                 default: throw new ArgumentOutOfRangeException(nameof(pkmn.Team.Battle.BattleFormat));
             }
         }
-        public static PBETurnTarget[] GetPossibleTargets(PBEPokemon pkmn, PBEMoveTarget targets)
+        public static PBETurnTarget[] GetPossibleTargets(PBEBattlePokemon pkmn, PBEMoveTarget targets)
         {
             switch (pkmn.Team.Battle.BattleFormat)
             {

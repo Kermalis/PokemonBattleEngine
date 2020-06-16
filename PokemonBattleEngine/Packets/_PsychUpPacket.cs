@@ -23,7 +23,7 @@ namespace Kermalis.PokemonBattleEngine.Packets
         public sbyte AccuracyChange { get; }
         public sbyte EvasionChange { get; }
 
-        internal PBEPsychUpPacket(PBEPokemon user, PBEPokemon target)
+        internal PBEPsychUpPacket(PBEBattlePokemon user, PBEBattlePokemon target)
         {
             using (var ms = new MemoryStream())
             using (var w = new EndianBinaryWriter(ms, encoding: EncodingType.UTF16))

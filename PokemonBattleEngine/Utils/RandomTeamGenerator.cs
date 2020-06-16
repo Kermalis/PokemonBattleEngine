@@ -1,6 +1,7 @@
 ﻿// This file is adapted from Pokémon Showdown (MIT License): https://github.com/smogon/pokemon-showdown/blob/master/data/mods/gen5/random-teams.ts
 // Those guys know what they're doing!
 using Kermalis.PokemonBattleEngine.Data;
+using Kermalis.PokemonBattleEngine.Data.Legality;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -49,7 +50,7 @@ namespace Kermalis.PokemonBattleEngine.Utils
                 {
                     _categories.Add(c, 0);
                 }
-                for (var t = (PBEType)1; t < PBEType.MAX; t++)
+                for (PBEType t = PBEType.None + 1; t < PBEType.MAX; t++)
                 {
                     _types.Add(t, 0);
                 }
@@ -104,16 +105,16 @@ namespace Kermalis.PokemonBattleEngine.Utils
                     case PBEAbility.Gluttony:
                     case PBEAbility.Moody: reject = true; break;
                     case PBEAbility.Blaze: reject = counter[PBEType.Fire] == 0; break;
-                    case PBEAbility.Chlorophyll: reject = !moves.Contains(PBEMove.SunnyDay) && !teamDs.HarshSunlight; break;
+                    case PBEAbility.Chlorophyll: reject = !teamDs.HarshSunlight && !moves.Contains(PBEMove.SunnyDay); break;
                     case PBEAbility.Compoundeyes:
                     case PBEAbility.NoGuard: reject = counter.Inaccurate == 0; break;
                     case PBEAbility.Defiant:
                     case PBEAbility.Moxie: reject = counter[PBEMoveCategory.Physical] == 0 && !moves.Contains(PBEMove.BatonPass); break;
                     case PBEAbility.Hydration:
                     case PBEAbility.RainDish:
-                    case PBEAbility.SwiftSwim: reject = !moves.Contains(PBEMove.RainDance) && !teamDs.Rain; break;
+                    case PBEAbility.SwiftSwim: reject = !teamDs.Rain && !moves.Contains(PBEMove.RainDance); break;
                     case PBEAbility.IceBody:
-                    case PBEAbility.SnowCloak: reject = !teamDs.Hail; break;
+                    case PBEAbility.SnowCloak: reject = !teamDs.Hail && !moves.Contains(PBEMove.Hail); break;
                     // Zangoose
                     case PBEAbility.Immunity: reject = pData.Abilities.Contains(PBEAbility.ToxicBoost); break;
                     case PBEAbility.Lightningrod: reject = pData.HasType(PBEType.Ground); break;
@@ -121,7 +122,7 @@ namespace Kermalis.PokemonBattleEngine.Utils
                     case PBEAbility.MoldBreaker: reject = pData.Abilities.Contains(PBEAbility.Adaptability); break;
                     case PBEAbility.Overgrow: reject = counter[PBEType.Grass] == 0; break;
                     // Breloom
-                    case PBEAbility.PoisonHeal: reject = pData.Abilities.Contains(PBEAbility.Technician) && counter[PBEAbility.Technician] > 0; break;
+                    case PBEAbility.PoisonHeal: reject = counter[PBEAbility.Technician] > 0 && pData.Abilities.Contains(PBEAbility.Technician); break;
                     case PBEAbility.Prankster: reject = counter[PBEMoveCategory.Status] == 0; break;
                     case PBEAbility.Reckless:
                     case PBEAbility.RockHead: reject = counter.Recoil == 0; break;
@@ -129,20 +130,20 @@ namespace Kermalis.PokemonBattleEngine.Utils
                     case PBEAbility.Regenerator: reject = pData.Abilities.Contains(PBEAbility.MagicGuard); break;
                     case PBEAbility.SandForce:
                     case PBEAbility.SandRush:
-                    case PBEAbility.SandVeil: reject = !teamDs.Sandstorm; break;
+                    case PBEAbility.SandVeil: reject = !teamDs.Sandstorm && !moves.Contains(PBEMove.Sandstorm); break;
                     case PBEAbility.SereneGrace: reject = species == PBESpecies.Blissey || species == PBESpecies.Togetic; break;
                     // Timburr, Gurdurr, Conkeldurr
-                    case PBEAbility.SheerForce: reject = moves.Contains(PBEMove.FakeOut) || (pData.Abilities.Contains(PBEAbility.IronFist) && counter[PBEAbility.IronFist] > counter[PBEAbility.SheerForce]); break;
+                    case PBEAbility.SheerForce: reject = (counter[PBEAbility.IronFist] > counter[PBEAbility.SheerForce] && pData.Abilities.Contains(PBEAbility.IronFist)) || moves.Contains(PBEMove.FakeOut); break;
                     case PBEAbility.Simple:
                     case PBEAbility.WeakArmor: reject = counter.SetupCategory == 'N'; break;
                     case PBEAbility.Sturdy: reject = counter.Recoil > 0 && counter.Recovery == 0; break;
                     case PBEAbility.Swarm: reject = counter[PBEType.Bug] == 0; break;
                     // Ambipom, Minccino, Cinccino
-                    case PBEAbility.Technician: reject = pData.Abilities.Contains(PBEAbility.SkillLink) && counter[PBEAbility.SkillLink] >= counter[PBEAbility.Technician]; break;
+                    case PBEAbility.Technician: reject = counter[PBEAbility.SkillLink] >= counter[PBEAbility.Technician] && pData.Abilities.Contains(PBEAbility.SkillLink); break;
                     case PBEAbility.TintedLens: reject = counter.Damage >= counter.DamagingMoves || (counter[PBEMoveCategory.Status] > 2 && counter.SetupCategory == 'N'); break;
                     case PBEAbility.Torrent: reject = counter[PBEType.Water] == 0; break;
                     // Clefable
-                    case PBEAbility.Unaware: reject = pData.Abilities.Contains(PBEAbility.MagicGuard) && counter[PBEMoveCategory.Status] < 2; break;
+                    case PBEAbility.Unaware: reject = counter[PBEMoveCategory.Status] < 2 && pData.Abilities.Contains(PBEAbility.MagicGuard); break;
                     case PBEAbility.Unburden: reject = pData.BaseStats.Speed > 100; break;
                     // Chinchou, Lanturn
                     case PBEAbility.WaterAbsorb: reject = pData.Abilities.Contains(PBEAbility.VoltAbsorb); break;
@@ -262,11 +263,11 @@ namespace Kermalis.PokemonBattleEngine.Utils
             {
                 item = PBEItem.LifeOrb;
             }
-            else if (moves.Contains(PBEMove.Facade) || ability == PBEAbility.PoisonHeal || ability == PBEAbility.ToxicBoost)
+            else if (ability == PBEAbility.PoisonHeal || ability == PBEAbility.ToxicBoost || moves.Contains(PBEMove.Facade))
             {
                 item = PBEItem.ToxicOrb;
             }
-            else if (moves.Contains(PBEMove.Rest) && !moves.Contains(PBEMove.SleepTalk) && ability != PBEAbility.NaturalCure && ability != PBEAbility.ShedSkin)
+            else if (ability != PBEAbility.NaturalCure && ability != PBEAbility.ShedSkin && moves.Contains(PBEMove.Rest) && !moves.Contains(PBEMove.SleepTalk))
             {
                 item = PBEItem.ChestoBerry;
             }
@@ -286,7 +287,7 @@ namespace Kermalis.PokemonBattleEngine.Utils
             {
                 item = PBEItem.FlyingGem;
             }
-            else if (moves.Contains(PBEMove.PsychoShift) || (ability == PBEAbility.Guts && !moves.Contains(PBEMove.SleepTalk)))
+            else if ((ability == PBEAbility.Guts && !moves.Contains(PBEMove.SleepTalk)) || moves.Contains(PBEMove.PsychoShift))
             {
                 item = moves.Contains(PBEMove.DrainPunch) ? PBEItem.FlameOrb : PBEItem.ToxicOrb;
             }
@@ -296,11 +297,11 @@ namespace Kermalis.PokemonBattleEngine.Utils
                 GetRandomGem();
             }
             // Medium priority
-            else if ((moves.Contains(PBEMove.Eruption) || moves.Contains(PBEMove.WaterSpout)) && counter[PBEMoveCategory.Status] == 0)
+            else if (counter[PBEMoveCategory.Status] == 0 && (moves.Contains(PBEMove.Eruption) || moves.Contains(PBEMove.WaterSpout)))
             {
                 item = PBEItem.ChoiceScarf;
             }
-            else if (ability == PBEAbility.SpeedBoost && !moves.Contains(PBEMove.Substitute) && counter[PBEMoveCategory.Physical] + counter[PBEMoveCategory.Special] > 2)
+            else if (ability == PBEAbility.SpeedBoost && counter[PBEMoveCategory.Physical] + counter[PBEMoveCategory.Special] > 2 && !moves.Contains(PBEMove.Substitute))
             {
                 item = PBEItem.LifeOrb;
             }
@@ -317,7 +318,7 @@ namespace Kermalis.PokemonBattleEngine.Utils
             {
                 item = PBEItem.ChoiceSpecs;
             }
-            else if (PBETypeEffectiveness.GetEffectiveness(PBEType.Ground, pData) > 1 && ability != PBEAbility.Levitate && !moves.Contains(PBEMove.MagnetRise))
+            else if (ability != PBEAbility.Levitate && PBETypeEffectiveness.GetEffectiveness(PBEType.Ground, pData) > 1 && !moves.Contains(PBEMove.MagnetRise))
             {
                 item = PBEItem.AirBalloon;
             }
@@ -325,7 +326,7 @@ namespace Kermalis.PokemonBattleEngine.Utils
             {
                 GetRandomGem();
             }
-            else if ((moves.Contains(PBEMove.Flail) || moves.Contains(PBEMove.Reversal)) && ability != PBEAbility.Sturdy)
+            else if (ability != PBEAbility.Sturdy && (moves.Contains(PBEMove.Flail) || moves.Contains(PBEMove.Reversal)))
             {
                 item = PBEItem.FocusSash;
             }
@@ -345,7 +346,7 @@ namespace Kermalis.PokemonBattleEngine.Utils
             {
                 item = PBEItem.Leftovers;
             }
-            else if (counter[PBEMoveCategory.Physical] + counter[PBEMoveCategory.Special] >= 3 && counter.SetupCategory != 'N' && ability != PBEAbility.Sturdy && !moves.Contains(PBEMove.RapidSpin))
+            else if (ability != PBEAbility.Sturdy && counter[PBEMoveCategory.Physical] + counter[PBEMoveCategory.Special] >= 3 && counter.SetupCategory != 'N' && !moves.Contains(PBEMove.RapidSpin))
             {
                 item = moves.Contains(PBEMove.Outrage) ? PBEItem.LumBerry : PBEItem.LifeOrb;
             }
@@ -362,7 +363,7 @@ namespace Kermalis.PokemonBattleEngine.Utils
             {
                 item = PBEItem.Leftovers;
             }
-            else if (counter[PBEMoveCategory.Status] <= 1 && ability != PBEAbility.Sturdy && !moves.Contains(PBEMove.RapidSpin) && !moves.Contains(PBEMove.Uturn))
+            else if (ability != PBEAbility.Sturdy && counter[PBEMoveCategory.Status] <= 1 && !moves.Contains(PBEMove.RapidSpin) && !moves.Contains(PBEMove.Uturn))
             {
                 item = PBEItem.LifeOrb;
             }
@@ -1266,27 +1267,27 @@ namespace Kermalis.PokemonBattleEngine.Utils
         }
 
         // TODO: Hidden power types
-        private static void GetRandomSet(PBESpecies species, PBEForm form, PBEPokemonData pData, bool isLead, PBETeamDetails teamDs, PBEPokemonShell shell)
+        private static void GetRandomSet(PBESpecies species, PBEForm form, PBEPokemonData pData, bool isLead, PBETeamDetails teamDs, PBELegalPokemon pkmn)
         {
-            shell.EffortValues.Equalize();
+            pkmn.EffortValues.Equalize();
             List<PBEMove> moves = GetMoves(species, form, pData, isLead, teamDs, out PBECounter counter);
             // If Hidden Power has been removed, reset the IVs
             if (!moves.Contains(PBEMove.HiddenPower))
             {
-                shell.IndividualValues.Maximize();
+                pkmn.IndividualValues.Maximize();
             }
 
-            if (shell.SelectableAbilities.Count > 1)
+            if (pkmn.SelectableAbilities.Count > 1)
             {
                 PBEAbility a = GetAbility(species, moves, pData, counter, teamDs);
                 if (a != PBEAbility.None)
                 {
-                    shell.Ability = a;
+                    pkmn.Ability = a;
                 }
             }
-            if (shell.SelectableItems.Count > 1)
+            if (pkmn.SelectableItems.Count > 1)
             {
-                shell.Item = GetItem(species, form, shell.Ability, moves, pData, counter, isLead);
+                pkmn.Item = GetItem(species, form, pkmn.Ability, moves, pData, counter, isLead);
             }
 
             // KERMALIS: This is where showdown does level scaling
@@ -1294,19 +1295,18 @@ namespace Kermalis.PokemonBattleEngine.Utils
             // Minimize confusion damage
             if (counter[PBEMoveCategory.Physical] == 0 && !moves.Contains(PBEMove.Transform))
             {
-                shell.EffortValues.Attack = 0;
-                shell.IndividualValues.Attack = 0;
+                pkmn.EffortValues.Attack = 0;
+                pkmn.IndividualValues.Attack = 0;
             }
             if (moves.Contains(PBEMove.GyroBall) || moves.Contains(PBEMove.MetalBurst) || moves.Contains(PBEMove.TrickRoom))
             {
-                shell.EffortValues.Speed = 0;
-                shell.IndividualValues.Speed = 0;
+                pkmn.EffortValues.Speed = 0;
+                pkmn.IndividualValues.Speed = 0;
             }
-            shell.Friendship = moves.Contains(PBEMove.Frustration) ? byte.MinValue : byte.MaxValue;
-            shell.Moveset.Clear();
+            pkmn.Friendship = moves.Contains(PBEMove.Frustration) ? byte.MinValue : byte.MaxValue;
             for (int i = 0; i < moves.Count; i++)
             {
-                PBEMoveset.PBEMovesetSlot slot = shell.Moveset[i];
+                PBELegalMoveset.PBELegalMovesetSlot slot = pkmn.Moveset[i];
                 slot.Move = moves[i];
                 if (slot.IsPPUpsEditable)
                 {
@@ -1317,7 +1317,7 @@ namespace Kermalis.PokemonBattleEngine.Utils
 
         /// <summary>Creates a random team meant for <see cref="PBESettings.DefaultSettings"/>.</summary>
         /// <param name="numPkmn">The amount of Pokémon to create in the team./></param>
-        public static PBETeamShell CreateRandomTeam(int numPkmn)
+        public static PBELegalPokemonCollection CreateRandomTeam(int numPkmn)
         {
             return CreateRandomTeam(numPkmn, PBEDataUtils.FullyEvolvedSpecies);
         }
@@ -1330,7 +1330,7 @@ namespace Kermalis.PokemonBattleEngine.Utils
         /// <summary>Creates a random team meant for <see cref="PBESettings.DefaultSettings"/>.</summary>
         /// <param name="numPkmn">The amount of Pokémon to create in the team./></param>
         /// <param name="allowedSpecies">The allowed species to consider.</param>
-        public static PBETeamShell CreateRandomTeam(int numPkmn, IEnumerable<PBESpecies> allowedSpecies)
+        public static PBELegalPokemonCollection CreateRandomTeam(int numPkmn, IEnumerable<PBESpecies> allowedSpecies)
         {
             if (numPkmn < 1 || numPkmn > PBESettings.DefaultMaxPartySize)
             {
@@ -1344,7 +1344,7 @@ namespace Kermalis.PokemonBattleEngine.Utils
             var speciesPool = new List<PBESpecies>(allowedSpecies);
             var teamDs = new PBETeamDetails();
             var usedTypes = new Dictionary<PBEType, int>(numPkmn - 1);
-            var team = new PBETeamShell(PBESettings.DefaultSettings, 1, true); // TODO: Don't generate any here
+            var team = new PBELegalPokemonCollection(PBESettings.DefaultSettings, 1, true); // TODO: Don't generate any here
             int currentIndex = 0;
             while (true)
             {
@@ -1365,22 +1365,22 @@ namespace Kermalis.PokemonBattleEngine.Utils
                     continue;
                 }
 
-                PBEPokemonShell shell;
+                PBELegalPokemon pkmn;
                 if (currentIndex == team.Count)
                 {
                     team.Add(species, form, PBESettings.DefaultMaxLevel);
-                    shell = team[currentIndex];
+                    pkmn = team[currentIndex];
                 }
                 else
                 {
-                    shell = team[currentIndex];
-                    shell.Species = species;
-                    shell.Form = form;
+                    pkmn = team[currentIndex];
+                    pkmn.Species = species;
+                    pkmn.Form = form;
                 }
-                GetRandomSet(species, form, pData, currentIndex == 0, teamDs, shell);
+                GetRandomSet(species, form, pData, currentIndex == 0, teamDs, pkmn);
 
                 // Illusion shouldn't be the last Pokémon of the team
-                if (shell.Ability == PBEAbility.Illusion && currentIndex == numPkmn - 1)
+                if (pkmn.Ability == PBEAbility.Illusion && currentIndex == numPkmn - 1)
                 {
                     if (RemoveSpeciesFromPool())
                     {
@@ -1410,31 +1410,31 @@ namespace Kermalis.PokemonBattleEngine.Utils
                 AddTypeToDict(usedTypes, pData.Type2);
 
                 // Team details
-                if (shell.Ability == PBEAbility.SnowWarning || shell.Moveset.Contains(PBEMove.Hail))
+                if (pkmn.Ability == PBEAbility.SnowWarning || pkmn.Moveset.Contains(PBEMove.Hail))
                 {
                     teamDs.Hail = true;
                 }
-                if (shell.Ability == PBEAbility.Drizzle || shell.Moveset.Contains(PBEMove.RainDance))
+                if (pkmn.Ability == PBEAbility.Drizzle || pkmn.Moveset.Contains(PBEMove.RainDance))
                 {
                     teamDs.Rain = true;
                 }
-                if (shell.Ability == PBEAbility.SandStream || shell.Moveset.Contains(PBEMove.Sandstorm))
+                if (pkmn.Ability == PBEAbility.SandStream || pkmn.Moveset.Contains(PBEMove.Sandstorm))
                 {
                     teamDs.Sandstorm = true;
                 }
-                if (shell.Ability == PBEAbility.Drought || shell.Moveset.Contains(PBEMove.SunnyDay))
+                if (pkmn.Ability == PBEAbility.Drought || pkmn.Moveset.Contains(PBEMove.SunnyDay))
                 {
                     teamDs.HarshSunlight = true;
                 }
-                if (shell.Moveset.Contains(PBEMove.StealthRock))
+                if (pkmn.Moveset.Contains(PBEMove.StealthRock))
                 {
                     teamDs.StealthRock = true;
                 }
-                if (shell.Moveset.Contains(PBEMove.ToxicSpikes))
+                if (pkmn.Moveset.Contains(PBEMove.ToxicSpikes))
                 {
                     teamDs.ToxicSpikes = true;
                 }
-                if (shell.Moveset.Contains(PBEMove.RapidSpin))
+                if (pkmn.Moveset.Contains(PBEMove.RapidSpin))
                 {
                     teamDs.RapidSpin = true;
                 }

@@ -24,7 +24,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
         /// <param name="ignoreSubstitute">Whether the damage should ignore <paramref name="victim"/>'s <see cref="PBEStatus2.Substitute"/>.</param>
         /// <param name="ignoreSturdy">Whether the damage should ignore <paramref name="victim"/>'s <see cref="PBEAbility.Sturdy"/>, <see cref="PBEItem.FocusBand"/>, or <see cref="PBEItem.FocusSash"/>.</param>
         /// <returns>The amount of damage dealt.</returns>
-        private ushort DealDamage(PBEPokemon culprit, PBEPokemon victim, int hp, bool ignoreSubstitute, bool ignoreSturdy = false)
+        private ushort DealDamage(PBEBattlePokemon culprit, PBEBattlePokemon victim, int hp, bool ignoreSubstitute, bool ignoreSturdy = false)
         {
             if (hp < 1)
             {
@@ -85,7 +85,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
         /// <param name="pkmn">The Pokémon receiving the HP.</param>
         /// <param name="hp">The amount of HP <paramref name="pkmn"/> will try to gain.</param>
         /// <returns>The amount of HP restored.</returns>
-        private ushort HealDamage(PBEPokemon pkmn, int hp)
+        private ushort HealDamage(PBEBattlePokemon pkmn, int hp)
         {
             if (hp < 1)
             {
@@ -103,7 +103,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
             return healAmt;
         }
 
-        private double CalculateBasePower(PBEPokemon user, PBEPokemon[] targets, PBEMove move, PBEType moveType)
+        private double CalculateBasePower(PBEBattlePokemon user, PBEBattlePokemon[] targets, PBEMove move, PBEType moveType)
         {
             PBEMoveData mData = PBEMoveData.Data[move];
             // Get move's base power
@@ -113,7 +113,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                 case PBEMove.CrushGrip:
                 case PBEMove.WringOut:
                 {
-                    PBEPokemon target = targets[0];
+                    PBEBattlePokemon target = targets[0];
                     basePower = Math.Max(1, 120 * target.HP / target.MaxHP);
                     break;
                 }
@@ -161,7 +161,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                 case PBEMove.GrassKnot:
                 case PBEMove.LowKick:
                 {
-                    PBEPokemon target = targets[0];
+                    PBEBattlePokemon target = targets[0];
                     if (target.Weight >= 200.0)
                     {
                         basePower = 120;
@@ -191,7 +191,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                 case PBEMove.HeatCrash:
                 case PBEMove.HeavySlam:
                 {
-                    PBEPokemon target = targets[0];
+                    PBEBattlePokemon target = targets[0];
                     double relative = user.Weight / target.Weight;
                     if (relative < 2)
                     {
@@ -217,7 +217,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                 }
                 case PBEMove.HiddenPower:
                 {
-                    basePower = user.IndividualValues.HiddenPowerBasePower;
+                    basePower = user.IndividualValues.GetHiddenPowerBasePower(Settings);
                     break;
                 }
                 case PBEMove.Magnitude:
@@ -264,7 +264,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                 }
                 case PBEMove.Punishment:
                 {
-                    PBEPokemon target = targets[0];
+                    PBEBattlePokemon target = targets[0];
                     basePower = Math.Max(1, Math.Min(200, 60 + (20 * target.GetPositiveStatTotal())));
                     break;
                 }
@@ -687,7 +687,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                 }
                 case PBEMove.Brine:
                 {
-                    PBEPokemon target = targets[0];
+                    PBEBattlePokemon target = targets[0];
                     if (target.HP <= target.HP / 2)
                     {
                         basePower *= 2.0;
@@ -704,7 +704,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                 }
                 case PBEMove.Hex:
                 {
-                    PBEPokemon target = targets[0];
+                    PBEBattlePokemon target = targets[0];
                     if (target.Status1 != PBEStatus1.None)
                     {
                         basePower *= 2.0;
@@ -721,7 +721,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                 }
                 case PBEMove.Venoshock:
                 {
-                    PBEPokemon target = targets[0];
+                    PBEBattlePokemon target = targets[0];
                     if (target.Status1 == PBEStatus1.Poisoned || target.Status1 == PBEStatus1.BadlyPoisoned)
                     {
                         basePower *= 2.0;
@@ -810,7 +810,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
 
             return basePower;
         }
-        private double CalculateDamageMultiplier(PBEPokemon user, PBEPokemon target, PBEMove move, PBEType moveType, PBEResult moveResult, bool criticalHit)
+        private double CalculateDamageMultiplier(PBEBattlePokemon user, PBEBattlePokemon target, PBEMove move, PBEType moveType, PBEResult moveResult, bool criticalHit)
         {
             PBEMoveData mData = PBEMoveData.Data[move];
             double damageMultiplier = 1;
@@ -923,7 +923,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
             return damageMultiplier;
         }
 
-        private double CalculateAttack(PBEPokemon user, PBEPokemon target, PBEType moveType, double initialAttack)
+        private double CalculateAttack(PBEBattlePokemon user, PBEBattlePokemon target, PBEType moveType, double initialAttack)
         {
             double attack = initialAttack;
 
@@ -982,7 +982,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
 
             return attack;
         }
-        private double CalculateDefense(PBEPokemon user, PBEPokemon target, double initialDefense)
+        private double CalculateDefense(PBEBattlePokemon user, PBEBattlePokemon target, double initialDefense)
         {
             double defense = initialDefense;
 
@@ -1001,7 +1001,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
 
             return defense;
         }
-        private double CalculateSpAttack(PBEPokemon user, PBEPokemon target, PBEType moveType, double initialSpAttack)
+        private double CalculateSpAttack(PBEBattlePokemon user, PBEBattlePokemon target, PBEType moveType, double initialSpAttack)
         {
             double spAttack = initialSpAttack;
 
@@ -1052,7 +1052,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
 
             return spAttack;
         }
-        private double CalculateSpDefense(PBEPokemon user, PBEPokemon target, double initialSpDefense)
+        private double CalculateSpDefense(PBEBattlePokemon user, PBEBattlePokemon target, double initialSpDefense)
         {
             double spDefense = initialSpDefense;
 
@@ -1083,7 +1083,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
             return spDefense;
         }
 
-        private ushort CalculateDamage(PBEPokemon user, PBEPokemon target, PBEMove move, PBEType moveType, PBEMoveCategory moveCategory, double basePower, bool criticalHit)
+        private ushort CalculateDamage(PBEBattlePokemon user, PBEBattlePokemon target, PBEMove move, PBEType moveType, PBEMoveCategory moveCategory, double basePower, bool criticalHit)
         {
             ushort damage;
             double a = 0, d = 0;

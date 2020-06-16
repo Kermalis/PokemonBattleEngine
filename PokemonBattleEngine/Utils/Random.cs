@@ -7,7 +7,16 @@ namespace Kermalis.PokemonBattleEngine.Utils
     public static class PBERandom
     {
         private static readonly object _randLockObj = new object();
-        private static Random _rand = new Random();
+        private static Random _rand;
+
+        internal static void Init()
+        {
+            _rand = new Random();
+        }
+        internal static void Init(int seed)
+        {
+            _rand = new Random(seed);
+        }
 
         public static PBEBattleTerrain RandomBattleTerrain()
         {
@@ -68,12 +77,16 @@ namespace Kermalis.PokemonBattleEngine.Utils
         }
         /// <summary>Returns a random <see cref="byte"/> value that is between <paramref name="settings"/>'s <see cref="PBESettings.MinLevel"/> and <see cref="PBESettings.MaxLevel"/>.</summary>
         /// <param name="settings">The <see cref="PBESettings"/> object to use.</param>
-        /// <exception cref="ArgumentNullException">Thrown when <paramref name="settings"/> is null.</exception>
+        /// <exception cref="ArgumentNullException">Thrown when <paramref name="settings"/> == null.</exception>
         public static byte RandomLevel(PBESettings settings)
         {
             if (settings == null)
             {
                 throw new ArgumentNullException(nameof(settings));
+            }
+            if (!settings.IsReadOnly)
+            {
+                throw new ArgumentException("Settings must be read-only.", nameof(settings));
             }
             return (byte)RandomInt(settings.MinLevel, settings.MaxLevel);
         }

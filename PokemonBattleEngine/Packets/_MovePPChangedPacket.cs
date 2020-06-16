@@ -16,7 +16,7 @@ namespace Kermalis.PokemonBattleEngine.Packets
         public PBEMove Move { get; }
         public int AmountReduced { get; }
 
-        internal PBEMovePPChangedPacket(PBEPokemon moveUser, PBEMove move, int amountReduced)
+        internal PBEMovePPChangedPacket(PBEBattlePokemon moveUser, PBEMove move, int amountReduced)
         {
             using (var ms = new MemoryStream())
             using (var w = new EndianBinaryWriter(ms, encoding: EncodingType.UTF16))

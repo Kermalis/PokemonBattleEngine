@@ -1,6 +1,8 @@
-﻿using Microsoft.Data.Sqlite;
+﻿using Kermalis.PokemonBattleEngine.Data;
+using Microsoft.Data.Sqlite;
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.IO;
 using System.Reflection;
 
@@ -11,6 +13,8 @@ namespace Kermalis.PokemonBattleEngine.Utils
     {
         private static readonly object _databaseConnectLockObj = new object();
         private static SqliteConnection _databaseConnection;
+        public static CultureInfo PBECulture { get; private set; }
+
         private static bool StrCmp(object arg0, object arg1)
         {
             if (Convert.IsDBNull(arg0) || Convert.IsDBNull(arg1))
@@ -22,33 +26,70 @@ namespace Kermalis.PokemonBattleEngine.Utils
                 return Convert.ToString(arg0).Equals(Convert.ToString(arg1), StringComparison.InvariantCultureIgnoreCase);
             }
         }
-        /// <summary>Creates a connection to PokemonBattleEngine.db. This must be called only once; before the database is used.</summary>
-        /// <param name="databasePath">The path of the folder containing PokemonBattleEngine.db.</param>
-        /// <exception cref="ArgumentNullException">Thrown when <paramref name="databasePath"/> is null.</exception>
-        /// <exception cref="InvalidOperationException">Thrown when a database connection has already been created.</exception>
-        public static void CreateDatabaseConnection(string databasePath)
+        private static void InitDB(string databasePath)
         {
             if (databasePath == null)
             {
                 throw new ArgumentNullException(nameof(databasePath));
             }
-            else if (_databaseConnection != null)
+            if (_databaseConnection != null)
             {
-                throw new InvalidOperationException("Database connection was already created.");
+                throw new InvalidOperationException("Engine already initialized.");
             }
-            else
+            SQLitePCL.Batteries_V2.Init();
+            _databaseConnection = new SqliteConnection($"Filename={Path.Combine(databasePath, "PokemonBattleEngine.db")};Mode=ReadOnly;");
+            _databaseConnection.Open();
+            _databaseConnection.CreateFunction("StrCmp", (Func<object, object, bool>)StrCmp);
+        }
+        private static void InitDBCurrentCulture(string databasePath)
+        {
+            InitDB(databasePath);
+            var cultureInfo = CultureInfo.ReadOnly(CultureInfo.CurrentUICulture);
+            PBECulture = PBELocalizedString.IsCultureValid(cultureInfo) ? cultureInfo : CultureInfo.GetCultureInfo("en-US");
+        }
+        private static void InitDBCulture(string databasePath, CultureInfo cultureInfo)
+        {
+            InitDB(databasePath);
+            if (cultureInfo == null)
             {
-                SQLitePCL.Batteries_V2.Init();
-                _databaseConnection = new SqliteConnection($"Filename={Path.Combine(databasePath, "PokemonBattleEngine.db")};Mode=ReadOnly;");
-                _databaseConnection.Open();
-                _databaseConnection.CreateFunction("StrCmp", (Func<object, object, bool>)StrCmp);
+                throw new ArgumentNullException(nameof(cultureInfo));
             }
+            cultureInfo = CultureInfo.ReadOnly(cultureInfo);
+            if (!PBELocalizedString.IsCultureValid(cultureInfo))
+            {
+                throw new ArgumentOutOfRangeException(nameof(cultureInfo));
+            }
+            PBECulture = cultureInfo;
+        }
+        /// <summary>Creates a connection to PokemonBattleEngine.db. This must be called only once; before the database is used.</summary>
+        /// <param name="databasePath">The path of the folder containing PokemonBattleEngine.db.</param>
+        /// <exception cref="ArgumentNullException">Thrown when <paramref name="databasePath"/> == null.</exception>
+        /// <exception cref="InvalidOperationException">Thrown when a database connection has already been created.</exception>
+        public static void InitEngine(string databasePath)
+        {
+            InitDBCurrentCulture(databasePath);
+            PBERandom.Init();
+        }
+        public static void InitEngine(string databasePath, CultureInfo cultureInfo)
+        {
+            InitDBCulture(databasePath, cultureInfo);
+            PBERandom.Init();
+        }
+        public static void InitEngine(string databasePath, int randomSeed)
+        {
+            InitDBCurrentCulture(databasePath);
+            PBERandom.Init(randomSeed);
+        }
+        public static void InitEngine(string databasePath, CultureInfo cultureInfo, int randomSeed)
+        {
+            InitDBCulture(databasePath, cultureInfo);
+            PBERandom.Init(randomSeed);
         }
 
         /// <summary>Returns a <see cref="string"/> that combines <paramref name="source"/>'s elements' string representations using "and" with commas.</summary>
         /// <typeparam name="T">The type of the elements of <paramref name="source"/>.</typeparam>
         /// <param name="source">An <see cref="IReadOnlyList{T}"/> to create a string from.</param>
-        /// <exception cref="ArgumentNullException">Thrown when <paramref name="source"/> is null.</exception>
+        /// <exception cref="ArgumentNullException">Thrown when <paramref name="source"/> == null.</exception>
         public static string Andify<T>(this IReadOnlyList<T> source)
         {
             if (source == null)
@@ -98,7 +139,7 @@ namespace Kermalis.PokemonBattleEngine.Utils
         {
             if (_databaseConnection == null)
             {
-                throw new Exception($"You must first call \"{nameof(PBEUtils)}.{nameof(CreateDatabaseConnection)}()\"");
+                throw new Exception($"You must first call \"{nameof(PBEUtils)}.{nameof(InitEngine)}()\"");
             }
             var list = new List<T>();
             Type type = typeof(T);

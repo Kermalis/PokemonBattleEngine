@@ -17,13 +17,13 @@ namespace Kermalis.PokemonBattleEngine.Battle
             OnNewEvent?.Invoke(this, packet);
         }
 
-        private void BroadcastAbility(PBEPokemon abilityOwner, PBEPokemon pokemon2, PBEAbility ability, PBEAbilityAction abilityAction)
+        private void BroadcastAbility(PBEBattlePokemon abilityOwner, PBEBattlePokemon pokemon2, PBEAbility ability, PBEAbilityAction abilityAction)
         {
             abilityOwner.Ability = ability;
             abilityOwner.KnownAbility = ability;
             Broadcast(new PBEAbilityPacket(abilityOwner, pokemon2, ability, abilityAction));
         }
-        private void BroadcastAbilityReplaced(PBEPokemon abilityOwner, PBEAbility newAbility)
+        private void BroadcastAbilityReplaced(PBEBattlePokemon abilityOwner, PBEAbility newAbility)
         {
             PBEAbility? oldAbility = newAbility == PBEAbility.None ? (PBEAbility?)null : abilityOwner.Ability; // Gastro Acid does not reveal previous ability
             abilityOwner.Ability = newAbility;
@@ -45,11 +45,11 @@ namespace Kermalis.PokemonBattleEngine.Battle
         {
             Broadcast(new PBEHazePacket());
         }
-        private void BroadcastIllusion(PBEPokemon pokemon)
+        private void BroadcastIllusion(PBEBattlePokemon pokemon)
         {
             Broadcast(new PBEIllusionPacket(pokemon));
         }
-        private void BroadcastItem(PBEPokemon itemHolder, PBEPokemon pokemon2, PBEItem item, PBEItemAction itemAction)
+        private void BroadcastItem(PBEBattlePokemon itemHolder, PBEBattlePokemon pokemon2, PBEItem item, PBEItemAction itemAction)
         {
             switch (itemAction)
             {
@@ -68,34 +68,34 @@ namespace Kermalis.PokemonBattleEngine.Battle
             }
             Broadcast(new PBEItemPacket(itemHolder, pokemon2, item, itemAction));
         }
-        private void BroadcastMoveCrit(PBEPokemon victim)
+        private void BroadcastMoveCrit(PBEBattlePokemon victim)
         {
             Broadcast(new PBEMoveCritPacket(victim));
         }
-        private void BroadcastMoveLock_ChoiceItem(PBEPokemon moveUser, PBEMove lockedMove)
+        private void BroadcastMoveLock_ChoiceItem(PBEBattlePokemon moveUser, PBEMove lockedMove)
         {
             moveUser.ChoiceLockedMove = lockedMove;
             Broadcast(new PBEMoveLockPacket(moveUser, PBEMoveLockType.ChoiceItem, lockedMove));
         }
-        private void BroadcastMoveLock_Temporary(PBEPokemon moveUser, PBEMove lockedMove, PBETurnTarget lockedTargets)
+        private void BroadcastMoveLock_Temporary(PBEBattlePokemon moveUser, PBEMove lockedMove, PBETurnTarget lockedTargets)
         {
             moveUser.TempLockedMove = lockedMove;
             moveUser.TempLockedTargets = lockedTargets;
             Broadcast(new PBEMoveLockPacket(moveUser, PBEMoveLockType.Temporary, lockedMove, lockedTargets));
         }
-        private void BroadcastMoveMissed(PBEPokemon moveUser, PBEPokemon pokemon2)
+        private void BroadcastMoveMissed(PBEBattlePokemon moveUser, PBEBattlePokemon pokemon2)
         {
             Broadcast(new PBEMoveMissedPacket(moveUser, pokemon2));
         }
-        private void BroadcastMovePPChanged(PBEPokemon moveUser, PBEMove move, int amountReduced)
+        private void BroadcastMovePPChanged(PBEBattlePokemon moveUser, PBEMove move, int amountReduced)
         {
             Broadcast(new PBEMovePPChangedPacket(moveUser, move, amountReduced));
         }
-        private void BroadcastMoveResult(PBEPokemon moveUser, PBEPokemon pokemon2, PBEResult result)
+        private void BroadcastMoveResult(PBEBattlePokemon moveUser, PBEBattlePokemon pokemon2, PBEResult result)
         {
             Broadcast(new PBEMoveResultPacket(moveUser, pokemon2, result));
         }
-        private void BroadcastMoveUsed(PBEPokemon moveUser, PBEMove move)
+        private void BroadcastMoveUsed(PBEBattlePokemon moveUser, PBEMove move)
         {
             bool reveal;
             if (!_calledFromOtherMove && moveUser.Moves.Contains(move) && !moveUser.KnownMoves.Contains(move))
@@ -109,11 +109,11 @@ namespace Kermalis.PokemonBattleEngine.Battle
             }
             Broadcast(new PBEMoveUsedPacket(moveUser, move, reveal));
         }
-        private void BroadcastPkmnFainted(PBEPokemon pokemon, PBEFieldPosition oldPosition)
+        private void BroadcastPkmnFainted(PBEBattlePokemon pokemon, PBEFieldPosition oldPosition)
         {
             Broadcast(new PBEPkmnFaintedPacket(pokemon, oldPosition));
         }
-        private void BroadcastPkmnFormChanged(PBEPokemon pokemon, PBEForm newForm, PBEAbility newAbility, PBEAbility newKnownAbility, bool isRevertForm)
+        private void BroadcastPkmnFormChanged(PBEBattlePokemon pokemon, PBEForm newForm, PBEAbility newAbility, PBEAbility newKnownAbility, bool isRevertForm)
         {
             pokemon.Ability = newAbility;
             pokemon.KnownAbility = newKnownAbility;
@@ -144,36 +144,36 @@ namespace Kermalis.PokemonBattleEngine.Battle
             }
 #endif
         }
-        private void BroadcastPkmnHPChanged(PBEPokemon pokemon, ushort oldHP, double oldHPPercentage)
+        private void BroadcastPkmnHPChanged(PBEBattlePokemon pokemon, ushort oldHP, double oldHPPercentage)
         {
             Broadcast(new PBEPkmnHPChangedPacket(pokemon, oldHP, oldHPPercentage));
         }
-        private void BroadcastPkmnStatChanged(PBEPokemon pokemon, PBEStat stat, sbyte oldValue, sbyte newValue)
+        private void BroadcastPkmnStatChanged(PBEBattlePokemon pokemon, PBEStat stat, sbyte oldValue, sbyte newValue)
         {
             Broadcast(new PBEPkmnStatChangedPacket(pokemon, stat, oldValue, newValue));
         }
-        private void BroadcastPkmnSwitchIn(PBETeam team, PBEPkmnSwitchInPacket.PBESwitchInInfo[] switchIns, PBEPokemon forcedByPokemon = null)
+        private void BroadcastPkmnSwitchIn(PBETeam team, PBEPkmnSwitchInPacket.PBESwitchInInfo[] switchIns, PBEBattlePokemon forcedByPokemon = null)
         {
             Broadcast(new PBEPkmnSwitchInPacket(team, switchIns, forcedByPokemon));
         }
-        private void BroadcastPkmnSwitchOut(PBEPokemon pokemon, PBEPokemon disguisedAsPokemon, PBEFieldPosition oldPosition, PBEPokemon forcedByPokemon = null)
+        private void BroadcastPkmnSwitchOut(PBEBattlePokemon pokemon, PBEBattlePokemon disguisedAsPokemon, PBEFieldPosition oldPosition, PBEBattlePokemon forcedByPokemon = null)
         {
             Broadcast(new PBEPkmnSwitchOutPacket(pokemon, disguisedAsPokemon, oldPosition, forcedByPokemon));
         }
-        private void BroadcastPsychUp(PBEPokemon user, PBEPokemon target)
+        private void BroadcastPsychUp(PBEBattlePokemon user, PBEBattlePokemon target)
         {
             Broadcast(new PBEPsychUpPacket(user, target));
         }
 
-        private void BroadcastDraggedOut(PBEPokemon pokemon)
+        private void BroadcastDraggedOut(PBEBattlePokemon pokemon)
         {
             Broadcast(new PBESpecialMessagePacket(PBESpecialMessage.DraggedOut, pokemon));
         }
-        private void BroadcastEndure(PBEPokemon pokemon)
+        private void BroadcastEndure(PBEBattlePokemon pokemon)
         {
             Broadcast(new PBESpecialMessagePacket(PBESpecialMessage.Endure, pokemon));
         }
-        private void BroadcastHPDrained(PBEPokemon pokemon)
+        private void BroadcastHPDrained(PBEBattlePokemon pokemon)
         {
             Broadcast(new PBESpecialMessagePacket(PBESpecialMessage.HPDrained, pokemon));
         }
@@ -193,24 +193,24 @@ namespace Kermalis.PokemonBattleEngine.Battle
         {
             Broadcast(new PBESpecialMessagePacket(PBESpecialMessage.OneHitKnockout));
         }
-        private void BroadcastPainSplit(PBEPokemon user, PBEPokemon target)
+        private void BroadcastPainSplit(PBEBattlePokemon user, PBEBattlePokemon target)
         {
             Broadcast(new PBESpecialMessagePacket(PBESpecialMessage.PainSplit, user, target));
         }
-        private void BroadcastRecoil(PBEPokemon pokemon)
+        private void BroadcastRecoil(PBEBattlePokemon pokemon)
         {
             Broadcast(new PBESpecialMessagePacket(PBESpecialMessage.Recoil, pokemon));
         }
-        private void BroadcastStruggle(PBEPokemon pokemon)
+        private void BroadcastStruggle(PBEBattlePokemon pokemon)
         {
             Broadcast(new PBESpecialMessagePacket(PBESpecialMessage.Struggle, pokemon));
         }
 
-        private void BroadcastStatus1(PBEPokemon status1Receiver, PBEPokemon pokemon2, PBEStatus1 status1, PBEStatusAction statusAction)
+        private void BroadcastStatus1(PBEBattlePokemon status1Receiver, PBEBattlePokemon pokemon2, PBEStatus1 status1, PBEStatusAction statusAction)
         {
             Broadcast(new PBEStatus1Packet(status1Receiver, pokemon2, status1, statusAction));
         }
-        private void BroadcastStatus2(PBEPokemon status2Receiver, PBEPokemon pokemon2, PBEStatus2 status2, PBEStatusAction statusAction)
+        private void BroadcastStatus2(PBEBattlePokemon status2Receiver, PBEBattlePokemon pokemon2, PBEStatus2 status2, PBEStatusAction statusAction)
         {
             switch (statusAction)
             {
@@ -224,7 +224,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
             }
             Broadcast(new PBEStatus2Packet(status2Receiver, pokemon2, status2, statusAction));
         }
-        private void BroadcastTeamStatus(PBETeam team, PBETeamStatus teamStatus, PBETeamStatusAction teamStatusAction, PBEPokemon damageVictim = null)
+        private void BroadcastTeamStatus(PBETeam team, PBETeamStatus teamStatus, PBETeamStatusAction teamStatusAction, PBEBattlePokemon damageVictim = null)
         {
             switch (teamStatusAction)
             {
@@ -236,11 +236,11 @@ namespace Kermalis.PokemonBattleEngine.Battle
             }
             Broadcast(new PBETeamStatusPacket(team, teamStatus, teamStatusAction, damageVictim));
         }
-        private void BroadcastTransform(PBEPokemon user, PBEPokemon target)
+        private void BroadcastTransform(PBEBattlePokemon user, PBEBattlePokemon target)
         {
             Broadcast(new PBETransformPacket(user, target));
         }
-        private void BroadcastTypeChanged(PBEPokemon pokemon, PBEType type1, PBEType type2)
+        private void BroadcastTypeChanged(PBEBattlePokemon pokemon, PBEType type1, PBEType type2)
         {
             pokemon.Type1 = type1;
             pokemon.KnownType1 = type1;
@@ -248,7 +248,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
             pokemon.KnownType2 = type2;
             Broadcast(new PBETypeChangedPacket(pokemon, type1, type2));
         }
-        private void BroadcastWeather(PBEWeather weather, PBEWeatherAction weatherAction, PBEPokemon damageVictim = null)
+        private void BroadcastWeather(PBEWeather weather, PBEWeatherAction weatherAction, PBEBattlePokemon damageVictim = null)
         {
             Broadcast(new PBEWeatherPacket(weather, weatherAction, damageVictim));
         }
@@ -256,7 +256,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
         {
             Broadcast(new PBEActionsRequestPacket(team));
         }
-        private void BroadcastAutoCenter(PBEPokemon pokemon1, PBEFieldPosition pokemon1OldPosition, PBEPokemon pokemon2, PBEFieldPosition pokemon2OldPosition)
+        private void BroadcastAutoCenter(PBEBattlePokemon pokemon1, PBEFieldPosition pokemon1OldPosition, PBEBattlePokemon pokemon2, PBEFieldPosition pokemon2OldPosition)
         {
             Broadcast(new PBEAutoCenterPacket(pokemon1, pokemon1OldPosition, pokemon2, pokemon2OldPosition));
         }
@@ -292,12 +292,8 @@ namespace Kermalis.PokemonBattleEngine.Battle
             {
                 throw new ArgumentNullException(nameof(packet));
             }
-            if (battle.IsDisposed)
-            {
-                throw new ObjectDisposedException(nameof(battle));
-            }
 
-            string NameForTrainer(PBEPokemon pkmn)
+            string NameForTrainer(PBEBattlePokemon pkmn)
             {
                 return pkmn == null ? string.Empty : $"{pkmn.Team.TrainerName}'s {pkmn.KnownNickname}";
             }
@@ -306,7 +302,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
             {
                 case PBEAbilityPacket ap:
                 {
-                    PBEPokemon abilityOwner = ap.AbilityOwnerTeam.TryGetPokemon(ap.AbilityOwner),
+                    PBEBattlePokemon abilityOwner = ap.AbilityOwnerTeam.TryGetPokemon(ap.AbilityOwner),
                             pokemon2 = ap.Pokemon2Team.TryGetPokemon(ap.Pokemon2);
                     string message;
                     switch (ap.Ability)
@@ -523,7 +519,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                 }
                 case PBEAbilityReplacedPacket arp:
                 {
-                    PBEPokemon abilityOwner = arp.AbilityOwnerTeam.TryGetPokemon(arp.AbilityOwner);
+                    PBEBattlePokemon abilityOwner = arp.AbilityOwnerTeam.TryGetPokemon(arp.AbilityOwner);
                     string message;
                     switch (arp.NewAbility)
                     {
@@ -561,7 +557,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                 }
                 case PBEItemPacket ip:
                 {
-                    PBEPokemon itemHolder = ip.ItemHolderTeam.TryGetPokemon(ip.ItemHolder),
+                    PBEBattlePokemon itemHolder = ip.ItemHolderTeam.TryGetPokemon(ip.ItemHolder),
                             pokemon2 = ip.Pokemon2Team.TryGetPokemon(ip.Pokemon2);
                     string message;
                     switch (ip.Item)
@@ -719,26 +715,26 @@ namespace Kermalis.PokemonBattleEngine.Battle
                 }
                 case PBEMoveCritPacket mcp:
                 {
-                    PBEPokemon victim = mcp.VictimTeam.TryGetPokemon(mcp.Victim);
+                    PBEBattlePokemon victim = mcp.VictimTeam.TryGetPokemon(mcp.Victim);
                     Console.WriteLine("A critical hit on {0}!", NameForTrainer(victim));
                     break;
                 }
                 case PBEMoveMissedPacket mmp:
                 {
-                    PBEPokemon moveUser = mmp.MoveUserTeam.TryGetPokemon(mmp.MoveUser),
+                    PBEBattlePokemon moveUser = mmp.MoveUserTeam.TryGetPokemon(mmp.MoveUser),
                             pokemon2 = mmp.Pokemon2Team.TryGetPokemon(mmp.Pokemon2);
                     Console.WriteLine("{0}'s attack missed {1}!", NameForTrainer(moveUser), NameForTrainer(pokemon2));
                     break;
                 }
                 case PBEMovePPChangedPacket mpcp:
                 {
-                    PBEPokemon moveUser = mpcp.MoveUserTeam.TryGetPokemon(mpcp.MoveUser);
+                    PBEBattlePokemon moveUser = mpcp.MoveUserTeam.TryGetPokemon(mpcp.MoveUser);
                     Console.WriteLine("{0}'s {1} {3} {2} PP!", NameForTrainer(moveUser), PBELocalizedString.GetMoveName(mpcp.Move).English, Math.Abs(mpcp.AmountReduced), mpcp.AmountReduced >= 0 ? "lost" : "gained");
                     break;
                 }
                 case PBEMoveResultPacket mrp:
                 {
-                    PBEPokemon moveUser = mrp.MoveUserTeam.TryGetPokemon(mrp.MoveUser),
+                    PBEBattlePokemon moveUser = mrp.MoveUserTeam.TryGetPokemon(mrp.MoveUser),
                             pokemon2 = mrp.Pokemon2Team.TryGetPokemon(mrp.Pokemon2);
                     string message;
                     switch (mrp.Result)
@@ -763,13 +759,13 @@ namespace Kermalis.PokemonBattleEngine.Battle
                 }
                 case PBEMoveUsedPacket mup:
                 {
-                    PBEPokemon moveUser = mup.MoveUserTeam.TryGetPokemon(mup.MoveUser);
+                    PBEBattlePokemon moveUser = mup.MoveUserTeam.TryGetPokemon(mup.MoveUser);
                     Console.WriteLine("{0} used {1}!", NameForTrainer(moveUser), PBELocalizedString.GetMoveName(mup.Move).English);
                     break;
                 }
                 case PBEPkmnFaintedPacket pfap:
                 {
-                    PBEPokemon pokemon;
+                    PBEBattlePokemon pokemon;
                     if (pfap.PokemonId == byte.MaxValue)
                     {
                         pokemon = pfap.PokemonTeam.TryGetPokemon(pfap.PokemonPosition);
@@ -783,13 +779,13 @@ namespace Kermalis.PokemonBattleEngine.Battle
                 }
                 case PBEPkmnFormChangedPacket pfcp:
                 {
-                    PBEPokemon pokemon = pfcp.PokemonTeam.TryGetPokemon(pfcp.Pokemon);
+                    PBEBattlePokemon pokemon = pfcp.PokemonTeam.TryGetPokemon(pfcp.Pokemon);
                     Console.WriteLine("{0}'s new form is {1}!", NameForTrainer(pokemon), PBELocalizedString.GetFormName(pokemon.Species, pfcp.NewForm).English);
                     break;
                 }
                 case PBEPkmnHPChangedPacket phcp:
                 {
-                    PBEPokemon pokemon = phcp.PokemonTeam.TryGetPokemon(phcp.Pokemon);
+                    PBEBattlePokemon pokemon = phcp.PokemonTeam.TryGetPokemon(phcp.Pokemon);
                     int change = phcp.NewHP - phcp.OldHP;
                     int absChange = Math.Abs(change);
                     double percentageChange = phcp.NewHPPercentage - phcp.OldHPPercentage;
@@ -806,7 +802,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                 }
                 case PBEPkmnStatChangedPacket pscp:
                 {
-                    PBEPokemon pokemon = pscp.PokemonTeam.TryGetPokemon(pscp.Pokemon);
+                    PBEBattlePokemon pokemon = pscp.PokemonTeam.TryGetPokemon(pscp.Pokemon);
                     string statName, message;
                     switch (pscp.Stat)
                     {
@@ -866,14 +862,14 @@ namespace Kermalis.PokemonBattleEngine.Battle
                 {
                     if (!psop.Forced)
                     {
-                        PBEPokemon disguisedAsPokemon = psop.DisguisedAsPokemonId != byte.MaxValue ? psop.PokemonTeam.TryGetPokemon(psop.DisguisedAsPokemonId) : psop.PokemonTeam.TryGetPokemon(psop.PokemonPosition);
+                        PBEBattlePokemon disguisedAsPokemon = psop.DisguisedAsPokemonId != byte.MaxValue ? psop.PokemonTeam.TryGetPokemon(psop.DisguisedAsPokemonId) : psop.PokemonTeam.TryGetPokemon(psop.PokemonPosition);
                         Console.WriteLine("{1} withdrew {0}!", disguisedAsPokemon.Nickname, psop.PokemonTeam.TrainerName);
                     }
                     break;
                 }
                 case PBEPsychUpPacket pup:
                 {
-                    PBEPokemon user = pup.UserTeam.TryGetPokemon(pup.User),
+                    PBEBattlePokemon user = pup.UserTeam.TryGetPokemon(pup.User),
                             target = pup.TargetTeam.TryGetPokemon(pup.Target);
                     Console.WriteLine("{0} copied {1}'s stat changes!", NameForTrainer(user), NameForTrainer(target));
                     break;
@@ -940,7 +936,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                 }
                 case PBEStatus1Packet s1p:
                 {
-                    PBEPokemon status1Receiver = s1p.Status1ReceiverTeam.TryGetPokemon(s1p.Status1Receiver);
+                    PBEBattlePokemon status1Receiver = s1p.Status1ReceiverTeam.TryGetPokemon(s1p.Status1Receiver);
                     string message;
                     switch (s1p.Status1)
                     {
@@ -1019,7 +1015,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                 }
                 case PBEStatus2Packet s2p:
                 {
-                    PBEPokemon status2Receiver = s2p.Status2ReceiverTeam.TryGetPokemon(s2p.Status2Receiver),
+                    PBEBattlePokemon status2Receiver = s2p.Status2ReceiverTeam.TryGetPokemon(s2p.Status2Receiver),
                             pokemon2 = s2p.Pokemon2Team.TryGetPokemon(s2p.Pokemon2);
                     string message;
                     switch (s2p.Status2)
@@ -1139,6 +1135,17 @@ namespace Kermalis.PokemonBattleEngine.Battle
                             }
                             break;
                         }
+                        case PBEStatus2.Nightmare:
+                        {
+                            switch (s2p.StatusAction)
+                            {
+                                case PBEStatusAction.Added: message = "{0} began having a nightmare!"; break;
+                                case PBEStatusAction.Damage: message = "{0} is locked in a nightmare!"; break;
+                                case PBEStatusAction.Ended: return;
+                                default: throw new ArgumentOutOfRangeException(nameof(s2p.StatusAction));
+                            }
+                            break;
+                        }
                         case PBEStatus2.PowerTrick:
                         {
                             switch (s2p.StatusAction)
@@ -1227,7 +1234,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                 }
                 case PBETeamStatusPacket tsp:
                 {
-                    PBEPokemon damageVictim = tsp.DamageVictim.HasValue ? tsp.Team.TryGetPokemon(tsp.DamageVictim.Value) : null;
+                    PBEBattlePokemon damageVictim = tsp.DamageVictim.HasValue ? tsp.Team.TryGetPokemon(tsp.DamageVictim.Value) : null;
                     string message;
                     switch (tsp.TeamStatus)
                     {
@@ -1334,7 +1341,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                 }
                 case PBETypeChangedPacket tcp:
                 {
-                    PBEPokemon pokemon = tcp.PokemonTeam.TryGetPokemon(tcp.Pokemon);
+                    PBEBattlePokemon pokemon = tcp.PokemonTeam.TryGetPokemon(tcp.Pokemon);
                     PBEType type1 = tcp.Type1;
                     PBEType type2 = tcp.Type2;
                     string type1Str = PBELocalizedString.GetTypeName(type1).English;
@@ -1343,7 +1350,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                 }
                 case PBEWeatherPacket wp:
                 {
-                    PBEPokemon damageVictim = wp.DamageVictim.HasValue ? wp.DamageVictimTeam.TryGetPokemon(wp.DamageVictim.Value) : null;
+                    PBEBattlePokemon damageVictim = wp.DamageVictim.HasValue ? wp.DamageVictimTeam.TryGetPokemon(wp.DamageVictim.Value) : null;
                     string message;
                     switch (wp.Weather)
                     {

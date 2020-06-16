@@ -14,102 +14,62 @@ namespace Kermalis.PokemonBattleEngineTests.Moves
             utils.SetOutputHelper(output);
         }
 
-        [Theory]
-        [InlineData(PBEMove.Detect)]
-        [InlineData(PBEMove.Protect)]
-        //[InlineData(PBEMove.QuickGuard)]
-        [InlineData(PBEMove.WideGuard)]
-        public void Protection_Counter_Does_Not_Reset(PBEMove move)
-        {
-            PBERandom.SetSeed(0);
-            PBESettings settings = PBESettings.DefaultSettings;
-
-            var team1Shell = new PBETeamShell(settings, 1, true);
-            PBEPokemonShell ps = team1Shell[0];
-            ps.Species = PBESpecies.Mienshao;
-            ps.Item = PBEItem.None;
-            ps.Moveset[0].Move = move;
-
-            var team2Shell = new PBETeamShell(settings, 1, true);
-            ps = team2Shell[0];
-            ps.Species = PBESpecies.Magikarp;
-            ps.Item = PBEItem.None;
-            ps.Moveset[0].Move = PBEMove.Splash;
-
-            var battle = new PBEBattle(PBEBattleTerrain.Plain, PBEBattleFormat.Single, team1Shell, "Team 1", team2Shell, "Team 2");
-            battle.OnNewEvent += PBEBattle.ConsoleBattleEventHandler;
-            team1Shell.Dispose();
-            team2Shell.Dispose();
-            battle.Begin();
-
-            PBETeam t = battle.Teams[0];
-            Assert.True(PBEBattle.SelectActionsIfValid(t, new[] { new PBETurnAction(t.Party[0].Id, move, PBETurnTarget.AllyCenter) }));
-
-            t = battle.Teams[1];
-            Assert.True(PBEBattle.SelectActionsIfValid(t, new[] { new PBETurnAction(t.Party[0].Id, PBEMove.Splash, PBETurnTarget.AllyCenter) })); ;
-
-            battle.RunTurn();
-
-            PBEPokemon pkmn = battle.Teams[0].Party[0];
-            Assert.True(pkmn.Protection_Counter == 1);
-
-            battle.OnNewEvent -= PBEBattle.ConsoleBattleEventHandler;
-            battle.Dispose();
-        }
-
         // https://github.com/Kermalis/PokemonBattleEngine/issues/261
         [Theory]
         [InlineData(PBEMove.Detect)]
         [InlineData(PBEMove.Protect)]
         //[InlineData(PBEMove.QuickGuard)]
         [InlineData(PBEMove.WideGuard)]
-        public void Protection_Counter_Does_Reset(PBEMove move)
+        public void Protection_Counter_Resets(PBEMove move)
         {
+            #region Setup
             PBERandom.SetSeed(0);
             PBESettings settings = PBESettings.DefaultSettings;
 
-            var team1Shell = new PBETeamShell(settings, 1, true);
-            PBEPokemonShell ps = team1Shell[0];
-            ps.Species = PBESpecies.Mienshao;
-            ps.Item = PBEItem.None;
-            ps.Moveset[0].Move = move;
-            ps.Moveset[1].Move = PBEMove.CalmMind;
+            var p0 = new TestPokemonCollection(1);
+            p0[0] = new TestPokemon(PBESpecies.Mienshao, 0, 100)
+            {
+                Moveset = new TestMoveset(settings, new[] { move, PBEMove.CalmMind })
+            };
 
-            var team2Shell = new PBETeamShell(settings, 1, true);
-            ps = team2Shell[0];
-            ps.Species = PBESpecies.Magikarp;
-            ps.Item = PBEItem.None;
-            ps.Moveset[0].Move = PBEMove.Splash;
+            var p1 = new TestPokemonCollection(1);
+            p1[0] = new TestPokemon(PBESpecies.Magikarp, 0, 100)
+            {
+                Moveset = new TestMoveset(settings, new[] { PBEMove.Splash })
+            };
 
-            var battle = new PBEBattle(PBEBattleTerrain.Plain, PBEBattleFormat.Single, team1Shell, "Team 1", team2Shell, "Team 2");
+            var battle = new PBEBattle(PBEBattleTerrain.Plain, PBEBattleFormat.Single, new PBETeamInfo(p0, "Team 1"), new PBETeamInfo(p1, "Team 2"), settings);
             battle.OnNewEvent += PBEBattle.ConsoleBattleEventHandler;
-            team1Shell.Dispose();
-            team2Shell.Dispose();
             battle.Begin();
 
-            PBETeam t = battle.Teams[0];
-            Assert.True(PBEBattle.SelectActionsIfValid(t, new[] { new PBETurnAction(t.Party[0].Id, move, PBETurnTarget.AllyCenter) }));
+            PBETeam t0 = battle.Teams[0];
+            PBETeam t1 = battle.Teams[1];
+            PBEBattlePokemon mienshao = t0.Party[0];
+            PBEBattlePokemon magikarp = t1.Party[0];
+            #endregion
 
-            t = battle.Teams[1];
-            Assert.True(PBEBattle.SelectActionsIfValid(t, new[] { new PBETurnAction(t.Party[0].Id, PBEMove.Splash, PBETurnTarget.AllyCenter) })); ;
+            #region Use move
+            Assert.True(PBEBattle.SelectActionsIfValid(t0, new[] { new PBETurnAction(mienshao.Id, move, PBETurnTarget.AllyCenter) }));
+            Assert.True(PBEBattle.SelectActionsIfValid(t1, new[] { new PBETurnAction(magikarp.Id, PBEMove.Splash, PBETurnTarget.AllyCenter) }));
 
             battle.RunTurn();
 
-            PBEPokemon pkmn = battle.Teams[0].Party[0];
+            PBEBattlePokemon pkmn = battle.Teams[0].Party[0];
             Assert.True(pkmn.Protection_Counter == 1);
+            #endregion
 
-            t = battle.Teams[0];
-            Assert.True(PBEBattle.SelectActionsIfValid(t, new[] { new PBETurnAction(t.Party[0].Id, PBEMove.CalmMind, PBETurnTarget.AllyCenter) }));
-
-            t = battle.Teams[1];
-            Assert.True(PBEBattle.SelectActionsIfValid(t, new[] { new PBETurnAction(t.Party[0].Id, PBEMove.Splash, PBETurnTarget.AllyCenter) })); ;
+            #region Use Calm Mind and check
+            Assert.True(PBEBattle.SelectActionsIfValid(t0, new[] { new PBETurnAction(mienshao.Id, move, PBETurnTarget.AllyCenter) }));
+            Assert.True(PBEBattle.SelectActionsIfValid(t1, new[] { new PBETurnAction(magikarp.Id, PBEMove.Splash, PBETurnTarget.AllyCenter) }));
 
             battle.RunTurn();
 
             Assert.True(pkmn.Protection_Counter == 0);
+            #endregion
 
+            #region Cleanup
             battle.OnNewEvent -= PBEBattle.ConsoleBattleEventHandler;
-            battle.Dispose();
+            #endregion
         }
     }
 }

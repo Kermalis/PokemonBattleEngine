@@ -21,10 +21,6 @@ namespace Kermalis.PokemonBattleEngine.Battle
 
         public void SaveReplay()
         {
-            if (IsDisposed)
-            {
-                throw new ObjectDisposedException(null);
-            }
             if (BattleState != PBEBattleState.Ended)
             {
                 throw new InvalidOperationException($"{nameof(BattleState)} must be {PBEBattleState.Ended} to save a replay.");
@@ -37,10 +33,6 @@ namespace Kermalis.PokemonBattleEngine.Battle
             {
                 throw new ArgumentNullException(nameof(path));
             }
-            if (IsDisposed)
-            {
-                throw new ObjectDisposedException(null);
-            }
             if (BattleState != PBEBattleState.Ended)
             {
                 throw new InvalidOperationException($"{nameof(BattleState)} must be {PBEBattleState.Ended} to save a replay.");
@@ -52,10 +44,6 @@ namespace Kermalis.PokemonBattleEngine.Battle
             if (path == null)
             {
                 throw new ArgumentNullException(nameof(path));
-            }
-            if (IsDisposed)
-            {
-                throw new ObjectDisposedException(null);
             }
             if (BattleState != PBEBattleState.Ended)
             {

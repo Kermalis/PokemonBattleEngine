@@ -1,4 +1,5 @@
-﻿using Kermalis.PokemonBattleEngine.Utils;
+﻿using Kermalis.PokemonBattleEngine.Data.Legality;
+using Kermalis.PokemonBattleEngine.Utils;
 using System;
 using System.Collections.Generic;
 using System.Globalization;
@@ -7,38 +8,6 @@ namespace Kermalis.PokemonBattleEngine.Data
 {
     public sealed class PBELocalizedString
     {
-        public delegate void PBECultureChangedHandler(CultureInfo oldPBECultureInfo);
-        public static event PBECultureChangedHandler PBECultureChanged;
-
-        private static CultureInfo _pbeCulture;
-        public static CultureInfo PBECulture
-        {
-            get => _pbeCulture;
-            set
-            {
-                if (value == null)
-                {
-                    throw new ArgumentNullException(nameof(value));
-                }
-                if (!_pbeCulture.Equals(value))
-                {
-                    if (!IsCultureValid(value))
-                    {
-                        throw new ArgumentOutOfRangeException(nameof(value));
-                    }
-                    CultureInfo oldPBECultureInfo = _pbeCulture;
-                    _pbeCulture = value;
-                    PBECultureChanged?.Invoke(oldPBECultureInfo);
-                }
-            }
-        }
-
-        static PBELocalizedString()
-        {
-            CultureInfo cultureInfo = CultureInfo.CurrentUICulture;
-            _pbeCulture = IsCultureValid(cultureInfo) ? cultureInfo : CultureInfo.GetCultureInfo("en-US");
-        }
-
         public string English { get; }
         public string French { get; }
         public string German { get; }
@@ -91,7 +60,7 @@ namespace Kermalis.PokemonBattleEngine.Data
 
         public override string ToString()
         {
-            return FromCultureInfo(_pbeCulture);
+            return FromCultureInfo(PBEUtils.PBECulture);
         }
 
         #region Database Querying
@@ -196,7 +165,7 @@ namespace Kermalis.PokemonBattleEngine.Data
         }
         public static PBELocalizedString GetFormName(PBESpecies species, PBEForm form)
         {
-            PBEPokemonShell.ValidateSpecies(species, form, false);
+            PBELegalityChecker.ValidateSpecies(species, form, false);
             return new PBELocalizedString(PBEUtils.QueryDatabase<FormNameSearchResult>(string.Format(QuerySpecies, "FormNames", (ushort)species, (byte)form))[0]);
         }
         public static PBEGender? GetGenderByName(string genderName)

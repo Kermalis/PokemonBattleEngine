@@ -1,7 +1,9 @@
 ﻿using Avalonia.Controls;
 using Avalonia.Markup.Xaml;
 using Avalonia.Threading;
+using Kermalis.PokemonBattleEngine.Battle;
 using Kermalis.PokemonBattleEngine.Data;
+using Kermalis.PokemonBattleEngine.Data.Legality;
 using Kermalis.PokemonBattleEngine.Utils;
 using Kermalis.PokemonBattleEngineClient.Views;
 using System.Collections.Generic;
@@ -60,7 +62,7 @@ namespace Kermalis.PokemonBattleEngineClient
             ConnectText = "Connecting...";
             string host = _ip.Text;
             ushort port = (ushort)_port.Value;
-            var client = new NetworkClient(PBEBattleFormat.Double, _teamBuilder.Team.Shell); // Must be called on UI thread
+            var client = new NetworkClient(PBEBattleFormat.Double, _teamBuilder.Team.Party); // Must be called on UI thread
             new Thread(() =>
             {
                 bool b;
@@ -78,6 +80,10 @@ namespace Kermalis.PokemonBattleEngineClient
                     {
                         Add(client);
                     }
+                    else
+                    {
+                        client.Dispose();
+                    }
                     ConnectText = "Connect";
                     _connect.IsEnabled = true;
                 });
@@ -88,17 +94,19 @@ namespace Kermalis.PokemonBattleEngineClient
         }
         public void WatchReplay()
         {
-            Add(new ReplayClient(@"C:\Users\Kermalis\Documents\Development\GitHub\PokeI\bin\Release\netcoreapp3.1\AI Final Replay.pbereplay"));
+            const string path = "SinglePlayer Battle.pbereplay";
+            //const string path = @"C:\Users\Kermalis\Documents\Development\GitHub\PokeI\bin\Release\netcoreapp3.1\AI Final Replay.pbereplay";
+            Add(new ReplayClient(path));
         }
         public void SinglePlayer()
         {
             PBESettings settings = PBESettings.DefaultSettings;
-            PBETeamShell team1Shell, team2Shell;
+            PBELegalPokemonCollection p0, p1;
             // Competitively Randomized Pokémon
-            team1Shell = PBERandomTeamGenerator.CreateRandomTeam(settings.MaxPartySize);
-            team2Shell = PBERandomTeamGenerator.CreateRandomTeam(settings.MaxPartySize);
+            p0 = PBERandomTeamGenerator.CreateRandomTeam(settings.MaxPartySize);
+            p1 = PBERandomTeamGenerator.CreateRandomTeam(settings.MaxPartySize);
 
-            Add(new SinglePlayerClient(PBEBattleFormat.Double, team1Shell, "Dawn", team2Shell, "Champion Cynthia"));
+            Add(new SinglePlayerClient(PBEBattleFormat.Double, new PBETeamInfo(p0, "Dawn"), new PBETeamInfo(p1, "Champion Cynthia"), settings));
         }
 
         // TODO: Removing battles (with disposing)
@@ -114,6 +122,14 @@ namespace Kermalis.PokemonBattleEngineClient
             pages.Add(tab);
             _tabs.Items = pages;
             _tabs.SelectedItem = tab;
+        }
+
+        internal void HandleClosing()
+        {
+            foreach (BattleClient bc in _battles)
+            {
+                bc.Dispose();
+            }
         }
     }
 }

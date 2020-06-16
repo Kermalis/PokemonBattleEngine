@@ -29,7 +29,6 @@ namespace Kermalis.PokemonBattleEngineServer
             bool receivedResponseInTime = resetEvent.WaitOne(1000 * 5);
             if (!receivedResponseInTime)
             {
-                Console.WriteLine($"Kicking client ({BattleId} {TrainerName})");
                 Server.DisconnectClient(this);
             }
             return receivedResponseInTime;
@@ -39,14 +38,27 @@ namespace Kermalis.PokemonBattleEngineServer
         {
             if (Client.IsConnected)
             {
-                Debug.WriteLine($"Packet sent ({BattleId} \"{packet.GetType().Name}\")");
+                Debug.WriteLine($"Packet sent ({BattleId} {TrainerName} \"{packet.GetType().Name}\")");
                 resetEvent.Reset();
                 Client.Send(packet);
             }
         }
+        private void PartySubmitted(IPBEPokemonCollection party)
+        {
+            Console.WriteLine($"Received party ({BattleId} {TrainerName})");
+            if (!submittedTeam)
+            {
+                submittedTeam = true;
+                Server.PartySubmitted(this, party);
+            }
+            else
+            {
+                Console.WriteLine("Party submitted multiple times!");
+            }
+        }
         private void OnPacketReceived(object sender, IPBEPacket packet)
         {
-            Debug.WriteLine($"Packet received ({BattleId} \"{packet.GetType().Name}\")");
+            Debug.WriteLine($"Packet received ({BattleId} {TrainerName} \"{packet.GetType().Name}\")");
             resetEvent.Set();
             if (BattleId < 2)
             {
@@ -57,19 +69,20 @@ namespace Kermalis.PokemonBattleEngineServer
                         Server.ActionsSubmitted(this, arp.Actions);
                         break;
                     }
+                    case PBELegalPartyResponsePacket lprp:
+                    {
+                        PartySubmitted(lprp.Party);
+                        break;
+                    }
                     case PBEPartyResponsePacket prp:
                     {
-                        Console.WriteLine($"Received team from {TrainerName}!");
-                        if (!submittedTeam)
+                        if (Server.RequireLegalParties)
                         {
-                            submittedTeam = true;
-                            PBETeamShell s = prp.TeamShell;
-                            Server.PartySubmitted(this, s);
-                            s.Dispose();
+                            Console.WriteLine("An unchecked party was submitted, despite requiring legal parties. Ignoring...");
                         }
                         else
                         {
-                            Console.WriteLine("Team submitted multiple times!");
+                            PartySubmitted(prp.Party);
                         }
                         break;
                     }

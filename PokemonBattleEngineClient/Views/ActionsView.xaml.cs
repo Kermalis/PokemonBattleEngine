@@ -17,8 +17,8 @@ namespace Kermalis.PokemonBattleEngineClient.Views
         }
         public new event PropertyChangedEventHandler PropertyChanged;
 
-        private PBEPokemon _targetAllyLeft;
-        public PBEPokemon TargetAllyLeft
+        private PBEBattlePokemon _targetAllyLeft;
+        public PBEBattlePokemon TargetAllyLeft
         {
             get => _targetAllyLeft;
             private set
@@ -43,8 +43,8 @@ namespace Kermalis.PokemonBattleEngineClient.Views
                 }
             }
         }
-        private PBEPokemon _targetAllyCenter;
-        public PBEPokemon TargetAllyCenter
+        private PBEBattlePokemon _targetAllyCenter;
+        public PBEBattlePokemon TargetAllyCenter
         {
             get => _targetAllyCenter;
             private set
@@ -69,8 +69,8 @@ namespace Kermalis.PokemonBattleEngineClient.Views
                 }
             }
         }
-        private PBEPokemon _targetAllyRight;
-        public PBEPokemon TargetAllyRight
+        private PBEBattlePokemon _targetAllyRight;
+        public PBEBattlePokemon TargetAllyRight
         {
             get => _targetAllyRight;
             private set
@@ -95,8 +95,8 @@ namespace Kermalis.PokemonBattleEngineClient.Views
                 }
             }
         }
-        private PBEPokemon _targetFoeLeft;
-        public PBEPokemon TargetFoeLeft
+        private PBEBattlePokemon _targetFoeLeft;
+        public PBEBattlePokemon TargetFoeLeft
         {
             get => _targetFoeLeft;
             private set
@@ -121,8 +121,8 @@ namespace Kermalis.PokemonBattleEngineClient.Views
                 }
             }
         }
-        private PBEPokemon _targetFoeCenter;
-        public PBEPokemon TargetFoeCenter
+        private PBEBattlePokemon _targetFoeCenter;
+        public PBEBattlePokemon TargetFoeCenter
         {
             get => _targetFoeCenter;
             private set
@@ -147,8 +147,8 @@ namespace Kermalis.PokemonBattleEngineClient.Views
                 }
             }
         }
-        private PBEPokemon _targetFoeRight;
-        public PBEPokemon TargetFoeRight
+        private PBEBattlePokemon _targetFoeRight;
+        public PBEBattlePokemon TargetFoeRight
         {
             get => _targetFoeRight;
             private set
@@ -404,7 +404,7 @@ namespace Kermalis.PokemonBattleEngineClient.Views
         }
 
         public BattleView BattleView { get; internal set; }
-        public PBEPokemon Pokemon { get; private set; }
+        public PBEBattlePokemon Pokemon { get; private set; }
 
         public ActionsView()
         {
@@ -412,7 +412,7 @@ namespace Kermalis.PokemonBattleEngineClient.Views
             AvaloniaXamlLoader.Load(this);
         }
 
-        internal void DisplayActions(PBEPokemon pkmn)
+        internal void DisplayActions(PBEBattlePokemon pkmn)
         {
             Pokemon = pkmn;
             PBEMove[] usableMoves = pkmn.GetUsableMoves();
@@ -425,7 +425,7 @@ namespace Kermalis.PokemonBattleEngineClient.Views
             var pInfo = new PokemonInfo[pkmn.Team.Party.Count];
             for (int i = 0; i < pInfo.Length; i++)
             {
-                PBEPokemon p = pkmn.Team.Party[i];
+                PBEBattlePokemon p = pkmn.Team.Party[i];
                 pInfo[i] = new PokemonInfo(p, !pkmn.CanSwitchOut() || BattleView.Client.StandBy.Contains(p), SelectPokemonForTurn);
             }
             Party = pInfo;
@@ -434,18 +434,18 @@ namespace Kermalis.PokemonBattleEngineClient.Views
         }
         internal void DisplaySwitches()
         {
-            PBEList<PBEPokemon> pa = BattleView.Client.Team.Party;
+            PBEList<PBEBattlePokemon> pa = BattleView.Client.Team.Party;
             var pInfo = new PokemonInfo[pa.Count];
             for (int i = 0; i < pa.Count; i++)
             {
-                PBEPokemon p = pa[i];
+                PBEBattlePokemon p = pa[i];
                 pInfo[i] = new PokemonInfo(p, BattleView.Client.StandBy.Contains(p), SelectSwitch);
             }
             Party = pInfo;
             SwitchesVisible = true;
         }
 
-        private void SelectPokemonForTurn(PBEPokemon pkmn)
+        private void SelectPokemonForTurn(PBEBattlePokemon pkmn)
         {
             Pokemon.TurnAction = new PBETurnAction(Pokemon.Id, pkmn.Id);
             BattleView.Client.StandBy.Add(pkmn);
@@ -460,7 +460,7 @@ namespace Kermalis.PokemonBattleEngineClient.Views
             SwitchesVisible = false;
             DisplayTargets(move);
         }
-        private void SelectSwitch(PBEPokemon pkmn)
+        private void SelectSwitch(PBEBattlePokemon pkmn)
         {
             Pokemon = pkmn;
             SwitchesVisible = false;

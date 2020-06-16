@@ -70,8 +70,8 @@ namespace Kermalis.PokemonBattleEngine.Battle
         /// <param name="pkmn">The Pokémon to check.</param>
         /// <param name="includeAllies">True if allies should be included, False otherwise.</param>
         /// <param name="includeFoes">True if foes should be included, False otherwise.</param>
-        /// <exception cref="ArgumentOutOfRangeException">Thrown when <paramref name="pkmn"/>'s <see cref="PBEBattle"/>'s <see cref="BattleFormat"/> is invalid or <paramref name="pkmn"/>'s <see cref="PBEPokemon.FieldPosition"/> is invalid for <paramref name="pkmn"/>'s <see cref="PBEBattle"/>'s <see cref="BattleFormat"/>.</exception>
-        public static List<PBEPokemon> GetRuntimeSurrounding(PBEPokemon pkmn, bool includeAllies, bool includeFoes)
+        /// <exception cref="ArgumentOutOfRangeException">Thrown when <paramref name="pkmn"/>'s <see cref="PBEBattle"/>'s <see cref="BattleFormat"/> is invalid or <paramref name="pkmn"/>'s <see cref="PBEBattlePokemon.FieldPosition"/> is invalid for <paramref name="pkmn"/>'s <see cref="PBEBattle"/>'s <see cref="BattleFormat"/>.</exception>
+        public static List<PBEBattlePokemon> GetRuntimeSurrounding(PBEBattlePokemon pkmn, bool includeAllies, bool includeFoes)
         {
             if (pkmn == null)
             {
@@ -81,15 +81,15 @@ namespace Kermalis.PokemonBattleEngine.Battle
             {
                 throw new ArgumentException($"\"{nameof(includeAllies)}\" and \"{nameof(includeFoes)}\" were false.");
             }
-            PBEPokemon[] allies = pkmn.Team.ActiveBattlers.Where(p => p != pkmn).ToArray();
-            PBEPokemon[] foes = pkmn.Team.OpposingTeam.ActiveBattlers;
+            PBEBattlePokemon[] allies = pkmn.Team.ActiveBattlers.Where(p => p != pkmn).ToArray();
+            PBEBattlePokemon[] foes = pkmn.Team.OpposingTeam.ActiveBattlers;
             switch (pkmn.Team.Battle.BattleFormat)
             {
                 case PBEBattleFormat.Single:
                 {
                     if (pkmn.FieldPosition == PBEFieldPosition.Center)
                     {
-                        var ret = new List<PBEPokemon>();
+                        var ret = new List<PBEBattlePokemon>();
                         if (includeFoes)
                         {
                             ret.AddRange(foes.Where(p => p.FieldPosition == PBEFieldPosition.Center));
@@ -105,7 +105,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                 {
                     if (pkmn.FieldPosition == PBEFieldPosition.Left)
                     {
-                        var ret = new List<PBEPokemon>();
+                        var ret = new List<PBEBattlePokemon>();
                         if (includeAllies)
                         {
                             ret.AddRange(allies.Where(p => p.FieldPosition == PBEFieldPosition.Right));
@@ -118,7 +118,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                     }
                     else if (pkmn.FieldPosition == PBEFieldPosition.Right)
                     {
-                        var ret = new List<PBEPokemon>();
+                        var ret = new List<PBEBattlePokemon>();
                         if (includeAllies)
                         {
                             ret.AddRange(allies.Where(p => p.FieldPosition == PBEFieldPosition.Left));
@@ -139,7 +139,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                 {
                     if (pkmn.FieldPosition == PBEFieldPosition.Left)
                     {
-                        var ret = new List<PBEPokemon>();
+                        var ret = new List<PBEBattlePokemon>();
                         if (includeAllies)
                         {
                             ret.AddRange(allies.Where(p => p.FieldPosition == PBEFieldPosition.Center));
@@ -152,7 +152,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                     }
                     else if (pkmn.FieldPosition == PBEFieldPosition.Center)
                     {
-                        var ret = new List<PBEPokemon>();
+                        var ret = new List<PBEBattlePokemon>();
                         if (includeAllies)
                         {
                             ret.AddRange(allies.Where(p => p.FieldPosition == PBEFieldPosition.Left || p.FieldPosition == PBEFieldPosition.Right));
@@ -165,7 +165,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                     }
                     else if (pkmn.FieldPosition == PBEFieldPosition.Right)
                     {
-                        var ret = new List<PBEPokemon>();
+                        var ret = new List<PBEBattlePokemon>();
                         if (includeAllies)
                         {
                             ret.AddRange(allies.Where(p => p.FieldPosition == PBEFieldPosition.Center));
@@ -189,9 +189,9 @@ namespace Kermalis.PokemonBattleEngine.Battle
         /// <param name="user">The Pokémon that will act.</param>
         /// <param name="requestedTargets">The targets the Pokémon wishes to hit.</param>
         /// <param name="canHitFarCorners">Whether the move can hit far Pokémon in a triple battle.</param>
-        private static PBEPokemon[] GetRuntimeTargets(PBEPokemon user, PBETurnTarget requestedTargets, bool canHitFarCorners)
+        private static PBEBattlePokemon[] GetRuntimeTargets(PBEBattlePokemon user, PBETurnTarget requestedTargets, bool canHitFarCorners)
         {
-            var targets = new List<PBEPokemon>();
+            var targets = new List<PBEBattlePokemon>();
             if (requestedTargets.HasFlag(PBETurnTarget.AllyLeft))
             {
                 targets.Add(user.Team.TryGetPokemon(PBEFieldPosition.Left));
@@ -206,7 +206,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
             }
             if (requestedTargets.HasFlag(PBETurnTarget.FoeLeft))
             {
-                PBEPokemon pkmn = user.Team.OpposingTeam.TryGetPokemon(PBEFieldPosition.Left);
+                PBEBattlePokemon pkmn = user.Team.OpposingTeam.TryGetPokemon(PBEFieldPosition.Left);
                 if (pkmn == null)
                 {
                     if (user.Team.Battle.BattleFormat == PBEBattleFormat.Double)
@@ -227,7 +227,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
             }
             if (requestedTargets.HasFlag(PBETurnTarget.FoeCenter))
             {
-                PBEPokemon pkmn = user.Team.OpposingTeam.TryGetPokemon(PBEFieldPosition.Center);
+                PBEBattlePokemon pkmn = user.Team.OpposingTeam.TryGetPokemon(PBEFieldPosition.Center);
                 // Target fainted, fallback to its teammate
                 if (pkmn == null)
                 {
@@ -253,7 +253,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                         }
                         else // Center
                         {
-                            PBEPokemon oppLeft = user.Team.OpposingTeam.TryGetPokemon(PBEFieldPosition.Left),
+                            PBEBattlePokemon oppLeft = user.Team.OpposingTeam.TryGetPokemon(PBEFieldPosition.Left),
                                 oppRight = user.Team.OpposingTeam.TryGetPokemon(PBEFieldPosition.Right);
                             // Left is dead but not right
                             if (oppLeft == null && oppRight != null)
@@ -277,7 +277,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
             }
             if (requestedTargets.HasFlag(PBETurnTarget.FoeRight))
             {
-                PBEPokemon pkmn = user.Team.OpposingTeam.TryGetPokemon(PBEFieldPosition.Right);
+                PBEBattlePokemon pkmn = user.Team.OpposingTeam.TryGetPokemon(PBEFieldPosition.Right);
                 // Target fainted, fallback to its teammate
                 if (pkmn == null)
                 {
@@ -304,8 +304,8 @@ namespace Kermalis.PokemonBattleEngine.Battle
         /// <param name="pkmn">The Pokémon that will act.</param>
         /// <param name="move">The move the Pokémon wishes to use.</param>
         /// <param name="targets">The targets bitfield to validate.</param>
-        /// <exception cref="ArgumentOutOfRangeException">Thrown when <paramref name="targets"/>, <paramref name="move"/>, <paramref name="pkmn"/>'s <see cref="PBEPokemon.FieldPosition"/>, or <paramref name="pkmn"/>'s <see cref="PBEBattle"/>'s <see cref="BattleFormat"/> is invalid.</exception>
-        public static bool AreTargetsValid(PBEPokemon pkmn, PBEMove move, PBETurnTarget targets)
+        /// <exception cref="ArgumentOutOfRangeException">Thrown when <paramref name="targets"/>, <paramref name="move"/>, <paramref name="pkmn"/>'s <see cref="PBEBattlePokemon.FieldPosition"/>, or <paramref name="pkmn"/>'s <see cref="PBEBattle"/>'s <see cref="BattleFormat"/> is invalid.</exception>
+        public static bool AreTargetsValid(PBEBattlePokemon pkmn, PBEMove move, PBETurnTarget targets)
         {
             if (pkmn == null)
             {
@@ -737,8 +737,8 @@ namespace Kermalis.PokemonBattleEngine.Battle
         /// <summary>Gets a random target a move can hit when called by <see cref="PBEMove.Metronome"/>.</summary>
         /// <param name="pkmn">The Pokémon using <paramref name="calledMove"/>.</param>
         /// <param name="calledMove">The move being called.</param>
-        /// <exception cref="ArgumentOutOfRangeException">Thrown when <paramref name="calledMove"/>, <paramref name="pkmn"/>'s <see cref="PBEPokemon.FieldPosition"/>, or <paramref name="pkmn"/>'s <see cref="PBEBattle"/>'s <see cref="BattleFormat"/> is invalid.</exception>
-        public static PBETurnTarget GetRandomTargetForMetronome(PBEPokemon pkmn, PBEMove calledMove)
+        /// <exception cref="ArgumentOutOfRangeException">Thrown when <paramref name="calledMove"/>, <paramref name="pkmn"/>'s <see cref="PBEBattlePokemon.FieldPosition"/>, or <paramref name="pkmn"/>'s <see cref="PBEBattle"/>'s <see cref="BattleFormat"/> is invalid.</exception>
+        public static PBETurnTarget GetRandomTargetForMetronome(PBEBattlePokemon pkmn, PBEMove calledMove)
         {
             if (pkmn == null)
             {

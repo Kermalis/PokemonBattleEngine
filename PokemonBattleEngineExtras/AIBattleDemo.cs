@@ -1,6 +1,7 @@
 ﻿using Kermalis.PokemonBattleEngine.AI;
 using Kermalis.PokemonBattleEngine.Battle;
 using Kermalis.PokemonBattleEngine.Data;
+using Kermalis.PokemonBattleEngine.Data.Legality;
 using Kermalis.PokemonBattleEngine.Packets;
 using Kermalis.PokemonBattleEngine.Utils;
 using System;
@@ -33,15 +34,14 @@ namespace Kermalis.PokemonBattleEngineExtras
 
             PBESettings settings = PBESettings.DefaultSettings;
             //var settings = new PBESettings { NumMoves = 8, MaxPartySize = 10 };
-            PBETeamShell team1Shell, team2Shell;
+            //settings.MakeReadOnly();
+            PBELegalPokemonCollection p0, p1;
 
             // Competitively Randomized Pokémon
-            team1Shell = PBERandomTeamGenerator.CreateRandomTeam(settings.MaxPartySize);
-            team2Shell = PBERandomTeamGenerator.CreateRandomTeam(settings.MaxPartySize);
+            p0 = PBERandomTeamGenerator.CreateRandomTeam(settings.MaxPartySize);
+            p1 = PBERandomTeamGenerator.CreateRandomTeam(settings.MaxPartySize);
 
-            _battle = new PBEBattle(PBERandom.RandomBattleTerrain(), PBEBattleFormat.Double, team1Shell, "Team 1", team2Shell, "Team 2");
-            team1Shell.Dispose();
-            team2Shell.Dispose();
+            _battle = new PBEBattle(PBERandom.RandomBattleTerrain(), PBEBattleFormat.Double, new PBETeamInfo(p0, "Team 1"), new PBETeamInfo(p1, "Team 2"), settings);
             _battle.OnNewEvent += PBEBattle.ConsoleBattleEventHandler;
             _battle.OnNewEvent += Battle_OnNewEvent;
             _battle.OnStateChanged += Battle_OnStateChanged;
@@ -70,7 +70,6 @@ namespace Kermalis.PokemonBattleEngineExtras
             _battle.OnNewEvent -= PBEBattle.ConsoleBattleEventHandler;
             _battle.OnNewEvent -= Battle_OnNewEvent;
             _battle.OnStateChanged -= Battle_OnStateChanged;
-            _battle.Dispose();
             Console.WriteLine("Demo battle threw an exception; check \"{0}\" for details.", LogFile);
             Console.ReadKey();
         }
@@ -138,12 +137,24 @@ namespace Kermalis.PokemonBattleEngineExtras
                             Console.WriteLine(e.Message);
                             Console.WriteLine(e.StackTrace);
                         }
-                        _battle.OnNewEvent -= PBEBattle.ConsoleBattleEventHandler;
-                        _battle.OnNewEvent -= Battle_OnNewEvent;
-                        _battle.OnStateChanged -= Battle_OnStateChanged;
-                        _battle.Dispose();
                         Console.WriteLine("Test battle ended. The battle was saved to \"{0}\" and \"{1}\".", LogFile, ReplayFile);
                         Console.ReadKey();
+                        break;
+                    }
+                    case PBEBattleState.ReadyToRunSwitches:
+                    {
+                        new Thread(() =>
+                        {
+                            try
+                            {
+                                _battle.RunSwitches();
+                            }
+                            catch (Exception e)
+                            {
+                                CatchException(e);
+                            }
+                        })
+                        { Name = "Battle Thread" }.Start();
                         break;
                     }
                     case PBEBattleState.ReadyToRunTurn:
@@ -152,7 +163,7 @@ namespace Kermalis.PokemonBattleEngineExtras
                         {
                             Console.WriteLine();
                             Console.WriteLine("{0}'s team:", team.TrainerName);
-                            PBEPokemon[] active = team.ActiveBattlers;
+                            PBEBattlePokemon[] active = team.ActiveBattlers;
                             for (int j = 0; j < active.Length; j++)
                             {
                                 Console.WriteLine(active[j]);

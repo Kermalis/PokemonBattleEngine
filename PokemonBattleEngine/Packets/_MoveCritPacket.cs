@@ -14,7 +14,7 @@ namespace Kermalis.PokemonBattleEngine.Packets
         public PBEFieldPosition Victim { get; }
         public PBETeam VictimTeam { get; }
 
-        internal PBEMoveCritPacket(PBEPokemon victim)
+        internal PBEMoveCritPacket(PBEBattlePokemon victim)
         {
             using (var ms = new MemoryStream())
             using (var w = new EndianBinaryWriter(ms, encoding: EncodingType.UTF16))

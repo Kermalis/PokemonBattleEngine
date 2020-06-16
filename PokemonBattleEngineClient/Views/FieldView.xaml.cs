@@ -10,7 +10,9 @@ using Kermalis.PokemonBattleEngine.Battle;
 using Kermalis.PokemonBattleEngine.Data;
 using Kermalis.PokemonBattleEngineClient.Infrastructure;
 using System;
+using System.Collections.Generic;
 using System.ComponentModel;
+using System.IO;
 
 namespace Kermalis.PokemonBattleEngineClient.Views
 {
@@ -27,7 +29,7 @@ namespace Kermalis.PokemonBattleEngineClient.Views
         public string Message
         {
             get => _message;
-            set
+            private set
             {
                 if (_message != value)
                 {
@@ -40,7 +42,7 @@ namespace Kermalis.PokemonBattleEngineClient.Views
         public bool MessageBoxVisible
         {
             get => _messageBoxVisible;
-            set
+            private set
             {
                 if (_messageBoxVisible != value)
                 {
@@ -52,8 +54,9 @@ namespace Kermalis.PokemonBattleEngineClient.Views
 
         private BattleView _battleView;
         private static IBrush _hailstormDim, _harshSunlightDim, _rainDim, _sandstormDim;
+        private static Dictionary<PBEWeather, Stream> _weathers;
 
-        internal static void CreateBrushes()
+        internal static void CreateResources()
         {
             _hailstormDim = new SolidColorBrush(Color.FromUInt32(0x20D0FFFF));
             _harshSunlightDim = new LinearGradientBrush()
@@ -78,6 +81,12 @@ namespace Kermalis.PokemonBattleEngineClient.Views
                     new GradientStop { Color = Color.FromUInt32(0x30FFC000), Offset = 1.0 }
                 }
             };
+
+            _weathers = new Dictionary<PBEWeather, Stream>
+            {
+                { PBEWeather.Hailstorm, Utils.GetResourceStream("MISC.WEATHER_Hailstorm.gif") },
+                { PBEWeather.Rain, Utils.GetResourceStream("MISC.WEATHER_Rain.gif") }
+            };
         }
 
         public FieldView()
@@ -89,6 +98,74 @@ namespace Kermalis.PokemonBattleEngineClient.Views
         {
             _battleView = battleView;
             PBEBattle b = _battleView.Client.Battle;
+            switch (b.BattleFormat)
+            {
+                case PBEBattleFormat.Single:
+                {
+                    this.FindControl<HPBarView>("Bar0_Center").Location = new Point(204, 35);
+
+                    this.FindControl<HPBarView>("Bar1_Center").Location = new Point(204, 6);
+
+                    this.FindControl<PokemonView>("Battler0_Center").Location = new Point(75, 53);
+
+                    this.FindControl<PokemonView>("Battler1_Center").Location = new Point(284, 8);
+                    break;
+                }
+                case PBEBattleFormat.Double:
+                {
+                    this.FindControl<HPBarView>("Bar0_Left").Location = new Point(101, 35);
+                    this.FindControl<HPBarView>("Bar0_Right").Location = new Point(307, 35);
+
+                    this.FindControl<HPBarView>("Bar1_Right").Location = new Point(101, 6);
+                    this.FindControl<HPBarView>("Bar1_Left").Location = new Point(307, 6);
+
+                    this.FindControl<PokemonView>("Battler0_Left").Location = new Point(-37, 43);
+                    this.FindControl<PokemonView>("Battler0_Right").Location = new Point(168, 54);
+
+                    this.FindControl<PokemonView>("Battler1_Right").Location = new Point(242, 9);
+                    this.FindControl<PokemonView>("Battler1_Left").Location = new Point(332, 15);
+                    break;
+                }
+                case PBEBattleFormat.Triple:
+                {
+                    this.FindControl<HPBarView>("Bar0_Left").Location = new Point(50, 35);
+                    this.FindControl<HPBarView>("Bar0_Center").Location = new Point(204, 35);
+                    this.FindControl<HPBarView>("Bar0_Right").Location = new Point(358, 35);
+
+                    this.FindControl<HPBarView>("Bar1_Right").Location = new Point(50, 6);
+                    this.FindControl<HPBarView>("Bar1_Center").Location = new Point(204, 6);
+                    this.FindControl<HPBarView>("Bar1_Left").Location = new Point(358, 6);
+
+                    this.FindControl<PokemonView>("Battler0_Left").Location = new Point(-53, 51);
+                    this.FindControl<PokemonView>("Battler0_Center").Location = new Point(92, 31);
+                    this.FindControl<PokemonView>("Battler0_Right").Location = new Point(221, 76);
+
+                    this.FindControl<PokemonView>("Battler1_Right").Location = new Point(209, -1);
+                    this.FindControl<PokemonView>("Battler1_Center").Location = new Point(282, 16);
+                    this.FindControl<PokemonView>("Battler1_Left").Location = new Point(362, 8);
+                    break;
+                }
+                case PBEBattleFormat.Rotation:
+                {
+                    this.FindControl<HPBarView>("Bar0_Left").Location = new Point(50, 35);
+                    this.FindControl<HPBarView>("Bar0_Center").Location = new Point(204, 35);
+                    this.FindControl<HPBarView>("Bar0_Right").Location = new Point(358, 35);
+
+                    this.FindControl<HPBarView>("Bar1_Right").Location = new Point(50, 6);
+                    this.FindControl<HPBarView>("Bar1_Center").Location = new Point(204, 6);
+                    this.FindControl<HPBarView>("Bar1_Left").Location = new Point(358, 6);
+
+                    this.FindControl<PokemonView>("Battler0_Left").Location = new Point(-46, 384); // Hidden
+                    this.FindControl<PokemonView>("Battler0_Center").Location = new Point(52, 72);
+                    this.FindControl<PokemonView>("Battler0_Right").Location = new Point(228, 384); // Hidden
+
+                    this.FindControl<PokemonView>("Battler1_Right").Location = new Point(211, -34);
+                    this.FindControl<PokemonView>("Battler1_Center").Location = new Point(282, 16);
+                    this.FindControl<PokemonView>("Battler1_Left").Location = new Point(421, -24);
+                    break;
+                }
+                default: throw new ArgumentOutOfRangeException(nameof(_battleView.Client.Battle.BattleFormat));
+            }
             BGSource = new Bitmap(Utils.GetResourceStream($"BG.BG_{b.BattleTerrain}_{b.BattleFormat}.png"));
             OnPropertyChanged(nameof(BGSource));
         }
@@ -105,14 +182,13 @@ namespace Kermalis.PokemonBattleEngineClient.Views
             {
                 Rectangle dim = this.FindControl<Rectangle>("WeatherDim");
                 Image gif = this.FindControl<Image>("WeatherGif");
-                string resource = "MISC.WEATHER_" + _battleView.Client.Battle.Weather + ".gif";
                 switch (_battleView.Client.Battle.Weather)
                 {
                     case PBEWeather.Hailstorm:
                     {
                         dim.Fill = _hailstormDim;
                         dim.IsVisible = true;
-                        GifImage.SetSourceStream(gif, Utils.GetResourceStream(resource));
+                        GifImage.SetSourceStream(gif, _weathers[PBEWeather.Hailstorm]);
                         gif.IsVisible = true;
                         break;
                     }
@@ -127,7 +203,7 @@ namespace Kermalis.PokemonBattleEngineClient.Views
                     {
                         dim.Fill = _rainDim;
                         dim.IsVisible = true;
-                        GifImage.SetSourceStream(gif, Utils.GetResourceStream(resource));
+                        GifImage.SetSourceStream(gif, _weathers[PBEWeather.Rain]);
                         gif.IsVisible = true;
                         break;
                     }
@@ -147,97 +223,64 @@ namespace Kermalis.PokemonBattleEngineClient.Views
                 }
             });
         }
-        // pkmn.FieldPosition must be updated before calling this
-        internal void UpdatePokemon(PBEPokemon pkmn, PBEFieldPosition oldPosition = PBEFieldPosition.None)
+        private void GetPokemonViewStuff(PBEBattlePokemon pkmn, PBEFieldPosition position, out bool backSprite, out HPBarView hpView, out PokemonView pkmnView)
+        {
+            backSprite = pkmn.Team.Id == 0 ? _battleView.Client.BattleId != 1 : _battleView.Client.BattleId == 1;
+            hpView = this.FindControl<HPBarView>($"Bar{(backSprite ? 0 : 1)}_{position}");
+            pkmnView = this.FindControl<PokemonView>($"Battler{(backSprite ? 0 : 1)}_{position}");
+        }
+        private void UpdatePokemon(PBEBattlePokemon pkmn, bool backSprite, HPBarView hpView, PokemonView pkmnView, bool hpBar, bool sprite)
+        {
+            bool se0 = _battleView.Client.ShowEverything0;
+            bool se1 = _battleView.Client.ShowEverything1;
+            if (hpBar)
+            {
+                hpView.Update(pkmn, se0, se1);
+            }
+            if (sprite)
+            {
+                pkmnView.Update(pkmn, backSprite, se0, se1);
+            }
+        }
+        // pkmn.FieldPosition must be updated before calling these
+        internal void ShowPokemon(PBEBattlePokemon pkmn)
         {
             Dispatcher.UIThread.InvokeAsync(() =>
             {
-                switch (_battleView.Client.Battle.BattleFormat)
-                {
-                    case PBEBattleFormat.Single:
-                    {
-                        this.FindControl<HPBarView>("Bar0_Center").Location = new Point(204, 35);
-
-                        this.FindControl<HPBarView>("Bar1_Center").Location = new Point(204, 6);
-
-                        this.FindControl<PokemonView>("Battler0_Center").Location = new Point(75, 53);
-
-                        this.FindControl<PokemonView>("Battler1_Center").Location = new Point(284, 8);
-                        break;
-                    }
-                    case PBEBattleFormat.Double:
-                    {
-                        this.FindControl<HPBarView>("Bar0_Left").Location = new Point(101, 35);
-                        this.FindControl<HPBarView>("Bar0_Right").Location = new Point(307, 35);
-
-                        this.FindControl<HPBarView>("Bar1_Right").Location = new Point(101, 6);
-                        this.FindControl<HPBarView>("Bar1_Left").Location = new Point(307, 6);
-
-                        this.FindControl<PokemonView>("Battler0_Left").Location = new Point(-37, 43);
-                        this.FindControl<PokemonView>("Battler0_Right").Location = new Point(168, 54);
-
-                        this.FindControl<PokemonView>("Battler1_Right").Location = new Point(242, 9);
-                        this.FindControl<PokemonView>("Battler1_Left").Location = new Point(332, 15);
-                        break;
-                    }
-                    case PBEBattleFormat.Triple:
-                    {
-                        this.FindControl<HPBarView>("Bar0_Left").Location = new Point(50, 35);
-                        this.FindControl<HPBarView>("Bar0_Center").Location = new Point(204, 35);
-                        this.FindControl<HPBarView>("Bar0_Right").Location = new Point(358, 35);
-
-                        this.FindControl<HPBarView>("Bar1_Right").Location = new Point(50, 6);
-                        this.FindControl<HPBarView>("Bar1_Center").Location = new Point(204, 6);
-                        this.FindControl<HPBarView>("Bar1_Left").Location = new Point(358, 6);
-
-                        this.FindControl<PokemonView>("Battler0_Left").Location = new Point(-53, 51);
-                        this.FindControl<PokemonView>("Battler0_Center").Location = new Point(92, 31);
-                        this.FindControl<PokemonView>("Battler0_Right").Location = new Point(221, 76);
-
-                        this.FindControl<PokemonView>("Battler1_Right").Location = new Point(209, -1);
-                        this.FindControl<PokemonView>("Battler1_Center").Location = new Point(282, 16);
-                        this.FindControl<PokemonView>("Battler1_Left").Location = new Point(362, 8);
-                        break;
-                    }
-                    case PBEBattleFormat.Rotation:
-                    {
-                        this.FindControl<HPBarView>("Bar0_Left").Location = new Point(50, 35);
-                        this.FindControl<HPBarView>("Bar0_Center").Location = new Point(204, 35);
-                        this.FindControl<HPBarView>("Bar0_Right").Location = new Point(358, 35);
-
-                        this.FindControl<HPBarView>("Bar1_Right").Location = new Point(50, 6);
-                        this.FindControl<HPBarView>("Bar1_Center").Location = new Point(204, 6);
-                        this.FindControl<HPBarView>("Bar1_Left").Location = new Point(358, 6);
-
-                        this.FindControl<PokemonView>("Battler0_Left").Location = new Point(-46, 384); // Hidden
-                        this.FindControl<PokemonView>("Battler0_Center").Location = new Point(52, 72);
-                        this.FindControl<PokemonView>("Battler0_Right").Location = new Point(228, 384); // Hidden
-
-                        this.FindControl<PokemonView>("Battler1_Right").Location = new Point(211, -34);
-                        this.FindControl<PokemonView>("Battler1_Center").Location = new Point(282, 16);
-                        this.FindControl<PokemonView>("Battler1_Left").Location = new Point(421, -24);
-                        break;
-                    }
-                    default: throw new ArgumentOutOfRangeException(nameof(_battleView.Client.Battle.BattleFormat));
-                }
-
-                HPBarView hpView;
-                PokemonView pkmnView;
-                bool backSprite = pkmn.Team.Id == 0 ? _battleView.Client.BattleId != 1 : _battleView.Client.BattleId == 1;
-                if (oldPosition != PBEFieldPosition.None)
-                {
-                    hpView = this.FindControl<HPBarView>($"Bar{(backSprite ? 0 : 1)}_{oldPosition}");
-                    hpView.IsVisible = false;
-                    pkmnView = this.FindControl<PokemonView>($"Battler{(backSprite ? 0 : 1)}_{oldPosition}");
-                    pkmnView.IsVisible = false;
-                }
-                if (pkmn.FieldPosition != PBEFieldPosition.None)
-                {
-                    hpView = this.FindControl<HPBarView>($"Bar{(backSprite ? 0 : 1)}_{pkmn.FieldPosition}");
-                    hpView.Update(pkmn, (pkmn.Team.Id == 0 && _battleView.Client.ShowEverything0) || (pkmn.Team.Id == 1 && _battleView.Client.ShowEverything1));
-                    pkmnView = this.FindControl<PokemonView>($"Battler{(backSprite ? 0 : 1)}_{pkmn.FieldPosition}");
-                    pkmnView.Update(pkmn, backSprite, _battleView.Client.ShowEverything0, _battleView.Client.ShowEverything1);
-                }
+                GetPokemonViewStuff(pkmn, pkmn.FieldPosition, out bool backSprite, out HPBarView hpView, out PokemonView pkmnView);
+                UpdatePokemon(pkmn, backSprite, hpView, pkmnView, true, true);
+                hpView.IsVisible = true;
+                pkmnView.IsVisible = true;
+            });
+        }
+        internal void HidePokemon(PBEBattlePokemon pkmn, PBEFieldPosition oldPosition)
+        {
+            Dispatcher.UIThread.InvokeAsync(() =>
+            {
+                GetPokemonViewStuff(pkmn, oldPosition, out _, out HPBarView hpView, out PokemonView pkmnView);
+                hpView.IsVisible = false;
+                pkmnView.IsVisible = false;
+            });
+        }
+        internal void UpdatePokemon(PBEBattlePokemon pkmn, bool hpBar, bool sprite)
+        {
+            Dispatcher.UIThread.InvokeAsync(() =>
+            {
+                GetPokemonViewStuff(pkmn, pkmn.FieldPosition, out bool backSprite, out HPBarView hpView, out PokemonView pkmnView);
+                UpdatePokemon(pkmn, backSprite, hpView, pkmnView, hpBar, sprite);
+            });
+        }
+        internal void MovePokemon(PBEBattlePokemon pkmn, PBEFieldPosition oldPosition)
+        {
+            Dispatcher.UIThread.InvokeAsync(() =>
+            {
+                GetPokemonViewStuff(pkmn, oldPosition, out _, out HPBarView hpView, out PokemonView pkmnView);
+                hpView.IsVisible = false;
+                pkmnView.IsVisible = false;
+                GetPokemonViewStuff(pkmn, pkmn.FieldPosition, out bool backSprite, out hpView, out pkmnView);
+                UpdatePokemon(pkmn, backSprite, hpView, pkmnView, true, true);
+                hpView.IsVisible = true;
+                pkmnView.IsVisible = true;
             });
         }
     }

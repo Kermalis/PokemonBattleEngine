@@ -23,34 +23,34 @@ namespace Kermalis.PokemonBattleEngineTests.Forms
             PBERandom.SetSeed(0);
             PBESettings settings = PBESettings.DefaultSettings;
 
-            var team1Shell = new PBETeamShell(settings, 2, true);
-            PBEPokemonShell ps = team1Shell[0];
-            ps.Species = PBESpecies.Groudon;
-            ps.Ability = PBEAbility.Drought;
-            ps.Item = PBEItem.None;
-            ps.Moveset[0].Move = PBEMove.Snore;
-            ps = team1Shell[1];
-            ps.Species = PBESpecies.Rayquaza;
-            ps.Moveset[0].Move = PBEMove.Snore;
+            var p0 = new TestPokemonCollection(2);
+            p0[0] = new TestPokemon(PBESpecies.Groudon, 0, 100)
+            {
+                Ability = PBEAbility.Drought,
+                Moveset = new TestMoveset(settings, new[] { PBEMove.Splash })
+            };
+            p0[1] = new TestPokemon(PBESpecies.Rayquaza, 0, 100)
+            {
+                Ability = PBEAbility.AirLock,
+                Moveset = new TestMoveset(settings, new[] { PBEMove.Splash })
+            };
 
-            var team2Shell = new PBETeamShell(settings, 1, true);
-            ps = team2Shell[0];
-            ps.Species = species;
-            ps.Ability = ability;
-            ps.Item = PBEItem.None;
-            ps.Moveset[0].Move = PBEMove.Snore;
+            var p1 = new TestPokemonCollection(1);
+            p1[0] = new TestPokemon(species, 0, 100)
+            {
+                Ability = ability,
+                Moveset = new TestMoveset(settings, new[] { PBEMove.Splash })
+            };
 
-            var battle = new PBEBattle(PBEBattleTerrain.Plain, PBEBattleFormat.Single, team1Shell, "Team 1", team2Shell, "Team 2");
+            var battle = new PBEBattle(PBEBattleTerrain.Plain, PBEBattleFormat.Single, new PBETeamInfo(p0, "Team 1"), new PBETeamInfo(p1, "Team 2"), settings);
             battle.OnNewEvent += PBEBattle.ConsoleBattleEventHandler;
-            team1Shell.Dispose();
-            team2Shell.Dispose();
             battle.Begin();
 
             PBETeam t0 = battle.Teams[0];
             PBETeam t1 = battle.Teams[1];
-            PBEPokemon groudon = t0.Party[0];
-            PBEPokemon rayquaza = t0.Party[1];
-            PBEPokemon castformCherrim = t1.Party[0];
+            PBEBattlePokemon groudon = t0.Party[0];
+            PBEBattlePokemon rayquaza = t0.Party[1];
+            PBEBattlePokemon castformCherrim = t1.Party[0];
             #endregion
 
             #region Check Castform/Cherrim for correct form
@@ -59,7 +59,7 @@ namespace Kermalis.PokemonBattleEngineTests.Forms
 
             #region Swap Groudon for Rayquaza and check for no form
             Assert.True(PBEBattle.SelectActionsIfValid(t0, new[] { new PBETurnAction(groudon.Id, rayquaza.Id) }));
-            Assert.True(PBEBattle.SelectActionsIfValid(t1, new[] { new PBETurnAction(castformCherrim.Id, PBEMove.Snore, PBETurnTarget.FoeCenter) }));
+            Assert.True(PBEBattle.SelectActionsIfValid(t1, new[] { new PBETurnAction(castformCherrim.Id, PBEMove.Splash, PBETurnTarget.AllyCenter) }));
 
             battle.RunTurn();
 
@@ -68,7 +68,7 @@ namespace Kermalis.PokemonBattleEngineTests.Forms
 
             #region Swap Rayquaza for Groudon and check for correct form
             Assert.True(PBEBattle.SelectActionsIfValid(t0, new[] { new PBETurnAction(rayquaza.Id, groudon.Id) }));
-            Assert.True(PBEBattle.SelectActionsIfValid(t1, new[] { new PBETurnAction(castformCherrim.Id, PBEMove.Snore, PBETurnTarget.FoeCenter) }));
+            Assert.True(PBEBattle.SelectActionsIfValid(t1, new[] { new PBETurnAction(castformCherrim.Id, PBEMove.Splash, PBETurnTarget.AllyCenter) }));
 
             battle.RunTurn();
 
@@ -77,7 +77,6 @@ namespace Kermalis.PokemonBattleEngineTests.Forms
 
             #region Cleanup
             battle.OnNewEvent -= PBEBattle.ConsoleBattleEventHandler;
-            battle.Dispose();
             #endregion
         }
 
@@ -90,35 +89,31 @@ namespace Kermalis.PokemonBattleEngineTests.Forms
             PBERandom.SetSeed(0);
             PBESettings settings = PBESettings.DefaultSettings;
 
-            var team1Shell = new PBETeamShell(settings, 1, true);
-            PBEPokemonShell ps = team1Shell[0];
-            ps.Species = PBESpecies.Shuckle;
-            ps.Item = PBEItem.None;
-            ps.Moveset[0].Move = PBEMove.Snore;
-            ps.Moveset[1].Move = PBEMove.GastroAcid;
+            var p0 = new TestPokemonCollection(1);
+            p0[0] = new TestPokemon(PBESpecies.Shuckle, 0, 100)
+            {
+                Moveset = new TestMoveset(settings, new[] { PBEMove.GastroAcid, PBEMove.Splash })
+            };
 
-            var team2Shell = new PBETeamShell(settings, 1, true);
-            ps = team2Shell[0];
-            ps.Species = species;
-            ps.Ability = ability;
-            ps.Item = PBEItem.None;
-            ps.Moveset[0].Move = PBEMove.Snore;
-            ps.Moveset[1].Move = PBEMove.SunnyDay;
+            var p1 = new TestPokemonCollection(1);
+            p1[0] = new TestPokemon(species, 0, 100)
+            {
+                Ability = ability,
+                Moveset = new TestMoveset(settings, new[] { PBEMove.SunnyDay, PBEMove.Splash })
+            };
 
-            var battle = new PBEBattle(PBEBattleTerrain.Plain, PBEBattleFormat.Single, team1Shell, "Team 1", team2Shell, "Team 2");
+            var battle = new PBEBattle(PBEBattleTerrain.Plain, PBEBattleFormat.Single, new PBETeamInfo(p0, "Team 1"), new PBETeamInfo(p1, "Team 2"), settings);
             battle.OnNewEvent += PBEBattle.ConsoleBattleEventHandler;
-            team1Shell.Dispose();
-            team2Shell.Dispose();
             battle.Begin();
 
             PBETeam t0 = battle.Teams[0];
             PBETeam t1 = battle.Teams[1];
-            PBEPokemon shuckle = t0.Party[0];
-            PBEPokemon castformCherrim = t1.Party[0];
+            PBEBattlePokemon shuckle = t0.Party[0];
+            PBEBattlePokemon castformCherrim = t1.Party[0];
             #endregion
 
             #region Use Sunny Day and check for correct form
-            Assert.True(PBEBattle.SelectActionsIfValid(t0, new[] { new PBETurnAction(shuckle.Id, PBEMove.Snore, PBETurnTarget.FoeCenter) }));
+            Assert.True(PBEBattle.SelectActionsIfValid(t0, new[] { new PBETurnAction(shuckle.Id, PBEMove.Splash, PBETurnTarget.AllyCenter) }));
             Assert.True(PBEBattle.SelectActionsIfValid(t1, new[] { new PBETurnAction(castformCherrim.Id, PBEMove.SunnyDay, PBETurnTarget.AllyCenter | PBETurnTarget.FoeCenter) }));
 
             battle.RunTurn();
@@ -128,7 +123,7 @@ namespace Kermalis.PokemonBattleEngineTests.Forms
 
             #region Use Gastro Acid and check for no form
             Assert.True(PBEBattle.SelectActionsIfValid(t0, new[] { new PBETurnAction(shuckle.Id, PBEMove.GastroAcid, PBETurnTarget.FoeCenter) }));
-            Assert.True(PBEBattle.SelectActionsIfValid(t1, new[] { new PBETurnAction(castformCherrim.Id, PBEMove.Snore, PBETurnTarget.FoeCenter) }));
+            Assert.True(PBEBattle.SelectActionsIfValid(t1, new[] { new PBETurnAction(castformCherrim.Id, PBEMove.Splash, PBETurnTarget.AllyCenter) }));
 
             battle.RunTurn();
 
@@ -137,7 +132,6 @@ namespace Kermalis.PokemonBattleEngineTests.Forms
 
             #region Cleanup
             battle.OnNewEvent -= PBEBattle.ConsoleBattleEventHandler;
-            battle.Dispose();
             #endregion
         }
     }

@@ -18,7 +18,7 @@ namespace Kermalis.PokemonBattleEngine.Packets
         public PBEStatus1 Status1 { get; }
         public PBEStatusAction StatusAction { get; }
 
-        internal PBEStatus1Packet(PBEPokemon status1Receiver, PBEPokemon pokemon2, PBEStatus1 status1, PBEStatusAction statusAction)
+        internal PBEStatus1Packet(PBEBattlePokemon status1Receiver, PBEBattlePokemon pokemon2, PBEStatus1 status1, PBEStatusAction statusAction)
         {
             using (var ms = new MemoryStream())
             using (var w = new EndianBinaryWriter(ms, encoding: EncodingType.UTF16))

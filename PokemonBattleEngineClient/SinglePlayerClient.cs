@@ -8,8 +8,8 @@ namespace Kermalis.PokemonBattleEngineClient
 {
     internal sealed class SinglePlayerClient : BattleClient
     {
-        public SinglePlayerClient(PBEBattleFormat battleFormat, PBETeamShell team1Shell, string team1TrainerName, PBETeamShell team2Shell, string team2TrainerName)
-            : base(new PBEBattle(PBERandom.RandomBattleTerrain(), battleFormat, team1Shell, team1TrainerName, team2Shell, team2TrainerName), ClientMode.SinglePlayer)
+        public SinglePlayerClient(PBEBattleFormat battleFormat, PBETeamInfo ti0, PBETeamInfo ti1, PBESettings settings)
+            : base(new PBEBattle(PBERandom.RandomBattleTerrain(), battleFormat, ti0, ti1, settings), ClientMode.SinglePlayer)
         {
             BattleId = 0;
             Team = Battle.Teams[0];
@@ -32,34 +32,25 @@ namespace Kermalis.PokemonBattleEngineClient
         {
             switch (battle.BattleState)
             {
-                case PBEBattleState.ReadyToRunTurn:
-                {
-                    battle.RunTurn();
-                    break;
-                }
+                case PBEBattleState.Ended: battle.SaveReplay("SinglePlayer Battle.pbereplay"); break;
+                case PBEBattleState.ReadyToRunSwitches: battle.RunSwitches(); break;
+                case PBEBattleState.ReadyToRunTurn: battle.RunTurn(); break;
             }
         }
 
         protected override void OnActionsReady(PBETurnAction[] acts)
         {
-            if (!Battle.IsDisposed)
-            {
-                new Thread(() => PBEBattle.SelectActionsIfValid(Team, acts)) { Name = "Battle Thread" }.Start();
-            }
+            new Thread(() => PBEBattle.SelectActionsIfValid(Team, acts)) { Name = "Battle Thread" }.Start();
         }
         protected override void OnSwitchesReady()
         {
-            if (!Battle.IsDisposed)
-            {
-                new Thread(() => PBEBattle.SelectSwitchesIfValid(Team, Switches)) { Name = "Battle Thread" }.Start();
-            }
+            new Thread(() => PBEBattle.SelectSwitchesIfValid(Team, Switches)) { Name = "Battle Thread" }.Start();
         }
 
         public override void Dispose()
         {
-            Battle.Dispose();
-            Battle.OnNewEvent -= SinglePlayerBattle_OnNewEvent;
-            Battle.OnStateChanged -= SinglePlayerBattle_OnStateChanged;
+            base.Dispose();
+            Battle.SetEnded(); // Events unsubscribed
         }
     }
 }

@@ -428,7 +428,7 @@ namespace Kermalis.PokemonBattleEngine.Data
         /// <summary>The default value of <see cref="ToxicDamageDenominator"/>.</summary>
         public const byte DefaultToxicDamageDenominator = 16;
         private byte _toxicDamageDenominator = DefaultToxicDamageDenominator;
-        /// <summary>A Pokémon with <see cref="PBEStatus1.BadlyPoisoned"/> loses (<see cref="PBEPokemon.Status1Counter"/>/this) of its HP at the end of every turn.</summary>
+        /// <summary>A Pokémon with <see cref="PBEStatus1.BadlyPoisoned"/> loses (<see cref="PBEBattlePokemon.Status1Counter"/>/this) of its HP at the end of every turn.</summary>
         public byte ToxicDamageDenominator
         {
             get => _toxicDamageDenominator;
@@ -449,7 +449,7 @@ namespace Kermalis.PokemonBattleEngine.Data
         /// <summary>The default value of <see cref="LeechSeedDenominator"/>.</summary>
         public const byte DefaultLeechSeedDenominator = 8;
         private byte _leechSeedDenominator = DefaultLeechSeedDenominator;
-        /// <summary>A Pokémon with <see cref="PBEStatus2.LeechSeed"/> loses (1/this) of its HP at the end of every turn and the Pokémon at <see cref="PBEPokemon.SeededPosition"/> on <see cref="PBEPokemon.SeededTeam"/> restores the lost HP.</summary>
+        /// <summary>A Pokémon with <see cref="PBEStatus2.LeechSeed"/> loses (1/this) of its HP at the end of every turn and the Pokémon at <see cref="PBEBattlePokemon.SeededPosition"/> on <see cref="PBEBattlePokemon.SeededTeam"/> restores the lost HP.</summary>
         public byte LeechSeedDenominator
         {
             get => _leechSeedDenominator;
@@ -905,6 +905,10 @@ namespace Kermalis.PokemonBattleEngine.Data
             {
                 throw new ArgumentNullException(nameof(other));
             }
+            if (!other.IsReadOnly)
+            {
+                throw new ArgumentException("Settings must be read-only.", nameof(other));
+            }
             MaxLevel = other._maxLevel;
             MinLevel = other._minLevel;
             MaxPartySize = other._maxPartySize;
@@ -959,12 +963,14 @@ namespace Kermalis.PokemonBattleEngine.Data
                 throw new InvalidOperationException($"This {nameof(PBESettings)} is marked as read-only.");
             }
         }
-        /// <summary>Marks this <see cref="PBESettings"/> object as read-only.</summary>
+        /// <summary>Marks this <see cref="PBESettings"/> object as read-only and clears <see cref="PropertyChanged"/>.</summary>
         public void MakeReadOnly()
         {
             if (!_isReadOnly)
             {
                 IsReadOnly = true;
+                OnPropertyChanged(nameof(IsReadOnly));
+                PropertyChanged = null;
             }
         }
 
@@ -1019,15 +1025,15 @@ namespace Kermalis.PokemonBattleEngine.Data
         /// <param name="obj">The code <see cref="string"/> or the <see cref="PBESettings"/> object to check for equality.</param>
         public override bool Equals(object obj)
         {
-            if (ReferenceEquals(obj, null))
+            if (obj is null)
             {
                 return false;
             }
-            else if (ReferenceEquals(obj, this))
+            if (ReferenceEquals(obj, this))
             {
                 return true;
             }
-            else if (obj is string str)
+            if (obj is string str)
             {
                 PBESettings ps;
                 try
@@ -1040,7 +1046,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                 }
                 return ps.Equals(this);
             }
-            else if (obj is PBESettings other)
+            if (obj is PBESettings other)
             {
                 return other._maxLevel.Equals(_maxLevel)
                     && other._minLevel.Equals(_minLevel)
@@ -1084,10 +1090,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                     && other._hiddenPowerMax.Equals(_hiddenPowerMax)
                     && other._hiddenPowerMin.Equals(_hiddenPowerMin);
             }
-            else
-            {
-                return false;
-            }
+            return false;
         }
 
         private enum PBESettingID : ushort

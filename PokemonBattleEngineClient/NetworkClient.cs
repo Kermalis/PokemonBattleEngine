@@ -1,5 +1,6 @@
 ﻿using Kermalis.PokemonBattleEngine.Battle;
 using Kermalis.PokemonBattleEngine.Data;
+using Kermalis.PokemonBattleEngine.Data.Legality;
 using Kermalis.PokemonBattleEngine.Network;
 using Kermalis.PokemonBattleEngine.Packets;
 using System;
@@ -11,12 +12,12 @@ namespace Kermalis.PokemonBattleEngineClient
     internal sealed class NetworkClient : BattleClient
     {
         private readonly PBEClient _client;
-        private readonly PBETeamShell _teamShell;
+        private readonly PBELegalPokemonCollection _party;
 
-        public NetworkClient(PBEBattleFormat battleFormat, PBETeamShell teamShell)
-            : base(new PBEBattle(PBEBattleTerrain.Plain, battleFormat, teamShell.Settings), ClientMode.Online)
+        public NetworkClient(PBEBattleFormat battleFormat, PBELegalPokemonCollection party)
+            : base(new PBEBattle(PBEBattleTerrain.Plain, battleFormat, party.Settings), ClientMode.Online)
         {
-            _teamShell = teamShell;
+            _party = party;
             _client = new PBEClient { Battle = Battle };
             _client.Disconnected += OnDisconnected;
             _client.Error += OnError;
@@ -82,9 +83,16 @@ namespace Kermalis.PokemonBattleEngineClient
                     Send(new PBEResponsePacket());
                     break;
                 }
-                case PBEPartyRequestPacket _:
+                case PBEPartyRequestPacket prp:
                 {
-                    Send(new PBEPartyResponsePacket(_teamShell));
+                    if (prp.RequireLegal)
+                    {
+                        Send(new PBELegalPartyResponsePacket(_party));
+                    }
+                    else
+                    {
+                        Send(new PBEPartyResponsePacket(_party));
+                    }
                     break;
                 }
                 case PBEActionsRequestPacket _:
@@ -126,10 +134,8 @@ namespace Kermalis.PokemonBattleEngineClient
 
         public override void Dispose()
         {
-            _client.Dispose();
-            _client.Disconnected -= OnDisconnected;
-            _client.Error -= OnError;
-            _client.PacketReceived -= OnPacketReceived;
+            base.Dispose();
+            _client.Dispose(); // Events unsubscribed
         }
     }
 }

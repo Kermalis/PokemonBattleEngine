@@ -32,7 +32,7 @@ namespace Kermalis.PokemonBattleEngine.Packets
                     case PBESpecialMessage.Recoil:
                     case PBESpecialMessage.Struggle:
                     {
-                        var p = (PBEPokemon)parameters[0];
+                        var p = (PBEBattlePokemon)parameters[0];
                         par.Add(p.FieldPosition);
                         par.Add(p.Team);
                         w.Write(p.FieldPosition);
@@ -49,8 +49,8 @@ namespace Kermalis.PokemonBattleEngine.Packets
                     }
                     case PBESpecialMessage.PainSplit:
                     {
-                        var p0 = (PBEPokemon)parameters[0];
-                        var p1 = (PBEPokemon)parameters[1];
+                        var p0 = (PBEBattlePokemon)parameters[0];
+                        var p1 = (PBEBattlePokemon)parameters[1];
                         par.Add(p0.FieldPosition);
                         par.Add(p0.Team);
                         par.Add(p1.FieldPosition);

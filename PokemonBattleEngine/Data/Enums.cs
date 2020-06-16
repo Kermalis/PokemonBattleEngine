@@ -84,7 +84,7 @@ namespace Kermalis.PokemonBattleEngine.Data
     /// <summary>Represents the current state of a specific battle.</summary>
     public enum PBEBattleState : byte
     {
-        /// <summary>The battle is waiting for team shells.</summary>
+        /// <summary>The battle is waiting for teams.</summary>
         WaitingForPlayers,
         /// <summary>The battle is ready to begin.</summary>
         ReadyToBegin,
@@ -96,6 +96,8 @@ namespace Kermalis.PokemonBattleEngine.Data
         Processing,
         /// <summary>The battle is waiting for players to send switch-ins.</summary>
         WaitingForSwitchIns,
+        /// <summary>The battle is ready to run switches.</summary>
+        ReadyToRunSwitches,
         /// <summary>The battle ended.</summary>
         Ended
     }
@@ -256,7 +258,8 @@ namespace Kermalis.PokemonBattleEngine.Data
         /// <summary>The Pokémon is paralyzed.</summary>
         Paralyzed,
         /// <summary>The Pokémon is poisoned.</summary>
-        Poisoned
+        Poisoned,
+        MAX
     }
     /// <summary>Represents a specific Pokémon's volatile status.</summary>
     [Flags]
@@ -270,37 +273,38 @@ namespace Kermalis.PokemonBattleEngine.Data
         Confused = 1 << 1,
         /// <summary>The Pokémon is cursed and will take damage at the end of each turn.</summary>
         Cursed = 1 << 2,
-        /// <summary>The Pokémon is disguised as <see cref="PBEPokemon.DisguisedAsPokemon"/> with <see cref="PBEAbility.Illusion"/>.</summary>
+        /// <summary>The Pokémon is disguised as <see cref="PBEBattlePokemon.DisguisedAsPokemon"/> with <see cref="PBEAbility.Illusion"/>.</summary>
         Disguised = 1 << 3,
         /// <summary>The Pokémon is flinching and will be unable to move this turn.</summary>
         Flinching = 1 << 4,
         /// <summary>The Pokémon will gain a power boost due to <see cref="PBEMove.HelpingHand"/>.</summary>
         HelpingHand = 1 << 5,
         Identified = 1 << 6,
-        /// <summary>The Pokémon is infatuated with <see cref="PBEPokemon.InfatuatedWithPokemon"/> and may be unable to move this turn.</summary>
+        /// <summary>The Pokémon is infatuated with <see cref="PBEBattlePokemon.InfatuatedWithPokemon"/> and may be unable to move this turn.</summary>
         Infatuated = 1 << 7,
         /// <summary>The Pokémon is seeded and HP will be stolen at the end of each turn.</summary>
         LeechSeed = 1 << 8,
         LockOn = 1 << 9,
         MagnetRise = 1 << 10,
         MiracleEye = 1 << 11,
+        Nightmare = 1 << 12,
         /// <summary>The Pokémon's <see cref="PBEStat.Attack"/> and <see cref="PBEStat.Defense"/> are switched.</summary>
-        PowerTrick = 1 << 12,
+        PowerTrick = 1 << 13,
         /// <summary>The Pokémon is protected from moves this turn.</summary>
-        Protected = 1 << 13,
+        Protected = 1 << 14,
         /// <summary>The Pokémon is under the effect of <see cref="PBEMove.FocusEnergy"/> or <see cref="PBEItem.LansatBerry"/> and has a higher chance of landing critical hits.</summary>
-        Pumped = 1 << 14,
-        ShadowForce = 1 << 15,
+        Pumped = 1 << 15,
+        ShadowForce = 1 << 16,
         /// <summary>The Pokémon is behind a substitute that will take damage on behalf of the Pokémon and prevent most moves from affecting the Pokémon.</summary>
-        Substitute = 1 << 16,
+        Substitute = 1 << 17,
         /// <summary>The Pokémon is transformed into another Pokémon.</summary>
-        Transformed = 1 << 17,
+        Transformed = 1 << 18,
         /// <summary>The Pokémon is underground. A move will miss against the Pokémon unless it has <see cref="PBEMoveFlag.HitsUnderground"/> or either Pokémon has <see cref="PBEAbility.NoGuard"/>.
         /// The Pokémon will take double damage from <see cref="PBEMove.Earthquake"/> and <see cref="PBEMove.Magnitude"/>.</summary>
-        Underground = 1 << 18,
+        Underground = 1 << 19,
         /// <summary>The Pokémon is underwater. A move will miss against the Pokémon unless it has <see cref="PBEMoveFlag.HitsUnderwater"/> or either Pokémon has <see cref="PBEAbility.NoGuard"/>.
         /// The Pokémon will take double damage from <see cref="PBEMove.Surf"/> and <see cref="PBEMove.Whirlpool"/>.</summary>
-        Underwater = 1 << 19
+        Underwater = 1 << 20
     }
     /// <summary>Represents a specific <see cref="PBEBattle"/>'s status.</summary>
     [Flags]
@@ -2248,6 +2252,7 @@ namespace Kermalis.PokemonBattleEngine.Data
         Metronome,
         MiracleEye,
         Moonlight,
+        Nightmare,
         Nothing,
         OneHitKnockout,
         PainSplit,
@@ -2625,7 +2630,7 @@ namespace Kermalis.PokemonBattleEngine.Data
         NaturePower = 267, // TODO
         NeedleArm = 302,
         NightDaze = 539,
-        Nightmare = 171, // TODO
+        Nightmare = 171,
         NightShade = 101,
         NightSlash = 400,
         Octazooka = 190,

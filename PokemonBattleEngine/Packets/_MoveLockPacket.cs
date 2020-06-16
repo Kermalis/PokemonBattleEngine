@@ -17,7 +17,7 @@ namespace Kermalis.PokemonBattleEngine.Packets
         public PBEMove LockedMove { get; }
         public PBETurnTarget? LockedTargets { get; }
 
-        internal PBEMoveLockPacket(PBEPokemon moveUser, PBEMoveLockType moveLockType, PBEMove lockedMove, PBETurnTarget? lockedTargets = null)
+        internal PBEMoveLockPacket(PBEBattlePokemon moveUser, PBEMoveLockType moveLockType, PBEMove lockedMove, PBETurnTarget? lockedTargets = null)
         {
             using (var ms = new MemoryStream())
             using (var w = new EndianBinaryWriter(ms, encoding: EncodingType.UTF16))

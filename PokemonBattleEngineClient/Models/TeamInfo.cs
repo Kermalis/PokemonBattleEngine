@@ -1,16 +1,16 @@
-﻿using Kermalis.PokemonBattleEngine.Data;
+﻿using Kermalis.PokemonBattleEngine.Data.Legality;
 
 namespace Kermalis.PokemonBattleEngineClient.Models
 {
     public sealed class TeamInfo
     {
         public string Name { get; }
-        public PBETeamShell Shell { get; }
+        public PBELegalPokemonCollection Party { get; }
 
-        internal TeamInfo(string name, PBETeamShell shell)
+        internal TeamInfo(string name, PBELegalPokemonCollection party)
         {
             Name = name;
-            Shell = shell;
+            Party = party;
         }
     }
 }

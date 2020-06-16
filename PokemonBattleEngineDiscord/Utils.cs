@@ -92,7 +92,7 @@ namespace Kermalis.PokemonBattleEngineDiscord
             }
             return color;
         }
-        public static Color GetColor(PBEPokemon pkmn)
+        public static Color GetColor(PBEBattlePokemon pkmn)
         {
             return GetColor(pkmn.KnownType1, pkmn.KnownType2);
         }
@@ -140,7 +140,7 @@ namespace Kermalis.PokemonBattleEngineDiscord
                 return _femaleSpriteLookup.Contains(species);
             }
         }
-        public static string GetPokemonSprite(PBEPokemon pokemon)
+        public static string GetPokemonSprite(PBEBattlePokemon pokemon)
         {
             return GetPokemonSprite(pokemon.KnownSpecies, pokemon.KnownForm, pokemon.KnownShiny, pokemon.KnownGender, pokemon.KnownStatus2.HasFlag(PBEStatus2.Substitute), false);
         }

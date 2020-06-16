@@ -266,6 +266,10 @@ namespace Kermalis.PokemonBattleEngine.Network
         public void Dispose()
         {
             Stop();
+            ClientConnected = null;
+            ClientDisconnected = null;
+            ClientRefused = null;
+            Error = null;
         }
     }
 }

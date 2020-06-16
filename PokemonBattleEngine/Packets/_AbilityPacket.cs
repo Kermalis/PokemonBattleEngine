@@ -18,7 +18,7 @@ namespace Kermalis.PokemonBattleEngine.Packets
         public PBEAbility Ability { get; }
         public PBEAbilityAction AbilityAction { get; }
 
-        internal PBEAbilityPacket(PBEPokemon abilityOwner, PBEPokemon pokemon2, PBEAbility ability, PBEAbilityAction abilityAction)
+        internal PBEAbilityPacket(PBEBattlePokemon abilityOwner, PBEBattlePokemon pokemon2, PBEAbility ability, PBEAbilityAction abilityAction)
         {
             using (var ms = new MemoryStream())
             using (var w = new EndianBinaryWriter(ms, encoding: EncodingType.UTF16))

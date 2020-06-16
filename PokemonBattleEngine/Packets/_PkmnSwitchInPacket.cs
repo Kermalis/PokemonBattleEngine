@@ -44,7 +44,7 @@ namespace Kermalis.PokemonBattleEngine.Packets
                 Status1 = status1;
                 FieldPosition = fieldPosition;
             }
-            internal PBESwitchInInfo(PBEPokemon pkmn)
+            internal PBESwitchInInfo(PBEBattlePokemon pkmn)
                 : this(pkmn.Id, pkmn.DisguisedAsPokemon != null ? pkmn.DisguisedAsPokemon.Id : pkmn.Id, pkmn.KnownSpecies, pkmn.KnownForm, pkmn.KnownNickname, pkmn.Level, pkmn.KnownShiny, pkmn.KnownGender, pkmn.HP, pkmn.MaxHP, pkmn.HPPercentage, pkmn.Status1, pkmn.FieldPosition) { }
             internal PBESwitchInInfo(EndianBinaryReader r)
             {
@@ -114,7 +114,7 @@ namespace Kermalis.PokemonBattleEngine.Packets
                 Data = new ReadOnlyCollection<byte>(ms.ToArray());
             }
         }
-        internal PBEPkmnSwitchInPacket(PBETeam team, IList<PBESwitchInInfo> switchIns, PBEPokemon forcedByPokemon = null)
+        internal PBEPkmnSwitchInPacket(PBETeam team, IList<PBESwitchInInfo> switchIns, PBEBattlePokemon forcedByPokemon = null)
             : this(team, switchIns, forcedByPokemon != null, forcedByPokemon?.FieldPosition, forcedByPokemon?.Team) { }
         internal PBEPkmnSwitchInPacket(byte[] data, EndianBinaryReader r, PBEBattle battle)
         {

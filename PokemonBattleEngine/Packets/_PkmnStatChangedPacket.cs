@@ -17,7 +17,7 @@ namespace Kermalis.PokemonBattleEngine.Packets
         public sbyte OldValue { get; }
         public sbyte NewValue { get; }
 
-        internal PBEPkmnStatChangedPacket(PBEPokemon pokemon, PBEStat stat, sbyte oldValue, sbyte newValue)
+        internal PBEPkmnStatChangedPacket(PBEBattlePokemon pokemon, PBEStat stat, sbyte oldValue, sbyte newValue)
         {
             using (var ms = new MemoryStream())
             using (var w = new EndianBinaryWriter(ms, encoding: EncodingType.UTF16))

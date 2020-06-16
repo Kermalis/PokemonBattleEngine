@@ -34,7 +34,7 @@ namespace Kermalis.PokemonBattleEngine.Packets
         public double TargetWeight { get; }
         public ReadOnlyCollection<PBEMove> TargetMoves { get; }
 
-        internal PBETransformPacket(PBEPokemon user, PBEPokemon target)
+        internal PBETransformPacket(PBEBattlePokemon user, PBEBattlePokemon target)
         {
             using (var ms = new MemoryStream())
             using (var w = new EndianBinaryWriter(ms, encoding: EncodingType.UTF16))

@@ -8,6 +8,7 @@ using Kermalis.PokemonBattleEngine.Battle;
 using Kermalis.PokemonBattleEngine.Data;
 using Kermalis.PokemonBattleEngineClient.Infrastructure;
 using System;
+using System.Collections.Generic;
 using System.ComponentModel;
 
 namespace Kermalis.PokemonBattleEngineClient.Views
@@ -21,6 +22,7 @@ namespace Kermalis.PokemonBattleEngineClient.Views
         }
         public new event PropertyChangedEventHandler PropertyChanged;
 
+        private PBEBattlePokemon _pokemon;
         private Point _location;
         public Point Location
         {
@@ -34,10 +36,17 @@ namespace Kermalis.PokemonBattleEngineClient.Views
                 }
             }
         }
+        private bool _showEverything0;
+        private bool _showEverything1;
+        public string Description => Utils.CustomPokemonToString(_pokemon, _showEverything0, _showEverything1);
+
+        private readonly Image _drawn;
 
         private static SolidColorBrush _greenSides, _greenMid, _yellowSides, _yellowMid, _redSides, _redMid;
+        private static Bitmap[] _hpBars;
+        private static Dictionary<PBEStatus1, Bitmap> _status1s;
 
-        internal static void CreateBrushes()
+        internal static void CreateResources()
         {
             _greenSides = new SolidColorBrush(0xFF008C29);
             _greenMid = new SolidColorBrush(0xFF00FF4A);
@@ -45,45 +54,59 @@ namespace Kermalis.PokemonBattleEngineClient.Views
             _yellowMid = new SolidColorBrush(0xFFF7B500);
             _redSides = new SolidColorBrush(0xFF942131);
             _redMid = new SolidColorBrush(0xFFFF3142);
+
+            _hpBars = new Bitmap[2] { new Bitmap(Utils.GetResourceStream("MISC.HPBAR_Ally.png")), new Bitmap(Utils.GetResourceStream("MISC.HPBAR_Foe.png")) };
+            _status1s = new Dictionary<PBEStatus1, Bitmap>();
+            for (PBEStatus1 s = PBEStatus1.None + 1; s < PBEStatus1.MAX; s++)
+            {
+                _status1s.Add(s, new Bitmap(Utils.GetResourceStream("MISC.STATUS1_" + s + ".png")));
+            }
         }
 
         public HPBarView()
         {
             DataContext = this;
             AvaloniaXamlLoader.Load(this);
+
+            _drawn = this.FindControl<Image>("Drawn");
         }
 
-        internal void Update(PBEPokemon pkmn, bool showRawValues)
+        internal void Update(PBEBattlePokemon pkmn, bool showEverything0, bool showEverything1)
         {
+            _showEverything0 = showEverything0;
+            _showEverything1 = showEverything1;
+            _pokemon = pkmn;
+            bool showEverything = Utils.ShouldShowEverything(pkmn.Team, showEverything0, showEverything1);
+
             var wb = new WriteableBitmap(new PixelSize(104, 27), new Vector(96, 96), PixelFormat.Bgra8888);
             using (IRenderTarget rtb = Utils.RenderInterface.CreateRenderTarget(new[] { new WriteableBitmapSurface(wb) }))
             using (IDrawingContextImpl ctx = rtb.CreateDrawingContext(null))
             {
-                string barResource;
+                int barResource;
                 byte yOffset;
-                if (showRawValues)
+                if (showEverything)
                 {
-                    barResource = "MISC.HPBAR_Ally.png";
+                    barResource = 0;
                     yOffset = 0;
                 }
                 else
                 {
-                    barResource = "MISC.HPBAR_Foe.png";
+                    barResource = 1;
                     yOffset = 2;
                 }
-                var hpBar = new Bitmap(Utils.GetResourceStream(barResource));
+                Bitmap hpBar = _hpBars[barResource];
                 ctx.DrawImage(hpBar.PlatformImpl, 1.0, new Rect(0, 0, hpBar.PixelSize.Width, hpBar.PixelSize.Height), new Rect(0, 11 + yOffset, hpBar.PixelSize.Width, hpBar.PixelSize.Height));
 
                 Bitmap nickname = StringRenderer.Render(pkmn.KnownNickname, "BattleName");
                 ctx.DrawImage(nickname.PlatformImpl, 1.0, new Rect(0, 0, nickname.PixelSize.Width, nickname.PixelSize.Height), new Rect(72 - Math.Max(54, nickname.PixelSize.Width), yOffset, nickname.PixelSize.Width, nickname.PixelSize.Height));
 
-                PBEGender gender = showRawValues || pkmn.KnownStatus2.HasFlag(PBEStatus2.Transformed) ? pkmn.Gender : pkmn.KnownGender;
+                PBEGender gender = showEverything || pkmn.KnownStatus2.HasFlag(PBEStatus2.Transformed) ? pkmn.Gender : pkmn.KnownGender;
                 Bitmap level = StringRenderer.Render($"{(gender == PBEGender.Female ? "♀" : gender == PBEGender.Male ? "♂" : " ")}[LV]{pkmn.Level}", "BattleLevel");
                 ctx.DrawImage(level.PlatformImpl, 1.0, new Rect(0, 0, level.PixelSize.Width, level.PixelSize.Height), new Rect(70, 1 + yOffset, level.PixelSize.Width, level.PixelSize.Height));
 
                 if (pkmn.Status1 != PBEStatus1.None)
                 {
-                    var status = new Bitmap(Utils.GetResourceStream("MISC.STATUS1_" + pkmn.Status1 + ".png"));
+                    Bitmap status = _status1s[pkmn.Status1];
                     ctx.DrawImage(status.PlatformImpl, 1.0, new Rect(0, 0, status.PixelSize.Width, status.PixelSize.Height), new Rect(1, 11 + yOffset, status.PixelSize.Width, status.PixelSize.Height));
                 }
 
@@ -113,7 +136,7 @@ namespace Kermalis.PokemonBattleEngineClient.Views
                 ctx.FillRectangle(hpMid, new Rect(38, 13 + yOffset + 1, theW, 1));
                 ctx.FillRectangle(hpSides, new Rect(38, 13 + yOffset + 2, theW, 1));
 
-                if (showRawValues)
+                if (showEverything)
                 {
                     Bitmap hp = StringRenderer.Render(pkmn.HP.ToString(), "BattleHP");
                     ctx.DrawImage(hp.PlatformImpl, 1.0, new Rect(0, 0, hp.PixelSize.Width, hp.PixelSize.Height), new Rect(62 - hp.PixelSize.Width, 16 + yOffset, hp.PixelSize.Width, hp.PixelSize.Height));
@@ -121,9 +144,7 @@ namespace Kermalis.PokemonBattleEngineClient.Views
                     ctx.DrawImage(maxHP.PlatformImpl, 1.0, new Rect(0, 0, maxHP.PixelSize.Width, maxHP.PixelSize.Height), new Rect(70, 16 + yOffset, maxHP.PixelSize.Width, maxHP.PixelSize.Height));
                 }
             }
-            this.FindControl<Image>("Drawn").Source = wb;
-
-            IsVisible = true;
+            _drawn.Source = wb;
         }
     }
 }

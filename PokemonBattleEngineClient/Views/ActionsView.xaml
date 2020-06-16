@@ -15,7 +15,10 @@
     </DataTemplate>
     <DataTemplate DataType="models:PokemonInfo">
       <Button Command="{Binding SelectPokemonCommand}" Background="White" BorderBrush="#A2A2A2" BorderThickness="4" Margin="4,*" IsEnabled="{Binding Enabled}">
-        <Image Stretch="None" Source="{Binding Pokemon.NameWithGender, Converter={x:Static infrastructure:ObjectToTextBitmapConverter.Instance}, ConverterParameter=MenuBlack, Mode=OneWay}"/>
+        <StackPanel Orientation="Horizontal">
+          <Image Stretch="None" VerticalAlignment="Center" Source="{Binding Pokemon, Converter={x:Static infrastructure:SpeciesToMinispriteConverter.Instance}, Mode=OneWay}"/>
+          <Image Stretch="None" VerticalAlignment="Center" Source="{Binding Pokemon.NameWithGender, Converter={x:Static infrastructure:ObjectToTextBitmapConverter.Instance}, ConverterParameter=MenuBlack, Mode=OneWay}"/>
+        </StackPanel>
         <ToolTip.Tip>
           <Image Stretch="None" Source="{Binding Description, Converter={x:Static infrastructure:ObjectToTextBitmapConverter.Instance}, ConverterParameter=MenuBlack, Mode=OneWay}"/>
         </ToolTip.Tip>
@@ -52,29 +55,47 @@
           <ColumnDefinition Width="3*"/>
         </Grid.ColumnDefinitions>
         <Button Grid.Column="0" Grid.Row="0" IsEnabled="{Binding TargetFoeRightEnabled}" Background="#F75231" BorderBrush="#732108" BorderThickness="4" Command="{Binding SelectTarget}" CommandParameter="FoeRight">
-          <Image Stretch="None" Source="{Binding TargetFoeRight.KnownNameWithKnownGender, Converter={x:Static infrastructure:ObjectToTextBitmapConverter.Instance}, Mode=OneWay}"/>
+          <StackPanel Orientation="Horizontal">
+            <Image Stretch="None" VerticalAlignment="Center" Source="{Binding TargetFoeRight, Converter={x:Static infrastructure:SpeciesToMinispriteConverter.Instance}, ConverterParameter=true, Mode=OneWay}"/>
+            <Image Stretch="None" VerticalAlignment="Center" Source="{Binding TargetFoeRight.KnownNameWithKnownGender, Converter={x:Static infrastructure:ObjectToTextBitmapConverter.Instance}, Mode=OneWay}"/>
+          </StackPanel>
         </Button>
         <Rectangle Grid.Column="0" Grid.Row="1" IsVisible="{Binding TargetLineFoeRightAllyLeftEnabled}" Width="12" Height="24" Stroke="#425294" StrokeThickness="2" Fill="#9CADF7"/>
         <Button Grid.Column="0" Grid.Row="2" IsEnabled="{Binding TargetAllyLeftEnabled}" Background="#7B63E7" BorderBrush="#4A3994" BorderThickness="4" Command="{Binding SelectTarget}" CommandParameter="AllyLeft">
-          <Image Stretch="None" Source="{Binding TargetAllyLeft.NameWithGender, Converter={x:Static infrastructure:ObjectToTextBitmapConverter.Instance}, Mode=OneWay}"/>
+          <StackPanel Orientation="Horizontal">
+            <Image Stretch="None" VerticalAlignment="Center" Source="{Binding TargetAllyLeft, Converter={x:Static infrastructure:SpeciesToMinispriteConverter.Instance}, Mode=OneWay}"/>
+            <Image Stretch="None" VerticalAlignment="Center" Source="{Binding TargetAllyLeft.NameWithGender, Converter={x:Static infrastructure:ObjectToTextBitmapConverter.Instance}, Mode=OneWay}"/>
+          </StackPanel>
         </Button>
         <Rectangle Grid.Column="1" Grid.Row="0" IsVisible="{Binding TargetLineFoeRightFoeCenterEnabled}" Width="48" Height="12" Stroke="#425294" StrokeThickness="2" Fill="#9CADF7"/>
         <Rectangle Grid.Column="1" Grid.Row="2" IsVisible="{Binding TargetLineAllyLeftAllyCenterEnabled}" Width="48" Height="12" Stroke="#425294" StrokeThickness="2" Fill="#9CADF7"/>
         <Button Grid.Column="2" Grid.Row="0" IsEnabled="{Binding TargetFoeCenterEnabled}" IsVisible="{Binding CenterTargetsVisible}" Background="#F75231" BorderBrush="#732108" BorderThickness="4" Command="{Binding SelectTarget}" CommandParameter="FoeCenter">
-          <Image Stretch="None" Source="{Binding TargetFoeCenter.KnownNameWithKnownGender, Converter={x:Static infrastructure:ObjectToTextBitmapConverter.Instance}, Mode=OneWay}"/>
+          <StackPanel Orientation="Horizontal">
+            <Image Stretch="None" VerticalAlignment="Center" Source="{Binding TargetFoeCenter, Converter={x:Static infrastructure:SpeciesToMinispriteConverter.Instance}, ConverterParameter=true, Mode=OneWay}"/>
+            <Image Stretch="None" VerticalAlignment="Center" Source="{Binding TargetFoeCenter.KnownNameWithKnownGender, Converter={x:Static infrastructure:ObjectToTextBitmapConverter.Instance}, Mode=OneWay}"/>
+          </StackPanel>
         </Button>
         <Rectangle Grid.Column="2" Grid.Row="1" IsVisible="{Binding TargetLineFoeCenterAllyCenterEnabled}" Width="12" Height="24" Stroke="#425294" StrokeThickness="2" Fill="#9CADF7"/>
         <Button Grid.Column="2" Grid.Row="2" IsEnabled="{Binding TargetAllyCenterEnabled}" IsVisible="{Binding CenterTargetsVisible}" Background="#7B63E7" BorderBrush="#4A3994" BorderThickness="4" Command="{Binding SelectTarget}" CommandParameter="AllyCenter">
-          <Image Stretch="None" Source="{Binding TargetAllyCenter.NameWithGender, Converter={x:Static infrastructure:ObjectToTextBitmapConverter.Instance}, Mode=OneWay}"/>
+          <StackPanel Orientation="Horizontal">
+            <Image Stretch="None" VerticalAlignment="Center" Source="{Binding TargetAllyCenter, Converter={x:Static infrastructure:SpeciesToMinispriteConverter.Instance}, Mode=OneWay}"/>
+            <Image Stretch="None" VerticalAlignment="Center" Source="{Binding TargetAllyCenter.NameWithGender, Converter={x:Static infrastructure:ObjectToTextBitmapConverter.Instance}, Mode=OneWay}"/>
+          </StackPanel>
         </Button>
         <Rectangle Grid.Column="3" Grid.Row="0" IsVisible="{Binding TargetLineFoeLeftFoeCenterEnabled}" Width="48" Height="12" Stroke="#425294" StrokeThickness="2" Fill="#9CADF7"/>
         <Rectangle Grid.Column="3" Grid.Row="2" IsVisible="{Binding TargetLineAllyRightAllyCenterEnabled}" Width="48" Height="12" Stroke="#425294" StrokeThickness="2" Fill="#9CADF7"/>
         <Button Grid.Column="4" Grid.Row="0" IsEnabled="{Binding TargetFoeLeftEnabled}" Background="#F75231" BorderBrush="#732108" BorderThickness="4" Command="{Binding SelectTarget}" CommandParameter="FoeLeft">
-          <Image Stretch="None" Source="{Binding TargetFoeLeft.KnownNameWithKnownGender, Converter={x:Static infrastructure:ObjectToTextBitmapConverter.Instance}, Mode=OneWay}"/>
+          <StackPanel Orientation="Horizontal">
+            <Image Stretch="None" VerticalAlignment="Center" Source="{Binding TargetFoeLeft, Converter={x:Static infrastructure:SpeciesToMinispriteConverter.Instance}, ConverterParameter=true, Mode=OneWay}"/>
+            <Image Stretch="None" VerticalAlignment="Center" Source="{Binding TargetFoeLeft.KnownNameWithKnownGender, Converter={x:Static infrastructure:ObjectToTextBitmapConverter.Instance}, Mode=OneWay}"/>
+          </StackPanel>
         </Button>
         <Rectangle Grid.Column="4" Grid.Row="1" IsVisible="{Binding TargetLineFoeLeftAllyRightEnabled}" Width="12" Height="24" Stroke="#425294" StrokeThickness="2" Fill="#9CADF7"/>
         <Button Grid.Column="4" Grid.Row="2" IsEnabled="{Binding TargetAllyRightEnabled}" Background="#7B63E7" BorderBrush="#4A3994" BorderThickness="4" Command="{Binding SelectTarget}" CommandParameter="AllyRight">
-          <Image Stretch="None" Source="{Binding TargetAllyRight.NameWithGender, Converter={x:Static infrastructure:ObjectToTextBitmapConverter.Instance}, Mode=OneWay}"/>
+          <StackPanel Orientation="Horizontal">
+            <Image Stretch="None" VerticalAlignment="Center" Source="{Binding TargetAllyRight, Converter={x:Static infrastructure:SpeciesToMinispriteConverter.Instance}, Mode=OneWay}"/>
+            <Image Stretch="None" VerticalAlignment="Center" Source="{Binding TargetAllyRight.NameWithGender, Converter={x:Static infrastructure:ObjectToTextBitmapConverter.Instance}, Mode=OneWay}"/>
+          </StackPanel>
         </Button>
       </Grid>
       <infrastructure:BetterWrapPanel IsVisible="{Binding PositionsVisible}" Orientation="Horizontal" HorizontalContentAlignment="Center">

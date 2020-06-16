@@ -16,7 +16,7 @@ namespace Kermalis.PokemonBattleEngine.Packets
         public PBEFieldPosition? DamageVictim { get; }
         public PBETeam DamageVictimTeam { get; }
 
-        internal PBEWeatherPacket(PBEWeather weather, PBEWeatherAction weatherAction, PBEPokemon damageVictim = null)
+        internal PBEWeatherPacket(PBEWeather weather, PBEWeatherAction weatherAction, PBEBattlePokemon damageVictim = null)
         {
             using (var ms = new MemoryStream())
             using (var w = new EndianBinaryWriter(ms, encoding: EncodingType.UTF16))

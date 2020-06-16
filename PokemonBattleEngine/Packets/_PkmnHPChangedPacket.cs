@@ -33,7 +33,7 @@ namespace Kermalis.PokemonBattleEngine.Packets
                 Data = new ReadOnlyCollection<byte>(ms.ToArray());
             }
         }
-        internal PBEPkmnHPChangedPacket(PBEPokemon pokemon, ushort oldHP, double oldHPPercentage)
+        internal PBEPkmnHPChangedPacket(PBEBattlePokemon pokemon, ushort oldHP, double oldHPPercentage)
             : this(pokemon.FieldPosition, pokemon.Team, oldHP, pokemon.HP, oldHPPercentage, pokemon.HPPercentage) { }
         internal PBEPkmnHPChangedPacket(byte[] data, EndianBinaryReader r, PBEBattle battle)
         {

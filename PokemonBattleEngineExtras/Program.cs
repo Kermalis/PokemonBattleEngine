@@ -30,7 +30,7 @@ namespace Kermalis.PokemonBattleEngineExtras
             {
                 case Extra.AIBattle:
                 {
-                    PBEUtils.CreateDatabaseConnection(string.Empty);
+                    PBEUtils.InitEngine(string.Empty);
                     AIBattleDemo.Run();
                     break;
                 }

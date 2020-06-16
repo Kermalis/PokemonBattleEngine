@@ -27,7 +27,7 @@ namespace Kermalis.PokemonBattleEngine.Packets
                 Data = new ReadOnlyCollection<byte>(ms.ToArray());
             }
         }
-        internal PBEPkmnFaintedPacket(PBEPokemon pokemon, PBEFieldPosition oldPosition)
+        internal PBEPkmnFaintedPacket(PBEBattlePokemon pokemon, PBEFieldPosition oldPosition)
             : this(pokemon.Id, oldPosition, pokemon.Team) { }
         internal PBEPkmnFaintedPacket(byte[] data, EndianBinaryReader r, PBEBattle battle)
         {
