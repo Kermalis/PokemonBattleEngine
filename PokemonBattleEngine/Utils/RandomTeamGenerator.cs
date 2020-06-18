@@ -10,7 +10,7 @@ namespace Kermalis.PokemonBattleEngine.Utils
 {
     public static class PBERandomTeamGenerator
     {
-        internal class PBETeamDetails
+        private sealed class PBETeamDetails
         {
             public bool Hail;
             public bool HarshSunlight;
@@ -21,7 +21,7 @@ namespace Kermalis.PokemonBattleEngine.Utils
             public bool RapidSpin;
         }
 
-        internal class PBECounter
+        private sealed class PBECounter
         {
             public int Damage;
             public int Recovery;
@@ -1341,51 +1341,29 @@ namespace Kermalis.PokemonBattleEngine.Utils
                 throw new ArgumentNullException(nameof(allowedSpecies));
             }
 
+            int maxShared = numPkmn / 3;
             var speciesPool = new List<PBESpecies>(allowedSpecies);
             var teamDs = new PBETeamDetails();
             var usedTypes = new Dictionary<PBEType, int>(numPkmn - 1);
-            var team = new PBELegalPokemonCollection(PBESettings.DefaultSettings, 1, true); // TODO: Don't generate any here
+            var team = new PBELegalPokemonCollection(PBESettings.DefaultSettings);
             int currentIndex = 0;
-            while (true)
+            while (speciesPool.Count > 0)
             {
                 (PBESpecies species, PBEForm form) = speciesPool.RandomSpecies(true);
-                bool RemoveSpeciesFromPool()
-                {
-                    speciesPool.Remove(species);
-                    return speciesPool.Count == 0;
-                }
-                // KERMALIS: Showdown limits 2 per tier
+                speciesPool.Remove(species);
+                // KERMALIS: Showdown limits {maxShared} per tier
                 var pData = PBEPokemonData.GetData(species, form);
-                if (ShouldDenyType(usedTypes, pData.Type1) || ShouldDenyType(usedTypes, pData.Type2))
+                if (ShouldDenyType(usedTypes, pData.Type1, maxShared) || ShouldDenyType(usedTypes, pData.Type2, maxShared))
                 {
-                    if (RemoveSpeciesFromPool())
-                    {
-                        break;
-                    }
                     continue;
                 }
 
-                PBELegalPokemon pkmn;
-                if (currentIndex == team.Count)
-                {
-                    team.Add(species, form, PBESettings.DefaultMaxLevel);
-                    pkmn = team[currentIndex];
-                }
-                else
-                {
-                    pkmn = team[currentIndex];
-                    pkmn.Species = species;
-                    pkmn.Form = form;
-                }
+                var pkmn = new PBELegalPokemon(species, form, PBESettings.DefaultMaxLevel, PBESettings.DefaultSettings);
                 GetRandomSet(species, form, pData, currentIndex == 0, teamDs, pkmn);
 
                 // Illusion shouldn't be the last Pokémon of the team
                 if (pkmn.Ability == PBEAbility.Illusion && currentIndex == numPkmn - 1)
                 {
-                    if (RemoveSpeciesFromPool())
-                    {
-                        break;
-                    }
                     continue;
                 }
 
@@ -1394,15 +1372,12 @@ namespace Kermalis.PokemonBattleEngine.Utils
                 // KERMALIS: Showdown sets Illusion user's level to the level of the last in the party
 
                 // Now that our Pokémon has passed all checks, we can increment our counters
-                if (team.Count >= numPkmn)
+                team.Add(pkmn);
+                if (team.Count >= numPkmn || speciesPool.Count == 0)
                 {
                     break;
                 }
                 currentIndex++;
-                if (RemoveSpeciesFromPool()) // No duplicate species
-                {
-                    break;
-                }
                 // Increment our tier counter
 
                 // Increment type counters
@@ -1461,9 +1436,9 @@ namespace Kermalis.PokemonBattleEngine.Utils
                 }
             }
         }
-        private static bool ShouldDenyType(Dictionary<PBEType, int> dict, PBEType type)
+        private static bool ShouldDenyType(Dictionary<PBEType, int> dict, PBEType type, int maxShared)
         {
-            return type != PBEType.None && dict.TryGetValue(type, out int value) && value >= 2 && PBERandom.RandomBool(4, 5); // No type should appear more than twice
+            return type != PBEType.None && dict.TryGetValue(type, out int value) && value >= maxShared;
         }
     }
 }

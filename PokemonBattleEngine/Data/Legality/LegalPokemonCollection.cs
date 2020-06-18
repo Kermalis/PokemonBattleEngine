@@ -76,6 +76,19 @@ namespace Kermalis.PokemonBattleEngine.Data.Legality
                 InsertWithEvents(false, new PBELegalPokemon(Settings, jArray[i]), i);
             }
         }
+        public PBELegalPokemonCollection(PBESettings settings)
+        {
+            if (settings == null)
+            {
+                throw new ArgumentNullException(nameof(settings));
+            }
+            if (!settings.IsReadOnly)
+            {
+                throw new ArgumentException("Settings must be read-only.", nameof(settings));
+            }
+            Settings = settings;
+            _list = new List<PBELegalPokemon>(Settings.MaxPartySize);
+        }
         public PBELegalPokemonCollection(PBESettings settings, int numPkmnToGenerate, bool setToMaxLevel)
         {
             if (settings == null)
