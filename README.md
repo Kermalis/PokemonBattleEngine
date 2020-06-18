@@ -25,7 +25,6 @@ Join our _(new)_ [Discord server](https://discord.gg/Z4Mn9qX) to talk or try out
 ----
 # To Do:
 * Triple-battle shifting, Multi-battles, Wild-battles, Rotation-battles, and "Bag" items
-* Complete [the Pokémon data dumper](PokemonBattleEngineTesting/PokemonDataDumper.cs)
 * Add the remaining vanilla [abilities](To%20Do%20Abilities.txt), [held items](To%20Do%20Items.txt), and [moves](To%20Do%20Moves.txt)
 * Finish adding all event Pokémon
 * Add previews of the Android/iOS apps

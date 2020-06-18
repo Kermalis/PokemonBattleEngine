@@ -100,6 +100,35 @@ namespace Kermalis.PokemonBattleEngine.Data
         #endregion
         #endregion
 
+        public static bool CanChangeForm(PBESpecies species, bool requireUsableOutsideOfBattle)
+        {
+            if (species <= 0 || species >= PBESpecies.MAX)
+            {
+                throw new ArgumentOutOfRangeException(nameof(species));
+            }
+            switch (species)
+            {
+                case PBESpecies.Arceus:
+                case PBESpecies.Burmy:
+                case PBESpecies.Deerling:
+                case PBESpecies.Deoxys:
+                case PBESpecies.Genesect:
+                case PBESpecies.Giratina:
+                case PBESpecies.Keldeo:
+                case PBESpecies.Kyurem:
+                case PBESpecies.Landorus:
+                case PBESpecies.Rotom:
+                case PBESpecies.Sawsbuck:
+                case PBESpecies.Shaymin:
+                case PBESpecies.Thundurus:
+                case PBESpecies.Tornadus: return true;
+                case PBESpecies.Castform:
+                case PBESpecies.Cherrim:
+                case PBESpecies.Darmanitan:
+                case PBESpecies.Meloetta: return !requireUsableOutsideOfBattle;
+                default: return false;
+            }
+        }
         public static bool HasForms(PBESpecies species, bool requireUsableOutsideOfBattle)
         {
             if (species <= 0 || species >= PBESpecies.MAX)

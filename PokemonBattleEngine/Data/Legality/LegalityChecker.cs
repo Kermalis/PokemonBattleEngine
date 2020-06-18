@@ -7,33 +7,35 @@ namespace Kermalis.PokemonBattleEngine.Data.Legality
 {
     public static class PBELegalityChecker
     {
-        private static List<(PBESpecies, PBEForm)> GetSpecies(PBESpecies species)
+        private static List<(PBESpecies, PBEForm)> GetSpecies(PBESpecies species, PBEForm form)
         {
+            // Recursion BAYBEE
+            // IDK what to name these functions so enjoy Add1 and Add2
             var list = new List<(PBESpecies, PBEForm)>();
-            void Add(PBESpecies s)
+            void Add1(PBESpecies s, PBEForm f)
             {
-                IReadOnlyList<PBEForm> allForms = PBEDataUtils.GetForms(s, true);
-                if (allForms.Count > 0)
+                // Do not take forms if unable to change into them (Wormadam)
+                if (PBEDataUtils.CanChangeForm(s, true))
                 {
-                    foreach (PBEForm form in allForms)
+                    foreach (PBEForm cf in PBEDataUtils.GetForms(s, true))
                     {
-                        Add2(s, form);
+                        Add2(s, cf);
                     }
                 }
                 else
                 {
-                    Add2(s, 0);
+                    Add2(s, f);
                 }
             }
-            void Add2(PBESpecies s, PBEForm form)
+            void Add2(PBESpecies s, PBEForm f)
             {
-                foreach (PBESpecies spe in PBEPokemonData.GetData(s, form).PreEvolutions)
+                foreach ((PBESpecies cs, PBEForm cf) in PBEPokemonData.GetData(s, f).PreEvolutions)
                 {
-                    Add(spe);
+                    Add1(cs, cf);
                 }
-                list.Add((s, form));
+                list.Add((s, f));
             }
-            Add(species);
+            Add1(species, form);
             return list;
         }
 
@@ -49,22 +51,26 @@ namespace Kermalis.PokemonBattleEngine.Data.Legality
             }
             ValidateSpecies(species, form, true);
             ValidateLevel(level, settings);
-            List<(PBESpecies, PBEForm)> speciesToStealFrom = GetSpecies(species);
+            List<(PBESpecies, PBEForm)> speciesToStealFrom = GetSpecies(species, form);
 
             var moves = new List<PBEMove>();
             foreach ((PBESpecies spe, PBEForm fo) in speciesToStealFrom)
             {
                 var pData = PBEPokemonData.GetData(spe, fo);
+                // Disallow moves learned after the current level
                 moves.AddRange(pData.LevelUpMoves.Where(t => t.Level <= level).Select(t => t.Move));
-                moves.AddRange(pData.OtherMoves.Select(t => t.Move));
+                // Disallow form-specific moves from other forms (Rotom)
+                moves.AddRange(pData.OtherMoves.Where(t => (spe == species && fo == form) || t.ObtainMethod != PBEMoveObtainMethod.Form).Select(t => t.Move));
+                // Event Pokémon checking is extremely basic and wrong, but the goal is not to be super restricting or accurate
                 if (PBEEventPokemon.Events.TryGetValue(spe, out ReadOnlyCollection<PBEEventPokemon> events))
                 {
-                    moves.AddRange(events.SelectMany(e => e.Moves));
+                    // Disallow moves learned after the current level
+                    moves.AddRange(events.Where(e => e.Level <= level).SelectMany(e => e.Moves));
                 }
-            }
-            if (moves.Contains(PBEMove.Sketch))
-            {
-                return PBEDataUtils.SketchLegalMoves;
+                if (moves.Contains(PBEMove.Sketch))
+                {
+                    return PBEDataUtils.SketchLegalMoves;
+                }
             }
             // None is here because of events
             return moves.Distinct().Where(m => m != PBEMove.None && PBEMoveData.IsMoveUsable(m)).ToArray();

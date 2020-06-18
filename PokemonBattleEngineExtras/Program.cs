@@ -16,7 +16,7 @@ namespace Kermalis.PokemonBattleEngineExtras
 
         public static void Main()
         {
-            SqliteConnection GetConnection()
+            static SqliteConnection GetConnection()
             {
                 SQLitePCL.Batteries_V2.Init();
                 const string databasePath = @"../../../../\PokemonBattleEngine\PokemonBattleEngine.db";

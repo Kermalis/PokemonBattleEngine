@@ -5,1021 +5,12 @@ using Microsoft.Data.Sqlite;
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 
 namespace Kermalis.PokemonBattleEngineExtras
 {
-    internal sealed class PokemonDataDumper
+    internal sealed partial class PokemonDataDumper
     {
-        private sealed class Pokemon
-        {
-            public byte HP;
-            public byte Attack;
-            public byte Defense;
-            public byte SpAttack;
-            public byte SpDefense;
-            public byte Speed;
-            public PBEType Type1;
-            public PBEType Type2;
-            public PBEGenderRatio GenderRatio;
-            public double Weight;
-            public List<PBESpecies> PreEvolutions = new List<PBESpecies>();
-            public List<PBESpecies> Evolutions = new List<PBESpecies>();
-            public List<PBEAbility> Abilities = new List<PBEAbility>();
-            public Dictionary<(PBEMove Move, byte Level), PBEMoveObtainMethod> LevelUpMoves = new Dictionary<(PBEMove Move, byte Level), PBEMoveObtainMethod>();
-            public Dictionary<PBEMove, PBEMoveObtainMethod> OtherMoves = new Dictionary<PBEMove, PBEMoveObtainMethod>();
-        }
-
-        #region Static Collections
-        private static readonly Dictionary<int, PBESpecies> _gen3SpeciesIndexToPBESpecies = new Dictionary<int, PBESpecies>
-        {
-            { 1, PBESpecies.Bulbasaur },
-            { 2, PBESpecies.Ivysaur },
-            { 3, PBESpecies.Venusaur },
-            { 4, PBESpecies.Charmander },
-            { 5, PBESpecies.Charmeleon },
-            { 6, PBESpecies.Charizard },
-            { 7, PBESpecies.Squirtle },
-            { 8, PBESpecies.Wartortle },
-            { 9, PBESpecies.Blastoise },
-            { 10, PBESpecies.Caterpie },
-            { 11, PBESpecies.Metapod },
-            { 12, PBESpecies.Butterfree },
-            { 13, PBESpecies.Weedle },
-            { 14, PBESpecies.Kakuna },
-            { 15, PBESpecies.Beedrill },
-            { 16, PBESpecies.Pidgey },
-            { 17, PBESpecies.Pidgeotto },
-            { 18, PBESpecies.Pidgeot },
-            { 19, PBESpecies.Rattata },
-            { 20, PBESpecies.Raticate },
-            { 21, PBESpecies.Spearow },
-            { 22, PBESpecies.Fearow },
-            { 23, PBESpecies.Ekans },
-            { 24, PBESpecies.Arbok },
-            { 25, PBESpecies.Pikachu },
-            { 26, PBESpecies.Raichu },
-            { 27, PBESpecies.Sandshrew },
-            { 28, PBESpecies.Sandslash },
-            { 29, PBESpecies.Nidoran_F },
-            { 30, PBESpecies.Nidorina },
-            { 31, PBESpecies.Nidoqueen },
-            { 32, PBESpecies.Nidoran_M },
-            { 33, PBESpecies.Nidorino },
-            { 34, PBESpecies.Nidoking },
-            { 35, PBESpecies.Clefairy },
-            { 36, PBESpecies.Clefable },
-            { 37, PBESpecies.Vulpix },
-            { 38, PBESpecies.Ninetales },
-            { 39, PBESpecies.Jigglypuff },
-            { 40, PBESpecies.Wigglytuff },
-            { 41, PBESpecies.Zubat },
-            { 42, PBESpecies.Golbat },
-            { 43, PBESpecies.Oddish },
-            { 44, PBESpecies.Gloom },
-            { 45, PBESpecies.Vileplume },
-            { 46, PBESpecies.Paras },
-            { 47, PBESpecies.Parasect },
-            { 48, PBESpecies.Venonat },
-            { 49, PBESpecies.Venomoth },
-            { 50, PBESpecies.Diglett },
-            { 51, PBESpecies.Dugtrio },
-            { 52, PBESpecies.Meowth },
-            { 53, PBESpecies.Persian },
-            { 54, PBESpecies.Psyduck },
-            { 55, PBESpecies.Golduck },
-            { 56, PBESpecies.Mankey },
-            { 57, PBESpecies.Primeape },
-            { 58, PBESpecies.Growlithe },
-            { 59, PBESpecies.Arcanine },
-            { 60, PBESpecies.Poliwag },
-            { 61, PBESpecies.Poliwhirl },
-            { 62, PBESpecies.Poliwrath },
-            { 63, PBESpecies.Abra },
-            { 64, PBESpecies.Kadabra },
-            { 65, PBESpecies.Alakazam },
-            { 66, PBESpecies.Machop },
-            { 67, PBESpecies.Machoke },
-            { 68, PBESpecies.Machamp },
-            { 69, PBESpecies.Bellsprout },
-            { 70, PBESpecies.Weepinbell },
-            { 71, PBESpecies.Victreebel },
-            { 72, PBESpecies.Tentacool },
-            { 73, PBESpecies.Tentacruel },
-            { 74, PBESpecies.Geodude },
-            { 75, PBESpecies.Graveler },
-            { 76, PBESpecies.Golem },
-            { 77, PBESpecies.Ponyta },
-            { 78, PBESpecies.Rapidash },
-            { 79, PBESpecies.Slowpoke },
-            { 80, PBESpecies.Slowbro },
-            { 81, PBESpecies.Magnemite },
-            { 82, PBESpecies.Magneton },
-            { 83, PBESpecies.Farfetchd },
-            { 84, PBESpecies.Doduo },
-            { 85, PBESpecies.Dodrio },
-            { 86, PBESpecies.Seel },
-            { 87, PBESpecies.Dewgong },
-            { 88, PBESpecies.Grimer },
-            { 89, PBESpecies.Muk },
-            { 90, PBESpecies.Shellder },
-            { 91, PBESpecies.Cloyster },
-            { 92, PBESpecies.Gastly },
-            { 93, PBESpecies.Haunter },
-            { 94, PBESpecies.Gengar },
-            { 95, PBESpecies.Onix },
-            { 96, PBESpecies.Drowzee },
-            { 97, PBESpecies.Hypno },
-            { 98, PBESpecies.Krabby },
-            { 99, PBESpecies.Kingler },
-            { 100, PBESpecies.Voltorb },
-            { 101, PBESpecies.Electrode },
-            { 102, PBESpecies.Exeggcute },
-            { 103, PBESpecies.Exeggutor },
-            { 104, PBESpecies.Cubone },
-            { 105, PBESpecies.Marowak },
-            { 106, PBESpecies.Hitmonlee },
-            { 107, PBESpecies.Hitmonchan },
-            { 108, PBESpecies.Lickitung },
-            { 109, PBESpecies.Koffing },
-            { 110, PBESpecies.Weezing },
-            { 111, PBESpecies.Rhyhorn },
-            { 112, PBESpecies.Rhydon },
-            { 113, PBESpecies.Chansey },
-            { 114, PBESpecies.Tangela },
-            { 115, PBESpecies.Kangaskhan },
-            { 116, PBESpecies.Horsea },
-            { 117, PBESpecies.Seadra },
-            { 118, PBESpecies.Goldeen },
-            { 119, PBESpecies.Seaking },
-            { 120, PBESpecies.Staryu },
-            { 121, PBESpecies.Starmie },
-            { 122, PBESpecies.MrMime },
-            { 123, PBESpecies.Scyther },
-            { 124, PBESpecies.Jynx },
-            { 125, PBESpecies.Electabuzz },
-            { 126, PBESpecies.Magmar },
-            { 127, PBESpecies.Pinsir },
-            { 128, PBESpecies.Tauros },
-            { 129, PBESpecies.Magikarp },
-            { 130, PBESpecies.Gyarados },
-            { 131, PBESpecies.Lapras },
-            { 132, PBESpecies.Ditto },
-            { 133, PBESpecies.Eevee },
-            { 134, PBESpecies.Vaporeon },
-            { 135, PBESpecies.Jolteon },
-            { 136, PBESpecies.Flareon },
-            { 137, PBESpecies.Porygon },
-            { 138, PBESpecies.Omanyte },
-            { 139, PBESpecies.Omastar },
-            { 140, PBESpecies.Kabuto },
-            { 141, PBESpecies.Kabutops },
-            { 142, PBESpecies.Aerodactyl },
-            { 143, PBESpecies.Snorlax },
-            { 144, PBESpecies.Articuno },
-            { 145, PBESpecies.Zapdos },
-            { 146, PBESpecies.Moltres },
-            { 147, PBESpecies.Dratini },
-            { 148, PBESpecies.Dragonair },
-            { 149, PBESpecies.Dragonite },
-            { 150, PBESpecies.Mewtwo },
-            { 151, PBESpecies.Mew },
-            { 152, PBESpecies.Chikorita },
-            { 153, PBESpecies.Bayleef },
-            { 154, PBESpecies.Meganium },
-            { 155, PBESpecies.Cyndaquil },
-            { 156, PBESpecies.Quilava },
-            { 157, PBESpecies.Typhlosion },
-            { 158, PBESpecies.Totodile },
-            { 159, PBESpecies.Croconaw },
-            { 160, PBESpecies.Feraligatr },
-            { 161, PBESpecies.Sentret },
-            { 162, PBESpecies.Furret },
-            { 163, PBESpecies.Hoothoot },
-            { 164, PBESpecies.Noctowl },
-            { 165, PBESpecies.Ledyba },
-            { 166, PBESpecies.Ledian },
-            { 167, PBESpecies.Spinarak },
-            { 168, PBESpecies.Ariados },
-            { 169, PBESpecies.Crobat },
-            { 170, PBESpecies.Chinchou },
-            { 171, PBESpecies.Lanturn },
-            { 172, PBESpecies.Pichu },
-            { 173, PBESpecies.Cleffa },
-            { 174, PBESpecies.Igglybuff },
-            { 175, PBESpecies.Togepi },
-            { 176, PBESpecies.Togetic },
-            { 177, PBESpecies.Natu },
-            { 178, PBESpecies.Xatu },
-            { 179, PBESpecies.Mareep },
-            { 180, PBESpecies.Flaaffy },
-            { 181, PBESpecies.Ampharos },
-            { 182, PBESpecies.Bellossom },
-            { 183, PBESpecies.Marill },
-            { 184, PBESpecies.Azumarill },
-            { 185, PBESpecies.Sudowoodo },
-            { 186, PBESpecies.Politoed },
-            { 187, PBESpecies.Hoppip },
-            { 188, PBESpecies.Skiploom },
-            { 189, PBESpecies.Jumpluff },
-            { 190, PBESpecies.Aipom },
-            { 191, PBESpecies.Sunkern },
-            { 192, PBESpecies.Sunflora },
-            { 193, PBESpecies.Yanma },
-            { 194, PBESpecies.Wooper },
-            { 195, PBESpecies.Quagsire },
-            { 196, PBESpecies.Espeon },
-            { 197, PBESpecies.Umbreon },
-            { 198, PBESpecies.Murkrow },
-            { 199, PBESpecies.Slowking },
-            { 200, PBESpecies.Misdreavus },
-            { 201, PBESpecies.Unown },
-            { 202, PBESpecies.Wobbuffet },
-            { 203, PBESpecies.Girafarig },
-            { 204, PBESpecies.Pineco },
-            { 205, PBESpecies.Forretress },
-            { 206, PBESpecies.Dunsparce },
-            { 207, PBESpecies.Gligar },
-            { 208, PBESpecies.Steelix },
-            { 209, PBESpecies.Snubbull },
-            { 210, PBESpecies.Granbull },
-            { 211, PBESpecies.Qwilfish },
-            { 212, PBESpecies.Scizor },
-            { 213, PBESpecies.Shuckle },
-            { 214, PBESpecies.Heracross },
-            { 215, PBESpecies.Sneasel },
-            { 216, PBESpecies.Teddiursa },
-            { 217, PBESpecies.Ursaring },
-            { 218, PBESpecies.Slugma },
-            { 219, PBESpecies.Magcargo },
-            { 220, PBESpecies.Swinub },
-            { 221, PBESpecies.Piloswine },
-            { 222, PBESpecies.Corsola },
-            { 223, PBESpecies.Remoraid },
-            { 224, PBESpecies.Octillery },
-            { 225, PBESpecies.Delibird },
-            { 226, PBESpecies.Mantine },
-            { 227, PBESpecies.Skarmory },
-            { 228, PBESpecies.Houndour },
-            { 229, PBESpecies.Houndoom },
-            { 230, PBESpecies.Kingdra },
-            { 231, PBESpecies.Phanpy },
-            { 232, PBESpecies.Donphan },
-            { 233, PBESpecies.Porygon2 },
-            { 234, PBESpecies.Stantler },
-            { 235, PBESpecies.Smeargle },
-            { 236, PBESpecies.Tyrogue },
-            { 237, PBESpecies.Hitmontop },
-            { 238, PBESpecies.Smoochum },
-            { 239, PBESpecies.Elekid },
-            { 240, PBESpecies.Magby },
-            { 241, PBESpecies.Miltank },
-            { 242, PBESpecies.Blissey },
-            { 243, PBESpecies.Raikou },
-            { 244, PBESpecies.Entei },
-            { 245, PBESpecies.Suicune },
-            { 246, PBESpecies.Larvitar },
-            { 247, PBESpecies.Pupitar },
-            { 248, PBESpecies.Tyranitar },
-            { 249, PBESpecies.Lugia },
-            { 250, PBESpecies.HoOh },
-            { 251, PBESpecies.Celebi },
-            { 277, PBESpecies.Treecko },
-            { 278, PBESpecies.Grovyle },
-            { 279, PBESpecies.Sceptile },
-            { 280, PBESpecies.Torchic },
-            { 281, PBESpecies.Combusken },
-            { 282, PBESpecies.Blaziken },
-            { 283, PBESpecies.Mudkip },
-            { 284, PBESpecies.Marshtomp },
-            { 285, PBESpecies.Swampert },
-            { 286, PBESpecies.Poochyena },
-            { 287, PBESpecies.Mightyena },
-            { 288, PBESpecies.Zigzagoon },
-            { 289, PBESpecies.Linoone },
-            { 290, PBESpecies.Wurmple },
-            { 291, PBESpecies.Silcoon },
-            { 292, PBESpecies.Beautifly },
-            { 293, PBESpecies.Cascoon },
-            { 294, PBESpecies.Dustox },
-            { 295, PBESpecies.Lotad },
-            { 296, PBESpecies.Lombre },
-            { 297, PBESpecies.Ludicolo },
-            { 298, PBESpecies.Seedot },
-            { 299, PBESpecies.Nuzleaf },
-            { 300, PBESpecies.Shiftry },
-            { 301, PBESpecies.Nincada },
-            { 302, PBESpecies.Ninjask },
-            { 303, PBESpecies.Shedinja },
-            { 304, PBESpecies.Taillow },
-            { 305, PBESpecies.Swellow },
-            { 306, PBESpecies.Shroomish },
-            { 307, PBESpecies.Breloom },
-            { 308, PBESpecies.Spinda },
-            { 309, PBESpecies.Wingull },
-            { 310, PBESpecies.Pelipper },
-            { 311, PBESpecies.Surskit },
-            { 312, PBESpecies.Masquerain },
-            { 313, PBESpecies.Wailmer },
-            { 314, PBESpecies.Wailord },
-            { 315, PBESpecies.Skitty },
-            { 316, PBESpecies.Delcatty },
-            { 317, PBESpecies.Kecleon },
-            { 318, PBESpecies.Baltoy },
-            { 319, PBESpecies.Claydol },
-            { 320, PBESpecies.Nosepass },
-            { 321, PBESpecies.Torkoal },
-            { 322, PBESpecies.Sableye },
-            { 323, PBESpecies.Barboach },
-            { 324, PBESpecies.Whiscash },
-            { 325, PBESpecies.Luvdisc },
-            { 326, PBESpecies.Corphish },
-            { 327, PBESpecies.Crawdaunt },
-            { 328, PBESpecies.Feebas },
-            { 329, PBESpecies.Milotic },
-            { 330, PBESpecies.Carvanha },
-            { 331, PBESpecies.Sharpedo },
-            { 332, PBESpecies.Trapinch },
-            { 333, PBESpecies.Vibrava },
-            { 334, PBESpecies.Flygon },
-            { 335, PBESpecies.Makuhita },
-            { 336, PBESpecies.Hariyama },
-            { 337, PBESpecies.Electrike },
-            { 338, PBESpecies.Manectric },
-            { 339, PBESpecies.Numel },
-            { 340, PBESpecies.Camerupt },
-            { 341, PBESpecies.Spheal },
-            { 342, PBESpecies.Sealeo },
-            { 343, PBESpecies.Walrein },
-            { 344, PBESpecies.Cacnea },
-            { 345, PBESpecies.Cacturne },
-            { 346, PBESpecies.Snorunt },
-            { 347, PBESpecies.Glalie },
-            { 348, PBESpecies.Lunatone },
-            { 349, PBESpecies.Solrock },
-            { 350, PBESpecies.Azurill },
-            { 351, PBESpecies.Spoink },
-            { 352, PBESpecies.Grumpig },
-            { 353, PBESpecies.Plusle },
-            { 354, PBESpecies.Minun },
-            { 355, PBESpecies.Mawile },
-            { 356, PBESpecies.Meditite },
-            { 357, PBESpecies.Medicham },
-            { 358, PBESpecies.Swablu },
-            { 359, PBESpecies.Altaria },
-            { 360, PBESpecies.Wynaut },
-            { 361, PBESpecies.Duskull },
-            { 362, PBESpecies.Dusclops },
-            { 363, PBESpecies.Roselia },
-            { 364, PBESpecies.Slakoth },
-            { 365, PBESpecies.Vigoroth },
-            { 366, PBESpecies.Slaking },
-            { 367, PBESpecies.Gulpin },
-            { 368, PBESpecies.Swalot },
-            { 369, PBESpecies.Tropius },
-            { 370, PBESpecies.Whismur },
-            { 371, PBESpecies.Loudred },
-            { 372, PBESpecies.Exploud },
-            { 373, PBESpecies.Clamperl },
-            { 374, PBESpecies.Huntail },
-            { 375, PBESpecies.Gorebyss },
-            { 376, PBESpecies.Absol },
-            { 377, PBESpecies.Shuppet },
-            { 378, PBESpecies.Banette },
-            { 379, PBESpecies.Seviper },
-            { 380, PBESpecies.Zangoose },
-            { 381, PBESpecies.Relicanth },
-            { 382, PBESpecies.Aron },
-            { 383, PBESpecies.Lairon },
-            { 384, PBESpecies.Aggron },
-            { 385, PBESpecies.Castform },
-            { 386, PBESpecies.Volbeat },
-            { 387, PBESpecies.Illumise },
-            { 388, PBESpecies.Lileep },
-            { 389, PBESpecies.Cradily },
-            { 390, PBESpecies.Anorith },
-            { 391, PBESpecies.Armaldo },
-            { 392, PBESpecies.Ralts },
-            { 393, PBESpecies.Kirlia },
-            { 394, PBESpecies.Gardevoir },
-            { 395, PBESpecies.Bagon },
-            { 396, PBESpecies.Shelgon },
-            { 397, PBESpecies.Salamence },
-            { 398, PBESpecies.Beldum },
-            { 399, PBESpecies.Metang },
-            { 400, PBESpecies.Metagross },
-            { 401, PBESpecies.Regirock },
-            { 402, PBESpecies.Regice },
-            { 403, PBESpecies.Registeel },
-            { 404, PBESpecies.Kyogre },
-            { 405, PBESpecies.Groudon },
-            { 406, PBESpecies.Rayquaza },
-            { 407, PBESpecies.Latias },
-            { 408, PBESpecies.Latios },
-            { 409, PBESpecies.Jirachi },
-            { 410, PBESpecies.Deoxys },
-            { 411, PBESpecies.Chimecho },
-        };
-        private static readonly PBEMove[] _gen3TMHMs = new PBEMove[58]
-        {
-            PBEMove.FocusPunch,
-            PBEMove.DragonClaw,
-            PBEMove.WaterPulse,
-            PBEMove.CalmMind,
-            PBEMove.Roar,
-            PBEMove.Toxic,
-            PBEMove.Hail,
-            PBEMove.BulkUp,
-            PBEMove.BulletSeed,
-            PBEMove.HiddenPower,
-            PBEMove.SunnyDay,
-            PBEMove.Taunt,
-            PBEMove.IceBeam,
-            PBEMove.Blizzard,
-            PBEMove.HyperBeam,
-            PBEMove.LightScreen,
-            PBEMove.Protect,
-            PBEMove.RainDance,
-            PBEMove.GigaDrain,
-            PBEMove.Safeguard,
-            PBEMove.Frustration,
-            PBEMove.SolarBeam,
-            PBEMove.IronTail,
-            PBEMove.Thunderbolt,
-            PBEMove.Thunder,
-            PBEMove.Earthquake,
-            PBEMove.Return,
-            PBEMove.Dig,
-            PBEMove.Psychic,
-            PBEMove.ShadowBall,
-            PBEMove.BrickBreak,
-            PBEMove.DoubleTeam,
-            PBEMove.Reflect,
-            PBEMove.ShockWave,
-            PBEMove.Flamethrower,
-            PBEMove.SludgeBomb,
-            PBEMove.Sandstorm,
-            PBEMove.FireBlast,
-            PBEMove.RockTomb,
-            PBEMove.AerialAce,
-            PBEMove.Torment,
-            PBEMove.Facade,
-            PBEMove.SecretPower,
-            PBEMove.Rest,
-            PBEMove.Attract,
-            PBEMove.Thief,
-            PBEMove.SteelWing,
-            PBEMove.SkillSwap,
-            PBEMove.Snatch,
-            PBEMove.Overheat,
-            PBEMove.Cut,
-            PBEMove.Fly,
-            PBEMove.Surf,
-            PBEMove.Strength,
-            PBEMove.Flash,
-            PBEMove.RockSmash,
-            PBEMove.Waterfall,
-            PBEMove.Dive
-        };
-        private static readonly PBEMove[] _frlgTutorMoves = new PBEMove[15]
-        {
-            PBEMove.MegaPunch,
-            PBEMove.SwordsDance,
-            PBEMove.MegaKick,
-            PBEMove.BodySlam,
-            PBEMove.DoubleEdge,
-            PBEMove.Counter,
-            PBEMove.SeismicToss,
-            PBEMove.Mimic,
-            PBEMove.Metronome,
-            PBEMove.Softboiled,
-            PBEMove.DreamEater,
-            PBEMove.ThunderWave,
-            PBEMove.Explosion,
-            PBEMove.RockSlide,
-            PBEMove.Substitute
-        };
-        private static readonly PBEMove[] _emeraldTutorMoves = new PBEMove[30]
-        {
-            PBEMove.MegaPunch,
-            PBEMove.SwordsDance,
-            PBEMove.MegaKick,
-            PBEMove.BodySlam,
-            PBEMove.DoubleEdge,
-            PBEMove.Counter,
-            PBEMove.SeismicToss,
-            PBEMove.Mimic,
-            PBEMove.Metronome,
-            PBEMove.Softboiled,
-            PBEMove.DreamEater,
-            PBEMove.ThunderWave,
-            PBEMove.Explosion,
-            PBEMove.RockSlide,
-            PBEMove.Substitute,
-            PBEMove.DynamicPunch,
-            PBEMove.Rollout,
-            PBEMove.PsychUp,
-            PBEMove.Snore,
-            PBEMove.IcyWind,
-            PBEMove.Endure,
-            PBEMove.MudSlap,
-            PBEMove.IcePunch,
-            PBEMove.Swagger,
-            PBEMove.SleepTalk,
-            PBEMove.Swift,
-            PBEMove.DefenseCurl,
-            PBEMove.ThunderPunch,
-            PBEMove.FirePunch,
-            PBEMove.FuryCutter
-        };
-        private static readonly PBEMove[] _xdTutorMoves = new PBEMove[12]
-        {
-            PBEMove.BodySlam,
-            PBEMove.DoubleEdge,
-            PBEMove.SeismicToss,
-            PBEMove.Mimic,
-            PBEMove.DreamEater,
-            PBEMove.ThunderWave,
-            PBEMove.Substitute,
-            PBEMove.IcyWind,
-            PBEMove.Swagger,
-            PBEMove.SkyAttack,
-            PBEMove.Selfdestruct,
-            PBEMove.Nightmare
-        };
-        private static readonly Dictionary<int, (PBESpecies, PBEForm)> _gen4SpeciesIndexToPBESpecies = new Dictionary<int, (PBESpecies, PBEForm)>
-        {
-            { 496, (PBESpecies.Deoxys, PBEForm.Deoxys_Attack) },
-            { 497, (PBESpecies.Deoxys, PBEForm.Deoxys_Defense) },
-            { 498, (PBESpecies.Deoxys, PBEForm.Deoxys_Speed) },
-            { 499, (PBESpecies.Wormadam, PBEForm.Wormadam_Sandy) },
-            { 500, (PBESpecies.Wormadam, PBEForm.Wormadam_Trash) },
-            { 501, (PBESpecies.Giratina, PBEForm.Giratina_Origin) },
-            { 502, (PBESpecies.Shaymin, PBEForm.Shaymin_Sky) },
-            { 503, (PBESpecies.Rotom, PBEForm.Rotom_Heat) },
-            { 504, (PBESpecies.Rotom, PBEForm.Rotom_Wash) },
-            { 505, (PBESpecies.Rotom, PBEForm.Rotom_Frost) },
-            { 506, (PBESpecies.Rotom, PBEForm.Rotom_Fan) },
-            { 507, (PBESpecies.Rotom, PBEForm.Rotom_Mow) }
-        };
-        private static readonly PBEMove[] _gen4TMHMs = new PBEMove[100]
-        {
-            PBEMove.FocusPunch,
-            PBEMove.DragonClaw,
-            PBEMove.WaterPulse,
-            PBEMove.CalmMind,
-            PBEMove.Roar,
-            PBEMove.Toxic,
-            PBEMove.Hail,
-            PBEMove.BulkUp,
-            PBEMove.BulletSeed,
-            PBEMove.HiddenPower,
-            PBEMove.SunnyDay,
-            PBEMove.Taunt,
-            PBEMove.IceBeam,
-            PBEMove.Blizzard,
-            PBEMove.HyperBeam,
-            PBEMove.LightScreen,
-            PBEMove.Protect,
-            PBEMove.RainDance,
-            PBEMove.GigaDrain,
-            PBEMove.Safeguard,
-            PBEMove.Frustration,
-            PBEMove.SolarBeam,
-            PBEMove.IronTail,
-            PBEMove.Thunderbolt,
-            PBEMove.Thunder,
-            PBEMove.Earthquake,
-            PBEMove.Return,
-            PBEMove.Dig,
-            PBEMove.Psychic,
-            PBEMove.ShadowBall,
-            PBEMove.BrickBreak,
-            PBEMove.DoubleTeam,
-            PBEMove.Reflect,
-            PBEMove.ShockWave,
-            PBEMove.Flamethrower,
-            PBEMove.SludgeBomb,
-            PBEMove.Sandstorm,
-            PBEMove.FireBlast,
-            PBEMove.RockTomb,
-            PBEMove.AerialAce,
-            PBEMove.Torment,
-            PBEMove.Facade,
-            PBEMove.SecretPower,
-            PBEMove.Rest,
-            PBEMove.Attract,
-            PBEMove.Thief,
-            PBEMove.SteelWing,
-            PBEMove.SkillSwap,
-            PBEMove.Snatch,
-            PBEMove.Overheat,
-            PBEMove.Roost,
-            PBEMove.FocusBlast,
-            PBEMove.EnergyBall,
-            PBEMove.FalseSwipe,
-            PBEMove.Brine,
-            PBEMove.Fling,
-            PBEMove.ChargeBeam,
-            PBEMove.Endure,
-            PBEMove.DragonPulse,
-            PBEMove.DrainPunch,
-            PBEMove.WillOWisp,
-            PBEMove.SilverWind,
-            PBEMove.Embargo,
-            PBEMove.Explosion,
-            PBEMove.ShadowClaw,
-            PBEMove.Payback,
-            PBEMove.Recycle,
-            PBEMove.GigaImpact,
-            PBEMove.RockPolish,
-            PBEMove.Flash,
-            PBEMove.StoneEdge,
-            PBEMove.Avalanche,
-            PBEMove.ThunderWave,
-            PBEMove.GyroBall,
-            PBEMove.SwordsDance,
-            PBEMove.StealthRock,
-            PBEMove.PsychUp,
-            PBEMove.Captivate,
-            PBEMove.DarkPulse,
-            PBEMove.RockSlide,
-            PBEMove.XScissor,
-            PBEMove.SleepTalk,
-            PBEMove.NaturalGift,
-            PBEMove.PoisonJab,
-            PBEMove.DreamEater,
-            PBEMove.GrassKnot,
-            PBEMove.Swagger,
-            PBEMove.Pluck,
-            PBEMove.Uturn,
-            PBEMove.Substitute,
-            PBEMove.FlashCannon,
-            PBEMove.TrickRoom,
-            PBEMove.Cut,
-            PBEMove.Fly,
-            PBEMove.Surf,
-            PBEMove.Strength,
-            PBEMove.None, // Defog/Whirlpool - code will apply the right one
-            PBEMove.RockSmash,
-            PBEMove.Waterfall,
-            PBEMove.RockClimb
-        };
-        // These tutor moves are copied from overlay_0005.bin address 0x2FF64 to ram address 0x02200CE4 on each map load (USA offsets)
-        // The tutor compatibility is at the end of the table (0x3012C and 0x02200EAC [USA offsets]), starting with Bulbasaur and ending with Arceus (no form entries), and each compatibility is a bitfield of 5 bytes
-        // Each tutor move entry is 0xC bytes:
-        // u16 moveId
-        // u8 redShard
-        // u8 blueShard
-        // u8 yellowShard
-        // u8 greenShard
-        // u16 unk1
-        // u32 areaId (0 = Route 212, 1 = Survival Area, 2 = Snowpoint City)
-        private static readonly PBEMove[] _ptTutorMoves = new PBEMove[38]
-        {
-            PBEMove.Dive,
-            PBEMove.MudSlap,
-            PBEMove.FuryCutter,
-            PBEMove.IcyWind,
-            PBEMove.Rollout,
-            PBEMove.ThunderPunch,
-            PBEMove.FirePunch,
-            PBEMove.Superpower,
-            PBEMove.IcePunch,
-            PBEMove.IronHead,
-            PBEMove.AquaTail,
-            PBEMove.OminousWind,
-            PBEMove.GastroAcid,
-            PBEMove.Snore,
-            PBEMove.Spite,
-            PBEMove.AirCutter,
-            PBEMove.HelpingHand,
-            PBEMove.Endeavor,
-            PBEMove.Outrage,
-            PBEMove.AncientPower,
-            PBEMove.Synthesis,
-            PBEMove.SignalBeam,
-            PBEMove.ZenHeadbutt,
-            PBEMove.VacuumWave,
-            PBEMove.EarthPower,
-            PBEMove.GunkShot,
-            PBEMove.Twister,
-            PBEMove.SeedBomb,
-            PBEMove.IronDefense,
-            PBEMove.MagnetRise,
-            PBEMove.LastResort,
-            PBEMove.Bounce,
-            PBEMove.Trick,
-            PBEMove.HeatWave,
-            PBEMove.KnockOff,
-            PBEMove.SuckerPunch,
-            PBEMove.Swift,
-            PBEMove.Uproar
-        };
-        // These tutor moves are decompressed to memory (ram address 0x022093E0 in HG, 0x022093F0 in SS) on each map load (USA offsets)
-        // Each tutor move entry is 0x4 bytes:
-        // u16 moveId
-        // u8 bpCost
-        // u8 areaId (0 = Frontier Access [top left tutor], 1 = Frontier Access [top right tutor], 2 = Frontier Access [bottom right tutor], 3 = Ilex Forest [Headbutt tutor])
-        private static readonly PBEMove[] _hgssTutorMoves = new PBEMove[52]
-        {
-            PBEMove.Dive,
-            PBEMove.MudSlap,
-            PBEMove.FuryCutter,
-            PBEMove.IcyWind,
-            PBEMove.Rollout,
-            PBEMove.ThunderPunch,
-            PBEMove.FirePunch,
-            PBEMove.Superpower,
-            PBEMove.IcePunch,
-            PBEMove.IronHead,
-            PBEMove.AquaTail,
-            PBEMove.OminousWind,
-            PBEMove.GastroAcid,
-            PBEMove.Snore,
-            PBEMove.Spite,
-            PBEMove.AirCutter,
-            PBEMove.HelpingHand,
-            PBEMove.Endeavor,
-            PBEMove.Outrage,
-            PBEMove.AncientPower,
-            PBEMove.Synthesis,
-            PBEMove.SignalBeam,
-            PBEMove.ZenHeadbutt,
-            PBEMove.VacuumWave,
-            PBEMove.EarthPower,
-            PBEMove.GunkShot,
-            PBEMove.Twister,
-            PBEMove.SeedBomb,
-            PBEMove.IronDefense,
-            PBEMove.MagnetRise,
-            PBEMove.LastResort,
-            PBEMove.Bounce,
-            PBEMove.Trick,
-            PBEMove.HeatWave,
-            PBEMove.KnockOff,
-            PBEMove.SuckerPunch,
-            PBEMove.Swift,
-            PBEMove.Uproar,
-            PBEMove.SuperFang,
-            PBEMove.PainSplit,
-            PBEMove.StringShot,
-            PBEMove.Tailwind,
-            PBEMove.Gravity,
-            PBEMove.WorrySeed,
-            PBEMove.MagicCoat,
-            PBEMove.RolePlay,
-            PBEMove.HealBell,
-            PBEMove.LowKick,
-            PBEMove.SkyAttack,
-            PBEMove.Block,
-            PBEMove.BugBite,
-            PBEMove.Headbutt
-        };
-        private static readonly Dictionary<int, (PBESpecies, PBEForm)> _bwSpeciesIndexToPBESpecies = new Dictionary<int, (PBESpecies, PBEForm)>
-        {
-            { 650, (PBESpecies.Deoxys, PBEForm.Deoxys_Attack) },
-            { 651, (PBESpecies.Deoxys, PBEForm.Deoxys_Defense) },
-            { 652, (PBESpecies.Deoxys, PBEForm.Deoxys_Speed) },
-            { 653, (PBESpecies.Wormadam, PBEForm.Wormadam_Sandy) },
-            { 654, (PBESpecies.Wormadam, PBEForm.Wormadam_Trash) },
-            { 655, (PBESpecies.Shaymin, PBEForm.Shaymin_Sky) },
-            { 656, (PBESpecies.Giratina, PBEForm.Giratina_Origin) },
-            { 657, (PBESpecies.Rotom, PBEForm.Rotom_Heat) },
-            { 658, (PBESpecies.Rotom, PBEForm.Rotom_Wash) },
-            { 659, (PBESpecies.Rotom, PBEForm.Rotom_Frost) },
-            { 660, (PBESpecies.Rotom, PBEForm.Rotom_Fan) },
-            { 661, (PBESpecies.Rotom, PBEForm.Rotom_Mow) },
-            { 662, (PBESpecies.Castform, PBEForm.Castform_Sunny) },
-            { 663, (PBESpecies.Castform, PBEForm.Castform_Rainy) },
-            { 664, (PBESpecies.Castform, PBEForm.Castform_Snowy) },
-            { 665, (PBESpecies.Basculin, PBEForm.Basculin_Red) },
-            { 666, (PBESpecies.Darmanitan, PBEForm.Darmanitan_Zen) },
-            { 667, (PBESpecies.Meloetta, PBEForm.Meloetta_Pirouette) }
-        };
-        private static readonly Dictionary<int, (PBESpecies, PBEForm)> _b2w2SpeciesIndexToPBESpecies = new Dictionary<int, (PBESpecies, PBEForm)>
-        {
-            { 685, (PBESpecies.Deoxys, PBEForm.Deoxys_Attack) },
-            { 686, (PBESpecies.Deoxys, PBEForm.Deoxys_Defense) },
-            { 687, (PBESpecies.Deoxys, PBEForm.Deoxys_Speed) },
-            { 688, (PBESpecies.Wormadam, PBEForm.Wormadam_Sandy) },
-            { 689, (PBESpecies.Wormadam, PBEForm.Wormadam_Trash) },
-            { 690, (PBESpecies.Shaymin, PBEForm.Shaymin_Sky) },
-            { 691, (PBESpecies.Giratina, PBEForm.Giratina_Origin) },
-            { 692, (PBESpecies.Rotom, PBEForm.Rotom_Heat) },
-            { 693, (PBESpecies.Rotom, PBEForm.Rotom_Wash) },
-            { 694, (PBESpecies.Rotom, PBEForm.Rotom_Frost) },
-            { 695, (PBESpecies.Rotom, PBEForm.Rotom_Fan) },
-            { 696, (PBESpecies.Rotom, PBEForm.Rotom_Mow) },
-            { 697, (PBESpecies.Castform, PBEForm.Castform_Sunny) },
-            { 698, (PBESpecies.Castform, PBEForm.Castform_Rainy) },
-            { 699, (PBESpecies.Castform, PBEForm.Castform_Snowy) },
-            { 700, (PBESpecies.Basculin, PBEForm.Basculin_Red) },
-            { 701, (PBESpecies.Darmanitan, PBEForm.Darmanitan_Zen) },
-            { 702, (PBESpecies.Meloetta, PBEForm.Meloetta_Pirouette) },
-            { 703, (PBESpecies.Kyurem, PBEForm.Kyurem_White) },
-            { 704, (PBESpecies.Kyurem, PBEForm.Kyurem_Black) },
-            { 705, (PBESpecies.Keldeo, PBEForm.Keldeo_Resolute) },
-            { 706, (PBESpecies.Tornadus, PBEForm.Tornadus_Therian) },
-            { 707, (PBESpecies.Thundurus, PBEForm.Thundurus_Therian) },
-            { 708, (PBESpecies.Landorus, PBEForm.Landorus_Therian) }
-        };
-        private static readonly PBEMove[] _gen5TMHMs = new PBEMove[101]
-        {
-            PBEMove.HoneClaws,
-            PBEMove.DragonClaw,
-            PBEMove.Psyshock,
-            PBEMove.CalmMind,
-            PBEMove.Roar,
-            PBEMove.Toxic,
-            PBEMove.Hail,
-            PBEMove.BulkUp,
-            PBEMove.Venoshock,
-            PBEMove.HiddenPower,
-            PBEMove.SunnyDay,
-            PBEMove.Taunt,
-            PBEMove.IceBeam,
-            PBEMove.Blizzard,
-            PBEMove.HyperBeam,
-            PBEMove.LightScreen,
-            PBEMove.Protect,
-            PBEMove.RainDance,
-            PBEMove.Telekinesis,
-            PBEMove.Safeguard,
-            PBEMove.Frustration,
-            PBEMove.SolarBeam,
-            PBEMove.SmackDown,
-            PBEMove.Thunderbolt,
-            PBEMove.Thunder,
-            PBEMove.Earthquake,
-            PBEMove.Return,
-            PBEMove.Dig,
-            PBEMove.Psychic,
-            PBEMove.ShadowBall,
-            PBEMove.BrickBreak,
-            PBEMove.DoubleTeam,
-            PBEMove.Reflect,
-            PBEMove.SludgeWave,
-            PBEMove.Flamethrower,
-            PBEMove.SludgeBomb,
-            PBEMove.Sandstorm,
-            PBEMove.FireBlast,
-            PBEMove.RockTomb,
-            PBEMove.AerialAce,
-            PBEMove.Torment,
-            PBEMove.Facade,
-            PBEMove.FlameCharge,
-            PBEMove.Rest,
-            PBEMove.Attract,
-            PBEMove.Thief,
-            PBEMove.LowSweep,
-            PBEMove.Round,
-            PBEMove.EchoedVoice,
-            PBEMove.Overheat,
-            PBEMove.AllySwitch,
-            PBEMove.FocusBlast,
-            PBEMove.EnergyBall,
-            PBEMove.FalseSwipe,
-            PBEMove.Scald,
-            PBEMove.Fling,
-            PBEMove.ChargeBeam,
-            PBEMove.SkyDrop,
-            PBEMove.Incinerate,
-            PBEMove.Quash,
-            PBEMove.WillOWisp,
-            PBEMove.Acrobatics,
-            PBEMove.Embargo,
-            PBEMove.Explosion,
-            PBEMove.ShadowClaw,
-            PBEMove.Payback,
-            PBEMove.Retaliate,
-            PBEMove.GigaImpact,
-            PBEMove.RockPolish,
-            PBEMove.Flash,
-            PBEMove.StoneEdge,
-            PBEMove.VoltSwitch,
-            PBEMove.ThunderWave,
-            PBEMove.GyroBall,
-            PBEMove.SwordsDance,
-            PBEMove.StruggleBug,
-            PBEMove.PsychUp,
-            PBEMove.Bulldoze,
-            PBEMove.FrostBreath,
-            PBEMove.RockSlide,
-            PBEMove.XScissor,
-            PBEMove.DragonTail,
-            PBEMove.WorkUp,
-            PBEMove.PoisonJab,
-            PBEMove.DreamEater,
-            PBEMove.GrassKnot,
-            PBEMove.Swagger,
-            PBEMove.Pluck,
-            PBEMove.Uturn,
-            PBEMove.Substitute,
-            PBEMove.FlashCannon,
-            PBEMove.TrickRoom,
-            PBEMove.WildCharge,
-            PBEMove.RockSmash,
-            PBEMove.Snarl,
-            PBEMove.Cut,
-            PBEMove.Fly,
-            PBEMove.Surf,
-            PBEMove.Strength,
-            PBEMove.Waterfall,
-            PBEMove.Dive
-        };
-        private static readonly PBEMove[] _gen5FreeTutorMoves = new PBEMove[7]
-        {
-            PBEMove.GrassPledge,
-            PBEMove.FirePledge,
-            PBEMove.WaterPledge,
-            PBEMove.FrenzyPlant,
-            PBEMove.BlastBurn,
-            PBEMove.HydroCannon,
-            PBEMove.DracoMeteor
-        };
-        // These tutor moves are decompressed to memory (ram address 0x021D0B38 in B2, 0x021D0B6C in W2) on each map load (USA offsets)
-        // For some reason, the location order in this table is different from the Pokémon's compatibility (this table is [Humilau,Driftveil,Nacrene,Lentimas] but in Pokémon data it is [Driftveil,Lentimas,Humilau,Nacrene])
-        // Each tutor move entry is 0xC bytes:
-        // u32 moveId
-        // u32 shardCost
-        // u32 indexInList
-        private static readonly PBEMove[][] _b2w2TutorMoves = new PBEMove[4][]
-        {
-            new PBEMove[15] // Driftveil City
-            {
-                PBEMove.BugBite,
-                PBEMove.Covet,
-                PBEMove.SuperFang,
-                PBEMove.DualChop,
-                PBEMove.SignalBeam,
-                PBEMove.IronHead,
-                PBEMove.SeedBomb,
-                PBEMove.DrillRun,
-                PBEMove.Bounce,
-                PBEMove.LowKick,
-                PBEMove.GunkShot,
-                PBEMove.Uproar,
-                PBEMove.ThunderPunch,
-                PBEMove.FirePunch,
-                PBEMove.IcePunch
-            },
-            new PBEMove[17] // Lentimas Town
-            {
-                PBEMove.MagicCoat,
-                PBEMove.Block,
-                PBEMove.EarthPower,
-                PBEMove.FoulPlay,
-                PBEMove.Gravity,
-                PBEMove.MagnetRise,
-                PBEMove.IronDefense,
-                PBEMove.LastResort,
-                PBEMove.Superpower,
-                PBEMove.Electroweb,
-                PBEMove.IcyWind,
-                PBEMove.AquaTail,
-                PBEMove.DarkPulse,
-                PBEMove.ZenHeadbutt,
-                PBEMove.DragonPulse,
-                PBEMove.HyperVoice,
-                PBEMove.IronTail
-            },
-            new PBEMove[13] // Humilau City
-            {
-                PBEMove.Bind,
-                PBEMove.Snore,
-                PBEMove.KnockOff,
-                PBEMove.Synthesis,
-                PBEMove.HeatWave,
-                PBEMove.RolePlay,
-                PBEMove.HealBell,
-                PBEMove.Tailwind,
-                PBEMove.SkyAttack,
-                PBEMove.PainSplit,
-                PBEMove.GigaDrain,
-                PBEMove.DrainPunch,
-                PBEMove.Roost
-            },
-            new PBEMove[15] // Nacrene City
-            {
-                PBEMove.GastroAcid,
-                PBEMove.WorrySeed,
-                PBEMove.Spite,
-                PBEMove.AfterYou,
-                PBEMove.HelpingHand,
-                PBEMove.Trick,
-                PBEMove.MagicRoom,
-                PBEMove.WonderRoom,
-                PBEMove.Endeavor,
-                PBEMove.Outrage,
-                PBEMove.Recycle,
-                PBEMove.Snatch,
-                PBEMove.StealthRock,
-                PBEMove.SleepTalk,
-                PBEMove.SkillSwap
-            }
-        };
-        #endregion
-
         // You must dump everything yourself
         // The GBA ROMs must all be USA v1.0
         // Colo and XD must be USA
@@ -1042,18 +33,6 @@ namespace Kermalis.PokemonBattleEngineExtras
         // B, W, B2, and W2 TMHM moves are in the Pokémon data NARC which is /a/0/1/6 (B and W have identical Pokémon data NARCs) (B2 and W2 have identical Pokémon data NARCs)
         // B2 and W2 tutor compatibility is in the Pokémon data NARC which is /a/0/1/6 (B2 and W2 have identical Pokémon data NARCs)
         // B and W egg move NARC is /a/1/2/3, B2 and W2 egg move NARC is /a/1/2/4 (B, W, B2, and W2 have identical egg move NARCs)
-        //
-        // TODO: XD - Mew special tutor moves
-        // TODO: FRLG - Ultimate starter tutor moves
-        // TODO: D, P, Pt - Free tutor moves
-        // TODO: HG, SS - Free tutor moves (aside from Headbutt)
-        // TODO: BW, B2W2 - SecretSword, RelicSong
-        // TODO: Rotom special moves
-        // TODO: Arceus_Dragon gets DracoMeteor from free tutor moves
-        // TODO: Basculin_Blue extra abilities
-        // TODO: Pichu & VoltTackle
-        // TODO: Egg move logic (currently we only kept the possible egg moves, but no logic that assigns them, so it is incorrect)
-        // TODO: Shedinja with SwordsDance
         public static void Run(SqliteConnection con)
         {
 #pragma warning disable CS8321 // Local function is declared but never used
@@ -1070,6 +49,7 @@ namespace Kermalis.PokemonBattleEngineExtras
                 cmd.Transaction = transaction;
 
                 var dict = new Dictionary<(PBESpecies, PBEForm), Pokemon>();
+                #region Helpers
                 Pokemon AddSpecies((PBESpecies, PBEForm) key)
                 {
                     if (!dict.TryGetValue(key, out Pokemon pkmn))
@@ -1106,7 +86,6 @@ namespace Kermalis.PokemonBattleEngineExtras
                         other.Add(move, flag);
                     }
                 }
-
                 (PBESpecies, PBEForm) GetGen3Key(EndianBinaryReader reader, int sp)
                 {
                     PBESpecies species = _gen3SpeciesIndexToPBESpecies[sp];
@@ -1128,9 +107,14 @@ namespace Kermalis.PokemonBattleEngineExtras
                     }
                     return (species, form);
                 }
+                void AddEvolution((PBESpecies, PBEForm) baybee, (PBESpecies, PBEForm) dadee)
+                {
+                    AddSpecies(baybee).Evolutions.Add(dadee);
+                    AddSpecies(dadee).PreEvolutions.Add(baybee);
+                }
+                #endregion
 
                 #region Pokémon Data
-
                 {
                     var b2w2Pokedata = new NARC(@"../../../\DumpedData\B2W2Pokedata.narc");
                     var b2w2Evolution = new NARC(@"../../../\DumpedData\B2W2Evolution.narc");
@@ -1178,21 +162,18 @@ namespace Kermalis.PokemonBattleEngineExtras
                                     var evo = (PBESpecies)evolution.ReadUInt16();
                                     if (method != 0)
                                     {
-                                        pkmn.Evolutions.Add(evo);
-                                        Pokemon evoPkmn = AddSpecies((evo, 0));
-                                        evoPkmn.PreEvolutions.Add(key.Item1);
+                                        AddEvolution(key, (evo, 0));
                                     }
                                 }
                             }
                         }
                     }
                 }
-
                 #endregion
 
                 #region Level Up Moves
 
-                // Gen 3
+                #region Gen 3
                 for (int sp = 1; sp <= 411; sp++)
                 {
                     // Gen 2 Unown slots are ignored in gen 3
@@ -1250,7 +231,8 @@ namespace Kermalis.PokemonBattleEngineExtras
                         //ReadGCLevelUpMoves(xdCommonRel, PBEMoveObtainMethod.LevelUp_RSColoXD);
                     }
                 }
-                // Gen 4
+                #endregion
+                #region Gen 4
                 {
                     var dp = new NARC(@"../../../\DumpedData\DPLevelUp.narc");
                     var pt = new NARC(@"../../../\DumpedData\PtLevelUp.narc");
@@ -1292,7 +274,8 @@ namespace Kermalis.PokemonBattleEngineExtras
                         }
                     }
                 }
-                // Gen 5
+                #endregion
+                #region Gen 5
                 {
                     var bw = new NARC(@"../../../\DumpedData\BWLevelUp.narc");
                     var b2w2 = new NARC(@"../../../\DumpedData\B2W2LevelUp.narc");
@@ -1332,12 +315,13 @@ namespace Kermalis.PokemonBattleEngineExtras
                         }
                     }
                 }
+                #endregion
 
                 #endregion
 
                 #region TMHM Compatibility
 
-                // Gen 3
+                #region Gen 3
                 for (int sp = 1; sp <= 411; sp++)
                 {
                     // Gen 2 Unown slots are ignored in gen 3
@@ -1387,7 +371,8 @@ namespace Kermalis.PokemonBattleEngineExtras
                         //ReadGCTMHM(xdCommonRel);
                     }
                 }
-                // Gen 4
+                #endregion
+                #region Gen 4
                 {
                     var dppt = new NARC(@"../../../\DumpedData\PtPokedata.narc");
                     var hgss = new NARC(@"../../../\DumpedData\HGSSPokedata.narc");
@@ -1424,7 +409,8 @@ namespace Kermalis.PokemonBattleEngineExtras
                         }
                     }
                 }
-                // Gen 5
+                #endregion
+                #region Gen 5
                 {
                     var bw = new NARC(@"../../../\DumpedData\BWPokedata.narc");
                     var b2w2 = new NARC(@"../../../\DumpedData\B2W2Pokedata.narc");
@@ -1469,12 +455,13 @@ namespace Kermalis.PokemonBattleEngineExtras
                         }
                     }
                 }
+                #endregion
 
                 #endregion
 
                 #region Move Tutor
 
-                // Gen 3 - FRLGE
+                #region Gen 3 - FRLGE
                 for (int sp = 1; sp <= 411; sp++)
                 {
                     // Gen 2 Unown slots are ignored in gen 3
@@ -1501,7 +488,8 @@ namespace Kermalis.PokemonBattleEngineExtras
                         ReadTutorMoves(e, _emeraldTutorMoves, PBEMoveObtainMethod.MoveTutor_E);
                     }
                 }
-                // Gen 3 - XD
+                #endregion
+                #region Gen 3 - XD
                 for (int sp = 1; sp <= 411; sp++)
                 {
                     // Gen 2 Unown slots are ignored in gen 3
@@ -1518,7 +506,8 @@ namespace Kermalis.PokemonBattleEngineExtras
                         }
                     }
                 }
-                // Gen 4
+                #endregion
+                #region Gen 4
                 using (var pt = new EndianBinaryReader(File.OpenRead(@"../../../\DumpedData\Ptoverlay_0005.bin"), Endianness.LittleEndian))
                 {
                     for (int sp = 1; sp <= 493; sp++)
@@ -1549,7 +538,8 @@ namespace Kermalis.PokemonBattleEngineExtras
                         }
                     }
                 }
-                // Gen 5
+                #endregion
+                #region Gen 5
                 {
                     var bw = new NARC(@"../../../\DumpedData\BWPokedata.narc");
                     var b2w2 = new NARC(@"../../../\DumpedData\B2W2Pokedata.narc");
@@ -1607,12 +597,13 @@ namespace Kermalis.PokemonBattleEngineExtras
                         }
                     }
                 }
+                #endregion
 
                 #endregion
 
                 #region Egg Moves
 
-                // Gen 3 & Gen 4
+                #region Gen 3 & Gen 4
                 using (var d = new EndianBinaryReader(File.OpenRead(@"../../../\DumpedData\Doverlay_0005.bin"), Endianness.LittleEndian))
                 using (var p = new EndianBinaryReader(File.OpenRead(@"../../../\DumpedData\Poverlay_0005.bin"), Endianness.LittleEndian))
                 using (var pt = new EndianBinaryReader(File.OpenRead(@"../../../\DumpedData\Ptoverlay_0005.bin"), Endianness.LittleEndian))
@@ -1659,7 +650,9 @@ namespace Kermalis.PokemonBattleEngineExtras
                     //ReadEggMoves(pt, false, PBEMoveObtainMethod.EggMove_DPPt);
                     ReadEggMoves(hgss, false, PBEMoveObtainMethod.EggMove_HGSS);
                 }
-                // Gen 5
+                #endregion
+
+                #region Gen 5
                 {
                     var bwb2w2 = new NARC(@"../../../\DumpedData\BWB2W2Egg.narc");
                     for (int sp = 1; sp <= 649; sp++)
@@ -1678,12 +671,87 @@ namespace Kermalis.PokemonBattleEngineExtras
                         }
                     }
                 }
+                #endregion
 
                 #endregion
 
                 #region Specific Fixes
 
-                // Arceus forms do not have Pokémon data, but I would like to have their types be in the database instead of having checks everywhere
+                #region Form Fixes
+                #region Explicitly Define All Evolutions/Pokedata
+                {
+                    void CopySpecies((PBESpecies, PBEForm) baseKey, (PBESpecies, PBEForm) newKey)
+                    {
+                        Pokemon basePkmn = dict[baseKey];
+                        Pokemon pkmn = AddSpecies(newKey);
+                        pkmn.HP = basePkmn.HP;
+                        pkmn.Attack = basePkmn.Attack;
+                        pkmn.Defense = basePkmn.Defense;
+                        pkmn.SpAttack = basePkmn.SpAttack;
+                        pkmn.SpDefense = basePkmn.SpDefense;
+                        pkmn.Speed = basePkmn.Speed;
+                        pkmn.Type1 = basePkmn.Type1;
+                        pkmn.Type2 = basePkmn.Type2;
+                        pkmn.GenderRatio = basePkmn.GenderRatio;
+                        pkmn.Abilities = basePkmn.Abilities;
+                        pkmn.Weight = basePkmn.Weight;
+                        pkmn.LevelUpMoves = basePkmn.LevelUpMoves;
+                        pkmn.OtherMoves = basePkmn.OtherMoves;
+                    }
+                    CopySpecies((PBESpecies.Burmy, PBEForm.Burmy_Plant), (PBESpecies.Burmy, PBEForm.Burmy_Sandy));
+                    CopySpecies((PBESpecies.Burmy, PBEForm.Burmy_Plant), (PBESpecies.Burmy, PBEForm.Burmy_Trash));
+                    CopySpecies((PBESpecies.Cherrim, PBEForm.Cherrim), (PBESpecies.Cherrim, PBEForm.Cherrim_Sunshine));
+                    CopySpecies((PBESpecies.Deerling, PBEForm.Deerling_Spring), (PBESpecies.Deerling, PBEForm.Deerling_Summer));
+                    CopySpecies((PBESpecies.Deerling, PBEForm.Deerling_Spring), (PBESpecies.Deerling, PBEForm.Deerling_Autumn));
+                    CopySpecies((PBESpecies.Deerling, PBEForm.Deerling_Spring), (PBESpecies.Deerling, PBEForm.Deerling_Winter));
+                    CopySpecies((PBESpecies.Gastrodon, PBEForm.Gastrodon_West), (PBESpecies.Gastrodon, PBEForm.Gastrodon_East));
+                    CopySpecies((PBESpecies.Genesect, PBEForm.Genesect), (PBESpecies.Genesect, PBEForm.Genesect_Douse));
+                    CopySpecies((PBESpecies.Genesect, PBEForm.Genesect), (PBESpecies.Genesect, PBEForm.Genesect_Shock));
+                    CopySpecies((PBESpecies.Genesect, PBEForm.Genesect), (PBESpecies.Genesect, PBEForm.Genesect_Burn));
+                    CopySpecies((PBESpecies.Genesect, PBEForm.Genesect), (PBESpecies.Genesect, PBEForm.Genesect_Chill));
+                    CopySpecies((PBESpecies.Sawsbuck, PBEForm.Sawsbuck_Spring), (PBESpecies.Sawsbuck, PBEForm.Sawsbuck_Summer));
+                    CopySpecies((PBESpecies.Sawsbuck, PBEForm.Sawsbuck_Spring), (PBESpecies.Sawsbuck, PBEForm.Sawsbuck_Autumn));
+                    CopySpecies((PBESpecies.Sawsbuck, PBEForm.Sawsbuck_Spring), (PBESpecies.Sawsbuck, PBEForm.Sawsbuck_Winter));
+                    CopySpecies((PBESpecies.Shellos, PBEForm.Shellos_West), (PBESpecies.Shellos, PBEForm.Shellos_East));
+                    CopySpecies((PBESpecies.Unown, PBEForm.Unown_A), (PBESpecies.Unown, PBEForm.Unown_B));
+                    CopySpecies((PBESpecies.Unown, PBEForm.Unown_A), (PBESpecies.Unown, PBEForm.Unown_C));
+                    CopySpecies((PBESpecies.Unown, PBEForm.Unown_A), (PBESpecies.Unown, PBEForm.Unown_D));
+                    CopySpecies((PBESpecies.Unown, PBEForm.Unown_A), (PBESpecies.Unown, PBEForm.Unown_E));
+                    CopySpecies((PBESpecies.Unown, PBEForm.Unown_A), (PBESpecies.Unown, PBEForm.Unown_F));
+                    CopySpecies((PBESpecies.Unown, PBEForm.Unown_A), (PBESpecies.Unown, PBEForm.Unown_G));
+                    CopySpecies((PBESpecies.Unown, PBEForm.Unown_A), (PBESpecies.Unown, PBEForm.Unown_H));
+                    CopySpecies((PBESpecies.Unown, PBEForm.Unown_A), (PBESpecies.Unown, PBEForm.Unown_I));
+                    CopySpecies((PBESpecies.Unown, PBEForm.Unown_A), (PBESpecies.Unown, PBEForm.Unown_J));
+                    CopySpecies((PBESpecies.Unown, PBEForm.Unown_A), (PBESpecies.Unown, PBEForm.Unown_K));
+                    CopySpecies((PBESpecies.Unown, PBEForm.Unown_A), (PBESpecies.Unown, PBEForm.Unown_L));
+                    CopySpecies((PBESpecies.Unown, PBEForm.Unown_A), (PBESpecies.Unown, PBEForm.Unown_M));
+                    CopySpecies((PBESpecies.Unown, PBEForm.Unown_A), (PBESpecies.Unown, PBEForm.Unown_N));
+                    CopySpecies((PBESpecies.Unown, PBEForm.Unown_A), (PBESpecies.Unown, PBEForm.Unown_O));
+                    CopySpecies((PBESpecies.Unown, PBEForm.Unown_A), (PBESpecies.Unown, PBEForm.Unown_P));
+                    CopySpecies((PBESpecies.Unown, PBEForm.Unown_A), (PBESpecies.Unown, PBEForm.Unown_Q));
+                    CopySpecies((PBESpecies.Unown, PBEForm.Unown_A), (PBESpecies.Unown, PBEForm.Unown_R));
+                    CopySpecies((PBESpecies.Unown, PBEForm.Unown_A), (PBESpecies.Unown, PBEForm.Unown_S));
+                    CopySpecies((PBESpecies.Unown, PBEForm.Unown_A), (PBESpecies.Unown, PBEForm.Unown_T));
+                    CopySpecies((PBESpecies.Unown, PBEForm.Unown_A), (PBESpecies.Unown, PBEForm.Unown_U));
+                    CopySpecies((PBESpecies.Unown, PBEForm.Unown_A), (PBESpecies.Unown, PBEForm.Unown_V));
+                    CopySpecies((PBESpecies.Unown, PBEForm.Unown_A), (PBESpecies.Unown, PBEForm.Unown_W));
+                    CopySpecies((PBESpecies.Unown, PBEForm.Unown_A), (PBESpecies.Unown, PBEForm.Unown_X));
+                    CopySpecies((PBESpecies.Unown, PBEForm.Unown_A), (PBESpecies.Unown, PBEForm.Unown_Y));
+                    CopySpecies((PBESpecies.Unown, PBEForm.Unown_A), (PBESpecies.Unown, PBEForm.Unown_Z));
+                    CopySpecies((PBESpecies.Unown, PBEForm.Unown_A), (PBESpecies.Unown, PBEForm.Unown_Exclamation));
+                    CopySpecies((PBESpecies.Unown, PBEForm.Unown_A), (PBESpecies.Unown, PBEForm.Unown_Question));
+                    AddEvolution((PBESpecies.Burmy, PBEForm.Burmy_Sandy), (PBESpecies.Wormadam, PBEForm.Wormadam_Sandy));
+                    AddEvolution((PBESpecies.Burmy, PBEForm.Burmy_Sandy), (PBESpecies.Mothim, 0));
+                    AddEvolution((PBESpecies.Burmy, PBEForm.Burmy_Trash), (PBESpecies.Wormadam, PBEForm.Wormadam_Trash));
+                    AddEvolution((PBESpecies.Burmy, PBEForm.Burmy_Trash), (PBESpecies.Mothim, 0));
+                    AddEvolution((PBESpecies.Deerling, PBEForm.Deerling_Summer), (PBESpecies.Sawsbuck, PBEForm.Sawsbuck_Summer));
+                    AddEvolution((PBESpecies.Deerling, PBEForm.Deerling_Autumn), (PBESpecies.Sawsbuck, PBEForm.Sawsbuck_Autumn));
+                    AddEvolution((PBESpecies.Deerling, PBEForm.Deerling_Winter), (PBESpecies.Sawsbuck, PBEForm.Sawsbuck_Winter));
+                    AddEvolution((PBESpecies.Shellos, PBEForm.Shellos_East), (PBESpecies.Gastrodon, PBEForm.Gastrodon_East));
+                }
+                #endregion
+
+                #region Arceus
                 {
                     Pokemon basePkmn = dict[(PBESpecies.Arceus, PBEForm.Arceus)];
                     void FixArceus(PBEForm form, PBEType type)
@@ -1705,88 +773,247 @@ namespace Kermalis.PokemonBattleEngineExtras
                         pkmn.LevelUpMoves = basePkmn.LevelUpMoves;
                         pkmn.OtherMoves = basePkmn.OtherMoves;
                     }
-                    FixArceus(PBEForm.Arceus_Bug, PBEType.Bug);
-                    FixArceus(PBEForm.Arceus_Dark, PBEType.Dark);
-                    FixArceus(PBEForm.Arceus_Dragon, PBEType.Dragon);
-                    FixArceus(PBEForm.Arceus_Electric, PBEType.Electric);
                     FixArceus(PBEForm.Arceus_Fighting, PBEType.Fighting);
-                    FixArceus(PBEForm.Arceus_Fire, PBEType.Fire);
                     FixArceus(PBEForm.Arceus_Flying, PBEType.Flying);
-                    FixArceus(PBEForm.Arceus_Ghost, PBEType.Ghost);
-                    FixArceus(PBEForm.Arceus_Grass, PBEType.Grass);
-                    FixArceus(PBEForm.Arceus_Ground, PBEType.Ground);
-                    FixArceus(PBEForm.Arceus_Ice, PBEType.Ice);
                     FixArceus(PBEForm.Arceus_Poison, PBEType.Poison);
-                    FixArceus(PBEForm.Arceus_Psychic, PBEType.Psychic);
+                    FixArceus(PBEForm.Arceus_Ground, PBEType.Ground);
                     FixArceus(PBEForm.Arceus_Rock, PBEType.Rock);
+                    FixArceus(PBEForm.Arceus_Bug, PBEType.Bug);
+                    FixArceus(PBEForm.Arceus_Ghost, PBEType.Ghost);
                     FixArceus(PBEForm.Arceus_Steel, PBEType.Steel);
+                    FixArceus(PBEForm.Arceus_Fire, PBEType.Fire);
                     FixArceus(PBEForm.Arceus_Water, PBEType.Water);
+                    FixArceus(PBEForm.Arceus_Grass, PBEType.Grass);
+                    FixArceus(PBEForm.Arceus_Electric, PBEType.Electric);
+                    FixArceus(PBEForm.Arceus_Psychic, PBEType.Psychic);
+                    FixArceus(PBEForm.Arceus_Ice, PBEType.Ice);
+                    FixArceus(PBEForm.Arceus_Dragon, PBEType.Dragon);
+                    FixArceus(PBEForm.Arceus_Dark, PBEType.Dark);
                 }
+                #endregion
+
+                #region Give Egg Moves To Form Variants
+                {
+                    PBEMoveObtainMethod[] flags = new[] { PBEMoveObtainMethod.EggMove_RSFRLGE, PBEMoveObtainMethod.EggMove_DPPt, PBEMoveObtainMethod.EggMove_HGSS,
+                        PBEMoveObtainMethod.EggMove_BWB2W2, PBEMoveObtainMethod.EggMove_Special };
+                    foreach ((PBESpecies, PBEForm) key in _b2w2SpeciesIndexToPBESpecies.Values)
+                    {
+                        foreach (KeyValuePair<PBEMove, PBEMoveObtainMethod> kvp in dict[(key.Item1, 0)].OtherMoves)
+                        {
+                            PBEMove move = kvp.Key;
+                            PBEMoveObtainMethod o = kvp.Value;
+                            foreach (PBEMoveObtainMethod flag in flags)
+                            {
+                                if (o.HasFlag(flag))
+                                {
+                                    AddOtherMove(key, move, flag);
+                                }
+                            }
+                        }
+                    }
+                }
+                #endregion
+                #endregion
+
+                #region Shedinja Gen3-4 Evolution Moves Bug
+                {
+                    (PBESpecies, PBEForm) key = (PBESpecies.Shedinja, 0);
+                    PBEMoveObtainMethod[] flags = new[] { PBEMoveObtainMethod.LevelUp_RSColoXD, PBEMoveObtainMethod.LevelUp_FR, PBEMoveObtainMethod.LevelUp_E,
+                        PBEMoveObtainMethod.LevelUp_DP, PBEMoveObtainMethod.LevelUp_Pt, PBEMoveObtainMethod.LevelUp_HGSS };
+                    // Nincada evolves starting at level 20
+                    foreach (KeyValuePair<(PBEMove, byte), PBEMoveObtainMethod> kvp in dict[(PBESpecies.Ninjask, 0)].LevelUpMoves)
+                    {
+                        (PBEMove move, byte level) = kvp.Key;
+                        if (level >= 20)
+                        {
+                            PBEMoveObtainMethod o = kvp.Value;
+                            foreach (PBEMoveObtainMethod flag in flags)
+                            {
+                                if (o.HasFlag(flag))
+                                {
+                                    AddLevelUpMove(key, move, level, flag);
+                                }
+                            }
+                        }
+                    }
+                }
+                #endregion
+
+                #region FRLG Ultimate Starter Moves
+                {
+                    PBEMoveObtainMethod flag = PBEMoveObtainMethod.MoveTutor_FRLG;
+                    AddOtherMove((PBESpecies.Venusaur, 0), PBEMove.FrenzyPlant, flag);
+                    AddOtherMove((PBESpecies.Charizard, 0), PBEMove.BlastBurn, flag);
+                    AddOtherMove((PBESpecies.Blastoise, 0), PBEMove.HydroCannon, flag);
+                }
+                #endregion
+
+                #region XD Mew Move Tutor
+                {
+                    (PBESpecies, PBEForm) key = (PBESpecies.Mew, 0);
+                    Pokemon pkmn = dict[key];
+                    var list = new List<PBEMove>
+                    {
+                        PBEMove.FaintAttack,
+                        PBEMove.FakeOut,
+                        PBEMove.Hypnosis,
+                        PBEMove.NightShade,
+                        PBEMove.RolePlay,
+                        PBEMove.ZapCannon
+                    };
+                    foreach (KeyValuePair<PBEMove, PBEMoveObtainMethod> kvp in pkmn.OtherMoves)
+                    {
+                        PBEMoveObtainMethod o = kvp.Value;
+                        if (o.HasFlag(PBEMoveObtainMethod.TM_RSFRLGEColoXD)
+                            || o.HasFlag(PBEMoveObtainMethod.HM_RSFRLGEColoXD)
+                            || o.HasFlag(PBEMoveObtainMethod.MoveTutor_FRLG)
+                            || o.HasFlag(PBEMoveObtainMethod.MoveTutor_E))
+                        {
+                            list.Add(kvp.Key);
+                        }
+                    }
+                    foreach (PBEMove move in list)
+                    {
+                        AddOtherMove(key, move, PBEMoveObtainMethod.MoveTutor_XD);
+                    }
+                }
+                #endregion
+
+                #region Pichu VoltTackle
+                AddOtherMove((PBESpecies.Pichu, 0), PBEMove.VoltTackle, PBEMoveObtainMethod.EggMove_Special);
+                #endregion
+
+                #region DPPtHGSS Free Move Tutors
+                {
+                    PBEMoveObtainMethod flag = PBEMoveObtainMethod.MoveTutor_DP | PBEMoveObtainMethod.MoveTutor_Pt | PBEMoveObtainMethod.MoveTutor_HGSS;
+                    AddOtherMove((PBESpecies.Venusaur, 0), PBEMove.FrenzyPlant, flag);
+                    AddOtherMove((PBESpecies.Charizard, 0), PBEMove.BlastBurn, flag);
+                    AddOtherMove((PBESpecies.Blastoise, 0), PBEMove.HydroCannon, flag);
+                    AddOtherMove((PBESpecies.Meganium, 0), PBEMove.FrenzyPlant, flag);
+                    AddOtherMove((PBESpecies.Typhlosion, 0), PBEMove.BlastBurn, flag);
+                    AddOtherMove((PBESpecies.Feraligatr, 0), PBEMove.HydroCannon, flag);
+                    AddOtherMove((PBESpecies.Sceptile, 0), PBEMove.FrenzyPlant, flag);
+                    AddOtherMove((PBESpecies.Blaziken, 0), PBEMove.BlastBurn, flag);
+                    AddOtherMove((PBESpecies.Swampert, 0), PBEMove.HydroCannon, flag);
+                    AddOtherMove((PBESpecies.Torterra, 0), PBEMove.FrenzyPlant, flag);
+                    AddOtherMove((PBESpecies.Infernape, 0), PBEMove.BlastBurn, flag);
+                    AddOtherMove((PBESpecies.Empoleon, 0), PBEMove.HydroCannon, flag);
+                    // Draco Meteor is taught to any Dragon type, including Arceus_Dragon
+                    foreach (KeyValuePair<(PBESpecies, PBEForm), Pokemon> pkmn in dict.Where(kvp => kvp.Key.Item1 <= PBESpecies.Arceus && kvp.Value.HasType(PBEType.Dragon)))
+                    {
+                        AddOtherMove(pkmn.Key, PBEMove.DracoMeteor, flag);
+                    }
+                }
+                #endregion
+
+                #region Rotom Form Moves
+                AddOtherMove((PBESpecies.Rotom, PBEForm.Rotom), PBEMove.ThunderShock, PBEMoveObtainMethod.Form);
+                AddOtherMove((PBESpecies.Rotom, PBEForm.Rotom_Fan), PBEMove.AirSlash, PBEMoveObtainMethod.Form);
+                AddOtherMove((PBESpecies.Rotom, PBEForm.Rotom_Frost), PBEMove.Blizzard, PBEMoveObtainMethod.Form);
+                AddOtherMove((PBESpecies.Rotom, PBEForm.Rotom_Heat), PBEMove.Overheat, PBEMoveObtainMethod.Form);
+                AddOtherMove((PBESpecies.Rotom, PBEForm.Rotom_Mow), PBEMove.LeafStorm, PBEMoveObtainMethod.Form);
+                AddOtherMove((PBESpecies.Rotom, PBEForm.Rotom_Wash), PBEMove.HydroPump, PBEMoveObtainMethod.Form);
+                #endregion
+
+                #region Gen5 RelicSong/SecretSword
+                {
+                    PBEMoveObtainMethod flag = PBEMoveObtainMethod.MoveTutor_BW | PBEMoveObtainMethod.MoveTutor_B2W2;
+                    AddOtherMove((PBESpecies.Meloetta, 0), PBEMove.RelicSong, flag);
+                    AddOtherMove((PBESpecies.Keldeo, 0), PBEMove.SecretSword, flag);
+                }
+                #endregion
+
+                #region Basculin_Blue Ability Bug
+                dict[(PBESpecies.Basculin, PBEForm.Basculin_Blue)].Abilities.Add(PBEAbility.Reckless);
+                #endregion
 
                 #endregion
 
-                #region Write to Database
-
-                cmd.CommandText = "DROP TABLE IF EXISTS PokemonData";
-                cmd.ExecuteNonQuery();
-                cmd.CommandText = "CREATE TABLE PokemonData(Species INTEGER, Form INTEGER"
-                    + ", HP INTEGER, Attack INTEGER, Defense INTEGER, SpAttack INTEGER, SpDefense INTEGER, Speed INTEGER"
-                    + ", Type1 INTEGER, Type2 INTEGER, GenderRatio INTEGER, Weight FLOAT"
-                    + ", PreEvolutions TEXT, Evolutions TEXT, Abilities TEXT, LevelUpMoves TEXT, OtherMoves TEXT"
-                    + ")";
-                cmd.ExecuteNonQuery();
-                cmd.CommandText = "INSERT INTO PokemonData VALUES(@0, @1, @2, @3, @4, @5, @6, @7, @8, @9, @10, @11, @12, @13, @14, @15, @16)";
-                var list = new List<string>();
-                foreach (KeyValuePair<(PBESpecies, PBEForm), Pokemon> tup in dict)
+                #region Dream World
+                foreach ((PBESpecies species, PBEForm form, PBEMove moveA, PBEMove moveB, PBEMove moveC, bool bw, bool b2w2) in _dreamWorld)
                 {
-                    (PBESpecies species, PBEForm form) = tup.Key;
-                    cmd.Parameters.AddWithValue("@0", (ushort)species);
-                    cmd.Parameters.AddWithValue("@1", (byte)form);
-                    Pokemon pkmn = tup.Value;
-                    cmd.Parameters.AddWithValue("@2", pkmn.HP);
-                    cmd.Parameters.AddWithValue("@3", pkmn.Attack);
-                    cmd.Parameters.AddWithValue("@4", pkmn.Defense);
-                    cmd.Parameters.AddWithValue("@5", pkmn.SpAttack);
-                    cmd.Parameters.AddWithValue("@6", pkmn.SpDefense);
-                    cmd.Parameters.AddWithValue("@7", pkmn.Speed);
-                    cmd.Parameters.AddWithValue("@8", (byte)pkmn.Type1);
-                    cmd.Parameters.AddWithValue("@9", (byte)pkmn.Type2);
-                    cmd.Parameters.AddWithValue("@10", pkmn.GenderRatio);
-                    cmd.Parameters.AddWithValue("@11", pkmn.Weight);
-                    list.Clear();
-                    foreach (PBESpecies sp in pkmn.PreEvolutions)
+                    PBEMoveObtainMethod o = PBEMoveObtainMethod.None;
+                    if (bw)
                     {
-                        list.Add($"{(ushort)sp}");
+                        o |= PBEMoveObtainMethod.DreamWorld_BW;
                     }
-                    cmd.Parameters.AddWithValue("@12", string.Join('|', list));
-                    list.Clear();
-                    foreach (PBESpecies sp in pkmn.Evolutions)
+                    if (b2w2)
                     {
-                        list.Add($"{(ushort)sp}");
+                        o |= PBEMoveObtainMethod.DreamWorld_B2W2;
                     }
-                    cmd.Parameters.AddWithValue("@13", string.Join('|', list));
-                    list.Clear();
-                    foreach (PBEAbility ab in pkmn.Abilities)
+                    if (o == PBEMoveObtainMethod.None)
                     {
-                        list.Add($"{(byte)ab}");
+                        throw new ArgumentException($"Problem with Dream World - {species}", nameof(_dreamWorld));
                     }
-                    cmd.Parameters.AddWithValue("@14", string.Join('|', list));
-                    list.Clear();
-                    foreach (KeyValuePair<(PBEMove Move, byte Level), PBEMoveObtainMethod> levelUpMove in pkmn.LevelUpMoves)
-                    {
-                        list.Add($"{(ushort)levelUpMove.Key.Move},{levelUpMove.Key.Level},{(ulong)levelUpMove.Value}");
-                    }
-                    cmd.Parameters.AddWithValue("@15", string.Join('|', list));
-                    list.Clear();
-                    foreach (KeyValuePair<PBEMove, PBEMoveObtainMethod> otherMove in pkmn.OtherMoves)
-                    {
-                        list.Add($"{(ushort)otherMove.Key},{(ulong)otherMove.Value}");
-                    }
-                    cmd.Parameters.AddWithValue("@16", string.Join('|', list));
-                    cmd.ExecuteNonQuery();
-                    cmd.Parameters.Clear();
+                    (PBESpecies, PBEForm) key = (species, form);
+                    AddOtherMove(key, moveA, o);
+                    AddOtherMove(key, moveB, o);
+                    AddOtherMove(key, moveC, o);
                 }
+                #endregion
 
+                #region Write to Database
+                {
+                    cmd.CommandText = "DROP TABLE IF EXISTS PokemonData";
+                    cmd.ExecuteNonQuery();
+                    cmd.CommandText = "CREATE TABLE PokemonData(Species INTEGER, Form INTEGER"
+                        + ", HP INTEGER, Attack INTEGER, Defense INTEGER, SpAttack INTEGER, SpDefense INTEGER, Speed INTEGER"
+                        + ", Type1 INTEGER, Type2 INTEGER, GenderRatio INTEGER, Weight FLOAT"
+                        + ", PreEvolutions TEXT, Evolutions TEXT, Abilities TEXT, LevelUpMoves TEXT, OtherMoves TEXT"
+                        + ")";
+                    cmd.ExecuteNonQuery();
+                    cmd.CommandText = "INSERT INTO PokemonData VALUES(@0, @1, @2, @3, @4, @5, @6, @7, @8, @9, @10, @11, @12, @13, @14, @15, @16)";
+                    var list = new List<string>();
+                    foreach (KeyValuePair<(PBESpecies, PBEForm), Pokemon> tup in dict)
+                    {
+                        (PBESpecies species, PBEForm form) = tup.Key;
+                        cmd.Parameters.AddWithValue("@0", (ushort)species);
+                        cmd.Parameters.AddWithValue("@1", (byte)form);
+                        Pokemon pkmn = tup.Value;
+                        cmd.Parameters.AddWithValue("@2", pkmn.HP);
+                        cmd.Parameters.AddWithValue("@3", pkmn.Attack);
+                        cmd.Parameters.AddWithValue("@4", pkmn.Defense);
+                        cmd.Parameters.AddWithValue("@5", pkmn.SpAttack);
+                        cmd.Parameters.AddWithValue("@6", pkmn.SpDefense);
+                        cmd.Parameters.AddWithValue("@7", pkmn.Speed);
+                        cmd.Parameters.AddWithValue("@8", (byte)pkmn.Type1);
+                        cmd.Parameters.AddWithValue("@9", (byte)pkmn.Type2);
+                        cmd.Parameters.AddWithValue("@10", pkmn.GenderRatio);
+                        cmd.Parameters.AddWithValue("@11", pkmn.Weight);
+                        list.Clear();
+                        foreach ((PBESpecies, PBEForm) key in pkmn.PreEvolutions)
+                        {
+                            list.Add($"{(ushort)key.Item1},{(byte)key.Item2}");
+                        }
+                        cmd.Parameters.AddWithValue("@12", string.Join('|', list));
+                        list.Clear();
+                        foreach ((PBESpecies, PBEForm) key in pkmn.Evolutions)
+                        {
+                            list.Add($"{(ushort)key.Item1},{(byte)key.Item2}");
+                        }
+                        cmd.Parameters.AddWithValue("@13", string.Join('|', list));
+                        list.Clear();
+                        foreach (PBEAbility ab in pkmn.Abilities)
+                        {
+                            list.Add($"{(byte)ab}");
+                        }
+                        cmd.Parameters.AddWithValue("@14", string.Join('|', list));
+                        list.Clear();
+                        foreach (KeyValuePair<(PBEMove Move, byte Level), PBEMoveObtainMethod> levelUpMove in pkmn.LevelUpMoves)
+                        {
+                            list.Add($"{(ushort)levelUpMove.Key.Move},{levelUpMove.Key.Level},{(ulong)levelUpMove.Value}");
+                        }
+                        cmd.Parameters.AddWithValue("@15", string.Join('|', list));
+                        list.Clear();
+                        foreach (KeyValuePair<PBEMove, PBEMoveObtainMethod> otherMove in pkmn.OtherMoves)
+                        {
+                            list.Add($"{(ushort)otherMove.Key},{(ulong)otherMove.Value}");
+                        }
+                        cmd.Parameters.AddWithValue("@16", string.Join('|', list));
+                        cmd.ExecuteNonQuery();
+                        cmd.Parameters.Clear();
+                    }
+                }
                 #endregion
 
                 transaction.Commit();

@@ -235,12 +235,14 @@ namespace Kermalis.PokemonBattleEngine.Data
         EggMove_HGSS = 1uL << 28,
         /// <summary>The move can be learned by hatching a Pokémon egg in Pokémon Black Version, Pokémon White Version, Pokémon Black Version 2, and Pokémon White Version 2.</summary>
         EggMove_BWB2W2 = 1uL << 29,
-        /// <summary>The move is known by a Pokémon when found in the Dream World.</summary>
-        DreamWorld = 1uL << 30,
+        /// <summary>The move is known by a Pokémon when found in the Dream World with Pokémon Black Version and Pokémon White Version.</summary>
+        DreamWorld_BW = 1uL << 30,
+        /// <summary>The move is known by a Pokémon when found in the Dream World with Pokémon Black Version 2 and Pokémon White Version 2.</summary>
+        DreamWorld_B2W2 = 1uL << 31,
         /// <summary>The move can be learned by hatching a Pokémon egg under special conditions.</summary>
-        EggMove_Special = 1uL << 31,
-        /// <summary>The move is learned by a Pokémon when changing forms.</summary>
-        Form = 1uL << 32
+        EggMove_Special = 1uL << 32,
+        /// <summary>The move is learned by a Pokémon when changing forms. The move cannot be used by other forms if this is the only flag or if the species cannot change forms.</summary>
+        Form = 1uL << 33
     }
     /// <summary>Represents a specific Pokémon's non-volatile status.</summary>
     public enum PBEStatus1 : byte
