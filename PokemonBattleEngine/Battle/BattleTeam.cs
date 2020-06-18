@@ -20,6 +20,10 @@ namespace Kermalis.PokemonBattleEngine.Battle
             {
                 throw new ArgumentNullException(nameof(party));
             }
+            if (party.Count < 1)
+            {
+                throw new ArgumentException(nameof(party));
+            }
             if (string.IsNullOrWhiteSpace(trainerName))
             {
                 throw new ArgumentOutOfRangeException(nameof(trainerName));
@@ -135,9 +139,13 @@ namespace Kermalis.PokemonBattleEngine.Battle
             {
                 throw new ArgumentOutOfRangeException(nameof(ti), "Team settings do not comply with battle settings.");
             }
-            TrainerName = ti.TrainerName;
             IPBEPokemonCollection party = ti.Party;
-            for (int i = 0; i < party.Count; i++)
+            int count = party.Count;
+            if (count < 1)
+            {
+                throw new ArgumentException(nameof(ti));
+            }
+            for (int i = 0; i < count; i++)
             {
                 IPBEPokemon pkmn = party[i];
                 byte id = (byte)((Id * Battle.Settings.MaxPartySize) + i);
@@ -150,6 +158,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                     new PBEBattlePokemon(this, id, pkmn);
                 }
             }
+            TrainerName = ti.TrainerName;
         }
 
         /// <summary>Gets a specific active <see cref="PBEBattlePokemon"/> by its <see cref="PBEBattlePokemon.FieldPosition"/>.</summary>
