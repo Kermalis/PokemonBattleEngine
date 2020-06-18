@@ -22,7 +22,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
             }
             if (party.Count < 1)
             {
-                throw new ArgumentException(nameof(party));
+                throw new ArgumentException("Party count must be at least 1", nameof(party));
             }
             if (string.IsNullOrWhiteSpace(trainerName))
             {
@@ -143,7 +143,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
             int count = party.Count;
             if (count < 1)
             {
-                throw new ArgumentException(nameof(ti));
+                throw new ArgumentException("Party count must be at least 1", nameof(ti));
             }
             for (int i = 0; i < count; i++)
             {
