@@ -769,7 +769,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                     }
                     case PBEWeather.Sandstorm:
                     {
-                        if (user.Ability == PBEAbility.SandForce && (user.HasType(PBEType.Rock) || user.HasType(PBEType.Ground) || user.HasType(PBEType.Steel)))
+                        if (user.Ability == PBEAbility.SandForce && (moveType == PBEType.Rock || moveType == PBEType.Ground || moveType == PBEType.Steel))
                         {
                             basePower *= 1.3;
                         }
