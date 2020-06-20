@@ -1115,8 +1115,9 @@ namespace Kermalis.PokemonBattleEngine.Battle
                 _turnOrder.Remove(pkmn);
                 ActiveBattlers.Remove(pkmn);
                 PBEFieldPosition oldPos = pkmn.FieldPosition;
+                PBEBattlePokemon disguisedAsPokemon = pkmn.Status2.HasFlag(PBEStatus2.Disguised) ? pkmn.DisguisedAsPokemon : pkmn;
                 pkmn.FieldPosition = PBEFieldPosition.None;
-                BroadcastPkmnFainted(pkmn, oldPos);
+                BroadcastPkmnFainted(pkmn, disguisedAsPokemon, oldPos);
                 RemoveInfatuationsAndLockOns(pkmn);
                 pkmn.Team.MonFaintedThisTurn = true;
                 TrySetLoser(pkmn);

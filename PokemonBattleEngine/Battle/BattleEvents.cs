@@ -109,9 +109,9 @@ namespace Kermalis.PokemonBattleEngine.Battle
             }
             Broadcast(new PBEMoveUsedPacket(moveUser, move, reveal));
         }
-        private void BroadcastPkmnFainted(PBEBattlePokemon pokemon, PBEFieldPosition oldPosition)
+        private void BroadcastPkmnFainted(PBEBattlePokemon pokemon, PBEBattlePokemon disguisedAsPokemon, PBEFieldPosition oldPosition)
         {
-            Broadcast(new PBEPkmnFaintedPacket(pokemon, oldPosition));
+            Broadcast(new PBEPkmnFaintedPacket(pokemon, disguisedAsPokemon, oldPosition));
         }
         private void BroadcastPkmnFormChanged(PBEBattlePokemon pokemon, PBEForm newForm, PBEAbility newAbility, PBEAbility newKnownAbility, bool isRevertForm)
         {
@@ -778,15 +778,13 @@ namespace Kermalis.PokemonBattleEngine.Battle
                 }
                 case PBEPkmnFaintedPacket pfap:
                 {
-                    PBEBattlePokemon pokemon;
-                    if (pfap.PokemonId == byte.MaxValue)
-                    {
-                        pokemon = pfap.PokemonTeam.TryGetPokemon(pfap.PokemonPosition);
-                    }
-                    else
-                    {
-                        pokemon = pfap.PokemonTeam.TryGetPokemon(pfap.PokemonId);
-                    }
+                    PBEBattlePokemon disguisedAsPokemon = pfap.PokemonTeam.TryGetPokemon(pfap.DisguisedAsPokemonId);
+                    Console.WriteLine("{0} fainted!", NameForTrainer(disguisedAsPokemon));
+                    break;
+                }
+                case PBEPkmnFaintedPacket_Hidden pfaph:
+                {
+                    PBEBattlePokemon pokemon = pfaph.PokemonTeam.TryGetPokemon(pfaph.PokemonPosition);
                     Console.WriteLine("{0} fainted!", NameForTrainer(pokemon));
                     break;
                 }
@@ -796,6 +794,12 @@ namespace Kermalis.PokemonBattleEngine.Battle
                     Console.WriteLine("{0}'s new form is {1}!", NameForTrainer(pokemon), PBELocalizedString.GetFormName(pokemon.Species, pfcp.NewForm).English);
                     break;
                 }
+                case PBEPkmnFormChangedPacket_Hidden pfcph:
+                {
+                    PBEBattlePokemon pokemon = pfcph.PokemonTeam.TryGetPokemon(pfcph.Pokemon);
+                    Console.WriteLine("{0}'s new form is {1}!", NameForTrainer(pokemon), PBELocalizedString.GetFormName(pokemon.Species, pfcph.NewForm).English);
+                    break;
+                }
                 case PBEPkmnHPChangedPacket phcp:
                 {
                     PBEBattlePokemon pokemon = phcp.PokemonTeam.TryGetPokemon(phcp.Pokemon);
@@ -803,14 +807,15 @@ namespace Kermalis.PokemonBattleEngine.Battle
                     int absChange = Math.Abs(change);
                     double percentageChange = phcp.NewHPPercentage - phcp.OldHPPercentage;
                     double absPercentageChange = Math.Abs(percentageChange);
-                    if (pokemon.HP == 0 && pokemon.MaxHP == 0)
-                    {
-                        Console.WriteLine("{0} {1} {2:P2} of its HP!", NameForTrainer(pokemon), percentageChange <= 0 ? "lost" : "restored", absPercentageChange);
-                    }
-                    else
-                    {
-                        Console.WriteLine("{0} {1} {2} ({3:P2}) HP!", NameForTrainer(pokemon), change <= 0 ? "lost" : "restored", absChange, absPercentageChange);
-                    }
+                    Console.WriteLine("{0} {1} {2} ({3:P2}) HP!", NameForTrainer(pokemon), change <= 0 ? "lost" : "restored", absChange, absPercentageChange);
+                    break;
+                }
+                case PBEPkmnHPChangedPacket_Hidden phcph:
+                {
+                    PBEBattlePokemon pokemon = phcph.PokemonTeam.TryGetPokemon(phcph.Pokemon);
+                    double percentageChange = phcph.NewHPPercentage - phcph.OldHPPercentage;
+                    double absPercentageChange = Math.Abs(percentageChange);
+                    Console.WriteLine("{0} {1} {2:P2} of its HP!", NameForTrainer(pokemon), percentageChange <= 0 ? "lost" : "restored", absPercentageChange);
                     break;
                 }
                 case PBEPkmnStatChangedPacket pscp:
@@ -871,12 +876,29 @@ namespace Kermalis.PokemonBattleEngine.Battle
                     }
                     break;
                 }
+                case PBEPkmnSwitchInPacket_Hidden psiph:
+                {
+                    if (!psiph.Forced)
+                    {
+                        Console.WriteLine("{1} sent out {0}!", psiph.SwitchIns.Select(s => s.Nickname).ToArray().Andify(), psiph.Team.TrainerName);
+                    }
+                    break;
+                }
                 case PBEPkmnSwitchOutPacket psop:
                 {
                     if (!psop.Forced)
                     {
-                        PBEBattlePokemon disguisedAsPokemon = psop.DisguisedAsPokemonId != byte.MaxValue ? psop.PokemonTeam.TryGetPokemon(psop.DisguisedAsPokemonId) : psop.PokemonTeam.TryGetPokemon(psop.PokemonPosition);
+                        PBEBattlePokemon disguisedAsPokemon = psop.PokemonTeam.TryGetPokemon(psop.DisguisedAsPokemonId);
                         Console.WriteLine("{1} withdrew {0}!", disguisedAsPokemon.Nickname, psop.PokemonTeam.TrainerName);
+                    }
+                    break;
+                }
+                case PBEPkmnSwitchOutPacket_Hidden psoph:
+                {
+                    if (!psoph.Forced)
+                    {
+                        PBEBattlePokemon pokemon = psoph.PokemonTeam.TryGetPokemon(psoph.PokemonPosition);
+                        Console.WriteLine("{1} withdrew {0}!", pokemon.Nickname, psoph.PokemonTeam.TrainerName);
                     }
                     break;
                 }
@@ -898,6 +920,13 @@ namespace Kermalis.PokemonBattleEngine.Battle
                         NameForTrainer(user),
                         NameForTrainer(target),
                         type2 == PBEType.None ? $"{type1Str} type!" : $"{type1Str} and {PBELocalizedString.GetTypeName(type2).English} types!");
+                    break;
+                }
+                case PBEReflectTypePacket_Hidden rtph:
+                {
+                    PBEBattlePokemon user = rtph.UserTeam.TryGetPokemon(rtph.User);
+                    PBEBattlePokemon target = rtph.TargetTeam.TryGetPokemon(rtph.Target);
+                    Console.WriteLine("{0} copied {1}'s types!", NameForTrainer(user), NameForTrainer(target));
                     break;
                 }
                 case PBESpecialMessagePacket smp:
@@ -1433,6 +1462,9 @@ namespace Kermalis.PokemonBattleEngine.Battle
                     break;
                 }
                 case PBEAutoCenterPacket _:
+                case PBEAutoCenterPacket_Hidden0 _:
+                case PBEAutoCenterPacket_Hidden1 _:
+                case PBEAutoCenterPacket_Hidden01 _:
                 {
                     Console.WriteLine("The battlers shifted to the center!");
                     break;

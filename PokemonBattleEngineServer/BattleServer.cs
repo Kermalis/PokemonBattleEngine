@@ -358,39 +358,39 @@ namespace Kermalis.PokemonBattleEngineServer
                 }
                 case PBEPkmnFaintedPacket pfp:
                 {
-                    SendOriginalPacketToTeamOwnerAndEveryoneElseGetsAPacketWithHiddenInfo(pfp, pfp.MakeHidden(), pfp.PokemonTeam.Id);
+                    SendOriginalPacketToTeamOwnerAndEveryoneElseGetsAPacketWithHiddenInfo(pfp, new PBEPkmnFaintedPacket_Hidden(pfp), pfp.PokemonTeam.Id);
                     break;
                 }
                 case PBEPkmnFormChangedPacket pfcp:
                 {
-                    SendOriginalPacketToTeamOwnerAndEveryoneElseGetsAPacketWithHiddenInfo(pfcp, pfcp.MakeHidden(), pfcp.PokemonTeam.Id);
+                    SendOriginalPacketToTeamOwnerAndEveryoneElseGetsAPacketWithHiddenInfo(pfcp, new PBEPkmnFormChangedPacket_Hidden(pfcp), pfcp.PokemonTeam.Id);
                     break;
                 }
                 case PBEPkmnHPChangedPacket phcp:
                 {
-                    SendOriginalPacketToTeamOwnerAndEveryoneElseGetsAPacketWithHiddenInfo(phcp, phcp.MakeHidden(), phcp.PokemonTeam.Id);
+                    SendOriginalPacketToTeamOwnerAndEveryoneElseGetsAPacketWithHiddenInfo(phcp, new PBEPkmnHPChangedPacket_Hidden(phcp), phcp.PokemonTeam.Id);
                     break;
                 }
                 case PBEPkmnSwitchInPacket psip:
                 {
-                    SendOriginalPacketToTeamOwnerAndEveryoneElseGetsAPacketWithHiddenInfo(psip, psip.MakeHidden(), psip.Team.Id);
+                    SendOriginalPacketToTeamOwnerAndEveryoneElseGetsAPacketWithHiddenInfo(psip, new PBEPkmnSwitchInPacket_Hidden(psip), psip.Team.Id);
                     break;
                 }
                 case PBEPkmnSwitchOutPacket psop:
                 {
-                    SendOriginalPacketToTeamOwnerAndEveryoneElseGetsAPacketWithHiddenInfo(psop, psop.MakeHidden(), psop.PokemonTeam.Id);
+                    SendOriginalPacketToTeamOwnerAndEveryoneElseGetsAPacketWithHiddenInfo(psop, new PBEPkmnSwitchOutPacket_Hidden(psop), psop.PokemonTeam.Id);
                     break;
                 }
                 case PBEReflectTypePacket rtp:
                 {
-                    PBEReflectTypePacket hidden = rtp.MakeHidden();
+                    var hidden = new PBEReflectTypePacket_Hidden(rtp);
                     _spectatorPackets.Add(hidden);
-                    _battlers[0].Send(rtp.UserTeam.Id == 0 || rtp.TargetTeam.Id == 0 ? rtp : hidden);
+                    _battlers[0].Send(rtp.UserTeam.Id == 0 || rtp.TargetTeam.Id == 0 ? (IPBEPacket)rtp : hidden);
                     if (!_battlers[0].WaitForResponse())
                     {
                         return;
                     }
-                    _battlers[1].Send(rtp.UserTeam.Id == 1 || rtp.TargetTeam.Id == 1 ? rtp : hidden);
+                    _battlers[1].Send(rtp.UserTeam.Id == 1 || rtp.TargetTeam.Id == 1 ? (IPBEPacket)rtp : hidden);
                     if (!_battlers[1].WaitForResponse())
                     {
                         return;
@@ -426,18 +426,15 @@ namespace Kermalis.PokemonBattleEngineServer
                 {
                     _state = ServerState.WaitingForActions;
                     _spectatorPackets.Add(packet);
-                    foreach (Player player in _readyPlayers.Values.ToArray())
-                    {
-                        player.Send(packet);
-                    }
+                    SendToAll(packet);
                     _resetEvent.Set();
                     break;
                 }
                 case PBEAutoCenterPacket acp:
                 {
-                    PBEAutoCenterPacket team0 = acp.MakeHidden(false, true);
-                    PBEAutoCenterPacket team1 = acp.MakeHidden(true, false);
-                    PBEAutoCenterPacket spectators = acp.MakeHidden(true, true);
+                    var team0 = new PBEAutoCenterPacket_Hidden0(acp);
+                    var team1 = new PBEAutoCenterPacket_Hidden1(acp);
+                    var spectators = new PBEAutoCenterPacket_Hidden01(acp);
                     _spectatorPackets.Add(spectators);
                     _battlers[0].Send(team0);
                     if (!_battlers[0].WaitForResponse())

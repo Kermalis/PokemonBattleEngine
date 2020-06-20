@@ -67,6 +67,15 @@ namespace Kermalis.PokemonBattleEngine.Packets
                     case PBEAbilityReplacedPacket.Code: return new PBEAbilityReplacedPacket(data, r, battle);
                     case PBELegalPartyResponsePacket.Code: return new PBELegalPartyResponsePacket(data, r, battle);
                     case PBEReflectTypePacket.Code: return new PBEReflectTypePacket(data, r, battle);
+                    case PBEPkmnFaintedPacket_Hidden.Code: return new PBEPkmnFaintedPacket_Hidden(data, r, battle);
+                    case PBEAutoCenterPacket_Hidden0.Code: return new PBEAutoCenterPacket_Hidden0(data, r, battle);
+                    case PBEAutoCenterPacket_Hidden1.Code: return new PBEAutoCenterPacket_Hidden1(data, r, battle);
+                    case PBEAutoCenterPacket_Hidden01.Code: return new PBEAutoCenterPacket_Hidden01(data, r, battle);
+                    case PBEReflectTypePacket_Hidden.Code: return new PBEReflectTypePacket_Hidden(data, r, battle);
+                    case PBEPkmnFormChangedPacket_Hidden.Code: return new PBEPkmnFormChangedPacket_Hidden(data, r, battle);
+                    case PBEPkmnHPChangedPacket_Hidden.Code: return new PBEPkmnHPChangedPacket_Hidden(data, r, battle);
+                    case PBEPkmnSwitchInPacket_Hidden.Code: return new PBEPkmnSwitchInPacket_Hidden(data, r, battle);
+                    case PBEPkmnSwitchOutPacket_Hidden.Code: return new PBEPkmnSwitchOutPacket_Hidden(data, r, battle);
                     default: throw new InvalidDataException();
                 }
             }

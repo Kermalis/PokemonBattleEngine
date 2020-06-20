@@ -1,6 +1,7 @@
 ﻿using Kermalis.EndianBinaryIO;
 using Kermalis.PokemonBattleEngine.Battle;
 using Kermalis.PokemonBattleEngine.Data;
+using System;
 using System.Collections.ObjectModel;
 using System.IO;
 
@@ -26,32 +27,29 @@ namespace Kermalis.PokemonBattleEngine.Packets
         public double NewWeight { get; }
         public bool IsRevertForm { get; }
 
-        private PBEPkmnFormChangedPacket(PBEFieldPosition pokemonPosition, PBETeam pokemonTeam, ushort newAttack, ushort newDefense, ushort newSpAttack, ushort newSpDefense, ushort newSpeed,
-            PBEAbility newAbility, PBEAbility newKnownAbility, PBEForm newForm, PBEType newType1, PBEType newType2, double newWeight, bool isRevertForm)
+        internal PBEPkmnFormChangedPacket(PBEBattlePokemon pokemon, bool isRevertForm)
         {
             using (var ms = new MemoryStream())
             using (var w = new EndianBinaryWriter(ms, encoding: EncodingType.UTF16))
             {
                 w.Write(Code);
-                w.Write(Pokemon = pokemonPosition);
-                w.Write((PokemonTeam = pokemonTeam).Id);
-                w.Write(NewAttack = newAttack);
-                w.Write(NewDefense = newDefense);
-                w.Write(NewSpAttack = newSpAttack);
-                w.Write(NewSpDefense = newSpDefense);
-                w.Write(NewSpeed = newSpeed);
-                w.Write(NewAbility = newAbility);
-                w.Write(NewKnownAbility = newKnownAbility);
-                w.Write(NewForm = newForm);
-                w.Write(NewType1 = newType1);
-                w.Write(NewType2 = newType2);
-                w.Write(NewWeight = newWeight);
+                w.Write(Pokemon = pokemon.FieldPosition);
+                w.Write((PokemonTeam = pokemon.Team).Id);
+                w.Write(NewAttack = pokemon.Attack);
+                w.Write(NewDefense = pokemon.Defense);
+                w.Write(NewSpAttack = pokemon.SpAttack);
+                w.Write(NewSpDefense = pokemon.SpDefense);
+                w.Write(NewSpeed = pokemon.Speed);
+                w.Write(NewAbility = pokemon.Ability);
+                w.Write(NewKnownAbility = pokemon.KnownAbility);
+                w.Write(NewForm = pokemon.Form);
+                w.Write(NewType1 = pokemon.Type1);
+                w.Write(NewType2 = pokemon.Type2);
+                w.Write(NewWeight = pokemon.Weight);
                 w.Write(IsRevertForm = isRevertForm);
                 Data = new ReadOnlyCollection<byte>(ms.ToArray());
             }
         }
-        internal PBEPkmnFormChangedPacket(PBEBattlePokemon pokemon, bool isRevertForm)
-            : this(pokemon.FieldPosition, pokemon.Team, pokemon.Attack, pokemon.Defense, pokemon.SpAttack, pokemon.SpDefense, pokemon.Speed, pokemon.Ability, pokemon.KnownAbility, pokemon.Form, pokemon.Type1, pokemon.Type2, pokemon.Weight, isRevertForm) { }
         internal PBEPkmnFormChangedPacket(byte[] data, EndianBinaryReader r, PBEBattle battle)
         {
             Data = new ReadOnlyCollection<byte>(data);
@@ -69,10 +67,55 @@ namespace Kermalis.PokemonBattleEngine.Packets
             NewType2 = r.ReadEnum<PBEType>();
             NewWeight = r.ReadDouble();
         }
+    }
+    public sealed class PBEPkmnFormChangedPacket_Hidden : IPBEPacket
+    {
+        public const ushort Code = 0x34;
+        public ReadOnlyCollection<byte> Data { get; }
 
-        public PBEPkmnFormChangedPacket MakeHidden()
+        public PBEFieldPosition Pokemon { get; }
+        public PBETeam PokemonTeam { get; }
+        public PBEAbility NewAbility { get; }
+        public PBEAbility NewKnownAbility { get; }
+        public PBEForm NewForm { get; }
+        public PBEType NewType1 { get; }
+        public PBEType NewType2 { get; }
+        public double NewWeight { get; }
+        public bool IsRevertForm { get; }
+
+        public PBEPkmnFormChangedPacket_Hidden(PBEPkmnFormChangedPacket other)
         {
-            return new PBEPkmnFormChangedPacket(Pokemon, PokemonTeam, ushort.MinValue, ushort.MinValue, ushort.MinValue, ushort.MinValue, ushort.MinValue, NewKnownAbility != PBEAbility.MAX ? NewAbility : PBEAbility.MAX, NewKnownAbility, NewForm, NewType1, NewType2, NewWeight, IsRevertForm);
+            if (other == null)
+            {
+                throw new ArgumentNullException(nameof(other));
+            }
+            using (var ms = new MemoryStream())
+            using (var w = new EndianBinaryWriter(ms, encoding: EncodingType.UTF16))
+            {
+                w.Write(Code);
+                w.Write(Pokemon = other.Pokemon);
+                w.Write((PokemonTeam = other.PokemonTeam).Id);
+                w.Write(NewAbility = other.NewKnownAbility != PBEAbility.MAX ? other.NewAbility : PBEAbility.MAX);
+                w.Write(NewKnownAbility = other.NewKnownAbility);
+                w.Write(NewForm = other.NewForm);
+                w.Write(NewType1 = other.NewType1);
+                w.Write(NewType2 = other.NewType2);
+                w.Write(NewWeight = other.NewWeight);
+                w.Write(IsRevertForm = other.IsRevertForm);
+                Data = new ReadOnlyCollection<byte>(ms.ToArray());
+            }
+        }
+        internal PBEPkmnFormChangedPacket_Hidden(byte[] data, EndianBinaryReader r, PBEBattle battle)
+        {
+            Data = new ReadOnlyCollection<byte>(data);
+            Pokemon = r.ReadEnum<PBEFieldPosition>();
+            PokemonTeam = battle.Teams[r.ReadByte()];
+            NewAbility = r.ReadEnum<PBEAbility>();
+            NewKnownAbility = r.ReadEnum<PBEAbility>();
+            NewForm = r.ReadEnum<PBEForm>();
+            NewType1 = r.ReadEnum<PBEType>();
+            NewType2 = r.ReadEnum<PBEType>();
+            NewWeight = r.ReadDouble();
         }
     }
 }

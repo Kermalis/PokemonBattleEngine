@@ -1,6 +1,7 @@
 ﻿using Kermalis.EndianBinaryIO;
 using Kermalis.PokemonBattleEngine.Battle;
 using Kermalis.PokemonBattleEngine.Data;
+using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.IO;
@@ -63,11 +64,6 @@ namespace Kermalis.PokemonBattleEngine.Packets
                 FieldPosition = r.ReadEnum<PBEFieldPosition>();
             }
 
-            internal PBESwitchInInfo MakeHidden()
-            {
-                return new PBESwitchInInfo(byte.MaxValue, byte.MaxValue, Species, Form, Nickname, Level, Shiny, Gender, ushort.MinValue, ushort.MinValue, HPPercentage, Status1, FieldPosition);
-            }
-
             internal void ToBytes(EndianBinaryWriter w)
             {
                 w.Write(PokemonId);
@@ -92,7 +88,7 @@ namespace Kermalis.PokemonBattleEngine.Packets
         public PBEFieldPosition? ForcedByPokemonPosition { get; }
         public PBETeam ForcedByPokemonTeam { get; }
 
-        private PBEPkmnSwitchInPacket(PBETeam team, IList<PBESwitchInInfo> switchIns, bool forced = false, PBEFieldPosition? forcedByPokemonPosition = null, PBETeam forcedByPokemonTeam = null)
+        internal PBEPkmnSwitchInPacket(PBETeam team, IList<PBESwitchInInfo> switchIns, PBEBattlePokemon forcedByPokemon = null)
         {
             using (var ms = new MemoryStream())
             using (var w = new EndianBinaryWriter(ms, encoding: EncodingType.UTF16))
@@ -105,17 +101,15 @@ namespace Kermalis.PokemonBattleEngine.Packets
                 {
                     SwitchIns[i].ToBytes(w);
                 }
-                w.Write(Forced = forced);
+                w.Write(Forced = forcedByPokemon != null);
                 if (Forced)
                 {
-                    w.Write((ForcedByPokemonPosition = forcedByPokemonPosition).Value);
-                    w.Write((ForcedByPokemonTeam = forcedByPokemonTeam).Id);
+                    w.Write((ForcedByPokemonPosition = forcedByPokemon.FieldPosition).Value);
+                    w.Write((ForcedByPokemonTeam = forcedByPokemon.Team).Id);
                 }
                 Data = new ReadOnlyCollection<byte>(ms.ToArray());
             }
         }
-        internal PBEPkmnSwitchInPacket(PBETeam team, IList<PBESwitchInInfo> switchIns, PBEBattlePokemon forcedByPokemon = null)
-            : this(team, switchIns, forcedByPokemon != null, forcedByPokemon?.FieldPosition, forcedByPokemon?.Team) { }
         internal PBEPkmnSwitchInPacket(byte[] data, EndianBinaryReader r, PBEBattle battle)
         {
             Data = new ReadOnlyCollection<byte>(data);
@@ -133,15 +127,116 @@ namespace Kermalis.PokemonBattleEngine.Packets
                 ForcedByPokemonTeam = battle.Teams[r.ReadByte()];
             }
         }
+    }
+    public sealed class PBEPkmnSwitchInPacket_Hidden : IPBEPacket
+    {
+        public const ushort Code = 0x36;
+        public ReadOnlyCollection<byte> Data { get; }
 
-        public PBEPkmnSwitchInPacket MakeHidden()
+        public sealed class PBESwitchInInfo
         {
-            var hiddenSwitchIns = new PBESwitchInInfo[SwitchIns.Count];
-            for (int i = 0; i < hiddenSwitchIns.Length; i++)
+            public PBESpecies Species { get; }
+            public PBEForm Form { get; }
+            public string Nickname { get; }
+            public byte Level { get; }
+            public bool Shiny { get; }
+            public PBEGender Gender { get; }
+            public double HPPercentage { get; }
+            public PBEStatus1 Status1 { get; }
+            public PBEFieldPosition FieldPosition { get; }
+
+            internal PBESwitchInInfo(PBEPkmnSwitchInPacket.PBESwitchInInfo other)
             {
-                hiddenSwitchIns[i] = SwitchIns[i].MakeHidden();
+                Species = other.Species;
+                Form = other.Form;
+                Nickname = other.Nickname;
+                Level = other.Level;
+                Shiny = other.Shiny;
+                Gender = other.Gender;
+                HPPercentage = other.HPPercentage;
+                Status1 = other.Status1;
+                FieldPosition = other.FieldPosition;
             }
-            return new PBEPkmnSwitchInPacket(Team, hiddenSwitchIns, Forced, ForcedByPokemonPosition, ForcedByPokemonTeam);
+            internal PBESwitchInInfo(EndianBinaryReader r)
+            {
+                Species = r.ReadEnum<PBESpecies>();
+                Form = r.ReadEnum<PBEForm>();
+                Nickname = r.ReadStringNullTerminated();
+                Level = r.ReadByte();
+                Shiny = r.ReadBoolean();
+                Gender = r.ReadEnum<PBEGender>();
+                HPPercentage = r.ReadDouble();
+                Status1 = r.ReadEnum<PBEStatus1>();
+                FieldPosition = r.ReadEnum<PBEFieldPosition>();
+            }
+
+            internal void ToBytes(EndianBinaryWriter w)
+            {
+                w.Write(Species);
+                w.Write(Form);
+                w.Write(Nickname, true);
+                w.Write(Level);
+                w.Write(Shiny);
+                w.Write(Gender);
+                w.Write(HPPercentage);
+                w.Write(Status1);
+                w.Write(FieldPosition);
+            }
+        }
+
+        public PBETeam Team { get; }
+        public ReadOnlyCollection<PBESwitchInInfo> SwitchIns { get; }
+        public bool Forced { get; }
+        public PBEFieldPosition? ForcedByPokemonPosition { get; }
+        public PBETeam ForcedByPokemonTeam { get; }
+
+        public PBEPkmnSwitchInPacket_Hidden(PBEPkmnSwitchInPacket other)
+        {
+            if (other == null)
+            {
+                throw new ArgumentNullException(nameof(other));
+            }
+            using (var ms = new MemoryStream())
+            using (var w = new EndianBinaryWriter(ms, encoding: EncodingType.UTF16))
+            {
+                w.Write(Code);
+                w.Write((Team = other.Team).Id);
+                var switchIns = new PBESwitchInInfo[other.SwitchIns.Count];
+                for (int i = 0; i < switchIns.Length; i++)
+                {
+                    switchIns[i] = new PBESwitchInInfo(other.SwitchIns[i]);
+                }
+                sbyte count = (sbyte)(SwitchIns = new ReadOnlyCollection<PBESwitchInInfo>(switchIns)).Count;
+                w.Write(count);
+                for (int i = 0; i < count; i++)
+                {
+                    SwitchIns[i].ToBytes(w);
+                }
+                w.Write(Forced = other.Forced);
+                if (Forced)
+                {
+                    w.Write((ForcedByPokemonPosition = other.ForcedByPokemonPosition).Value);
+                    w.Write((ForcedByPokemonTeam = other.ForcedByPokemonTeam).Id);
+                }
+                Data = new ReadOnlyCollection<byte>(ms.ToArray());
+            }
+        }
+        internal PBEPkmnSwitchInPacket_Hidden(byte[] data, EndianBinaryReader r, PBEBattle battle)
+        {
+            Data = new ReadOnlyCollection<byte>(data);
+            Team = battle.Teams[r.ReadByte()];
+            var switches = new PBESwitchInInfo[r.ReadSByte()];
+            for (int i = 0; i < switches.Length; i++)
+            {
+                switches[i] = new PBESwitchInInfo(r);
+            }
+            SwitchIns = new ReadOnlyCollection<PBESwitchInInfo>(switches);
+            Forced = r.ReadBoolean();
+            if (Forced)
+            {
+                ForcedByPokemonPosition = r.ReadEnum<PBEFieldPosition>();
+                ForcedByPokemonTeam = battle.Teams[r.ReadByte()];
+            }
         }
     }
 }

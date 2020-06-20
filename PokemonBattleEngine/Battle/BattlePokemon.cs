@@ -235,7 +235,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
             team.Party.Add(this);
         }
         /// <summary>This constructor is for remote Pokémon only.</summary>
-        public PBEBattlePokemon(PBETeam team, PBEPkmnSwitchInPacket.PBESwitchInInfo info)
+        public PBEBattlePokemon(PBETeam team, PBEPkmnSwitchInPacket_Hidden.PBESwitchInInfo info)
         {
             if (team == null)
             {
@@ -246,10 +246,8 @@ namespace Kermalis.PokemonBattleEngine.Battle
                 throw new ArgumentNullException(nameof(info));
             }
             Team = team;
-            Id = info.PokemonId;
+            Id = byte.MaxValue;
             FieldPosition = info.FieldPosition;
-            HP = info.HP;
-            MaxHP = info.MaxHP;
             HPPercentage = info.HPPercentage;
             Status1 = info.Status1;
             Level = info.Level;
@@ -268,6 +266,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
             KnownType2 = Type2 = pData.Type2;
             KnownWeight = Weight = pData.Weight;
             Team.Party.Add(this);
+            Team.Battle.ActiveBattlers.Add(this);
         }
         private void InitPokemon(PBESpecies species, PBEForm form, string nickname, byte level, byte friendship, bool shiny,
             PBEAbility ability, PBENature nature, PBEGender gender, PBEItem item)

@@ -1096,8 +1096,8 @@ namespace Kermalis.PokemonBattleEngineDiscord
                 }
                 case PBEPkmnFaintedPacket pfap:
                 {
-                    PBEBattlePokemon pokemon = pfap.PokemonTeam.TryGetPokemon(pfap.PokemonId);
-                    _queuedMessages.AppendLine(string.Format("{0} fainted!", NameForTrainer(pokemon)));
+                    PBEBattlePokemon disguisedAsPokemon = pfap.PokemonTeam.TryGetPokemon(pfap.DisguisedAsPokemonId);
+                    _queuedMessages.AppendLine(string.Format("{0} fainted!", NameForTrainer(disguisedAsPokemon)));
                     break;
                 }
                 case PBEPkmnFormChangedPacket pfcp:

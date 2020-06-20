@@ -742,17 +742,24 @@ namespace Kermalis.PokemonBattleEngineClient
                 }
                 case PBEPkmnFaintedPacket pfap:
                 {
-                    PBEBattlePokemon pokemon = _mode == ClientMode.SinglePlayer ? pfap.PokemonTeam.TryGetPokemon(pfap.PokemonId) : pfap.PokemonTeam.TryGetPokemon(pfap.PokemonPosition);
+                    PBEBattlePokemon pokemon = pfap.PokemonTeam.TryGetPokemon(pfap.PokemonId);
+                    PBEBattlePokemon disguisedAsPokemon = pfap.PokemonTeam.TryGetPokemon(pfap.DisguisedAsPokemonId);
                     if (_mode != ClientMode.SinglePlayer)
                     {
                         Battle.ActiveBattlers.Remove(pokemon);
                         pokemon.FieldPosition = PBEFieldPosition.None;
-                        if (_mode == ClientMode.Online && pfap.PokemonTeam.Id != BattleId)
-                        {
-                            PBETeam.Remove(pokemon);
-                        }
                     }
                     BattleView.Field.HidePokemon(pokemon, pfap.PokemonPosition);
+                    BattleView.AddMessage(string.Format("{0} fainted!", NameForTrainer(disguisedAsPokemon, true)));
+                    return false;
+                }
+                case PBEPkmnFaintedPacket_Hidden pfaph:
+                {
+                    PBEBattlePokemon pokemon = pfaph.PokemonTeam.TryGetPokemon(pfaph.PokemonPosition);
+                    Battle.ActiveBattlers.Remove(pokemon);
+                    pokemon.FieldPosition = PBEFieldPosition.None;
+                    PBETeam.Remove(pokemon);
+                    BattleView.Field.HidePokemon(pokemon, pfaph.PokemonPosition);
                     BattleView.AddMessage(string.Format("{0} fainted!", NameForTrainer(pokemon, true)));
                     return false;
                 }
@@ -775,9 +782,21 @@ namespace Kermalis.PokemonBattleEngineClient
                         if (pfcp.IsRevertForm)
                         {
                             pokemon.RevertForm = pfcp.NewForm;
-                            pokemon.RevertAbility = pfcp.NewAbility; // If it's an opponent, this will be PBEAbility.MAX which is fine
+                            pokemon.RevertAbility = pfcp.NewAbility;
                         }
                     }
+                    BattleView.Field.UpdatePokemon(pokemon, false, true);
+                    BattleView.AddMessage(string.Format("{0} transformed!", NameForTrainer(pokemon, true)));
+                    return false;
+                }
+                case PBEPkmnFormChangedPacket_Hidden pfcph:
+                {
+                    PBEBattlePokemon pokemon = pfcph.PokemonTeam.TryGetPokemon(pfcph.Pokemon);
+                    pokemon.KnownAbility = pfcph.NewKnownAbility;
+                    pokemon.KnownForm = pfcph.NewForm;
+                    pokemon.KnownType1 = pfcph.NewType1;
+                    pokemon.KnownType2 = pfcph.NewType2;
+                    pokemon.KnownWeight = pfcph.NewWeight;
                     BattleView.Field.UpdatePokemon(pokemon, false, true);
                     BattleView.AddMessage(string.Format("{0} transformed!", NameForTrainer(pokemon, true)));
                     return false;
@@ -795,14 +814,17 @@ namespace Kermalis.PokemonBattleEngineClient
                     int absChange = Math.Abs(change);
                     double percentageChange = phcp.NewHPPercentage - phcp.OldHPPercentage;
                     double absPercentageChange = Math.Abs(percentageChange);
-                    if (pokemon.Team.Id == BattleId || _mode == ClientMode.Replay) // Show raw values
-                    {
-                        BattleView.AddMessage(string.Format("{0} {1} {2} ({3:P2}) HP!", NameForTrainer(pokemon, true), change <= 0 ? "lost" : "restored", absChange, absPercentageChange));
-                    }
-                    else
-                    {
-                        BattleView.AddMessage(string.Format("{0} {1} {2:P2} of its HP!", NameForTrainer(pokemon, true), percentageChange <= 0 ? "lost" : "restored", absPercentageChange));
-                    }
+                    BattleView.AddMessage(string.Format("{0} {1} {2} ({3:P2}) HP!", NameForTrainer(pokemon, true), change <= 0 ? "lost" : "restored", absChange, absPercentageChange));
+                    return false;
+                }
+                case PBEPkmnHPChangedPacket_Hidden phcph:
+                {
+                    PBEBattlePokemon pokemon = phcph.PokemonTeam.TryGetPokemon(phcph.Pokemon);
+                    pokemon.HPPercentage = phcph.NewHPPercentage;
+                    BattleView.Field.UpdatePokemon(pokemon, true, false);
+                    double percentageChange = phcph.NewHPPercentage - phcph.OldHPPercentage;
+                    double absPercentageChange = Math.Abs(percentageChange);
+                    BattleView.AddMessage(string.Format("{0} {1} {2:P2} of its HP!", NameForTrainer(pokemon, true), percentageChange <= 0 ? "lost" : "restored", absPercentageChange));
                     return false;
                 }
                 case PBEPkmnStatChangedPacket pscp:
@@ -863,35 +885,24 @@ namespace Kermalis.PokemonBattleEngineClient
                 {
                     foreach (PBEPkmnSwitchInPacket.PBESwitchInInfo info in psip.SwitchIns)
                     {
-                        PBEBattlePokemon pokemon;
-                        if (_mode == ClientMode.Online && psip.Team.Id != BattleId)
-                        {
-                            pokemon = new PBEBattlePokemon(psip.Team, info);
-                        }
-                        else
-                        {
-                            pokemon = psip.Team.TryGetPokemon(info.PokemonId);
-                            if (_mode != ClientMode.SinglePlayer)
-                            {
-                                pokemon.FieldPosition = info.FieldPosition;
-                                PBETeam.SwitchTwoPokemon(pokemon, info.FieldPosition);
-                                if (info.DisguisedAsId != info.PokemonId)
-                                {
-                                    pokemon.Status2 |= PBEStatus2.Disguised;
-                                    pokemon.DisguisedAsPokemon = psip.Team.TryGetPokemon(info.DisguisedAsId);
-                                    pokemon.KnownGender = pokemon.DisguisedAsPokemon.Gender;
-                                    pokemon.KnownNickname = pokemon.DisguisedAsPokemon.Nickname;
-                                    pokemon.KnownShiny = pokemon.DisguisedAsPokemon.Shiny;
-                                    pokemon.KnownSpecies = pokemon.DisguisedAsPokemon.OriginalSpecies;
-                                    pokemon.KnownForm = pokemon.DisguisedAsPokemon.Form;
-                                    var pData = PBEPokemonData.GetData(pokemon.KnownSpecies, pokemon.KnownForm);
-                                    pokemon.KnownType1 = pData.Type1;
-                                    pokemon.KnownType2 = pData.Type2;
-                                }
-                            }
-                        }
+                        PBEBattlePokemon pokemon = psip.Team.TryGetPokemon(info.PokemonId);
                         if (_mode != ClientMode.SinglePlayer)
                         {
+                            pokemon.FieldPosition = info.FieldPosition;
+                            PBETeam.SwitchTwoPokemon(pokemon, info.FieldPosition);
+                            if (info.DisguisedAsId != info.PokemonId)
+                            {
+                                pokemon.Status2 |= PBEStatus2.Disguised;
+                                pokemon.DisguisedAsPokemon = psip.Team.TryGetPokemon(info.DisguisedAsId);
+                                pokemon.KnownGender = pokemon.DisguisedAsPokemon.Gender;
+                                pokemon.KnownNickname = pokemon.DisguisedAsPokemon.Nickname;
+                                pokemon.KnownShiny = pokemon.DisguisedAsPokemon.Shiny;
+                                pokemon.KnownSpecies = pokemon.DisguisedAsPokemon.OriginalSpecies;
+                                pokemon.KnownForm = pokemon.DisguisedAsPokemon.Form;
+                                var pData = PBEPokemonData.GetData(pokemon.KnownSpecies, pokemon.KnownForm);
+                                pokemon.KnownType1 = pData.Type1;
+                                pokemon.KnownType2 = pData.Type2;
+                            }
                             Battle.ActiveBattlers.Add(pokemon);
                         }
                         BattleView.Field.ShowPokemon(pokemon);
@@ -902,26 +913,44 @@ namespace Kermalis.PokemonBattleEngineClient
                     }
                     return false;
                 }
+                case PBEPkmnSwitchInPacket_Hidden psiph:
+                {
+                    foreach (PBEPkmnSwitchInPacket_Hidden.PBESwitchInInfo info in psiph.SwitchIns)
+                    {
+                        var pokemon = new PBEBattlePokemon(psiph.Team, info);
+                        BattleView.Field.ShowPokemon(pokemon);
+                    }
+                    if (!psiph.Forced)
+                    {
+                        BattleView.AddMessage(string.Format("{1} sent out {0}!", PBEUtils.Andify(psiph.SwitchIns.Select(s => s.Nickname).ToArray()), psiph.Team.TrainerName));
+                    }
+                    return false;
+                }
                 case PBEPkmnSwitchOutPacket psop:
                 {
-                    PBEBattlePokemon pokemon = psop.PokemonId != byte.MaxValue ? psop.PokemonTeam.TryGetPokemon(psop.PokemonId) : psop.PokemonTeam.TryGetPokemon(psop.PokemonPosition);
-                    PBEBattlePokemon disguisedAsPokemon = psop.DisguisedAsPokemonId != byte.MaxValue ? psop.PokemonTeam.TryGetPokemon(psop.DisguisedAsPokemonId) : pokemon;
+                    PBEBattlePokemon pokemon = psop.PokemonTeam.TryGetPokemon(psop.PokemonId);
+                    PBEBattlePokemon disguisedAsPokemon = psop.PokemonTeam.TryGetPokemon(psop.DisguisedAsPokemonId);
                     if (_mode != ClientMode.SinglePlayer)
                     {
                         Battle.ActiveBattlers.Remove(pokemon);
-                    }
-                    if (_mode == ClientMode.Online && psop.PokemonTeam.Id != BattleId)
-                    {
-                        PBETeam.Remove(pokemon);
-                    }
-                    else if (_mode != ClientMode.SinglePlayer)
-                    {
                         pokemon.ClearForSwitch();
                     }
                     BattleView.Field.HidePokemon(pokemon, psop.PokemonPosition);
                     if (!psop.Forced)
                     {
                         BattleView.AddMessage(string.Format("{1} withdrew {0}!", disguisedAsPokemon.Nickname, psop.PokemonTeam.TrainerName));
+                    }
+                    return false;
+                }
+                case PBEPkmnSwitchOutPacket_Hidden psoph:
+                {
+                    PBEBattlePokemon pokemon = psoph.PokemonTeam.TryGetPokemon(psoph.PokemonPosition);
+                    Battle.ActiveBattlers.Remove(pokemon);
+                    PBETeam.Remove(pokemon);
+                    BattleView.Field.HidePokemon(pokemon, psoph.PokemonPosition);
+                    if (!psoph.Forced)
+                    {
+                        BattleView.AddMessage(string.Format("{1} withdrew {0}!", pokemon.Nickname, psoph.PokemonTeam.TrainerName));
                     }
                     return false;
                 }
@@ -948,28 +977,25 @@ namespace Kermalis.PokemonBattleEngineClient
                     PBEBattlePokemon target = rtp.TargetTeam.TryGetPokemon(rtp.Target);
                     PBEType type1 = rtp.Type1;
                     PBEType type2 = rtp.Type2;
-                    if (type1 == PBEType.None && type2 == PBEType.None) // Hidden info
+                    if (_mode != ClientMode.SinglePlayer)
                     {
-                        if (_mode != ClientMode.SinglePlayer)
-                        {
-                            user.KnownType1 = target.KnownType1;
-                            user.KnownType2 = target.KnownType2;
-                        }
-                        BattleView.AddMessage(string.Format("{0} copied {1}'s types!", NameForTrainer(user, true), NameForTrainer(target, false)));
+                        user.Type1 = user.KnownType1 = target.KnownType1 = target.Type1 = type1;
+                        user.Type2 = user.KnownType2 = target.KnownType2 = target.Type2 = type2;
                     }
-                    else
-                    {
-                        if (_mode != ClientMode.SinglePlayer)
-                        {
-                            user.Type1 = user.KnownType1 = target.KnownType1 = target.Type1 = type1;
-                            user.Type2 = user.KnownType2 = target.KnownType2 = target.Type2 = type2;
-                        }
-                        string type1Str = PBELocalizedString.GetTypeName(type1).ToString();
-                        BattleView.AddMessage(string.Format("{0} copied {1}'s {2}",
-                            NameForTrainer(user, true),
-                            NameForTrainer(target, false),
-                            type2 == PBEType.None ? $"{type1Str} type!" : $"{type1Str} and {PBELocalizedString.GetTypeName(type2)} types!"));
-                    }
+                    string type1Str = PBELocalizedString.GetTypeName(type1).ToString();
+                    BattleView.AddMessage(string.Format("{0} copied {1}'s {2}",
+                        NameForTrainer(user, true),
+                        NameForTrainer(target, false),
+                        type2 == PBEType.None ? $"{type1Str} type!" : $"{type1Str} and {PBELocalizedString.GetTypeName(type2)} types!"));
+                    return false;
+                }
+                case PBEReflectTypePacket_Hidden rtph:
+                {
+                    PBEBattlePokemon user = rtph.UserTeam.TryGetPokemon(rtph.User);
+                    PBEBattlePokemon target = rtph.TargetTeam.TryGetPokemon(rtph.Target);
+                    user.KnownType1 = target.KnownType1;
+                    user.KnownType2 = target.KnownType2;
+                    BattleView.AddMessage(string.Format("{0} copied {1}'s types!", NameForTrainer(user, true), NameForTrainer(target, false)));
                     return false;
                 }
                 case PBESpecialMessagePacket smp:
@@ -1732,22 +1758,43 @@ namespace Kermalis.PokemonBattleEngineClient
                 }
                 case PBEAutoCenterPacket acp:
                 {
-                    PBEBattlePokemon pokemon1,
-                            pokemon2;
-                    if (_mode == ClientMode.SinglePlayer)
-                    {
-                        pokemon1 = acp.Pokemon1Team.TryGetPokemon(acp.Pokemon1Id);
-                        pokemon2 = acp.Pokemon2Team.TryGetPokemon(acp.Pokemon2Id);
-                    }
-                    else
-                    {
-                        pokemon1 = acp.Pokemon1Team.TryGetPokemon(acp.Pokemon1Position);
-                        pokemon2 = acp.Pokemon2Team.TryGetPokemon(acp.Pokemon2Position);
-                        pokemon1.FieldPosition = PBEFieldPosition.Center;
-                        pokemon2.FieldPosition = PBEFieldPosition.Center;
-                    }
+                    PBEBattlePokemon pokemon1 = acp.Pokemon1Team.TryGetPokemon(acp.Pokemon1Id);
+                    PBEBattlePokemon pokemon2 = acp.Pokemon2Team.TryGetPokemon(acp.Pokemon2Id);
                     BattleView.Field.MovePokemon(pokemon1, acp.Pokemon1Position);
                     BattleView.Field.MovePokemon(pokemon2, acp.Pokemon2Position);
+                    BattleView.AddMessage("The battlers shifted to the center!");
+                    return false;
+                }
+                case PBEAutoCenterPacket_Hidden0 acph0:
+                {
+                    PBEBattlePokemon pokemon1 = acph0.Pokemon1Team.TryGetPokemon(acph0.Pokemon1Position);
+                    PBEBattlePokemon pokemon2 = acph0.Pokemon2Team.TryGetPokemon(acph0.Pokemon2Id);
+                    pokemon1.FieldPosition = PBEFieldPosition.Center;
+                    pokemon2.FieldPosition = PBEFieldPosition.Center;
+                    BattleView.Field.MovePokemon(pokemon1, acph0.Pokemon1Position);
+                    BattleView.Field.MovePokemon(pokemon2, acph0.Pokemon2Position);
+                    BattleView.AddMessage("The battlers shifted to the center!");
+                    return false;
+                }
+                case PBEAutoCenterPacket_Hidden1 acph1:
+                {
+                    PBEBattlePokemon pokemon1 = acph1.Pokemon1Team.TryGetPokemon(acph1.Pokemon1Id);
+                    PBEBattlePokemon pokemon2 = acph1.Pokemon2Team.TryGetPokemon(acph1.Pokemon2Position);
+                    pokemon1.FieldPosition = PBEFieldPosition.Center;
+                    pokemon2.FieldPosition = PBEFieldPosition.Center;
+                    BattleView.Field.MovePokemon(pokemon1, acph1.Pokemon1Position);
+                    BattleView.Field.MovePokemon(pokemon2, acph1.Pokemon2Position);
+                    BattleView.AddMessage("The battlers shifted to the center!");
+                    return false;
+                }
+                case PBEAutoCenterPacket_Hidden01 acph01:
+                {
+                    PBEBattlePokemon pokemon1 = acph01.Pokemon1Team.TryGetPokemon(acph01.Pokemon1Position);
+                    PBEBattlePokemon pokemon2 = acph01.Pokemon2Team.TryGetPokemon(acph01.Pokemon2Position);
+                    pokemon1.FieldPosition = PBEFieldPosition.Center;
+                    pokemon2.FieldPosition = PBEFieldPosition.Center;
+                    BattleView.Field.MovePokemon(pokemon1, acph01.Pokemon1Position);
+                    BattleView.Field.MovePokemon(pokemon2, acph01.Pokemon2Position);
                     BattleView.AddMessage("The battlers shifted to the center!");
                     return false;
                 }
