@@ -573,6 +573,7 @@ namespace Kermalis.PokemonBattleEngine.AI
                                     case PBEMoveEffect.PsychUp:
                                     case PBEMoveEffect.Psywave:
                                     case PBEMoveEffect.RainDance:
+                                    case PBEMoveEffect.ReflectType:
                                     case PBEMoveEffect.RolePlay:
                                     case PBEMoveEffect.Sandstorm:
                                     case PBEMoveEffect.SeismicToss:

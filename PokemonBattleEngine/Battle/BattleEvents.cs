@@ -162,7 +162,20 @@ namespace Kermalis.PokemonBattleEngine.Battle
         }
         private void BroadcastPsychUp(PBEBattlePokemon user, PBEBattlePokemon target)
         {
+            user.AttackChange = target.AttackChange;
+            user.DefenseChange = target.DefenseChange;
+            user.SpAttackChange = target.SpAttackChange;
+            user.SpDefenseChange = target.SpDefenseChange;
+            user.SpeedChange = target.SpeedChange;
+            user.AccuracyChange = target.AccuracyChange;
+            user.EvasionChange = target.EvasionChange;
             Broadcast(new PBEPsychUpPacket(user, target));
+        }
+        private void BroadcastReflectType(PBEBattlePokemon user, PBEBattlePokemon target)
+        {
+            user.Type1 = user.KnownType1 = target.KnownType1 = target.Type1;
+            user.Type2 = user.KnownType2 = target.KnownType2 = target.Type2;
+            Broadcast(new PBEReflectTypePacket(user, target));
         }
 
         private void BroadcastDraggedOut(PBEBattlePokemon pokemon)
@@ -872,6 +885,19 @@ namespace Kermalis.PokemonBattleEngine.Battle
                     PBEBattlePokemon user = pup.UserTeam.TryGetPokemon(pup.User),
                             target = pup.TargetTeam.TryGetPokemon(pup.Target);
                     Console.WriteLine("{0} copied {1}'s stat changes!", NameForTrainer(user), NameForTrainer(target));
+                    break;
+                }
+                case PBEReflectTypePacket rtp:
+                {
+                    PBEBattlePokemon user = rtp.UserTeam.TryGetPokemon(rtp.User);
+                    PBEBattlePokemon target = rtp.TargetTeam.TryGetPokemon(rtp.Target);
+                    PBEType type1 = rtp.Type1;
+                    PBEType type2 = rtp.Type2;
+                    string type1Str = PBELocalizedString.GetTypeName(type1).English;
+                    Console.WriteLine("{0} copied {1}'s {2}",
+                        NameForTrainer(user),
+                        NameForTrainer(target),
+                        type2 == PBEType.None ? $"{type1Str} type!" : $"{type1Str} and {PBELocalizedString.GetTypeName(type2).English} types!");
                     break;
                 }
                 case PBESpecialMessagePacket smp:

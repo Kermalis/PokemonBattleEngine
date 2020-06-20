@@ -942,6 +942,36 @@ namespace Kermalis.PokemonBattleEngineClient
                     BattleView.AddMessage(string.Format("{0} copied {1}'s stat changes!", NameForTrainer(user, true), NameForTrainer(target, false)));
                     return false;
                 }
+                case PBEReflectTypePacket rtp:
+                {
+                    PBEBattlePokemon user = rtp.UserTeam.TryGetPokemon(rtp.User);
+                    PBEBattlePokemon target = rtp.TargetTeam.TryGetPokemon(rtp.Target);
+                    PBEType type1 = rtp.Type1;
+                    PBEType type2 = rtp.Type2;
+                    if (type1 == PBEType.None && type2 == PBEType.None) // Hidden info
+                    {
+                        if (_mode != ClientMode.SinglePlayer)
+                        {
+                            user.KnownType1 = target.KnownType1;
+                            user.KnownType2 = target.KnownType2;
+                        }
+                        BattleView.AddMessage(string.Format("{0} copied {1}'s types!", NameForTrainer(user, true), NameForTrainer(target, false)));
+                    }
+                    else
+                    {
+                        if (_mode != ClientMode.SinglePlayer)
+                        {
+                            user.Type1 = user.KnownType1 = target.KnownType1 = target.Type1 = type1;
+                            user.Type2 = user.KnownType2 = target.KnownType2 = target.Type2 = type2;
+                        }
+                        string type1Str = PBELocalizedString.GetTypeName(type1).ToString();
+                        BattleView.AddMessage(string.Format("{0} copied {1}'s {2}",
+                            NameForTrainer(user, true),
+                            NameForTrainer(target, false),
+                            type2 == PBEType.None ? $"{type1Str} type!" : $"{type1Str} and {PBELocalizedString.GetTypeName(type2)} types!"));
+                    }
+                    return false;
+                }
                 case PBESpecialMessagePacket smp:
                 {
                     string message;

@@ -2296,6 +2296,7 @@ namespace Kermalis.PokemonBattleEngine.Data
         Recoil__10PercentBurn,
         Recoil__10PercentParalyze,
         Reflect,
+        ReflectType,
         Rest,
         RestoreTargetHP,
         Retaliate,

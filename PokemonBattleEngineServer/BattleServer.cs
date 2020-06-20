@@ -381,6 +381,27 @@ namespace Kermalis.PokemonBattleEngineServer
                     SendOriginalPacketToTeamOwnerAndEveryoneElseGetsAPacketWithHiddenInfo(psop, psop.MakeHidden(), psop.PokemonTeam.Id);
                     break;
                 }
+                case PBEReflectTypePacket rtp:
+                {
+                    PBEReflectTypePacket hidden = rtp.MakeHidden();
+                    _spectatorPackets.Add(hidden);
+                    _battlers[0].Send(rtp.UserTeam.Id == 0 || rtp.TargetTeam.Id == 0 ? rtp : hidden);
+                    if (!_battlers[0].WaitForResponse())
+                    {
+                        return;
+                    }
+                    _battlers[1].Send(rtp.UserTeam.Id == 1 || rtp.TargetTeam.Id == 1 ? rtp : hidden);
+                    if (!_battlers[1].WaitForResponse())
+                    {
+                        return;
+                    }
+                    foreach (Player player in _readyPlayers.Values.Except(_battlers))
+                    {
+                        player.Send(hidden);
+                        player.WaitForResponse();
+                    }
+                    break;
+                }
                 case PBETransformPacket tp:
                 {
                     if (tp.UserTeam.Id == 0 || tp.TargetTeam.Id == 0)

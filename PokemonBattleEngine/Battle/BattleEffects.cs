@@ -777,6 +777,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                 case PBEMoveEffect.Recoil__10PercentBurn: Ef_Recoil(user, targets, move, mData, status1: PBEStatus1.Burned, chanceToInflictStatus1: 10); break;
                 case PBEMoveEffect.Recoil__10PercentParalyze: Ef_Recoil(user, targets, move, mData, status1: PBEStatus1.Paralyzed, chanceToInflictStatus1: 10); break;
                 case PBEMoveEffect.Reflect: Ef_TryForceTeamStatus(user, move, mData, PBETeamStatus.Reflect); break;
+                case PBEMoveEffect.ReflectType: Ef_ReflectType(user, targets, move, mData); break;
                 case PBEMoveEffect.Rest: Ef_Rest(user, move, mData); break;
                 case PBEMoveEffect.RestoreTargetHP: Ef_RestoreTargetHP(user, targets, move, mData); break;
                 case PBEMoveEffect.RolePlay: Ef_RolePlay(user, targets, move, mData); break;
@@ -3567,14 +3568,35 @@ namespace Kermalis.PokemonBattleEngine.Battle
                 {
                     if (!MissCheck(user, target, mData))
                     {
-                        user.AttackChange = target.AttackChange;
-                        user.DefenseChange = target.DefenseChange;
-                        user.SpAttackChange = target.SpAttackChange;
-                        user.SpDefenseChange = target.SpDefenseChange;
-                        user.SpeedChange = target.SpeedChange;
-                        user.AccuracyChange = target.AccuracyChange;
-                        user.EvasionChange = target.EvasionChange;
                         BroadcastPsychUp(user, target);
+                    }
+                }
+            }
+            RecordExecutedMove(user, move, mData);
+        }
+        private void Ef_ReflectType(PBEBattlePokemon user, PBEBattlePokemon[] targets, PBEMove move, PBEMoveData mData)
+        {
+            BroadcastMoveUsed(user, move);
+            PPReduce(user, move);
+            if (targets.Length == 0)
+            {
+                BroadcastMoveResult(user, user, PBEResult.NoTarget);
+            }
+            else
+            {
+                foreach (PBEBattlePokemon target in targets)
+                {
+                    if (!MissCheck(user, target, mData))
+                    {
+                        // Fail if pure flying-type roosts
+                        if (target.Type1 == PBEType.None && target.Type2 == PBEType.None)
+                        {
+                            BroadcastMoveResult(user, target, PBEResult.InvalidConditions);
+                        }
+                        else
+                        {
+                            BroadcastReflectType(user, target);
+                        }
                     }
                 }
             }

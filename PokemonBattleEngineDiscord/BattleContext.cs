@@ -1194,6 +1194,19 @@ namespace Kermalis.PokemonBattleEngineDiscord
                     _queuedMessages.AppendLine(string.Format("{0} copied {1}'s stat changes!", NameForTrainer(user), NameForTrainer(target)));
                     break;
                 }
+                case PBEReflectTypePacket rtp:
+                {
+                    PBEBattlePokemon user = rtp.UserTeam.TryGetPokemon(rtp.User);
+                    PBEBattlePokemon target = rtp.TargetTeam.TryGetPokemon(rtp.Target);
+                    PBEType type1 = rtp.Type1;
+                    PBEType type2 = rtp.Type2;
+                    string type1Str = PBELocalizedString.GetTypeName(type1).English;
+                    _queuedMessages.AppendLine(string.Format("{0} copied {1}'s {2}",
+                        NameForTrainer(user),
+                        NameForTrainer(target),
+                        type2 == PBEType.None ? $"{type1Str} type!" : $"{type1Str} and {PBELocalizedString.GetTypeName(type2).English} types!"));
+                    break;
+                }
                 case PBESpecialMessagePacket smp:
                 {
                     PBEBattlePokemon pokemon = null;
@@ -1671,7 +1684,9 @@ namespace Kermalis.PokemonBattleEngineDiscord
                     PBEType type1 = tcp.Type1;
                     PBEType type2 = tcp.Type2;
                     string type1Str = PBELocalizedString.GetTypeName(type1).English;
-                    _queuedMessages.AppendLine(string.Format("{0} transformed into the {1}", NameForTrainer(pokemon), type2 == PBEType.None ? $"{type1Str} type!" : $"{type1Str} and {PBELocalizedString.GetTypeName(type2).English} types!"));
+                    _queuedMessages.AppendLine(string.Format("{0} transformed into the {1}",
+                        NameForTrainer(pokemon),
+                        type2 == PBEType.None ? $"{type1Str} type!" : $"{type1Str} and {PBELocalizedString.GetTypeName(type2).English} types!"));
                     break;
                 }
                 case PBEWeatherPacket wp:

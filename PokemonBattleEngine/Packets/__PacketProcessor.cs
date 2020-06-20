@@ -66,6 +66,7 @@ namespace Kermalis.PokemonBattleEngine.Packets
                     case PBETypeChangedPacket.Code: return new PBETypeChangedPacket(data, r, battle);
                     case PBEAbilityReplacedPacket.Code: return new PBEAbilityReplacedPacket(data, r, battle);
                     case PBELegalPartyResponsePacket.Code: return new PBELegalPartyResponsePacket(data, r, battle);
+                    case PBEReflectTypePacket.Code: return new PBEReflectTypePacket(data, r, battle);
                     default: throw new InvalidDataException();
                 }
             }
