@@ -3528,10 +3528,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                     }
                     else
                     {
-                        if (!MissCheck(user, target, mData))
-                        {
-                            ApplyStatus2IfPossible(user, target, PBEStatus2.HelpingHand, true);
-                        }
+                        ApplyStatus2IfPossible(user, target, PBEStatus2.HelpingHand, true); // No MissCheck because should be able to hit through protect, shadowforce, etc
                     }
                 }
             }

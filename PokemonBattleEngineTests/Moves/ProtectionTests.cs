@@ -54,8 +54,7 @@ namespace Kermalis.PokemonBattleEngineTests.Moves
 
             battle.RunTurn();
 
-            PBEBattlePokemon pkmn = battle.Teams[0].Party[0];
-            Assert.True(pkmn.Protection_Counter == 1);
+            Assert.True(mienshao.Protection_Counter == 1);
             #endregion
 
             #region Use Calm Mind and check
@@ -64,7 +63,7 @@ namespace Kermalis.PokemonBattleEngineTests.Moves
 
             battle.RunTurn();
 
-            Assert.True(pkmn.Protection_Counter == 0);
+            Assert.True(mienshao.Protection_Counter == 0);
             #endregion
 
             #region Cleanup
