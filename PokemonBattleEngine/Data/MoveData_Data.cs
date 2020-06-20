@@ -48,7 +48,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                 new PBEMoveData
                 (
                     PBEType.Flying, PBEMoveCategory.Physical, 0, 3, 55, 100,
-                    PBEMoveEffect.Hit, 0, PBEMoveTarget.SingleNotSelf,
+                    PBEMoveEffect.Acrobatics, 0, PBEMoveTarget.SingleNotSelf,
                     PBEMoveFlag.AffectedByMirrorMove | PBEMoveFlag.AffectedByProtect | PBEMoveFlag.MakesContact
                 )
             },
@@ -373,7 +373,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                 (
                     PBEType.Ice, PBEMoveCategory.Special, 0, 1, 120, 70,
                     PBEMoveEffect.Hit__MaybeFreeze, 10, PBEMoveTarget.AllFoesSurrounding,
-                    PBEMoveFlag.AffectedByMirrorMove | PBEMoveFlag.AffectedByProtect
+                    PBEMoveFlag.AffectedByMirrorMove | PBEMoveFlag.AffectedByProtect | PBEMoveFlag.NeverMissHail
                 )
             },
             {
@@ -408,7 +408,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                 new PBEMoveData
                 (
                     PBEType.Water, PBEMoveCategory.Special, 0, 2, 65, 100,
-                    PBEMoveEffect.Hit, 0, PBEMoveTarget.SingleSurrounding,
+                    PBEMoveEffect.Brine, 0, PBEMoveTarget.SingleSurrounding,
                     PBEMoveFlag.AffectedByMirrorMove | PBEMoveFlag.AffectedByProtect
                 )
             },
@@ -821,8 +821,8 @@ namespace Kermalis.PokemonBattleEngine.Data
                 PBEMove.CrushGrip,
                 new PBEMoveData
                 (
-                    PBEType.Normal, PBEMoveCategory.Physical, 0, 1, 0, 100,
-                    PBEMoveEffect.Hit, 0, PBEMoveTarget.SingleSurrounding,
+                    PBEType.Normal, PBEMoveCategory.Physical, 0, 1, 120, 100,
+                    PBEMoveEffect.CrushGrip, 0, PBEMoveTarget.SingleSurrounding,
                     PBEMoveFlag.AffectedByMirrorMove | PBEMoveFlag.AffectedByProtect | PBEMoveFlag.MakesContact
                 )
             },
@@ -1147,7 +1147,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                 (
                     PBEType.Ground, PBEMoveCategory.Physical, 0, 2, 100, 100,
                     PBEMoveEffect.Hit, 0, PBEMoveTarget.AllSurrounding,
-                    PBEMoveFlag.AffectedByMirrorMove | PBEMoveFlag.AffectedByProtect | PBEMoveFlag.HitsUnderground
+                    PBEMoveFlag.AffectedByMirrorMove | PBEMoveFlag.AffectedByProtect | PBEMoveFlag.DoubleDamageUnderground
                 )
             },
             {
@@ -1254,7 +1254,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                 new PBEMoveData
                 (
                     PBEType.Fire, PBEMoveCategory.Special, 0, 1, 150, 100,
-                    PBEMoveEffect.Hit, 0, PBEMoveTarget.AllFoesSurrounding,
+                    PBEMoveEffect.Eruption, 0, PBEMoveTarget.AllFoesSurrounding,
                     PBEMoveFlag.AffectedByMirrorMove | PBEMoveFlag.AffectedByProtect
                 )
             },
@@ -1290,7 +1290,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                 new PBEMoveData
                 (
                     PBEType.Normal, PBEMoveCategory.Physical, 0, 4, 70, 100,
-                    PBEMoveEffect.Hit, 0, PBEMoveTarget.SingleSurrounding,
+                    PBEMoveEffect.Facade, 0, PBEMoveTarget.SingleSurrounding,
                     PBEMoveFlag.AffectedByMirrorMove | PBEMoveFlag.AffectedByProtect | PBEMoveFlag.MakesContact
                 )
             },
@@ -1425,7 +1425,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                 new PBEMoveData
                 (
                     PBEType.Normal, PBEMoveCategory.Physical, 0, 3, 0, 100,
-                    PBEMoveEffect.Hit, 0, PBEMoveTarget.SingleSurrounding,
+                    PBEMoveEffect.Flail, 0, PBEMoveTarget.SingleSurrounding,
                     PBEMoveFlag.AffectedByMirrorMove | PBEMoveFlag.AffectedByProtect | PBEMoveFlag.MakesContact
                 )
             },
@@ -1578,7 +1578,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                 new PBEMoveData
                 (
                     PBEType.Dark, PBEMoveCategory.Physical, 0, 3, 95, 100,
-                    PBEMoveEffect.Hit, 0, PBEMoveTarget.SingleSurrounding,
+                    PBEMoveEffect.FoulPlay, 0, PBEMoveTarget.SingleSurrounding,
                     PBEMoveFlag.AffectedByMirrorMove | PBEMoveFlag.AffectedByProtect | PBEMoveFlag.MakesContact
                 )
             },
@@ -1614,7 +1614,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                 new PBEMoveData
                 (
                     PBEType.Normal, PBEMoveCategory.Physical, 0, 4, 0, 100,
-                    PBEMoveEffect.Hit, 0, PBEMoveTarget.SingleSurrounding,
+                    PBEMoveEffect.Frustration, 0, PBEMoveTarget.SingleSurrounding,
                     PBEMoveFlag.AffectedByMirrorMove | PBEMoveFlag.AffectedByProtect | PBEMoveFlag.MakesContact
                 )
             },
@@ -1731,7 +1731,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                 new PBEMoveData
                 (
                     PBEType.Grass, PBEMoveCategory.Special, 0, 4, 0, 100,
-                    PBEMoveEffect.Hit, 0, PBEMoveTarget.SingleSurrounding,
+                    PBEMoveEffect.GrassKnot, 0, PBEMoveTarget.SingleSurrounding,
                     PBEMoveFlag.AffectedByMirrorMove | PBEMoveFlag.AffectedByProtect | PBEMoveFlag.MakesContact
                 )
             },
@@ -1831,7 +1831,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                 (
                     PBEType.Flying, PBEMoveCategory.Special, 0, 7, 40, 100,
                     PBEMoveEffect.Hit, 0, PBEMoveTarget.SingleNotSelf,
-                    PBEMoveFlag.AffectedByMirrorMove | PBEMoveFlag.AffectedByProtect | PBEMoveFlag.HitsAirborne
+                    PBEMoveFlag.AffectedByMirrorMove | PBEMoveFlag.AffectedByProtect | PBEMoveFlag.DoubleDamageAirborne
                 )
             },
             {
@@ -1974,7 +1974,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                 new PBEMoveData
                 (
                     PBEType.Fire, PBEMoveCategory.Physical, 0, 2, 0, 100,
-                    PBEMoveEffect.Hit, 0, PBEMoveTarget.SingleSurrounding,
+                    PBEMoveEffect.HeatCrash, 0, PBEMoveTarget.SingleSurrounding,
                     PBEMoveFlag.AffectedByMirrorMove | PBEMoveFlag.AffectedByProtect | PBEMoveFlag.MakesContact
                 )
             },
@@ -1992,7 +1992,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                 new PBEMoveData
                 (
                     PBEType.Steel, PBEMoveCategory.Physical, 0, 2, 0, 100,
-                    PBEMoveEffect.Hit, 0, PBEMoveTarget.SingleSurrounding,
+                    PBEMoveEffect.HeatCrash, 0, PBEMoveTarget.SingleSurrounding,
                     PBEMoveFlag.AffectedByMirrorMove | PBEMoveFlag.AffectedByProtect | PBEMoveFlag.MakesContact
                 )
             },
@@ -2010,7 +2010,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                 new PBEMoveData
                 (
                     PBEType.Ghost, PBEMoveCategory.Special, 0, 2, 50, 100,
-                    PBEMoveEffect.Hit, 0, PBEMoveTarget.SingleSurrounding,
+                    PBEMoveEffect.Hex, 0, PBEMoveTarget.SingleSurrounding,
                     PBEMoveFlag.AffectedByMirrorMove | PBEMoveFlag.AffectedByProtect
                 )
             },
@@ -2019,7 +2019,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                 new PBEMoveData
                 (
                     PBEType.Normal, PBEMoveCategory.Special, 0, 3, 0, 100,
-                    PBEMoveEffect.Hit, 0, PBEMoveTarget.SingleSurrounding,
+                    PBEMoveEffect.HiddenPower, 0, PBEMoveTarget.SingleSurrounding,
                     PBEMoveFlag.AffectedByMirrorMove | PBEMoveFlag.AffectedByProtect
                 )
             },
@@ -2083,7 +2083,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                 (
                     PBEType.Flying, PBEMoveCategory.Special, 0, 2, 120, 70,
                     PBEMoveEffect.Hit__MaybeConfuse, 30, PBEMoveTarget.SingleNotSelf,
-                    PBEMoveFlag.AffectedByMirrorMove | PBEMoveFlag.AffectedByProtect | PBEMoveFlag.HitsAirborne
+                    PBEMoveFlag.AffectedByMirrorMove | PBEMoveFlag.AffectedByProtect | PBEMoveFlag.HitsAirborne | PBEMoveFlag.NeverMissRain
                 )
             },
             {
@@ -2146,7 +2146,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                 (
                     PBEType.Ice, PBEMoveCategory.Physical, 0, 4, 30, 90,
                     PBEMoveEffect.TODOMOVE, 0, PBEMoveTarget.SingleSurrounding,
-                    PBEMoveFlag.AffectedByMirrorMove | PBEMoveFlag.AffectedByProtect | PBEMoveFlag.MakesContact
+                    PBEMoveFlag.AffectedByMirrorMove | PBEMoveFlag.AffectedByProtect | PBEMoveFlag.DoubleDamageUserDefenseCurl | PBEMoveFlag.MakesContact
                 )
             },
             {
@@ -2289,7 +2289,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                 new PBEMoveData
                 (
                     PBEType.Normal, PBEMoveCategory.Special, 0, 2, 100, 100,
-                    PBEMoveEffect.Hit, 0, PBEMoveTarget.SingleSurrounding,
+                    PBEMoveEffect.Judgment, 0, PBEMoveTarget.SingleSurrounding,
                     PBEMoveFlag.AffectedByMirrorMove | PBEMoveFlag.AffectedByProtect
                 )
             },
@@ -2442,7 +2442,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                 new PBEMoveData
                 (
                     PBEType.Fighting, PBEMoveCategory.Physical, 0, 4, 0, 100,
-                    PBEMoveEffect.Hit, 0, PBEMoveTarget.SingleSurrounding,
+                    PBEMoveEffect.GrassKnot, 0, PBEMoveTarget.SingleSurrounding,
                     PBEMoveFlag.AffectedByMirrorMove | PBEMoveFlag.AffectedByProtect | PBEMoveFlag.MakesContact
                 )
             },
@@ -2550,8 +2550,8 @@ namespace Kermalis.PokemonBattleEngine.Data
                 new PBEMoveData
                 (
                     PBEType.Ground, PBEMoveCategory.Physical, 0, 6, 0, 100,
-                    PBEMoveEffect.Hit, 0, PBEMoveTarget.AllSurrounding,
-                    PBEMoveFlag.AffectedByMirrorMove | PBEMoveFlag.AffectedByProtect | PBEMoveFlag.HitsUnderground
+                    PBEMoveEffect.Magnitude, 0, PBEMoveTarget.AllSurrounding,
+                    PBEMoveFlag.AffectedByMirrorMove | PBEMoveFlag.AffectedByProtect | PBEMoveFlag.DoubleDamageUnderground
                 )
             },
             {
@@ -2703,7 +2703,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                 new PBEMoveData
                 (
                     PBEType.Normal, PBEMoveCategory.Status, 0, 4, 0, 0,
-                    PBEMoveEffect.ChangeTarget_EVA, +2, PBEMoveTarget.Self,
+                    PBEMoveEffect.Minimize, +2, PBEMoveTarget.Self,
                     PBEMoveFlag.AffectedBySnatch
                 )
             },
@@ -3207,7 +3207,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                 new PBEMoveData
                 (
                     PBEType.Psychic, PBEMoveCategory.Special, 0, 2, 80, 100,
-                    PBEMoveEffect.Hit, 0, PBEMoveTarget.SingleSurrounding,
+                    PBEMoveEffect.Psyshock, 0, PBEMoveTarget.SingleSurrounding,
                     PBEMoveFlag.AffectedByMirrorMove | PBEMoveFlag.AffectedByProtect
                 )
             },
@@ -3216,7 +3216,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                 new PBEMoveData
                 (
                     PBEType.Psychic, PBEMoveCategory.Special, 0, 2, 100, 100,
-                    PBEMoveEffect.Hit, 0, PBEMoveTarget.SingleSurrounding,
+                    PBEMoveEffect.Psyshock, 0, PBEMoveTarget.SingleSurrounding,
                     PBEMoveFlag.AffectedByMirrorMove | PBEMoveFlag.AffectedByProtect
                 )
             },
@@ -3233,8 +3233,8 @@ namespace Kermalis.PokemonBattleEngine.Data
                 PBEMove.Punishment,
                 new PBEMoveData
                 (
-                    PBEType.Dark, PBEMoveCategory.Physical, 0, 1, 0, 100,
-                    PBEMoveEffect.Hit, 0, PBEMoveTarget.SingleSurrounding,
+                    PBEType.Dark, PBEMoveCategory.Physical, 0, 1, 60, 100,
+                    PBEMoveEffect.Punishment, 0, PBEMoveTarget.SingleSurrounding,
                     PBEMoveFlag.AffectedByMirrorMove | PBEMoveFlag.AffectedByProtect | PBEMoveFlag.MakesContact
                 )
             },
@@ -3414,7 +3414,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                 new PBEMoveData
                 (
                     PBEType.Normal, PBEMoveCategory.Physical, 0, 1, 70, 100,
-                    PBEMoveEffect.Hit, 0, PBEMoveTarget.SingleSurrounding,
+                    PBEMoveEffect.Retaliate, 0, PBEMoveTarget.SingleSurrounding,
                     PBEMoveFlag.AffectedByMirrorMove | PBEMoveFlag.AffectedByProtect
                 )
             },
@@ -3423,7 +3423,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                 new PBEMoveData
                 (
                     PBEType.Normal, PBEMoveCategory.Physical, 0, 4, 0, 100,
-                    PBEMoveEffect.Hit, 0, PBEMoveTarget.SingleSurrounding,
+                    PBEMoveEffect.Return, 0, PBEMoveTarget.SingleSurrounding,
                     PBEMoveFlag.AffectedByMirrorMove | PBEMoveFlag.AffectedByProtect | PBEMoveFlag.MakesContact
                 )
             },
@@ -3441,7 +3441,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                 new PBEMoveData
                 (
                     PBEType.Fighting, PBEMoveCategory.Physical, 0, 3, 0, 100,
-                    PBEMoveEffect.Hit, 0, PBEMoveTarget.SingleSurrounding,
+                    PBEMoveEffect.Flail, 0, PBEMoveTarget.SingleSurrounding,
                     PBEMoveFlag.AffectedByMirrorMove | PBEMoveFlag.AffectedByProtect | PBEMoveFlag.MakesContact
                 )
             },
@@ -3559,7 +3559,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                 (
                     PBEType.Rock, PBEMoveCategory.Physical, 0, 4, 30, 90,
                     PBEMoveEffect.TODOMOVE, 0, PBEMoveTarget.SingleSurrounding,
-                    PBEMoveFlag.AffectedByMirrorMove | PBEMoveFlag.AffectedByProtect | PBEMoveFlag.MakesContact
+                    PBEMoveFlag.AffectedByMirrorMove | PBEMoveFlag.AffectedByProtect | PBEMoveFlag.DoubleDamageUserDefenseCurl | PBEMoveFlag.MakesContact
                 )
             },
             {
@@ -3693,7 +3693,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                 new PBEMoveData
                 (
                     PBEType.Fighting, PBEMoveCategory.Special, 0, 2, 85, 100,
-                    PBEMoveEffect.Hit, 0, PBEMoveTarget.SingleSurrounding,
+                    PBEMoveEffect.Psyshock, 0, PBEMoveTarget.SingleSurrounding,
                     PBEMoveFlag.AffectedByMirrorMove | PBEMoveFlag.AffectedByProtect | PBEMoveFlag.BlockedFromMetronome
                 )
             },
@@ -3855,7 +3855,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                 new PBEMoveData
                 (
                     PBEType.Normal, PBEMoveCategory.Status, 0, 0, 0, 0,
-                    PBEMoveEffect.TODOMOVE, 0, PBEMoveTarget.SingleSurrounding,
+                    PBEMoveEffect.Sketch, 0, PBEMoveTarget.SingleSurrounding,
                     PBEMoveFlag.BlockedFromAssist | PBEMoveFlag.BlockedFromCopycat | PBEMoveFlag.BlockedFromMetronome | PBEMoveFlag.BlockedFromMimic | PBEMoveFlag.BlockedFromSketch | PBEMoveFlag.BlockedFromSleepTalk
                 )
             },
@@ -4180,7 +4180,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                 (
                     PBEType.Bug, PBEMoveCategory.Physical, 0, 4, 65, 100,
                     PBEMoveEffect.Hit__MaybeFlinch, 30, PBEMoveTarget.SingleSurrounding,
-                    PBEMoveFlag.AffectedByMirrorMove | PBEMoveFlag.AffectedByProtect | PBEMoveFlag.MakesContact
+                    PBEMoveFlag.AffectedByMirrorMove | PBEMoveFlag.AffectedByProtect | PBEMoveFlag.DoubleDamageMinimized | PBEMoveFlag.MakesContact
                 )
             },
             {
@@ -4207,7 +4207,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                 (
                     PBEType.Normal, PBEMoveCategory.Physical, 0, 4, 65, 100,
                     PBEMoveEffect.Hit, 0, PBEMoveTarget.SingleSurrounding,
-                    PBEMoveFlag.AffectedByMirrorMove | PBEMoveFlag.AffectedByProtect | PBEMoveFlag.MakesContact
+                    PBEMoveFlag.AffectedByMirrorMove | PBEMoveFlag.AffectedByProtect | PBEMoveFlag.DoubleDamageMinimized | PBEMoveFlag.MakesContact
                 )
             },
             {
@@ -4224,7 +4224,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                 new PBEMoveData
                 (
                     PBEType.Psychic, PBEMoveCategory.Special, 0, 2, 20, 100,
-                    PBEMoveEffect.Hit, 0, PBEMoveTarget.SingleSurrounding,
+                    PBEMoveEffect.StoredPower, 0, PBEMoveTarget.SingleSurrounding,
                     PBEMoveFlag.AffectedByMirrorMove | PBEMoveFlag.AffectedByProtect
                 )
             },
@@ -4260,7 +4260,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                 new PBEMoveData
                 (
                     PBEType.Normal, PBEMoveCategory.Physical, 0, 0, 50, 0,
-                    PBEMoveEffect.Struggle, 0, PBEMoveTarget.RandomFoeSurrounding,
+                    PBEMoveEffect.Struggle, 4, PBEMoveTarget.RandomFoeSurrounding,
                     PBEMoveFlag.AffectedByProtect | PBEMoveFlag.BlockedFromAssist | PBEMoveFlag.BlockedFromCopycat | PBEMoveFlag.BlockedFromMeFirst | PBEMoveFlag.BlockedFromMetronome | PBEMoveFlag.BlockedFromMimic | PBEMoveFlag.BlockedFromSketch | PBEMoveFlag.MakesContact | PBEMoveFlag.UnaffectedByGems
                 )
             },
@@ -4351,7 +4351,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                 (
                     PBEType.Water, PBEMoveCategory.Special, 0, 3, 95, 100,
                     PBEMoveEffect.Hit, 0, PBEMoveTarget.AllSurrounding,
-                    PBEMoveFlag.AffectedByMirrorMove | PBEMoveFlag.AffectedByProtect | PBEMoveFlag.HitsUnderwater
+                    PBEMoveFlag.AffectedByMirrorMove | PBEMoveFlag.AffectedByProtect | PBEMoveFlag.DoubleDamageUnderwater
                 )
             },
             {
@@ -4503,7 +4503,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                 new PBEMoveData
                 (
                     PBEType.Normal, PBEMoveCategory.Special, 0, 1, 85, 100,
-                    PBEMoveEffect.Hit, 0, PBEMoveTarget.SingleSurrounding,
+                    PBEMoveEffect.TechnoBlast, 0, PBEMoveTarget.SingleSurrounding,
                     PBEMoveFlag.AffectedByMirrorMove | PBEMoveFlag.AffectedByProtect | PBEMoveFlag.BlockedFromMetronome
                 )
             },
@@ -4558,7 +4558,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                 (
                     PBEType.Electric, PBEMoveCategory.Special, 0, 2, 120, 70,
                     PBEMoveEffect.Hit__MaybeParalyze, 30, PBEMoveTarget.SingleSurrounding,
-                    PBEMoveFlag.AffectedByMirrorMove | PBEMoveFlag.AffectedByProtect | PBEMoveFlag.HitsAirborne
+                    PBEMoveFlag.AffectedByMirrorMove | PBEMoveFlag.AffectedByProtect | PBEMoveFlag.HitsAirborne | PBEMoveFlag.NeverMissRain
                 )
             },
             {
@@ -4602,7 +4602,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                 new PBEMoveData
                 (
                     PBEType.Electric, PBEMoveCategory.Status, 0, 4, 0, 100,
-                    PBEMoveEffect.Paralyze, 0, PBEMoveTarget.SingleSurrounding,
+                    PBEMoveEffect.ThunderWave, 0, PBEMoveTarget.SingleSurrounding,
                     PBEMoveFlag.AffectedByMagicCoat | PBEMoveFlag.AffectedByMirrorMove | PBEMoveFlag.AffectedByProtect
                 )
             },
@@ -4711,7 +4711,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                 (
                     PBEType.Dragon, PBEMoveCategory.Special, 0, 4, 40, 100,
                     PBEMoveEffect.Hit__MaybeFlinch, 20, PBEMoveTarget.AllFoesSurrounding,
-                    PBEMoveFlag.AffectedByMirrorMove | PBEMoveFlag.AffectedByProtect | PBEMoveFlag.HitsAirborne
+                    PBEMoveFlag.AffectedByMirrorMove | PBEMoveFlag.AffectedByProtect | PBEMoveFlag.DoubleDamageAirborne
                 )
             },
             {
@@ -4755,7 +4755,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                 new PBEMoveData
                 (
                     PBEType.Poison, PBEMoveCategory.Special, 0, 2, 65, 100,
-                    PBEMoveEffect.Hit, 0, PBEMoveTarget.SingleSurrounding,
+                    PBEMoveEffect.Venoshock, 0, PBEMoveTarget.SingleSurrounding,
                     PBEMoveFlag.AffectedByMirrorMove | PBEMoveFlag.AffectedByProtect
                 )
             },
@@ -4863,7 +4863,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                 new PBEMoveData
                 (
                     PBEType.Water, PBEMoveCategory.Special, 0, 1, 150, 100,
-                    PBEMoveEffect.Hit, 0, PBEMoveTarget.AllFoesSurrounding,
+                    PBEMoveEffect.Eruption, 0, PBEMoveTarget.AllFoesSurrounding,
                     PBEMoveFlag.AffectedByMirrorMove | PBEMoveFlag.AffectedByProtect
                 )
             },
@@ -4872,7 +4872,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                 new PBEMoveData
                 (
                     PBEType.Normal, PBEMoveCategory.Special, 0, 2, 50, 100,
-                    PBEMoveEffect.Hit, 0, PBEMoveTarget.SingleSurrounding,
+                    PBEMoveEffect.WeatherBall, 0, PBEMoveTarget.SingleSurrounding,
                     PBEMoveFlag.AffectedByMirrorMove | PBEMoveFlag.AffectedByProtect
                 )
             },
@@ -4882,7 +4882,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                 (
                     PBEType.Water, PBEMoveCategory.Special, 0, 3, 35, 85,
                     PBEMoveEffect.TODOMOVE, 0, PBEMoveTarget.SingleSurrounding,
-                    PBEMoveFlag.AffectedByMirrorMove | PBEMoveFlag.AffectedByProtect
+                    PBEMoveFlag.AffectedByMirrorMove | PBEMoveFlag.AffectedByProtect | PBEMoveFlag.DoubleDamageUnderwater
                 )
             },
             {
@@ -4997,8 +4997,8 @@ namespace Kermalis.PokemonBattleEngine.Data
                 PBEMove.WringOut,
                 new PBEMoveData
                 (
-                    PBEType.Normal, PBEMoveCategory.Special, 0, 1, 0, 100,
-                    PBEMoveEffect.Hit, 0, PBEMoveTarget.SingleSurrounding,
+                    PBEType.Normal, PBEMoveCategory.Special, 0, 1, 120, 100,
+                    PBEMoveEffect.CrushGrip, 0, PBEMoveTarget.SingleSurrounding,
                     PBEMoveFlag.AffectedByMirrorMove | PBEMoveFlag.AffectedByProtect | PBEMoveFlag.MakesContact
                 )
             },

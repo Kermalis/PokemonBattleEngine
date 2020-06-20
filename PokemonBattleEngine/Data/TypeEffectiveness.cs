@@ -462,8 +462,8 @@ namespace Kermalis.PokemonBattleEngine.Data
             }
             return result;
         }
-        /// <summary>Checks if <see cref="PBEMove.ThunderWave"/>'s type affects the target, taking into account <see cref="PBEAbility.Normalize"/>.</summary>
-        public static PBEResult ThunderWaveTypeCheck(PBEBattlePokemon user, PBEBattlePokemon target, bool useKnownInfo = false)
+        /// <summary>Checks if <see cref="PBEMoveEffect.ThunderWave"/>'s type affects the target, taking into account <see cref="PBEAbility.Normalize"/>.</summary>
+        public static PBEResult ThunderWaveTypeCheck(PBEBattlePokemon user, PBEBattlePokemon target, PBEMove move, bool useKnownInfo = false)
         {
             if (user == null)
             {
@@ -474,7 +474,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                 throw new ArgumentNullException(nameof(target));
             }
 
-            PBEType moveType = user.GetMoveType(PBEMove.ThunderWave);
+            PBEType moveType = user.GetMoveType(move);
             double d = GetEffectiveness(moveType, useKnownInfo ? target.KnownType1 : target.Type1, useKnownInfo ? target.KnownType2 : target.Type2);
             if (d <= 0)
             {

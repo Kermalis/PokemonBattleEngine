@@ -171,7 +171,7 @@ namespace Kermalis.PokemonBattleEngine.Data
         /// <summary>The default value of <see cref="MaxIVs"/>.</summary>
         public const byte DefaultMaxIVs = 31;
         private byte _maxIVs = DefaultMaxIVs;
-        /// <summary>The maximum amount of IVs Pokémon can have in each stat. Raising this will not affect <see cref="PBEMove.HiddenPower"/>.</summary>
+        /// <summary>The maximum amount of IVs Pokémon can have in each stat. Raising this will not affect <see cref="PBEMoveEffect.HiddenPower"/>.</summary>
         public byte MaxIVs
         {
             get => _maxIVs;
@@ -344,7 +344,7 @@ namespace Kermalis.PokemonBattleEngine.Data
         /// <summary>The default value of <see cref="SleepMaxTurns"/>.</summary>
         public const byte DefaultSleepMaxTurns = 3;
         private byte _sleepMaxTurns = DefaultSleepMaxTurns;
-        /// <summary>The maximum amount of turns a Pokémon can be <see cref="PBEStatus1.Asleep"/>. <see cref="PBEMove.Rest"/> will always sleep for <see cref="SleepMaxTurns"/> turns.</summary>
+        /// <summary>The maximum amount of turns a Pokémon can be <see cref="PBEStatus1.Asleep"/>. <see cref="PBEMoveEffect.Rest"/> will always sleep for <see cref="SleepMaxTurns"/> turns.</summary>
         public byte SleepMaxTurns
         {
             get => _sleepMaxTurns;
@@ -365,7 +365,7 @@ namespace Kermalis.PokemonBattleEngine.Data
         /// <summary>The default value of <see cref="SleepMinTurns"/>.</summary>
         public const byte DefaultSleepMinTurns = 1;
         private byte _sleepMinTurns = DefaultSleepMinTurns;
-        /// <summary>The minimum amount of turns a Pokémon can be <see cref="PBEStatus1.Asleep"/>. <see cref="PBEMove.Rest"/> will ignore this value and always sleep for <see cref="SleepMaxTurns"/> turns.</summary>
+        /// <summary>The minimum amount of turns a Pokémon can be <see cref="PBEStatus1.Asleep"/>. <see cref="PBEMoveEffect.Rest"/> will ignore this value and always sleep for <see cref="SleepMaxTurns"/> turns.</summary>
         public byte SleepMinTurns
         {
             get => _sleepMinTurns;
@@ -554,7 +554,7 @@ namespace Kermalis.PokemonBattleEngine.Data
         /// <summary>The default value of <see cref="ReflectTurns"/>.</summary>
         public const byte DefaultReflectTurns = 5;
         private byte _reflectTurns = DefaultReflectTurns;
-        /// <summary>The amount of turns <see cref="PBEMove.Reflect"/> lasts.</summary>
+        /// <summary>The amount of turns <see cref="PBEMoveEffect.Reflect"/> lasts.</summary>
         public byte ReflectTurns
         {
             get => _reflectTurns;
@@ -575,7 +575,7 @@ namespace Kermalis.PokemonBattleEngine.Data
         /// <summary>The default value of <see cref="LightScreenTurns"/>.</summary>
         public const byte DefaultLightScreenTurns = 5;
         private byte _lightScreenTurns = DefaultLightScreenTurns;
-        /// <summary>The amount of turns <see cref="PBEMove.LightScreen"/> lasts.</summary>
+        /// <summary>The amount of turns <see cref="PBEMoveEffect.LightScreen"/> lasts.</summary>
         public byte LightScreenTurns
         {
             get => _lightScreenTurns;
@@ -843,7 +843,7 @@ namespace Kermalis.PokemonBattleEngine.Data
         }
         public const byte DefaultHiddenPowerMax = 70;
         private byte _hiddenPowerMax = DefaultHiddenPowerMax;
-        /// <summary>The maximum base power of <see cref="PBEMove.HiddenPower"/>.</summary>
+        /// <summary>The maximum base power of <see cref="PBEMoveEffect.HiddenPower"/>.</summary>
         public byte HiddenPowerMax
         {
             get => _hiddenPowerMax;
@@ -863,7 +863,7 @@ namespace Kermalis.PokemonBattleEngine.Data
         }
         public const byte DefaultHiddenPowerMin = 30;
         private byte _hiddenPowerMin = DefaultHiddenPowerMin;
-        /// <summary>The minimum base power of <see cref="PBEMove.HiddenPower"/>.</summary>
+        /// <summary>The minimum base power of <see cref="PBEMoveEffect.HiddenPower"/>.</summary>
         public byte HiddenPowerMin
         {
             get => _hiddenPowerMin;

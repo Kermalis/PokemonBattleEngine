@@ -279,7 +279,7 @@ namespace Kermalis.PokemonBattleEngine.Data
         Disguised = 1 << 3,
         /// <summary>The Pokémon is flinching and will be unable to move this turn.</summary>
         Flinching = 1 << 4,
-        /// <summary>The Pokémon will gain a power boost due to <see cref="PBEMove.HelpingHand"/>.</summary>
+        /// <summary>The Pokémon will gain a power boost due to <see cref="PBEMoveEffect.HelpingHand"/>.</summary>
         HelpingHand = 1 << 5,
         Identified = 1 << 6,
         /// <summary>The Pokémon is infatuated with <see cref="PBEBattlePokemon.InfatuatedWithPokemon"/> and may be unable to move this turn.</summary>
@@ -294,7 +294,7 @@ namespace Kermalis.PokemonBattleEngine.Data
         PowerTrick = 1 << 13,
         /// <summary>The Pokémon is protected from moves this turn.</summary>
         Protected = 1 << 14,
-        /// <summary>The Pokémon is under the effect of <see cref="PBEMove.FocusEnergy"/> or <see cref="PBEItem.LansatBerry"/> and has a higher chance of landing critical hits.</summary>
+        /// <summary>The Pokémon is under the effect of <see cref="PBEMoveEffect.FocusEnergy"/> or <see cref="PBEItem.LansatBerry"/> and has a higher chance of landing critical hits.</summary>
         Pumped = 1 << 15,
         ShadowForce = 1 << 16,
         /// <summary>The Pokémon is behind a substitute that will take damage on behalf of the Pokémon and prevent most moves from affecting the Pokémon.</summary>
@@ -302,10 +302,8 @@ namespace Kermalis.PokemonBattleEngine.Data
         /// <summary>The Pokémon is transformed into another Pokémon.</summary>
         Transformed = 1 << 18,
         /// <summary>The Pokémon is underground. A move will miss against the Pokémon unless it has <see cref="PBEMoveFlag.HitsUnderground"/> or either Pokémon has <see cref="PBEAbility.NoGuard"/>.
-        /// The Pokémon will take double damage from <see cref="PBEMove.Earthquake"/> and <see cref="PBEMove.Magnitude"/>.</summary>
         Underground = 1 << 19,
         /// <summary>The Pokémon is underwater. A move will miss against the Pokémon unless it has <see cref="PBEMoveFlag.HitsUnderwater"/> or either Pokémon has <see cref="PBEAbility.NoGuard"/>.
-        /// The Pokémon will take double damage from <see cref="PBEMove.Surf"/> and <see cref="PBEMove.Whirlpool"/>.</summary>
         Underwater = 1 << 20
     }
     /// <summary>Represents a specific <see cref="PBEBattle"/>'s status.</summary>
@@ -410,7 +408,7 @@ namespace Kermalis.PokemonBattleEngine.Data
         /// <example>A team set up <see cref="PBETeamStatus.LightScreen"/>.</example>
         Added = 0,
         /// <summary>The status was forcefully removed from a team.</summary>
-        /// <example>A Pokémon used <see cref="PBEMove.BrickBreak"/> and destroyed <see cref="PBETeamStatus.Reflect"/>.</example>
+        /// <example>A Pokémon used <see cref="PBEMoveEffect.BrickBreak"/> and destroyed <see cref="PBETeamStatus.Reflect"/>.</example>
         Cleared = 1,
         /// <summary>The status caused a Pokémon to take damage.</summary>
         /// <example>A Pokémon switched in and took damage from <see cref="PBETeamStatus.StealthRock"/>.</example>
@@ -1141,7 +1139,7 @@ namespace Kermalis.PokemonBattleEngine.Data
     /// <summary>Represents a specific Pokémon's special ability.</summary>
     public enum PBEAbility : byte
     {
-        /// <summary>The Pokémon's ability was suppressed with <see cref="PBEMove.GastroAcid"/>.</summary>
+        /// <summary>The Pokémon's ability was suppressed with <see cref="PBEMoveEffect.GastroAcid"/>.</summary>
         None = 0,
         /// <summary>The Pokémon has a stronger same-type-attack-bonus.</summary>
         Adaptability = 91,
@@ -2142,15 +2140,11 @@ namespace Kermalis.PokemonBattleEngine.Data
         None,
         /// <summary>The move's power is boosted by <see cref="PBEAbility.IronFist"/>.</summary>
         AffectedByIronFist = 1 << 0,
-        /// <summary>The move is blocked by <see cref="PBEMove.MagicCoat"/> and <see cref="PBEAbility.MagicBounce"/>.</summary>
         AffectedByMagicCoat = 1 << 1,
-        /// <summary>The move can be copied by <see cref="PBEMove.MirrorMove"/>.</summary>
         AffectedByMirrorMove = 1 << 2,
-        /// <summary>The move is blocked by <see cref="PBEMove.Detect"/>, <see cref="PBEMove.Protect"/>, and <see cref="PBEMove.WideGuard"/>.</summary>
         AffectedByProtect = 1 << 3,
         /// <summary>The move's power is boosted by <see cref="PBEAbility.Reckless"/>.</summary>
         AffectedByReckless = 1 << 4,
-        /// <summary>The move can be stolen by <see cref="PBEMove.Snatch"/>.</summary>
         AffectedBySnatch = 1 << 5,
         /// <summary>The move is blocked by <see cref="PBEAbility.Soundproof"/>.</summary>
         AffectedBySoundproof = 1 << 14,
@@ -2166,24 +2160,33 @@ namespace Kermalis.PokemonBattleEngine.Data
         BlockedFromSleepTalk = 1 << 14,
         /// <summary>The move removes <see cref="PBEStatus1.Frozen"/> from the user.</summary>
         DefrostsUser = 1 << 15,
+        DoubleDamageAirborne = 1 << 16,
+        DoubleDamageMinimized = 1 << 17,
+        DoubleDamageUnderground = 1 << 18,
+        DoubleDamageUnderwater = 1 << 19,
+        DoubleDamageUserDefenseCurl = 1 << 20,
         /// <summary>The move has a higher chance of landing a critical hit.</summary>
-        HighCritChance = 1 << 16,
+        HighCritChance = 1 << 21,
         /// <summary>The move can hit <see cref="PBEStatus2.Airborne"/> targets.</summary>
-        HitsAirborne = 1 << 17,
+        HitsAirborne = 1 << 22,
         /// <summary>The move can hit <see cref="PBEStatus2.Underground"/> targets.</summary>
-        HitsUnderground = 1 << 18,
+        HitsUnderground = 1 << 23,
         /// <summary>The move can hit <see cref="PBEStatus2.Underwater"/> targets.</summary>
-        HitsUnderwater = 1 << 19,
+        HitsUnderwater = 1 << 24,
         /// <summary>The user makes contact with the target, causing it to take damage from the target's <see cref="PBEAbility.IronBarbs"/>, <see cref="PBEAbility.RoughSkin"/>, and <see cref="PBEItem.RockyHelmet"/>.</summary>
-        MakesContact = 1 << 20,
-        UnaffectedByGems = 1 << 21
+        MakesContact = 1 << 25,
+        NeverMissHail = 1 << 26,
+        NeverMissRain = 1 << 27,
+        UnaffectedByGems = 1 << 28 // TODO
     }
     public enum PBEMoveEffect : byte
     {
+        Acrobatics,
         Attract,
         BellyDrum,
         Bounce,
         BrickBreak,
+        Brine,
         Burn,
         Camouflage,
         ChangeTarget_ACC,
@@ -2196,21 +2199,31 @@ namespace Kermalis.PokemonBattleEngine.Data
         ChangeTarget_SPE,
         Confuse,
         Conversion,
+        CrushGrip,
         Curse,
         Dig,
         Dive,
         Endeavor,
         Entrainment,
+        Eruption,
+        Facade,
         FinalGambit,
         Flatter,
+        Flail,
         Fly,
         FocusEnergy,
         Foresight,
+        FoulPlay,
+        Frustration,
         GastroAcid,
+        GrassKnot,
         Growth,
         Hail,
         Haze,
+        HeatCrash,
         HelpingHand,
+        Hex,
+        HiddenPower,
         Hit,
         Hit__2Times,
         Hit__2Times__MaybePoison,
@@ -2244,6 +2257,7 @@ namespace Kermalis.PokemonBattleEngine.Data
         Hit__MaybeToxic,
         HPDrain,
         HPDrain__RequireSleep,
+        Judgment,
         LeechSeed,
         LightScreen,
         LockOn,
@@ -2251,7 +2265,9 @@ namespace Kermalis.PokemonBattleEngine.Data
         LowerTarget_DEF_SPDEF_By1_Raise_ATK_SPATK_SPE_By2,
         LuckyChant,
         MagnetRise,
+        Magnitude,
         Metronome,
+        Minimize,
         MiracleEye,
         Moonlight,
         Nightmare,
@@ -2263,7 +2279,9 @@ namespace Kermalis.PokemonBattleEngine.Data
         PowerTrick,
         Protect, // TODO: If the user goes last, fail
         PsychUp,
+        Psyshock,
         Psywave,
+        Punishment,
         RainDance,
         RaiseTarget_ATK_ACC_By1,
         RaiseTarget_ATK_DEF_By1,
@@ -2280,6 +2298,8 @@ namespace Kermalis.PokemonBattleEngine.Data
         Reflect,
         Rest,
         RestoreTargetHP,
+        Retaliate,
+        Return,
         RolePlay,
         Safeguard,
         Sandstorm,
@@ -2289,11 +2309,13 @@ namespace Kermalis.PokemonBattleEngine.Data
         SetDamage,
         ShadowForce,
         SimpleBeam,
+        Sketch, // TODO
         Sleep,
         Snore,
         Soak,
         Spikes,
         StealthRock,
+        StoredPower,
         Struggle,
         Substitute,
         SuckerPunch,
@@ -2301,11 +2323,15 @@ namespace Kermalis.PokemonBattleEngine.Data
         SuperFang,
         Swagger,
         Tailwind,
+        TechnoBlast,
         Teleport,
+        ThunderWave,
         Toxic,
         ToxicSpikes,
         Transform,
         TrickRoom,
+        Venoshock,
+        WeatherBall,
         Whirlwind,
         WideGuard,
         WorrySeed,

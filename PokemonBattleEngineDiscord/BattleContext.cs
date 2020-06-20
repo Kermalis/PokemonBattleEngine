@@ -461,11 +461,11 @@ namespace Kermalis.PokemonBattleEngineDiscord
             }
             sb.AppendLine($"**Ability:** {PBELocalizedString.GetAbilityName(pkmn.Ability).English}");
             sb.AppendLine($"**Item:** {PBELocalizedString.GetItemName(pkmn.Item).English}");
-            if (pkmn.Moves.Contains(PBEMove.Frustration) || pkmn.Moves.Contains(PBEMove.Return))
+            if (pkmn.Moves.Contains(PBEMoveEffect.Frustration) || pkmn.Moves.Contains(PBEMoveEffect.Return))
             {
                 sb.AppendLine($"**Friendship:** {pkmn.Friendship} ({pkmn.Friendship / (double)byte.MaxValue:P2})");
             }
-            if (pkmn.Moves.Contains(PBEMove.HiddenPower))
+            if (pkmn.Moves.Contains(PBEMoveEffect.HiddenPower))
             {
                 sb.AppendLine($"**{PBELocalizedString.GetMoveName(PBEMove.HiddenPower).English}:** {Utils.TypeEmotes[pkmn.IndividualValues.GetHiddenPowerType()]}|{pkmn.IndividualValues.GetHiddenPowerBasePower(PBESettings.DefaultSettings)}");
             }

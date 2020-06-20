@@ -734,7 +734,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
             }
         }
 
-        /// <summary>Gets a random target a move can hit when called by <see cref="PBEMove.Metronome"/>.</summary>
+        /// <summary>Gets a random target a move can hit when called by <see cref="PBEMoveEffect.Metronome"/>.</summary>
         /// <param name="pkmn">The Pokémon using <paramref name="calledMove"/>.</param>
         /// <param name="calledMove">The move being called.</param>
         /// <exception cref="ArgumentOutOfRangeException">Thrown when <paramref name="calledMove"/>, <paramref name="pkmn"/>'s <see cref="PBEBattlePokemon.FieldPosition"/>, or <paramref name="pkmn"/>'s <see cref="PBEBattle"/>'s <see cref="BattleFormat"/> is invalid.</exception>

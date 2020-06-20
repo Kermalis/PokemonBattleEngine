@@ -136,7 +136,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
         /// <summary>The Pokémon that <see cref="PBEStatus2.LockOn"/> is bound to.</summary>
         public PBEBattlePokemon LockOnPokemon { get; set; }
         public byte LockOnTurns { get; set; }
-        /// <summary>The amount of times the Pokémon has successfully used <see cref="PBEMove.Detect"/>, <see cref="PBEMove.Protect"/>, <see cref="PBEMove.QuickGuard"/>, and/or <see cref="PBEMove.WideGuard"/> consecutively.</summary>
+        /// <summary>The amount of times the Pokémon has successfully used <see cref="PBEMoveEffect.Protect"/>, <see cref="PBEMoveEffect.QuickGuard"/>, and/or <see cref="PBEMoveEffect.WideGuard"/> consecutively.</summary>
         public int Protection_Counter { get; set; }
         public bool Protection_Used { get; set; }
         /// <summary>The position to return <see cref="PBEStatus2.LeechSeed"/> HP to on <see cref="SeededTeam"/>.</summary>
@@ -162,7 +162,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
         #endregion
 
         #region Special Flags
-        /// <summary>True if the Pokémon has successfully used <see cref="PBEMove.Minimize"/> which makes it succeptible to double damage from <see cref="PBEMove.Steamroller"/> and <see cref="PBEMove.Stomp"/>.</summary>
+        /// <summary>True if the Pokémon has successfully used <see cref="PBEMoveEffect.Minimize"/> which makes it succeptible to double damage from <see cref="PBEMoveFlag.DoubleDamageMinimized"/>.</summary>
         public bool Minimize_Used { get; set; }
         /// <summary>The amount of turns left until a Pokémon with <see cref="PBEAbility.SlowStart"/> loses its hinderance.</summary>
         public byte SlowStart_HinderTurnsLeft { get; set; }
@@ -648,27 +648,28 @@ namespace Kermalis.PokemonBattleEngine.Battle
             AccuracyChange = 0;
             EvasionChange = 0;
         }
-        /// <summary>For use with <see cref="PBEMove.Punishment"/> and <see cref="PBEMove.StoredPower"/>.</summary>
+        /// <summary>For use with <see cref="PBEMoveEffect.Punishment"/> and <see cref="PBEMoveEffect.StoredPower"/>.</summary>
         public int GetPositiveStatTotal()
         {
             return GetStatsGreaterThan(0).Sum(s => GetStatChange(s));
         }
-        /// <summary>Gets the type that a move will become when used by this Pokémon.</summary>
-        /// <param name="move">The move to check.</param>
-        /// <exception cref="ArgumentOutOfRangeException">Thrown when <paramref name="move"/> is invalid.</exception>
-        public PBEType GetMoveType(PBEMove move, bool useKnownInfo = false)
+        public PBEType GetMoveType(PBEMoveData mData, bool useKnownInfo = false)
         {
-            if (move == PBEMove.None || move >= PBEMove.MAX || !PBEMoveData.IsMoveUsable(move))
+            if (mData == null)
             {
-                throw new ArgumentOutOfRangeException(nameof(move));
+                throw new ArgumentNullException(nameof(mData));
             }
-            switch (move)
+            if (!mData.IsMoveUsable())
             {
-                case PBEMove.HiddenPower:
+                throw new ArgumentOutOfRangeException(nameof(mData));
+            }
+            switch (mData.Effect)
+            {
+                case PBEMoveEffect.HiddenPower:
                 {
                     return useKnownInfo ? PBEType.None : IndividualValues.GetHiddenPowerType();
                 }
-                case PBEMove.Judgment:
+                case PBEMoveEffect.Judgment:
                 {
                     switch (useKnownInfo ? KnownItem : Item)
                     {
@@ -688,14 +689,14 @@ namespace Kermalis.PokemonBattleEngine.Battle
                         case PBEItem.StonePlate: return PBEType.Rock;
                         case PBEItem.ToxicPlate: return PBEType.Poison;
                         case PBEItem.ZapPlate: return PBEType.Electric;
-                        default: return PBEMoveData.Data[PBEMove.Judgment].Type;
                     }
+                    break;
                 }
-                case PBEMove.Struggle:
+                case PBEMoveEffect.Struggle:
                 {
                     return PBEType.None;
                 }
-                case PBEMove.TechnoBlast:
+                case PBEMoveEffect.TechnoBlast:
                 {
                     switch (useKnownInfo ? KnownItem : Item)
                     {
@@ -703,10 +704,10 @@ namespace Kermalis.PokemonBattleEngine.Battle
                         case PBEItem.ChillDrive: return PBEType.Ice;
                         case PBEItem.DouseDrive: return PBEType.Water;
                         case PBEItem.ShockDrive: return PBEType.Electric;
-                        default: return PBEMoveData.Data[PBEMove.TechnoBlast].Type;
                     }
+                    break;
                 }
-                case PBEMove.WeatherBall:
+                case PBEMoveEffect.WeatherBall:
                 {
                     if (Team.Battle.ShouldDoWeatherEffects())
                     {
@@ -718,45 +719,53 @@ namespace Kermalis.PokemonBattleEngine.Battle
                             case PBEWeather.Sandstorm: return PBEType.Rock;
                         }
                     }
-                    return PBEMoveData.Data[PBEMove.WeatherBall].Type;
-                }
-                default:
-                {
-                    if ((useKnownInfo ? KnownAbility : Ability) == PBEAbility.Normalize)
-                    {
-                        return PBEType.Normal;
-                    }
-                    else
-                    {
-                        return PBEMoveData.Data[move].Type;
-                    }
+                    break;
                 }
             }
+            if ((useKnownInfo ? KnownAbility : Ability) == PBEAbility.Normalize)
+            {
+                return PBEType.Normal;
+            }
+            return mData.Type;
+        }
+        public PBEType GetMoveType(PBEMove move, bool useKnownInfo = false)
+        {
+            if (move == PBEMove.None || move >= PBEMove.MAX)
+            {
+                throw new ArgumentOutOfRangeException(nameof(move));
+            }
+            return GetMoveType(PBEMoveData.Data[move], useKnownInfo: useKnownInfo);
+        }
+        public PBEMoveTarget GetMoveTargets(PBEMoveData mData)
+        {
+            if (mData == null)
+            {
+                throw new ArgumentNullException(nameof(mData));
+            }
+            if (!mData.IsMoveUsable())
+            {
+                throw new ArgumentOutOfRangeException(nameof(mData));
+            }
+            if (mData.Effect == PBEMoveEffect.Curse)
+            {
+                if (HasType(PBEType.Ghost))
+                {
+                    return PBEMoveTarget.SingleSurrounding;
+                }
+                return PBEMoveTarget.Self;
+            }
+            return mData.Targets;
         }
         /// <summary>Gets the possible targets that a move can target when used by this Pokémon.</summary>
         /// <param name="move">The move to check.</param>
         /// <exception cref="ArgumentOutOfRangeException">Thrown when <paramref name="move"/> is invalid.</exception>
         public PBEMoveTarget GetMoveTargets(PBEMove move)
         {
-            if (move == PBEMove.None || move >= PBEMove.MAX || !PBEMoveData.IsMoveUsable(move))
+            if (move == PBEMove.None || move >= PBEMove.MAX)
             {
                 throw new ArgumentOutOfRangeException(nameof(move));
             }
-            else if (move == PBEMove.Curse)
-            {
-                if (HasType(PBEType.Ghost))
-                {
-                    return PBEMoveTarget.SingleSurrounding;
-                }
-                else
-                {
-                    return PBEMoveTarget.Self;
-                }
-            }
-            else
-            {
-                return PBEMoveData.Data[move].Targets;
-            }
+            return GetMoveTargets(PBEMoveData.Data[move]);
         }
         /// <summary>Returns True if the Pokémon is only able to use <see cref="PBEMove.Struggle"/>.</summary>
         public bool IsForcedToStruggle()
@@ -1196,11 +1205,11 @@ namespace Kermalis.PokemonBattleEngine.Battle
             sb.AppendLine($"Known ability: {(KnownAbility == PBEAbility.MAX ? "???" : PBELocalizedString.GetAbilityName(KnownAbility).English)}");
             sb.AppendLine($"Item: {PBELocalizedString.GetItemName(Item).English}");
             sb.AppendLine($"Known item: {(KnownItem == (PBEItem)ushort.MaxValue ? "???" : PBELocalizedString.GetItemName(KnownItem).English)}");
-            if (Moves.Contains(PBEMove.Frustration) || Moves.Contains(PBEMove.Return))
+            if (Moves.Contains(PBEMoveEffect.Frustration) || Moves.Contains(PBEMoveEffect.Return))
             {
                 sb.AppendLine($"Friendship: {Friendship} ({Friendship / byte.MaxValue:P2})");
             }
-            if (Moves.Contains(PBEMove.HiddenPower))
+            if (Moves.Contains(PBEMoveEffect.HiddenPower))
             {
                 sb.AppendLine($"{PBELocalizedString.GetMoveName(PBEMove.HiddenPower).English}: {PBELocalizedString.GetTypeName(IndividualValues.GetHiddenPowerType()).English}|{IndividualValues.GetHiddenPowerBasePower(Team.Battle.Settings)}");
             }

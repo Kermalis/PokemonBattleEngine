@@ -91,7 +91,7 @@ namespace Kermalis.PokemonBattleEngine.AI
                             }
                             else
                             {
-                                score = 0d;
+                                score = 0;
                                 targets.RemoveAll(p => p == null);
                                 PBEMoveData mData = PBEMoveData.Data[move];
                                 if (!mData.IsMoveUsable())
@@ -100,27 +100,23 @@ namespace Kermalis.PokemonBattleEngine.AI
                                 }
                                 switch (mData.Effect)
                                 {
-                                    case PBEMoveEffect.Attract:
-                                    {
-                                        foreach (PBEBattlePokemon target in targets)
-                                        {
-                                            // TODO: Destiny knot
-                                            if (target.IsAttractionPossible(user, useKnownInfo: true) == PBEResult.Success)
-                                            {
-                                                score += target.Team == team ? -20 : +40;
-                                            }
-                                            else
-                                            {
-                                                score += target.Team == team ? 0 : -60;
-                                            }
-                                        }
-                                        break;
-                                    }
+                                    case PBEMoveEffect.Acrobatics:
                                     case PBEMoveEffect.Bounce:
                                     case PBEMoveEffect.BrickBreak:
+                                    case PBEMoveEffect.Brine:
+                                    case PBEMoveEffect.CrushGrip:
                                     case PBEMoveEffect.Dig:
                                     case PBEMoveEffect.Dive:
+                                    case PBEMoveEffect.Eruption:
+                                    case PBEMoveEffect.Facade:
+                                    case PBEMoveEffect.Flail:
                                     case PBEMoveEffect.Fly:
+                                    case PBEMoveEffect.FoulPlay:
+                                    case PBEMoveEffect.Frustration:
+                                    case PBEMoveEffect.GrassKnot:
+                                    case PBEMoveEffect.HeatCrash:
+                                    case PBEMoveEffect.Hex:
+                                    case PBEMoveEffect.HiddenPower:
                                     case PBEMoveEffect.Hit:
                                     case PBEMoveEffect.Hit__2Times:
                                     case PBEMoveEffect.Hit__2Times__MaybePoison:
@@ -153,11 +149,21 @@ namespace Kermalis.PokemonBattleEngine.AI
                                     case PBEMoveEffect.Hit__MaybeRaiseUser_SPE_By1:
                                     case PBEMoveEffect.Hit__MaybeToxic:
                                     case PBEMoveEffect.HPDrain:
+                                    case PBEMoveEffect.Judgment:
+                                    case PBEMoveEffect.Magnitude:
+                                    case PBEMoveEffect.Psyshock:
+                                    case PBEMoveEffect.Punishment:
                                     case PBEMoveEffect.Recoil:
                                     case PBEMoveEffect.Recoil__10PercentBurn:
                                     case PBEMoveEffect.Recoil__10PercentParalyze:
+                                    case PBEMoveEffect.Retaliate:
+                                    case PBEMoveEffect.Return:
                                     case PBEMoveEffect.SecretPower:
                                     case PBEMoveEffect.ShadowForce:
+                                    case PBEMoveEffect.StoredPower:
+                                    case PBEMoveEffect.TechnoBlast:
+                                    case PBEMoveEffect.Venoshock:
+                                    case PBEMoveEffect.WeatherBall:
                                     {
                                         foreach (PBEBattlePokemon target in targets)
                                         {
@@ -196,7 +202,22 @@ namespace Kermalis.PokemonBattleEngine.AI
                                                 score += (user.Ability == PBEAbility.Adaptability ? 7 : 5) * (target.Team == team ? -1 : +1);
                                             }
                                         }
-
+                                        break;
+                                    }
+                                    case PBEMoveEffect.Attract:
+                                    {
+                                        foreach (PBEBattlePokemon target in targets)
+                                        {
+                                            // TODO: Destiny knot
+                                            if (target.IsAttractionPossible(user, useKnownInfo: true) == PBEResult.Success)
+                                            {
+                                                score += target.Team == team ? -20 : +40;
+                                            }
+                                            else
+                                            {
+                                                score += target.Team == team ? 0 : -60;
+                                            }
+                                        }
                                         break;
                                     }
                                     case PBEMoveEffect.Burn:
@@ -369,10 +390,11 @@ namespace Kermalis.PokemonBattleEngine.AI
                                         break;
                                     }
                                     case PBEMoveEffect.Paralyze:
+                                    case PBEMoveEffect.ThunderWave:
                                     {
                                         foreach (PBEBattlePokemon target in targets)
                                         {
-                                            bool tw = move != PBEMove.ThunderWave || PBETypeEffectiveness.ThunderWaveTypeCheck(user, target, useKnownInfo: true) == PBEResult.Success;
+                                            bool tw = mData.Effect != PBEMoveEffect.ThunderWave || PBETypeEffectiveness.ThunderWaveTypeCheck(user, target, move, useKnownInfo: true) == PBEResult.Success;
                                             if (tw && target.IsParalysisPossible(user, useKnownInfo: true) == PBEResult.Success)
                                             {
                                                 score += target.Team == team ? -20 : +40;
@@ -572,7 +594,7 @@ namespace Kermalis.PokemonBattleEngine.AI
                                     case PBEMoveEffect.WideGuard:
                                     case PBEMoveEffect.WorrySeed:
                                     {
-                                        // TODO Moves
+                                        // TODO
                                         break;
                                     }
                                     default: throw new ArgumentOutOfRangeException(nameof(PBEMoveData.Effect));

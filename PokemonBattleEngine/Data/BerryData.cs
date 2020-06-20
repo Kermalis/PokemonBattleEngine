@@ -11,9 +11,9 @@ namespace Kermalis.PokemonBattleEngine.Data
         public byte Spicyness { get; }
         public byte Sweetness { get; }
 
-        /// <summary>The power <see cref="PBEMove.NaturalGift"/> has when the user is holding this item.</summary>
+        /// <summary>The power <see cref="PBEMoveEffect.NaturalGift"/> has when the user is holding this item.</summary>
         public byte NaturalGiftPower { get; }
-        /// <summary>The type <see cref="PBEMove.NaturalGift"/> becomes when the user is holding this item.</summary>
+        /// <summary>The type <see cref="PBEMoveEffect.NaturalGift"/> becomes when the user is holding this item.</summary>
         public PBEType NaturalGiftType { get; }
 
         private PBEBerryData(byte naturalGiftPower, PBEType naturalGiftType,

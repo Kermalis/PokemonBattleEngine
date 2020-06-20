@@ -146,7 +146,7 @@ namespace Kermalis.PokemonBattleEngine.Data
         // Temporary check to see if a move is usable, can be removed once all moves are added
         public bool IsMoveUsable()
         {
-            return Effect != PBEMoveEffect.TODOMOVE;
+            return Effect != PBEMoveEffect.TODOMOVE && Effect != PBEMoveEffect.Sketch;
         }
         public static bool IsMoveUsable(PBEMove move)
         {

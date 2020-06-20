@@ -272,6 +272,18 @@ namespace Kermalis.PokemonBattleEngine.Battle
         {
             return this[move] != null;
         }
+        public bool Contains(PBEMoveEffect effect)
+        {
+            for (int i = 0; i < _list.Length; i++)
+            {
+                PBEBattleMovesetSlot slot = _list[i];
+                if (PBEMoveData.Data[slot.Move].Effect == effect)
+                {
+                    return true;
+                }
+            }
+            return false;
+        }
 
         public IEnumerator<PBEBattleMovesetSlot> GetEnumerator()
         {

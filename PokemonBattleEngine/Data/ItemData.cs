@@ -5,7 +5,7 @@ namespace Kermalis.PokemonBattleEngine.Data
 {
     public sealed class PBEItemData
     {
-        /// <summary>The power <see cref="PBEMove.Fling"/> has when the user is holding this item. 0 will cause the move to fail.</summary>
+        /// <summary>The power <see cref="PBEMoveEffect.Fling"/> has when the user is holding this item. 0 will cause the move to fail.</summary>
         public byte FlingPower { get; }
 
         private PBEItemData(byte flingPower = 0)
