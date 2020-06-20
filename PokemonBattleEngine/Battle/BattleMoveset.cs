@@ -276,8 +276,8 @@ namespace Kermalis.PokemonBattleEngine.Battle
         {
             for (int i = 0; i < _list.Length; i++)
             {
-                PBEBattleMovesetSlot slot = _list[i];
-                if (PBEMoveData.Data[slot.Move].Effect == effect)
+                PBEMove move = _list[i].Move;
+                if (move != PBEMove.None && move != PBEMove.MAX && PBEMoveData.Data[move].Effect == effect)
                 {
                     return true;
                 }
