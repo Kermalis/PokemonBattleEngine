@@ -65,15 +65,14 @@ namespace Kermalis.PokemonBattleEngine.Data.Legality
                 if (PBEEventPokemon.Events.TryGetValue(spe, out ReadOnlyCollection<PBEEventPokemon> events))
                 {
                     // Disallow moves learned after the current level
-                    moves.AddRange(events.Where(e => e.Level <= level).SelectMany(e => e.Moves));
+                    moves.AddRange(events.Where(e => e.Level <= level).SelectMany(e => e.Moves).Where(m => m != PBEMove.None));
                 }
                 if (moves.Any(m => PBEMoveData.Data[m].Effect == PBEMoveEffect.Sketch))
                 {
                     return PBEDataUtils.SketchLegalMoves;
                 }
             }
-            // None is here because of events
-            return moves.Distinct().Where(m => m != PBEMove.None && PBEMoveData.IsMoveUsable(m)).ToArray();
+            return moves.Distinct().Where(m => PBEMoveData.IsMoveUsable(m)).ToArray();
         }
 
         internal static void ValidateSpecies(PBESpecies species, PBEForm form, bool requireUsableOutsideOfBattle)

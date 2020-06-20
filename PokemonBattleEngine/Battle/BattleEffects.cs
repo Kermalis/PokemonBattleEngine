@@ -949,6 +949,10 @@ namespace Kermalis.PokemonBattleEngine.Battle
             }
             // These go after semi-invulnerable
             double chance = mData.Accuracy;
+            if (chance == 0) // Moves that don't miss
+            {
+                return false;
+            }
             if (ShouldDoWeatherEffects())
             {
                 if (Weather == PBEWeather.Hailstorm && mData.Flags.HasFlag(PBEMoveFlag.NeverMissHail))
@@ -969,7 +973,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
             }
             if (mData.Effect == PBEMoveEffect.OneHitKnockout)
             {
-                chance = user.Level - target.Level + 30;
+                chance = user.Level - target.Level + chance;
                 if (chance < 1)
                 {
                     goto miss;
@@ -982,10 +986,6 @@ namespace Kermalis.PokemonBattleEngine.Battle
             if (target.Ability == PBEAbility.WonderSkin && mData.Category == PBEMoveCategory.Status && !user.HasCancellingAbility())
             {
                 chance = Math.Min(50, chance);
-            }
-            if (chance < 1)
-            {
-                goto miss;
             }
             double accuracy = target.Ability == PBEAbility.Unaware ? 1 : GetStatChangeModifier(user.AccuracyChange, true);
             bool ignorePositiveEvasion = target.Status2.HasFlag(PBEStatus2.Identified) || target.Status2.HasFlag(PBEStatus2.MiracleEye);
