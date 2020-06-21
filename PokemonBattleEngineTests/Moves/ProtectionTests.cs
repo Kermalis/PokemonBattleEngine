@@ -18,7 +18,7 @@ namespace Kermalis.PokemonBattleEngineTests.Moves
         [Theory]
         [InlineData(PBEMove.Detect)]
         [InlineData(PBEMove.Protect)]
-        //[InlineData(PBEMove.QuickGuard)]
+        [InlineData(PBEMove.QuickGuard)]
         [InlineData(PBEMove.WideGuard)]
         public void Protection_Counter_Resets(PBEMove move)
         {
@@ -64,6 +64,148 @@ namespace Kermalis.PokemonBattleEngineTests.Moves
             battle.RunTurn();
 
             Assert.True(mienshao.Protection_Counter == 0);
+            #endregion
+
+            #region Cleanup
+            battle.OnNewEvent -= PBEBattle.ConsoleBattleEventHandler;
+            #endregion
+        }
+
+        [Theory]
+        [InlineData(true)]
+        [InlineData(false)]
+        public void Feint_And_QuickGuard(bool ally)
+        {
+            #region Setup
+            PBERandom.SetSeed(0);
+            PBESettings settings = PBESettings.DefaultSettings;
+
+            var p0 = new TestPokemonCollection(2);
+            p0[0] = new TestPokemon(PBESpecies.Lucario, 0, 100)
+            {
+                Moveset = new TestMoveset(settings, new[] { PBEMove.Feint })
+            };
+            p0[1] = new TestPokemon(PBESpecies.Mienshao, 0, 100)
+            {
+                Moveset = new TestMoveset(settings, new[] { PBEMove.QuickGuard })
+            };
+
+            var p1 = new TestPokemonCollection(1);
+            p1[0] = new TestPokemon(PBESpecies.MrMime, 0, 100)
+            {
+                Moveset = new TestMoveset(settings, new[] { PBEMove.QuickGuard })
+            };
+
+            var battle = new PBEBattle(PBEBattleTerrain.Plain, PBEBattleFormat.Double, new PBETeamInfo(p0, "Team 1"), new PBETeamInfo(p1, "Team 2"), settings);
+            battle.OnNewEvent += PBEBattle.ConsoleBattleEventHandler;
+            battle.Begin();
+
+            PBETeam t0 = battle.Teams[0];
+            PBETeam t1 = battle.Teams[1];
+            PBEBattlePokemon lucario = t0.Party[0];
+            PBEBattlePokemon mienshao = t0.Party[1];
+            PBEBattlePokemon mrmime = t1.Party[0];
+            #endregion
+
+            #region Use move and check
+            Assert.True(PBEBattle.SelectActionsIfValid(t0, new[]
+            {
+                new PBETurnAction(lucario.Id, PBEMove.Feint, ally ? PBETurnTarget.AllyRight : PBETurnTarget.FoeLeft),
+                new PBETurnAction(mienshao.Id, PBEMove.QuickGuard, PBETurnTarget.AllyLeft | PBETurnTarget.AllyRight),
+            }));
+            Assert.True(PBEBattle.SelectActionsIfValid(t1, new[] { new PBETurnAction(mrmime.Id, PBEMove.QuickGuard, PBETurnTarget.AllyLeft | PBETurnTarget.AllyRight) }));
+
+            battle.RunTurn();
+
+            Assert.True(TestUtils.VerifyTeamStatusHappened(battle, ally ? t0 : t1, PBETeamStatus.QuickGuard, PBETeamStatusAction.Damage, damageVictim: ally ? mienshao : mrmime) == ally);
+            #endregion
+
+            #region Cleanup
+            battle.OnNewEvent -= PBEBattle.ConsoleBattleEventHandler;
+            #endregion
+        }
+
+        [Fact]
+        public void UserProtection_Works()
+        {
+            #region Setup
+            PBERandom.SetSeed(0);
+            PBESettings settings = PBESettings.DefaultSettings;
+
+            var p0 = new TestPokemonCollection(1);
+            p0[0] = new TestPokemon(PBESpecies.Lucario, 0, 100)
+            {
+                Moveset = new TestMoveset(settings, new[] { PBEMove.Tackle })
+            };
+
+            var p1 = new TestPokemonCollection(1);
+            p1[0] = new TestPokemon(PBESpecies.Mienshao, 0, 100)
+            {
+                Moveset = new TestMoveset(settings, new[] { PBEMove.Protect })
+            };
+
+            var battle = new PBEBattle(PBEBattleTerrain.Plain, PBEBattleFormat.Single, new PBETeamInfo(p0, "Team 1"), new PBETeamInfo(p1, "Team 2"), settings);
+            battle.OnNewEvent += PBEBattle.ConsoleBattleEventHandler;
+            battle.Begin();
+
+            PBETeam t0 = battle.Teams[0];
+            PBETeam t1 = battle.Teams[1];
+            PBEBattlePokemon lucario = t0.Party[0];
+            PBEBattlePokemon mienshao = t1.Party[0];
+            #endregion
+
+            #region Use move and check
+            Assert.True(PBEBattle.SelectActionsIfValid(t0, new[] { new PBETurnAction(lucario.Id, PBEMove.Tackle, PBETurnTarget.FoeCenter) }));
+            Assert.True(PBEBattle.SelectActionsIfValid(t1, new[] { new PBETurnAction(mienshao.Id, PBEMove.Protect, PBETurnTarget.AllyCenter) }));
+
+            battle.RunTurn();
+
+            Assert.True(TestUtils.VerifyStatus2Happened(battle, mienshao, lucario, PBEStatus2.Protected, PBEStatusAction.Damage) && !mienshao.Status2.HasFlag(PBEStatus2.Protected));
+            #endregion
+
+            #region Cleanup
+            battle.OnNewEvent -= PBEBattle.ConsoleBattleEventHandler;
+            #endregion
+        }
+
+        [Theory]
+        [InlineData(PBEMove.QuickGuard, PBEMove.QuickAttack, PBETeamStatus.QuickGuard)]
+        [InlineData(PBEMove.WideGuard, PBEMove.Earthquake, PBETeamStatus.WideGuard)]
+        public void TeamProtection_Works(PBEMove move, PBEMove move2, PBETeamStatus teamStatus)
+        {
+            #region Setup
+            PBERandom.SetSeed(0);
+            PBESettings settings = PBESettings.DefaultSettings;
+
+            var p0 = new TestPokemonCollection(1);
+            p0[0] = new TestPokemon(PBESpecies.Lucario, 0, 100)
+            {
+                Moveset = new TestMoveset(settings, new[] { move2 })
+            };
+
+            var p1 = new TestPokemonCollection(1);
+            p1[0] = new TestPokemon(PBESpecies.Mienshao, 0, 100)
+            {
+                Moveset = new TestMoveset(settings, new[] { move })
+            };
+
+            var battle = new PBEBattle(PBEBattleTerrain.Plain, PBEBattleFormat.Single, new PBETeamInfo(p0, "Team 1"), new PBETeamInfo(p1, "Team 2"), settings);
+            battle.OnNewEvent += PBEBattle.ConsoleBattleEventHandler;
+            battle.Begin();
+
+            PBETeam t0 = battle.Teams[0];
+            PBETeam t1 = battle.Teams[1];
+            PBEBattlePokemon lucario = t0.Party[0];
+            PBEBattlePokemon mienshao = t1.Party[0];
+            #endregion
+
+            #region Use move and check
+            Assert.True(PBEBattle.SelectActionsIfValid(t0, new[] { new PBETurnAction(lucario.Id, move2, PBETurnTarget.FoeCenter) }));
+            Assert.True(PBEBattle.SelectActionsIfValid(t1, new[] { new PBETurnAction(mienshao.Id, move, PBETurnTarget.AllyCenter) }));
+
+            battle.RunTurn();
+
+            Assert.True(TestUtils.VerifyTeamStatusHappened(battle, t1, teamStatus, PBETeamStatusAction.Damage, damageVictim: mienshao) && !t1.TeamStatus.HasFlag(teamStatus));
             #endregion
 
             #region Cleanup

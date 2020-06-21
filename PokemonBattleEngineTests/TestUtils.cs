@@ -53,6 +53,20 @@ namespace Kermalis.PokemonBattleEngineTests
             }
             return false;
         }
+        public static bool VerifyTeamStatusHappened(PBEBattle battle, PBETeam team, PBETeamStatus teamStatus, PBETeamStatusAction teamStatusAction, PBEBattlePokemon damageVictim = null)
+        {
+            foreach (IPBEPacket packet in battle.Events)
+            {
+                if (packet is PBETeamStatusPacket tsp)
+                {
+                    if (tsp.Team == team && tsp.TeamStatus == teamStatus && tsp.TeamStatusAction == teamStatusAction && team.TryGetPokemon(tsp.DamageVictim) == damageVictim)
+                    {
+                        return true;
+                    }
+                }
+            }
+            return false;
+        }
 
         #region Output
         public void SetOutputHelper(ITestOutputHelper output)

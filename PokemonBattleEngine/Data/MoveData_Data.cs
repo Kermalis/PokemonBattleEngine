@@ -3270,7 +3270,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                 new PBEMoveData
                 (
                     PBEType.Fighting, PBEMoveCategory.Status, +3, 3, 0, 0,
-                    PBEMoveEffect.TODOMOVE, 0, PBEMoveTarget.AllTeam,
+                    PBEMoveEffect.QuickGuard, 0, PBEMoveTarget.AllTeam,
                     PBEMoveFlag.AffectedBySnatch | PBEMoveFlag.BlockedFromMetronome
                 )
             },

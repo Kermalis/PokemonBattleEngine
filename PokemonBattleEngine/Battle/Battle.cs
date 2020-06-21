@@ -396,6 +396,10 @@ namespace Kermalis.PokemonBattleEngine.Battle
                 }
                 foreach (PBETeam team in Teams)
                 {
+                    if (team.TeamStatus.HasFlag(PBETeamStatus.QuickGuard))
+                    {
+                        BroadcastTeamStatus(team, PBETeamStatus.QuickGuard, PBETeamStatusAction.Ended);
+                    }
                     if (team.TeamStatus.HasFlag(PBETeamStatus.WideGuard))
                     {
                         BroadcastTeamStatus(team, PBETeamStatus.WideGuard, PBETeamStatusAction.Ended);

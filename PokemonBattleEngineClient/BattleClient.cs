@@ -1464,7 +1464,7 @@ namespace Kermalis.PokemonBattleEngineClient
                             default: throw new ArgumentOutOfRangeException(nameof(tsp.TeamStatusAction));
                         }
                     }
-                    PBEBattlePokemon damageVictim = tsp.DamageVictim.HasValue ? tsp.Team.TryGetPokemon(tsp.DamageVictim.Value) : null;
+                    PBEBattlePokemon damageVictim = tsp.Team.TryGetPokemon(tsp.DamageVictim);
                     string message;
                     bool damageVictimCaps = false;
                     switch (tsp.TeamStatus)
@@ -1486,6 +1486,18 @@ namespace Kermalis.PokemonBattleEngineClient
                             {
                                 case PBETeamStatusAction.Added: message = "The Lucky Chant shielded {0} team from critical hits!"; break;
                                 case PBETeamStatusAction.Ended: message = "{1} team's Lucky Chant wore off!"; break;
+                                default: throw new ArgumentOutOfRangeException(nameof(tsp.TeamStatusAction));
+                            }
+                            break;
+                        }
+                        case PBETeamStatus.QuickGuard:
+                        {
+                            switch (tsp.TeamStatusAction)
+                            {
+                                case PBETeamStatusAction.Added: message = "Quick Guard protected {2} team!"; break;
+                                case PBETeamStatusAction.Cleared: message = "{1} team's Quick Guard was destroyed!"; break;
+                                case PBETeamStatusAction.Damage: message = "Quick Guard protected {4}!"; break;
+                                case PBETeamStatusAction.Ended: return true;
                                 default: throw new ArgumentOutOfRangeException(nameof(tsp.TeamStatusAction));
                             }
                             break;
@@ -1674,7 +1686,7 @@ namespace Kermalis.PokemonBattleEngineClient
                         case PBEWeatherAction.CausedDamage: break;
                         default: throw new ArgumentOutOfRangeException(nameof(wp.WeatherAction));
                     }
-                    PBEBattlePokemon damageVictim = wp.DamageVictim.HasValue ? wp.DamageVictimTeam.TryGetPokemon(wp.DamageVictim.Value) : null;
+                    PBEBattlePokemon damageVictim = wp.DamageVictimTeam?.TryGetPokemon(wp.DamageVictim.Value);
                     string message;
                     switch (wp.Weather)
                     {

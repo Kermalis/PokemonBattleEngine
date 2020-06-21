@@ -765,6 +765,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                 case PBEMoveEffect.Protect: Ef_TryForceStatus2(user, targets, move, mData, PBEStatus2.Protected); break;
                 case PBEMoveEffect.PsychUp: Ef_PsychUp(user, targets, move, mData); break;
                 case PBEMoveEffect.Psywave: Ef_Psywave(user, targets, move, mData); break;
+                case PBEMoveEffect.QuickGuard: Ef_TryForceTeamStatus(user, move, mData, PBETeamStatus.QuickGuard); break;
                 case PBEMoveEffect.RainDance: Ef_TryForceWeather(user, move, mData, PBEWeather.Rain); break;
                 case PBEMoveEffect.RaiseTarget_ATK_ACC_By1: Ef_ChangeTargetStats(user, targets, move, mData, new[] { (PBEStat.Attack, +1), (PBEStat.Accuracy, +1) }); break;
                 case PBEMoveEffect.RaiseTarget_ATK_DEF_By1: Ef_ChangeTargetStats(user, targets, move, mData, new[] { (PBEStat.Attack, +1), (PBEStat.Defense, +1) }); break;
@@ -924,6 +925,12 @@ namespace Kermalis.PokemonBattleEngine.Battle
             if (target.Team.TeamStatus.HasFlag(PBETeamStatus.WideGuard) && mData.Category != PBEMoveCategory.Status && PBEMoveData.IsSpreadMove(user.GetMoveTargets(mData)))
             {
                 BroadcastTeamStatus(target.Team, PBETeamStatus.WideGuard, PBETeamStatusAction.Damage, damageVictim: target);
+                return true;
+            }
+            // Feint ignores Quick Guard unless the target is an ally
+            if (target.Team.TeamStatus.HasFlag(PBETeamStatus.QuickGuard) && mData.Priority > 0 && (mData.Effect != PBEMoveEffect.Feint || user.Team == target.Team))
+            {
+                BroadcastTeamStatus(target.Team, PBETeamStatus.QuickGuard, PBETeamStatusAction.Damage, damageVictim: target);
                 return true;
             }
             if (user.Status2.HasFlag(PBEStatus2.LockOn) && user.LockOnPokemon == target)
@@ -2326,6 +2333,20 @@ namespace Kermalis.PokemonBattleEngine.Battle
                     }
                     break;
                 }
+                case PBETeamStatus.QuickGuard:
+                {
+                    if (!user.Team.TeamStatus.HasFlag(PBETeamStatus.QuickGuard) && PBERandom.RandomBool(user.GetProtectionChance(), ushort.MaxValue))
+                    {
+                        user.Protection_Used = true;
+                        BroadcastTeamStatus(user.Team, PBETeamStatus.QuickGuard, PBETeamStatusAction.Added);
+                        result = PBEResult.Success;
+                    }
+                    else
+                    {
+                        result = PBEResult.Ineffective_Status;
+                    }
+                    break;
+                }
                 case PBETeamStatus.Reflect:
                 {
                     if (!user.Team.TeamStatus.HasFlag(PBETeamStatus.Reflect))
@@ -2687,10 +2708,13 @@ namespace Kermalis.PokemonBattleEngine.Battle
         {
             void BeforePostHit(PBEBattlePokemon target)
             {
-                // TODO: Quick Guard
                 if (target.HP > 0 && target.Status2.HasFlag(PBEStatus2.Protected))
                 {
                     BroadcastStatus2(target, user, PBEStatus2.Protected, PBEStatusAction.Cleared);
+                }
+                if (target.Team.TeamStatus.HasFlag(PBETeamStatus.QuickGuard))
+                {
+                    BroadcastTeamStatus(target.Team, PBETeamStatus.QuickGuard, PBETeamStatusAction.Cleared, damageVictim: target);
                 }
                 if (target.Team.TeamStatus.HasFlag(PBETeamStatus.WideGuard))
                 {
@@ -2741,13 +2765,16 @@ namespace Kermalis.PokemonBattleEngine.Battle
             {
                 void BeforePostHit(PBEBattlePokemon target)
                 {
-                    // TODO: Quick Guard
                     if (target.HP > 0 && target.Status2.HasFlag(PBEStatus2.Protected))
                     {
                         BroadcastStatus2(target, user, PBEStatus2.Protected, PBEStatusAction.Cleared);
                     }
                     if (target.Team == user.Team.OpposingTeam)
                     {
+                        if (target.Team.TeamStatus.HasFlag(PBETeamStatus.QuickGuard))
+                        {
+                            BroadcastTeamStatus(target.Team, PBETeamStatus.QuickGuard, PBETeamStatusAction.Cleared, damageVictim: target);
+                        }
                         if (target.Team.TeamStatus.HasFlag(PBETeamStatus.WideGuard))
                         {
                             BroadcastTeamStatus(target.Team, PBETeamStatus.WideGuard, PBETeamStatusAction.Cleared, damageVictim: target);

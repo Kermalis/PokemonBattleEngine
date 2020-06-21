@@ -167,6 +167,10 @@ namespace Kermalis.PokemonBattleEngine.Battle
         {
             return ActiveBattlers.SingleOrDefault(p => p.FieldPosition == pos);
         }
+        public PBEBattlePokemon TryGetPokemon(PBEFieldPosition? pos)
+        {
+            return pos.HasValue ? TryGetPokemon(pos.Value) : null;
+        }
         /// <summary>Gets a specific <see cref="PBEBattlePokemon"/> by its ID.</summary>
         /// <param name="pkmnId">The ID of the <see cref="PBEBattlePokemon"/>.</param>
         public PBEBattlePokemon TryGetPokemon(byte pkmnId)

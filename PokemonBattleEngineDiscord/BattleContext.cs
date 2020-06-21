@@ -1573,7 +1573,7 @@ namespace Kermalis.PokemonBattleEngineDiscord
                 }
                 case PBETeamStatusPacket tsp:
                 {
-                    PBEBattlePokemon damageVictim = tsp.DamageVictim.HasValue ? tsp.Team.TryGetPokemon(tsp.DamageVictim.Value) : null;
+                    PBEBattlePokemon damageVictim = tsp.Team.TryGetPokemon(tsp.DamageVictim);
                     string message;
                     switch (tsp.TeamStatus)
                     {
@@ -1594,6 +1594,18 @@ namespace Kermalis.PokemonBattleEngineDiscord
                             {
                                 case PBETeamStatusAction.Added: message = "The Lucky Chant shielded {0}'s team from critical hits!"; break;
                                 case PBETeamStatusAction.Ended: message = "{0}'s team's Lucky Chant wore off!"; break;
+                                default: throw new ArgumentOutOfRangeException(nameof(tsp.TeamStatusAction));
+                            }
+                            break;
+                        }
+                        case PBETeamStatus.QuickGuard:
+                        {
+                            switch (tsp.TeamStatusAction)
+                            {
+                                case PBETeamStatusAction.Added: message = "Quick Guard protected {0}'s team!"; break;
+                                case PBETeamStatusAction.Cleared: message = "{0}'s team's Quick Guard was destroyed!"; break;
+                                case PBETeamStatusAction.Damage: message = "Quick Guard protected {1}!"; break;
+                                case PBETeamStatusAction.Ended: return;
                                 default: throw new ArgumentOutOfRangeException(nameof(tsp.TeamStatusAction));
                             }
                             break;
@@ -1691,7 +1703,7 @@ namespace Kermalis.PokemonBattleEngineDiscord
                 }
                 case PBEWeatherPacket wp:
                 {
-                    PBEBattlePokemon damageVictim = wp.DamageVictim.HasValue ? wp.DamageVictimTeam.TryGetPokemon(wp.DamageVictim.Value) : null;
+                    PBEBattlePokemon damageVictim = wp.DamageVictimTeam?.TryGetPokemon(wp.DamageVictim.Value);
                     if (wp.WeatherAction == PBEWeatherAction.Added || wp.WeatherAction == PBEWeatherAction.Ended)
                     {
                         SetEmbedTitle();
