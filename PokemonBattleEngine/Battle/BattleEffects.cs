@@ -2055,6 +2055,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                             beforePostHit?.Invoke(target);
                             DoPostHitEffects(user, target, mData, moveType); // User faints here
                             // HP-draining moves restore HP after post-hit effects
+                            // Shadow Force destroys protection
                             afterPostHit?.Invoke(target, damageDealt);
                             DoPostAttackedTargetEffects(target, colorChangeType: moveType);
                             hitSomeone = true;
@@ -2193,7 +2194,8 @@ namespace Kermalis.PokemonBattleEngine.Battle
             // Official order: user faints/target eats berry, effectiveness, "Hit 4 times!", target faints, Life Orb, target AntiStatusAbilityCheck()
         }
         private void SemiInvulnerableChargeMove(PBEBattlePokemon user, PBEBattlePokemon[] targets, PBEMove move, PBEMoveData mData, PBETurnTarget requestedTargets, PBEStatus2 status2,
-            Action<PBEBattlePokemon> beforePostHit = null)
+            Action<PBEBattlePokemon> beforePostHit = null,
+            Action<PBEBattlePokemon, ushort> afterPostHit = null)
         {
             BroadcastMoveUsed(user, move);
         top:
@@ -2207,7 +2209,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                 }
                 else
                 {
-                    BasicHit(user, targets, mData, beforePostHit: beforePostHit);
+                    BasicHit(user, targets, mData, beforePostHit: beforePostHit, afterPostHit: afterPostHit);
                 }
                 RecordExecutedMove(user, move, mData); // Should only count as the last used move if it finishes charging
             }
@@ -2707,7 +2709,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
         }
         private void Ef_ShadowForce(PBEBattlePokemon user, PBEBattlePokemon[] targets, PBEMove move, PBEMoveData mData, PBETurnTarget requestedTargets)
         {
-            void BeforePostHit(PBEBattlePokemon target)
+            void AfterPostHit(PBEBattlePokemon target, ushort damageDealt)
             {
                 if (target.HP > 0 && target.Status2.HasFlag(PBEStatus2.Protected))
                 {
@@ -2722,7 +2724,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                     BroadcastTeamStatus(target.Team, PBETeamStatus.WideGuard, PBETeamStatusAction.Cleared, damageVictim: target);
                 }
             }
-            SemiInvulnerableChargeMove(user, targets, move, mData, requestedTargets, PBEStatus2.ShadowForce, beforePostHit: BeforePostHit);
+            SemiInvulnerableChargeMove(user, targets, move, mData, requestedTargets, PBEStatus2.ShadowForce, afterPostHit: AfterPostHit);
         }
 
         private void Ef_BrickBreak(PBEBattlePokemon user, PBEBattlePokemon[] targets, PBEMove move, PBEMoveData mData)
