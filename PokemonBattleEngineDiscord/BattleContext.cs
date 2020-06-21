@@ -1256,6 +1256,11 @@ namespace Kermalis.PokemonBattleEngineDiscord
                             message = "The battlers shared their pain!";
                             break;
                         }
+                        case PBESpecialMessage.PayDay:
+                        {
+                            message = "Coins were scattered everywhere!";
+                            break;
+                        }
                         case PBESpecialMessage.Recoil:
                         {
                             pokemon = ((PBETeam)smp.Params[1]).TryGetPokemon((PBEFieldPosition)smp.Params[0]);

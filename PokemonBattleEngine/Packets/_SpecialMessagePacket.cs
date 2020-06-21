@@ -89,6 +89,7 @@ namespace Kermalis.PokemonBattleEngine.Packets
                 }
                 case PBESpecialMessage.NothingHappened:
                 case PBESpecialMessage.OneHitKnockout:
+                case PBESpecialMessage.PayDay:
                 {
                     Params = new ReadOnlyCollection<object>(Array.Empty<object>());
                     break;

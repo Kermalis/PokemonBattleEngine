@@ -86,7 +86,6 @@ NaturalGift
 NaturePower
 Outrage
 Payback
-PayDay
 PerishSong
 PetalDance
 Pluck

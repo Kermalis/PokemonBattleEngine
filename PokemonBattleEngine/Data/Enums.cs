@@ -470,8 +470,9 @@ namespace Kermalis.PokemonBattleEngine.Data
         NothingHappened = 5,
         OneHitKnockout = 6,
         PainSplit = 7,
-        Recoil = 8,
-        Struggle = 9
+        PayDay = 8,
+        Recoil = 9,
+        Struggle = 10
     }
     public enum PBEMoveLockType : byte
     {
@@ -2279,6 +2280,7 @@ namespace Kermalis.PokemonBattleEngine.Data
         OneHitKnockout,
         PainSplit,
         Paralyze,
+        PayDay,
         Poison,
         PowerTrick,
         Protect, // TODO: If the user goes last, fail
@@ -2674,7 +2676,7 @@ namespace Kermalis.PokemonBattleEngine.Data
         Overheat = 315,
         PainSplit = 220,
         Payback = 371, // TODO
-        PayDay = 6, // TODO
+        PayDay = 6,
         Peck = 64,
         PerishSong = 195, // TODO
         PetalDance = 80, // TODO

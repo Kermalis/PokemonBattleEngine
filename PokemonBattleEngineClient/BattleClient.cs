@@ -1043,6 +1043,11 @@ namespace Kermalis.PokemonBattleEngineClient
                             message = "The battlers shared their pain!";
                             break;
                         }
+                        case PBESpecialMessage.PayDay:
+                        {
+                            message = "Coins were scattered everywhere!";
+                            break;
+                        }
                         case PBESpecialMessage.Recoil:
                         {
                             message = string.Format("{0} is damaged by recoil!", NameForTrainer(((PBETeam)smp.Params[1]).TryGetPokemon((PBEFieldPosition)smp.Params[0]), true));

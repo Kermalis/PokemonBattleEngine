@@ -761,6 +761,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                 case PBEMoveEffect.OneHitKnockout: Ef_OneHitKnockout(user, targets, move, mData); break;
                 case PBEMoveEffect.PainSplit: Ef_PainSplit(user, targets, move, mData); break;
                 case PBEMoveEffect.Paralyze: Ef_TryForceStatus1(user, targets, move, mData, PBEStatus1.Paralyzed); break;
+                case PBEMoveEffect.PayDay: Ef_PayDay(user, targets, move, mData); break;
                 case PBEMoveEffect.Poison: Ef_TryForceStatus1(user, targets, move, mData, PBEStatus1.Poisoned); break;
                 case PBEMoveEffect.PowerTrick: Ef_TryForceStatus2(user, targets, move, mData, PBEStatus2.PowerTrick); break;
                 case PBEMoveEffect.Protect: Ef_TryForceStatus2(user, targets, move, mData, PBEStatus2.Protected); break;
@@ -2901,6 +2902,25 @@ namespace Kermalis.PokemonBattleEngine.Battle
                 }
             }
             Ef_MultiHit(user, targets, move, mData, numHits);
+        }
+        private void Ef_PayDay(PBEBattlePokemon user, PBEBattlePokemon[] targets, PBEMove move, PBEMoveData mData)
+        {
+            BroadcastMoveUsed(user, move);
+            PPReduce(user, move);
+            if (targets.Length == 0)
+            {
+                BroadcastMoveResult(user, user, PBEResult.NoTarget);
+            }
+            else
+            {
+                PBEResult BeforeDoingDamage(PBEBattlePokemon target)
+                {
+                    BroadcastPayDay();
+                    return PBEResult.Success;
+                }
+                BasicHit(user, targets, mData, beforeDoingDamage: BeforeDoingDamage);
+            }
+            RecordExecutedMove(user, move, mData);
         }
         private void Ef_Recoil(PBEBattlePokemon user, PBEBattlePokemon[] targets, PBEMove move, PBEMoveData mData, PBEStatus1 status1 = PBEStatus1.None, int chanceToInflictStatus1 = 0, PBEStatus2 status2 = PBEStatus2.None, int chanceToInflictStatus2 = 0)
         {

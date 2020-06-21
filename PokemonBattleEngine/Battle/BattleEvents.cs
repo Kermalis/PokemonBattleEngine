@@ -210,6 +210,10 @@ namespace Kermalis.PokemonBattleEngine.Battle
         {
             Broadcast(new PBESpecialMessagePacket(PBESpecialMessage.PainSplit, user, target));
         }
+        private void BroadcastPayDay()
+        {
+            Broadcast(new PBESpecialMessagePacket(PBESpecialMessage.PayDay));
+        }
         private void BroadcastRecoil(PBEBattlePokemon pokemon)
         {
             Broadcast(new PBESpecialMessagePacket(PBESpecialMessage.Recoil, pokemon));
@@ -972,6 +976,11 @@ namespace Kermalis.PokemonBattleEngine.Battle
                         case PBESpecialMessage.PainSplit:
                         {
                             message = string.Format("{0} and {1} shared pain!", NameForTrainer(((PBETeam)smp.Params[1]).TryGetPokemon((PBEFieldPosition)smp.Params[0])), NameForTrainer(((PBETeam)smp.Params[3]).TryGetPokemon((PBEFieldPosition)smp.Params[2])));
+                            break;
+                        }
+                        case PBESpecialMessage.PayDay:
+                        {
+                            message = "Coins were scattered everywhere!";
                             break;
                         }
                         case PBESpecialMessage.Recoil:
