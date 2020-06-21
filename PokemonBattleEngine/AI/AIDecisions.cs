@@ -579,6 +579,7 @@ namespace Kermalis.PokemonBattleEngine.AI
                                     case PBEMoveEffect.QuickGuard:
                                     case PBEMoveEffect.RainDance:
                                     case PBEMoveEffect.ReflectType:
+                                    case PBEMoveEffect.Refresh:
                                     case PBEMoveEffect.RolePlay:
                                     case PBEMoveEffect.Sandstorm:
                                     case PBEMoveEffect.SeismicToss:

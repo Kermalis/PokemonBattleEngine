@@ -2304,6 +2304,7 @@ namespace Kermalis.PokemonBattleEngine.Data
         Recoil__10PercentParalyze,
         Reflect,
         ReflectType,
+        Refresh,
         Rest,
         RestoreTargetHP,
         Retaliate,
@@ -2723,7 +2724,7 @@ namespace Kermalis.PokemonBattleEngine.Data
         Recycle = 278, // TODO
         Reflect = 115,
         ReflectType = 513,
-        Refresh = 287, // TODO
+        Refresh = 287,
         RelicSong = 547, // TODO
         Rest = 156, // TODO: Uproar, Leaf Guard
         Retaliate = 514,

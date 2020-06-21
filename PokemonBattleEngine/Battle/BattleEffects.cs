@@ -783,6 +783,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                 case PBEMoveEffect.Recoil__10PercentParalyze: Ef_Recoil(user, targets, move, mData, status1: PBEStatus1.Paralyzed, chanceToInflictStatus1: 10); break;
                 case PBEMoveEffect.Reflect: Ef_TryForceTeamStatus(user, move, mData, PBETeamStatus.Reflect); break;
                 case PBEMoveEffect.ReflectType: Ef_ReflectType(user, targets, move, mData); break;
+                case PBEMoveEffect.Refresh: Ef_Refresh(user, targets, move, mData); break;
                 case PBEMoveEffect.Rest: Ef_Rest(user, move, mData); break;
                 case PBEMoveEffect.RestoreTargetHP: Ef_RestoreTargetHP(user, targets, move, mData); break;
                 case PBEMoveEffect.RolePlay: Ef_RolePlay(user, targets, move, mData); break;
@@ -3725,6 +3726,36 @@ namespace Kermalis.PokemonBattleEngine.Battle
                         else
                         {
                             BroadcastReflectType(user, target);
+                        }
+                    }
+                }
+            }
+            RecordExecutedMove(user, move, mData);
+        }
+        private void Ef_Refresh(PBEBattlePokemon user, PBEBattlePokemon[] targets, PBEMove move, PBEMoveData mData)
+        {
+            BroadcastMoveUsed(user, move);
+            PPReduce(user, move);
+            if (targets.Length == 0)
+            {
+                BroadcastMoveResult(user, user, PBEResult.NoTarget);
+            }
+            else
+            {
+                foreach (PBEBattlePokemon target in targets)
+                {
+                    if (!MissCheck(user, target, mData))
+                    {
+                        PBEStatus1 status1 = target.Status1;
+                        if (status1 == PBEStatus1.None || status1 == PBEStatus1.Asleep || status1 == PBEStatus1.Frozen)
+                        {
+                            BroadcastMoveResult(user, target, PBEResult.InvalidConditions);
+                        }
+                        else
+                        {
+                            target.Status1 = PBEStatus1.None;
+                            target.Status1Counter = 0;
+                            BroadcastStatus1(target, user, status1, PBEStatusAction.Cleared);
                         }
                     }
                 }

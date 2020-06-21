@@ -100,7 +100,6 @@ RagePowder
 RapidSpin
 RazorWind
 Recycle
-Refresh
 RelicSong
 Revenge
 RoarOfTime
