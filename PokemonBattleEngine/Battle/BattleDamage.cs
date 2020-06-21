@@ -1065,6 +1065,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
         }
         private ushort CalculateConfusionDamage(PBEBattlePokemon pkmn)
         {
+            // Verified: Unaware has no effect on confusion damage
             double m = GetStatChangeModifier(pkmn.AttackChange, false);
             double a = CalculateAttack(pkmn, pkmn, PBEType.None, pkmn.Attack * m);
             m = GetStatChangeModifier(pkmn.DefenseChange, false);
@@ -1097,27 +1098,27 @@ namespace Kermalis.PokemonBattleEngine.Battle
                 }
             }
 
-            bool unawareA = user != target && target.Ability == PBEAbility.Unaware && !user.HasCancellingAbility();
-            bool unawareD = user != target && user.Ability == PBEAbility.Unaware && !target.HasCancellingAbility(); // Verified: A target with Mold Breaker will accept more damage from a user with Unaware
+            bool ignoreA = user != target && target.Ability == PBEAbility.Unaware && !user.HasCancellingAbility();
+            bool ignoreD = user != target && (mData.Effect == PBEMoveEffect.ChipAway || user.Ability == PBEAbility.Unaware);
             double a, d;
             if (aCat == PBEMoveCategory.Physical)
             {
-                double m = unawareA ? 1 : GetStatChangeModifier(criticalHit ? Math.Max((sbyte)0, aPkmn.AttackChange) : aPkmn.AttackChange, false);
+                double m = ignoreA ? 1 : GetStatChangeModifier(criticalHit ? Math.Max((sbyte)0, aPkmn.AttackChange) : aPkmn.AttackChange, false);
                 a = CalculateAttack(user, target, moveType, aPkmn.Attack * m);
             }
             else
             {
-                double m = unawareA ? 1 : GetStatChangeModifier(criticalHit ? Math.Max((sbyte)0, aPkmn.SpAttackChange) : aPkmn.SpAttackChange, false);
+                double m = ignoreA ? 1 : GetStatChangeModifier(criticalHit ? Math.Max((sbyte)0, aPkmn.SpAttackChange) : aPkmn.SpAttackChange, false);
                 a = CalculateSpAttack(user, target, moveType, aPkmn.SpAttack * m);
             }
             if (dCat == PBEMoveCategory.Physical)
             {
-                double m = unawareD ? 1 : GetStatChangeModifier(criticalHit ? Math.Min((sbyte)0, target.DefenseChange) : target.DefenseChange, false);
+                double m = ignoreD ? 1 : GetStatChangeModifier(criticalHit ? Math.Min((sbyte)0, target.DefenseChange) : target.DefenseChange, false);
                 d = CalculateDefense(user, target, target.Defense * m);
             }
             else
             {
-                double m = unawareD ? 1 : GetStatChangeModifier(criticalHit ? Math.Min((sbyte)0, target.SpDefenseChange) : target.SpDefenseChange, false);
+                double m = ignoreD ? 1 : GetStatChangeModifier(criticalHit ? Math.Min((sbyte)0, target.SpDefenseChange) : target.SpDefenseChange, false);
                 d = CalculateSpDefense(user, target, target.SpDefense * m);
             }
 

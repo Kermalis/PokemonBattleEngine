@@ -658,6 +658,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
             {
                 case PBEMoveEffect.Acrobatics:
                 case PBEMoveEffect.Brine:
+                case PBEMoveEffect.ChipAway:
                 case PBEMoveEffect.CrushGrip:
                 case PBEMoveEffect.Eruption:
                 case PBEMoveEffect.Facade:
@@ -988,9 +989,19 @@ namespace Kermalis.PokemonBattleEngine.Battle
             {
                 chance = Math.Min(50, chance);
             }
-            double accuracy = target.Ability == PBEAbility.Unaware ? 1 : GetStatChangeModifier(user.AccuracyChange, true);
-            bool ignorePositiveEvasion = target.Status2.HasFlag(PBEStatus2.Identified) || target.Status2.HasFlag(PBEStatus2.MiracleEye);
-            double evasion = user.Ability == PBEAbility.Unaware ? 1 : GetStatChangeModifier(ignorePositiveEvasion ? Math.Min((sbyte)0, target.EvasionChange) : target.EvasionChange, true);
+            bool ignoreA = mData.Category != PBEMoveCategory.Status && target.Ability == PBEAbility.Unaware && !user.HasCancellingAbility();
+            bool ignoreE = mData.Effect == PBEMoveEffect.ChipAway || (mData.Category != PBEMoveCategory.Status && user.Ability == PBEAbility.Unaware);
+            double accuracy = ignoreA ? 1 : GetStatChangeModifier(user.AccuracyChange, true);
+            double evasion;
+            if (ignoreE)
+            {
+                evasion = 1;
+            }
+            else
+            {
+                bool ignorePositive = target.Status2.HasFlag(PBEStatus2.Identified) || target.Status2.HasFlag(PBEStatus2.MiracleEye);
+                evasion = GetStatChangeModifier(ignorePositive ? Math.Min((sbyte)0, target.EvasionChange) : target.EvasionChange, true);
+            }
             chance *= accuracy / evasion;
             if (user.Ability == PBEAbility.Compoundeyes)
             {

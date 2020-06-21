@@ -2197,6 +2197,7 @@ namespace Kermalis.PokemonBattleEngine.Data
         ChangeTarget_SPATK__IfAttractionPossible,
         ChangeTarget_SPDEF,
         ChangeTarget_SPE,
+        ChipAway,
         Confuse,
         Conversion,
         CrushGrip,
@@ -2408,7 +2409,7 @@ namespace Kermalis.PokemonBattleEngine.Data
         ChargeBeam = 451,
         Charm = 204,
         Chatter = 448,
-        ChipAway = 498, // TODO
+        ChipAway = 498,
         CircleThrow = 509, // TODO
         Clamp = 128, // TODO
         ClearSmog = 499, // TODO
@@ -2715,7 +2716,7 @@ namespace Kermalis.PokemonBattleEngine.Data
         Recover = 105,
         Recycle = 278, // TODO
         Reflect = 115,
-        ReflectType = 513, // TODO
+        ReflectType = 513,
         Refresh = 287, // TODO
         RelicSong = 547, // TODO
         Rest = 156, // TODO: Uproar, Leaf Guard
@@ -2739,7 +2740,7 @@ namespace Kermalis.PokemonBattleEngine.Data
         Roost = 355, // TODO
         Round = 496, // TODO
         SacredFire = 221,
-        SacredSword = 533, // TODO
+        SacredSword = 533,
         Safeguard = 219,
         SandAttack = 28,
         Sandstorm = 201,
