@@ -2030,6 +2030,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                         // Brick Break destroys Light Screen and Reflect before doing damage
                         // Dream Eater checks for sleep before doing damage
                         // Sucker Punch fails before doing damage
+                        // Feint destroys protection
                         if (beforeDoingDamage == null || beforeDoingDamage.Invoke(target) == PBEResult.Success)
                         {
                             if (targets.Length > 1)
@@ -2051,7 +2052,6 @@ namespace Kermalis.PokemonBattleEngine.Battle
                             }
                             // Target's statuses are assigned and target's stats are changed before post-hit effects
                             // Snore has a chance to flinch
-                            // Feint destroys protection
                             beforePostHit?.Invoke(target);
                             DoPostHitEffects(user, target, mData, moveType); // User faints here
                             // HP-draining moves restore HP after post-hit effects
@@ -2764,7 +2764,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
             }
             else
             {
-                void BeforePostHit(PBEBattlePokemon target)
+                PBEResult BeforeDoingDamage(PBEBattlePokemon target)
                 {
                     if (target.HP > 0 && target.Status2.HasFlag(PBEStatus2.Protected))
                     {
@@ -2781,8 +2781,9 @@ namespace Kermalis.PokemonBattleEngine.Battle
                             BroadcastTeamStatus(target.Team, PBETeamStatus.WideGuard, PBETeamStatusAction.Cleared, damageVictim: target);
                         }
                     }
+                    return PBEResult.Success;
                 }
-                BasicHit(user, targets, mData, beforePostHit: BeforePostHit);
+                BasicHit(user, targets, mData, beforeDoingDamage: BeforeDoingDamage);
             }
             RecordExecutedMove(user, move, mData);
         }
