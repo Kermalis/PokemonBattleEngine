@@ -132,7 +132,6 @@ Telekinesis
 Thief
 Thrash
 Torment
-TriAttack
 Trick
 TripleKick
 TrumpCard

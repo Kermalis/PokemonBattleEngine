@@ -4656,7 +4656,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                 new PBEMoveData
                 (
                     PBEType.Normal, PBEMoveCategory.Special, 0, 2, 80, 100,
-                    PBEMoveEffect.TODOMOVE, 0, PBEMoveTarget.SingleSurrounding,
+                    PBEMoveEffect.Hit__MaybeBurnFreezeParalyze, 20, PBEMoveTarget.SingleSurrounding,
                     PBEMoveFlag.AffectedByMirrorMove | PBEMoveFlag.AffectedByProtect
                 )
             },

@@ -125,6 +125,7 @@ namespace Kermalis.PokemonBattleEngine.AI
                                     case PBEMoveEffect.Hit__2To5Times:
                                     case PBEMoveEffect.Hit__MaybeBurn:
                                     case PBEMoveEffect.Hit__MaybeBurn__10PercentFlinch:
+                                    case PBEMoveEffect.Hit__MaybeBurnFreezeParalyze:
                                     case PBEMoveEffect.Hit__MaybeConfuse:
                                     case PBEMoveEffect.Hit__MaybeFlinch:
                                     case PBEMoveEffect.Hit__MaybeFreeze:

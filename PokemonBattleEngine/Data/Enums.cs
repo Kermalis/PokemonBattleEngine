@@ -2233,6 +2233,7 @@ namespace Kermalis.PokemonBattleEngine.Data
         Hit__2To5Times,
         Hit__MaybeBurn,
         Hit__MaybeBurn__10PercentFlinch,
+        Hit__MaybeBurnFreezeParalyze,
         Hit__MaybeConfuse,
         Hit__MaybeFlinch,
         Hit__MaybeFreeze,
@@ -2861,7 +2862,7 @@ namespace Kermalis.PokemonBattleEngine.Data
         Toxic = 92,
         ToxicSpikes = 390,
         Transform = 144,
-        TriAttack = 161, // TODO
+        TriAttack = 161,
         Trick = 271, // TODO
         TrickRoom = 433,
         TripleKick = 167, // TODO

@@ -718,6 +718,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                 case PBEMoveEffect.Hit__2To5Times: Ef_MultiHit_2To5(user, targets, move, mData); break;
                 case PBEMoveEffect.Hit__MaybeBurn: Ef_Hit(user, targets, move, mData, status1: PBEStatus1.Burned, chanceToInflictStatus1: mData.EffectParam); break;
                 case PBEMoveEffect.Hit__MaybeBurn__10PercentFlinch: Ef_Hit(user, targets, move, mData, status1: PBEStatus1.Burned, chanceToInflictStatus1: mData.EffectParam, status2: PBEStatus2.Flinching, chanceToInflictStatus2: 10); break;
+                case PBEMoveEffect.Hit__MaybeBurnFreezeParalyze: Ef_Hit__MaybeBurnFreezeParalyze(user, targets, move, mData); break;
                 case PBEMoveEffect.Hit__MaybeConfuse: Ef_Hit(user, targets, move, mData, status2: PBEStatus2.Confused, chanceToInflictStatus2: mData.EffectParam); break;
                 case PBEMoveEffect.Hit__MaybeFlinch: Ef_Hit(user, targets, move, mData, status2: PBEStatus2.Flinching, chanceToInflictStatus2: mData.EffectParam); break;
                 case PBEMoveEffect.Hit__MaybeFreeze: Ef_Hit(user, targets, move, mData, status1: PBEStatus1.Frozen, chanceToInflictStatus1: mData.EffectParam); break;
@@ -2810,6 +2811,41 @@ namespace Kermalis.PokemonBattleEngine.Battle
                     }
                 }
                 BasicHit(user, targets, mData, beforePostHit: status1 != PBEStatus1.None || status2 != PBEStatus2.None ? BeforePostHit : (Action<PBEBattlePokemon>)null);
+            }
+            RecordExecutedMove(user, move, mData);
+        }
+        private void Ef_Hit__MaybeBurnFreezeParalyze(PBEBattlePokemon user, PBEBattlePokemon[] targets, PBEMove move, PBEMoveData mData)
+        {
+            BroadcastMoveUsed(user, move);
+            PPReduce(user, move);
+            if (targets.Length == 0)
+            {
+                BroadcastMoveResult(user, user, PBEResult.NoTarget);
+            }
+            else
+            {
+                void BeforePostHit(PBEBattlePokemon target)
+                {
+                    if (target.HP > 0 && GetManipulableChance(user, mData.EffectParam))
+                    {
+                        PBEStatus1 status1;
+                        int val = PBERandom.RandomInt(0, 2);
+                        if (val == 0)
+                        {
+                            status1 = PBEStatus1.Burned;
+                        }
+                        else if (val == 1)
+                        {
+                            status1 = PBEStatus1.Frozen;
+                        }
+                        else
+                        {
+                            status1 = PBEStatus1.Paralyzed;
+                        }
+                        ApplyStatus1IfPossible(user, target, status1, false);
+                    }
+                }
+                BasicHit(user, targets, mData, beforePostHit: BeforePostHit);
             }
             RecordExecutedMove(user, move, mData);
         }
