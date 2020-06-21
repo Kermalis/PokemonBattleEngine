@@ -702,6 +702,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                 case PBEMoveEffect.Dive: SemiInvulnerableChargeMove(user, targets, move, mData, requestedTargets, PBEStatus2.Underwater); break;
                 case PBEMoveEffect.Endeavor: Ef_Endeavor(user, targets, move, mData); break;
                 case PBEMoveEffect.Entrainment: Ef_Entrainment(user, targets, move, mData); break;
+                case PBEMoveEffect.Feint: Ef_Feint(user, targets, move, mData); break;
                 case PBEMoveEffect.FinalGambit: Ef_FinalGambit(user, targets, move, mData); break;
                 case PBEMoveEffect.Flatter: Ef_Flatter(user, targets, move, mData); break;
                 case PBEMoveEffect.Fly: SemiInvulnerableChargeMove(user, targets, move, mData, requestedTargets, PBEStatus2.Airborne); break;
@@ -2042,6 +2043,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                             }
                             // Target's statuses are assigned and target's stats are changed before post-hit effects
                             // Snore has a chance to flinch
+                            // Feint destroys protection
                             beforePostHit?.Invoke(target);
                             DoPostHitEffects(user, target, mData, moveType); // User faints here
                             // HP-draining moves restore HP after post-hit effects
@@ -2724,6 +2726,35 @@ namespace Kermalis.PokemonBattleEngine.Battle
                     return PBEResult.Success;
                 }
                 BasicHit(user, targets, mData, beforeDoingDamage: BeforeDoingDamage);
+            }
+            RecordExecutedMove(user, move, mData);
+        }
+        private void Ef_Feint(PBEBattlePokemon user, PBEBattlePokemon[] targets, PBEMove move, PBEMoveData mData)
+        {
+            BroadcastMoveUsed(user, move);
+            PPReduce(user, move);
+            if (targets.Length == 0)
+            {
+                BroadcastMoveResult(user, user, PBEResult.NoTarget);
+            }
+            else
+            {
+                void BeforePostHit(PBEBattlePokemon target)
+                {
+                    // TODO: Quick Guard
+                    if (target.HP > 0 && target.Status2.HasFlag(PBEStatus2.Protected))
+                    {
+                        BroadcastStatus2(target, user, PBEStatus2.Protected, PBEStatusAction.Cleared);
+                    }
+                    if (target.Team == user.Team.OpposingTeam)
+                    {
+                        if (target.Team.TeamStatus.HasFlag(PBETeamStatus.WideGuard))
+                        {
+                            BroadcastTeamStatus(target.Team, PBETeamStatus.WideGuard, PBETeamStatusAction.Cleared, damageVictim: target);
+                        }
+                    }
+                }
+                BasicHit(user, targets, mData, beforePostHit: BeforePostHit);
             }
             RecordExecutedMove(user, move, mData);
         }

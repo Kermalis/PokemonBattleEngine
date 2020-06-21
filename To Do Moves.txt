@@ -16,7 +16,6 @@ BlastBurn
 Block
 BugBite
 Charge
-ChipAway
 CircleThrow
 Clamp
 ClearSmog
@@ -36,7 +35,6 @@ Encore
 Endure
 FakeOut
 FalseSwipe
-Feint
 FirePledge
 FireSpin
 FlameBurst
@@ -104,7 +102,6 @@ RagePowder
 RapidSpin
 RazorWind
 Recycle
-ReflectType
 Refresh
 RelicSong
 Revenge
@@ -113,7 +110,6 @@ RockWrecker
 Rollout
 Roost
 Round
-SacredSword
 SandTomb
 Sketch
 SkillSwap

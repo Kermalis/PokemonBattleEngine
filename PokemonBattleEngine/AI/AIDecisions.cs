@@ -110,6 +110,7 @@ namespace Kermalis.PokemonBattleEngine.AI
                                     case PBEMoveEffect.Dive:
                                     case PBEMoveEffect.Eruption:
                                     case PBEMoveEffect.Facade:
+                                    case PBEMoveEffect.Feint:
                                     case PBEMoveEffect.Flail:
                                     case PBEMoveEffect.Fly:
                                     case PBEMoveEffect.FoulPlay:

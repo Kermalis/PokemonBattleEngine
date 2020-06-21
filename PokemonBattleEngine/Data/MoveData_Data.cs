@@ -1344,7 +1344,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                 new PBEMoveData
                 (
                     PBEType.Normal, PBEMoveCategory.Physical, +2, 2, 30, 100,
-                    PBEMoveEffect.TODOMOVE, 0, PBEMoveTarget.SingleSurrounding,
+                    PBEMoveEffect.Feint, 0, PBEMoveTarget.SingleSurrounding,
                     PBEMoveFlag.BlockedFromAssist | PBEMoveFlag.BlockedFromCopycat | PBEMoveFlag.BlockedFromMetronome
                 )
             },

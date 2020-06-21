@@ -2208,6 +2208,7 @@ namespace Kermalis.PokemonBattleEngine.Data
         Entrainment,
         Eruption,
         Facade,
+        Feint,
         FinalGambit,
         Flatter,
         Flail,
@@ -2490,7 +2491,7 @@ namespace Kermalis.PokemonBattleEngine.Data
         FakeTears = 313,
         FalseSwipe = 206, // TODO
         FeatherDance = 297,
-        Feint = 364, // TODO
+        Feint = 364,
         FieryDance = 552,
         FinalGambit = 515,
         FireBlast = 126,
