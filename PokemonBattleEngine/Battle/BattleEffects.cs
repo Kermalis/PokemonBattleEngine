@@ -755,7 +755,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                 case PBEMoveEffect.MagnetRise: Ef_TryForceStatus2(user, targets, move, mData, PBEStatus2.MagnetRise); break;
                 case PBEMoveEffect.Metronome: Ef_Metronome(user, move, mData); break;
                 case PBEMoveEffect.MiracleEye: Ef_TryForceStatus2(user, targets, move, mData, PBEStatus2.MiracleEye); break;
-                case PBEMoveEffect.Moonlight: Ef_Moonlight(user, move, mData); break;
+                case PBEMoveEffect.Moonlight: Ef_Moonlight(user, targets, move, mData); break;
                 case PBEMoveEffect.Nightmare: Ef_TryForceStatus2(user, targets, move, mData, PBEStatus2.Nightmare); break;
                 case PBEMoveEffect.Nothing: Ef_Nothing(user, move, mData); break;
                 case PBEMoveEffect.OneHitKnockout: Ef_OneHitKnockout(user, targets, move, mData); break;
@@ -787,6 +787,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                 case PBEMoveEffect.Rest: Ef_Rest(user, move, mData); break;
                 case PBEMoveEffect.RestoreTargetHP: Ef_RestoreTargetHP(user, targets, move, mData); break;
                 case PBEMoveEffect.RolePlay: Ef_RolePlay(user, targets, move, mData); break;
+                case PBEMoveEffect.Roost: Ef_Roost(user, targets, move, mData); break;
                 case PBEMoveEffect.Safeguard: Ef_TryForceTeamStatus(user, move, mData, PBETeamStatus.Safeguard); break;
                 case PBEMoveEffect.Sandstorm: Ef_TryForceWeather(user, move, mData, PBEWeather.Sandstorm); break;
                 case PBEMoveEffect.SecretPower: Ef_SecretPower(user, targets, move, mData); break;
@@ -3298,28 +3299,41 @@ namespace Kermalis.PokemonBattleEngine.Battle
             }
             RecordExecutedMove(user, move, mData);
         }
-        private void Ef_Moonlight(PBEBattlePokemon user, PBEMove move, PBEMoveData mData)
+        private void Ef_Moonlight(PBEBattlePokemon user, PBEBattlePokemon[] targets, PBEMove move, PBEMoveData mData)
         {
             BroadcastMoveUsed(user, move);
             PPReduce(user, move);
-            double percentage;
-            if (ShouldDoWeatherEffects())
+            if (targets.Length == 0)
             {
-                switch (Weather)
-                {
-                    case PBEWeather.None: percentage = 0.50; break;
-                    case PBEWeather.HarshSunlight: percentage = 0.66; break;
-                    default: percentage = 0.25; break;
-                }
+                BroadcastMoveResult(user, user, PBEResult.NoTarget);
             }
             else
             {
-                percentage = 0.50;
-            }
-            ushort amtRestored = HealDamage(user, (int)(user.MaxHP * percentage));
-            if (amtRestored == 0)
-            {
-                BroadcastMoveResult(user, user, PBEResult.Ineffective_Stat);
+                int denominator;
+                if (ShouldDoWeatherEffects())
+                {
+                    switch (Weather)
+                    {
+                        case PBEWeather.None: denominator = 2; break;
+                        case PBEWeather.HarshSunlight: denominator = 3; break;
+                        default: denominator = 4; break;
+                    }
+                }
+                else
+                {
+                    denominator = 2;
+                }
+                foreach (PBEBattlePokemon target in targets)
+                {
+                    if (!MissCheck(user, target, mData))
+                    {
+                        ushort amtRestored = HealDamage(user, user.MaxHP / denominator);
+                        if (amtRestored == 0)
+                        {
+                            BroadcastMoveResult(user, user, PBEResult.Ineffective_Stat);
+                        }
+                    }
+                }
             }
             RecordExecutedMove(user, move, mData);
         }
@@ -3425,6 +3439,42 @@ namespace Kermalis.PokemonBattleEngine.Battle
                             if (amtRestored == 0)
                             {
                                 BroadcastMoveResult(user, target, PBEResult.Ineffective_Stat);
+                            }
+                        }
+                    }
+                }
+            }
+            RecordExecutedMove(user, move, mData);
+        }
+        private void Ef_Roost(PBEBattlePokemon user, PBEBattlePokemon[] targets, PBEMove move, PBEMoveData mData)
+        {
+            BroadcastMoveUsed(user, move);
+            PPReduce(user, move);
+            if (targets.Length == 0)
+            {
+                BroadcastMoveResult(user, user, PBEResult.NoTarget);
+            }
+            else
+            {
+                foreach (PBEBattlePokemon target in targets)
+                {
+                    if (!MissCheck(user, target, mData))
+                    {
+                        if (target.Status2.HasFlag(PBEStatus2.Roost))
+                        {
+                            BroadcastMoveResult(user, target, PBEResult.Ineffective_Status);
+                        }
+                        else
+                        {
+                            ushort amtRestored = HealDamage(target, (int)(target.MaxHP * (mData.EffectParam / 100.0)));
+                            if (amtRestored == 0)
+                            {
+                                BroadcastMoveResult(user, target, PBEResult.Ineffective_Stat);
+                            }
+                            else
+                            {
+                                target.StartRoost();
+                                BroadcastStatus2(target, user, PBEStatus2.Roost, PBEStatusAction.Added);
                             }
                         }
                     }

@@ -373,6 +373,7 @@ namespace Kermalis.PokemonBattleEngine.AI
                                     case PBEMoveEffect.Moonlight:
                                     case PBEMoveEffect.Rest:
                                     case PBEMoveEffect.RestoreTargetHP:
+                                    case PBEMoveEffect.Roost:
                                     {
                                         foreach (PBEBattlePokemon target in targets)
                                         {

@@ -3567,7 +3567,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                 new PBEMoveData
                 (
                     PBEType.Flying, PBEMoveCategory.Status, 0, 2, 0, 0,
-                    PBEMoveEffect.TODOMOVE, 0, PBEMoveTarget.Self,
+                    PBEMoveEffect.Roost, 50, PBEMoveTarget.Self,
                     PBEMoveFlag.AffectedBySnatch
                 )
             },

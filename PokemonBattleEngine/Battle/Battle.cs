@@ -393,6 +393,11 @@ namespace Kermalis.PokemonBattleEngine.Battle
                     {
                         pkmn.Protection_Counter = 0;
                     }
+                    if (pkmn.Status2.HasFlag(PBEStatus2.Roost))
+                    {
+                        pkmn.EndRoost();
+                        BroadcastStatus2(pkmn, pkmn, PBEStatus2.Roost, PBEStatusAction.Ended);
+                    }
                 }
                 foreach (PBETeam team in Teams)
                 {

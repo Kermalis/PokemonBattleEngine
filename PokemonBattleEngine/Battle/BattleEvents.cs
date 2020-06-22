@@ -1241,6 +1241,15 @@ namespace Kermalis.PokemonBattleEngine.Battle
                             }
                             break;
                         }
+                        case PBEStatus2.Roost:
+                        {
+                            switch (s2p.StatusAction)
+                            {
+                                case PBEStatusAction.Added:
+                                case PBEStatusAction.Ended: return;
+                                default: throw new ArgumentOutOfRangeException(nameof(s2p.StatusAction));
+                            }
+                        }
                         case PBEStatus2.ShadowForce:
                         {
                             switch (s2p.StatusAction)

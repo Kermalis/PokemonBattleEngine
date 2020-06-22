@@ -1388,6 +1388,29 @@ namespace Kermalis.PokemonBattleEngineClient
                             }
                             break;
                         }
+                        case PBEStatus2.Roost:
+                        {
+                            switch (s2p.StatusAction)
+                            {
+                                case PBEStatusAction.Added:
+                                {
+                                    if (_mode != ClientMode.SinglePlayer)
+                                    {
+                                        status2Receiver.StartRoost();
+                                    }
+                                    return true;
+                                }
+                                case PBEStatusAction.Ended:
+                                {
+                                    if (_mode != ClientMode.SinglePlayer)
+                                    {
+                                        status2Receiver.EndRoost();
+                                    }
+                                    return true;
+                                }
+                                default: throw new ArgumentOutOfRangeException(nameof(s2p.StatusAction));
+                            }
+                        }
                         case PBEStatus2.ShadowForce:
                         {
                             BattleView.Field.UpdatePokemon(status2Receiver, false, true);

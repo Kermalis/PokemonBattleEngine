@@ -139,6 +139,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
         /// <summary>The amount of times the Pokémon has successfully used <see cref="PBEMoveEffect.Protect"/>, <see cref="PBEMoveEffect.QuickGuard"/>, and/or <see cref="PBEMoveEffect.WideGuard"/> consecutively.</summary>
         public int Protection_Counter { get; set; }
         public bool Protection_Used { get; set; }
+        public PBERoostTypes RoostTypes { get; set; }
         /// <summary>The position to return <see cref="PBEStatus2.LeechSeed"/> HP to on <see cref="SeededTeam"/>.</summary>
         public PBEFieldPosition SeededPosition { get; set; }
         /// <summary>The team responsible for <see cref="PBEStatus2.LeechSeed"/>.</summary>
@@ -456,6 +457,70 @@ namespace Kermalis.PokemonBattleEngine.Battle
                 }
             }
         }
+        public void StartRoost()
+        {
+            PBERoostTypes t = PBERoostTypes.None;
+            if (Type1 == PBEType.Flying)
+            {
+                if (Type2 == PBEType.None)
+                {
+                    Type1 = PBEType.Normal; // Pure flying-type becomes Normal-type
+                    t |= PBERoostTypes.Type1;
+                }
+                else
+                {
+                    Type1 = Type2;
+                    Type2 = PBEType.None;
+                    t |= PBERoostTypes.Type2;
+                }
+            }
+            if (Type2 == PBEType.Flying)
+            {
+                Type2 = PBEType.None;
+                t |= PBERoostTypes.Type2;
+            }
+            if (KnownType1 == PBEType.Flying)
+            {
+                if (KnownType2 == PBEType.None)
+                {
+                    KnownType1 = PBEType.Normal;
+                    t |= PBERoostTypes.KnownType1;
+                }
+                else
+                {
+                    KnownType1 = KnownType2;
+                    KnownType2 = PBEType.None;
+                    t |= PBERoostTypes.KnownType2;
+                }
+            }
+            if (KnownType2 == PBEType.Flying)
+            {
+                KnownType2 = PBEType.None;
+                t |= PBERoostTypes.KnownType2;
+            }
+            RoostTypes = t;
+        }
+        public void EndRoost()
+        {
+            PBERoostTypes t = RoostTypes;
+            if (t.HasFlag(PBERoostTypes.Type1))
+            {
+                Type1 = PBEType.Flying;
+            }
+            if (t.HasFlag(PBERoostTypes.Type2))
+            {
+                Type2 = PBEType.Flying;
+            }
+            if (t.HasFlag(PBERoostTypes.KnownType1))
+            {
+                KnownType1 = PBEType.Flying;
+            }
+            if (t.HasFlag(PBERoostTypes.KnownType2))
+            {
+                KnownType2 = PBEType.Flying;
+            }
+            RoostTypes = PBERoostTypes.None;
+        }
 
         public bool HasType(PBEType type, bool useKnownInfo = false)
         {
@@ -666,7 +731,11 @@ namespace Kermalis.PokemonBattleEngine.Battle
             {
                 case PBEMoveEffect.HiddenPower:
                 {
-                    return useKnownInfo ? PBEType.None : IndividualValues.GetHiddenPowerType();
+                    if (!useKnownInfo)
+                    {
+                        return IndividualValues.GetHiddenPowerType();
+                    }
+                    break;
                 }
                 case PBEMoveEffect.Judgment:
                 {

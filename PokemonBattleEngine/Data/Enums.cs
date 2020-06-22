@@ -296,15 +296,26 @@ namespace Kermalis.PokemonBattleEngine.Data
         Protected = 1 << 14,
         /// <summary>The Pokémon is under the effect of <see cref="PBEMoveEffect.FocusEnergy"/> or <see cref="PBEItem.LansatBerry"/> and has a higher chance of landing critical hits.</summary>
         Pumped = 1 << 15,
-        ShadowForce = 1 << 16,
+        Roost = 1 << 16,
+        ShadowForce = 1 << 17,
         /// <summary>The Pokémon is behind a substitute that will take damage on behalf of the Pokémon and prevent most moves from affecting the Pokémon.</summary>
-        Substitute = 1 << 17,
+        Substitute = 1 << 18,
         /// <summary>The Pokémon is transformed into another Pokémon.</summary>
-        Transformed = 1 << 18,
+        Transformed = 1 << 19,
         /// <summary>The Pokémon is underground. A move will miss against the Pokémon unless it has <see cref="PBEMoveFlag.HitsUnderground"/> or either Pokémon has <see cref="PBEAbility.NoGuard"/>.
-        Underground = 1 << 19,
+        Underground = 1 << 20,
         /// <summary>The Pokémon is underwater. A move will miss against the Pokémon unless it has <see cref="PBEMoveFlag.HitsUnderwater"/> or either Pokémon has <see cref="PBEAbility.NoGuard"/>.
-        Underwater = 1 << 20
+        Underwater = 1 << 21
+    }
+    /// <summary>Keeps track of which types <see cref="PBEStatus2.Roost"/> changes to/from <see cref="PBEType.Flying"/>.</summary>
+    [Flags]
+    public enum PBERoostTypes : byte
+    {
+        None,
+        KnownType1 = 1 << 0,
+        KnownType2 = 1 << 1,
+        Type1 = 1 << 2,
+        Type2 = 1 << 3
     }
     /// <summary>Represents a specific <see cref="PBEBattle"/>'s status.</summary>
     [Flags]
@@ -2310,6 +2321,7 @@ namespace Kermalis.PokemonBattleEngine.Data
         Retaliate,
         Return,
         RolePlay,
+        Roost,
         Safeguard,
         Sandstorm,
         SecretPower,
@@ -2744,7 +2756,7 @@ namespace Kermalis.PokemonBattleEngine.Data
         RolePlay = 272,
         RollingKick = 27,
         Rollout = 205, // TODO
-        Roost = 355, // TODO
+        Roost = 355,
         Round = 496, // TODO
         SacredFire = 221,
         SacredSword = 533,
