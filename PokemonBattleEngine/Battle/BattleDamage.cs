@@ -727,6 +727,14 @@ namespace Kermalis.PokemonBattleEngine.Battle
                     }
                     break;
                 }
+                case PBEMoveEffect.WakeUpSlap:
+                {
+                    if (targets.Any(t => t.Status1 == PBEStatus1.Asleep))
+                    {
+                        basePower *= 2.0;
+                    }
+                    break;
+                }
                 case PBEMoveEffect.WeatherBall:
                 {
                     if (ShouldDoWeatherEffects() && Weather != PBEWeather.None)

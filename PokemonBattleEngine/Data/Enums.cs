@@ -2353,6 +2353,7 @@ namespace Kermalis.PokemonBattleEngine.Data
         Transform,
         TrickRoom,
         Venoshock,
+        WakeUpSlap,
         WeatherBall,
         Whirlwind,
         WideGuard,
@@ -2895,7 +2896,7 @@ namespace Kermalis.PokemonBattleEngine.Data
         VitalThrow = 233,
         VoltSwitch = 521, // TODO
         VoltTackle = 344,
-        WakeUpSlap = 358, // TODO
+        WakeUpSlap = 358,
         Waterfall = 127,
         WaterGun = 55,
         WaterPledge = 518, // TODO

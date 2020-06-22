@@ -353,6 +353,8 @@ namespace Kermalis.PokemonBattleEngine.Battle
                                     BroadcastAbility(pkmn, ally, pkmn.Ability, PBEAbilityAction.ChangedStatus);
                                     PBEStatus1 status1 = ally.Status1;
                                     ally.Status1 = PBEStatus1.None;
+                                    ally.Status1Counter = 0;
+                                    ally.SleepTurns = 0;
                                     BroadcastStatus1(ally, pkmn, status1, PBEStatusAction.Cleared);
                                     if (status1 == PBEStatus1.Asleep)
                                     {
@@ -369,6 +371,8 @@ namespace Kermalis.PokemonBattleEngine.Battle
                                 BroadcastAbility(pkmn, pkmn, pkmn.Ability, PBEAbilityAction.ChangedStatus);
                                 PBEStatus1 status1 = pkmn.Status1;
                                 pkmn.Status1 = PBEStatus1.None;
+                                pkmn.Status1Counter = 0;
+                                pkmn.SleepTurns = 0;
                                 BroadcastStatus1(pkmn, pkmn, status1, PBEStatusAction.Cleared);
                                 if (status1 == PBEStatus1.Asleep)
                                 {
@@ -815,6 +819,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                 case PBEMoveEffect.ToxicSpikes: Ef_TryForceTeamStatus(user, move, mData, PBETeamStatus.ToxicSpikes); break;
                 case PBEMoveEffect.Transform: Ef_TryForceStatus2(user, targets, move, mData, PBEStatus2.Transformed); break;
                 case PBEMoveEffect.TrickRoom: Ef_TryForceBattleStatus(user, move, mData, PBEBattleStatus.TrickRoom); break;
+                case PBEMoveEffect.WakeUpSlap: Ef_WakeUpSlap(user, targets, move, mData); break;
                 case PBEMoveEffect.Whirlwind: Ef_Whirlwind(user, targets, move, mData); break;
                 case PBEMoveEffect.WideGuard: Ef_TryForceTeamStatus(user, move, mData, PBETeamStatus.WideGuard); break;
                 case PBEMoveEffect.WorrySeed: Ef_SetOtherAbility(user, targets, move, mData, PBEAbility.Insomnia, true); break;
@@ -3018,8 +3023,8 @@ namespace Kermalis.PokemonBattleEngine.Battle
         }
         private void Ef_SmellingSalt(PBEBattlePokemon user, PBEBattlePokemon[] targets, PBEMove move, PBEMoveData mData)
         {
-            BroadcastStruggle(user);
             BroadcastMoveUsed(user, move);
+            PPReduce(user, move);
             if (targets.Length == 0)
             {
                 BroadcastMoveResult(user, user, PBEResult.NoTarget);
@@ -3108,6 +3113,31 @@ namespace Kermalis.PokemonBattleEngine.Battle
                     }
                 }
                 BasicHit(user, targets, mData, beforeDoingDamage: BeforeDoingDamage);
+            }
+            RecordExecutedMove(user, move, mData);
+        }
+        private void Ef_WakeUpSlap(PBEBattlePokemon user, PBEBattlePokemon[] targets, PBEMove move, PBEMoveData mData)
+        {
+            BroadcastMoveUsed(user, move);
+            PPReduce(user, move);
+            if (targets.Length == 0)
+            {
+                BroadcastMoveResult(user, user, PBEResult.NoTarget);
+            }
+            else
+            {
+                void AfterPostHit(PBEBattlePokemon target, ushort damageDealt)
+                {
+                    if (target.HP > 0 && target.Status1 == PBEStatus1.Asleep)
+                    {
+                        target.Status1 = PBEStatus1.None;
+                        target.Status1Counter = 0;
+                        target.SleepTurns = 0;
+                        BroadcastStatus1(target, user, PBEStatus1.Asleep, PBEStatusAction.Cleared);
+                        CureNightmare(target, user);
+                    }
+                }
+                BasicHit(user, targets, mData, afterPostHit: AfterPostHit);
             }
             RecordExecutedMove(user, move, mData);
         }

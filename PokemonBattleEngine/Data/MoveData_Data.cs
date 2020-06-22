@@ -4809,7 +4809,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                 new PBEMoveData
                 (
                     PBEType.Fighting, PBEMoveCategory.Physical, 0, 2, 60, 100,
-                    PBEMoveEffect.TODOMOVE, 0, PBEMoveTarget.SingleSurrounding,
+                    PBEMoveEffect.WakeUpSlap, 0, PBEMoveTarget.SingleSurrounding,
                     PBEMoveFlag.AffectedByMirrorMove | PBEMoveFlag.AffectedByProtect | PBEMoveFlag.MakesContact
                 )
             },

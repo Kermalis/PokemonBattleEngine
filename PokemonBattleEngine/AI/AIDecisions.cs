@@ -168,6 +168,7 @@ namespace Kermalis.PokemonBattleEngine.AI
                                     case PBEMoveEffect.StoredPower:
                                     case PBEMoveEffect.TechnoBlast:
                                     case PBEMoveEffect.Venoshock:
+                                    case PBEMoveEffect.WakeUpSlap:
                                     case PBEMoveEffect.WeatherBall:
                                     {
                                         foreach (PBEBattlePokemon target in targets)

@@ -134,7 +134,6 @@ TrumpCard
 Uproar
 Uturn
 VoltSwitch
-WakeUpSlap
 WaterPledge
 WaterSport
 Whirlpool
