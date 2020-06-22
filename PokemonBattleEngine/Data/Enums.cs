@@ -2163,34 +2163,35 @@ namespace Kermalis.PokemonBattleEngine.Data
         AffectedBySoundproof = 1 << 6,
         /// <summary>The move always lands a critical hit.</summary>
         AlwaysCrit = 1 << 7,
-        BlockedFromAssist = 1 << 8,
-        BlockedFromCopycat = 1 << 9,
-        BlockedFromMeFirst = 1 << 10,
-        BlockedFromMetronome = 1 << 11,
-        BlockedFromMimic = 1 << 12,
-        BlockedFromSketch = 1 << 13,
-        BlockedFromSketchWhenSuccessful = 1 << 14,
-        BlockedFromSleepTalk = 1 << 15,
+        BlockedByGravity = 1 << 8,
+        BlockedFromAssist = 1 << 9,
+        BlockedFromCopycat = 1 << 10,
+        BlockedFromMeFirst = 1 << 12,
+        BlockedFromMetronome = 1 << 12,
+        BlockedFromMimic = 1 << 13,
+        BlockedFromSketch = 1 << 14,
+        BlockedFromSketchWhenSuccessful = 1 << 15,
+        BlockedFromSleepTalk = 1 << 16,
         /// <summary>The move removes <see cref="PBEStatus1.Frozen"/> from the user.</summary>
-        DefrostsUser = 1 << 16,
-        DoubleDamageAirborne = 1 << 17,
-        DoubleDamageMinimized = 1 << 18,
-        DoubleDamageUnderground = 1 << 19,
-        DoubleDamageUnderwater = 1 << 20,
-        DoubleDamageUserDefenseCurl = 1 << 21,
+        DefrostsUser = 1 << 17,
+        DoubleDamageAirborne = 1 << 18,
+        DoubleDamageMinimized = 1 << 19,
+        DoubleDamageUnderground = 1 << 20,
+        DoubleDamageUnderwater = 1 << 21,
+        DoubleDamageUserDefenseCurl = 1 << 22,
         /// <summary>The move has a higher chance of landing a critical hit.</summary>
-        HighCritChance = 1 << 22,
+        HighCritChance = 1 << 23,
         /// <summary>The move can hit <see cref="PBEStatus2.Airborne"/> targets.</summary>
-        HitsAirborne = 1 << 23,
+        HitsAirborne = 1 << 24,
         /// <summary>The move can hit <see cref="PBEStatus2.Underground"/> targets.</summary>
-        HitsUnderground = 1 << 24,
+        HitsUnderground = 1 << 25,
         /// <summary>The move can hit <see cref="PBEStatus2.Underwater"/> targets.</summary>
-        HitsUnderwater = 1 << 25,
+        HitsUnderwater = 1 << 26,
         /// <summary>The user makes contact with the target, causing it to take damage from the target's <see cref="PBEAbility.IronBarbs"/>, <see cref="PBEAbility.RoughSkin"/>, and <see cref="PBEItem.RockyHelmet"/>.</summary>
-        MakesContact = 1 << 26,
-        NeverMissHail = 1 << 27,
-        NeverMissRain = 1 << 28,
-        UnaffectedByGems = 1 << 29 // TODO
+        MakesContact = 1 << 27,
+        NeverMissHail = 1 << 28,
+        NeverMissRain = 1 << 29,
+        UnaffectedByGems = 1 << 30 // TODO
     }
     public enum PBEMoveEffect : byte
     {

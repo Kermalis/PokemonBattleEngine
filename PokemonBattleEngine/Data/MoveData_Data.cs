@@ -463,7 +463,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                 (
                     PBEType.Flying, PBEMoveCategory.Physical, 0, 1, 85, 85,
                     PBEMoveEffect.Bounce, 30, PBEMoveTarget.SingleNotSelf,
-                    PBEMoveFlag.AffectedByMirrorMove | PBEMoveFlag.AffectedByProtect | PBEMoveFlag.BlockedFromSleepTalk | PBEMoveFlag.MakesContact
+                    PBEMoveFlag.AffectedByMirrorMove | PBEMoveFlag.AffectedByProtect | PBEMoveFlag.BlockedByGravity | PBEMoveFlag.BlockedFromSleepTalk | PBEMoveFlag.MakesContact
                 )
             },
             {
@@ -1516,7 +1516,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                 (
                     PBEType.Flying, PBEMoveCategory.Physical, 0, 3, 90, 95,
                     PBEMoveEffect.Fly, 0, PBEMoveTarget.SingleNotSelf,
-                    PBEMoveFlag.AffectedByMirrorMove | PBEMoveFlag.AffectedByProtect | PBEMoveFlag.BlockedFromSleepTalk | PBEMoveFlag.MakesContact
+                    PBEMoveFlag.AffectedByMirrorMove | PBEMoveFlag.AffectedByProtect | PBEMoveFlag.BlockedByGravity | PBEMoveFlag.BlockedFromSleepTalk | PBEMoveFlag.MakesContact
                 )
             },
             {
@@ -2029,7 +2029,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                 (
                     PBEType.Fighting, PBEMoveCategory.Physical, 0, 2, 130, 90,
                     PBEMoveEffect.TODOMOVE, 0, PBEMoveTarget.SingleSurrounding,
-                    PBEMoveFlag.AffectedByMirrorMove | PBEMoveFlag.AffectedByProtect | PBEMoveFlag.AffectedByReckless | PBEMoveFlag.MakesContact
+                    PBEMoveFlag.AffectedByMirrorMove | PBEMoveFlag.AffectedByProtect | PBEMoveFlag.AffectedByReckless | PBEMoveFlag.BlockedByGravity | PBEMoveFlag.MakesContact
                 )
             },
             {
@@ -2299,7 +2299,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                 (
                     PBEType.Fighting, PBEMoveCategory.Physical, 0, 2, 100, 95,
                     PBEMoveEffect.TODOMOVE, 0, PBEMoveTarget.SingleSurrounding,
-                    PBEMoveFlag.AffectedByMirrorMove | PBEMoveFlag.AffectedByProtect | PBEMoveFlag.AffectedByReckless | PBEMoveFlag.MakesContact
+                    PBEMoveFlag.AffectedByMirrorMove | PBEMoveFlag.AffectedByProtect | PBEMoveFlag.AffectedByReckless | PBEMoveFlag.BlockedByGravity | PBEMoveFlag.MakesContact
                 )
             },
             {
@@ -2542,7 +2542,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                 (
                     PBEType.Electric, PBEMoveCategory.Status, 0, 2, 0, 0,
                     PBEMoveEffect.MagnetRise, 0, PBEMoveTarget.Self,
-                    PBEMoveFlag.AffectedBySnatch
+                    PBEMoveFlag.AffectedBySnatch | PBEMoveFlag.BlockedByGravity
                 )
             },
             {
@@ -3892,7 +3892,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                 (
                     PBEType.Flying, PBEMoveCategory.Physical, 0, 2, 60, 100,
                     PBEMoveEffect.TODOMOVE, 0, PBEMoveTarget.SingleNotSelf,
-                    PBEMoveFlag.AffectedByMirrorMove | PBEMoveFlag.AffectedByProtect | PBEMoveFlag.BlockedFromSleepTalk | PBEMoveFlag.MakesContact
+                    PBEMoveFlag.AffectedByMirrorMove | PBEMoveFlag.AffectedByProtect | PBEMoveFlag.BlockedByGravity | PBEMoveFlag.BlockedFromSleepTalk | PBEMoveFlag.MakesContact
                 )
             },
             {
@@ -4153,7 +4153,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                 (
                     PBEType.Normal, PBEMoveCategory.Status, 0, 8, 0, 0,
                     PBEMoveEffect.Nothing, 0, PBEMoveTarget.Self,
-                    PBEMoveFlag.None
+                    PBEMoveFlag.BlockedByGravity
                 )
             },
             {
@@ -4522,7 +4522,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                 (
                     PBEType.Psychic, PBEMoveCategory.Status, 0, 3, 0, 0,
                     PBEMoveEffect.TODOMOVE, 0, PBEMoveTarget.SingleSurrounding,
-                    PBEMoveFlag.AffectedByMagicCoat | PBEMoveFlag.AffectedByProtect
+                    PBEMoveFlag.AffectedByMagicCoat | PBEMoveFlag.AffectedByProtect | PBEMoveFlag.BlockedByGravity
                 )
             },
             {
