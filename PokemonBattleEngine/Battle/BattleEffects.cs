@@ -3276,22 +3276,25 @@ namespace Kermalis.PokemonBattleEngine.Battle
                 }
                 void AfterPostHit(PBEBattlePokemon target, ushort damageDealt)
                 {
-                    int restoreAmt = (int)(damageDealt * (mData.EffectParam / 100.0));
-                    if (user.Item == PBEItem.BigRoot)
+                    if (user.HP > 0)
                     {
-                        restoreAmt += (int)(restoreAmt * 0.3);
-                    }
-                    if (target.Ability == PBEAbility.LiquidOoze)
-                    {
-                        DealDamage(target, user, restoreAmt, true, ignoreSturdy: true); // Verified: It does ignore Sturdy
-                        BroadcastAbility(target, user, PBEAbility.LiquidOoze, PBEAbilityAction.Damage);
-                        FaintCheck(user);
-                    }
-                    else
-                    {
-                        if (HealDamage(user, restoreAmt) > 0)
+                        int restoreAmt = (int)(damageDealt * (mData.EffectParam / 100.0));
+                        if (user.Item == PBEItem.BigRoot)
                         {
-                            BroadcastHPDrained(target);
+                            restoreAmt += (int)(restoreAmt * 0.3);
+                        }
+                        if (target.Ability == PBEAbility.LiquidOoze)
+                        {
+                            DealDamage(target, user, restoreAmt, true, ignoreSturdy: true); // Verified: It does ignore Sturdy
+                            BroadcastAbility(target, user, PBEAbility.LiquidOoze, PBEAbilityAction.Damage);
+                            FaintCheck(user);
+                        }
+                        else
+                        {
+                            if (HealDamage(user, restoreAmt) > 0)
+                            {
+                                BroadcastHPDrained(target);
+                            }
                         }
                     }
                 }
