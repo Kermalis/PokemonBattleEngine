@@ -2332,6 +2332,7 @@ namespace Kermalis.PokemonBattleEngine.Data
         SimpleBeam,
         Sketch, // TODO
         Sleep,
+        SmellingSalt,
         Snore,
         Soak,
         Spikes,
@@ -2804,7 +2805,7 @@ namespace Kermalis.PokemonBattleEngine.Data
         SludgeBomb = 188,
         SludgeWave = 482,
         SmackDown = 479, // TODO
-        SmellingSalt = 265, // TODO
+        SmellingSalt = 265,
         Smog = 123,
         SmokeScreen = 108,
         Snarl = 555,

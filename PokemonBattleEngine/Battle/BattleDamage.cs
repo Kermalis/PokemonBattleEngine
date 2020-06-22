@@ -711,6 +711,14 @@ namespace Kermalis.PokemonBattleEngine.Battle
                     }
                     break;
                 }
+                case PBEMoveEffect.SmellingSalt:
+                {
+                    if (targets.Any(t => t.Status1 == PBEStatus1.Paralyzed))
+                    {
+                        basePower *= 2.0;
+                    }
+                    break;
+                }
                 case PBEMoveEffect.Venoshock:
                 {
                     if (targets.Any(t => t.Status1 == PBEStatus1.Poisoned || t.Status1 == PBEStatus1.BadlyPoisoned))

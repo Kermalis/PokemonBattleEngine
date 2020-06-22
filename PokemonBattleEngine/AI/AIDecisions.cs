@@ -164,6 +164,7 @@ namespace Kermalis.PokemonBattleEngine.AI
                                     case PBEMoveEffect.Return:
                                     case PBEMoveEffect.SecretPower:
                                     case PBEMoveEffect.ShadowForce:
+                                    case PBEMoveEffect.SmellingSalt:
                                     case PBEMoveEffect.StoredPower:
                                     case PBEMoveEffect.TechnoBlast:
                                     case PBEMoveEffect.Venoshock:

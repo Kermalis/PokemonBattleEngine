@@ -114,7 +114,6 @@ SkyAttack
 SkyDrop
 SleepTalk
 SmackDown
-SmellingSalt
 Snatch
 SolarBeam
 SpiderWeb

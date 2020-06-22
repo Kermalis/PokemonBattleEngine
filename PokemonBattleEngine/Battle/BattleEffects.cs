@@ -797,6 +797,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                 case PBEMoveEffect.ShadowForce: Ef_ShadowForce(user, targets, move, mData, requestedTargets); break;
                 case PBEMoveEffect.SimpleBeam: Ef_SetOtherAbility(user, targets, move, mData, PBEAbility.Simple, true); break;
                 case PBEMoveEffect.Sleep: Ef_TryForceStatus1(user, targets, move, mData, PBEStatus1.Asleep); break;
+                case PBEMoveEffect.SmellingSalt: Ef_SmellingSalt(user, targets, move, mData); break;
                 case PBEMoveEffect.Snore: Ef_Snore(user, targets, move, mData); break;
                 case PBEMoveEffect.Soak: Ef_Soak(user, targets, move, mData); break;
                 case PBEMoveEffect.Spikes: Ef_TryForceTeamStatus(user, move, mData, PBETeamStatus.Spikes); break;
@@ -2059,6 +2060,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                             DoPostHitEffects(user, target, mData, moveType); // User faints here
                             // HP-draining moves restore HP after post-hit effects
                             // Shadow Force destroys protection
+                            // SmellingSalt cures paralysis
                             afterPostHit?.Invoke(target, damageDealt);
                             DoPostAttackedTargetEffects(target, colorChangeType: moveType);
                             hitSomeone = true;
@@ -3012,6 +3014,28 @@ namespace Kermalis.PokemonBattleEngine.Battle
                 BasicHit(user, targets, mData, hitRegardlessOfUserConciousness: true);
             }
             FaintCheck(user);
+            RecordExecutedMove(user, move, mData);
+        }
+        private void Ef_SmellingSalt(PBEBattlePokemon user, PBEBattlePokemon[] targets, PBEMove move, PBEMoveData mData)
+        {
+            BroadcastStruggle(user);
+            BroadcastMoveUsed(user, move);
+            if (targets.Length == 0)
+            {
+                BroadcastMoveResult(user, user, PBEResult.NoTarget);
+            }
+            else
+            {
+                void AfterPostHit(PBEBattlePokemon target, ushort damageDealt)
+                {
+                    if (target.HP > 0 && target.Status1 == PBEStatus1.Paralyzed)
+                    {
+                        target.Status1 = PBEStatus1.None;
+                        BroadcastStatus1(target, user, PBEStatus1.Paralyzed, PBEStatusAction.Cleared);
+                    }
+                }
+                BasicHit(user, targets, mData, afterPostHit: AfterPostHit);
+            }
             RecordExecutedMove(user, move, mData);
         }
         private void Ef_Snore(PBEBattlePokemon user, PBEBattlePokemon[] targets, PBEMove move, PBEMoveData mData)
