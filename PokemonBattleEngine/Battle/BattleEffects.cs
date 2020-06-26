@@ -1025,7 +1025,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
             {
                 chance *= 1.3;
             }
-            if (Array.Exists(user.Team.ActiveBattlers, p => p.Ability == PBEAbility.VictoryStar))
+            if (user.Team.ActiveBattlers.Any(p => p.Ability == PBEAbility.VictoryStar))
             {
                 chance *= 1.1;
             }
@@ -1190,25 +1190,21 @@ namespace Kermalis.PokemonBattleEngine.Battle
                 }
                 case PBEAbility.Anticipation:
                 {
-                    PBEBattlePokemon[] oppActive = pkmn.Team.OpposingTeam.ActiveBattlers;
-                    if (oppActive.Length != 0)
+                    foreach (PBEBattlePokemon opponent in pkmn.Team.OpposingTeam.ActiveBattlers)
                     {
-                        foreach (PBEBattlePokemon opponent in oppActive)
+                        foreach (PBEBattleMoveset.PBEBattleMovesetSlot moveSlot in opponent.Moves)
                         {
-                            foreach (PBEBattleMoveset.PBEBattleMovesetSlot moveSlot in opponent.Moves)
+                            PBEMove move = moveSlot.Move;
+                            if (move != PBEMove.None)
                             {
-                                PBEMove move = moveSlot.Move;
-                                if (move != PBEMove.None)
+                                PBEMoveData mData = PBEMoveData.Data[move];
+                                if (mData.Category != PBEMoveCategory.Status)
                                 {
-                                    PBEMoveData mData = PBEMoveData.Data[move];
-                                    if (mData.Category != PBEMoveCategory.Status)
+                                    double d = PBETypeEffectiveness.GetEffectiveness(mData.Type, pkmn);
+                                    if (d > 1)
                                     {
-                                        double d = PBETypeEffectiveness.GetEffectiveness(mData.Type, pkmn);
-                                        if (d > 1)
-                                        {
-                                            BroadcastAbility(pkmn, pkmn, PBEAbility.Anticipation, PBEAbilityAction.Announced);
-                                            goto bottomAnticipation;
-                                        }
+                                        BroadcastAbility(pkmn, pkmn, PBEAbility.Anticipation, PBEAbilityAction.Announced);
+                                        goto bottomAnticipation;
                                     }
                                 }
                             }
@@ -1219,7 +1215,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                 }
                 case PBEAbility.Download:
                 {
-                    PBEBattlePokemon[] oppActive = pkmn.Team.OpposingTeam.ActiveBattlers;
+                    PBEBattlePokemon[] oppActive = pkmn.Team.OpposingTeam.ActiveBattlers.ToArray();
                     if (oppActive.Length != 0)
                     {
                         PBEStat stat = oppActive.Average(p => p.Defense * GetStatChangeModifier(p.DefenseChange, false))
@@ -1946,7 +1942,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
         {
             if (pkmn.Ability == PBEAbility.Illusion)
             {
-                PBEList<PBEBattlePokemon> party = pkmn.Team.Party;
+                PBEList<PBEBattlePokemon> party = pkmn.Trainer.Party;
                 for (int i = party.Count - 1; i >= 0; i--)
                 {
                     PBEBattlePokemon p = party[i];
@@ -1985,9 +1981,9 @@ namespace Kermalis.PokemonBattleEngine.Battle
             RemoveInfatuationsAndLockOns(pkmnLeaving);
             pkmnComing.FieldPosition = pos;
             var switches = new PBEPkmnSwitchInPacket.PBESwitchInInfo[] { CreateSwitchInInfo(pkmnComing) };
-            PBETeam.SwitchTwoPokemon(pkmnLeaving, pkmnComing);
-            BroadcastPkmnSwitchIn(pkmnComing.Team, switches, forcedByPkmn);
-            ActiveBattlers.Add(pkmnComing);
+            PBETrainer.SwitchTwoPokemon(pkmnLeaving, pkmnComing);
+            ActiveBattlers.Add(pkmnComing); // Add to active before broadcast
+            BroadcastPkmnSwitchIn(pkmnComing.Trainer, switches, forcedByPkmn);
             if (forcedByPkmn != null)
             {
                 BroadcastDraggedOut(pkmnComing);
@@ -3931,7 +3927,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                 {
                     if (!MissCheck(user, target, mData))
                     {
-                        PBEBattlePokemon[] possibleSwitcheroonies = target.Team.Party.Where(p => p.FieldPosition == PBEFieldPosition.None && p.HP > 0).ToArray();
+                        PBEBattlePokemon[] possibleSwitcheroonies = target.Trainer.Party.Where(p => p.FieldPosition == PBEFieldPosition.None && p.HP > 0).ToArray();
                         if (possibleSwitcheroonies.Length == 0)
                         {
                             BroadcastMoveResult(user, target, PBEResult.InvalidConditions);

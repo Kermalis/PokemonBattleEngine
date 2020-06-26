@@ -9,10 +9,6 @@ namespace Kermalis.PokemonBattleEngine.Packets
     {
         public static IPBEPacket CreatePacket(PBEBattle battle, byte[] data)
         {
-            if (battle == null)
-            {
-                throw new ArgumentNullException(nameof(battle));
-            }
             if (data == null)
             {
                 throw new ArgumentNullException(nameof(data));
@@ -31,7 +27,7 @@ namespace Kermalis.PokemonBattleEngine.Packets
                     case PBEMatchCancelledPacket.Code: return new PBEMatchCancelledPacket(data);
                     case PBEPartyRequestPacket.Code: return new PBEPartyRequestPacket(data, r);
                     case PBEPartyResponsePacket.Code: return new PBEPartyResponsePacket(data, r);
-                    case PBETeamPacket.Code: return new PBETeamPacket(data, r, battle);
+                    case PBEBattlePacket.Code: return new PBEBattlePacket(data, r);
                     case PBEPkmnSwitchInPacket.Code: return new PBEPkmnSwitchInPacket(data, r, battle);
                     case PBEActionsRequestPacket.Code: return new PBEActionsRequestPacket(data, r, battle);
                     case PBEActionsResponsePacket.Code: return new PBEActionsResponsePacket(data, r);

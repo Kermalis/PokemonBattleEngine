@@ -36,9 +36,8 @@ namespace Kermalis.PokemonBattleEngineClient.Views
                 }
             }
         }
-        private bool _showEverything0;
-        private bool _showEverything1;
-        public string Description => Utils.CustomPokemonToString(_pokemon, _showEverything0, _showEverything1);
+        private bool _useKnownInfo;
+        public string Description => Utils.CustomPokemonToString(_pokemon, _useKnownInfo);
 
         private readonly Image _drawn;
 
@@ -71,12 +70,10 @@ namespace Kermalis.PokemonBattleEngineClient.Views
             _drawn = this.FindControl<Image>("Drawn");
         }
 
-        internal void Update(PBEBattlePokemon pkmn, bool showEverything0, bool showEverything1)
+        internal void Update(PBEBattlePokemon pkmn, bool useKnownInfo)
         {
-            _showEverything0 = showEverything0;
-            _showEverything1 = showEverything1;
+            _useKnownInfo = useKnownInfo;
             _pokemon = pkmn;
-            bool showEverything = Utils.ShouldShowEverything(pkmn.Team, showEverything0, showEverything1);
 
             var wb = new WriteableBitmap(new PixelSize(104, 27), new Vector(96, 96), PixelFormat.Bgra8888);
             using (IRenderTarget rtb = Utils.RenderInterface.CreateRenderTarget(new[] { new WriteableBitmapSurface(wb) }))
@@ -84,15 +81,15 @@ namespace Kermalis.PokemonBattleEngineClient.Views
             {
                 int barResource;
                 byte yOffset;
-                if (showEverything)
-                {
-                    barResource = 0;
-                    yOffset = 0;
-                }
-                else
+                if (useKnownInfo)
                 {
                     barResource = 1;
                     yOffset = 2;
+                }
+                else
+                {
+                    barResource = 0;
+                    yOffset = 0;
                 }
                 Bitmap hpBar = _hpBars[barResource];
                 ctx.DrawImage(hpBar.PlatformImpl, 1.0, new Rect(0, 0, hpBar.PixelSize.Width, hpBar.PixelSize.Height), new Rect(0, 11 + yOffset, hpBar.PixelSize.Width, hpBar.PixelSize.Height));
@@ -100,7 +97,7 @@ namespace Kermalis.PokemonBattleEngineClient.Views
                 Bitmap nickname = StringRenderer.Render(pkmn.KnownNickname, "BattleName");
                 ctx.DrawImage(nickname.PlatformImpl, 1.0, new Rect(0, 0, nickname.PixelSize.Width, nickname.PixelSize.Height), new Rect(72 - Math.Max(54, nickname.PixelSize.Width), yOffset, nickname.PixelSize.Width, nickname.PixelSize.Height));
 
-                PBEGender gender = showEverything || pkmn.KnownStatus2.HasFlag(PBEStatus2.Transformed) ? pkmn.Gender : pkmn.KnownGender;
+                PBEGender gender = useKnownInfo && !pkmn.KnownStatus2.HasFlag(PBEStatus2.Transformed) ? pkmn.KnownGender : pkmn.Gender;
                 Bitmap level = StringRenderer.Render($"{(gender == PBEGender.Female ? "♀" : gender == PBEGender.Male ? "♂" : " ")}[LV]{pkmn.Level}", "BattleLevel");
                 ctx.DrawImage(level.PlatformImpl, 1.0, new Rect(0, 0, level.PixelSize.Width, level.PixelSize.Height), new Rect(70, 1 + yOffset, level.PixelSize.Width, level.PixelSize.Height));
 
@@ -136,7 +133,7 @@ namespace Kermalis.PokemonBattleEngineClient.Views
                 ctx.FillRectangle(hpMid, new Rect(38, 13 + yOffset + 1, theW, 1));
                 ctx.FillRectangle(hpSides, new Rect(38, 13 + yOffset + 2, theW, 1));
 
-                if (showEverything)
+                if (!useKnownInfo)
                 {
                     Bitmap hp = StringRenderer.Render(pkmn.HP.ToString(), "BattleHP");
                     ctx.DrawImage(hp.PlatformImpl, 1.0, new Rect(0, 0, hp.PixelSize.Width, hp.PixelSize.Height), new Rect(62 - hp.PixelSize.Width, 16 + yOffset, hp.PixelSize.Width, hp.PixelSize.Height));

@@ -8,15 +8,34 @@ using System.IO;
 
 namespace Kermalis.PokemonBattleEngine.Packets
 {
-    public sealed class PBEPkmnSwitchInPacket : IPBEPacket
+    public interface IPBEPkmnSwitchInInfo
+    {
+        PBESpecies Species { get; }
+        PBEForm Form { get; }
+        string Nickname { get; }
+        byte Level { get; }
+        bool Shiny { get; }
+        PBEGender Gender { get; }
+        double HPPercentage { get; }
+        PBEStatus1 Status1 { get; }
+        PBEFieldPosition FieldPosition { get; }
+    }
+    public interface IPBEPkmnSwitchInPacket : IPBEPacket
+    {
+        PBETrainer Trainer { get; }
+        IReadOnlyList<IPBEPkmnSwitchInInfo> SwitchIns { get; }
+        bool Forced { get; }
+        PBEBattlePokemon ForcedByPokemon { get; }
+    }
+    public sealed class PBEPkmnSwitchInPacket : IPBEPkmnSwitchInPacket
     {
         public const ushort Code = 0x06;
         public ReadOnlyCollection<byte> Data { get; }
 
-        public sealed class PBESwitchInInfo
+        public sealed class PBESwitchInInfo : IPBEPkmnSwitchInInfo
         {
-            public byte PokemonId { get; }
-            public byte DisguisedAsId { get; }
+            public PBEBattlePokemon Pokemon { get; }
+            public PBEBattlePokemon DisguisedAsPokemon { get; }
             public PBESpecies Species { get; }
             public PBEForm Form { get; }
             public string Nickname { get; }
@@ -29,28 +48,25 @@ namespace Kermalis.PokemonBattleEngine.Packets
             public PBEStatus1 Status1 { get; }
             public PBEFieldPosition FieldPosition { get; }
 
-            private PBESwitchInInfo(byte pkmnId, byte disguisedAsId, PBESpecies species, PBEForm form, string nickname, byte level, bool shiny, PBEGender gender, ushort hp, ushort maxHP, double hpPercentage, PBEStatus1 status1, PBEFieldPosition fieldPosition)
-            {
-                PokemonId = pkmnId;
-                DisguisedAsId = disguisedAsId;
-                Species = species;
-                Form = form;
-                Nickname = nickname;
-                Level = level;
-                Shiny = shiny;
-                Gender = gender;
-                HP = hp;
-                MaxHP = maxHP;
-                HPPercentage = hpPercentage;
-                Status1 = status1;
-                FieldPosition = fieldPosition;
-            }
             internal PBESwitchInInfo(PBEBattlePokemon pkmn)
-                : this(pkmn.Id, pkmn.DisguisedAsPokemon != null ? pkmn.DisguisedAsPokemon.Id : pkmn.Id, pkmn.KnownSpecies, pkmn.KnownForm, pkmn.KnownNickname, pkmn.Level, pkmn.KnownShiny, pkmn.KnownGender, pkmn.HP, pkmn.MaxHP, pkmn.HPPercentage, pkmn.Status1, pkmn.FieldPosition) { }
-            internal PBESwitchInInfo(EndianBinaryReader r)
             {
-                PokemonId = r.ReadByte();
-                DisguisedAsId = r.ReadByte();
+                Pokemon = pkmn;
+                DisguisedAsPokemon = pkmn.Status2.HasFlag(PBEStatus2.Disguised) ? pkmn.DisguisedAsPokemon : pkmn;
+                Species = pkmn.KnownSpecies;
+                Form = pkmn.KnownForm;
+                Nickname = pkmn.KnownNickname;
+                Level = pkmn.Level;
+                Shiny = pkmn.KnownShiny;
+                Gender = pkmn.KnownGender;
+                HP = pkmn.HP;
+                MaxHP = pkmn.MaxHP;
+                HPPercentage = pkmn.HPPercentage;
+                Status1 = pkmn.Status1;
+                FieldPosition = pkmn.FieldPosition;
+            }
+            internal PBESwitchInInfo(EndianBinaryReader r, PBEBattle battle)
+            {
+                (Pokemon, DisguisedAsPokemon) = battle.GetPokemon_DisguisedId(r);
                 Species = r.ReadEnum<PBESpecies>();
                 Form = r.ReadEnum<PBEForm>();
                 Nickname = r.ReadStringNullTerminated();
@@ -66,8 +82,7 @@ namespace Kermalis.PokemonBattleEngine.Packets
 
             internal void ToBytes(EndianBinaryWriter w)
             {
-                w.Write(PokemonId);
-                w.Write(DisguisedAsId);
+                Pokemon.ToBytes_Id(w, DisguisedAsPokemon);
                 w.Write(Species);
                 w.Write(Form);
                 w.Write(Nickname, true);
@@ -82,19 +97,19 @@ namespace Kermalis.PokemonBattleEngine.Packets
             }
         }
 
-        public PBETeam Team { get; }
+        public PBETrainer Trainer { get; }
         public ReadOnlyCollection<PBESwitchInInfo> SwitchIns { get; }
+        IReadOnlyList<IPBEPkmnSwitchInInfo> IPBEPkmnSwitchInPacket.SwitchIns => SwitchIns;
         public bool Forced { get; }
-        public PBEFieldPosition? ForcedByPokemonPosition { get; }
-        public PBETeam ForcedByPokemonTeam { get; }
+        public PBEBattlePokemon ForcedByPokemon { get; }
 
-        internal PBEPkmnSwitchInPacket(PBETeam team, IList<PBESwitchInInfo> switchIns, PBEBattlePokemon forcedByPokemon = null)
+        internal PBEPkmnSwitchInPacket(PBETrainer trainer, IList<PBESwitchInInfo> switchIns, PBEBattlePokemon forcedByPokemon = null)
         {
             using (var ms = new MemoryStream())
             using (var w = new EndianBinaryWriter(ms, encoding: EncodingType.UTF16))
             {
                 w.Write(Code);
-                w.Write((Team = team).Id);
+                w.Write((Trainer = trainer).Id);
                 sbyte count = (sbyte)(SwitchIns = new ReadOnlyCollection<PBESwitchInInfo>(switchIns)).Count;
                 w.Write(count);
                 for (int i = 0; i < count; i++)
@@ -104,8 +119,7 @@ namespace Kermalis.PokemonBattleEngine.Packets
                 w.Write(Forced = forcedByPokemon != null);
                 if (Forced)
                 {
-                    w.Write((ForcedByPokemonPosition = forcedByPokemon.FieldPosition).Value);
-                    w.Write((ForcedByPokemonTeam = forcedByPokemon.Team).Id);
+                    (ForcedByPokemon = forcedByPokemon).ToBytes_Position(w);
                 }
                 Data = new ReadOnlyCollection<byte>(ms.ToArray());
             }
@@ -113,27 +127,26 @@ namespace Kermalis.PokemonBattleEngine.Packets
         internal PBEPkmnSwitchInPacket(byte[] data, EndianBinaryReader r, PBEBattle battle)
         {
             Data = new ReadOnlyCollection<byte>(data);
-            Team = battle.Teams[r.ReadByte()];
+            Trainer = battle.Trainers[r.ReadByte()];
             var switches = new PBESwitchInInfo[r.ReadSByte()];
             for (int i = 0; i < switches.Length; i++)
             {
-                switches[i] = new PBESwitchInInfo(r);
+                switches[i] = new PBESwitchInInfo(r, battle);
             }
             SwitchIns = new ReadOnlyCollection<PBESwitchInInfo>(switches);
             Forced = r.ReadBoolean();
             if (Forced)
             {
-                ForcedByPokemonPosition = r.ReadEnum<PBEFieldPosition>();
-                ForcedByPokemonTeam = battle.Teams[r.ReadByte()];
+                ForcedByPokemon = battle.GetPokemon_Position(r);
             }
         }
     }
-    public sealed class PBEPkmnSwitchInPacket_Hidden : IPBEPacket
+    public sealed class PBEPkmnSwitchInPacket_Hidden : IPBEPkmnSwitchInPacket
     {
         public const ushort Code = 0x36;
         public ReadOnlyCollection<byte> Data { get; }
 
-        public sealed class PBESwitchInInfo
+        public sealed class PBESwitchInInfo : IPBEPkmnSwitchInInfo
         {
             public PBESpecies Species { get; }
             public PBEForm Form { get; }
@@ -184,11 +197,11 @@ namespace Kermalis.PokemonBattleEngine.Packets
             }
         }
 
-        public PBETeam Team { get; }
+        public PBETrainer Trainer { get; }
         public ReadOnlyCollection<PBESwitchInInfo> SwitchIns { get; }
+        IReadOnlyList<IPBEPkmnSwitchInInfo> IPBEPkmnSwitchInPacket.SwitchIns => SwitchIns;
         public bool Forced { get; }
-        public PBEFieldPosition? ForcedByPokemonPosition { get; }
-        public PBETeam ForcedByPokemonTeam { get; }
+        public PBEBattlePokemon ForcedByPokemon { get; }
 
         public PBEPkmnSwitchInPacket_Hidden(PBEPkmnSwitchInPacket other)
         {
@@ -200,7 +213,7 @@ namespace Kermalis.PokemonBattleEngine.Packets
             using (var w = new EndianBinaryWriter(ms, encoding: EncodingType.UTF16))
             {
                 w.Write(Code);
-                w.Write((Team = other.Team).Id);
+                w.Write((Trainer = other.Trainer).Id);
                 var switchIns = new PBESwitchInInfo[other.SwitchIns.Count];
                 for (int i = 0; i < switchIns.Length; i++)
                 {
@@ -215,8 +228,7 @@ namespace Kermalis.PokemonBattleEngine.Packets
                 w.Write(Forced = other.Forced);
                 if (Forced)
                 {
-                    w.Write((ForcedByPokemonPosition = other.ForcedByPokemonPosition).Value);
-                    w.Write((ForcedByPokemonTeam = other.ForcedByPokemonTeam).Id);
+                    (ForcedByPokemon = other.ForcedByPokemon).ToBytes_Position(w);
                 }
                 Data = new ReadOnlyCollection<byte>(ms.ToArray());
             }
@@ -224,7 +236,7 @@ namespace Kermalis.PokemonBattleEngine.Packets
         internal PBEPkmnSwitchInPacket_Hidden(byte[] data, EndianBinaryReader r, PBEBattle battle)
         {
             Data = new ReadOnlyCollection<byte>(data);
-            Team = battle.Teams[r.ReadByte()];
+            Trainer = battle.Trainers[r.ReadByte()];
             var switches = new PBESwitchInInfo[r.ReadSByte()];
             for (int i = 0; i < switches.Length; i++)
             {
@@ -234,8 +246,7 @@ namespace Kermalis.PokemonBattleEngine.Packets
             Forced = r.ReadBoolean();
             if (Forced)
             {
-                ForcedByPokemonPosition = r.ReadEnum<PBEFieldPosition>();
-                ForcedByPokemonTeam = battle.Teams[r.ReadByte()];
+                ForcedByPokemon = battle.GetPokemon_Position(r);
             }
         }
     }

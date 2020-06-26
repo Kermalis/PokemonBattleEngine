@@ -38,12 +38,12 @@ namespace Kermalis.PokemonBattleEngineTests.Moves
                 Moveset = new TestMoveset(settings, new[] { PBEMove.Splash })
             };
 
-            var battle = new PBEBattle(PBEBattleTerrain.Plain, PBEBattleFormat.Single, new PBETeamInfo(p0, "Team 1"), new PBETeamInfo(p1, "Team 2"), settings);
+            var battle = new PBEBattle(PBEBattleFormat.Single, settings, new PBETrainerInfo(p0, "Team 1"), new PBETrainerInfo(p1, "Team 2"));
             battle.OnNewEvent += PBEBattle.ConsoleBattleEventHandler;
             battle.Begin();
 
-            PBETeam t0 = battle.Teams[0];
-            PBETeam t1 = battle.Teams[1];
+            PBETrainer t0 = battle.Trainers[0];
+            PBETrainer t1 = battle.Trainers[1];
             PBEBattlePokemon mienshao = t0.Party[0];
             PBEBattlePokemon magikarp = t1.Party[0];
             #endregion
@@ -96,12 +96,12 @@ namespace Kermalis.PokemonBattleEngineTests.Moves
                 Moveset = new TestMoveset(settings, new[] { PBEMove.QuickGuard })
             };
 
-            var battle = new PBEBattle(PBEBattleTerrain.Plain, PBEBattleFormat.Double, new PBETeamInfo(p0, "Team 1"), new PBETeamInfo(p1, "Team 2"), settings);
+            var battle = new PBEBattle(PBEBattleFormat.Double, settings, new PBETrainerInfo(p0, "Team 1"), new PBETrainerInfo(p1, "Team 2"));
             battle.OnNewEvent += PBEBattle.ConsoleBattleEventHandler;
             battle.Begin();
 
-            PBETeam t0 = battle.Teams[0];
-            PBETeam t1 = battle.Teams[1];
+            PBETrainer t0 = battle.Trainers[0];
+            PBETrainer t1 = battle.Trainers[1];
             PBEBattlePokemon lucario = t0.Party[0];
             PBEBattlePokemon mienshao = t0.Party[1];
             PBEBattlePokemon mrmime = t1.Party[0];
@@ -117,7 +117,7 @@ namespace Kermalis.PokemonBattleEngineTests.Moves
 
             battle.RunTurn();
 
-            Assert.True(TestUtils.VerifyTeamStatusHappened(battle, ally ? t0 : t1, PBETeamStatus.QuickGuard, PBETeamStatusAction.Damage, damageVictim: ally ? mienshao : mrmime) == ally);
+            Assert.True(TestUtils.VerifyTeamStatusHappened(battle, (ally ? t0 : t1).Team, PBETeamStatus.QuickGuard, PBETeamStatusAction.Damage, damageVictim: ally ? mienshao : mrmime) == ally);
             #endregion
 
             #region Cleanup
@@ -144,12 +144,12 @@ namespace Kermalis.PokemonBattleEngineTests.Moves
                 Moveset = new TestMoveset(settings, new[] { PBEMove.Protect })
             };
 
-            var battle = new PBEBattle(PBEBattleTerrain.Plain, PBEBattleFormat.Single, new PBETeamInfo(p0, "Team 1"), new PBETeamInfo(p1, "Team 2"), settings);
+            var battle = new PBEBattle(PBEBattleFormat.Single, settings, new PBETrainerInfo(p0, "Team 1"), new PBETrainerInfo(p1, "Team 2"));
             battle.OnNewEvent += PBEBattle.ConsoleBattleEventHandler;
             battle.Begin();
 
-            PBETeam t0 = battle.Teams[0];
-            PBETeam t1 = battle.Teams[1];
+            PBETrainer t0 = battle.Trainers[0];
+            PBETrainer t1 = battle.Trainers[1];
             PBEBattlePokemon lucario = t0.Party[0];
             PBEBattlePokemon mienshao = t1.Party[0];
             #endregion
@@ -189,12 +189,12 @@ namespace Kermalis.PokemonBattleEngineTests.Moves
                 Moveset = new TestMoveset(settings, new[] { move })
             };
 
-            var battle = new PBEBattle(PBEBattleTerrain.Plain, PBEBattleFormat.Single, new PBETeamInfo(p0, "Team 1"), new PBETeamInfo(p1, "Team 2"), settings);
+            var battle = new PBEBattle(PBEBattleFormat.Single, settings, new PBETrainerInfo(p0, "Team 1"), new PBETrainerInfo(p1, "Team 2"));
             battle.OnNewEvent += PBEBattle.ConsoleBattleEventHandler;
             battle.Begin();
 
-            PBETeam t0 = battle.Teams[0];
-            PBETeam t1 = battle.Teams[1];
+            PBETrainer t0 = battle.Trainers[0];
+            PBETrainer t1 = battle.Trainers[1];
             PBEBattlePokemon lucario = t0.Party[0];
             PBEBattlePokemon mienshao = t1.Party[0];
             #endregion
@@ -205,7 +205,7 @@ namespace Kermalis.PokemonBattleEngineTests.Moves
 
             battle.RunTurn();
 
-            Assert.True(TestUtils.VerifyTeamStatusHappened(battle, t1, teamStatus, PBETeamStatusAction.Damage, damageVictim: mienshao) && !t1.TeamStatus.HasFlag(teamStatus));
+            Assert.True(TestUtils.VerifyTeamStatusHappened(battle, t1.Team, teamStatus, PBETeamStatusAction.Damage, damageVictim: mienshao) && !t1.Team.TeamStatus.HasFlag(teamStatus));
             #endregion
 
             #region Cleanup

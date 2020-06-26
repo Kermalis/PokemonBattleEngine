@@ -38,12 +38,12 @@ namespace Kermalis.PokemonBattleEngineTests.Moves
                 Moveset = new TestMoveset(settings, new[] { PBEMove.Splash, PBEMove.Roost })
             };
 
-            var battle = new PBEBattle(PBEBattleTerrain.Plain, PBEBattleFormat.Single, new PBETeamInfo(p0, "Team 1"), new PBETeamInfo(p1, "Team 2"), settings);
+            var battle = new PBEBattle(PBEBattleFormat.Single, settings, new PBETrainerInfo(p0, "Team 1"), new PBETrainerInfo(p1, "Team 2"));
             battle.OnNewEvent += PBEBattle.ConsoleBattleEventHandler;
             battle.Begin();
 
-            PBETeam t0 = battle.Teams[0];
-            PBETeam t1 = battle.Teams[1];
+            PBETrainer t0 = battle.Trainers[0];
+            PBETrainer t1 = battle.Trainers[1];
             PBEBattlePokemon lucario = t0.Party[0];
             PBEBattlePokemon rooster = t1.Party[0];
             PBEType type1 = rooster.Type1;

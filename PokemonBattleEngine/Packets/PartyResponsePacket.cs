@@ -59,7 +59,7 @@ namespace Kermalis.PokemonBattleEngine.Packets
         internal PBELegalPartyResponsePacket(byte[] data, EndianBinaryReader r, PBEBattle battle)
         {
             Data = new ReadOnlyCollection<byte>(data);
-            Party = new PBELegalPokemonCollection(battle.Settings, r);
+            Party = new PBELegalPokemonCollection(battle.Settings, r); // TODO: Server battle is null here
         }
     }
 }

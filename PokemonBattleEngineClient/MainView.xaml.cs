@@ -4,8 +4,12 @@ using Avalonia.Threading;
 using Kermalis.PokemonBattleEngine.Battle;
 using Kermalis.PokemonBattleEngine.Data;
 using Kermalis.PokemonBattleEngine.Data.Legality;
+using Kermalis.PokemonBattleEngine.Network;
+using Kermalis.PokemonBattleEngine.Packets;
 using Kermalis.PokemonBattleEngine.Utils;
+using Kermalis.PokemonBattleEngineClient.Clients;
 using Kermalis.PokemonBattleEngineClient.Views;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
@@ -21,7 +25,7 @@ namespace Kermalis.PokemonBattleEngineClient
         }
         public new event PropertyChangedEventHandler PropertyChanged;
 
-        private string _connectText = "Connect";
+        private string _connectText;
         public string ConnectText
         {
             get => _connectText;
@@ -53,6 +57,11 @@ namespace Kermalis.PokemonBattleEngineClient
             _ip = this.FindControl<TextBox>("IP");
             _port = this.FindControl<NumericUpDown>("Port");
             _connect = this.FindControl<Button>("Connect");
+            ResetConnectButton();
+        }
+        private void ResetConnectButton()
+        {
+            ConnectText = "Connect";
             _connect.IsEnabled = true;
         }
 
@@ -62,31 +71,38 @@ namespace Kermalis.PokemonBattleEngineClient
             ConnectText = "Connecting...";
             string host = _ip.Text;
             ushort port = (ushort)_port.Value;
-            var client = new NetworkClient(PBEBattleFormat.Double, _teamBuilder.Team.Party); // Must be called on UI thread
             new Thread(() =>
             {
-                bool b;
+                NetworkClientConnection con = null;
+                void ConnectHandler(object arg)
+                {
+                    Dispatcher.UIThread.InvokeAsync(() =>
+                    {
+                        if (arg == null)
+                        {
+                            ResetConnectButton();
+                            con?.Dispose();
+                        }
+                        else if (arg is string str)
+                        {
+                            ConnectText = str;
+                        }
+                        else
+                        {
+                            var tup = (Tuple<PBEClient, PBEBattlePacket, byte>)arg;
+                            Add(new NetworkClient(tup.Item1, tup.Item2, tup.Item3));
+                            ResetConnectButton();
+                        }
+                    });
+                }
                 try
                 {
-                    b = client.Connect(host, port);
+                    con = new NetworkClientConnection(host, port, _teamBuilder.Team.Party, ConnectHandler);
                 }
                 catch
                 {
-                    b = false;
+                    con = null;
                 }
-                Dispatcher.UIThread.InvokeAsync(() =>
-                {
-                    if (b)
-                    {
-                        Add(client);
-                    }
-                    else
-                    {
-                        client.Dispose();
-                    }
-                    ConnectText = "Connect";
-                    _connect.IsEnabled = true;
-                });
             })
             {
                 Name = "Connect Thread"
@@ -100,13 +116,52 @@ namespace Kermalis.PokemonBattleEngineClient
         }
         public void SinglePlayer()
         {
-            PBESettings settings = PBESettings.DefaultSettings;
-            PBELegalPokemonCollection p0, p1;
             // Competitively Randomized Pokémon
-            p0 = PBERandomTeamGenerator.CreateRandomTeam(settings.MaxPartySize);
-            p1 = PBERandomTeamGenerator.CreateRandomTeam(settings.MaxPartySize);
-
-            Add(new SinglePlayerClient(PBEBattleFormat.Double, new PBETeamInfo(p0, "Dawn"), new PBETeamInfo(p1, "Champion Cynthia"), settings));
+            PBESettings settings = PBESettings.DefaultSettings;
+            PBEBattleFormat battleFormat;
+            IReadOnlyList<PBETrainerInfo> t0, t1;
+            bool multiBattle = true;
+            bool triple = true;
+            if (multiBattle)
+            {
+                if (triple)
+                {
+                    PBELegalPokemonCollection p0, p1, p2, p3, p4, p5;
+                    int numPerTeam = settings.MaxPartySize / 3;
+                    p0 = PBERandomTeamGenerator.CreateRandomTeam(numPerTeam);
+                    p1 = PBERandomTeamGenerator.CreateRandomTeam(numPerTeam);
+                    p2 = PBERandomTeamGenerator.CreateRandomTeam(numPerTeam);
+                    p3 = PBERandomTeamGenerator.CreateRandomTeam(numPerTeam);
+                    p4 = PBERandomTeamGenerator.CreateRandomTeam(numPerTeam);
+                    p5 = PBERandomTeamGenerator.CreateRandomTeam(numPerTeam);
+                    t0 = new[] { new PBETrainerInfo(p0, "Dawn"), new PBETrainerInfo(p1, "Barry"), new PBETrainerInfo(p2, "Lucas") };
+                    t1 = new[] { new PBETrainerInfo(p3, "Champion Cynthia"), new PBETrainerInfo(p4, "Leader Volkner"), new PBETrainerInfo(p5, "Elite Four Flint") };
+                    battleFormat = PBEBattleFormat.Triple;
+                }
+                else
+                {
+                    PBELegalPokemonCollection p0, p1, p2, p3;
+                    int numPerTeam = settings.MaxPartySize / 2;
+                    p0 = PBERandomTeamGenerator.CreateRandomTeam(numPerTeam);
+                    p1 = PBERandomTeamGenerator.CreateRandomTeam(numPerTeam);
+                    p2 = PBERandomTeamGenerator.CreateRandomTeam(numPerTeam);
+                    p3 = PBERandomTeamGenerator.CreateRandomTeam(numPerTeam);
+                    t0 = new[] { new PBETrainerInfo(p0, "Dawn"), new PBETrainerInfo(p1, "Barry") };
+                    t1 = new[] { new PBETrainerInfo(p2, "Leader Volkner"), new PBETrainerInfo(p3, "Elite Four Flint") };
+                    battleFormat = PBEBattleFormat.Double;
+                }
+            }
+            else
+            {
+                PBELegalPokemonCollection p0, p1;
+                int numPerTeam = settings.MaxPartySize;
+                p0 = PBERandomTeamGenerator.CreateRandomTeam(numPerTeam);
+                p1 = PBERandomTeamGenerator.CreateRandomTeam(numPerTeam);
+                t0 = new[] { new PBETrainerInfo(p0, "Dawn") };
+                t1 = new[] { new PBETrainerInfo(p1, "Champion Cynthia") };
+                battleFormat = triple ? PBEBattleFormat.Triple : PBEBattleFormat.Double;
+            }
+            Add(new SinglePlayerClient(battleFormat, settings, t0, t1));
         }
 
         // TODO: Removing battles (with disposing)

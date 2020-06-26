@@ -11,10 +11,8 @@ namespace Kermalis.PokemonBattleEngine.Packets
         public const ushort Code = 0x18;
         public ReadOnlyCollection<byte> Data { get; }
 
-        public PBEFieldPosition User { get; }
-        public PBETeam UserTeam { get; }
-        public PBEFieldPosition Target { get; }
-        public PBETeam TargetTeam { get; }
+        public PBEBattlePokemon User { get; }
+        public PBEBattlePokemon Target { get; }
         public ushort TargetAttack { get; }
         public ushort TargetDefense { get; }
         public ushort TargetSpAttack { get; }
@@ -40,10 +38,8 @@ namespace Kermalis.PokemonBattleEngine.Packets
             using (var w = new EndianBinaryWriter(ms, encoding: EncodingType.UTF16))
             {
                 w.Write(Code);
-                w.Write(User = user.FieldPosition);
-                w.Write((UserTeam = user.Team).Id);
-                w.Write(Target = target.FieldPosition);
-                w.Write((TargetTeam = target.Team).Id);
+                (User = user).ToBytes_Position(w);
+                (Target = target).ToBytes_Position(w);
                 w.Write(TargetAttack = target.Attack);
                 w.Write(TargetDefense = target.Defense);
                 w.Write(TargetSpAttack = target.SpAttack);
@@ -72,10 +68,8 @@ namespace Kermalis.PokemonBattleEngine.Packets
         internal PBETransformPacket(byte[] data, EndianBinaryReader r, PBEBattle battle)
         {
             Data = new ReadOnlyCollection<byte>(data);
-            User = r.ReadEnum<PBEFieldPosition>();
-            UserTeam = battle.Teams[r.ReadByte()];
-            Target = r.ReadEnum<PBEFieldPosition>();
-            TargetTeam = battle.Teams[r.ReadByte()];
+            User = battle.GetPokemon_Position(r);
+            Target = battle.GetPokemon_Position(r);
             TargetAttack = r.ReadUInt16();
             TargetDefense = r.ReadUInt16();
             TargetSpAttack = r.ReadUInt16();

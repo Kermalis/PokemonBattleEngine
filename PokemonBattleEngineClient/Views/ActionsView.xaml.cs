@@ -422,10 +422,10 @@ namespace Kermalis.PokemonBattleEngineClient.Views
                 mInfo[i] = new MoveInfo(pkmn, usableMoves[i], SelectMoveForTurn);
             }
             Moves = mInfo;
-            var pInfo = new PokemonInfo[pkmn.Team.Party.Count];
+            var pInfo = new PokemonInfo[pkmn.Trainer.Party.Count];
             for (int i = 0; i < pInfo.Length; i++)
             {
-                PBEBattlePokemon p = pkmn.Team.Party[i];
+                PBEBattlePokemon p = pkmn.Trainer.Party[i];
                 pInfo[i] = new PokemonInfo(p, !pkmn.CanSwitchOut() || BattleView.Client.StandBy.Contains(p), SelectPokemonForTurn);
             }
             Party = pInfo;
@@ -434,7 +434,7 @@ namespace Kermalis.PokemonBattleEngineClient.Views
         }
         internal void DisplaySwitches()
         {
-            PBEList<PBEBattlePokemon> pa = BattleView.Client.Team.Party;
+            PBEList<PBEBattlePokemon> pa = BattleView.Client.Trainer.Party;
             var pInfo = new PokemonInfo[pa.Count];
             for (int i = 0; i < pa.Count; i++)
             {
@@ -475,30 +475,18 @@ namespace Kermalis.PokemonBattleEngineClient.Views
                 PBETurnTarget targets;
                 switch (possibleTargets)
                 {
-                    case PBEMoveTarget.All:
-                    {
-                        targets = PBETurnTarget.AllyCenter | PBETurnTarget.FoeCenter;
-                        break;
-                    }
+                    case PBEMoveTarget.All: targets = PBETurnTarget.AllyCenter | PBETurnTarget.FoeCenter; break;
                     case PBEMoveTarget.AllFoes:
                     case PBEMoveTarget.AllFoesSurrounding:
                     case PBEMoveTarget.AllSurrounding:
                     case PBEMoveTarget.RandomFoeSurrounding:
                     case PBEMoveTarget.SingleFoeSurrounding:
                     case PBEMoveTarget.SingleNotSelf:
-                    case PBEMoveTarget.SingleSurrounding:
-                    {
-                        targets = PBETurnTarget.FoeCenter;
-                        break;
-                    }
+                    case PBEMoveTarget.SingleSurrounding: targets = PBETurnTarget.FoeCenter; break;
                     case PBEMoveTarget.AllTeam:
                     case PBEMoveTarget.Self:
                     case PBEMoveTarget.SelfOrAllySurrounding:
-                    case PBEMoveTarget.SingleAllySurrounding:
-                    {
-                        targets = PBETurnTarget.AllyCenter;
-                        break;
-                    }
+                    case PBEMoveTarget.SingleAllySurrounding: targets = PBETurnTarget.AllyCenter; break;
                     default: throw new ArgumentOutOfRangeException(nameof(possibleTargets));
                 }
                 Pokemon.TurnAction = new PBETurnAction(Pokemon.Id, move, targets);
@@ -506,12 +494,12 @@ namespace Kermalis.PokemonBattleEngineClient.Views
             }
             else // Double / Triple
             {
-                TargetAllyLeft = BattleView.Client.Team.TryGetPokemon(PBEFieldPosition.Left);
-                TargetAllyCenter = BattleView.Client.Team.TryGetPokemon(PBEFieldPosition.Center);
-                TargetAllyRight = BattleView.Client.Team.TryGetPokemon(PBEFieldPosition.Right);
-                TargetFoeLeft = BattleView.Client.Team.OpposingTeam.TryGetPokemon(PBEFieldPosition.Left);
-                TargetFoeCenter = BattleView.Client.Team.OpposingTeam.TryGetPokemon(PBEFieldPosition.Center);
-                TargetFoeRight = BattleView.Client.Team.OpposingTeam.TryGetPokemon(PBEFieldPosition.Right);
+                TargetAllyLeft = BattleView.Client.Trainer.Team.TryGetPokemon(PBEFieldPosition.Left);
+                TargetAllyCenter = BattleView.Client.Trainer.Team.TryGetPokemon(PBEFieldPosition.Center);
+                TargetAllyRight = BattleView.Client.Trainer.Team.TryGetPokemon(PBEFieldPosition.Right);
+                TargetFoeLeft = BattleView.Client.Trainer.Team.OpposingTeam.TryGetPokemon(PBEFieldPosition.Left);
+                TargetFoeCenter = BattleView.Client.Trainer.Team.OpposingTeam.TryGetPokemon(PBEFieldPosition.Center);
+                TargetFoeRight = BattleView.Client.Trainer.Team.OpposingTeam.TryGetPokemon(PBEFieldPosition.Right);
 
                 if (BattleView.Client.Battle.BattleFormat == PBEBattleFormat.Double)
                 {
@@ -896,6 +884,7 @@ namespace Kermalis.PokemonBattleEngineClient.Views
                     }
                 }
 
+                // This would still show the lines if a move had lines
                 if (Pokemon.TempLockedTargets != PBETurnTarget.None)
                 {
                     if (!Pokemon.TempLockedTargets.HasFlag(PBETurnTarget.AllyLeft))
@@ -939,8 +928,8 @@ namespace Kermalis.PokemonBattleEngineClient.Views
                 }
                 case PBEBattleFormat.Double:
                 {
-                    LeftPositionEnabled = !BattleView.Client.PositionStandBy.Contains(PBEFieldPosition.Left) && BattleView.Client.Team.TryGetPokemon(PBEFieldPosition.Left) == null;
-                    RightPositionEnabled = !BattleView.Client.PositionStandBy.Contains(PBEFieldPosition.Right) && BattleView.Client.Team.TryGetPokemon(PBEFieldPosition.Right) == null;
+                    LeftPositionEnabled = !BattleView.Client.PositionStandBy.Contains(PBEFieldPosition.Left) && BattleView.Client.Trainer.OwnsSpot(PBEFieldPosition.Left) && BattleView.Client.Trainer.Team.TryGetPokemon(PBEFieldPosition.Left) == null;
+                    RightPositionEnabled = !BattleView.Client.PositionStandBy.Contains(PBEFieldPosition.Right) && BattleView.Client.Trainer.OwnsSpot(PBEFieldPosition.Right) && BattleView.Client.Trainer.Team.TryGetPokemon(PBEFieldPosition.Right) == null;
                     if (_leftPositionEnabled && !_rightPositionEnabled)
                     {
                         SelectPosition("Left");
@@ -959,9 +948,9 @@ namespace Kermalis.PokemonBattleEngineClient.Views
                 case PBEBattleFormat.Triple:
                 case PBEBattleFormat.Rotation:
                 {
-                    LeftPositionEnabled = !BattleView.Client.PositionStandBy.Contains(PBEFieldPosition.Left) && BattleView.Client.Team.TryGetPokemon(PBEFieldPosition.Left) == null;
-                    CenterPositionEnabled = !BattleView.Client.PositionStandBy.Contains(PBEFieldPosition.Center) && BattleView.Client.Team.TryGetPokemon(PBEFieldPosition.Center) == null;
-                    RightPositionEnabled = !BattleView.Client.PositionStandBy.Contains(PBEFieldPosition.Right) && BattleView.Client.Team.TryGetPokemon(PBEFieldPosition.Right) == null;
+                    LeftPositionEnabled = !BattleView.Client.PositionStandBy.Contains(PBEFieldPosition.Left) && BattleView.Client.Trainer.OwnsSpot(PBEFieldPosition.Left) && BattleView.Client.Trainer.Team.TryGetPokemon(PBEFieldPosition.Left) == null;
+                    CenterPositionEnabled = !BattleView.Client.PositionStandBy.Contains(PBEFieldPosition.Center) && BattleView.Client.Trainer.OwnsSpot(PBEFieldPosition.Center) && BattleView.Client.Trainer.Team.TryGetPokemon(PBEFieldPosition.Center) == null;
+                    RightPositionEnabled = !BattleView.Client.PositionStandBy.Contains(PBEFieldPosition.Right) && BattleView.Client.Trainer.OwnsSpot(PBEFieldPosition.Right) && BattleView.Client.Trainer.Team.TryGetPokemon(PBEFieldPosition.Right) == null;
                     if (_leftPositionEnabled && !_centerPositionEnabled && !_rightPositionEnabled)
                     {
                         SelectPosition("Left");

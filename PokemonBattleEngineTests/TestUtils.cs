@@ -31,7 +31,7 @@ namespace Kermalis.PokemonBattleEngineTests
             {
                 if (packet is PBEMoveResultPacket mrp)
                 {
-                    if (mrp.Result == result && mrp.MoveUserTeam.TryGetPokemon(mrp.MoveUser) == moveUser && mrp.Pokemon2Team.TryGetPokemon(mrp.Pokemon2) == pokemon2)
+                    if (mrp.Result == result && mrp.MoveUser == moveUser && mrp.Pokemon2 == pokemon2)
                     {
                         return true;
                     }
@@ -45,7 +45,7 @@ namespace Kermalis.PokemonBattleEngineTests
             {
                 if (packet is PBEStatus2Packet s2p)
                 {
-                    if (s2p.Status2 == status2 && s2p.StatusAction == statusAction && s2p.Status2ReceiverTeam.TryGetPokemon(s2p.Status2Receiver) == status2Receiver && s2p.Pokemon2Team.TryGetPokemon(s2p.Pokemon2) == pokemon2)
+                    if (s2p.Status2 == status2 && s2p.StatusAction == statusAction && s2p.Status2Receiver == status2Receiver && s2p.Pokemon2 == pokemon2)
                     {
                         return true;
                     }
@@ -59,7 +59,7 @@ namespace Kermalis.PokemonBattleEngineTests
             {
                 if (packet is PBETeamStatusPacket tsp)
                 {
-                    if (tsp.Team == team && tsp.TeamStatus == teamStatus && tsp.TeamStatusAction == teamStatusAction && team.TryGetPokemon(tsp.DamageVictim) == damageVictim)
+                    if (tsp.Team == team && tsp.TeamStatus == teamStatus && tsp.TeamStatusAction == teamStatusAction && tsp.DamageVictim == damageVictim)
                     {
                         return true;
                     }

@@ -1,8 +1,10 @@
-﻿using Kermalis.PokemonBattleEngine.Data;
+﻿using Kermalis.EndianBinaryIO;
+using Kermalis.PokemonBattleEngine.Data;
 using Kermalis.PokemonBattleEngine.Packets;
 using Kermalis.PokemonBattleEngine.Utils;
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.Linq;
@@ -31,6 +33,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
         public PBEBattleFormat BattleFormat { get; }
         public PBESettings Settings { get; }
         public PBETeams Teams { get; }
+        public ReadOnlyCollection<PBETrainer> Trainers { get; }
         public List<PBEBattlePokemon> ActiveBattlers { get; } = new List<PBEBattlePokemon>(6);
         private readonly List<PBEBattlePokemon> _turnOrder = new List<PBEBattlePokemon>(6);
 
@@ -41,167 +44,117 @@ namespace Kermalis.PokemonBattleEngine.Battle
 
         public List<IPBEPacket> Events { get; } = new List<IPBEPacket>();
 
-        /// <summary>Gets a specific <see cref="PBEBattlePokemon"/> participating in this battle by its ID.</summary>
-        /// <param name="pkmnId">The ID of the <see cref="PBEBattlePokemon"/>.</param>
-        public PBEBattlePokemon TryGetPokemon(byte pkmnId)
+        public PBEBattle(PBEBattleFormat battleFormat, PBESettings settings, PBETrainerInfo ti0, PBETrainerInfo ti1, PBEBattleTerrain battleTerrain = PBEBattleTerrain.Plain, PBEWeather weather = PBEWeather.None)
+            : this(battleFormat, settings, new[] { ti0 }, new[] { ti1 }, battleTerrain: battleTerrain, weather: weather) { }
+        public PBEBattle(PBEBattleFormat battleFormat, PBESettings settings, IReadOnlyList<PBETrainerInfo> ti0, IReadOnlyList<PBETrainerInfo> ti1, PBEBattleTerrain battleTerrain = PBEBattleTerrain.Plain, PBEWeather weather = PBEWeather.None)
         {
-            return Teams.SelectMany(t => t.Party).SingleOrDefault(p => p.Id == pkmnId);
-        }
-
-        // TODO: Constructor with weather
-        public PBEBattle(PBEBattleTerrain battleTerrain, PBEBattleFormat battleFormat, PBETeamInfo ti0, PBETeamInfo ti1, PBESettings settings)
-        {
-            if (battleTerrain >= PBEBattleTerrain.MAX)
-            {
-                throw new ArgumentOutOfRangeException(nameof(battleTerrain));
-            }
             if (battleFormat >= PBEBattleFormat.MAX)
             {
                 throw new ArgumentOutOfRangeException(nameof(battleFormat));
             }
-            if (ti0 == null)
+            if (battleTerrain >= PBEBattleTerrain.MAX)
+            {
+                throw new ArgumentOutOfRangeException(nameof(battleTerrain));
+            }
+            if (weather >= PBEWeather.MAX)
+            {
+                throw new ArgumentOutOfRangeException(nameof(weather));
+            }
+            if (settings == null)
+            {
+                throw new ArgumentNullException(nameof(settings));
+            }
+            if (!settings.IsReadOnly)
+            {
+                throw new ArgumentException("Settings must be read-only.", nameof(settings));
+            }
+            if (ti0 == null || ti0.Any(t => t == null))
             {
                 throw new ArgumentNullException(nameof(ti0));
             }
-            if (ti1 == null)
+            if (ti1 == null || ti1.Any(t => t == null))
             {
                 throw new ArgumentNullException(nameof(ti1));
             }
-            if (settings == null)
-            {
-                throw new ArgumentNullException(nameof(settings));
-            }
-            if (!settings.IsReadOnly)
-            {
-                throw new ArgumentException("Settings must be read-only.", nameof(settings));
-            }
             BattleTerrain = battleTerrain;
             BattleFormat = battleFormat;
             Settings = settings;
-            Teams = new PBETeams(this, ti0, ti1);
-            CheckForReadiness();
-        }
-        /// <summary>Creates a new <see cref="PBEBattle"/> object with the specified <see cref="PBEBattleFormat"/> and a copy of the specified <see cref="PBESettings"/>. <see cref="BattleState"/> will be <see cref="PBEBattleState.WaitingForPlayers"/>.</summary>
-        /// <param name="battleTerrain">The <see cref="PBEBattleTerrain"/> of the battle.</param>
-        /// <param name="battleFormat">The <see cref="PBEBattleFormat"/> of the battle.</param>
-        /// <param name="settings">The <see cref="PBESettings"/> to copy for the battle to use.</param>
-        public PBEBattle(PBEBattleTerrain battleTerrain, PBEBattleFormat battleFormat, PBESettings settings)
-        {
-            if (battleTerrain >= PBEBattleTerrain.MAX)
+            Weather = weather;
+            Teams = new PBETeams(this, ti0, ti1, out ReadOnlyCollection<PBETrainer> trainers);
+            Trainers = trainers;
+
+            void QueueUp(PBETeam team, int i, PBEFieldPosition pos)
             {
-                throw new ArgumentOutOfRangeException(nameof(battleTerrain));
+                PBETrainer t;
+                if (team.Trainers.Count == 1)
+                {
+                    t = team.Trainers[0];
+                }
+                else
+                {
+                    t = team.GetTrainer(pos);
+                    i = 0;
+                }
+                PBEList<PBEBattlePokemon> party = t.Party;
+                if (i < party.Count)
+                {
+                    PBEBattlePokemon p = party[i];
+                    p.Trainer.SwitchInQueue.Add((p, pos));
+                }
             }
-            if (battleFormat >= PBEBattleFormat.MAX)
+            switch (BattleFormat)
             {
-                throw new ArgumentOutOfRangeException(nameof(battleFormat));
+                case PBEBattleFormat.Single:
+                {
+                    foreach (PBETeam team in Teams)
+                    {
+                        QueueUp(team, 0, PBEFieldPosition.Center);
+                    }
+                    break;
+                }
+                case PBEBattleFormat.Double:
+                {
+                    foreach (PBETeam team in Teams)
+                    {
+                        QueueUp(team, 0, PBEFieldPosition.Left);
+                        QueueUp(team, 1, PBEFieldPosition.Right);
+                    }
+                    break;
+                }
+                case PBEBattleFormat.Triple:
+                {
+                    foreach (PBETeam team in Teams)
+                    {
+                        QueueUp(team, 0, PBEFieldPosition.Left);
+                        QueueUp(team, 1, PBEFieldPosition.Center);
+                        QueueUp(team, 2, PBEFieldPosition.Right);
+                    }
+                    break;
+                }
+                case PBEBattleFormat.Rotation:
+                {
+                    foreach (PBETeam team in Teams)
+                    {
+                        QueueUp(team, 0, PBEFieldPosition.Center);
+                        QueueUp(team, 1, PBEFieldPosition.Left);
+                        QueueUp(team, 2, PBEFieldPosition.Right);
+                    }
+                    break;
+                }
+                default: throw new ArgumentOutOfRangeException(nameof(BattleFormat));
             }
-            if (settings == null)
-            {
-                throw new ArgumentNullException(nameof(settings));
-            }
-            if (!settings.IsReadOnly)
-            {
-                throw new ArgumentException("Settings must be read-only.", nameof(settings));
-            }
-            BattleTerrain = battleTerrain;
-            BattleFormat = battleFormat;
-            Settings = settings;
-            Teams = new PBETeams(this);
-            BattleState = PBEBattleState.WaitingForPlayers;
+
+            BattleState = PBEBattleState.ReadyToBegin;
             OnStateChanged?.Invoke(this);
         }
-        private void CheckForReadiness()
+        public PBEBattle(PBEBattlePacket packet)
         {
-            if (Teams.All(t => t.NumConsciousPkmn > 0))
-            {
-                switch (BattleFormat)
-                {
-                    case PBEBattleFormat.Single:
-                    {
-                        foreach (PBETeam team in Teams)
-                        {
-                            team.SwitchInQueue.Add((team.Party[0], PBEFieldPosition.Center));
-                        }
-                        break;
-                    }
-                    case PBEBattleFormat.Double:
-                    {
-                        foreach (PBETeam team in Teams)
-                        {
-                            team.SwitchInQueue.Add((team.Party[0], PBEFieldPosition.Left));
-                            if (team.Party.Count > 1)
-                            {
-                                team.SwitchInQueue.Add((team.Party[1], PBEFieldPosition.Right));
-                            }
-                        }
-                        break;
-                    }
-                    case PBEBattleFormat.Triple:
-                    {
-                        foreach (PBETeam team in Teams)
-                        {
-                            team.SwitchInQueue.Add((team.Party[0], PBEFieldPosition.Left));
-                            if (team.Party.Count > 1)
-                            {
-                                team.SwitchInQueue.Add((team.Party[1], PBEFieldPosition.Center));
-                            }
-                            if (team.Party.Count > 2)
-                            {
-                                team.SwitchInQueue.Add((team.Party[2], PBEFieldPosition.Right));
-                            }
-                        }
-                        break;
-                    }
-                    case PBEBattleFormat.Rotation:
-                    {
-                        foreach (PBETeam team in Teams)
-                        {
-                            team.SwitchInQueue.Add((team.Party[0], PBEFieldPosition.Center));
-                            if (team.Party.Count > 1)
-                            {
-                                team.SwitchInQueue.Add((team.Party[1], PBEFieldPosition.Left));
-                            }
-                            if (team.Party.Count > 2)
-                            {
-                                team.SwitchInQueue.Add((team.Party[2], PBEFieldPosition.Right));
-                            }
-                        }
-                        break;
-                    }
-                    default: throw new ArgumentOutOfRangeException(nameof(BattleFormat));
-                }
-
-                BattleState = PBEBattleState.ReadyToBegin;
-                OnStateChanged?.Invoke(this);
-            }
-        }
-        /// <summary>Sets a specific team's party. <see cref="BattleState"/> will change to <see cref="PBEBattleState.ReadyToBegin"/> if all teams have parties.</summary>
-        /// <param name="team">The team which will have its party set.</param>
-        /// <param name="ti">The information <paramref name="team"/> will use to create its party.</param>
-        /// <param name="teamName">The name of the trainer(s) on <paramref name="team"/>.</param>
-        /// <exception cref="InvalidOperationException">Thrown when <see cref="BattleState"/> is not <see cref="PBEBattleState.WaitingForPlayers"/> or <paramref name="team"/> already has its party set.</exception>
-        /// <exception cref="ArgumentNullException">Thrown when <paramref name="team"/> or <paramref name="ti"/> == null.</exception>
-        /// <exception cref="ArgumentOutOfRangeException">Thrown when <paramref name="ti"/>'s settings are unequal to <paramref name="team"/>'s battle's settings or when <paramref name="teamName"/> is invalid.</exception>
-        public static void CreateTeamParty(PBETeam team, PBETeamInfo ti)
-        {
-            if (team == null)
-            {
-                throw new ArgumentNullException(nameof(team));
-            }
-            if (ti == null)
-            {
-                throw new ArgumentNullException(nameof(ti));
-            }
-            if (team.Battle.BattleState != PBEBattleState.WaitingForPlayers)
-            {
-                throw new InvalidOperationException($"{nameof(BattleState)} must be {PBEBattleState.WaitingForPlayers} to set a team's party.");
-            }
-            if (team.Party.Count > 0)
-            {
-                throw new InvalidOperationException("This team already has its party set.");
-            }
-            team.CreateParty(ti);
-            team.Battle.CheckForReadiness();
+            BattleFormat = packet.BattleFormat;
+            BattleTerrain = packet.BattleTerrain;
+            Weather = packet.Weather;
+            Settings = packet.Settings;
+            Teams = new PBETeams(this, packet, out ReadOnlyCollection<PBETrainer> trainers);
+            Trainers = trainers;
         }
         /// <summary>Begins the battle.</summary>
         /// <exception cref="InvalidOperationException">Thrown when <see cref="BattleState"/> is not <see cref="PBEBattleState.ReadyToBegin"/>.</exception>
@@ -211,10 +164,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
             {
                 throw new InvalidOperationException($"{nameof(BattleState)} must be {PBEBattleState.ReadyToBegin} to begin the battle.");
             }
-            foreach (PBETeam team in Teams)
-            {
-                BroadcastTeam(team);
-            }
+            BroadcastBattle(); // The first packet sent is PBEBattlePacket which replays rely on
             SwitchesOrActions();
         }
         /// <summary>Runs a turn.</summary>
@@ -269,86 +219,89 @@ namespace Kermalis.PokemonBattleEngine.Battle
             OnStateChanged?.Invoke(this);
 
             // Checking SwitchInQueue count since SwitchInsRequired is set to 0 after submitting switches
-            PBETeam[] teamsWithSwitchIns = Teams.Where(t => t.SwitchInQueue.Count > 0).ToArray();
-            if (teamsWithSwitchIns.Length > 0)
+            PBETrainer[] trainersWithSwitchIns = Trainers.Where(t => t.SwitchInQueue.Count > 0).ToArray();
+            if (trainersWithSwitchIns.Length > 0)
             {
                 var list = new List<PBEBattlePokemon>(6);
-                foreach (PBETeam team in teamsWithSwitchIns)
+                foreach (PBETrainer trainer in trainersWithSwitchIns)
                 {
-                    int count = team.SwitchInQueue.Count;
+                    int count = trainer.SwitchInQueue.Count;
                     var switches = new PBEPkmnSwitchInPacket.PBESwitchInInfo[count];
                     for (int i = 0; i < count; i++)
                     {
-                        (PBEBattlePokemon pkmn, PBEFieldPosition pos) = team.SwitchInQueue[i];
+                        (PBEBattlePokemon pkmn, PBEFieldPosition pos) = trainer.SwitchInQueue[i];
                         pkmn.FieldPosition = pos;
                         switches[i] = CreateSwitchInInfo(pkmn);
-                        PBETeam.SwitchTwoPokemon(pkmn, pos);
+                        PBETrainer.SwitchTwoPokemon(pkmn, pos);
+                        ActiveBattlers.Add(pkmn); // Add before broadcast
                         list.Add(pkmn);
                     }
-                    BroadcastPkmnSwitchIn(team, switches);
+                    BroadcastPkmnSwitchIn(trainer, switches);
                 }
-                ActiveBattlers.AddRange(list);
                 DoSwitchInEffects(list);
             }
 
-            foreach (PBETeam team in Teams)
+            foreach (PBETrainer trainer in Trainers)
             {
-                int available = team.NumConsciousPkmn - team.NumPkmnOnField;
-                team.SwitchInsRequired = 0;
-                team.SwitchInQueue.Clear();
-                switch (BattleFormat)
+                int available = trainer.NumConsciousPkmn - trainer.NumPkmnOnField;
+                trainer.SwitchInsRequired = 0;
+                trainer.SwitchInQueue.Clear();
+                if (available > 0)
                 {
-                    case PBEBattleFormat.Single:
+                    switch (BattleFormat)
                     {
-                        if (available > 0 && team.TryGetPokemon(PBEFieldPosition.Center) == null)
+                        case PBEBattleFormat.Single:
                         {
-                            team.SwitchInsRequired = 1;
+                            if (trainer.TryGetPokemon(PBEFieldPosition.Center) == null)
+                            {
+                                trainer.SwitchInsRequired = 1;
+                            }
+                            break;
                         }
-                        break;
+                        case PBEBattleFormat.Double:
+                        {
+                            if (trainer.OwnsSpot(PBEFieldPosition.Left) && trainer.TryGetPokemon(PBEFieldPosition.Left) == null)
+                            {
+                                available--;
+                                trainer.SwitchInsRequired++;
+                            }
+                            if (available > 0 && trainer.OwnsSpot(PBEFieldPosition.Right) && trainer.TryGetPokemon(PBEFieldPosition.Right) == null)
+                            {
+                                trainer.SwitchInsRequired++;
+                            }
+                            break;
+                        }
+                        case PBEBattleFormat.Rotation:
+                        case PBEBattleFormat.Triple:
+                        {
+                            if (trainer.OwnsSpot(PBEFieldPosition.Left) && trainer.TryGetPokemon(PBEFieldPosition.Left) == null)
+                            {
+                                available--;
+                                trainer.SwitchInsRequired++;
+                            }
+                            if (available > 0 && trainer.OwnsSpot(PBEFieldPosition.Center) && trainer.TryGetPokemon(PBEFieldPosition.Center) == null)
+                            {
+                                available--;
+                                trainer.SwitchInsRequired++;
+                            }
+                            if (available > 0 && trainer.OwnsSpot(PBEFieldPosition.Right) && trainer.TryGetPokemon(PBEFieldPosition.Right) == null)
+                            {
+                                trainer.SwitchInsRequired++;
+                            }
+                            break;
+                        }
+                        default: throw new ArgumentOutOfRangeException(nameof(BattleFormat));
                     }
-                    case PBEBattleFormat.Double:
-                    {
-                        if (available > 0 && team.TryGetPokemon(PBEFieldPosition.Left) == null)
-                        {
-                            available--;
-                            team.SwitchInsRequired++;
-                        }
-                        if (available > 0 && team.TryGetPokemon(PBEFieldPosition.Right) == null)
-                        {
-                            team.SwitchInsRequired++;
-                        }
-                        break;
-                    }
-                    case PBEBattleFormat.Rotation:
-                    case PBEBattleFormat.Triple:
-                    {
-                        if (available > 0 && team.TryGetPokemon(PBEFieldPosition.Left) == null)
-                        {
-                            available--;
-                            team.SwitchInsRequired++;
-                        }
-                        if (available > 0 && team.TryGetPokemon(PBEFieldPosition.Center) == null)
-                        {
-                            available--;
-                            team.SwitchInsRequired++;
-                        }
-                        if (available > 0 && team.TryGetPokemon(PBEFieldPosition.Right) == null)
-                        {
-                            team.SwitchInsRequired++;
-                        }
-                        break;
-                    }
-                    default: throw new ArgumentOutOfRangeException(nameof(BattleFormat));
                 }
             }
-            teamsWithSwitchIns = Teams.Where(t => t.SwitchInsRequired > 0).ToArray();
-            if (teamsWithSwitchIns.Length > 0)
+            trainersWithSwitchIns = Trainers.Where(t => t.SwitchInsRequired > 0).ToArray();
+            if (trainersWithSwitchIns.Length > 0)
             {
                 BattleState = PBEBattleState.WaitingForSwitchIns;
                 OnStateChanged?.Invoke(this);
-                foreach (PBETeam team in teamsWithSwitchIns)
+                foreach (PBETrainer trainer in trainersWithSwitchIns)
                 {
-                    BroadcastSwitchInRequest(team);
+                    BroadcastSwitchInRequest(trainer);
                 }
             }
             else
@@ -410,23 +363,23 @@ namespace Kermalis.PokemonBattleEngine.Battle
                         BroadcastTeamStatus(team, PBETeamStatus.WideGuard, PBETeamStatusAction.Ended);
                     }
                 }
-                foreach (PBETeam team in Teams)
+                foreach (PBETrainer trainer in Trainers)
                 {
-                    team.ActionsRequired.Clear();
-                    team.ActionsRequired.AddRange(team.ActiveBattlers);
+                    trainer.ActionsRequired.Clear();
+                    trainer.ActionsRequired.AddRange(trainer.ActiveBattlers);
                 }
 
                 if (BattleFormat == PBEBattleFormat.Triple && Teams.All(t => t.NumConsciousPkmn == 1))
                 {
-                    PBEBattlePokemon pkmn1 = ActiveBattlers[0],
-                        pkmn2 = ActiveBattlers[1];
-                    if ((pkmn1.FieldPosition == PBEFieldPosition.Left && pkmn2.FieldPosition == PBEFieldPosition.Left) || (pkmn1.FieldPosition == PBEFieldPosition.Right && pkmn2.FieldPosition == PBEFieldPosition.Right))
+                    PBEBattlePokemon pkmn0 = ActiveBattlers[0],
+                        pkmn1 = ActiveBattlers[1];
+                    if ((pkmn0.FieldPosition == PBEFieldPosition.Left && pkmn1.FieldPosition == PBEFieldPosition.Left) || (pkmn0.FieldPosition == PBEFieldPosition.Right && pkmn1.FieldPosition == PBEFieldPosition.Right))
                     {
-                        PBEFieldPosition pkmn1OldPos = pkmn1.FieldPosition,
-                            pkmn2OldPos = pkmn2.FieldPosition;
+                        PBEFieldPosition pkmn0OldPos = pkmn0.FieldPosition,
+                            pkmn1OldPos = pkmn1.FieldPosition;
+                        pkmn0.FieldPosition = PBEFieldPosition.Center;
                         pkmn1.FieldPosition = PBEFieldPosition.Center;
-                        pkmn2.FieldPosition = PBEFieldPosition.Center;
-                        BroadcastAutoCenter(pkmn1, pkmn1OldPos, pkmn2, pkmn2OldPos);
+                        BroadcastAutoCenter(pkmn0, pkmn0OldPos, pkmn1, pkmn1OldPos);
                     }
                 }
 
@@ -440,9 +393,9 @@ namespace Kermalis.PokemonBattleEngine.Battle
                 }
                 BattleState = PBEBattleState.WaitingForActions;
                 OnStateChanged?.Invoke(this);
-                foreach (PBETeam team in Teams)
+                foreach (PBETrainer trainer in Trainers.Where(t => t.NumConsciousPkmn > 0))
                 {
-                    BroadcastActionsRequest(team);
+                    BroadcastActionsRequest(trainer);
                 }
             }
         }
@@ -609,7 +562,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                         }
                         case PBETurnDecision.SwitchOut:
                         {
-                            SwitchTwoPokemon(pkmn, TryGetPokemon(pkmn.TurnAction.SwitchPokemonId));
+                            SwitchTwoPokemon(pkmn, pkmn.Trainer.TryGetPokemon(pkmn.TurnAction.SwitchPokemonId));
                             break;
                         }
                         default: throw new ArgumentOutOfRangeException(nameof(pkmn.TurnAction.Decision));
@@ -687,6 +640,20 @@ namespace Kermalis.PokemonBattleEngine.Battle
             }
 
             SwitchesOrActions();
+        }
+
+        internal (PBEBattlePokemon, PBEBattlePokemon) GetPokemon_DisguisedId(EndianBinaryReader r)
+        {
+            PBETrainer trainer = Trainers[r.ReadByte()];
+            return (trainer.TryGetPokemon(r.ReadByte()), trainer.TryGetPokemon(r.ReadByte()));
+        }
+        internal PBEBattlePokemon GetPokemon_Id(EndianBinaryReader r)
+        {
+            return Trainers[r.ReadByte()].TryGetPokemon(r.ReadByte());
+        }
+        internal PBEBattlePokemon GetPokemon_Position(EndianBinaryReader r)
+        {
+            return Trainers[r.ReadByte()].TryGetPokemon(r.ReadEnum<PBEFieldPosition>());
         }
     }
 }

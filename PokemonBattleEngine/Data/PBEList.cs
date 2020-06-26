@@ -42,6 +42,10 @@ namespace Kermalis.PokemonBattleEngine.Data
         {
             _list = new List<T>(capacity);
         }
+        internal PBEList(IEnumerable<T> collection)
+        {
+            _list = new List<T>(collection);
+        }
 
         internal void Add(T item)
         {

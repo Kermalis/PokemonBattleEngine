@@ -1,6 +1,5 @@
 ﻿using Kermalis.EndianBinaryIO;
 using Kermalis.PokemonBattleEngine.Battle;
-using Kermalis.PokemonBattleEngine.Data;
 using System.Collections.ObjectModel;
 using System.IO;
 
@@ -11,10 +10,8 @@ namespace Kermalis.PokemonBattleEngine.Packets
         public const ushort Code = 0x22;
         public ReadOnlyCollection<byte> Data { get; }
 
-        public PBEFieldPosition User { get; }
-        public PBETeam UserTeam { get; }
-        public PBEFieldPosition Target { get; }
-        public PBETeam TargetTeam { get; }
+        public PBEBattlePokemon User { get; }
+        public PBEBattlePokemon Target { get; }
         public sbyte AttackChange { get; }
         public sbyte DefenseChange { get; }
         public sbyte SpAttackChange { get; }
@@ -29,10 +26,8 @@ namespace Kermalis.PokemonBattleEngine.Packets
             using (var w = new EndianBinaryWriter(ms, encoding: EncodingType.UTF16))
             {
                 w.Write(Code);
-                w.Write(User = user.FieldPosition);
-                w.Write((UserTeam = user.Team).Id);
-                w.Write(Target = target.FieldPosition);
-                w.Write((TargetTeam = target.Team).Id);
+                (User = user).ToBytes_Position(w);
+                (Target = target).ToBytes_Position(w);
                 w.Write(AttackChange = target.AttackChange);
                 w.Write(DefenseChange = target.DefenseChange);
                 w.Write(SpAttackChange = target.SpAttackChange);
@@ -46,10 +41,8 @@ namespace Kermalis.PokemonBattleEngine.Packets
         internal PBEPsychUpPacket(byte[] data, EndianBinaryReader r, PBEBattle battle)
         {
             Data = new ReadOnlyCollection<byte>(data);
-            User = r.ReadEnum<PBEFieldPosition>();
-            UserTeam = battle.Teams[r.ReadByte()];
-            Target = r.ReadEnum<PBEFieldPosition>();
-            TargetTeam = battle.Teams[r.ReadByte()];
+            User = battle.GetPokemon_Position(r);
+            Target = battle.GetPokemon_Position(r);
             AttackChange = r.ReadSByte();
             DefenseChange = r.ReadSByte();
             SpAttackChange = r.ReadSByte();

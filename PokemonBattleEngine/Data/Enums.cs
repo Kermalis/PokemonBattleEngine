@@ -113,7 +113,8 @@ namespace Kermalis.PokemonBattleEngine.Data
         /// <summary>It is raining.</summary>
         Rain,
         /// <summary>A sandstorm is brewing.</summary>
-        Sandstorm
+        Sandstorm,
+        MAX
     }
     /// <summary>Represents a position on the battle field.</summary>
     public enum PBEFieldPosition : byte

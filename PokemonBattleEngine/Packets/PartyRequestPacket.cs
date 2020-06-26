@@ -8,14 +8,17 @@ namespace Kermalis.PokemonBattleEngine.Packets
     {
         public const ushort Code = 0x03;
         public ReadOnlyCollection<byte> Data { get; }
+
+        public byte BattleId { get; }
         public bool RequireLegal { get; }
 
-        public PBEPartyRequestPacket(bool requireLegal)
+        public PBEPartyRequestPacket(byte battleId, bool requireLegal)
         {
             using (var ms = new MemoryStream())
             using (var w = new EndianBinaryWriter(ms, encoding: EncodingType.UTF16))
             {
                 w.Write(Code);
+                w.Write(BattleId = battleId);
                 w.Write(RequireLegal = requireLegal);
                 Data = new ReadOnlyCollection<byte>(ms.ToArray());
             }
@@ -23,6 +26,7 @@ namespace Kermalis.PokemonBattleEngine.Packets
         internal PBEPartyRequestPacket(byte[] data, EndianBinaryReader r)
         {
             Data = new ReadOnlyCollection<byte>(data);
+            BattleId = r.ReadByte();
             RequireLegal = r.ReadBoolean();
         }
     }

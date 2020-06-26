@@ -122,17 +122,13 @@ namespace Kermalis.PokemonBattleEngineClient.Infrastructure
             }
         }
 
-        public static bool ShouldShowEverything(PBETeam team, bool showEverything0, bool showEverything1)
-        {
-            return (team.Id == 0 && showEverything0) || (team.Id == 1 && showEverything1);
-        }
-        public static string CustomPokemonToString(PBEBattlePokemon pkmn, bool showEverything0, bool showEverything1)
+        public static string CustomPokemonToString(PBEBattlePokemon pkmn, bool useKnownInfo)
         {
             var sb = new StringBuilder();
 
             string GetTeamNickname(PBEBattlePokemon p)
             {
-                return $"{p.Team.TrainerName}'s {(ShouldShowEverything(p.Team, showEverything0, showEverything1) ? p.Nickname : p.KnownNickname)}";
+                return $"{p.Trainer.Name}'s {(useKnownInfo ? p.KnownNickname : p.Nickname)}";
             }
 
             void AddStatChanges()
@@ -203,7 +199,7 @@ namespace Kermalis.PokemonBattleEngineClient.Infrastructure
                     }
                     if (status2.HasFlag(PBEStatus2.LeechSeed))
                     {
-                        sb.AppendLine($"Seeded position: {pkmn.SeededTeam.TrainerName}'s {pkmn.SeededPosition}");
+                        sb.AppendLine($"Seeded position: {pkmn.SeededTeam.CombinedName}'s {pkmn.SeededPosition}");
                     }
                     if (status2.HasFlag(PBEStatus2.LockOn))
                     {
@@ -212,7 +208,7 @@ namespace Kermalis.PokemonBattleEngineClient.Infrastructure
                 }
             }
 
-            if (!ShouldShowEverything(pkmn.Team, showEverything0, showEverything1))
+            if (useKnownInfo)
             {
                 var pData = PBEPokemonData.GetData(pkmn.KnownSpecies, pkmn.KnownForm);
                 string formStr = PBEDataUtils.HasForms(pkmn.KnownSpecies, false) ? $" ({PBELocalizedString.GetFormName(pkmn.KnownSpecies, pkmn.KnownForm)})" : string.Empty;
@@ -226,7 +222,7 @@ namespace Kermalis.PokemonBattleEngineClient.Infrastructure
                 sb.AppendLine();
                 if (pkmn.FieldPosition != PBEFieldPosition.None)
                 {
-                    sb.AppendLine($"Position: {pkmn.Team.TrainerName}'s {pkmn.FieldPosition}");
+                    sb.AppendLine($"Position: {pkmn.Team.CombinedName}'s {pkmn.FieldPosition}");
                 }
                 AddStatus1();
                 if (pkmn.FieldPosition != PBEFieldPosition.None)
@@ -287,7 +283,7 @@ namespace Kermalis.PokemonBattleEngineClient.Infrastructure
                 sb.AppendLine();
                 if (pkmn.FieldPosition != PBEFieldPosition.None)
                 {
-                    sb.AppendLine($"Position: {pkmn.Team.TrainerName}'s {pkmn.FieldPosition}");
+                    sb.AppendLine($"Position: {pkmn.Team.CombinedName}'s {pkmn.FieldPosition}");
                 }
                 AddStatus1();
                 if (pkmn.FieldPosition != PBEFieldPosition.None && pkmn.Status2 != PBEStatus2.None)

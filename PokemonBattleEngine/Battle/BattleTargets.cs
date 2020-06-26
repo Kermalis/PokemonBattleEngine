@@ -81,8 +81,8 @@ namespace Kermalis.PokemonBattleEngine.Battle
             {
                 throw new ArgumentException($"\"{nameof(includeAllies)}\" and \"{nameof(includeFoes)}\" were false.");
             }
-            PBEBattlePokemon[] allies = pkmn.Team.ActiveBattlers.Where(p => p != pkmn).ToArray();
-            PBEBattlePokemon[] foes = pkmn.Team.OpposingTeam.ActiveBattlers;
+            IEnumerable<PBEBattlePokemon> allies = pkmn.Team.ActiveBattlers.Where(p => p != pkmn);
+            IEnumerable<PBEBattlePokemon> foes = pkmn.Team.OpposingTeam.ActiveBattlers;
             switch (pkmn.Team.Battle.BattleFormat)
             {
                 case PBEBattleFormat.Single:

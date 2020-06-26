@@ -24,9 +24,8 @@ namespace Kermalis.PokemonBattleEngineTests.Forms
             PBESettings settings = PBESettings.DefaultSettings;
 
             var p0 = new TestPokemonCollection(2);
-            p0[0] = new TestPokemon(PBESpecies.Groudon, 0, 100)
+            p0[0] = new TestPokemon(PBESpecies.Magikarp, 0, 100)
             {
-                Ability = PBEAbility.Drought,
                 Moveset = new TestMoveset(settings, new[] { PBEMove.Splash })
             };
             p0[1] = new TestPokemon(PBESpecies.Rayquaza, 0, 100)
@@ -42,13 +41,13 @@ namespace Kermalis.PokemonBattleEngineTests.Forms
                 Moveset = new TestMoveset(settings, new[] { PBEMove.Splash })
             };
 
-            var battle = new PBEBattle(PBEBattleTerrain.Plain, PBEBattleFormat.Single, new PBETeamInfo(p0, "Team 1"), new PBETeamInfo(p1, "Team 2"), settings);
+            var battle = new PBEBattle(PBEBattleFormat.Single, settings, new PBETrainerInfo(p0, "Team 1"), new PBETrainerInfo(p1, "Team 2"), weather: PBEWeather.HarshSunlight);
             battle.OnNewEvent += PBEBattle.ConsoleBattleEventHandler;
             battle.Begin();
 
-            PBETeam t0 = battle.Teams[0];
-            PBETeam t1 = battle.Teams[1];
-            PBEBattlePokemon groudon = t0.Party[0];
+            PBETrainer t0 = battle.Trainers[0];
+            PBETrainer t1 = battle.Trainers[1];
+            PBEBattlePokemon magikarp = t0.Party[0];
             PBEBattlePokemon rayquaza = t0.Party[1];
             PBEBattlePokemon castformCherrim = t1.Party[0];
             #endregion
@@ -57,8 +56,8 @@ namespace Kermalis.PokemonBattleEngineTests.Forms
             Assert.True(battle.Weather == PBEWeather.HarshSunlight && castformCherrim.Form == form);
             #endregion
 
-            #region Swap Groudon for Rayquaza and check for no form
-            Assert.True(PBEBattle.SelectActionsIfValid(t0, new[] { new PBETurnAction(groudon.Id, rayquaza.Id) }));
+            #region Swap Magikarp for Rayquaza and check for no form
+            Assert.True(PBEBattle.SelectActionsIfValid(t0, new[] { new PBETurnAction(magikarp.Id, rayquaza.Id) }));
             Assert.True(PBEBattle.SelectActionsIfValid(t1, new[] { new PBETurnAction(castformCherrim.Id, PBEMove.Splash, PBETurnTarget.AllyCenter) }));
 
             battle.RunTurn();
@@ -66,8 +65,8 @@ namespace Kermalis.PokemonBattleEngineTests.Forms
             Assert.True(battle.Weather == PBEWeather.HarshSunlight && castformCherrim.Form == 0);
             #endregion
 
-            #region Swap Rayquaza for Groudon and check for correct form
-            Assert.True(PBEBattle.SelectActionsIfValid(t0, new[] { new PBETurnAction(rayquaza.Id, groudon.Id) }));
+            #region Swap Rayquaza for Magikarp and check for correct form
+            Assert.True(PBEBattle.SelectActionsIfValid(t0, new[] { new PBETurnAction(rayquaza.Id, magikarp.Id) }));
             Assert.True(PBEBattle.SelectActionsIfValid(t1, new[] { new PBETurnAction(castformCherrim.Id, PBEMove.Splash, PBETurnTarget.AllyCenter) }));
 
             battle.RunTurn();
@@ -102,12 +101,12 @@ namespace Kermalis.PokemonBattleEngineTests.Forms
                 Moveset = new TestMoveset(settings, new[] { PBEMove.SunnyDay, PBEMove.Splash })
             };
 
-            var battle = new PBEBattle(PBEBattleTerrain.Plain, PBEBattleFormat.Single, new PBETeamInfo(p0, "Team 1"), new PBETeamInfo(p1, "Team 2"), settings);
+            var battle = new PBEBattle(PBEBattleFormat.Single, settings, new PBETrainerInfo(p0, "Team 1"), new PBETrainerInfo(p1, "Team 2"));
             battle.OnNewEvent += PBEBattle.ConsoleBattleEventHandler;
             battle.Begin();
 
-            PBETeam t0 = battle.Teams[0];
-            PBETeam t1 = battle.Teams[1];
+            PBETrainer t0 = battle.Trainers[0];
+            PBETrainer t1 = battle.Trainers[1];
             PBEBattlePokemon shuckle = t0.Party[0];
             PBEBattlePokemon castformCherrim = t1.Party[0];
             #endregion

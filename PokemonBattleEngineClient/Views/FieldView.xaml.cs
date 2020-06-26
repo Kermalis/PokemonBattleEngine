@@ -53,6 +53,8 @@ namespace Kermalis.PokemonBattleEngineClient.Views
         }
 
         private BattleView _battleView;
+        private readonly Rectangle _dim;
+        private readonly Image _gif;
         private static IBrush _hailstormDim, _harshSunlightDim, _rainDim, _sandstormDim;
         private static Dictionary<PBEWeather, Stream> _weathers;
 
@@ -93,6 +95,9 @@ namespace Kermalis.PokemonBattleEngineClient.Views
         {
             DataContext = this;
             AvaloniaXamlLoader.Load(this);
+
+            _dim = this.FindControl<Rectangle>("WeatherDim");
+            _gif = this.FindControl<Image>("WeatherGif");
         }
         internal void SetBattleView(BattleView battleView)
         {
@@ -180,44 +185,42 @@ namespace Kermalis.PokemonBattleEngineClient.Views
         {
             Dispatcher.UIThread.InvokeAsync(() =>
             {
-                Rectangle dim = this.FindControl<Rectangle>("WeatherDim");
-                Image gif = this.FindControl<Image>("WeatherGif");
                 switch (_battleView.Client.Battle.Weather)
                 {
                     case PBEWeather.Hailstorm:
                     {
-                        dim.Fill = _hailstormDim;
-                        dim.IsVisible = true;
-                        GifImage.SetSourceStream(gif, _weathers[PBEWeather.Hailstorm]);
-                        gif.IsVisible = true;
+                        _dim.Fill = _hailstormDim;
+                        _dim.IsVisible = true;
+                        GifImage.SetSourceStream(_gif, _weathers[PBEWeather.Hailstorm]);
+                        _gif.IsVisible = true;
                         break;
                     }
                     case PBEWeather.HarshSunlight:
                     {
-                        dim.Fill = _harshSunlightDim;
-                        dim.IsVisible = true;
-                        gif.IsVisible = false;
+                        _dim.Fill = _harshSunlightDim;
+                        _dim.IsVisible = true;
+                        _gif.IsVisible = false;
                         break;
                     }
                     case PBEWeather.Rain:
                     {
-                        dim.Fill = _rainDim;
-                        dim.IsVisible = true;
-                        GifImage.SetSourceStream(gif, _weathers[PBEWeather.Rain]);
-                        gif.IsVisible = true;
+                        _dim.Fill = _rainDim;
+                        _dim.IsVisible = true;
+                        GifImage.SetSourceStream(_gif, _weathers[PBEWeather.Rain]);
+                        _gif.IsVisible = true;
                         break;
                     }
                     case PBEWeather.Sandstorm:
                     {
-                        dim.Fill = _sandstormDim;
-                        dim.IsVisible = true;
-                        gif.IsVisible = false;
+                        _dim.Fill = _sandstormDim;
+                        _dim.IsVisible = true;
+                        _gif.IsVisible = false;
                         break;
                     }
                     default:
                     {
-                        dim.IsVisible = false;
-                        gif.IsVisible = false;
+                        _dim.IsVisible = false;
+                        _gif.IsVisible = false;
                         break;
                     }
                 }
@@ -225,21 +228,21 @@ namespace Kermalis.PokemonBattleEngineClient.Views
         }
         private void GetPokemonViewStuff(PBEBattlePokemon pkmn, PBEFieldPosition position, out bool backSprite, out HPBarView hpView, out PokemonView pkmnView)
         {
-            backSprite = pkmn.Team.Id == 0 ? _battleView.Client.BattleId != 1 : _battleView.Client.BattleId == 1;
+            byte? owner = _battleView.Client.Trainer?.Team.Id;
+            backSprite = pkmn.Team.Id == 0 ? owner != 1 : owner == 1; // Spectators and replays view from team 0's perspective
             hpView = this.FindControl<HPBarView>($"Bar{(backSprite ? 0 : 1)}_{position}");
             pkmnView = this.FindControl<PokemonView>($"Battler{(backSprite ? 0 : 1)}_{position}");
         }
         private void UpdatePokemon(PBEBattlePokemon pkmn, bool backSprite, HPBarView hpView, PokemonView pkmnView, bool hpBar, bool sprite)
         {
-            bool se0 = _battleView.Client.ShowEverything0;
-            bool se1 = _battleView.Client.ShowEverything1;
+            bool useKnownInfo = _battleView.Client.ShouldUseKnownInfo(pkmn.Trainer);
             if (hpBar)
             {
-                hpView.Update(pkmn, se0, se1);
+                hpView.Update(pkmn, useKnownInfo);
             }
             if (sprite)
             {
-                pkmnView.Update(pkmn, backSprite, se0, se1);
+                pkmnView.Update(pkmn, backSprite, useKnownInfo);
             }
         }
         // pkmn.FieldPosition must be updated before calling these

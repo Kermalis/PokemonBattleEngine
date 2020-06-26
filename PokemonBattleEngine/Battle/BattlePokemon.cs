@@ -11,23 +11,23 @@ namespace Kermalis.PokemonBattleEngine.Battle
 {
     // TODO: INPC
     /// <summary>Represents a specific Pokémon during a battle.</summary>
-    public sealed class PBEBattlePokemon : IPBEPokemonTypes
+    public sealed class PBEBattlePokemon : IPBEPokemonKnownTypes, IPBEPokemonTypes
     {
-        #region Basic Properties
-        /// <summary>The team this Pokémon belongs to in its battle.</summary>
+        public PBEBattle Battle { get; }
         public PBETeam Team { get; }
-        /// <summary>The Pokémon's ID in its battle.</summary>
+        public PBETrainer Trainer { get; }
         public byte Id { get; }
 
         /// <summary>The Pokémon's <see cref="Nickname"/> with its <see cref="GenderSymbol"/> attached.</summary>
         public string NameWithGender => Nickname + GenderSymbol;
         /// <summary>The Pokémon's <see cref="Gender"/> as a <see cref="string"/>.</summary>
-        public string GenderSymbol => Gender == PBEGender.Female ? "♀" : Gender == PBEGender.Male ? "♂" : string.Empty;
+        public string GenderSymbol => Gender.ToSymbol();
         /// <summary>The Pokémon's <see cref="KnownNickname"/> with its <see cref="KnownGenderSymbol"/> attached.</summary>
         public string KnownNameWithKnownGender => KnownNickname + KnownGenderSymbol;
         /// <summary>The Pokémon's <see cref="KnownGender"/> as a <see cref="string"/>.</summary>
-        public string KnownGenderSymbol => KnownGender == PBEGender.Female ? "♀" : KnownGender == PBEGender.Male ? "♂" : string.Empty;
+        public string KnownGenderSymbol => KnownGender.ToSymbol();
 
+        #region Basic Properties
         /// <summary>The Pokémon's current HP.</summary>
         public ushort HP { get; set; }
         /// <summary>The Pokémon's maximum HP.</summary>
@@ -51,9 +51,11 @@ namespace Kermalis.PokemonBattleEngine.Battle
         public sbyte SpeedChange { get; set; }
         public sbyte AccuracyChange { get; set; }
         public sbyte EvasionChange { get; set; }
-        public PBEStatCollection EffortValues { get; } // TODO: OriginalEffortValues, OriginalLevel, OriginalEXP
+        public PBEReadOnlyStatCollection OriginalEffortValues { get; }
+        public PBEStatCollection EffortValues { get; }
         public PBEReadOnlyStatCollection IndividualValues { get; }
         public byte Friendship { get; set; }
+        public byte OriginalLevel { get; set; }
         /// <summary>The Pokémon's level.</summary>
         public byte Level { get; set; }
         /// <summary>The Pokémon's nature.</summary>
@@ -172,48 +174,63 @@ namespace Kermalis.PokemonBattleEngine.Battle
         #endregion
 
         #region Constructors
-        private PBEBattlePokemon(PBETeam team, byte id)
+        private PBEBattlePokemon(PBETrainer trainer, byte id,
+            PBESpecies species, PBEForm form, string nickname, byte level, byte friendship, bool shiny,
+            PBEAbility ability, PBENature nature, PBEGender gender, PBEItem item,
+            PBEReadOnlyStatCollection evs, PBEReadOnlyStatCollection ivs, PBEReadOnlyPartyMoveset moves)
         {
-            Team = team;
+            Battle = trainer.Battle;
+            Team = trainer.Team;
+            Trainer = trainer;
             Id = id;
-        }
-        internal PBEBattlePokemon(EndianBinaryReader r, PBETeam team) : this(team, r.ReadByte())
-        {
-            InitPokemon(r.ReadEnum<PBESpecies>(), r.ReadEnum<PBEForm>(), r.ReadStringNullTerminated(), r.ReadByte(), r.ReadByte(), r.ReadBoolean(),
-                r.ReadEnum<PBEAbility>(), r.ReadEnum<PBENature>(), r.ReadEnum<PBEGender>(), r.ReadEnum<PBEItem>());
-            EffortValues = new PBEStatCollection(r);
-            IndividualValues = new PBEReadOnlyStatCollection(r);
+            Species = OriginalSpecies = KnownSpecies = species;
+            Form = OriginalForm = KnownForm = RevertForm = form;
+            var pData = PBEPokemonData.GetData(species, form);
+            KnownType1 = Type1 = pData.Type1;
+            KnownType2 = Type2 = pData.Type2;
+            KnownWeight = Weight = pData.Weight;
+            Nickname = KnownNickname = nickname;
+            Level = OriginalLevel = level;
+            Friendship = friendship;
+            Shiny = KnownShiny = shiny;
+            Ability = OriginalAbility = RevertAbility = ability;
+            KnownAbility = PBEAbility.MAX;
+            Nature = nature;
+            Gender = KnownGender = gender;
+            Item = OriginalItem = item;
+            KnownItem = (PBEItem)ushort.MaxValue;
+            OriginalEffortValues = evs;
+            EffortValues = new PBEStatCollection(evs);
+            IndividualValues = new PBEReadOnlyStatCollection(ivs);
             SetStats(true);
-            OriginalMoveset = new PBEReadOnlyPartyMoveset(r);
-            Moves = new PBEBattleMoveset(Team.Battle.Settings, OriginalMoveset);
-            KnownMoves = new PBEBattleMoveset(Team.Battle.Settings);
-            TransformBackupMoves = new PBEBattleMoveset(Team.Battle.Settings);
-            Team.Party.Add(this);
+            OriginalMoveset = moves;
+            PBESettings settings = Battle.Settings;
+            Moves = new PBEBattleMoveset(settings, moves);
+            KnownMoves = new PBEBattleMoveset(settings);
+            TransformBackupMoves = new PBEBattleMoveset(settings);
         }
-        internal PBEBattlePokemon(PBETeam team, byte id, IPBEPokemon pkmn) : this(team, id)
+        internal PBEBattlePokemon(EndianBinaryReader r, PBETrainer trainer)
+            : this(trainer, r.ReadByte(),
+                  r.ReadEnum<PBESpecies>(), r.ReadEnum<PBEForm>(), r.ReadStringNullTerminated(), r.ReadByte(), r.ReadByte(), r.ReadBoolean(),
+                  r.ReadEnum<PBEAbility>(), r.ReadEnum<PBENature>(), r.ReadEnum<PBEGender>(), r.ReadEnum<PBEItem>(),
+                  new PBEReadOnlyStatCollection(r), new PBEReadOnlyStatCollection(r), new PBEReadOnlyPartyMoveset(r))
         {
-            InitPokemon(pkmn.Species, pkmn.Form, pkmn.Nickname, pkmn.Level, pkmn.Friendship, pkmn.Shiny,
-                pkmn.Ability, pkmn.Nature, pkmn.Gender, pkmn.Item);
-            EffortValues = new PBEStatCollection(pkmn.EffortValues);
-            IndividualValues = new PBEReadOnlyStatCollection(pkmn.IndividualValues);
-            SetStats(true);
-            OriginalMoveset = new PBEReadOnlyPartyMoveset(team.Battle.Settings, pkmn.Moveset);
-            Moves = new PBEBattleMoveset(Team.Battle.Settings, OriginalMoveset);
-            KnownMoves = new PBEBattleMoveset(Team.Battle.Settings);
-            TransformBackupMoves = new PBEBattleMoveset(Team.Battle.Settings);
-            Team.Party.Add(this);
+            trainer.Party.Add(this);
         }
-        internal PBEBattlePokemon(PBETeam team, byte id, IPBEPartyPokemon pkmn) : this(team, id)
+        internal PBEBattlePokemon(PBETrainer trainer, byte id, IPBEPokemon pkmn)
+            : this(trainer, id,
+                  pkmn.Species, pkmn.Form, pkmn.Nickname, pkmn.Level, pkmn.Friendship, pkmn.Shiny,
+                  pkmn.Ability, pkmn.Nature, pkmn.Gender, pkmn.Item,
+                  new PBEReadOnlyStatCollection(pkmn.EffortValues), new PBEReadOnlyStatCollection(pkmn.IndividualValues), new PBEReadOnlyPartyMoveset(trainer.Team.Battle.Settings, pkmn.Moveset))
         {
-            InitPokemon(pkmn.Species, pkmn.Form, pkmn.Nickname, pkmn.Level, pkmn.Friendship, pkmn.Shiny,
-                pkmn.Ability, pkmn.Nature, pkmn.Gender, pkmn.Item);
-            EffortValues = new PBEStatCollection(pkmn.EffortValues);
-            IndividualValues = new PBEReadOnlyStatCollection(pkmn.IndividualValues);
-            SetStats(true);
-            OriginalMoveset = new PBEReadOnlyPartyMoveset(pkmn.Moveset);
-            Moves = new PBEBattleMoveset(Team.Battle.Settings, OriginalMoveset);
-            KnownMoves = new PBEBattleMoveset(Team.Battle.Settings);
-            TransformBackupMoves = new PBEBattleMoveset(Team.Battle.Settings);
+            trainer.Party.Add(this);
+        }
+        internal PBEBattlePokemon(PBETrainer trainer, byte id, IPBEPartyPokemon pkmn)
+            : this(trainer, id,
+                  pkmn.Species, pkmn.Form, pkmn.Nickname, pkmn.Level, pkmn.Friendship, pkmn.Shiny,
+                  pkmn.Ability, pkmn.Nature, pkmn.Gender, pkmn.Item,
+                  new PBEReadOnlyStatCollection(pkmn.EffortValues), new PBEReadOnlyStatCollection(pkmn.IndividualValues), new PBEReadOnlyPartyMoveset(pkmn.Moveset))
+        {
             ushort hp = pkmn.HP;
             if (hp > MaxHP)
             {
@@ -233,61 +250,45 @@ namespace Kermalis.PokemonBattleEngine.Battle
                 throw new ArgumentOutOfRangeException(nameof(pkmn.SleepTurns));
             }
             SleepTurns = sleepTurns;
-            team.Party.Add(this);
+            trainer.Party.Add(this);
         }
-        /// <summary>This constructor is for remote Pokémon only.</summary>
-        public PBEBattlePokemon(PBETeam team, PBEPkmnSwitchInPacket_Hidden.PBESwitchInInfo info)
+        internal PBEBattlePokemon(PBETrainer trainer, PBEBattlePacket.PBETeamInfo.PBETrainerInfo.PBEBattlePokemonInfo info)
+            : this(trainer, info.Id,
+                  info.Species, info.Form, info.Nickname, info.Level, info.Friendship, info.Shiny,
+                  info.Ability, info.Nature, info.Gender, info.Item,
+                  info.EffortValues, info.IndividualValues, info.Moveset)
+        { }
+        public PBEBattlePokemon(PBETrainer trainer, PBEPkmnSwitchInPacket_Hidden.PBESwitchInInfo info)
         {
-            if (team == null)
+            if (trainer == null)
             {
-                throw new ArgumentNullException(nameof(team));
+                throw new ArgumentNullException(nameof(trainer));
             }
             if (info == null)
             {
                 throw new ArgumentNullException(nameof(info));
             }
-            Team = team;
-            Id = byte.MaxValue;
+            Battle = trainer.Battle;
+            Team = trainer.Team;
+            Trainer = trainer;
             FieldPosition = info.FieldPosition;
             HPPercentage = info.HPPercentage;
             Status1 = info.Status1;
             Level = info.Level;
-            KnownAbility = Ability = RevertAbility = OriginalAbility = PBEAbility.MAX;
-            KnownGender = Gender = info.Gender;
-            KnownItem = Item = OriginalItem = (PBEItem)ushort.MaxValue;
-            Moves = new PBEBattleMoveset(Team.Battle.Settings);
-            KnownMoves = new PBEBattleMoveset(Team.Battle.Settings);
-            TransformBackupMoves = new PBEBattleMoveset(Team.Battle.Settings);
-            KnownNickname = Nickname = info.Nickname;
-            KnownShiny = Shiny = info.Shiny;
-            KnownSpecies = Species = OriginalSpecies = info.Species;
-            KnownForm = RevertForm = Form = OriginalForm = info.Form;
-            var pData = PBEPokemonData.GetData(KnownSpecies, KnownForm);
-            KnownType1 = Type1 = pData.Type1;
-            KnownType2 = Type2 = pData.Type2;
-            KnownWeight = Weight = pData.Weight;
-            Team.Party.Add(this);
-            Team.Battle.ActiveBattlers.Add(this);
-        }
-        private void InitPokemon(PBESpecies species, PBEForm form, string nickname, byte level, byte friendship, bool shiny,
-            PBEAbility ability, PBENature nature, PBEGender gender, PBEItem item)
-        {
-            Species = OriginalSpecies = KnownSpecies = species;
-            Form = OriginalForm = KnownForm = RevertForm = form;
-            var pData = PBEPokemonData.GetData(species, form);
-            KnownType1 = Type1 = pData.Type1;
-            KnownType2 = Type2 = pData.Type2;
-            KnownWeight = Weight = pData.Weight;
-            Nickname = KnownNickname = nickname;
-            Level = level;
-            Friendship = friendship;
-            Shiny = KnownShiny = shiny;
-            Ability = OriginalAbility = RevertAbility = ability;
             KnownAbility = PBEAbility.MAX;
-            Nature = nature;
-            Gender = KnownGender = gender;
-            Item = OriginalItem = item;
+            KnownGender = info.Gender;
             KnownItem = (PBEItem)ushort.MaxValue;
+            KnownMoves = new PBEBattleMoveset(Battle.Settings);
+            KnownNickname = info.Nickname;
+            KnownShiny = info.Shiny;
+            KnownSpecies = info.Species;
+            KnownForm = info.Form;
+            var pData = PBEPokemonData.GetData(KnownSpecies, KnownForm);
+            KnownType1 = pData.Type1;
+            KnownType2 = pData.Type2;
+            KnownWeight = pData.Weight;
+            trainer.Party.Add(this);
+            Battle.ActiveBattlers.Add(this);
         }
         #endregion
 
@@ -379,7 +380,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
             PBEStatCollection evs = EffortValues;
             PBEReadOnlyStatCollection ivs = IndividualValues;
             byte level = Level;
-            PBESettings settings = Team.Battle.Settings;
+            PBESettings settings = Battle.Settings;
             if (calculateHP)
             {
                 ushort hp = PBEDataUtils.CalculateStat(pData, PBEStat.HP, nature, evs.HP, ivs.HP, level, settings);
@@ -449,11 +450,11 @@ namespace Kermalis.PokemonBattleEngine.Battle
             {
                 if (Status2.HasFlag(PBEStatus2.Transformed))
                 {
-                    knownSlot.MaxPP = PBEBattleMoveset.GetTransformPP(Team.Battle.Settings, move);
+                    knownSlot.MaxPP = PBEBattleMoveset.GetTransformPP(Battle.Settings, move);
                 }
-                else if (Team.Battle.Settings.MaxPPUps == 0 || knownSlot.PP > PBEBattleMoveset.GetNonTransformPP(Team.Battle.Settings, move, (byte)(Team.Battle.Settings.MaxPPUps - 1)))
+                else if (Battle.Settings.MaxPPUps == 0 || knownSlot.PP > PBEBattleMoveset.GetNonTransformPP(Battle.Settings, move, (byte)(Battle.Settings.MaxPPUps - 1)))
                 {
-                    knownSlot.MaxPP = PBEBattleMoveset.GetNonTransformPP(Team.Battle.Settings, move, Team.Battle.Settings.MaxPPUps);
+                    knownSlot.MaxPP = PBEBattleMoveset.GetNonTransformPP(Battle.Settings, move, Battle.Settings.MaxPPUps);
                 }
             }
         }
@@ -520,19 +521,6 @@ namespace Kermalis.PokemonBattleEngine.Battle
                 KnownType2 = PBEType.Flying;
             }
             RoostTypes = PBERoostTypes.None;
-        }
-
-        public bool HasType(PBEType type, bool useKnownInfo = false)
-        {
-            if (type >= PBEType.MAX)
-            {
-                throw new ArgumentOutOfRangeException(nameof(type));
-            }
-            return ((useKnownInfo ? KnownType1 : Type1) == type) || ((useKnownInfo ? KnownType2 : Type2) == type);
-        }
-        public bool ReceivesSTAB(PBEType type, bool useKnownInfo = false)
-        {
-            return type != PBEType.None && HasType(type, useKnownInfo: useKnownInfo);
         }
         public bool HasCancellingAbility(bool useKnownInfo = false)
         {
@@ -654,7 +642,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
         }
         public sbyte SetStatChange(PBEStat stat, int value)
         {
-            sbyte maxStatChange = Team.Battle.Settings.MaxStatChange;
+            sbyte maxStatChange = Battle.Settings.MaxStatChange;
             sbyte val = (sbyte)PBEUtils.Clamp(value, -maxStatChange, maxStatChange);
             switch (stat)
             {
@@ -693,7 +681,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                 }
             }
 
-            sbyte maxStatChange = Team.Battle.Settings.MaxStatChange;
+            sbyte maxStatChange = Battle.Settings.MaxStatChange;
             newValue = (sbyte)PBEUtils.Clamp(oldValue + change, -maxStatChange, maxStatChange);
 
             if (oldValue == newValue)
@@ -777,9 +765,9 @@ namespace Kermalis.PokemonBattleEngine.Battle
                 }
                 case PBEMoveEffect.WeatherBall:
                 {
-                    if (Team.Battle.ShouldDoWeatherEffects())
+                    if (Battle.ShouldDoWeatherEffects())
                     {
-                        switch (Team.Battle.Weather)
+                        switch (Battle.Weather)
                         {
                             case PBEWeather.Hailstorm: return PBEType.Ice;
                             case PBEWeather.HarshSunlight: return PBEType.Fire;
@@ -816,7 +804,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
             }
             if (mData.Effect == PBEMoveEffect.Curse)
             {
-                if (HasType(PBEType.Ghost))
+                if (this.HasType(PBEType.Ghost))
                 {
                     return PBEMoveTarget.SingleSurrounding;
                 }
@@ -900,12 +888,12 @@ namespace Kermalis.PokemonBattleEngine.Battle
             {
                 return PBEResult.Ineffective_Safeguard;
             }
-            if (HasType(PBEType.Fire, useKnownInfo: useKnownInfo))
+            if (this.HasType(PBEType.Fire, useKnownInfo))
             {
                 return PBEResult.Ineffective_Type;
             }
             PBEAbility kAbility = useKnownInfo ? KnownAbility : Ability;
-            if (other?.HasCancellingAbility() != true && (kAbility == PBEAbility.WaterVeil || (kAbility == PBEAbility.LeafGuard && Team.Battle.WillLeafGuardActivate())))
+            if (other?.HasCancellingAbility() != true && (kAbility == PBEAbility.WaterVeil || (kAbility == PBEAbility.LeafGuard && Battle.WillLeafGuardActivate())))
             {
                 return PBEResult.Ineffective_Ability;
             }
@@ -948,12 +936,12 @@ namespace Kermalis.PokemonBattleEngine.Battle
             {
                 return PBEResult.Ineffective_Safeguard;
             }
-            if (HasType(PBEType.Ice, useKnownInfo: useKnownInfo))
+            if (this.HasType(PBEType.Ice, useKnownInfo))
             {
                 return PBEResult.Ineffective_Type;
             }
             PBEAbility kAbility = useKnownInfo ? KnownAbility : Ability;
-            if (other?.HasCancellingAbility() != true && (kAbility == PBEAbility.MagmaArmor || (kAbility == PBEAbility.LeafGuard && Team.Battle.WillLeafGuardActivate())))
+            if (other?.HasCancellingAbility() != true && (kAbility == PBEAbility.MagmaArmor || (kAbility == PBEAbility.LeafGuard && Battle.WillLeafGuardActivate())))
             {
                 return PBEResult.Ineffective_Ability;
             }
@@ -979,7 +967,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
         }
         public PBEResult IsGrounded(PBEBattlePokemon other, bool useKnownInfo = false)
         {
-            if (HasType(PBEType.Flying, useKnownInfo: useKnownInfo))
+            if (this.HasType(PBEType.Flying, useKnownInfo))
             {
                 return PBEResult.Ineffective_Type;
             }
@@ -1006,7 +994,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
             {
                 return PBEResult.Ineffective_Status;
             }
-            if (HasType(PBEType.Grass, useKnownInfo: useKnownInfo))
+            if (this.HasType(PBEType.Grass, useKnownInfo))
             {
                 return PBEResult.Ineffective_Type;
             }
@@ -1037,7 +1025,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                 return PBEResult.Ineffective_Safeguard;
             }
             PBEAbility kAbility = useKnownInfo ? KnownAbility : Ability;
-            if (other?.HasCancellingAbility() != true && (kAbility == PBEAbility.Limber || (kAbility == PBEAbility.LeafGuard && Team.Battle.WillLeafGuardActivate())))
+            if (other?.HasCancellingAbility() != true && (kAbility == PBEAbility.Limber || (kAbility == PBEAbility.LeafGuard && Battle.WillLeafGuardActivate())))
             {
                 return PBEResult.Ineffective_Ability;
             }
@@ -1058,12 +1046,12 @@ namespace Kermalis.PokemonBattleEngine.Battle
             {
                 return PBEResult.Ineffective_Safeguard;
             }
-            if (HasType(PBEType.Poison, useKnownInfo: useKnownInfo) || HasType(PBEType.Steel, useKnownInfo: useKnownInfo))
+            if (this.HasType(PBEType.Poison, useKnownInfo) || this.HasType(PBEType.Steel, useKnownInfo))
             {
                 return PBEResult.Ineffective_Type;
             }
             PBEAbility kAbility = useKnownInfo ? KnownAbility : Ability;
-            if (other?.HasCancellingAbility() != true && (kAbility == PBEAbility.Immunity || (kAbility == PBEAbility.LeafGuard && Team.Battle.WillLeafGuardActivate())))
+            if (other?.HasCancellingAbility() != true && (kAbility == PBEAbility.Immunity || (kAbility == PBEAbility.LeafGuard && Battle.WillLeafGuardActivate())))
             {
                 return PBEResult.Ineffective_Ability;
             }
@@ -1085,7 +1073,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                 return PBEResult.Ineffective_Safeguard;
             }
             PBEAbility kAbility = useKnownInfo ? KnownAbility : Ability;
-            if (other?.HasCancellingAbility() != true && (kAbility == PBEAbility.Insomnia || (kAbility == PBEAbility.LeafGuard && Team.Battle.WillLeafGuardActivate()) || kAbility == PBEAbility.VitalSpirit))
+            if (other?.HasCancellingAbility() != true && (kAbility == PBEAbility.Insomnia || (kAbility == PBEAbility.LeafGuard && Battle.WillLeafGuardActivate()) || kAbility == PBEAbility.VitalSpirit))
             {
                 return PBEResult.Ineffective_Ability;
             }
@@ -1159,22 +1147,21 @@ namespace Kermalis.PokemonBattleEngine.Battle
             return count == 0 ? ushort.MaxValue : (ushort)(ushort.MaxValue / (count * 2));
         }
 
-        internal void ToBytes(EndianBinaryWriter w)
+        internal void ToBytes_Id(EndianBinaryWriter w, PBEBattlePokemon disguisedAsPokemon)
         {
+            w.Write(Trainer.Id);
             w.Write(Id);
-            w.Write(OriginalSpecies);
-            w.Write(OriginalForm);
-            w.Write(Nickname, true);
-            w.Write(Level);
-            w.Write(Friendship);
-            w.Write(Shiny);
-            w.Write(OriginalAbility);
-            w.Write(Nature);
-            w.Write(Gender);
-            w.Write(OriginalItem);
-            EffortValues.ToBytes(w);
-            IndividualValues.ToBytes(w);
-            OriginalMoveset.ToBytes(w);
+            w.Write(disguisedAsPokemon.Id);
+        }
+        internal void ToBytes_Id(EndianBinaryWriter w)
+        {
+            w.Write(Trainer.Id);
+            w.Write(Id);
+        }
+        internal void ToBytes_Position(EndianBinaryWriter w)
+        {
+            w.Write(Trainer.Id);
+            w.Write(FieldPosition);
         }
 
         // Will only be accurate for the host
@@ -1182,7 +1169,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
         {
             var sb = new StringBuilder();
             string formStr = PBEDataUtils.HasForms(Species, false) ? $" ({PBELocalizedString.GetFormName(Species, Form)})" : string.Empty;
-            sb.AppendLine($"{Nickname}/{Species}{formStr} {GenderSymbol} Lv.{Level}");
+            sb.AppendLine($"{Nickname}/{Species}{formStr} {Gender.ToSymbol()} Lv.{Level}");
             sb.AppendLine($"HP: {HP}/{MaxHP} ({HPPercentage:P2})");
             sb.Append($"Types: {PBELocalizedString.GetTypeName(Type1).English}");
             if (Type2 != PBEType.None)
@@ -1196,7 +1183,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                 sb.Append($"/{PBELocalizedString.GetTypeName(KnownType2).English}");
             }
             sb.AppendLine();
-            sb.AppendLine($"Position: {Team.TrainerName}'s {FieldPosition}");
+            sb.AppendLine($"Position: {Team.CombinedName}'s {FieldPosition}");
             sb.AppendLine($"Status1: {Status1}");
             if (Status1 == PBEStatus1.Asleep)
             {
@@ -1213,21 +1200,21 @@ namespace Kermalis.PokemonBattleEngine.Battle
             }
             if (Status2.HasFlag(PBEStatus2.Disguised))
             {
-                sb.AppendLine($"Disguised as: {DisguisedAsPokemon.Team.TrainerName}'s {DisguisedAsPokemon.Nickname}");
+                sb.AppendLine($"Disguised as: {DisguisedAsPokemon.Trainer.Name}'s {DisguisedAsPokemon.Nickname}");
             }
-            if (Team.Battle.BattleFormat != PBEBattleFormat.Single)
+            if (Battle.BattleFormat != PBEBattleFormat.Single)
             {
                 if (Status2.HasFlag(PBEStatus2.Infatuated))
                 {
-                    sb.AppendLine($"Infatuated with: {InfatuatedWithPokemon.Team.TrainerName}'s {InfatuatedWithPokemon.Nickname}");
+                    sb.AppendLine($"Infatuated with: {InfatuatedWithPokemon.Trainer.Name}'s {InfatuatedWithPokemon.Nickname}");
                 }
                 if (Status2.HasFlag(PBEStatus2.LeechSeed))
                 {
-                    sb.AppendLine($"Seeded position: {SeededTeam.TrainerName}'s {SeededPosition}");
+                    sb.AppendLine($"Seeded position: {SeededTeam.CombinedName}'s {SeededPosition}");
                 }
                 if (Status2.HasFlag(PBEStatus2.LockOn))
                 {
-                    sb.AppendLine($"Taking aim at: {LockOnPokemon.Team.TrainerName}'s {LockOnPokemon.Nickname}");
+                    sb.AppendLine($"Taking aim at: {LockOnPokemon.Trainer.Name}'s {LockOnPokemon.Nickname}");
                 }
             }
             if (Status2.HasFlag(PBEStatus2.Substitute))
@@ -1279,10 +1266,10 @@ namespace Kermalis.PokemonBattleEngine.Battle
             }
             if (Moves.Contains(PBEMoveEffect.HiddenPower))
             {
-                sb.AppendLine($"{PBELocalizedString.GetMoveName(PBEMove.HiddenPower).English}: {PBELocalizedString.GetTypeName(IndividualValues.GetHiddenPowerType()).English}|{IndividualValues.GetHiddenPowerBasePower(Team.Battle.Settings)}");
+                sb.AppendLine($"{PBELocalizedString.GetMoveName(PBEMove.HiddenPower).English}: {PBELocalizedString.GetTypeName(IndividualValues.GetHiddenPowerType()).English}|{IndividualValues.GetHiddenPowerBasePower(Battle.Settings)}");
             }
             sb.Append("Moves: ");
-            for (int i = 0; i < Team.Battle.Settings.NumMoves; i++)
+            for (int i = 0; i < Battle.Settings.NumMoves; i++)
             {
                 PBEBattleMoveset.PBEBattleMovesetSlot slot = Moves[i];
                 PBEMove move = slot.Move;
@@ -1298,7 +1285,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
             }
             sb.AppendLine();
             sb.Append("Known moves: ");
-            for (int i = 0; i < Team.Battle.Settings.NumMoves; i++)
+            for (int i = 0; i < Battle.Settings.NumMoves; i++)
             {
                 PBEBattleMoveset.PBEBattleMovesetSlot slot = KnownMoves[i];
                 PBEMove move = slot.Move;

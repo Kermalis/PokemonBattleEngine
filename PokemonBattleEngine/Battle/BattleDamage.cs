@@ -950,7 +950,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
             {
                 attack *= 1.5;
             }
-            if (!user.HasCancellingAbility() && ShouldDoWeatherEffects() && Weather == PBEWeather.HarshSunlight && Array.Exists(user.Team.ActiveBattlers, p => p.Ability == PBEAbility.FlowerGift))
+            if (!user.HasCancellingAbility() && ShouldDoWeatherEffects() && Weather == PBEWeather.HarshSunlight && user.Team.ActiveBattlers.Any(p => p.Ability == PBEAbility.FlowerGift))
             {
                 attack *= 1.5;
             }
@@ -1024,7 +1024,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
             {
                 spAttack *= 1.5;
             }
-            if ((user.Ability == PBEAbility.Minus || user.Ability == PBEAbility.Plus) && Array.Exists(user.Team.ActiveBattlers, p => p != user && (p.Ability == PBEAbility.Minus || p.Ability == PBEAbility.Plus)))
+            if ((user.Ability == PBEAbility.Minus || user.Ability == PBEAbility.Plus) && user.Team.ActiveBattlers.Any(p => p != user && (p.Ability == PBEAbility.Minus || p.Ability == PBEAbility.Plus)))
             {
                 spAttack *= 1.5;
             }
@@ -1061,7 +1061,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                 {
                     spDefense *= 1.5;
                 }
-                if (!user.HasCancellingAbility() && Weather == PBEWeather.HarshSunlight && Array.Exists(target.Team.ActiveBattlers, p => p.Ability == PBEAbility.FlowerGift))
+                if (!user.HasCancellingAbility() && Weather == PBEWeather.HarshSunlight && target.Team.ActiveBattlers.Any(p => p.Ability == PBEAbility.FlowerGift))
                 {
                     spDefense *= 1.5;
                 }

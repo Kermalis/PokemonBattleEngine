@@ -47,12 +47,12 @@ namespace Kermalis.PokemonBattleEngineTests.Moves
                 Moveset = new TestMoveset(settings, new[] { PBEMove.Splash })
             };
 
-            var battle = new PBEBattle(battleTerrain, PBEBattleFormat.Single, new PBETeamInfo(p0, "Team 1"), new PBETeamInfo(p1, "Team 2"), settings);
+            var battle = new PBEBattle(PBEBattleFormat.Single, settings, new PBETrainerInfo(p0, "Team 1"), new PBETrainerInfo(p1, "Team 2"), battleTerrain: battleTerrain);
             battle.OnNewEvent += PBEBattle.ConsoleBattleEventHandler;
             battle.Begin();
 
-            PBETeam t0 = battle.Teams[0];
-            PBETeam t1 = battle.Teams[1];
+            PBETrainer t0 = battle.Trainers[0];
+            PBETrainer t1 = battle.Trainers[1];
             PBEBattlePokemon camouflager = t0.Party[0];
             PBEBattlePokemon magikarp = t1.Party[0];
             #endregion
@@ -90,12 +90,12 @@ namespace Kermalis.PokemonBattleEngineTests.Moves
                 Moveset = new TestMoveset(settings, new[] { PBEMove.Splash })
             };
 
-            var battle = new PBEBattle(PBEBattleTerrain.Water, PBEBattleFormat.Single, new PBETeamInfo(p0, "Team 1"), new PBETeamInfo(p1, "Team 2"), settings);
+            var battle = new PBEBattle(PBEBattleFormat.Single, settings, new PBETrainerInfo(p0, "Team 1"), new PBETrainerInfo(p1, "Team 2"), battleTerrain: PBEBattleTerrain.Water);
             battle.OnNewEvent += PBEBattle.ConsoleBattleEventHandler;
             battle.Begin();
 
-            PBETeam t0 = battle.Teams[0];
-            PBETeam t1 = battle.Teams[1];
+            PBETrainer t0 = battle.Trainers[0];
+            PBETrainer t1 = battle.Trainers[1];
             PBEBattlePokemon staryu = t0.Party[0];
             PBEBattlePokemon magikarp = t1.Party[0];
             #endregion

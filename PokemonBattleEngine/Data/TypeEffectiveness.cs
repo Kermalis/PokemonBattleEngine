@@ -436,7 +436,7 @@ namespace Kermalis.PokemonBattleEngine.Data
             }
             bool ignoreGhost = user.Ability == PBEAbility.Scrappy || target.Status2.HasFlag(PBEStatus2.Identified),
                 ignoreDark = target.Status2.HasFlag(PBEStatus2.MiracleEye);
-            damageMultiplier = GetEffectiveness(moveType, useKnownInfo ? target.KnownType1 : target.Type1, useKnownInfo ? target.KnownType2 : target.Type2, ignoreGhost: ignoreGhost, ignoreDark: ignoreDark);
+            damageMultiplier = GetEffectiveness(moveType, target, useKnownInfo, ignoreGhost: ignoreGhost, ignoreDark: ignoreDark);
             if (damageMultiplier <= 0) // (-infinity, 0]
             {
                 damageMultiplier = 0;
@@ -475,7 +475,7 @@ namespace Kermalis.PokemonBattleEngine.Data
             }
 
             PBEType moveType = user.GetMoveType(move);
-            double d = GetEffectiveness(moveType, useKnownInfo ? target.KnownType1 : target.Type1, useKnownInfo ? target.KnownType2 : target.Type2);
+            double d = GetEffectiveness(moveType, target, useKnownInfo);
             if (d <= 0)
             {
                 return PBEResult.Ineffective_Type;
@@ -514,6 +514,23 @@ namespace Kermalis.PokemonBattleEngine.Data
                 throw new ArgumentNullException(nameof(defendingTypes));
             }
             return GetEffectiveness(attackingType, defendingTypes.Type1, defendingTypes.Type2, ignoreGhost: ignoreGhost, ignoreDark: ignoreDark);
+        }
+        public static double GetEffectiveness_Known(PBEType attackingType, IPBEPokemonKnownTypes defendingTypes, bool ignoreGhost = false, bool ignoreDark = false)
+        {
+            if (defendingTypes == null)
+            {
+                throw new ArgumentNullException(nameof(defendingTypes));
+            }
+            return GetEffectiveness(attackingType, defendingTypes.KnownType1, defendingTypes.KnownType2, ignoreGhost: ignoreGhost, ignoreDark: ignoreDark);
+        }
+        public static double GetEffectiveness<T>(PBEType attackingType, T defendingTypes, bool useKnownInfo, bool ignoreGhost = false, bool ignoreDark = false)
+            where T : IPBEPokemonTypes, IPBEPokemonKnownTypes
+        {
+            if (defendingTypes == null)
+            {
+                throw new ArgumentNullException(nameof(defendingTypes));
+            }
+            return GetEffectiveness(attackingType, useKnownInfo ? defendingTypes.KnownType1 : defendingTypes.Type1, useKnownInfo ? defendingTypes.KnownType2 : defendingTypes.Type2, ignoreGhost: ignoreGhost, ignoreDark: ignoreDark);
         }
         public static double GetStealthRockMultiplier(PBEType type1, PBEType type2)
         {

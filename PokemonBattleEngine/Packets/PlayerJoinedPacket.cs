@@ -10,16 +10,10 @@ namespace Kermalis.PokemonBattleEngine.Packets
         public const ushort Code = 0x01;
         public ReadOnlyCollection<byte> Data { get; }
 
-        public bool IsMe { get; }
-        public int BattleId { get; }
         public string TrainerName { get; }
 
-        public PBEPlayerJoinedPacket(bool isMe, int battleId, string trainerName)
+        public PBEPlayerJoinedPacket(string trainerName)
         {
-            if (trainerName == null)
-            {
-                throw new ArgumentNullException(nameof(trainerName));
-            }
             if (string.IsNullOrWhiteSpace(trainerName))
             {
                 throw new ArgumentOutOfRangeException(nameof(trainerName));
@@ -28,8 +22,6 @@ namespace Kermalis.PokemonBattleEngine.Packets
             using (var w = new EndianBinaryWriter(ms, encoding: EncodingType.UTF16))
             {
                 w.Write(Code);
-                w.Write(IsMe = isMe);
-                w.Write(BattleId = battleId);
                 w.Write(TrainerName = trainerName, true);
                 Data = new ReadOnlyCollection<byte>(ms.ToArray());
             }
@@ -37,8 +29,6 @@ namespace Kermalis.PokemonBattleEngine.Packets
         internal PBEPlayerJoinedPacket(byte[] data, EndianBinaryReader r)
         {
             Data = new ReadOnlyCollection<byte>(data);
-            IsMe = r.ReadBoolean();
-            BattleId = r.ReadInt32();
             TrainerName = r.ReadStringNullTerminated();
         }
     }

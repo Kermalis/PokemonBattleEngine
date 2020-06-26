@@ -7,13 +7,23 @@ using System.IO;
 
 namespace Kermalis.PokemonBattleEngine.Packets
 {
-    public sealed class PBEPkmnFormChangedPacket : IPBEPacket
+    public interface IPBEPkmnFormChangedPacket : IPBEPacket
+    {
+        PBEBattlePokemon Pokemon { get; }
+        PBEAbility NewAbility { get; }
+        PBEAbility NewKnownAbility { get; }
+        PBEForm NewForm { get; }
+        PBEType NewType1 { get; }
+        PBEType NewType2 { get; }
+        double NewWeight { get; }
+        bool IsRevertForm { get; }
+    }
+    public sealed class PBEPkmnFormChangedPacket : IPBEPkmnFormChangedPacket
     {
         public const ushort Code = 0x29;
         public ReadOnlyCollection<byte> Data { get; }
 
-        public PBEFieldPosition Pokemon { get; }
-        public PBETeam PokemonTeam { get; }
+        public PBEBattlePokemon Pokemon { get; }
         public ushort NewAttack { get; }
         public ushort NewDefense { get; }
         public ushort NewSpAttack { get; }
@@ -33,8 +43,7 @@ namespace Kermalis.PokemonBattleEngine.Packets
             using (var w = new EndianBinaryWriter(ms, encoding: EncodingType.UTF16))
             {
                 w.Write(Code);
-                w.Write(Pokemon = pokemon.FieldPosition);
-                w.Write((PokemonTeam = pokemon.Team).Id);
+                (Pokemon = pokemon).ToBytes_Position(w);
                 w.Write(NewAttack = pokemon.Attack);
                 w.Write(NewDefense = pokemon.Defense);
                 w.Write(NewSpAttack = pokemon.SpAttack);
@@ -53,8 +62,7 @@ namespace Kermalis.PokemonBattleEngine.Packets
         internal PBEPkmnFormChangedPacket(byte[] data, EndianBinaryReader r, PBEBattle battle)
         {
             Data = new ReadOnlyCollection<byte>(data);
-            Pokemon = r.ReadEnum<PBEFieldPosition>();
-            PokemonTeam = battle.Teams[r.ReadByte()];
+            Pokemon = battle.GetPokemon_Position(r);
             NewAttack = r.ReadUInt16();
             NewDefense = r.ReadUInt16();
             NewSpAttack = r.ReadUInt16();
@@ -68,13 +76,12 @@ namespace Kermalis.PokemonBattleEngine.Packets
             NewWeight = r.ReadDouble();
         }
     }
-    public sealed class PBEPkmnFormChangedPacket_Hidden : IPBEPacket
+    public sealed class PBEPkmnFormChangedPacket_Hidden : IPBEPkmnFormChangedPacket
     {
         public const ushort Code = 0x34;
         public ReadOnlyCollection<byte> Data { get; }
 
-        public PBEFieldPosition Pokemon { get; }
-        public PBETeam PokemonTeam { get; }
+        public PBEBattlePokemon Pokemon { get; }
         public PBEAbility NewAbility { get; }
         public PBEAbility NewKnownAbility { get; }
         public PBEForm NewForm { get; }
@@ -93,8 +100,7 @@ namespace Kermalis.PokemonBattleEngine.Packets
             using (var w = new EndianBinaryWriter(ms, encoding: EncodingType.UTF16))
             {
                 w.Write(Code);
-                w.Write(Pokemon = other.Pokemon);
-                w.Write((PokemonTeam = other.PokemonTeam).Id);
+                (Pokemon = other.Pokemon).ToBytes_Position(w);
                 w.Write(NewAbility = other.NewKnownAbility != PBEAbility.MAX ? other.NewAbility : PBEAbility.MAX);
                 w.Write(NewKnownAbility = other.NewKnownAbility);
                 w.Write(NewForm = other.NewForm);
@@ -108,8 +114,7 @@ namespace Kermalis.PokemonBattleEngine.Packets
         internal PBEPkmnFormChangedPacket_Hidden(byte[] data, EndianBinaryReader r, PBEBattle battle)
         {
             Data = new ReadOnlyCollection<byte>(data);
-            Pokemon = r.ReadEnum<PBEFieldPosition>();
-            PokemonTeam = battle.Teams[r.ReadByte()];
+            Pokemon = battle.GetPokemon_Position(r);
             NewAbility = r.ReadEnum<PBEAbility>();
             NewKnownAbility = r.ReadEnum<PBEAbility>();
             NewForm = r.ReadEnum<PBEForm>();

@@ -1,5 +1,6 @@
 ﻿using Avalonia.Controls;
 using Avalonia.Markup.Xaml;
+using Kermalis.PokemonBattleEngineClient.Clients;
 
 namespace Kermalis.PokemonBattleEngineClient.Views
 {
@@ -25,7 +26,7 @@ namespace Kermalis.PokemonBattleEngineClient.Views
             Field.SetBattleView(this);
             Actions = this.FindControl<ActionsView>("Actions");
             Actions.BattleView = this;
-            _messages = this.FindControl<MessageView>("Messages"); // Messages will be null
+            _messages = this.FindControl<MessageView>("Messages");
         }
 
         internal void AddMessage(string message, bool messageBox = true, bool messageLog = true)

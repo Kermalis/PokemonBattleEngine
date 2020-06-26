@@ -32,33 +32,27 @@ namespace Kermalis.PokemonBattleEngine.Packets
                     case PBESpecialMessage.Recoil:
                     case PBESpecialMessage.Struggle:
                     {
-                        var p = (PBEBattlePokemon)parameters[0];
-                        par.Add(p.FieldPosition);
-                        par.Add(p.Team);
-                        w.Write(p.FieldPosition);
-                        w.Write(p.Team.Id);
+                        var p0 = (PBEBattlePokemon)parameters[0];
+                        par.Add(p0);
+                        p0.ToBytes_Position(w);
                         break;
                     }
                     case PBESpecialMessage.Magnitude:
                     case PBESpecialMessage.MultiHit:
                     {
-                        byte p = (byte)parameters[0];
-                        par.Add(p);
-                        w.Write(p);
+                        byte p0 = (byte)parameters[0];
+                        par.Add(p0);
+                        w.Write(p0);
                         break;
                     }
                     case PBESpecialMessage.PainSplit:
                     {
                         var p0 = (PBEBattlePokemon)parameters[0];
                         var p1 = (PBEBattlePokemon)parameters[1];
-                        par.Add(p0.FieldPosition);
-                        par.Add(p0.Team);
-                        par.Add(p1.FieldPosition);
-                        par.Add(p1.Team);
-                        w.Write(p0.FieldPosition);
-                        w.Write(p0.Team.Id);
-                        w.Write(p1.FieldPosition);
-                        w.Write(p1.Team.Id);
+                        par.Add(p0);
+                        par.Add(p1);
+                        p0.ToBytes_Position(w);
+                        p1.ToBytes_Position(w);
                         break;
                     }
                 }
@@ -78,7 +72,7 @@ namespace Kermalis.PokemonBattleEngine.Packets
                 case PBESpecialMessage.Recoil:
                 case PBESpecialMessage.Struggle:
                 {
-                    Params = new ReadOnlyCollection<object>(new object[] { r.ReadEnum<PBEFieldPosition>(), battle.Teams[r.ReadByte()] });
+                    Params = new ReadOnlyCollection<object>(new object[] { battle.GetPokemon_Position(r) });
                     break;
                 }
                 case PBESpecialMessage.Magnitude:
@@ -96,7 +90,7 @@ namespace Kermalis.PokemonBattleEngine.Packets
                 }
                 case PBESpecialMessage.PainSplit:
                 {
-                    Params = new ReadOnlyCollection<object>(new object[] { r.ReadEnum<PBEFieldPosition>(), battle.Teams[r.ReadByte()], r.ReadEnum<PBEFieldPosition>(), battle.Teams[r.ReadByte()] });
+                    Params = new ReadOnlyCollection<object>(new object[] { battle.GetPokemon_Position(r), battle.GetPokemon_Position(r) });
                     break;
                 }
                 throw new InvalidDataException();
