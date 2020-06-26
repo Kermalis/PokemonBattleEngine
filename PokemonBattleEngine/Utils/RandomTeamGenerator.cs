@@ -386,7 +386,7 @@ namespace Kermalis.PokemonBattleEngine.Utils
             int startI;
             if (species == PBESpecies.Keldeo && form == PBEForm.Keldeo_Resolute)
             {
-                moves[0] = PBEMove.SecretSword;
+                moves.Add(PBEMove.SecretSword);
                 movePool.Remove(PBEMove.SecretSword);
                 startI = 1;
             }
