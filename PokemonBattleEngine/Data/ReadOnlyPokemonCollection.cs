@@ -38,11 +38,11 @@ namespace Kermalis.PokemonBattleEngine.Data
         }
         IEnumerator<IPBEPokemon> IEnumerable<IPBEPokemon>.GetEnumerator()
         {
-            return GetEnumerator();
+            return ((IEnumerable<PBEReadOnlyPokemon>)_list).GetEnumerator();
         }
         public IEnumerator<PBEReadOnlyPokemon> GetEnumerator()
         {
-            return GetEnumerator();
+            return ((IEnumerable<PBEReadOnlyPokemon>)_list).GetEnumerator();
         }
     }
 }

@@ -310,7 +310,7 @@ namespace Kermalis.PokemonBattleEngine.Data.Legality
         }
         IEnumerator<IPBEPokemon> IEnumerable<IPBEPokemon>.GetEnumerator()
         {
-            return GetEnumerator();
+            return _list.GetEnumerator();
         }
 
         public void ToJsonFile(string path)

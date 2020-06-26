@@ -205,11 +205,11 @@ namespace Kermalis.PokemonBattleEngineTests
         }
         IEnumerator<IPBEPokemon> IEnumerable<IPBEPokemon>.GetEnumerator()
         {
-            return GetEnumerator();
+            return ((IEnumerable<TestPokemon>)_list).GetEnumerator();
         }
         public IEnumerator<TestPokemon> GetEnumerator()
         {
-            return GetEnumerator();
+            return ((IEnumerable<TestPokemon>)_list).GetEnumerator();
         }
     }
 }
