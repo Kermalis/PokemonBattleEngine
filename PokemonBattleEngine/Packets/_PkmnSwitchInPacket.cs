@@ -114,7 +114,7 @@ namespace Kermalis.PokemonBattleEngine.Packets
             {
                 w.Write(Code);
                 w.Write((Trainer = trainer).Id);
-                sbyte count = (sbyte)(SwitchIns = new ReadOnlyCollection<PBESwitchInInfo>(switchIns)).Count;
+                byte count = (byte)(SwitchIns = new ReadOnlyCollection<PBESwitchInInfo>(switchIns)).Count;
                 w.Write(count);
                 for (int i = 0; i < count; i++)
                 {
@@ -133,7 +133,7 @@ namespace Kermalis.PokemonBattleEngine.Packets
         {
             Data = new ReadOnlyCollection<byte>(data);
             Trainer = battle.Trainers[r.ReadByte()];
-            var switches = new PBESwitchInInfo[r.ReadSByte()];
+            var switches = new PBESwitchInInfo[r.ReadByte()];
             for (int i = 0; i < switches.Length; i++)
             {
                 switches[i] = new PBESwitchInInfo(r);
@@ -226,7 +226,7 @@ namespace Kermalis.PokemonBattleEngine.Packets
                 {
                     switchIns[i] = new PBESwitchInInfo(other.SwitchIns[i]);
                 }
-                sbyte count = (sbyte)(SwitchIns = new ReadOnlyCollection<PBESwitchInInfo>(switchIns)).Count;
+                byte count = (byte)(SwitchIns = new ReadOnlyCollection<PBESwitchInInfo>(switchIns)).Count;
                 w.Write(count);
                 for (int i = 0; i < count; i++)
                 {
@@ -245,7 +245,7 @@ namespace Kermalis.PokemonBattleEngine.Packets
         {
             Data = new ReadOnlyCollection<byte>(data);
             Trainer = battle.Trainers[r.ReadByte()];
-            var switches = new PBESwitchInInfo[r.ReadSByte()];
+            var switches = new PBESwitchInInfo[r.ReadByte()];
             for (int i = 0; i < switches.Length; i++)
             {
                 switches[i] = new PBESwitchInInfo(r);

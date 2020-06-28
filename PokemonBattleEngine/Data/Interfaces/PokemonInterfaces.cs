@@ -154,7 +154,7 @@ namespace Kermalis.PokemonBattleEngine.Data
 
         internal static void ToBytes(this IPBEPokemonCollection party, EndianBinaryWriter w)
         {
-            sbyte count = (sbyte)party.Count;
+            byte count = (byte)party.Count;
             w.Write(count);
             for (int i = 0; i < count; i++)
             {

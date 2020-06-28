@@ -103,7 +103,7 @@ namespace Kermalis.PokemonBattleEngine.Packets
                 {
                     Id = r.ReadByte();
                     Name = r.ReadStringNullTerminated();
-                    var party = new PBEBattlePokemonInfo[r.ReadSByte()];
+                    var party = new PBEBattlePokemonInfo[r.ReadByte()];
                     for (int i = 0; i < party.Length; i++)
                     {
                         party[i] = new PBEBattlePokemonInfo(r);
@@ -121,7 +121,7 @@ namespace Kermalis.PokemonBattleEngine.Packets
                 {
                     w.Write(Id);
                     w.Write(Name, true);
-                    sbyte count = (sbyte)Party.Count;
+                    byte count = (byte)Party.Count;
                     w.Write(count);
                     for (int i = 0; i < count; i++)
                     {
@@ -141,7 +141,7 @@ namespace Kermalis.PokemonBattleEngine.Packets
             internal PBETeamInfo(EndianBinaryReader r)
             {
                 Id = r.ReadByte();
-                var trainers = new PBETrainerInfo[r.ReadSByte()];
+                var trainers = new PBETrainerInfo[r.ReadByte()];
                 for (int i = 0; i < trainers.Length; i++)
                 {
                     trainers[i] = new PBETrainerInfo(r);
@@ -157,7 +157,7 @@ namespace Kermalis.PokemonBattleEngine.Packets
             internal void ToBytes(EndianBinaryWriter w)
             {
                 w.Write(Id);
-                sbyte count = (sbyte)Trainers.Count;
+                byte count = (byte)Trainers.Count;
                 w.Write(count);
                 for (int i = 0; i < count; i++)
                 {
@@ -182,7 +182,7 @@ namespace Kermalis.PokemonBattleEngine.Packets
                 w.Write(BattleTerrain = battle.BattleTerrain);
                 w.Write(Weather = battle.Weather);
                 w.Write((Settings = battle.Settings).ToBytes());
-                sbyte count = (sbyte)(Teams = new ReadOnlyCollection<PBETeamInfo>(battle.Teams.Select(t => new PBETeamInfo(t)).ToArray())).Count;
+                byte count = (byte)(Teams = new ReadOnlyCollection<PBETeamInfo>(battle.Teams.Select(t => new PBETeamInfo(t)).ToArray())).Count;
                 w.Write(count);
                 for (int i = 0; i < count; i++)
                 {
@@ -199,7 +199,7 @@ namespace Kermalis.PokemonBattleEngine.Packets
             Weather = r.ReadEnum<PBEWeather>();
             Settings = new PBESettings(r);
             Settings.MakeReadOnly();
-            var teams = new PBETeamInfo[r.ReadSByte()];
+            var teams = new PBETeamInfo[r.ReadByte()];
             for (int i = 0; i < teams.Length; i++)
             {
                 teams[i] = new PBETeamInfo(r);
@@ -216,7 +216,7 @@ namespace Kermalis.PokemonBattleEngine.Packets
                 w.Write(BattleTerrain = other.BattleTerrain);
                 w.Write(Weather = other.Weather);
                 w.Write((Settings = other.Settings).ToBytes());
-                sbyte count = (sbyte)(Teams = new ReadOnlyCollection<PBETeamInfo>(other.Teams.Select(t => new PBETeamInfo(t, onlyForTrainer)).ToArray())).Count;
+                byte count = (byte)(Teams = new ReadOnlyCollection<PBETeamInfo>(other.Teams.Select(t => new PBETeamInfo(t, onlyForTrainer)).ToArray())).Count;
                 w.Write(count);
                 for (int i = 0; i < count; i++)
                 {
