@@ -32,7 +32,12 @@ namespace Kermalis.PokemonBattleEngineClient.Clients
         {
             switch (packet)
             {
-                case PBEMovePPChangedPacket mpcp: mpcp.MoveUser.Moves[mpcp.Move].PP -= mpcp.AmountReduced; break;
+                case PBEMovePPChangedPacket mpcp:
+                {
+                    PBEBattlePokemon moveUser = mpcp.MoveUserTrainer.TryGetPokemon(mpcp.MoveUser);
+                    moveUser.Moves[mpcp.Move].PP -= mpcp.AmountReduced;
+                    break;
+                }
                 case PBEActionsRequestPacket _:
                 case PBESwitchInRequestPacket _: return true;
             }

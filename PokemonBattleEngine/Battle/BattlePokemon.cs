@@ -1147,23 +1147,6 @@ namespace Kermalis.PokemonBattleEngine.Battle
             return count == 0 ? ushort.MaxValue : (ushort)(ushort.MaxValue / (count * 2));
         }
 
-        internal void ToBytes_Id(EndianBinaryWriter w, PBEBattlePokemon disguisedAsPokemon)
-        {
-            w.Write(Trainer.Id);
-            w.Write(Id);
-            w.Write(disguisedAsPokemon.Id);
-        }
-        internal void ToBytes_Id(EndianBinaryWriter w)
-        {
-            w.Write(Trainer.Id);
-            w.Write(Id);
-        }
-        internal void ToBytes_Position(EndianBinaryWriter w)
-        {
-            w.Write(Trainer.Id);
-            w.Write(FieldPosition);
-        }
-
         // Will only be accurate for the host
         public override string ToString()
         {

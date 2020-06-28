@@ -1,5 +1,6 @@
 ﻿using Kermalis.EndianBinaryIO;
 using Kermalis.PokemonBattleEngine.Battle;
+using Kermalis.PokemonBattleEngine.Data;
 using System.Collections.ObjectModel;
 using System.IO;
 
@@ -10,7 +11,8 @@ namespace Kermalis.PokemonBattleEngine.Packets
         public const ushort Code = 0x0F;
         public ReadOnlyCollection<byte> Data { get; }
 
-        public PBEBattlePokemon Victim { get; }
+        public PBETrainer VictimTrainer { get; }
+        public PBEFieldPosition Victim { get; }
 
         internal PBEMoveCritPacket(PBEBattlePokemon victim)
         {
@@ -18,14 +20,16 @@ namespace Kermalis.PokemonBattleEngine.Packets
             using (var w = new EndianBinaryWriter(ms, encoding: EncodingType.UTF16))
             {
                 w.Write(Code);
-                (Victim = victim).ToBytes_Position(w);
+                w.Write((VictimTrainer = victim.Trainer).Id);
+                w.Write(Victim = victim.FieldPosition);
                 Data = new ReadOnlyCollection<byte>(ms.ToArray());
             }
         }
         internal PBEMoveCritPacket(byte[] data, EndianBinaryReader r, PBEBattle battle)
         {
             Data = new ReadOnlyCollection<byte>(data);
-            Victim = battle.GetPokemon_Position(r);
+            VictimTrainer = battle.Trainers[r.ReadByte()];
+            Victim = r.ReadEnum<PBEFieldPosition>();
         }
     }
 }

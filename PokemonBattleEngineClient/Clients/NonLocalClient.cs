@@ -69,14 +69,14 @@ namespace Kermalis.PokemonBattleEngineClient.Clients
             {
                 case PBEAbilityPacket ap:
                 {
-                    PBEBattlePokemon abilityOwner = ap.AbilityOwner;
+                    PBEBattlePokemon abilityOwner = ap.AbilityOwnerTrainer.TryGetPokemon(ap.AbilityOwner);
                     abilityOwner.Ability = ap.Ability;
                     abilityOwner.KnownAbility = ap.Ability;
                     break;
                 }
                 case PBEAbilityReplacedPacket arp:
                 {
-                    PBEBattlePokemon abilityOwner = arp.AbilityOwner;
+                    PBEBattlePokemon abilityOwner = arp.AbilityOwnerTrainer.TryGetPokemon(arp.AbilityOwner);
                     abilityOwner.Ability = arp.NewAbility;
                     abilityOwner.KnownAbility = arp.NewAbility;
                     break;
@@ -102,7 +102,7 @@ namespace Kermalis.PokemonBattleEngineClient.Clients
                 }
                 case PBEIllusionPacket ilp:
                 {
-                    PBEBattlePokemon pokemon = ilp.Pokemon;
+                    PBEBattlePokemon pokemon = ilp.PokemonTrainer.TryGetPokemon(ilp.Pokemon);
                     pokemon.DisguisedAsPokemon = null;
                     pokemon.Ability = pokemon.KnownAbility = PBEAbility.Illusion;
                     pokemon.Gender = pokemon.KnownGender = ilp.ActualGender;
@@ -117,7 +117,7 @@ namespace Kermalis.PokemonBattleEngineClient.Clients
                 }
                 case PBEItemPacket ip:
                 {
-                    PBEBattlePokemon itemHolder = ip.ItemHolder;
+                    PBEBattlePokemon itemHolder = ip.ItemHolderTrainer.TryGetPokemon(ip.ItemHolder);
                     switch (ip.ItemAction)
                     {
                         case PBEItemAction.ChangedStatus:
@@ -130,7 +130,7 @@ namespace Kermalis.PokemonBattleEngineClient.Clients
                 }
                 case PBEMoveLockPacket mlp:
                 {
-                    PBEBattlePokemon moveUser = mlp.MoveUser;
+                    PBEBattlePokemon moveUser = mlp.MoveUserTrainer.TryGetPokemon(mlp.MoveUser);
                     switch (mlp.MoveLockType)
                     {
                         case PBEMoveLockType.ChoiceItem: moveUser.ChoiceLockedMove = mlp.LockedMove; break;
@@ -145,35 +145,39 @@ namespace Kermalis.PokemonBattleEngineClient.Clients
                 }
                 case PBEMovePPChangedPacket mpcp:
                 {
-                    mpcp.MoveUser.UpdateKnownPP(mpcp.Move, mpcp.AmountReduced);
+                    PBEBattlePokemon moveUser = mpcp.MoveUserTrainer.TryGetPokemon(mpcp.MoveUser);
+                    moveUser.UpdateKnownPP(mpcp.Move, mpcp.AmountReduced);
                     return true;
                 }
                 case PBEMoveUsedPacket mup:
                 {
                     if (mup.Reveal)
                     {
-                        mup.MoveUser.KnownMoves[PBEMove.MAX].Move = mup.Move;
+                        PBEBattlePokemon moveUser = mup.MoveUserTrainer.TryGetPokemon(mup.MoveUser);
+                        moveUser.KnownMoves[PBEMove.MAX].Move = mup.Move;
                     }
                     break;
                 }
                 case PBEPkmnFaintedPacket pfp:
                 {
-                    PBEBattlePokemon pokemon = pfp.Pokemon;
+                    bool ret = base.ProcessPacket(packet); // Process before removal
+                    PBEBattlePokemon pokemon = pfp.PokemonTrainer.TryGetPokemon(pfp.Pokemon);
                     Battle.ActiveBattlers.Remove(pokemon);
                     pokemon.FieldPosition = PBEFieldPosition.None;
-                    break;
+                    return ret;
                 }
                 case PBEPkmnFaintedPacket_Hidden pfph:
                 {
-                    PBEBattlePokemon pokemon = pfph.Pokemon;
+                    bool ret = base.ProcessPacket(packet); // Process before removal
+                    PBEBattlePokemon pokemon = pfph.PokemonTrainer.TryGetPokemon(pfph.OldPosition);
                     Battle.ActiveBattlers.Remove(pokemon);
                     pokemon.FieldPosition = PBEFieldPosition.None;
                     PBETrainer.Remove(pokemon);
-                    break;
+                    return ret;
                 }
                 case PBEPkmnFormChangedPacket pfcp:
                 {
-                    PBEBattlePokemon pokemon = pfcp.Pokemon;
+                    PBEBattlePokemon pokemon = pfcp.PokemonTrainer.TryGetPokemon(pfcp.Pokemon);
                     pokemon.Attack = pfcp.NewAttack;
                     pokemon.Defense = pfcp.NewDefense;
                     pokemon.SpAttack = pfcp.NewSpAttack;
@@ -194,7 +198,7 @@ namespace Kermalis.PokemonBattleEngineClient.Clients
                 }
                 case PBEPkmnFormChangedPacket_Hidden pfcph:
                 {
-                    PBEBattlePokemon pokemon = pfcph.Pokemon;
+                    PBEBattlePokemon pokemon = pfcph.PokemonTrainer.TryGetPokemon(pfcph.Pokemon);
                     pokemon.KnownAbility = pfcph.NewKnownAbility;
                     pokemon.KnownForm = pfcph.NewForm;
                     pokemon.KnownType1 = pfcph.NewType1;
@@ -204,32 +208,35 @@ namespace Kermalis.PokemonBattleEngineClient.Clients
                 }
                 case PBEPkmnHPChangedPacket phcp:
                 {
-                    PBEBattlePokemon pokemon = phcp.Pokemon;
+                    PBEBattlePokemon pokemon = phcp.PokemonTrainer.TryGetPokemon(phcp.Pokemon);
                     pokemon.HP = phcp.NewHP;
                     pokemon.HPPercentage = phcp.NewHPPercentage;
                     break;
                 }
                 case PBEPkmnHPChangedPacket_Hidden phcph:
                 {
-                    phcph.Pokemon.HPPercentage = phcph.NewHPPercentage;
+                    PBEBattlePokemon pokemon = phcph.PokemonTrainer.TryGetPokemon(phcph.Pokemon);
+                    pokemon.HPPercentage = phcph.NewHPPercentage;
                     break;
                 }
                 case PBEPkmnStatChangedPacket pscp:
                 {
-                    pscp.Pokemon.SetStatChange(pscp.Stat, pscp.NewValue);
+                    PBEBattlePokemon pokemon = pscp.PokemonTrainer.TryGetPokemon(pscp.Pokemon);
+                    pokemon.SetStatChange(pscp.Stat, pscp.NewValue);
                     break;
                 }
                 case PBEPkmnSwitchInPacket psip:
                 {
                     foreach (PBEPkmnSwitchInPacket.PBESwitchInInfo info in psip.SwitchIns)
                     {
-                        PBEBattlePokemon pokemon = info.Pokemon;
+                        PBEBattlePokemon pokemon = psip.Trainer.TryGetPokemon(info.Pokemon);
+                        PBEBattlePokemon disguisedAsPokemon = psip.Trainer.TryGetPokemon(info.DisguisedAsPokemon);
                         pokemon.FieldPosition = info.FieldPosition;
                         PBETrainer.SwitchTwoPokemon(pokemon, info.FieldPosition);
-                        if (info.DisguisedAsPokemon != pokemon)
+                        if (disguisedAsPokemon != pokemon)
                         {
                             pokemon.Status2 |= PBEStatus2.Disguised;
-                            pokemon.DisguisedAsPokemon = info.DisguisedAsPokemon;
+                            pokemon.DisguisedAsPokemon = disguisedAsPokemon;
                             pokemon.KnownGender = pokemon.DisguisedAsPokemon.Gender;
                             pokemon.KnownNickname = pokemon.DisguisedAsPokemon.Nickname;
                             pokemon.KnownShiny = pokemon.DisguisedAsPokemon.Shiny;
@@ -253,22 +260,24 @@ namespace Kermalis.PokemonBattleEngineClient.Clients
                 }
                 case PBEPkmnSwitchOutPacket psop:
                 {
-                    PBEBattlePokemon pokemon = psop.Pokemon;
+                    bool ret = base.ProcessPacket(packet); // Process before removal
+                    PBEBattlePokemon pokemon = psop.PokemonTrainer.TryGetPokemon(psop.Pokemon);
                     Battle.ActiveBattlers.Remove(pokemon);
                     pokemon.ClearForSwitch();
-                    break;
+                    return ret;
                 }
                 case PBEPkmnSwitchOutPacket_Hidden psoph:
                 {
-                    PBEBattlePokemon pokemon = psoph.Pokemon;
+                    bool ret = base.ProcessPacket(packet); // Process before removal
+                    PBEBattlePokemon pokemon = psoph.PokemonTrainer.TryGetPokemon(psoph.OldPosition);
                     Battle.ActiveBattlers.Remove(pokemon);
                     PBETrainer.Remove(pokemon);
-                    break;
+                    return ret;
                 }
                 case PBEPsychUpPacket pup:
                 {
-                    PBEBattlePokemon user = pup.User;
-                    PBEBattlePokemon target = pup.Target;
+                    PBEBattlePokemon user = pup.UserTrainer.TryGetPokemon(pup.User);
+                    PBEBattlePokemon target = pup.TargetTrainer.TryGetPokemon(pup.Target);
                     user.AttackChange = target.AttackChange = pup.AttackChange;
                     user.DefenseChange = target.DefenseChange = pup.DefenseChange;
                     user.SpAttackChange = target.SpAttackChange = pup.SpAttackChange;
@@ -280,25 +289,23 @@ namespace Kermalis.PokemonBattleEngineClient.Clients
                 }
                 case PBEReflectTypePacket rtp:
                 {
-                    PBEBattlePokemon user = rtp.User;
-                    PBEBattlePokemon target = rtp.Target;
-                    PBEType type1 = rtp.Type1;
-                    PBEType type2 = rtp.Type2;
-                    user.Type1 = user.KnownType1 = target.KnownType1 = target.Type1 = type1;
-                    user.Type2 = user.KnownType2 = target.KnownType2 = target.Type2 = type2;
+                    PBEBattlePokemon user = rtp.UserTrainer.TryGetPokemon(rtp.User);
+                    PBEBattlePokemon target = rtp.TargetTrainer.TryGetPokemon(rtp.Target);
+                    user.Type1 = user.KnownType1 = target.KnownType1 = target.Type1 = rtp.Type1;
+                    user.Type2 = user.KnownType2 = target.KnownType2 = target.Type2 = rtp.Type2;
                     break;
                 }
                 case PBEReflectTypePacket_Hidden rtph:
                 {
-                    PBEBattlePokemon user = rtph.User;
-                    PBEBattlePokemon target = rtph.Target;
+                    PBEBattlePokemon user = rtph.UserTrainer.TryGetPokemon(rtph.User);
+                    PBEBattlePokemon target = rtph.TargetTrainer.TryGetPokemon(rtph.Target);
                     user.KnownType1 = target.KnownType1;
                     user.KnownType2 = target.KnownType2;
                     break;
                 }
                 case PBEStatus1Packet s1p:
                 {
-                    PBEBattlePokemon status1Receiver = s1p.Status1Receiver;
+                    PBEBattlePokemon status1Receiver = s1p.Status1ReceiverTrainer.TryGetPokemon(s1p.Status1Receiver);
                     switch (s1p.StatusAction)
                     {
                         case PBEStatusAction.Added:
@@ -313,8 +320,8 @@ namespace Kermalis.PokemonBattleEngineClient.Clients
                 }
                 case PBEStatus2Packet s2p:
                 {
-                    PBEBattlePokemon status2Receiver = s2p.Status2Receiver;
-                    PBEBattlePokemon pokemon2 = s2p.Pokemon2;
+                    PBEBattlePokemon status2Receiver = s2p.Status2ReceiverTrainer.TryGetPokemon(s2p.Status2Receiver);
+                    PBEBattlePokemon pokemon2 = s2p.Pokemon2Trainer.TryGetPokemon(s2p.Pokemon2);
                     switch (s2p.StatusAction)
                     {
                         case PBEStatusAction.Added:
@@ -416,7 +423,7 @@ namespace Kermalis.PokemonBattleEngineClient.Clients
                 }
                 case PBETransformPacket tp:
                 {
-                    PBEBattlePokemon target = tp.Target;
+                    PBEBattlePokemon target = tp.TargetTrainer.TryGetPokemon(tp.Target);
                     target.Attack = tp.TargetAttack;
                     target.Defense = tp.TargetDefense;
                     target.SpAttack = tp.TargetSpAttack;
@@ -442,13 +449,9 @@ namespace Kermalis.PokemonBattleEngineClient.Clients
                 }
                 case PBETypeChangedPacket tcp:
                 {
-                    PBEBattlePokemon pokemon = tcp.Pokemon;
-                    PBEType type1 = tcp.Type1;
-                    PBEType type2 = tcp.Type2;
-                    pokemon.Type1 = type1;
-                    pokemon.KnownType1 = type1;
-                    pokemon.Type2 = type2;
-                    pokemon.KnownType2 = type2;
+                    PBEBattlePokemon pokemon = tcp.PokemonTrainer.TryGetPokemon(tcp.Pokemon);
+                    pokemon.Type1 = pokemon.KnownType1 = tcp.Type1;
+                    pokemon.Type2 = pokemon.KnownType2 = tcp.Type2;
                     break;
                 }
                 case PBEWeatherPacket wp:
@@ -464,8 +467,10 @@ namespace Kermalis.PokemonBattleEngineClient.Clients
                 }
                 case IPBEAutoCenterPacket acp:
                 {
-                    acp.Pokemon0.FieldPosition = PBEFieldPosition.Center;
-                    acp.Pokemon1.FieldPosition = PBEFieldPosition.Center;
+                    PBEBattlePokemon pokemon0 = acp.Pokemon0Trainer.TryGetPokemon(acp.Pokemon0OldPosition);
+                    PBEBattlePokemon pokemon1 = acp.Pokemon1Trainer.TryGetPokemon(acp.Pokemon1OldPosition);
+                    pokemon0.FieldPosition = PBEFieldPosition.Center;
+                    pokemon1.FieldPosition = PBEFieldPosition.Center;
                     break;
                 }
                 case PBETurnBeganPacket tbp:

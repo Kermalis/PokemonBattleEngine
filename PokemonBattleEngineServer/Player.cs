@@ -73,8 +73,17 @@ namespace Kermalis.PokemonBattleEngineServer
                     case PBELegalPartyResponsePacket lprp:
                     {
                         Console.WriteLine($"Received party ({BattleId} {TrainerName})");
-                        _party = lprp.Party;
-                        resetEvent.Set();
+                        if (!Server.Settings.Equals(lprp.Party.Settings))
+                        {
+                            Console.WriteLine("Party does not have matching settings!");
+                            Console.WriteLine("\tServer: \"{0}\"", Server.Settings);
+                            Console.WriteLine("\tParty: \"{0}\"", lprp.Party.Settings);
+                        }
+                        else
+                        {
+                            _party = lprp.Party;
+                            resetEvent.Set();
+                        }
                         break;
                     }
                     case PBEPartyResponsePacket prp:

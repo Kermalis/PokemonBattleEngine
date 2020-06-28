@@ -33,8 +33,10 @@ namespace Kermalis.PokemonBattleEngine.Packets
                     case PBESpecialMessage.Struggle:
                     {
                         var p0 = (PBEBattlePokemon)parameters[0];
-                        par.Add(p0);
-                        p0.ToBytes_Position(w);
+                        par.Add(p0.Trainer);
+                        par.Add(p0.FieldPosition);
+                        w.Write(p0.Trainer.Id);
+                        w.Write(p0.FieldPosition);
                         break;
                     }
                     case PBESpecialMessage.Magnitude:
@@ -49,10 +51,14 @@ namespace Kermalis.PokemonBattleEngine.Packets
                     {
                         var p0 = (PBEBattlePokemon)parameters[0];
                         var p1 = (PBEBattlePokemon)parameters[1];
-                        par.Add(p0);
-                        par.Add(p1);
-                        p0.ToBytes_Position(w);
-                        p1.ToBytes_Position(w);
+                        par.Add(p0.Trainer);
+                        par.Add(p0.FieldPosition);
+                        par.Add(p1.Trainer);
+                        par.Add(p1.FieldPosition);
+                        w.Write(p1.Trainer.Id);
+                        w.Write(p1.FieldPosition);
+                        w.Write(p1.Trainer.Id);
+                        w.Write(p1.FieldPosition);
                         break;
                     }
                 }
@@ -72,7 +78,7 @@ namespace Kermalis.PokemonBattleEngine.Packets
                 case PBESpecialMessage.Recoil:
                 case PBESpecialMessage.Struggle:
                 {
-                    Params = new ReadOnlyCollection<object>(new object[] { battle.GetPokemon_Position(r) });
+                    Params = new ReadOnlyCollection<object>(new object[] { battle.Trainers[r.ReadByte()], r.ReadEnum<PBEFieldPosition>() });
                     break;
                 }
                 case PBESpecialMessage.Magnitude:
@@ -90,7 +96,7 @@ namespace Kermalis.PokemonBattleEngine.Packets
                 }
                 case PBESpecialMessage.PainSplit:
                 {
-                    Params = new ReadOnlyCollection<object>(new object[] { battle.GetPokemon_Position(r), battle.GetPokemon_Position(r) });
+                    Params = new ReadOnlyCollection<object>(new object[] { battle.Trainers[r.ReadByte()], r.ReadEnum<PBEFieldPosition>(), battle.Trainers[r.ReadByte()], r.ReadEnum<PBEFieldPosition>() });
                     break;
                 }
                 throw new InvalidDataException();

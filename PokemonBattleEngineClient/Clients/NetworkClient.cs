@@ -198,7 +198,7 @@ namespace Kermalis.PokemonBattleEngineClient.Clients
             {
                 case PBEMovePPChangedPacket mpcp:
                 {
-                    PBEBattlePokemon moveUser = mpcp.MoveUser;
+                    PBEBattlePokemon moveUser = mpcp.MoveUserTrainer.TryGetPokemon(mpcp.MoveUser);
                     if (moveUser.Trainer == Trainer)
                     {
                         moveUser.Moves[mpcp.Move].PP -= mpcp.AmountReduced;
@@ -211,7 +211,7 @@ namespace Kermalis.PokemonBattleEngineClient.Clients
                     {
                         ActionsLoop(true);
                     }
-                    else if (Trainer == null) // Spectators
+                    else if (Trainer == null || Trainer.NumConsciousPkmn == 0) // Spectators/KO'd
                     {
                         BattleView.AddMessage("Waiting for players...", messageLog: false);
                     }
@@ -226,13 +226,9 @@ namespace Kermalis.PokemonBattleEngineClient.Clients
                         _switchesRequired = sirp.Amount;
                         SwitchesLoop(true);
                     }
-                    else if (Trainer == null) // Spectators
+                    else if (_switchesRequired == 0) // No need to switch/Spectators/KO'd
                     {
                         BattleView.AddMessage("Waiting for players...", messageLog: false);
-                    }
-                    else if (_switchesRequired == 0) // Don't display this message if we're in switchesloop because it'd overwrite the messages we need to see.
-                    {
-                        BattleView.AddMessage($"Waiting for {Trainer.Team.OpposingTeam.CombinedName}...", messageLog: false);
                     }
                     return true;
                 }

@@ -11,8 +11,10 @@ namespace Kermalis.PokemonBattleEngine.Packets
         public const ushort Code = 0x11;
         public ReadOnlyCollection<byte> Data { get; }
 
-        public PBEBattlePokemon Status1Receiver { get; }
-        public PBEBattlePokemon Pokemon2 { get; }
+        public PBETrainer Status1ReceiverTrainer { get; }
+        public PBEFieldPosition Status1Receiver { get; }
+        public PBETrainer Pokemon2Trainer { get; }
+        public PBEFieldPosition Pokemon2 { get; }
         public PBEStatus1 Status1 { get; }
         public PBEStatusAction StatusAction { get; }
 
@@ -22,8 +24,10 @@ namespace Kermalis.PokemonBattleEngine.Packets
             using (var w = new EndianBinaryWriter(ms, encoding: EncodingType.UTF16))
             {
                 w.Write(Code);
-                (Status1Receiver = status1Receiver).ToBytes_Position(w);
-                (Pokemon2 = pokemon2).ToBytes_Position(w);
+                w.Write((Status1ReceiverTrainer = status1Receiver.Trainer).Id);
+                w.Write(Status1Receiver = status1Receiver.FieldPosition);
+                w.Write((Pokemon2Trainer = pokemon2.Trainer).Id);
+                w.Write(Pokemon2 = pokemon2.FieldPosition);
                 w.Write(Status1 = status1);
                 w.Write(StatusAction = statusAction);
                 Data = new ReadOnlyCollection<byte>(ms.ToArray());
@@ -32,8 +36,10 @@ namespace Kermalis.PokemonBattleEngine.Packets
         internal PBEStatus1Packet(byte[] data, EndianBinaryReader r, PBEBattle battle)
         {
             Data = new ReadOnlyCollection<byte>(data);
-            Status1Receiver = battle.GetPokemon_Position(r);
-            Pokemon2 = battle.GetPokemon_Position(r);
+            Status1ReceiverTrainer = battle.Trainers[r.ReadByte()];
+            Status1Receiver = r.ReadEnum<PBEFieldPosition>();
+            Pokemon2Trainer = battle.Trainers[r.ReadByte()];
+            Pokemon2 = r.ReadEnum<PBEFieldPosition>();
             Status1 = r.ReadEnum<PBEStatus1>();
             StatusAction = r.ReadEnum<PBEStatusAction>();
         }

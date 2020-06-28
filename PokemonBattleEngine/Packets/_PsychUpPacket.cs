@@ -1,5 +1,6 @@
 ﻿using Kermalis.EndianBinaryIO;
 using Kermalis.PokemonBattleEngine.Battle;
+using Kermalis.PokemonBattleEngine.Data;
 using System.Collections.ObjectModel;
 using System.IO;
 
@@ -10,8 +11,10 @@ namespace Kermalis.PokemonBattleEngine.Packets
         public const ushort Code = 0x22;
         public ReadOnlyCollection<byte> Data { get; }
 
-        public PBEBattlePokemon User { get; }
-        public PBEBattlePokemon Target { get; }
+        public PBETrainer UserTrainer { get; }
+        public PBEFieldPosition User { get; }
+        public PBETrainer TargetTrainer { get; }
+        public PBEFieldPosition Target { get; }
         public sbyte AttackChange { get; }
         public sbyte DefenseChange { get; }
         public sbyte SpAttackChange { get; }
@@ -26,8 +29,10 @@ namespace Kermalis.PokemonBattleEngine.Packets
             using (var w = new EndianBinaryWriter(ms, encoding: EncodingType.UTF16))
             {
                 w.Write(Code);
-                (User = user).ToBytes_Position(w);
-                (Target = target).ToBytes_Position(w);
+                w.Write((UserTrainer = user.Trainer).Id);
+                w.Write(User = user.FieldPosition);
+                w.Write((TargetTrainer = target.Trainer).Id);
+                w.Write(Target = target.FieldPosition);
                 w.Write(AttackChange = target.AttackChange);
                 w.Write(DefenseChange = target.DefenseChange);
                 w.Write(SpAttackChange = target.SpAttackChange);
@@ -41,8 +46,10 @@ namespace Kermalis.PokemonBattleEngine.Packets
         internal PBEPsychUpPacket(byte[] data, EndianBinaryReader r, PBEBattle battle)
         {
             Data = new ReadOnlyCollection<byte>(data);
-            User = battle.GetPokemon_Position(r);
-            Target = battle.GetPokemon_Position(r);
+            UserTrainer = battle.Trainers[r.ReadByte()];
+            User = r.ReadEnum<PBEFieldPosition>();
+            TargetTrainer = battle.Trainers[r.ReadByte()];
+            Target = r.ReadEnum<PBEFieldPosition>();
             AttackChange = r.ReadSByte();
             DefenseChange = r.ReadSByte();
             SpAttackChange = r.ReadSByte();

@@ -9,7 +9,7 @@ namespace Kermalis.PokemonBattleEngine.Packets
 {
     public interface IPBEPkmnFaintedPacket : IPBEPacket
     {
-        PBEBattlePokemon Pokemon { get; }
+        PBETrainer PokemonTrainer { get; }
         PBEFieldPosition OldPosition { get; }
     }
     public sealed class PBEPkmnFaintedPacket : IPBEPkmnFaintedPacket
@@ -17,8 +17,9 @@ namespace Kermalis.PokemonBattleEngine.Packets
         public const ushort Code = 0x0E;
         public ReadOnlyCollection<byte> Data { get; }
 
-        public PBEBattlePokemon Pokemon { get; }
-        public PBEBattlePokemon DisguisedAsPokemon { get; }
+        public PBETrainer PokemonTrainer { get; }
+        public byte Pokemon { get; }
+        public byte DisguisedAsPokemon { get; }
         public PBEFieldPosition OldPosition { get; }
 
         internal PBEPkmnFaintedPacket(PBEBattlePokemon pokemon, PBEBattlePokemon disguisedAsPokemon, PBEFieldPosition oldPosition)
@@ -27,7 +28,9 @@ namespace Kermalis.PokemonBattleEngine.Packets
             using (var w = new EndianBinaryWriter(ms, encoding: EncodingType.UTF16))
             {
                 w.Write(Code);
-                (Pokemon = pokemon).ToBytes_Id(w, DisguisedAsPokemon = disguisedAsPokemon);
+                w.Write((PokemonTrainer = pokemon.Trainer).Id);
+                w.Write(Pokemon = pokemon.Id);
+                w.Write(DisguisedAsPokemon = disguisedAsPokemon.Id);
                 w.Write(OldPosition = oldPosition);
                 Data = new ReadOnlyCollection<byte>(ms.ToArray());
             }
@@ -35,7 +38,9 @@ namespace Kermalis.PokemonBattleEngine.Packets
         internal PBEPkmnFaintedPacket(byte[] data, EndianBinaryReader r, PBEBattle battle)
         {
             Data = new ReadOnlyCollection<byte>(data);
-            (Pokemon, DisguisedAsPokemon) = battle.GetPokemon_DisguisedId(r);
+            PokemonTrainer = battle.Trainers[r.ReadByte()];
+            Pokemon = r.ReadByte();
+            DisguisedAsPokemon = r.ReadByte();
             OldPosition = r.ReadEnum<PBEFieldPosition>();
         }
     }
@@ -44,7 +49,7 @@ namespace Kermalis.PokemonBattleEngine.Packets
         public const ushort Code = 0x2F;
         public ReadOnlyCollection<byte> Data { get; }
 
-        public PBEBattlePokemon Pokemon { get; }
+        public PBETrainer PokemonTrainer { get; }
         public PBEFieldPosition OldPosition { get; }
 
         public PBEPkmnFaintedPacket_Hidden(PBEPkmnFaintedPacket other)
@@ -57,7 +62,7 @@ namespace Kermalis.PokemonBattleEngine.Packets
             using (var w = new EndianBinaryWriter(ms, encoding: EncodingType.UTF16))
             {
                 w.Write(Code);
-                (Pokemon = other.Pokemon).ToBytes_Position(w);
+                w.Write((PokemonTrainer = other.PokemonTrainer).Id);
                 w.Write(OldPosition = other.OldPosition);
                 Data = new ReadOnlyCollection<byte>(ms.ToArray());
             }
@@ -65,7 +70,7 @@ namespace Kermalis.PokemonBattleEngine.Packets
         internal PBEPkmnFaintedPacket_Hidden(byte[] data, EndianBinaryReader r, PBEBattle battle)
         {
             Data = new ReadOnlyCollection<byte>(data);
-            Pokemon = battle.GetPokemon_Position(r);
+            PokemonTrainer = battle.Trainers[r.ReadByte()];
             OldPosition = r.ReadEnum<PBEFieldPosition>();
         }
     }

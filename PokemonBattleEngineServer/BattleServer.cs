@@ -28,6 +28,7 @@ namespace Kermalis.PokemonBattleEngineServer
         private ServerState _state = ServerState.Resetting;
         private readonly ManualResetEvent _resetEvent = new ManualResetEvent(true);
         private PBEBattle _battle;
+        public readonly PBESettings Settings = PBESettings.DefaultSettings;
         private const PBEBattleFormat BattleFormat = PBEBattleFormat.Double;
         private const int NumTrainersPerTeam = 2; // Must be changed if BattleFormat is changed
         private const int NumBattlers = 2 * NumTrainersPerTeam;
@@ -45,7 +46,6 @@ namespace Kermalis.PokemonBattleEngineServer
         }
         public static void Main(string[] args)
         {
-            args = new string[] { "192.168.1.217", "8888", "false" }; // TODOOOOOOOOOO
             if (args.Length != 3)
             {
                 PrintUsage();
@@ -110,7 +110,7 @@ namespace Kermalis.PokemonBattleEngineServer
                         if (++_battlerCounter == NumBattlers)
                         {
                             Console.WriteLine("All players connected!");
-                            _battle = new PBEBattle(BattleFormat, PBESettings.DefaultSettings, _incomingTrainers[0], _incomingTrainers[1]);
+                            _battle = new PBEBattle(BattleFormat, Settings, _incomingTrainers[0], _incomingTrainers[1]);
                             _incomingTrainers = null;
                             _battle.OnNewEvent += PBEBattle.ConsoleBattleEventHandler;
                             _battle.OnNewEvent += BattleEventHandler;
@@ -341,7 +341,7 @@ namespace Kermalis.PokemonBattleEngineServer
             {
                 case PBEMoveLockPacket mlp:
                 {
-                    Player p = _battlers[mlp.MoveUser.Trainer.Id];
+                    Player p = _battlers[mlp.MoveUserTrainer.Id];
                     p.Send(mlp);
                     if (!p.WaitForResponse(typeof(PBEResponsePacket)))
                     {
@@ -351,17 +351,17 @@ namespace Kermalis.PokemonBattleEngineServer
                 }
                 case PBEPkmnFaintedPacket pfp:
                 {
-                    SendOriginalPacketToTeamOwnerAndEveryoneElseGetsAPacketWithHiddenInfo(pfp, new PBEPkmnFaintedPacket_Hidden(pfp), pfp.Pokemon.Trainer.Id);
+                    SendOriginalPacketToTeamOwnerAndEveryoneElseGetsAPacketWithHiddenInfo(pfp, new PBEPkmnFaintedPacket_Hidden(pfp), pfp.PokemonTrainer.Id);
                     break;
                 }
                 case PBEPkmnFormChangedPacket pfcp:
                 {
-                    SendOriginalPacketToTeamOwnerAndEveryoneElseGetsAPacketWithHiddenInfo(pfcp, new PBEPkmnFormChangedPacket_Hidden(pfcp), pfcp.Pokemon.Trainer.Id);
+                    SendOriginalPacketToTeamOwnerAndEveryoneElseGetsAPacketWithHiddenInfo(pfcp, new PBEPkmnFormChangedPacket_Hidden(pfcp), pfcp.PokemonTrainer.Id);
                     break;
                 }
                 case PBEPkmnHPChangedPacket phcp:
                 {
-                    SendOriginalPacketToTeamOwnerAndEveryoneElseGetsAPacketWithHiddenInfo(phcp, new PBEPkmnHPChangedPacket_Hidden(phcp), phcp.Pokemon.Trainer.Id);
+                    SendOriginalPacketToTeamOwnerAndEveryoneElseGetsAPacketWithHiddenInfo(phcp, new PBEPkmnHPChangedPacket_Hidden(phcp), phcp.PokemonTrainer.Id);
                     break;
                 }
                 case PBEPkmnSwitchInPacket psip:
@@ -371,7 +371,7 @@ namespace Kermalis.PokemonBattleEngineServer
                 }
                 case PBEPkmnSwitchOutPacket psop:
                 {
-                    SendOriginalPacketToTeamOwnerAndEveryoneElseGetsAPacketWithHiddenInfo(psop, new PBEPkmnSwitchOutPacket_Hidden(psop), psop.Pokemon.Trainer.Id);
+                    SendOriginalPacketToTeamOwnerAndEveryoneElseGetsAPacketWithHiddenInfo(psop, new PBEPkmnSwitchOutPacket_Hidden(psop), psop.PokemonTrainer.Id);
                     break;
                 }
                 case PBEReflectTypePacket rtp:
@@ -379,7 +379,7 @@ namespace Kermalis.PokemonBattleEngineServer
                     var hidden = new PBEReflectTypePacket_Hidden(rtp);
                     foreach (Player p in _battlers)
                     {
-                        p.Send(rtp.User.Trainer.Id == p.BattleId || rtp.Target.Trainer.Id == p.BattleId ? (IPBEPacket)rtp : hidden);
+                        p.Send(rtp.UserTrainer.Id == p.BattleId || rtp.TargetTrainer.Id == p.BattleId ? (IPBEPacket)rtp : hidden);
                         if (!p.WaitForResponse(typeof(PBEResponsePacket)))
                         {
                             return;
@@ -397,7 +397,7 @@ namespace Kermalis.PokemonBattleEngineServer
                 {
                     foreach (Player p in _battlers)
                     {
-                        if (tp.User.Trainer.Id == p.BattleId || tp.Target.Trainer.Id == p.BattleId)
+                        if (tp.UserTrainer.Id == p.BattleId || tp.TargetTrainer.Id == p.BattleId)
                         {
                             p.Send(tp);
                             if (!p.WaitForResponse(typeof(PBEResponsePacket)))
@@ -433,7 +433,7 @@ namespace Kermalis.PokemonBattleEngineServer
                     {
                         IPBEAutoCenterPacket chakoPackay = p.BattleId == byte.MaxValue
                             ? spectators
-                            : acp.Pokemon0.Trainer.Id == p.BattleId ? team0 : acp.Pokemon1.Trainer.Id == p.BattleId ? (IPBEAutoCenterPacket)team1: spectators;
+                            : acp.Pokemon0Trainer.Id == p.BattleId ? team0 : acp.Pokemon1Trainer.Id == p.BattleId ? (IPBEAutoCenterPacket)team1: spectators;
                         p.Send(chakoPackay);
                         if (!p.WaitForResponse(typeof(PBEResponsePacket)) && p.BattleId != byte.MaxValue)
                         {

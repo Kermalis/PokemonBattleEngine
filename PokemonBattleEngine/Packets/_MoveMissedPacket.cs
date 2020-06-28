@@ -1,5 +1,6 @@
 ﻿using Kermalis.EndianBinaryIO;
 using Kermalis.PokemonBattleEngine.Battle;
+using Kermalis.PokemonBattleEngine.Data;
 using System.Collections.ObjectModel;
 using System.IO;
 
@@ -10,8 +11,10 @@ namespace Kermalis.PokemonBattleEngine.Packets
         public const ushort Code = 0x0D;
         public ReadOnlyCollection<byte> Data { get; }
 
-        public PBEBattlePokemon MoveUser { get; }
-        public PBEBattlePokemon Pokemon2 { get; }
+        public PBETrainer MoveUserTrainer { get; }
+        public PBEFieldPosition MoveUser { get; }
+        public PBETrainer Pokemon2Trainer { get; }
+        public PBEFieldPosition Pokemon2 { get; }
 
         internal PBEMoveMissedPacket(PBEBattlePokemon moveUser, PBEBattlePokemon pokemon2)
         {
@@ -19,16 +22,20 @@ namespace Kermalis.PokemonBattleEngine.Packets
             using (var w = new EndianBinaryWriter(ms, encoding: EncodingType.UTF16))
             {
                 w.Write(Code);
-                (MoveUser = moveUser).ToBytes_Position(w);
-                (Pokemon2 = pokemon2).ToBytes_Position(w);
+                w.Write((MoveUserTrainer = moveUser.Trainer).Id);
+                w.Write(MoveUser = moveUser.FieldPosition);
+                w.Write((Pokemon2Trainer = pokemon2.Trainer).Id);
+                w.Write(Pokemon2 = pokemon2.FieldPosition);
                 Data = new ReadOnlyCollection<byte>(ms.ToArray());
             }
         }
         internal PBEMoveMissedPacket(byte[] data, EndianBinaryReader r, PBEBattle battle)
         {
             Data = new ReadOnlyCollection<byte>(data);
-            MoveUser = battle.GetPokemon_Position(r);
-            Pokemon2 = battle.GetPokemon_Position(r);
+            MoveUserTrainer = battle.Trainers[r.ReadByte()];
+            MoveUser = r.ReadEnum<PBEFieldPosition>();
+            Pokemon2Trainer = battle.Trainers[r.ReadByte()];
+            Pokemon2 = r.ReadEnum<PBEFieldPosition>();
         }
     }
 }

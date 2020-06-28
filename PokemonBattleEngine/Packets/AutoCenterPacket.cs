@@ -9,19 +9,29 @@ namespace Kermalis.PokemonBattleEngine.Packets
 {
     public interface IPBEAutoCenterPacket : IPBEPacket
     {
-        PBEBattlePokemon Pokemon0 { get; }
+        PBETrainer Pokemon0Trainer { get; }
         PBEFieldPosition Pokemon0OldPosition { get; }
-        PBEBattlePokemon Pokemon1 { get; }
+        PBETrainer Pokemon1Trainer { get; }
         PBEFieldPosition Pokemon1OldPosition { get; }
     }
-    public sealed class PBEAutoCenterPacket : IPBEAutoCenterPacket
+    public interface IPBEAutoCenterPacket_0 : IPBEAutoCenterPacket
+    {
+        byte Pokemon0 { get; }
+    }
+    public interface IPBEAutoCenterPacket_1 : IPBEAutoCenterPacket
+    {
+        byte Pokemon1 { get; }
+    }
+    public sealed class PBEAutoCenterPacket : IPBEAutoCenterPacket_0, IPBEAutoCenterPacket_1
     {
         public const ushort Code = 0x2A;
         public ReadOnlyCollection<byte> Data { get; }
 
-        public PBEBattlePokemon Pokemon0 { get; }
+        public PBETrainer Pokemon0Trainer { get; }
+        public byte Pokemon0 { get; }
         public PBEFieldPosition Pokemon0OldPosition { get; }
-        public PBEBattlePokemon Pokemon1 { get; }
+        public PBETrainer Pokemon1Trainer { get; }
+        public byte Pokemon1 { get; }
         public PBEFieldPosition Pokemon1OldPosition { get; }
 
         internal PBEAutoCenterPacket(PBEBattlePokemon pokemon0, PBEFieldPosition pokemon0OldPosition, PBEBattlePokemon pokemon1, PBEFieldPosition pokemon1OldPosition)
@@ -30,9 +40,11 @@ namespace Kermalis.PokemonBattleEngine.Packets
             using (var w = new EndianBinaryWriter(ms, encoding: EncodingType.UTF16))
             {
                 w.Write(Code);
-                (Pokemon0 = pokemon0).ToBytes_Id(w);
+                w.Write((Pokemon0Trainer = pokemon0.Trainer).Id);
+                w.Write(Pokemon0 = pokemon0.Id);
                 w.Write(Pokemon0OldPosition = pokemon0OldPosition);
-                (Pokemon1 = pokemon1).ToBytes_Id(w);
+                w.Write((Pokemon1Trainer = pokemon1.Trainer).Id);
+                w.Write(Pokemon1 = pokemon1.Id);
                 w.Write(Pokemon1OldPosition = pokemon1OldPosition);
                 Data = new ReadOnlyCollection<byte>(ms.ToArray());
             }
@@ -40,20 +52,23 @@ namespace Kermalis.PokemonBattleEngine.Packets
         internal PBEAutoCenterPacket(byte[] data, EndianBinaryReader r, PBEBattle battle)
         {
             Data = new ReadOnlyCollection<byte>(data);
-            Pokemon0 = battle.GetPokemon_Id(r);
+            Pokemon0Trainer = battle.Trainers[r.ReadByte()];
+            Pokemon0 = r.ReadByte();
             Pokemon0OldPosition = r.ReadEnum<PBEFieldPosition>();
-            Pokemon1 = battle.GetPokemon_Id(r);
+            Pokemon1Trainer = battle.Trainers[r.ReadByte()];
+            Pokemon1 = r.ReadByte();
             Pokemon1OldPosition = r.ReadEnum<PBEFieldPosition>();
         }
     }
-    public sealed class PBEAutoCenterPacket_Hidden0 : IPBEAutoCenterPacket
+    public sealed class PBEAutoCenterPacket_Hidden0 : IPBEAutoCenterPacket_1
     {
         public const ushort Code = 0x30;
         public ReadOnlyCollection<byte> Data { get; }
 
-        public PBEBattlePokemon Pokemon0 { get; }
+        public PBETrainer Pokemon0Trainer { get; }
         public PBEFieldPosition Pokemon0OldPosition { get; }
-        public PBEBattlePokemon Pokemon1 { get; }
+        public PBETrainer Pokemon1Trainer { get; }
+        public byte Pokemon1 { get; }
         public PBEFieldPosition Pokemon1OldPosition { get; }
 
         public PBEAutoCenterPacket_Hidden0(PBEAutoCenterPacket other)
@@ -66,9 +81,10 @@ namespace Kermalis.PokemonBattleEngine.Packets
             using (var w = new EndianBinaryWriter(ms, encoding: EncodingType.UTF16))
             {
                 w.Write(Code);
-                (Pokemon0 = other.Pokemon0).ToBytes_Position(w);
+                w.Write((Pokemon0Trainer = other.Pokemon0Trainer).Id);
                 w.Write(Pokemon0OldPosition = other.Pokemon0OldPosition);
-                (Pokemon1 = other.Pokemon1).ToBytes_Id(w);
+                w.Write((Pokemon1Trainer = other.Pokemon1Trainer).Id);
+                w.Write(Pokemon1 = other.Pokemon1);
                 w.Write(Pokemon1OldPosition = other.Pokemon1OldPosition);
                 Data = new ReadOnlyCollection<byte>(ms.ToArray());
             }
@@ -76,20 +92,22 @@ namespace Kermalis.PokemonBattleEngine.Packets
         internal PBEAutoCenterPacket_Hidden0(byte[] data, EndianBinaryReader r, PBEBattle battle)
         {
             Data = new ReadOnlyCollection<byte>(data);
-            Pokemon0 = battle.GetPokemon_Position(r);
+            Pokemon0Trainer = battle.Trainers[r.ReadByte()];
             Pokemon0OldPosition = r.ReadEnum<PBEFieldPosition>();
-            Pokemon1 = battle.GetPokemon_Id(r);
+            Pokemon1Trainer = battle.Trainers[r.ReadByte()];
+            Pokemon1 = r.ReadByte();
             Pokemon1OldPosition = r.ReadEnum<PBEFieldPosition>();
         }
     }
-    public sealed class PBEAutoCenterPacket_Hidden1 : IPBEAutoCenterPacket
+    public sealed class PBEAutoCenterPacket_Hidden1 : IPBEAutoCenterPacket_0
     {
         public const ushort Code = 0x31;
         public ReadOnlyCollection<byte> Data { get; }
 
-        public PBEBattlePokemon Pokemon0 { get; }
+        public PBETrainer Pokemon0Trainer { get; }
+        public byte Pokemon0 { get; }
         public PBEFieldPosition Pokemon0OldPosition { get; }
-        public PBEBattlePokemon Pokemon1 { get; }
+        public PBETrainer Pokemon1Trainer { get; }
         public PBEFieldPosition Pokemon1OldPosition { get; }
 
         public PBEAutoCenterPacket_Hidden1(PBEAutoCenterPacket other)
@@ -102,9 +120,10 @@ namespace Kermalis.PokemonBattleEngine.Packets
             using (var w = new EndianBinaryWriter(ms, encoding: EncodingType.UTF16))
             {
                 w.Write(Code);
-                (Pokemon0 = other.Pokemon0).ToBytes_Id(w);
+                w.Write((Pokemon0Trainer = other.Pokemon0Trainer).Id);
+                w.Write(Pokemon0 = other.Pokemon0);
                 w.Write(Pokemon0OldPosition = other.Pokemon0OldPosition);
-                (Pokemon1 = other.Pokemon1).ToBytes_Position(w);
+                w.Write((Pokemon1Trainer = other.Pokemon1Trainer).Id);
                 w.Write(Pokemon1OldPosition = other.Pokemon1OldPosition);
                 Data = new ReadOnlyCollection<byte>(ms.ToArray());
             }
@@ -112,9 +131,10 @@ namespace Kermalis.PokemonBattleEngine.Packets
         internal PBEAutoCenterPacket_Hidden1(byte[] data, EndianBinaryReader r, PBEBattle battle)
         {
             Data = new ReadOnlyCollection<byte>(data);
-            Pokemon0 = battle.GetPokemon_Id(r);
+            Pokemon0Trainer = battle.Trainers[r.ReadByte()];
+            Pokemon0 = r.ReadByte();
             Pokemon0OldPosition = r.ReadEnum<PBEFieldPosition>();
-            Pokemon1 = battle.GetPokemon_Position(r);
+            Pokemon1Trainer = battle.Trainers[r.ReadByte()];
             Pokemon1OldPosition = r.ReadEnum<PBEFieldPosition>();
         }
     }
@@ -123,9 +143,9 @@ namespace Kermalis.PokemonBattleEngine.Packets
         public const ushort Code = 0x32;
         public ReadOnlyCollection<byte> Data { get; }
 
-        public PBEBattlePokemon Pokemon0 { get; }
+        public PBETrainer Pokemon0Trainer { get; }
         public PBEFieldPosition Pokemon0OldPosition { get; }
-        public PBEBattlePokemon Pokemon1 { get; }
+        public PBETrainer Pokemon1Trainer { get; }
         public PBEFieldPosition Pokemon1OldPosition { get; }
 
         public PBEAutoCenterPacket_Hidden01(PBEAutoCenterPacket other)
@@ -138,9 +158,9 @@ namespace Kermalis.PokemonBattleEngine.Packets
             using (var w = new EndianBinaryWriter(ms, encoding: EncodingType.UTF16))
             {
                 w.Write(Code);
-                (Pokemon0 = other.Pokemon0).ToBytes_Position(w);
+                w.Write((Pokemon0Trainer = other.Pokemon0Trainer).Id);
                 w.Write(Pokemon0OldPosition = other.Pokemon0OldPosition);
-                (Pokemon1 = other.Pokemon1).ToBytes_Position(w);
+                w.Write((Pokemon1Trainer = other.Pokemon1Trainer).Id);
                 w.Write(Pokemon1OldPosition = other.Pokemon1OldPosition);
                 Data = new ReadOnlyCollection<byte>(ms.ToArray());
             }
@@ -148,9 +168,9 @@ namespace Kermalis.PokemonBattleEngine.Packets
         internal PBEAutoCenterPacket_Hidden01(byte[] data, EndianBinaryReader r, PBEBattle battle)
         {
             Data = new ReadOnlyCollection<byte>(data);
-            Pokemon0 = battle.GetPokemon_Position(r);
+            Pokemon0Trainer = battle.Trainers[r.ReadByte()];
             Pokemon0OldPosition = r.ReadEnum<PBEFieldPosition>();
-            Pokemon1 = battle.GetPokemon_Position(r);
+            Pokemon1Trainer = battle.Trainers[r.ReadByte()];
             Pokemon1OldPosition = r.ReadEnum<PBEFieldPosition>();
         }
     }

@@ -640,6 +640,8 @@ namespace Kermalis.PokemonBattleEngineDiscord
             {
                 case PBEAbilityPacket ap:
                 {
+                    PBEBattlePokemon abilityOwner = ap.AbilityOwnerTrainer.TryGetPokemon(ap.AbilityOwner);
+                    PBEBattlePokemon pokemon2 = ap.AbilityOwnerTrainer.TryGetPokemon(ap.Pokemon2);
                     string message;
                     switch (ap.Ability)
                     {
@@ -850,11 +852,12 @@ namespace Kermalis.PokemonBattleEngineDiscord
                         }
                         default: throw new ArgumentOutOfRangeException(nameof(ap.Ability));
                     }
-                    _queuedMessages.AppendLine(string.Format(message, NameForTrainer(ap.AbilityOwner), NameForTrainer(ap.Pokemon2), PBELocalizedString.GetAbilityName(ap.Ability).English));
+                    _queuedMessages.AppendLine(string.Format(message, NameForTrainer(abilityOwner), NameForTrainer(pokemon2), PBELocalizedString.GetAbilityName(ap.Ability).English));
                     break;
                 }
                 case PBEAbilityReplacedPacket arp:
                 {
+                    PBEBattlePokemon abilityOwner = arp.AbilityOwnerTrainer.TryGetPokemon(arp.AbilityOwner);
                     string message;
                     switch (arp.NewAbility)
                     {
@@ -862,7 +865,7 @@ namespace Kermalis.PokemonBattleEngineDiscord
                         default: message = "{0}'s {1} was changed to {2}!"; break;
                     }
                     _queuedMessages.AppendLine(string.Format(message,
-                        NameForTrainer(arp.AbilityOwner),
+                        NameForTrainer(abilityOwner),
                         arp.OldAbility.HasValue ? PBELocalizedString.GetAbilityName(arp.OldAbility.Value).English : "Ability",
                         PBELocalizedString.GetAbilityName(arp.NewAbility).English));
                     break;
@@ -895,6 +898,8 @@ namespace Kermalis.PokemonBattleEngineDiscord
                 }
                 case PBEItemPacket ip:
                 {
+                    PBEBattlePokemon itemHolder = ip.ItemHolderTrainer.TryGetPokemon(ip.ItemHolder);
+                    PBEBattlePokemon pokemon2 = ip.Pokemon2Trainer.TryGetPokemon(ip.Pokemon2);
                     string message;
                     switch (ip.Item)
                     {
@@ -1046,21 +1051,25 @@ namespace Kermalis.PokemonBattleEngineDiscord
                         }
                         default: throw new ArgumentOutOfRangeException(nameof(ip.Item));
                     }
-                    _queuedMessages.AppendLine(string.Format(message, NameForTrainer(ip.ItemHolder), NameForTrainer(ip.Pokemon2), PBELocalizedString.GetItemName(ip.Item).English));
+                    _queuedMessages.AppendLine(string.Format(message, NameForTrainer(itemHolder), NameForTrainer(pokemon2), PBELocalizedString.GetItemName(ip.Item).English));
                     break;
                 }
                 case PBEMoveCritPacket mcp:
                 {
-                    _queuedMessages.AppendLine(string.Format("A critical hit on {0}!", NameForTrainer(mcp.Victim)));
+                    PBEBattlePokemon victim = mcp.VictimTrainer.TryGetPokemon(mcp.Victim);
+                    _queuedMessages.AppendLine(string.Format("A critical hit on {0}!", NameForTrainer(victim)));
                     break;
                 }
                 case PBEMoveMissedPacket mmp:
                 {
-                    _queuedMessages.AppendLine(string.Format("{0}'s attack missed {1}!", NameForTrainer(mmp.MoveUser), NameForTrainer(mmp.Pokemon2)));
+                    PBEBattlePokemon moveUser = mmp.MoveUserTrainer.TryGetPokemon(mmp.MoveUser);
+                    PBEBattlePokemon pokemon2 = mmp.Pokemon2Trainer.TryGetPokemon(mmp.Pokemon2);
+                    _queuedMessages.AppendLine(string.Format("{0}'s attack missed {1}!", NameForTrainer(moveUser), NameForTrainer(pokemon2)));
                     break;
                 }
                 case PBEMoveResultPacket mrp:
                 {
+                    PBEBattlePokemon pokemon2 = mrp.Pokemon2Trainer.TryGetPokemon(mrp.Pokemon2);
                     string message;
                     switch (mrp.Result)
                     {
@@ -1079,33 +1088,38 @@ namespace Kermalis.PokemonBattleEngineDiscord
                         case PBEResult.SuperEffective_Type: message = "It's super effective on {0}!"; break;
                         default: throw new ArgumentOutOfRangeException(nameof(mrp.Result));
                     }
-                    _queuedMessages.AppendLine(string.Format(message, NameForTrainer(mrp.Pokemon2)));
+                    _queuedMessages.AppendLine(string.Format(message, NameForTrainer(pokemon2)));
                     break;
                 }
                 case PBEMoveUsedPacket mup:
                 {
-                    _queuedMessages.AppendLine(string.Format("{0} used {1}!", NameForTrainer(mup.MoveUser), PBELocalizedString.GetMoveName(mup.Move).English));
+                    PBEBattlePokemon moveUser = mup.MoveUserTrainer.TryGetPokemon(mup.MoveUser);
+                    _queuedMessages.AppendLine(string.Format("{0} used {1}!", NameForTrainer(moveUser), PBELocalizedString.GetMoveName(mup.Move).English));
                     break;
                 }
-                case PBEPkmnFaintedPacket pfap:
+                case PBEPkmnFaintedPacket pfp:
                 {
-                    _queuedMessages.AppendLine(string.Format("{0} fainted!", NameForTrainer(pfap.Pokemon)));
+                    PBEBattlePokemon pokemon = pfp.PokemonTrainer.TryGetPokemon(pfp.Pokemon);
+                    _queuedMessages.AppendLine(string.Format("{0} fainted!", NameForTrainer(pokemon)));
                     break;
                 }
                 case PBEPkmnFormChangedPacket pfcp:
                 {
-                    _queuedMessages.AppendLine(string.Format("{0}'s new form is {1}!", NameForTrainer(pfcp.Pokemon), PBELocalizedString.GetFormName(pfcp.Pokemon.Species, pfcp.NewForm).English));
+                    PBEBattlePokemon pokemon = pfcp.PokemonTrainer.TryGetPokemon(pfcp.Pokemon);
+                    _queuedMessages.AppendLine(string.Format("{0}'s new form is {1}!", NameForTrainer(pokemon), PBELocalizedString.GetFormName(pokemon.Species, pfcp.NewForm).English));
                     break;
                 }
                 case PBEPkmnHPChangedPacket phcp:
                 {
+                    PBEBattlePokemon pokemon = phcp.PokemonTrainer.TryGetPokemon(phcp.Pokemon);
                     double percentageChange = phcp.NewHPPercentage - phcp.OldHPPercentage;
                     double absPercentageChange = Math.Abs(percentageChange);
-                    _queuedMessages.AppendLine(string.Format("{0} {1} {2:P2} of its HP!", NameForTrainer(phcp.Pokemon), percentageChange <= 0 ? "lost" : "restored", absPercentageChange));
+                    _queuedMessages.AppendLine(string.Format("{0} {1} {2:P2} of its HP!", NameForTrainer(pokemon), percentageChange <= 0 ? "lost" : "restored", absPercentageChange));
                     break;
                 }
                 case PBEPkmnStatChangedPacket pscp:
                 {
+                    PBEBattlePokemon pokemon = pscp.PokemonTrainer.TryGetPokemon(pscp.Pokemon);
                     string statName, message;
                     switch (pscp.Stat)
                     {
@@ -1150,7 +1164,7 @@ namespace Kermalis.PokemonBattleEngineDiscord
                             break;
                         }
                     }
-                    _queuedMessages.AppendLine(string.Format("{0}'s {1} {2}!", NameForTrainer(pscp.Pokemon), statName, message));
+                    _queuedMessages.AppendLine(string.Format("{0}'s {1} {2}!", NameForTrainer(pokemon), statName, message));
                     break;
                 }
                 case PBEPkmnSwitchInPacket psip:
@@ -1168,21 +1182,26 @@ namespace Kermalis.PokemonBattleEngineDiscord
                 {
                     if (!psop.Forced)
                     {
-                        _queuedMessages.AppendLine(string.Format("{1} withdrew {0}!", psop.DisguisedAsPokemon.KnownNickname, psop.Pokemon.Trainer.Name));
+                        PBEBattlePokemon disguisedAsPokemon = psop.PokemonTrainer.TryGetPokemon(psop.DisguisedAsPokemon);
+                        _queuedMessages.AppendLine(string.Format("{1} withdrew {0}!", disguisedAsPokemon.KnownNickname, psop.PokemonTrainer.Name));
                     }
                     break;
                 }
                 case PBEPsychUpPacket pup:
                 {
-                    _queuedMessages.AppendLine(string.Format("{0} copied {1}'s stat changes!", NameForTrainer(pup.User), NameForTrainer(pup.Target)));
+                    PBEBattlePokemon user = pup.UserTrainer.TryGetPokemon(pup.User);
+                    PBEBattlePokemon target = pup.TargetTrainer.TryGetPokemon(pup.Target);
+                    _queuedMessages.AppendLine(string.Format("{0} copied {1}'s stat changes!", NameForTrainer(user), NameForTrainer(target)));
                     break;
                 }
                 case PBEReflectTypePacket rtp:
                 {
+                    PBEBattlePokemon user = rtp.UserTrainer.TryGetPokemon(rtp.User);
+                    PBEBattlePokemon target = rtp.TargetTrainer.TryGetPokemon(rtp.Target);
                     string type1Str = PBELocalizedString.GetTypeName(rtp.Type1).English;
                     _queuedMessages.AppendLine(string.Format("{0} copied {1}'s {2}",
-                        NameForTrainer(rtp.User),
-                        NameForTrainer(rtp.Target),
+                        NameForTrainer(user),
+                        NameForTrainer(target),
                         rtp.Type2 == PBEType.None ? $"{type1Str} type!" : $"{type1Str} and {PBELocalizedString.GetTypeName(rtp.Type2).English} types!"));
                     break;
                 }
@@ -1191,17 +1210,17 @@ namespace Kermalis.PokemonBattleEngineDiscord
                     string message;
                     switch (smp.Message)
                     {
-                        case PBESpecialMessage.DraggedOut: message = string.Format("{0} was dragged out!", NameForTrainer((PBEBattlePokemon)smp.Params[0])); break;
-                        case PBESpecialMessage.Endure: message = string.Format("{0} endured the hit!", NameForTrainer((PBEBattlePokemon)smp.Params[0])); break;
-                        case PBESpecialMessage.HPDrained: message = string.Format("{0} had its energy drained!", NameForTrainer((PBEBattlePokemon)smp.Params[0])); break;
+                        case PBESpecialMessage.DraggedOut: message = string.Format("{0} was dragged out!", NameForTrainer(((PBETrainer)smp.Params[0]).TryGetPokemon((PBEFieldPosition)smp.Params[1]))); break;
+                        case PBESpecialMessage.Endure: message = string.Format("{0} endured the hit!", NameForTrainer(((PBETrainer)smp.Params[0]).TryGetPokemon((PBEFieldPosition)smp.Params[1]))); break;
+                        case PBESpecialMessage.HPDrained: message = string.Format("{0} had its energy drained!", NameForTrainer(((PBETrainer)smp.Params[0]).TryGetPokemon((PBEFieldPosition)smp.Params[1]))); break;
                         case PBESpecialMessage.Magnitude: message = string.Format("Magnitude {0}!", (byte)smp.Params[0]); break;
                         case PBESpecialMessage.MultiHit: message = string.Format("Hit {0} time(s)!", (byte)smp.Params[0]); break;
                         case PBESpecialMessage.NothingHappened: message = "But nothing happened!"; break;
                         case PBESpecialMessage.OneHitKnockout: message = "It's a one-hit KO!"; break;
                         case PBESpecialMessage.PainSplit: message = "The battlers shared their pain!"; break;
                         case PBESpecialMessage.PayDay: message = "Coins were scattered everywhere!"; break;
-                        case PBESpecialMessage.Recoil: message = string.Format("{0} is damaged by recoil!", NameForTrainer((PBEBattlePokemon)smp.Params[0])); break;
-                        case PBESpecialMessage.Struggle: message = string.Format("{0} has no moves left!", NameForTrainer((PBEBattlePokemon)smp.Params[0])); break;
+                        case PBESpecialMessage.Recoil: message = string.Format("{0} is damaged by recoil!", NameForTrainer(((PBETrainer)smp.Params[0]).TryGetPokemon((PBEFieldPosition)smp.Params[1]))); break;
+                        case PBESpecialMessage.Struggle: message = string.Format("{0} has no moves left!", NameForTrainer(((PBETrainer)smp.Params[0]).TryGetPokemon((PBEFieldPosition)smp.Params[1]))); break;
                         default: throw new ArgumentOutOfRangeException(nameof(smp.Message));
                     }
                     _queuedMessages.AppendLine(message);
@@ -1209,6 +1228,7 @@ namespace Kermalis.PokemonBattleEngineDiscord
                 }
                 case PBEStatus1Packet s1p:
                 {
+                    PBEBattlePokemon status1Receiver = s1p.Status1ReceiverTrainer.TryGetPokemon(s1p.Status1Receiver);
                     string message;
                     switch (s1p.Status1)
                     {
@@ -1282,11 +1302,13 @@ namespace Kermalis.PokemonBattleEngineDiscord
                         }
                         default: throw new ArgumentOutOfRangeException(nameof(s1p.Status1));
                     }
-                    _queuedMessages.AppendLine(string.Format(message, NameForTrainer(s1p.Status1Receiver)));
+                    _queuedMessages.AppendLine(string.Format(message, NameForTrainer(status1Receiver)));
                     break;
                 }
                 case PBEStatus2Packet s2p:
                 {
+                    PBEBattlePokemon status2Receiver = s2p.Status2ReceiverTrainer.TryGetPokemon(s2p.Status2Receiver);
+                    PBEBattlePokemon pokemon2 = s2p.Pokemon2Trainer.TryGetPokemon(s2p.Pokemon2);
                     string message;
                     switch (s2p.Status2)
                     {
@@ -1508,11 +1530,12 @@ namespace Kermalis.PokemonBattleEngineDiscord
                         }
                         default: throw new ArgumentOutOfRangeException(nameof(s2p.Status2));
                     }
-                    _queuedMessages.AppendLine(string.Format(message, NameForTrainer(s2p.Status2Receiver), NameForTrainer(s2p.Pokemon2)));
+                    _queuedMessages.AppendLine(string.Format(message, NameForTrainer(status2Receiver), NameForTrainer(pokemon2)));
                     break;
                 }
                 case PBETeamStatusPacket tsp:
                 {
+                    PBEBattlePokemon damageVictim = tsp.DamageVictimTrainer?.TryGetPokemon(tsp.DamageVictim);
                     string message;
                     switch (tsp.TeamStatus)
                     {
@@ -1626,19 +1649,21 @@ namespace Kermalis.PokemonBattleEngineDiscord
                         }
                         default: throw new ArgumentOutOfRangeException(nameof(tsp.TeamStatus));
                     }
-                    _queuedMessages.AppendLine(string.Format(message, tsp.Team.CombinedName, NameForTrainer(tsp.DamageVictim)));
+                    _queuedMessages.AppendLine(string.Format(message, tsp.Team.CombinedName, NameForTrainer(damageVictim)));
                     break;
                 }
                 case PBETypeChangedPacket tcp:
                 {
+                    PBEBattlePokemon pokemon = tcp.PokemonTrainer.TryGetPokemon(tcp.Pokemon);
                     string type1Str = PBELocalizedString.GetTypeName(tcp.Type1).English;
                     _queuedMessages.AppendLine(string.Format("{0} transformed into the {1}",
-                        NameForTrainer(tcp.Pokemon),
+                        NameForTrainer(pokemon),
                         tcp.Type2 == PBEType.None ? $"{type1Str} type!" : $"{type1Str} and {PBELocalizedString.GetTypeName(tcp.Type2).English} types!"));
                     break;
                 }
                 case PBEWeatherPacket wp:
                 {
+                    PBEBattlePokemon damageVictim = wp.DamageVictimTrainer?.TryGetPokemon(wp.DamageVictim);
                     if (wp.WeatherAction == PBEWeatherAction.Added || wp.WeatherAction == PBEWeatherAction.Ended)
                     {
                         SetEmbedTitle();
@@ -1690,12 +1715,12 @@ namespace Kermalis.PokemonBattleEngineDiscord
                         }
                         default: throw new ArgumentOutOfRangeException(nameof(wp.Weather));
                     }
-                    _queuedMessages.AppendLine(string.Format(message, NameForTrainer(wp.DamageVictim)));
+                    _queuedMessages.AppendLine(string.Format(message, NameForTrainer(damageVictim)));
                     break;
                 }
                 case PBEActionsRequestPacket arp:
                 {
-                    var trainer = (PBETrainer)arp.Trainer;
+                    PBETrainer trainer = arp.Trainer;
                     SocketUser user = trainer.Team.Id == 0 ? _battler0 : _battler1;
                     if (user == null) // PBEAI
                     {
@@ -1786,7 +1811,7 @@ namespace Kermalis.PokemonBattleEngineDiscord
                 }
                 case PBESwitchInRequestPacket sirp:
                 {
-                    var trainer = (PBETrainer)sirp.Trainer;
+                    PBETrainer trainer = sirp.Trainer;
                     PBEBattlePokemon[] switches = trainer.Party.Where(p => p.HP > 0).ToArray();
                     if (switches.Length == 1)
                     {

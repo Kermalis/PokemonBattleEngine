@@ -29,12 +29,12 @@ namespace Kermalis.PokemonBattleEngineTests
         {
             foreach (IPBEPacket packet in battle.Events)
             {
-                if (packet is PBEMoveResultPacket mrp)
+                if (packet is PBEMoveResultPacket mrp
+                    && mrp.Result == result
+                    && mrp.MoveUserTrainer.TryGetPokemon(mrp.MoveUser) == moveUser
+                    && mrp.Pokemon2Trainer.TryGetPokemon(mrp.Pokemon2) == pokemon2)
                 {
-                    if (mrp.Result == result && mrp.MoveUser == moveUser && mrp.Pokemon2 == pokemon2)
-                    {
-                        return true;
-                    }
+                    return true;
                 }
             }
             return false;
@@ -43,12 +43,13 @@ namespace Kermalis.PokemonBattleEngineTests
         {
             foreach (IPBEPacket packet in battle.Events)
             {
-                if (packet is PBEStatus2Packet s2p)
+                if (packet is PBEStatus2Packet s2p
+                    && s2p.Status2 == status2
+                    && s2p.StatusAction == statusAction
+                    && s2p.Status2ReceiverTrainer.TryGetPokemon(s2p.Status2Receiver) == status2Receiver
+                    && s2p.Pokemon2Trainer.TryGetPokemon(s2p.Pokemon2) == pokemon2)
                 {
-                    if (s2p.Status2 == status2 && s2p.StatusAction == statusAction && s2p.Status2Receiver == status2Receiver && s2p.Pokemon2 == pokemon2)
-                    {
-                        return true;
-                    }
+                    return true;
                 }
             }
             return false;
@@ -57,12 +58,13 @@ namespace Kermalis.PokemonBattleEngineTests
         {
             foreach (IPBEPacket packet in battle.Events)
             {
-                if (packet is PBETeamStatusPacket tsp)
+                if (packet is PBETeamStatusPacket tsp
+                    && tsp.Team == team
+                    && tsp.TeamStatus == teamStatus
+                    && tsp.TeamStatusAction == teamStatusAction
+                    && tsp.DamageVictimTrainer?.TryGetPokemon(tsp.DamageVictim) == damageVictim)
                 {
-                    if (tsp.Team == team && tsp.TeamStatus == teamStatus && tsp.TeamStatusAction == teamStatusAction && tsp.DamageVictim == damageVictim)
-                    {
-                        return true;
-                    }
+                    return true;
                 }
             }
             return false;

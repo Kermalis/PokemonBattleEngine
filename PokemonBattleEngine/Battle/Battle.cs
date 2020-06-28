@@ -1,5 +1,4 @@
-﻿using Kermalis.EndianBinaryIO;
-using Kermalis.PokemonBattleEngine.Data;
+﻿using Kermalis.PokemonBattleEngine.Data;
 using Kermalis.PokemonBattleEngine.Packets;
 using Kermalis.PokemonBattleEngine.Utils;
 using System;
@@ -640,20 +639,6 @@ namespace Kermalis.PokemonBattleEngine.Battle
             }
 
             SwitchesOrActions();
-        }
-
-        internal (PBEBattlePokemon, PBEBattlePokemon) GetPokemon_DisguisedId(EndianBinaryReader r)
-        {
-            PBETrainer trainer = Trainers[r.ReadByte()];
-            return (trainer.TryGetPokemon(r.ReadByte()), trainer.TryGetPokemon(r.ReadByte()));
-        }
-        internal PBEBattlePokemon GetPokemon_Id(EndianBinaryReader r)
-        {
-            return Trainers[r.ReadByte()].TryGetPokemon(r.ReadByte());
-        }
-        internal PBEBattlePokemon GetPokemon_Position(EndianBinaryReader r)
-        {
-            return Trainers[r.ReadByte()].TryGetPokemon(r.ReadEnum<PBEFieldPosition>());
         }
     }
 }

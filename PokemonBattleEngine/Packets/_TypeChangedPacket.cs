@@ -11,7 +11,8 @@ namespace Kermalis.PokemonBattleEngine.Packets
         public const ushort Code = 0x2B;
         public ReadOnlyCollection<byte> Data { get; }
 
-        public PBEBattlePokemon Pokemon { get; }
+        public PBETrainer PokemonTrainer { get; }
+        public PBEFieldPosition Pokemon { get; }
         public PBEType Type1 { get; }
         public PBEType Type2 { get; }
 
@@ -21,7 +22,8 @@ namespace Kermalis.PokemonBattleEngine.Packets
             using (var w = new EndianBinaryWriter(ms, encoding: EncodingType.UTF16))
             {
                 w.Write(Code);
-                (Pokemon = pokemon).ToBytes_Position(w);
+                w.Write((PokemonTrainer = pokemon.Trainer).Id);
+                w.Write(Pokemon = pokemon.FieldPosition);
                 w.Write(Type1 = type1);
                 w.Write(Type2 = type2);
                 Data = new ReadOnlyCollection<byte>(ms.ToArray());
@@ -30,7 +32,8 @@ namespace Kermalis.PokemonBattleEngine.Packets
         internal PBETypeChangedPacket(byte[] data, EndianBinaryReader r, PBEBattle battle)
         {
             Data = new ReadOnlyCollection<byte>(data);
-            Pokemon = battle.GetPokemon_Position(r);
+            PokemonTrainer = battle.Trainers[r.ReadByte()];
+            Pokemon = r.ReadEnum<PBEFieldPosition>();
             Type1 = r.ReadEnum<PBEType>();
             Type2 = r.ReadEnum<PBEType>();
         }

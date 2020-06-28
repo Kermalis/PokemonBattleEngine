@@ -11,7 +11,8 @@ namespace Kermalis.PokemonBattleEngine.Packets
         public const ushort Code = 0x25;
         public ReadOnlyCollection<byte> Data { get; }
 
-        public PBEBattlePokemon Pokemon { get; }
+        public PBETrainer PokemonTrainer { get; }
+        public PBEFieldPosition Pokemon { get; }
         public PBEGender ActualGender { get; }
         public bool ActualShiny { get; }
         public string ActualNickname { get; }
@@ -27,7 +28,8 @@ namespace Kermalis.PokemonBattleEngine.Packets
             using (var w = new EndianBinaryWriter(ms, encoding: EncodingType.UTF16))
             {
                 w.Write(Code);
-                (Pokemon = pokemon).ToBytes_Position(w);
+                w.Write((PokemonTrainer = pokemon.Trainer).Id);
+                w.Write(Pokemon = pokemon.FieldPosition);
                 w.Write(ActualGender = pokemon.Gender);
                 w.Write(ActualNickname = pokemon.Nickname, true);
                 w.Write(ActualShiny = pokemon.Shiny);
@@ -42,7 +44,8 @@ namespace Kermalis.PokemonBattleEngine.Packets
         internal PBEIllusionPacket(byte[] data, EndianBinaryReader r, PBEBattle battle)
         {
             Data = new ReadOnlyCollection<byte>(data);
-            Pokemon = battle.GetPokemon_Position(r);
+            PokemonTrainer = battle.Trainers[r.ReadByte()];
+            Pokemon = r.ReadEnum<PBEFieldPosition>();
             ActualGender = r.ReadEnum<PBEGender>();
             ActualNickname = r.ReadStringNullTerminated();
             ActualShiny = r.ReadBoolean();

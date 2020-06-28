@@ -61,7 +61,7 @@ namespace Kermalis.PokemonBattleEngine.Packets
                     case PBEAutoCenterPacket.Code: return new PBEAutoCenterPacket(data, r, battle);
                     case PBETypeChangedPacket.Code: return new PBETypeChangedPacket(data, r, battle);
                     case PBEAbilityReplacedPacket.Code: return new PBEAbilityReplacedPacket(data, r, battle);
-                    case PBELegalPartyResponsePacket.Code: return new PBELegalPartyResponsePacket(data, r, battle);
+                    case PBELegalPartyResponsePacket.Code: return new PBELegalPartyResponsePacket(data, r);
                     case PBEReflectTypePacket.Code: return new PBEReflectTypePacket(data, r, battle);
                     case PBEPkmnFaintedPacket_Hidden.Code: return new PBEPkmnFaintedPacket_Hidden(data, r, battle);
                     case PBEAutoCenterPacket_Hidden0.Code: return new PBEAutoCenterPacket_Hidden0(data, r, battle);
