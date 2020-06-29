@@ -55,6 +55,10 @@ namespace Kermalis.PokemonBattleEngineClient.Infrastructure
         public static SpeciesToMinispriteConverter Instance { get; } = new SpeciesToMinispriteConverter();
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
+            if (value == null) // Fainted
+            {
+                return null;
+            }
             PBESpecies species;
             PBEForm form;
             PBEGender gender;
