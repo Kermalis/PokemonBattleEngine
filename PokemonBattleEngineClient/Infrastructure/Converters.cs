@@ -1,4 +1,5 @@
-﻿using Avalonia.Data.Converters;
+﻿using Avalonia;
+using Avalonia.Data.Converters;
 using Kermalis.PokemonBattleEngine.Battle;
 using Kermalis.PokemonBattleEngine.Data;
 using System;
@@ -15,14 +16,11 @@ namespace Kermalis.PokemonBattleEngineClient.Infrastructure
             var species = (PBESpecies)values[0];
             if (!PBEDataUtils.HasForms(species, true))
             {
-                return null;
+                return AvaloniaProperty.UnsetValue;
             }
-            else
-            {
-                PBEForm form = true ? 0 : (PBEForm)values[1]; // TODO
-                var localized = PBELocalizedString.GetFormName(species, form);
-                return StringRenderer.Render(localized.ToString(), parameter?.ToString());
-            }
+            PBEForm form = true ? 0 : (PBEForm)values[1]; // TODO
+            var localized = PBELocalizedString.GetFormName(species, form);
+            return StringRenderer.Render(localized.ToString(), parameter?.ToString());
         }
     }
     public sealed class ObjectToTextBitmapConverter : IValueConverter
@@ -57,7 +55,7 @@ namespace Kermalis.PokemonBattleEngineClient.Infrastructure
         {
             if (value == null) // Fainted
             {
-                return null;
+                return AvaloniaProperty.UnsetValue;
             }
             PBESpecies species;
             PBEForm form;
