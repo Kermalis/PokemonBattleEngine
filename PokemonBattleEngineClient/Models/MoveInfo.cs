@@ -46,15 +46,22 @@ namespace Kermalis.PokemonBattleEngineClient.Models
         public MoveInfo(PBEBattlePokemon pkmn, PBEMove move, Action<PBEMove> clickAction)
         {
             Move = move;
-            (SolidColorBrush Brush, SolidColorBrush BorderBrush) ttb = _typeToBrush[pkmn.GetMoveType(move)];
-            Brush = ttb.Brush;
-            BorderBrush = ttb.BorderBrush;
-
-            var sb = new StringBuilder();
-            if (move != PBEMove.None)
+            PBEType moveType = pkmn.GetMoveType(move);
+            (Brush, BorderBrush) = _typeToBrush[moveType];
+            if (move == PBEMove.None)
+            {
+                Description = string.Empty;
+            }
+            else
             {
                 PBEMoveData mData = PBEMoveData.Data[move];
-                sb.AppendLine($"Type: {PBELocalizedString.GetTypeName(mData.Type).ToString()}");
+                string s = $"Type: {PBELocalizedString.GetTypeName(mData.Type)}";
+                if (mData.Type != moveType)
+                {
+                    s += $" → {PBELocalizedString.GetTypeName(moveType)}";
+                }
+                var sb = new StringBuilder();
+                sb.AppendLine(s);
                 sb.AppendLine($"Category: {mData.Category}");
                 PBEBattleMoveset.PBEBattleMovesetSlot slot = pkmn.Moves[move];
                 if (slot != null)
@@ -62,9 +69,15 @@ namespace Kermalis.PokemonBattleEngineClient.Models
                     sb.AppendLine($"PP: {slot.PP}/{slot.MaxPP}");
                 }
                 sb.AppendLine($"Priority: {mData.Priority}");
-                sb.AppendLine($"Power: {(mData.Power == 0 ? "--" : mData.Power.ToString())}");
-                sb.AppendLine($"Accuracy: {(mData.Accuracy == 0 ? "--" : mData.Accuracy.ToString())}");
-                sb.AppendLine($"Targets: {mData.Targets}");
+                sb.AppendLine($"Power: {(mData.Power == 0 ? "―" : mData.Power.ToString())}");
+                sb.AppendLine($"Accuracy: {(mData.Accuracy == 0 ? "―" : mData.Accuracy.ToString())}");
+                s = $"Targets: {mData.Targets}";
+                PBEMoveTarget moveTargets = pkmn.GetMoveTargets(move);
+                if (mData.Targets != moveTargets)
+                {
+                    s += $" → {moveTargets}";
+                }
+                sb.AppendLine(s);
                 sb.AppendLine($"Flags: {mData.Flags}");
                 switch (mData.Effect)
                 {
@@ -75,9 +88,8 @@ namespace Kermalis.PokemonBattleEngineClient.Models
                 }
                 sb.AppendLine();
                 sb.Append(PBELocalizedString.GetMoveDescription(move).ToString().Replace('\n', ' '));
+                Description = sb.ToString();
             }
-            Description = sb.ToString();
-
             SelectMoveCommand = ReactiveCommand.Create(() => clickAction(move));
         }
     }
