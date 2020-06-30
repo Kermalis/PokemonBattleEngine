@@ -43,7 +43,7 @@ namespace Kermalis.PokemonBattleEngineClient.Models
         public string Description { get; }
         public ReactiveCommand<Unit, Unit> SelectMoveCommand { get; }
 
-        public MoveInfo(PBEBattlePokemon pkmn, PBEMove move, Action<PBEMove> clickAction)
+        internal MoveInfo(PBEBattlePokemon pkmn, PBEMove move, Action<PBEMove> clickAction)
         {
             Move = move;
             PBEType moveType = pkmn.GetMoveType(move);

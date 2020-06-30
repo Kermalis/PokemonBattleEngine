@@ -18,15 +18,6 @@ namespace Kermalis.PokemonBattleEngine.Battle
         public PBETrainer Trainer { get; }
         public byte Id { get; }
 
-        /// <summary>The Pokémon's <see cref="Nickname"/> with its <see cref="GenderSymbol"/> attached.</summary>
-        public string NameWithGender => Nickname + GenderSymbol;
-        /// <summary>The Pokémon's <see cref="Gender"/> as a <see cref="string"/>.</summary>
-        public string GenderSymbol => Gender.ToSymbol();
-        /// <summary>The Pokémon's <see cref="KnownNickname"/> with its <see cref="KnownGenderSymbol"/> attached.</summary>
-        public string KnownNameWithKnownGender => KnownNickname + KnownGenderSymbol;
-        /// <summary>The Pokémon's <see cref="KnownGender"/> as a <see cref="string"/>.</summary>
-        public string KnownGenderSymbol => KnownGender.ToSymbol();
-
         #region Basic Properties
         /// <summary>The Pokémon's current HP.</summary>
         public ushort HP { get; set; }

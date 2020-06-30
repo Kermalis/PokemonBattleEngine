@@ -4,6 +4,7 @@ using Kermalis.PokemonBattleEngine.AI;
 using Kermalis.PokemonBattleEngine.Battle;
 using Kermalis.PokemonBattleEngine.Data;
 using Kermalis.PokemonBattleEngine.Packets;
+using Kermalis.PokemonBattleEngine.Utils;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -416,7 +417,7 @@ namespace Kermalis.PokemonBattleEngineDiscord
         {
             var sb = new StringBuilder();
             string formStr = PBEDataUtils.HasForms(pkmn.Species, false) ? $" ({PBELocalizedString.GetFormName(pkmn.Species, pkmn.Form)})" : string.Empty;
-            sb.AppendLine($"{pkmn.Nickname}/{pkmn.Species}{formStr} {pkmn.GenderSymbol} Lv.{pkmn.Level}{(pkmn.Shiny ? $" {_shinyEmoji}" : string.Empty)}");
+            sb.AppendLine($"{pkmn.Nickname}/{pkmn.Species}{formStr} {pkmn.Gender.ToSymbol()} Lv.{pkmn.Level}{(pkmn.Shiny ? $" {_shinyEmoji}" : string.Empty)}");
             sb.AppendLine($"**HP:** {pkmn.HP}/{pkmn.MaxHP} ({pkmn.HPPercentage:P2})");
             sb.Append($"**Types:** {Utils.TypeEmotes[pkmn.Type1]}");
             if (pkmn.Type2 != PBEType.None)
@@ -523,7 +524,7 @@ namespace Kermalis.PokemonBattleEngineDiscord
             var pData = PBEPokemonData.GetData(pkmn.KnownSpecies, pkmn.KnownForm);
             var sb = new StringBuilder();
             string formStr = PBEDataUtils.HasForms(pkmn.KnownSpecies, false) ? $" ({PBELocalizedString.GetFormName(pkmn.KnownSpecies, pkmn.KnownForm)})" : string.Empty;
-            sb.AppendLine($"{pkmn.Trainer.Name}'s {pkmn.KnownNickname}/{pkmn.KnownSpecies}{formStr} {(pkmn.KnownStatus2.HasFlag(PBEStatus2.Transformed) ? pkmn.GenderSymbol : pkmn.KnownGenderSymbol)} Lv.{pkmn.Level}{(pkmn.KnownShiny ? $" {_shinyEmoji}" : string.Empty)}");
+            sb.AppendLine($"{pkmn.Trainer.Name}'s {pkmn.KnownNickname}/{pkmn.KnownSpecies}{formStr} {(pkmn.KnownStatus2.HasFlag(PBEStatus2.Transformed) ? pkmn.Gender.ToSymbol() : pkmn.KnownGender.ToSymbol())} Lv.{pkmn.Level}{(pkmn.KnownShiny ? $" {_shinyEmoji}" : string.Empty)}");
             sb.AppendLine($"**HP:** {pkmn.HPPercentage:P2}");
             sb.Append($"**Known types:** {Utils.TypeEmotes[pkmn.KnownType1]}");
             if (pkmn.KnownType2 != PBEType.None)

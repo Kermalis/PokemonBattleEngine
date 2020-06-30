@@ -212,7 +212,7 @@ namespace Kermalis.PokemonBattleEngineClient.Infrastructure
             {
                 var pData = PBEPokemonData.GetData(pkmn.KnownSpecies, pkmn.KnownForm);
                 string formStr = PBEDataUtils.HasForms(pkmn.KnownSpecies, false) ? $" ({PBELocalizedString.GetFormName(pkmn.KnownSpecies, pkmn.KnownForm)})" : string.Empty;
-                sb.AppendLine($"{pkmn.KnownNickname}/{pkmn.KnownSpecies}{formStr} {(pkmn.KnownStatus2.HasFlag(PBEStatus2.Transformed) ? pkmn.GenderSymbol : pkmn.KnownGenderSymbol)} Lv.{pkmn.Level}");
+                sb.AppendLine($"{pkmn.KnownNickname}/{pkmn.KnownSpecies}{formStr} {(pkmn.KnownStatus2.HasFlag(PBEStatus2.Transformed) ? pkmn.Gender.ToSymbol() : pkmn.KnownGender.ToSymbol())} Lv.{pkmn.Level}");
                 sb.AppendLine($"HP: {pkmn.HPPercentage:P2}");
                 sb.Append($"Known types: {PBELocalizedString.GetTypeName(pkmn.KnownType1)}");
                 if (pkmn.KnownType2 != PBEType.None)
@@ -273,7 +273,7 @@ namespace Kermalis.PokemonBattleEngineClient.Infrastructure
             else
             {
                 string formStr = PBEDataUtils.HasForms(pkmn.Species, false) ? $" ({PBELocalizedString.GetFormName(pkmn.Species, pkmn.Form)})" : string.Empty;
-                sb.AppendLine($"{pkmn.Nickname}/{pkmn.Species}{formStr} {pkmn.GenderSymbol} Lv.{pkmn.Level}");
+                sb.AppendLine($"{pkmn.Nickname}/{pkmn.Species}{formStr} {pkmn.Gender.ToSymbol()} Lv.{pkmn.Level}");
                 sb.AppendLine($"HP: {pkmn.HP}/{pkmn.MaxHP} ({pkmn.HPPercentage:P2})");
                 sb.Append($"Types: {PBELocalizedString.GetTypeName(pkmn.Type1)}");
                 if (pkmn.Type2 != PBEType.None)

@@ -2,13 +2,13 @@
 using Avalonia.Markup.Xaml;
 using Kermalis.PokemonBattleEngine.Battle;
 using Kermalis.PokemonBattleEngine.Data;
+using Kermalis.PokemonBattleEngineClient.Clients;
 using Kermalis.PokemonBattleEngineClient.Models;
 using System;
 using System.ComponentModel;
 
 namespace Kermalis.PokemonBattleEngineClient.Views
 {
-    // If you dislike spaghetti code, I suggest you close this file to avoid death
     public sealed class ActionsView : UserControl, INotifyPropertyChanged
     {
         private void OnPropertyChanged(string property)
@@ -17,162 +17,12 @@ namespace Kermalis.PokemonBattleEngineClient.Views
         }
         public new event PropertyChangedEventHandler PropertyChanged;
 
-        private PBEBattlePokemon _targetAllyLeft;
-        public PBEBattlePokemon TargetAllyLeft
-        {
-            get => _targetAllyLeft;
-            private set
-            {
-                if (_targetAllyLeft != value)
-                {
-                    _targetAllyLeft = value;
-                    OnPropertyChanged(nameof(TargetAllyLeft));
-                }
-            }
-        }
-        private bool _targetAllyLeftEnabled;
-        public bool TargetAllyLeftEnabled
-        {
-            get => _targetAllyLeftEnabled;
-            private set
-            {
-                if (_targetAllyLeftEnabled != value)
-                {
-                    _targetAllyLeftEnabled = value;
-                    OnPropertyChanged(nameof(TargetAllyLeftEnabled));
-                }
-            }
-        }
-        private PBEBattlePokemon _targetAllyCenter;
-        public PBEBattlePokemon TargetAllyCenter
-        {
-            get => _targetAllyCenter;
-            private set
-            {
-                if (_targetAllyCenter != value)
-                {
-                    _targetAllyCenter = value;
-                    OnPropertyChanged(nameof(TargetAllyCenter));
-                }
-            }
-        }
-        private bool _targetAllyCenterEnabled;
-        public bool TargetAllyCenterEnabled
-        {
-            get => _targetAllyCenterEnabled;
-            private set
-            {
-                if (_targetAllyCenterEnabled != value)
-                {
-                    _targetAllyCenterEnabled = value;
-                    OnPropertyChanged(nameof(TargetAllyCenterEnabled));
-                }
-            }
-        }
-        private PBEBattlePokemon _targetAllyRight;
-        public PBEBattlePokemon TargetAllyRight
-        {
-            get => _targetAllyRight;
-            private set
-            {
-                if (_targetAllyRight != value)
-                {
-                    _targetAllyRight = value;
-                    OnPropertyChanged(nameof(TargetAllyRight));
-                }
-            }
-        }
-        private bool _targetAllyRightEnabled;
-        public bool TargetAllyRightEnabled
-        {
-            get => _targetAllyRightEnabled;
-            private set
-            {
-                if (_targetAllyRightEnabled != value)
-                {
-                    _targetAllyRightEnabled = value;
-                    OnPropertyChanged(nameof(TargetAllyRightEnabled));
-                }
-            }
-        }
-        private PBEBattlePokemon _targetFoeLeft;
-        public PBEBattlePokemon TargetFoeLeft
-        {
-            get => _targetFoeLeft;
-            private set
-            {
-                if (_targetFoeLeft != value)
-                {
-                    _targetFoeLeft = value;
-                    OnPropertyChanged(nameof(TargetFoeLeft));
-                }
-            }
-        }
-        private bool _targetFoeLeftEnabled;
-        public bool TargetFoeLeftEnabled
-        {
-            get => _targetFoeLeftEnabled;
-            private set
-            {
-                if (_targetFoeLeftEnabled != value)
-                {
-                    _targetFoeLeftEnabled = value;
-                    OnPropertyChanged(nameof(TargetFoeLeftEnabled));
-                }
-            }
-        }
-        private PBEBattlePokemon _targetFoeCenter;
-        public PBEBattlePokemon TargetFoeCenter
-        {
-            get => _targetFoeCenter;
-            private set
-            {
-                if (_targetFoeCenter != value)
-                {
-                    _targetFoeCenter = value;
-                    OnPropertyChanged(nameof(TargetFoeCenter));
-                }
-            }
-        }
-        private bool _targetFoeCenterEnabled;
-        public bool TargetFoeCenterEnabled
-        {
-            get => _targetFoeCenterEnabled;
-            private set
-            {
-                if (_targetFoeCenterEnabled != value)
-                {
-                    _targetFoeCenterEnabled = value;
-                    OnPropertyChanged(nameof(TargetFoeCenterEnabled));
-                }
-            }
-        }
-        private PBEBattlePokemon _targetFoeRight;
-        public PBEBattlePokemon TargetFoeRight
-        {
-            get => _targetFoeRight;
-            private set
-            {
-                if (_targetFoeRight != value)
-                {
-                    _targetFoeRight = value;
-                    OnPropertyChanged(nameof(TargetFoeRight));
-                }
-            }
-        }
-        private bool _targetFoeRightEnabled;
-        public bool TargetFoeRightEnabled
-        {
-            get => _targetFoeRightEnabled;
-            private set
-            {
-                if (_targetFoeRightEnabled != value)
-                {
-                    _targetFoeRightEnabled = value;
-                    OnPropertyChanged(nameof(TargetFoeRightEnabled));
-                }
-            }
-        }
+        public TargetInfo TargetAllyLeft { get; } = new TargetInfo();
+        public TargetInfo TargetAllyCenter { get; } = new TargetInfo();
+        public TargetInfo TargetAllyRight { get; } = new TargetInfo();
+        public TargetInfo TargetFoeLeft { get; } = new TargetInfo();
+        public TargetInfo TargetFoeCenter { get; } = new TargetInfo();
+        public TargetInfo TargetFoeRight { get; } = new TargetInfo();
 
         private bool _centerTargetsVisible;
         public bool CenterTargetsVisible
@@ -184,97 +34,6 @@ namespace Kermalis.PokemonBattleEngineClient.Views
                 {
                     _centerTargetsVisible = value;
                     OnPropertyChanged(nameof(CenterTargetsVisible));
-                }
-            }
-        }
-        private bool _targetLineFoeLeftFoeCenterEnabled;
-        public bool TargetLineFoeLeftFoeCenterEnabled
-        {
-            get => _targetLineFoeLeftFoeCenterEnabled;
-            private set
-            {
-                if (_targetLineFoeLeftFoeCenterEnabled != value)
-                {
-                    _targetLineFoeLeftFoeCenterEnabled = value;
-                    OnPropertyChanged(nameof(TargetLineFoeLeftFoeCenterEnabled));
-                }
-            }
-        }
-        private bool _targetLineFoeLeftAllyRightEnabled;
-        public bool TargetLineFoeLeftAllyRightEnabled
-        {
-            get => _targetLineFoeLeftAllyRightEnabled;
-            private set
-            {
-                if (_targetLineFoeLeftAllyRightEnabled != value)
-                {
-                    _targetLineFoeLeftAllyRightEnabled = value;
-                    OnPropertyChanged(nameof(TargetLineFoeLeftAllyRightEnabled));
-                }
-            }
-        }
-        private bool _targetLineFoeCenterAllyCenterEnabled;
-        public bool TargetLineFoeCenterAllyCenterEnabled
-        {
-            get => _targetLineFoeCenterAllyCenterEnabled;
-            private set
-            {
-                if (_targetLineFoeCenterAllyCenterEnabled != value)
-                {
-                    _targetLineFoeCenterAllyCenterEnabled = value;
-                    OnPropertyChanged(nameof(TargetLineFoeCenterAllyCenterEnabled));
-                }
-            }
-        }
-        private bool _targetLineFoeRightFoeCenterEnabled;
-        public bool TargetLineFoeRightFoeCenterEnabled
-        {
-            get => _targetLineFoeRightFoeCenterEnabled;
-            private set
-            {
-                if (_targetLineFoeRightFoeCenterEnabled != value)
-                {
-                    _targetLineFoeRightFoeCenterEnabled = value;
-                    OnPropertyChanged(nameof(TargetLineFoeRightFoeCenterEnabled));
-                }
-            }
-        }
-        private bool _targetLineFoeRightAllyLeftEnabled;
-        public bool TargetLineFoeRightAllyLeftEnabled
-        {
-            get => _targetLineFoeRightAllyLeftEnabled;
-            private set
-            {
-                if (_targetLineFoeRightAllyLeftEnabled != value)
-                {
-                    _targetLineFoeRightAllyLeftEnabled = value;
-                    OnPropertyChanged(nameof(TargetLineFoeRightAllyLeftEnabled));
-                }
-            }
-        }
-        private bool _targetLineAllyLeftAllyCenterEnabled;
-        public bool TargetLineAllyLeftAllyCenterEnabled
-        {
-            get => _targetLineAllyLeftAllyCenterEnabled;
-            private set
-            {
-                if (_targetLineAllyLeftAllyCenterEnabled != value)
-                {
-                    _targetLineAllyLeftAllyCenterEnabled = value;
-                    OnPropertyChanged(nameof(TargetLineAllyLeftAllyCenterEnabled));
-                }
-            }
-        }
-        private bool _targetLineAllyRightAllyCenterEnabled;
-        public bool TargetLineAllyRightAllyCenterEnabled
-        {
-            get => _targetLineAllyRightAllyCenterEnabled;
-            private set
-            {
-                if (_targetLineAllyRightAllyCenterEnabled != value)
-                {
-                    _targetLineAllyRightAllyCenterEnabled = value;
-                    OnPropertyChanged(nameof(TargetLineAllyRightAllyCenterEnabled));
                 }
             }
         }
@@ -320,8 +79,6 @@ namespace Kermalis.PokemonBattleEngineClient.Views
         }
 
         private PBEMove _fightMove;
-        private PBETurnTarget _targetAllyLeftResult, _targetAllyCenterResult, _targetAllyRightResult,
-            _targetFoeLeftResult, _targetFoeCenterResult, _targetFoeRightResult;
 
         private MoveInfo[] _moves;
         public MoveInfo[] Moves
@@ -336,8 +93,8 @@ namespace Kermalis.PokemonBattleEngineClient.Views
                 }
             }
         }
-        private PokemonInfo[] _party;
-        public PokemonInfo[] Party
+        private SwitchInfo[] _party;
+        public SwitchInfo[] Party
         {
             get => _party;
             private set
@@ -422,11 +179,11 @@ namespace Kermalis.PokemonBattleEngineClient.Views
                 mInfo[i] = new MoveInfo(pkmn, usableMoves[i], SelectMoveForTurn);
             }
             Moves = mInfo;
-            var pInfo = new PokemonInfo[pkmn.Trainer.Party.Count];
+            var pInfo = new SwitchInfo[pkmn.Trainer.Party.Count];
             for (int i = 0; i < pInfo.Length; i++)
             {
                 PBEBattlePokemon p = pkmn.Trainer.Party[i];
-                pInfo[i] = new PokemonInfo(p, !pkmn.CanSwitchOut() || BattleView.Client.StandBy.Contains(p), SelectPokemonForTurn);
+                pInfo[i] = new SwitchInfo(p, !pkmn.CanSwitchOut() || BattleView.Client.StandBy.Contains(p), SelectPokemonForTurn);
             }
             Party = pInfo;
             MovesVisible = true;
@@ -435,11 +192,11 @@ namespace Kermalis.PokemonBattleEngineClient.Views
         internal void DisplaySwitches()
         {
             PBEList<PBEBattlePokemon> pa = BattleView.Client.Trainer.Party;
-            var pInfo = new PokemonInfo[pa.Count];
+            var pInfo = new SwitchInfo[pa.Count];
             for (int i = 0; i < pa.Count; i++)
             {
                 PBEBattlePokemon p = pa[i];
-                pInfo[i] = new PokemonInfo(p, BattleView.Client.StandBy.Contains(p), SelectSwitch);
+                pInfo[i] = new SwitchInfo(p, BattleView.Client.StandBy.Contains(p), SelectSwitch);
             }
             Party = pInfo;
             SwitchesVisible = true;
@@ -455,7 +212,6 @@ namespace Kermalis.PokemonBattleEngineClient.Views
         }
         private void SelectMoveForTurn(PBEMove move)
         {
-            _fightMove = move;
             MovesVisible = false;
             SwitchesVisible = false;
             DisplayTargets(move);
@@ -470,7 +226,8 @@ namespace Kermalis.PokemonBattleEngineClient.Views
         {
             PBEMoveTarget possibleTargets = Pokemon.GetMoveTargets(move);
 
-            if (BattleView.Client.Battle.BattleFormat == PBEBattleFormat.Single || BattleView.Client.Battle.BattleFormat == PBEBattleFormat.Rotation)
+            BattleClient client = BattleView.Client;
+            if (client.Battle.BattleFormat == PBEBattleFormat.Single || client.Battle.BattleFormat == PBEBattleFormat.Rotation)
             {
                 PBETurnTarget targets;
                 switch (possibleTargets)
@@ -490,70 +247,71 @@ namespace Kermalis.PokemonBattleEngineClient.Views
                     default: throw new ArgumentOutOfRangeException(nameof(possibleTargets));
                 }
                 Pokemon.TurnAction = new PBETurnAction(Pokemon.Id, move, targets);
-                BattleView.Client.ActionsLoop(false);
+                client.ActionsLoop(false);
             }
             else // Double / Triple
             {
-                TargetAllyLeft = BattleView.Client.Trainer.Team.TryGetPokemon(PBEFieldPosition.Left);
-                TargetAllyCenter = BattleView.Client.Trainer.Team.TryGetPokemon(PBEFieldPosition.Center);
-                TargetAllyRight = BattleView.Client.Trainer.Team.TryGetPokemon(PBEFieldPosition.Right);
-                TargetFoeLeft = BattleView.Client.Trainer.Team.OpposingTeam.TryGetPokemon(PBEFieldPosition.Left);
-                TargetFoeCenter = BattleView.Client.Trainer.Team.OpposingTeam.TryGetPokemon(PBEFieldPosition.Center);
-                TargetFoeRight = BattleView.Client.Trainer.Team.OpposingTeam.TryGetPokemon(PBEFieldPosition.Right);
+                _fightMove = move;
+                TargetAllyLeft.Pokemon = new PokemonInfo(client, client.Trainer.Team.TryGetPokemon(PBEFieldPosition.Left));
+                TargetAllyCenter.Pokemon = new PokemonInfo(client, client.Trainer.Team.TryGetPokemon(PBEFieldPosition.Center));
+                TargetAllyRight.Pokemon = new PokemonInfo(client, client.Trainer.Team.TryGetPokemon(PBEFieldPosition.Right));
+                TargetFoeLeft.Pokemon = new PokemonInfo(client, client.Trainer.Team.OpposingTeam.TryGetPokemon(PBEFieldPosition.Left));
+                TargetFoeCenter.Pokemon = new PokemonInfo(client, client.Trainer.Team.OpposingTeam.TryGetPokemon(PBEFieldPosition.Center));
+                TargetFoeRight.Pokemon = new PokemonInfo(client, client.Trainer.Team.OpposingTeam.TryGetPokemon(PBEFieldPosition.Right));
 
-                if (BattleView.Client.Battle.BattleFormat == PBEBattleFormat.Double)
+                if (client.Battle.BattleFormat == PBEBattleFormat.Double)
                 {
                     CenterTargetsVisible = false;
-                    TargetLineFoeCenterAllyCenterEnabled = TargetLineFoeLeftFoeCenterEnabled = TargetLineAllyRightAllyCenterEnabled = false;
+                    TargetFoeCenter.LineDownVisible = TargetFoeCenter.LineRightVisible = TargetAllyCenter.LineRightVisible = false;
                     switch (possibleTargets)
                     {
                         case PBEMoveTarget.All:
                         {
-                            TargetAllyLeftEnabled = TargetAllyRightEnabled = TargetFoeLeftEnabled = TargetFoeRightEnabled = true;
-                            TargetLineAllyLeftAllyCenterEnabled = TargetLineFoeRightFoeCenterEnabled = TargetLineFoeLeftAllyRightEnabled = TargetLineFoeRightAllyLeftEnabled = true;
-                            _targetAllyLeftResult = _targetAllyRightResult = _targetFoeLeftResult = _targetFoeRightResult = PBETurnTarget.AllyLeft | PBETurnTarget.AllyRight | PBETurnTarget.FoeLeft | PBETurnTarget.FoeRight;
+                            TargetAllyLeft.Enabled = TargetAllyRight.Enabled = TargetFoeLeft.Enabled = TargetFoeRight.Enabled = true;
+                            TargetAllyLeft.LineRightVisible = TargetFoeRight.LineRightVisible = TargetFoeLeft.LineDownVisible = TargetFoeRight.LineDownVisible = true;
+                            TargetAllyLeft.Targets = TargetAllyRight.Targets = TargetFoeLeft.Targets = TargetFoeRight.Targets = PBETurnTarget.AllyLeft | PBETurnTarget.AllyRight | PBETurnTarget.FoeLeft | PBETurnTarget.FoeRight;
                             break;
                         }
                         case PBEMoveTarget.AllFoes:
                         case PBEMoveTarget.AllFoesSurrounding:
                         {
-                            TargetAllyLeftEnabled = TargetAllyRightEnabled = false;
-                            TargetFoeLeftEnabled = TargetFoeRightEnabled = true;
-                            TargetLineAllyLeftAllyCenterEnabled = TargetLineFoeLeftAllyRightEnabled = TargetLineFoeRightAllyLeftEnabled = false;
-                            TargetLineFoeRightFoeCenterEnabled = true;
-                            _targetFoeLeftResult = _targetFoeRightResult = PBETurnTarget.FoeLeft | PBETurnTarget.FoeRight;
+                            TargetAllyLeft.Enabled = TargetAllyRight.Enabled = false;
+                            TargetFoeLeft.Enabled = TargetFoeRight.Enabled = true;
+                            TargetAllyLeft.LineRightVisible = TargetFoeLeft.LineDownVisible = TargetFoeRight.LineDownVisible = false;
+                            TargetFoeRight.LineRightVisible = true;
+                            TargetFoeLeft.Targets = TargetFoeRight.Targets = PBETurnTarget.FoeLeft | PBETurnTarget.FoeRight;
                             break;
                         }
                         case PBEMoveTarget.AllSurrounding:
                         {
                             if (Pokemon.FieldPosition == PBEFieldPosition.Left)
                             {
-                                TargetAllyLeftEnabled = false;
-                                TargetAllyRightEnabled = true;
-                                TargetLineFoeRightAllyLeftEnabled = false;
-                                TargetLineFoeLeftAllyRightEnabled = true;
-                                _targetAllyRightResult = _targetFoeLeftResult = _targetFoeRightResult = PBETurnTarget.AllyRight | PBETurnTarget.FoeLeft | PBETurnTarget.FoeRight;
+                                TargetAllyLeft.Enabled = false;
+                                TargetAllyRight.Enabled = true;
+                                TargetFoeRight.LineDownVisible = false;
+                                TargetFoeLeft.LineDownVisible = true;
+                                TargetAllyRight.Targets = TargetFoeLeft.Targets = TargetFoeRight.Targets = PBETurnTarget.AllyRight | PBETurnTarget.FoeLeft | PBETurnTarget.FoeRight;
                             }
                             else
                             {
-                                TargetAllyLeftEnabled = true;
-                                TargetAllyRightEnabled = false;
-                                TargetLineFoeRightAllyLeftEnabled = true;
-                                TargetLineFoeLeftAllyRightEnabled = false;
-                                _targetAllyLeftResult = _targetFoeLeftResult = _targetFoeRightResult = PBETurnTarget.AllyLeft | PBETurnTarget.FoeLeft | PBETurnTarget.FoeRight;
+                                TargetAllyLeft.Enabled = true;
+                                TargetAllyRight.Enabled = false;
+                                TargetFoeRight.LineDownVisible = true;
+                                TargetFoeLeft.LineDownVisible = false;
+                                TargetAllyLeft.Targets = TargetFoeLeft.Targets = TargetFoeRight.Targets = PBETurnTarget.AllyLeft | PBETurnTarget.FoeLeft | PBETurnTarget.FoeRight;
                             }
-                            TargetFoeLeftEnabled = TargetFoeRightEnabled = true;
-                            TargetLineAllyLeftAllyCenterEnabled = false;
-                            TargetLineFoeRightFoeCenterEnabled = true;
+                            TargetFoeLeft.Enabled = TargetFoeRight.Enabled = true;
+                            TargetAllyLeft.LineRightVisible = false;
+                            TargetFoeRight.LineRightVisible = true;
                             break;
                         }
                         case PBEMoveTarget.AllTeam:
                         {
-                            TargetAllyLeftEnabled = TargetAllyRightEnabled = true;
-                            TargetFoeLeftEnabled = TargetFoeRightEnabled = false;
-                            TargetLineFoeRightFoeCenterEnabled = TargetLineFoeLeftAllyRightEnabled = TargetLineFoeRightAllyLeftEnabled = false;
-                            TargetLineAllyLeftAllyCenterEnabled = true;
-                            _targetAllyLeftResult = _targetAllyRightResult = PBETurnTarget.AllyLeft | PBETurnTarget.AllyRight;
+                            TargetAllyLeft.Enabled = TargetAllyRight.Enabled = true;
+                            TargetFoeLeft.Enabled = TargetFoeRight.Enabled = false;
+                            TargetFoeRight.LineRightVisible = TargetFoeLeft.LineDownVisible = TargetFoeRight.LineDownVisible = false;
+                            TargetAllyLeft.LineRightVisible = true;
+                            TargetAllyLeft.Targets = TargetAllyRight.Targets = PBETurnTarget.AllyLeft | PBETurnTarget.AllyRight;
                             break;
                         }
                         case PBEMoveTarget.RandomFoeSurrounding:
@@ -561,54 +319,54 @@ namespace Kermalis.PokemonBattleEngineClient.Views
                         {
                             if (Pokemon.FieldPosition == PBEFieldPosition.Left)
                             {
-                                TargetAllyLeftEnabled = true;
-                                TargetAllyRightEnabled = false;
-                                _targetAllyLeftResult = PBETurnTarget.AllyLeft;
+                                TargetAllyLeft.Enabled = true;
+                                TargetAllyRight.Enabled = false;
+                                TargetAllyLeft.Targets = PBETurnTarget.AllyLeft;
                             }
                             else
                             {
-                                TargetAllyLeftEnabled = false;
-                                TargetAllyRightEnabled = true;
-                                _targetAllyRightResult = PBETurnTarget.AllyRight;
+                                TargetAllyLeft.Enabled = false;
+                                TargetAllyRight.Enabled = true;
+                                TargetAllyRight.Targets = PBETurnTarget.AllyRight;
                             }
-                            TargetFoeLeftEnabled = TargetFoeRightEnabled = false;
-                            TargetLineAllyLeftAllyCenterEnabled = TargetLineFoeRightFoeCenterEnabled = TargetLineFoeLeftAllyRightEnabled = TargetLineFoeRightAllyLeftEnabled = false;
+                            TargetFoeLeft.Enabled = TargetFoeRight.Enabled = false;
+                            TargetAllyLeft.LineRightVisible = TargetFoeRight.LineRightVisible = TargetFoeLeft.LineDownVisible = TargetFoeRight.LineDownVisible = false;
                             break;
                         }
                         case PBEMoveTarget.SelfOrAllySurrounding:
                         {
-                            TargetAllyLeftEnabled = TargetAllyRightEnabled = true;
-                            TargetFoeLeftEnabled = TargetFoeRightEnabled = false;
-                            TargetLineAllyLeftAllyCenterEnabled = TargetLineFoeRightFoeCenterEnabled = TargetLineFoeLeftAllyRightEnabled = TargetLineFoeRightAllyLeftEnabled = false;
-                            _targetAllyLeftResult = PBETurnTarget.AllyLeft;
-                            _targetAllyRightResult = PBETurnTarget.AllyRight;
+                            TargetAllyLeft.Enabled = TargetAllyRight.Enabled = true;
+                            TargetFoeLeft.Enabled = TargetFoeRight.Enabled = false;
+                            TargetAllyLeft.LineRightVisible = TargetFoeRight.LineRightVisible = TargetFoeLeft.LineDownVisible = TargetFoeRight.LineDownVisible = false;
+                            TargetAllyLeft.Targets = PBETurnTarget.AllyLeft;
+                            TargetAllyRight.Targets = PBETurnTarget.AllyRight;
                             break;
                         }
                         case PBEMoveTarget.SingleAllySurrounding:
                         {
                             if (Pokemon.FieldPosition == PBEFieldPosition.Left)
                             {
-                                TargetAllyLeftEnabled = false;
-                                TargetAllyRightEnabled = true;
-                                _targetAllyRightResult = PBETurnTarget.AllyRight;
+                                TargetAllyLeft.Enabled = false;
+                                TargetAllyRight.Enabled = true;
+                                TargetAllyRight.Targets = PBETurnTarget.AllyRight;
                             }
                             else
                             {
-                                TargetAllyLeftEnabled = true;
-                                TargetAllyRightEnabled = false;
-                                _targetAllyLeftResult = PBETurnTarget.AllyLeft;
+                                TargetAllyLeft.Enabled = true;
+                                TargetAllyRight.Enabled = false;
+                                TargetAllyLeft.Targets = PBETurnTarget.AllyLeft;
                             }
-                            TargetFoeLeftEnabled = TargetFoeRightEnabled = false;
-                            TargetLineAllyLeftAllyCenterEnabled = TargetLineFoeRightFoeCenterEnabled = TargetLineFoeLeftAllyRightEnabled = TargetLineFoeRightAllyLeftEnabled = false;
+                            TargetFoeLeft.Enabled = TargetFoeRight.Enabled = false;
+                            TargetAllyLeft.LineRightVisible = TargetFoeRight.LineRightVisible = TargetFoeLeft.LineDownVisible = TargetFoeRight.LineDownVisible = false;
                             break;
                         }
                         case PBEMoveTarget.SingleFoeSurrounding:
                         {
-                            TargetAllyLeftEnabled = TargetAllyRightEnabled = false;
-                            TargetFoeLeftEnabled = TargetFoeRightEnabled = true;
-                            TargetLineAllyLeftAllyCenterEnabled = TargetLineFoeRightFoeCenterEnabled = TargetLineFoeLeftAllyRightEnabled = TargetLineFoeRightAllyLeftEnabled = false;
-                            _targetFoeLeftResult = PBETurnTarget.FoeLeft;
-                            _targetFoeRightResult = PBETurnTarget.FoeRight;
+                            TargetAllyLeft.Enabled = TargetAllyRight.Enabled = false;
+                            TargetFoeLeft.Enabled = TargetFoeRight.Enabled = true;
+                            TargetAllyLeft.LineRightVisible = TargetFoeRight.LineRightVisible = TargetFoeLeft.LineDownVisible = TargetFoeRight.LineDownVisible = false;
+                            TargetFoeLeft.Targets = PBETurnTarget.FoeLeft;
+                            TargetFoeRight.Targets = PBETurnTarget.FoeRight;
                             break;
                         }
                         case PBEMoveTarget.SingleNotSelf:
@@ -616,20 +374,20 @@ namespace Kermalis.PokemonBattleEngineClient.Views
                         {
                             if (Pokemon.FieldPosition == PBEFieldPosition.Left)
                             {
-                                TargetAllyLeftEnabled = false;
-                                TargetAllyRightEnabled = true;
-                                _targetAllyRightResult = PBETurnTarget.AllyRight;
+                                TargetAllyLeft.Enabled = false;
+                                TargetAllyRight.Enabled = true;
+                                TargetAllyRight.Targets = PBETurnTarget.AllyRight;
                             }
                             else
                             {
-                                TargetAllyLeftEnabled = true;
-                                TargetAllyRightEnabled = false;
-                                _targetAllyLeftResult = PBETurnTarget.AllyLeft;
+                                TargetAllyLeft.Enabled = true;
+                                TargetAllyRight.Enabled = false;
+                                TargetAllyLeft.Targets = PBETurnTarget.AllyLeft;
                             }
-                            TargetFoeLeftEnabled = TargetFoeRightEnabled = true;
-                            TargetLineAllyLeftAllyCenterEnabled = TargetLineFoeRightFoeCenterEnabled = TargetLineFoeLeftAllyRightEnabled = TargetLineFoeRightAllyLeftEnabled = false;
-                            _targetFoeLeftResult = PBETurnTarget.FoeLeft;
-                            _targetFoeRightResult = PBETurnTarget.FoeRight;
+                            TargetFoeLeft.Enabled = TargetFoeRight.Enabled = true;
+                            TargetAllyLeft.LineRightVisible = TargetFoeRight.LineRightVisible = TargetFoeLeft.LineDownVisible = TargetFoeRight.LineDownVisible = false;
+                            TargetFoeLeft.Targets = PBETurnTarget.FoeLeft;
+                            TargetFoeRight.Targets = PBETurnTarget.FoeRight;
                             break;
                         }
                         default: throw new ArgumentOutOfRangeException(nameof(possibleTargets));
@@ -642,83 +400,83 @@ namespace Kermalis.PokemonBattleEngineClient.Views
                     {
                         case PBEMoveTarget.All:
                         {
-                            TargetAllyLeftEnabled = TargetAllyCenterEnabled = TargetAllyRightEnabled = TargetFoeLeftEnabled = TargetFoeCenterEnabled = TargetFoeRightEnabled = true;
-                            TargetLineAllyLeftAllyCenterEnabled = TargetLineAllyRightAllyCenterEnabled = TargetLineFoeRightFoeCenterEnabled = TargetLineFoeLeftFoeCenterEnabled = TargetLineFoeCenterAllyCenterEnabled = TargetLineFoeLeftAllyRightEnabled = TargetLineFoeRightAllyLeftEnabled = true;
-                            _targetAllyLeftResult = _targetAllyCenterResult = _targetAllyRightResult = _targetFoeLeftResult = _targetFoeCenterResult = _targetFoeRightResult = PBETurnTarget.AllyLeft | PBETurnTarget.AllyCenter | PBETurnTarget.AllyRight | PBETurnTarget.FoeLeft | PBETurnTarget.FoeCenter | PBETurnTarget.FoeRight;
+                            TargetAllyLeft.Enabled = TargetAllyCenter.Enabled = TargetAllyRight.Enabled = TargetFoeLeft.Enabled = TargetFoeCenter.Enabled = TargetFoeRight.Enabled = true;
+                            TargetAllyLeft.LineRightVisible = TargetAllyCenter.LineRightVisible = TargetFoeRight.LineRightVisible = TargetFoeCenter.LineRightVisible = TargetFoeCenter.LineDownVisible = TargetFoeLeft.LineDownVisible = TargetFoeRight.LineDownVisible = true;
+                            TargetAllyLeft.Targets = TargetAllyCenter.Targets = TargetAllyRight.Targets = TargetFoeLeft.Targets = TargetFoeCenter.Targets = TargetFoeRight.Targets = PBETurnTarget.AllyLeft | PBETurnTarget.AllyCenter | PBETurnTarget.AllyRight | PBETurnTarget.FoeLeft | PBETurnTarget.FoeCenter | PBETurnTarget.FoeRight;
                             break;
                         }
                         case PBEMoveTarget.AllFoes:
                         {
-                            TargetAllyLeftEnabled = TargetAllyCenterEnabled = TargetAllyRightEnabled = false;
-                            TargetFoeLeftEnabled = TargetFoeCenterEnabled = TargetFoeRightEnabled = true;
-                            TargetLineAllyLeftAllyCenterEnabled = TargetLineAllyRightAllyCenterEnabled = TargetLineFoeCenterAllyCenterEnabled = TargetLineFoeLeftAllyRightEnabled = TargetLineFoeRightAllyLeftEnabled = false;
-                            TargetLineFoeRightFoeCenterEnabled = TargetLineFoeLeftFoeCenterEnabled = true;
-                            _targetFoeLeftResult = _targetFoeCenterResult = _targetFoeRightResult = PBETurnTarget.FoeLeft | PBETurnTarget.FoeCenter | PBETurnTarget.FoeRight;
+                            TargetAllyLeft.Enabled = TargetAllyCenter.Enabled = TargetAllyRight.Enabled = false;
+                            TargetFoeLeft.Enabled = TargetFoeCenter.Enabled = TargetFoeRight.Enabled = true;
+                            TargetAllyLeft.LineRightVisible = TargetAllyCenter.LineRightVisible = TargetFoeCenter.LineDownVisible = TargetFoeLeft.LineDownVisible = TargetFoeRight.LineDownVisible = false;
+                            TargetFoeRight.LineRightVisible = TargetFoeCenter.LineRightVisible = true;
+                            TargetFoeLeft.Targets = TargetFoeCenter.Targets = TargetFoeRight.Targets = PBETurnTarget.FoeLeft | PBETurnTarget.FoeCenter | PBETurnTarget.FoeRight;
                             break;
                         }
                         case PBEMoveTarget.AllFoesSurrounding:
                         {
                             if (Pokemon.FieldPosition == PBEFieldPosition.Left)
                             {
-                                TargetFoeCenterEnabled = TargetFoeRightEnabled = true;
-                                TargetFoeLeftEnabled = false;
-                                TargetLineFoeRightFoeCenterEnabled = true;
-                                TargetLineFoeLeftFoeCenterEnabled = false;
-                                _targetFoeCenterResult = _targetFoeRightResult = PBETurnTarget.FoeCenter | PBETurnTarget.FoeRight;
+                                TargetFoeCenter.Enabled = TargetFoeRight.Enabled = true;
+                                TargetFoeLeft.Enabled = false;
+                                TargetFoeRight.LineRightVisible = true;
+                                TargetFoeCenter.LineRightVisible = false;
+                                TargetFoeCenter.Targets = TargetFoeRight.Targets = PBETurnTarget.FoeCenter | PBETurnTarget.FoeRight;
                             }
                             else if (Pokemon.FieldPosition == PBEFieldPosition.Center)
                             {
-                                TargetFoeLeftEnabled = TargetFoeCenterEnabled = TargetFoeRightEnabled = true;
-                                TargetLineFoeRightFoeCenterEnabled = TargetLineFoeLeftFoeCenterEnabled = true;
-                                _targetFoeLeftResult = _targetFoeCenterResult = _targetFoeRightResult = PBETurnTarget.FoeLeft | PBETurnTarget.FoeCenter | PBETurnTarget.FoeRight;
+                                TargetFoeLeft.Enabled = TargetFoeCenter.Enabled = TargetFoeRight.Enabled = true;
+                                TargetFoeRight.LineRightVisible = TargetFoeCenter.LineRightVisible = true;
+                                TargetFoeLeft.Targets = TargetFoeCenter.Targets = TargetFoeRight.Targets = PBETurnTarget.FoeLeft | PBETurnTarget.FoeCenter | PBETurnTarget.FoeRight;
                             }
                             else
                             {
-                                TargetFoeLeftEnabled = TargetFoeCenterEnabled = true;
-                                TargetFoeRightEnabled = false;
-                                TargetLineFoeLeftFoeCenterEnabled = true;
-                                TargetLineFoeRightFoeCenterEnabled = false;
-                                _targetFoeLeftResult = _targetFoeCenterResult = PBETurnTarget.FoeLeft | PBETurnTarget.FoeCenter;
+                                TargetFoeLeft.Enabled = TargetFoeCenter.Enabled = true;
+                                TargetFoeRight.Enabled = false;
+                                TargetFoeCenter.LineRightVisible = true;
+                                TargetFoeRight.LineRightVisible = false;
+                                TargetFoeLeft.Targets = TargetFoeCenter.Targets = PBETurnTarget.FoeLeft | PBETurnTarget.FoeCenter;
                             }
-                            TargetAllyLeftEnabled = TargetAllyCenterEnabled = TargetAllyRightEnabled = false;
-                            TargetLineFoeRightAllyLeftEnabled = TargetLineAllyLeftAllyCenterEnabled = TargetLineAllyRightAllyCenterEnabled = TargetLineFoeCenterAllyCenterEnabled = TargetLineFoeLeftAllyRightEnabled = false;
+                            TargetAllyLeft.Enabled = TargetAllyCenter.Enabled = TargetAllyRight.Enabled = false;
+                            TargetFoeRight.LineDownVisible = TargetAllyLeft.LineRightVisible = TargetAllyCenter.LineRightVisible = TargetFoeCenter.LineDownVisible = TargetFoeLeft.LineDownVisible = false;
                             break;
                         }
                         case PBEMoveTarget.AllSurrounding:
                         {
                             if (Pokemon.FieldPosition == PBEFieldPosition.Left)
                             {
-                                TargetFoeRightEnabled = TargetFoeCenterEnabled = TargetAllyCenterEnabled = true;
-                                TargetAllyLeftEnabled = TargetAllyRightEnabled = TargetFoeLeftEnabled = false;
-                                TargetLineAllyLeftAllyCenterEnabled = TargetLineAllyRightAllyCenterEnabled = TargetLineFoeLeftFoeCenterEnabled = TargetLineFoeLeftAllyRightEnabled = TargetLineFoeRightAllyLeftEnabled = false;
-                                TargetLineFoeRightFoeCenterEnabled = TargetLineFoeCenterAllyCenterEnabled = true;
-                                _targetAllyCenterResult = _targetFoeCenterResult = _targetFoeRightResult = PBETurnTarget.AllyCenter | PBETurnTarget.FoeCenter | PBETurnTarget.FoeRight;
+                                TargetFoeRight.Enabled = TargetFoeCenter.Enabled = TargetAllyCenter.Enabled = true;
+                                TargetAllyLeft.Enabled = TargetAllyRight.Enabled = TargetFoeLeft.Enabled = false;
+                                TargetAllyLeft.LineRightVisible = TargetAllyCenter.LineRightVisible = TargetFoeCenter.LineRightVisible = TargetFoeLeft.LineDownVisible = TargetFoeRight.LineDownVisible = false;
+                                TargetFoeRight.LineRightVisible = TargetFoeCenter.LineDownVisible = true;
+                                TargetAllyCenter.Targets = TargetFoeCenter.Targets = TargetFoeRight.Targets = PBETurnTarget.AllyCenter | PBETurnTarget.FoeCenter | PBETurnTarget.FoeRight;
                             }
                             else if (Pokemon.FieldPosition == PBEFieldPosition.Center)
                             {
-                                TargetAllyLeftEnabled = TargetAllyRightEnabled = TargetFoeLeftEnabled = TargetFoeCenterEnabled = TargetFoeRightEnabled = true;
-                                TargetAllyCenterEnabled = false;
-                                TargetLineAllyLeftAllyCenterEnabled = TargetLineAllyRightAllyCenterEnabled = TargetLineFoeCenterAllyCenterEnabled = false;
-                                TargetLineFoeRightFoeCenterEnabled = TargetLineFoeLeftFoeCenterEnabled = TargetLineFoeLeftAllyRightEnabled = TargetLineFoeRightAllyLeftEnabled = true;
-                                _targetAllyLeftResult = _targetAllyRightResult = _targetFoeLeftResult = _targetFoeCenterResult = _targetFoeRightResult = PBETurnTarget.AllyLeft | PBETurnTarget.AllyRight | PBETurnTarget.FoeLeft | PBETurnTarget.FoeCenter | PBETurnTarget.FoeRight;
+                                TargetAllyLeft.Enabled = TargetAllyRight.Enabled = TargetFoeLeft.Enabled = TargetFoeCenter.Enabled = TargetFoeRight.Enabled = true;
+                                TargetAllyCenter.Enabled = false;
+                                TargetAllyLeft.LineRightVisible = TargetAllyCenter.LineRightVisible = TargetFoeCenter.LineDownVisible = false;
+                                TargetFoeRight.LineRightVisible = TargetFoeCenter.LineRightVisible = TargetFoeLeft.LineDownVisible = TargetFoeRight.LineDownVisible = true;
+                                TargetAllyLeft.Targets = TargetAllyRight.Targets = TargetFoeLeft.Targets = TargetFoeCenter.Targets = TargetFoeRight.Targets = PBETurnTarget.AllyLeft | PBETurnTarget.AllyRight | PBETurnTarget.FoeLeft | PBETurnTarget.FoeCenter | PBETurnTarget.FoeRight;
                             }
                             else
                             {
-                                TargetAllyLeftEnabled = TargetAllyRightEnabled = TargetFoeRightEnabled = false;
-                                TargetAllyCenterEnabled = TargetFoeLeftEnabled = TargetFoeCenterEnabled = true;
-                                TargetLineAllyLeftAllyCenterEnabled = TargetLineAllyRightAllyCenterEnabled = TargetLineFoeRightFoeCenterEnabled = TargetLineFoeLeftAllyRightEnabled = TargetLineFoeRightAllyLeftEnabled = false;
-                                TargetLineFoeLeftFoeCenterEnabled = TargetLineFoeCenterAllyCenterEnabled = true;
-                                _targetAllyCenterResult = _targetFoeLeftResult = _targetFoeCenterResult = PBETurnTarget.AllyCenter | PBETurnTarget.FoeLeft | PBETurnTarget.FoeCenter;
+                                TargetAllyLeft.Enabled = TargetAllyRight.Enabled = TargetFoeRight.Enabled = false;
+                                TargetAllyCenter.Enabled = TargetFoeLeft.Enabled = TargetFoeCenter.Enabled = true;
+                                TargetAllyLeft.LineRightVisible = TargetAllyCenter.LineRightVisible = TargetFoeRight.LineRightVisible = TargetFoeLeft.LineDownVisible = TargetFoeRight.LineDownVisible = false;
+                                TargetFoeCenter.LineRightVisible = TargetFoeCenter.LineDownVisible = true;
+                                TargetAllyCenter.Targets = TargetFoeLeft.Targets = TargetFoeCenter.Targets = PBETurnTarget.AllyCenter | PBETurnTarget.FoeLeft | PBETurnTarget.FoeCenter;
                             }
                             break;
                         }
                         case PBEMoveTarget.AllTeam:
                         {
-                            TargetAllyLeftEnabled = TargetAllyCenterEnabled = TargetAllyRightEnabled = true;
-                            TargetFoeLeftEnabled = TargetFoeCenterEnabled = TargetFoeRightEnabled = false;
-                            TargetLineAllyLeftAllyCenterEnabled = TargetLineAllyRightAllyCenterEnabled = true;
-                            TargetLineFoeRightFoeCenterEnabled = TargetLineFoeLeftFoeCenterEnabled = TargetLineFoeCenterAllyCenterEnabled = TargetLineFoeLeftAllyRightEnabled = TargetLineFoeRightAllyLeftEnabled = false;
-                            _targetAllyLeftResult = _targetAllyCenterResult = _targetAllyRightResult = PBETurnTarget.AllyLeft | PBETurnTarget.AllyCenter | PBETurnTarget.AllyRight;
+                            TargetAllyLeft.Enabled = TargetAllyCenter.Enabled = TargetAllyRight.Enabled = true;
+                            TargetFoeLeft.Enabled = TargetFoeCenter.Enabled = TargetFoeRight.Enabled = false;
+                            TargetAllyLeft.LineRightVisible = TargetAllyCenter.LineRightVisible = true;
+                            TargetFoeRight.LineRightVisible = TargetFoeCenter.LineRightVisible = TargetFoeCenter.LineDownVisible = TargetFoeLeft.LineDownVisible = TargetFoeRight.LineDownVisible = false;
+                            TargetAllyLeft.Targets = TargetAllyCenter.Targets = TargetAllyRight.Targets = PBETurnTarget.AllyLeft | PBETurnTarget.AllyCenter | PBETurnTarget.AllyRight;
                             break;
                         }
                         case PBEMoveTarget.RandomFoeSurrounding:
@@ -726,158 +484,158 @@ namespace Kermalis.PokemonBattleEngineClient.Views
                         {
                             if (Pokemon.FieldPosition == PBEFieldPosition.Left)
                             {
-                                TargetAllyLeftEnabled = true;
-                                TargetAllyCenterEnabled = TargetAllyRightEnabled = false;
-                                _targetAllyLeftResult = PBETurnTarget.AllyLeft;
+                                TargetAllyLeft.Enabled = true;
+                                TargetAllyCenter.Enabled = TargetAllyRight.Enabled = false;
+                                TargetAllyLeft.Targets = PBETurnTarget.AllyLeft;
                             }
                             else if (Pokemon.FieldPosition == PBEFieldPosition.Center)
                             {
-                                TargetAllyCenterEnabled = true;
-                                TargetAllyLeftEnabled = TargetAllyRightEnabled = false;
-                                _targetAllyCenterResult = PBETurnTarget.AllyCenter;
+                                TargetAllyCenter.Enabled = true;
+                                TargetAllyLeft.Enabled = TargetAllyRight.Enabled = false;
+                                TargetAllyCenter.Targets = PBETurnTarget.AllyCenter;
                             }
                             else
                             {
-                                TargetAllyRightEnabled = true;
-                                TargetAllyLeftEnabled = TargetAllyCenterEnabled = false;
-                                _targetAllyRightResult = PBETurnTarget.AllyRight;
+                                TargetAllyRight.Enabled = true;
+                                TargetAllyLeft.Enabled = TargetAllyCenter.Enabled = false;
+                                TargetAllyRight.Targets = PBETurnTarget.AllyRight;
                             }
-                            TargetFoeLeftEnabled = TargetFoeCenterEnabled = TargetFoeRightEnabled = false;
-                            TargetLineAllyLeftAllyCenterEnabled = TargetLineAllyRightAllyCenterEnabled = TargetLineFoeRightFoeCenterEnabled = TargetLineFoeLeftFoeCenterEnabled = TargetLineFoeCenterAllyCenterEnabled = TargetLineFoeLeftAllyRightEnabled = TargetLineFoeRightAllyLeftEnabled = false;
+                            TargetFoeLeft.Enabled = TargetFoeCenter.Enabled = TargetFoeRight.Enabled = false;
+                            TargetAllyLeft.LineRightVisible = TargetAllyCenter.LineRightVisible = TargetFoeRight.LineRightVisible = TargetFoeCenter.LineRightVisible = TargetFoeCenter.LineDownVisible = TargetFoeLeft.LineDownVisible = TargetFoeRight.LineDownVisible = false;
                             break;
                         }
                         case PBEMoveTarget.SelfOrAllySurrounding:
                         {
                             if (Pokemon.FieldPosition == PBEFieldPosition.Left)
                             {
-                                TargetAllyLeftEnabled = TargetAllyCenterEnabled = true;
-                                TargetAllyRightEnabled = false;
-                                _targetAllyLeftResult = PBETurnTarget.AllyLeft;
-                                _targetAllyCenterResult = PBETurnTarget.AllyCenter;
+                                TargetAllyLeft.Enabled = TargetAllyCenter.Enabled = true;
+                                TargetAllyRight.Enabled = false;
+                                TargetAllyLeft.Targets = PBETurnTarget.AllyLeft;
+                                TargetAllyCenter.Targets = PBETurnTarget.AllyCenter;
                             }
                             else if (Pokemon.FieldPosition == PBEFieldPosition.Center)
                             {
-                                TargetAllyCenterEnabled = TargetAllyLeftEnabled = TargetAllyRightEnabled = true;
-                                _targetAllyLeftResult = PBETurnTarget.AllyLeft;
-                                _targetAllyCenterResult = PBETurnTarget.AllyCenter;
-                                _targetAllyRightResult = PBETurnTarget.AllyRight;
+                                TargetAllyCenter.Enabled = TargetAllyLeft.Enabled = TargetAllyRight.Enabled = true;
+                                TargetAllyLeft.Targets = PBETurnTarget.AllyLeft;
+                                TargetAllyCenter.Targets = PBETurnTarget.AllyCenter;
+                                TargetAllyRight.Targets = PBETurnTarget.AllyRight;
                             }
                             else
                             {
-                                TargetAllyCenterEnabled = TargetAllyRightEnabled = true;
-                                TargetAllyLeftEnabled = false;
-                                _targetAllyCenterResult = PBETurnTarget.AllyCenter;
-                                _targetAllyRightResult = PBETurnTarget.AllyRight;
+                                TargetAllyCenter.Enabled = TargetAllyRight.Enabled = true;
+                                TargetAllyLeft.Enabled = false;
+                                TargetAllyCenter.Targets = PBETurnTarget.AllyCenter;
+                                TargetAllyRight.Targets = PBETurnTarget.AllyRight;
                             }
-                            TargetFoeLeftEnabled = TargetFoeCenterEnabled = TargetFoeRightEnabled = false;
-                            TargetLineAllyLeftAllyCenterEnabled = TargetLineAllyRightAllyCenterEnabled = TargetLineFoeRightFoeCenterEnabled = TargetLineFoeLeftFoeCenterEnabled = TargetLineFoeCenterAllyCenterEnabled = TargetLineFoeLeftAllyRightEnabled = TargetLineFoeRightAllyLeftEnabled = false;
+                            TargetFoeLeft.Enabled = TargetFoeCenter.Enabled = TargetFoeRight.Enabled = false;
+                            TargetAllyLeft.LineRightVisible = TargetAllyCenter.LineRightVisible = TargetFoeRight.LineRightVisible = TargetFoeCenter.LineRightVisible = TargetFoeCenter.LineDownVisible = TargetFoeLeft.LineDownVisible = TargetFoeRight.LineDownVisible = false;
                             break;
                         }
                         case PBEMoveTarget.SingleAllySurrounding:
                         {
                             if (Pokemon.FieldPosition == PBEFieldPosition.Left || Pokemon.FieldPosition == PBEFieldPosition.Right)
                             {
-                                TargetAllyCenterEnabled = true;
-                                TargetAllyLeftEnabled = TargetAllyRightEnabled = false;
-                                _targetAllyCenterResult = PBETurnTarget.AllyCenter;
+                                TargetAllyCenter.Enabled = true;
+                                TargetAllyLeft.Enabled = TargetAllyRight.Enabled = false;
+                                TargetAllyCenter.Targets = PBETurnTarget.AllyCenter;
                             }
                             else
                             {
-                                TargetAllyCenterEnabled = false;
-                                TargetAllyLeftEnabled = TargetAllyRightEnabled = true;
-                                _targetAllyLeftResult = PBETurnTarget.AllyLeft;
-                                _targetAllyRightResult = PBETurnTarget.AllyRight;
+                                TargetAllyCenter.Enabled = false;
+                                TargetAllyLeft.Enabled = TargetAllyRight.Enabled = true;
+                                TargetAllyLeft.Targets = PBETurnTarget.AllyLeft;
+                                TargetAllyRight.Targets = PBETurnTarget.AllyRight;
                             }
-                            TargetFoeLeftEnabled = TargetFoeCenterEnabled = TargetFoeRightEnabled = false;
-                            TargetLineAllyLeftAllyCenterEnabled = TargetLineAllyRightAllyCenterEnabled = TargetLineFoeRightFoeCenterEnabled = TargetLineFoeLeftFoeCenterEnabled = TargetLineFoeCenterAllyCenterEnabled = TargetLineFoeLeftAllyRightEnabled = TargetLineFoeRightAllyLeftEnabled = false;
+                            TargetFoeLeft.Enabled = TargetFoeCenter.Enabled = TargetFoeRight.Enabled = false;
+                            TargetAllyLeft.LineRightVisible = TargetAllyCenter.LineRightVisible = TargetFoeRight.LineRightVisible = TargetFoeCenter.LineRightVisible = TargetFoeCenter.LineDownVisible = TargetFoeLeft.LineDownVisible = TargetFoeRight.LineDownVisible = false;
                             break;
                         }
                         case PBEMoveTarget.SingleFoeSurrounding:
                         {
                             if (Pokemon.FieldPosition == PBEFieldPosition.Left)
                             {
-                                TargetFoeCenterEnabled = TargetFoeRightEnabled = true;
-                                TargetFoeLeftEnabled = false;
-                                _targetFoeCenterResult = PBETurnTarget.FoeCenter;
-                                _targetFoeRightResult = PBETurnTarget.FoeRight;
+                                TargetFoeCenter.Enabled = TargetFoeRight.Enabled = true;
+                                TargetFoeLeft.Enabled = false;
+                                TargetFoeCenter.Targets = PBETurnTarget.FoeCenter;
+                                TargetFoeRight.Targets = PBETurnTarget.FoeRight;
                             }
                             else if (Pokemon.FieldPosition == PBEFieldPosition.Center)
                             {
-                                TargetFoeLeftEnabled = TargetFoeCenterEnabled = TargetFoeRightEnabled = true;
-                                _targetFoeLeftResult = PBETurnTarget.FoeLeft;
-                                _targetFoeCenterResult = PBETurnTarget.FoeCenter;
-                                _targetFoeRightResult = PBETurnTarget.FoeRight;
+                                TargetFoeLeft.Enabled = TargetFoeCenter.Enabled = TargetFoeRight.Enabled = true;
+                                TargetFoeLeft.Targets = PBETurnTarget.FoeLeft;
+                                TargetFoeCenter.Targets = PBETurnTarget.FoeCenter;
+                                TargetFoeRight.Targets = PBETurnTarget.FoeRight;
                             }
                             else
                             {
-                                TargetFoeLeftEnabled = TargetFoeCenterEnabled = true;
-                                TargetFoeRightEnabled = false;
-                                _targetFoeLeftResult = PBETurnTarget.FoeLeft;
-                                _targetFoeCenterResult = PBETurnTarget.FoeCenter;
+                                TargetFoeLeft.Enabled = TargetFoeCenter.Enabled = true;
+                                TargetFoeRight.Enabled = false;
+                                TargetFoeLeft.Targets = PBETurnTarget.FoeLeft;
+                                TargetFoeCenter.Targets = PBETurnTarget.FoeCenter;
                             }
-                            TargetAllyLeftEnabled = TargetAllyCenterEnabled = TargetAllyRightEnabled = false;
-                            TargetLineAllyLeftAllyCenterEnabled = TargetLineAllyRightAllyCenterEnabled = TargetLineFoeRightFoeCenterEnabled = TargetLineFoeLeftFoeCenterEnabled = TargetLineFoeCenterAllyCenterEnabled = TargetLineFoeLeftAllyRightEnabled = TargetLineFoeRightAllyLeftEnabled = false;
+                            TargetAllyLeft.Enabled = TargetAllyCenter.Enabled = TargetAllyRight.Enabled = false;
+                            TargetAllyLeft.LineRightVisible = TargetAllyCenter.LineRightVisible = TargetFoeRight.LineRightVisible = TargetFoeCenter.LineRightVisible = TargetFoeCenter.LineDownVisible = TargetFoeLeft.LineDownVisible = TargetFoeRight.LineDownVisible = false;
                             break;
                         }
                         case PBEMoveTarget.SingleNotSelf:
                         {
                             if (Pokemon.FieldPosition == PBEFieldPosition.Left)
                             {
-                                TargetAllyLeftEnabled = false;
-                                TargetAllyCenterEnabled = TargetAllyRightEnabled = true;
-                                _targetAllyCenterResult = PBETurnTarget.AllyCenter;
-                                _targetAllyRightResult = PBETurnTarget.AllyRight;
+                                TargetAllyLeft.Enabled = false;
+                                TargetAllyCenter.Enabled = TargetAllyRight.Enabled = true;
+                                TargetAllyCenter.Targets = PBETurnTarget.AllyCenter;
+                                TargetAllyRight.Targets = PBETurnTarget.AllyRight;
                             }
                             else if (Pokemon.FieldPosition == PBEFieldPosition.Center)
                             {
-                                TargetAllyCenterEnabled = false;
-                                TargetAllyLeftEnabled = TargetAllyRightEnabled = true;
-                                _targetAllyLeftResult = PBETurnTarget.AllyLeft;
-                                _targetAllyRightResult = PBETurnTarget.AllyRight;
+                                TargetAllyCenter.Enabled = false;
+                                TargetAllyLeft.Enabled = TargetAllyRight.Enabled = true;
+                                TargetAllyLeft.Targets = PBETurnTarget.AllyLeft;
+                                TargetAllyRight.Targets = PBETurnTarget.AllyRight;
                             }
                             else
                             {
-                                TargetAllyRightEnabled = false;
-                                TargetAllyLeftEnabled = TargetAllyCenterEnabled = true;
-                                _targetAllyLeftResult = PBETurnTarget.AllyLeft;
-                                _targetAllyCenterResult = PBETurnTarget.AllyCenter;
+                                TargetAllyRight.Enabled = false;
+                                TargetAllyLeft.Enabled = TargetAllyCenter.Enabled = true;
+                                TargetAllyLeft.Targets = PBETurnTarget.AllyLeft;
+                                TargetAllyCenter.Targets = PBETurnTarget.AllyCenter;
                             }
-                            TargetFoeLeftEnabled = TargetFoeCenterEnabled = TargetFoeRightEnabled = true;
-                            TargetLineAllyLeftAllyCenterEnabled = TargetLineAllyRightAllyCenterEnabled = TargetLineFoeRightFoeCenterEnabled = TargetLineFoeLeftFoeCenterEnabled = TargetLineFoeCenterAllyCenterEnabled = TargetLineFoeLeftAllyRightEnabled = TargetLineFoeRightAllyLeftEnabled = false;
-                            _targetFoeLeftResult = PBETurnTarget.FoeLeft;
-                            _targetFoeCenterResult = PBETurnTarget.FoeCenter;
-                            _targetFoeRightResult = PBETurnTarget.FoeRight;
+                            TargetFoeLeft.Enabled = TargetFoeCenter.Enabled = TargetFoeRight.Enabled = true;
+                            TargetAllyLeft.LineRightVisible = TargetAllyCenter.LineRightVisible = TargetFoeRight.LineRightVisible = TargetFoeCenter.LineRightVisible = TargetFoeCenter.LineDownVisible = TargetFoeLeft.LineDownVisible = TargetFoeRight.LineDownVisible = false;
+                            TargetFoeLeft.Targets = PBETurnTarget.FoeLeft;
+                            TargetFoeCenter.Targets = PBETurnTarget.FoeCenter;
+                            TargetFoeRight.Targets = PBETurnTarget.FoeRight;
                             break;
                         }
                         case PBEMoveTarget.SingleSurrounding:
                         {
                             if (Pokemon.FieldPosition == PBEFieldPosition.Left)
                             {
-                                TargetAllyCenterEnabled = TargetFoeCenterEnabled = TargetFoeRightEnabled = true;
-                                TargetAllyLeftEnabled = TargetAllyRightEnabled = TargetFoeLeftEnabled = false;
-                                _targetAllyCenterResult = PBETurnTarget.AllyCenter;
-                                _targetFoeCenterResult = PBETurnTarget.FoeCenter;
-                                _targetFoeRightResult = PBETurnTarget.FoeRight;
+                                TargetAllyCenter.Enabled = TargetFoeCenter.Enabled = TargetFoeRight.Enabled = true;
+                                TargetAllyLeft.Enabled = TargetAllyRight.Enabled = TargetFoeLeft.Enabled = false;
+                                TargetAllyCenter.Targets = PBETurnTarget.AllyCenter;
+                                TargetFoeCenter.Targets = PBETurnTarget.FoeCenter;
+                                TargetFoeRight.Targets = PBETurnTarget.FoeRight;
                             }
                             else if (Pokemon.FieldPosition == PBEFieldPosition.Center)
                             {
-                                TargetAllyLeftEnabled = TargetAllyRightEnabled = TargetFoeLeftEnabled = TargetFoeCenterEnabled = TargetFoeRightEnabled = true;
-                                TargetAllyCenterEnabled = false;
-                                _targetAllyLeftResult = PBETurnTarget.AllyLeft;
-                                _targetAllyRightResult = PBETurnTarget.AllyRight;
-                                _targetFoeLeftResult = PBETurnTarget.FoeLeft;
-                                _targetFoeCenterResult = PBETurnTarget.FoeCenter;
-                                _targetFoeRightResult = PBETurnTarget.FoeRight;
+                                TargetAllyLeft.Enabled = TargetAllyRight.Enabled = TargetFoeLeft.Enabled = TargetFoeCenter.Enabled = TargetFoeRight.Enabled = true;
+                                TargetAllyCenter.Enabled = false;
+                                TargetAllyLeft.Targets = PBETurnTarget.AllyLeft;
+                                TargetAllyRight.Targets = PBETurnTarget.AllyRight;
+                                TargetFoeLeft.Targets = PBETurnTarget.FoeLeft;
+                                TargetFoeCenter.Targets = PBETurnTarget.FoeCenter;
+                                TargetFoeRight.Targets = PBETurnTarget.FoeRight;
                             }
                             else
                             {
-                                TargetAllyCenterEnabled = TargetFoeLeftEnabled = TargetFoeCenterEnabled = true;
-                                TargetAllyLeftEnabled = TargetAllyRightEnabled = TargetFoeRightEnabled = false;
-                                _targetAllyCenterResult = PBETurnTarget.AllyCenter;
-                                _targetFoeLeftResult = PBETurnTarget.FoeLeft;
-                                _targetFoeCenterResult = PBETurnTarget.FoeCenter;
+                                TargetAllyCenter.Enabled = TargetFoeLeft.Enabled = TargetFoeCenter.Enabled = true;
+                                TargetAllyLeft.Enabled = TargetAllyRight.Enabled = TargetFoeRight.Enabled = false;
+                                TargetAllyCenter.Targets = PBETurnTarget.AllyCenter;
+                                TargetFoeLeft.Targets = PBETurnTarget.FoeLeft;
+                                TargetFoeCenter.Targets = PBETurnTarget.FoeCenter;
                             }
-                            TargetLineAllyLeftAllyCenterEnabled = TargetLineAllyRightAllyCenterEnabled = TargetLineFoeRightFoeCenterEnabled = TargetLineFoeLeftFoeCenterEnabled = TargetLineFoeCenterAllyCenterEnabled = TargetLineFoeLeftAllyRightEnabled = TargetLineFoeRightAllyLeftEnabled = false;
+                            TargetAllyLeft.LineRightVisible = TargetAllyCenter.LineRightVisible = TargetFoeRight.LineRightVisible = TargetFoeCenter.LineRightVisible = TargetFoeCenter.LineDownVisible = TargetFoeLeft.LineDownVisible = TargetFoeRight.LineDownVisible = false;
                             break;
                         }
                         default: throw new ArgumentOutOfRangeException(nameof(possibleTargets));
@@ -889,27 +647,27 @@ namespace Kermalis.PokemonBattleEngineClient.Views
                 {
                     if (!Pokemon.TempLockedTargets.HasFlag(PBETurnTarget.AllyLeft))
                     {
-                        TargetAllyLeftEnabled = false;
+                        TargetAllyLeft.Enabled = false;
                     }
                     if (!Pokemon.TempLockedTargets.HasFlag(PBETurnTarget.AllyCenter))
                     {
-                        TargetAllyCenterEnabled = false;
+                        TargetAllyCenter.Enabled = false;
                     }
                     if (!Pokemon.TempLockedTargets.HasFlag(PBETurnTarget.AllyRight))
                     {
-                        TargetAllyRightEnabled = false;
+                        TargetAllyRight.Enabled = false;
                     }
                     if (!Pokemon.TempLockedTargets.HasFlag(PBETurnTarget.FoeLeft))
                     {
-                        TargetFoeLeftEnabled = false;
+                        TargetFoeLeft.Enabled = false;
                     }
                     if (!Pokemon.TempLockedTargets.HasFlag(PBETurnTarget.FoeCenter))
                     {
-                        TargetFoeCenterEnabled = false;
+                        TargetFoeCenter.Enabled = false;
                     }
                     if (!Pokemon.TempLockedTargets.HasFlag(PBETurnTarget.FoeRight))
                     {
-                        TargetFoeRightEnabled = false;
+                        TargetFoeRight.Enabled = false;
                     }
                 }
 
@@ -978,12 +736,12 @@ namespace Kermalis.PokemonBattleEngineClient.Views
             PBETurnTarget targets;
             switch (arg)
             {
-                case "AllyLeft": targets = _targetAllyLeftResult; break;
-                case "AllyCenter": targets = _targetAllyCenterResult; break;
-                case "AllyRight": targets = _targetAllyRightResult; break;
-                case "FoeLeft": targets = _targetFoeLeftResult; break;
-                case "FoeCenter": targets = _targetFoeCenterResult; break;
-                case "FoeRight": targets = _targetFoeRightResult; break;
+                case "AllyLeft": targets = TargetAllyLeft.Targets; break;
+                case "AllyCenter": targets = TargetAllyCenter.Targets; break;
+                case "AllyRight": targets = TargetAllyRight.Targets; break;
+                case "FoeLeft": targets = TargetFoeLeft.Targets; break;
+                case "FoeCenter": targets = TargetFoeCenter.Targets; break;
+                case "FoeRight": targets = TargetFoeRight.Targets; break;
                 default: throw new ArgumentOutOfRangeException(nameof(arg));
             }
             TargetsVisible = false;

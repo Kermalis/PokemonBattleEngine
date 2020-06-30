@@ -28,6 +28,10 @@ namespace Kermalis.PokemonBattleEngineClient.Infrastructure
         public static ObjectToTextBitmapConverter Instance { get; } = new ObjectToTextBitmapConverter();
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
+            if (value is null)
+            {
+                return AvaloniaProperty.UnsetValue;
+            }
             PBELocalizedString localized = null;
             switch (value)
             {
@@ -41,7 +45,7 @@ namespace Kermalis.PokemonBattleEngineClient.Infrastructure
                 case PBEStat stat: localized = PBELocalizedString.GetStatName(stat); break;
                 case PBEType type: localized = PBELocalizedString.GetTypeName(type); break;
             }
-            return StringRenderer.Render(localized == null ? value?.ToString() : localized.ToString(), parameter?.ToString());
+            return StringRenderer.Render(localized == null ? value.ToString() : localized.ToString(), parameter?.ToString()) ?? AvaloniaProperty.UnsetValue;
         }
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
         {
@@ -53,10 +57,6 @@ namespace Kermalis.PokemonBattleEngineClient.Infrastructure
         public static SpeciesToMinispriteConverter Instance { get; } = new SpeciesToMinispriteConverter();
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            if (value == null) // Fainted
-            {
-                return AvaloniaProperty.UnsetValue;
-            }
             PBESpecies species;
             PBEForm form;
             PBEGender gender;
