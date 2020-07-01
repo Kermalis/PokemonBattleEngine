@@ -236,7 +236,7 @@ namespace Kermalis.PokemonBattleEngineServer
             _resetEvent.Set();
             Console.WriteLine("Reset complete.");
         }
-        public void ActionsSubmitted(Player player, IList<PBETurnAction> actions)
+        public void ActionsSubmitted(Player player, IReadOnlyList<PBETurnAction> actions)
         {
             if (_state != ServerState.WaitingForActions)
             {
@@ -257,7 +257,7 @@ namespace Kermalis.PokemonBattleEngineServer
                 }
             }
         }
-        public void SwitchesSubmitted(Player player, IList<PBESwitchIn> switches)
+        public void SwitchesSubmitted(Player player, IReadOnlyList<PBESwitchIn> switches)
         {
             if (_state != ServerState.WaitingForSwitchIns)
             {

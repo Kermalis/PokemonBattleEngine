@@ -204,7 +204,7 @@ namespace Kermalis.PokemonBattleEngineClient.Views
 
         private void SelectPokemonForTurn(PBEBattlePokemon pkmn)
         {
-            Pokemon.TurnAction = new PBETurnAction(Pokemon.Id, pkmn.Id);
+            Pokemon.TurnAction = new PBETurnAction(Pokemon, pkmn);
             BattleView.Client.StandBy.Add(pkmn);
             MovesVisible = false;
             SwitchesVisible = false;
@@ -246,7 +246,7 @@ namespace Kermalis.PokemonBattleEngineClient.Views
                     case PBEMoveTarget.SingleAllySurrounding: targets = PBETurnTarget.AllyCenter; break;
                     default: throw new ArgumentOutOfRangeException(nameof(possibleTargets));
                 }
-                Pokemon.TurnAction = new PBETurnAction(Pokemon.Id, move, targets);
+                Pokemon.TurnAction = new PBETurnAction(Pokemon, move, targets);
                 client.ActionsLoop(false);
             }
             else // Double / Triple
@@ -745,13 +745,13 @@ namespace Kermalis.PokemonBattleEngineClient.Views
                 default: throw new ArgumentOutOfRangeException(nameof(arg));
             }
             TargetsVisible = false;
-            Pokemon.TurnAction = new PBETurnAction(Pokemon.Id, _fightMove, targets);
+            Pokemon.TurnAction = new PBETurnAction(Pokemon, _fightMove, targets);
             BattleView.Client.ActionsLoop(false);
         }
         public void SelectPosition(string arg)
         {
             var pos = (PBEFieldPosition)Enum.Parse(typeof(PBEFieldPosition), arg);
-            BattleView.Client.Switches.Add(new PBESwitchIn(Pokemon.Id, pos));
+            BattleView.Client.Switches.Add(new PBESwitchIn(Pokemon, pos));
             BattleView.Client.StandBy.Add(Pokemon);
             BattleView.Client.PositionStandBy.Add(pos);
             PositionsVisible = false;

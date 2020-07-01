@@ -22,19 +22,15 @@ namespace Kermalis.PokemonBattleEngineTests.Abilities
             PBESettings settings = PBESettings.DefaultSettings;
 
             var p0 = new TestPokemonCollection(1);
-            p0[0] = new TestPokemon(PBESpecies.Seviper, 0, 100)
-            {
-                Moveset = new TestMoveset(settings, new[] { PBEMove.Toxic })
-            };
+            p0[0] = new TestPokemon(settings, PBESpecies.Seviper, 0, 100, PBEMove.Toxic);
 
             var p1 = new TestPokemonCollection(1);
-            p1[0] = new TestPokemon(PBESpecies.Zangoose, 0, 100)
+            p1[0] = new TestPokemon(settings, PBESpecies.Zangoose, 0, 100, PBEMove.Splash)
             {
-                Ability = PBEAbility.Immunity,
-                Moveset = new TestMoveset(settings, new[] { PBEMove.Splash })
+                Ability = PBEAbility.Immunity
             };
 
-            var battle = new PBEBattle(PBEBattleFormat.Single, settings, new PBETrainerInfo(p0, "Team 1"), new PBETrainerInfo(p1, "Team 2"));
+            var battle = new PBEBattle(PBEBattleFormat.Single, settings, new PBETrainerInfo(p0, "Trainer 0"), new PBETrainerInfo(p1, "Trainer 1"));
             battle.OnNewEvent += PBEBattle.ConsoleBattleEventHandler;
             battle.Begin();
 
@@ -45,8 +41,8 @@ namespace Kermalis.PokemonBattleEngineTests.Abilities
             #endregion
 
             #region Badly Poison Zangoose and check
-            Assert.True(PBEBattle.SelectActionsIfValid(t0, new[] { new PBETurnAction(seviper.Id, PBEMove.Toxic, PBETurnTarget.FoeCenter) }));
-            Assert.True(PBEBattle.SelectActionsIfValid(t1, new[] { new PBETurnAction(zangoose.Id, PBEMove.Splash, PBETurnTarget.AllyCenter) }));
+            Assert.True(PBEBattle.SelectActionsIfValid(t0, new PBETurnAction(seviper, PBEMove.Toxic, PBETurnTarget.FoeCenter)));
+            Assert.True(PBEBattle.SelectActionsIfValid(t1, new PBETurnAction(zangoose, PBEMove.Splash, PBETurnTarget.AllyCenter)));
 
             battle.RunTurn();
 

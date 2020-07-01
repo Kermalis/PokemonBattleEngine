@@ -1770,7 +1770,7 @@ namespace Kermalis.PokemonBattleEngineDiscord
                             async Task SwitchReactionClicked(IUserMessage switchMsg, PBEBattlePokemon switchPkmn)
                             {
                                 await switchMsg.AddReactionAsync(_confirmationEmoji); // Put this here so it happens before RunTurn() takes its time
-                                PBEBattle.SelectActionsIfValid(trainer, new[] { new PBETurnAction(mainPkmn.Id, switchPkmn.Id) });
+                                PBEBattle.SelectActionsIfValid(trainer, new PBETurnAction(mainPkmn, switchPkmn));
                             }
 
                             PBEBattlePokemon[] switches = trainer.Party.Where(p => p != mainPkmn && p.HP > 0).ToArray();
@@ -1821,7 +1821,7 @@ namespace Kermalis.PokemonBattleEngineDiscord
                                 default: throw new ArgumentOutOfRangeException(nameof(possibleTargets));
                             }
 
-                            PBEBattle.SelectActionsIfValid(trainer, new[] { new PBETurnAction(mainPkmn.Id, move, targets) });
+                            PBEBattle.SelectActionsIfValid(trainer, new PBETurnAction(mainPkmn, move, targets));
                         }
 
                         PBEMove[] usableMoves = mainPkmn.GetUsableMoves();
@@ -1847,7 +1847,7 @@ namespace Kermalis.PokemonBattleEngineDiscord
                     PBEBattlePokemon[] switches = trainer.Party.Where(p => p.HP > 0).ToArray();
                     if (switches.Length == 1)
                     {
-                        PBEBattle.SelectSwitchesIfValid(trainer, new[] { new PBESwitchIn(switches[0].Id, PBEFieldPosition.Center) });
+                        PBEBattle.SelectSwitchesIfValid(trainer, new PBESwitchIn(switches[0], PBEFieldPosition.Center));
                     }
                     else
                     {
@@ -1869,7 +1869,7 @@ namespace Kermalis.PokemonBattleEngineDiscord
                             async Task SwitchReactionClicked(IUserMessage switchMsg, PBEBattlePokemon switchPkmn)
                             {
                                 await switchMsg.AddReactionAsync(_confirmationEmoji); // Put this here so it happens before RunTurn() takes its time
-                                PBEBattle.SelectSwitchesIfValid(trainer, new[] { new PBESwitchIn(switchPkmn.Id, PBEFieldPosition.Center) });
+                                PBEBattle.SelectSwitchesIfValid(trainer, new PBESwitchIn(switchPkmn, PBEFieldPosition.Center));
                             }
 
                             var reactionsToAdd = new (IUserMessage Message, IEmote Reaction)[switches.Length];

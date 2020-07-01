@@ -125,7 +125,7 @@ namespace Kermalis.PokemonBattleEngineTests
         }
         IPBEMovesetSlot IReadOnlyList<IPBEMovesetSlot>.this[int index] => this[index];
 
-        public TestMoveset(PBESettings settings, PBEMove[] moves)
+        public TestMoveset(PBESettings settings, params PBEMove[] moves)
         {
             int numMoves = settings.NumMoves;
             _list = new TestMovesetSlot[numMoves];
@@ -174,7 +174,7 @@ namespace Kermalis.PokemonBattleEngineTests
         public TestMoveset Moveset { get; set; }
         IPBEMoveset IPBEPokemon.Moveset => Moveset;
 
-        public TestPokemon(PBESpecies species, PBEForm form, byte level)
+        public TestPokemon(PBESettings settings, PBESpecies species, PBEForm form, byte level, params PBEMove[] moves)
         {
             Species = species;
             Form = form;
@@ -183,6 +183,7 @@ namespace Kermalis.PokemonBattleEngineTests
             Gender = PBERandom.RandomGender(PBEPokemonData.GetData(species, form).GenderRatio);
             EffortValues = new PBEStatCollection(0, 0, 0, 0, 0, 0);
             IndividualValues = new PBEStatCollection(0, 0, 0, 0, 0, 0);
+            Moveset = new TestMoveset(settings, moves);
         }
     }
     public class TestPokemonCollection : IPBEPokemonCollection, IPBEPokemonCollection<TestPokemon>

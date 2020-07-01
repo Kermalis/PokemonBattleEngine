@@ -36,18 +36,12 @@ namespace Kermalis.PokemonBattleEngineTests.Moves
             PBESettings settings = PBESettings.DefaultSettings;
 
             var p0 = new TestPokemonCollection(1);
-            p0[0] = new TestPokemon(species, 0, 100)
-            {
-                Moveset = new TestMoveset(settings, new[] { PBEMove.Camouflage })
-            };
+            p0[0] = new TestPokemon(settings, species, 0, 100, PBEMove.Camouflage);
 
             var p1 = new TestPokemonCollection(1);
-            p1[0] = new TestPokemon(PBESpecies.Magikarp, 0, 100)
-            {
-                Moveset = new TestMoveset(settings, new[] { PBEMove.Splash })
-            };
+            p1[0] = new TestPokemon(settings, PBESpecies.Magikarp, 0, 100, PBEMove.Splash);
 
-            var battle = new PBEBattle(PBEBattleFormat.Single, settings, new PBETrainerInfo(p0, "Team 1"), new PBETrainerInfo(p1, "Team 2"), battleTerrain: battleTerrain);
+            var battle = new PBEBattle(PBEBattleFormat.Single, settings, new PBETrainerInfo(p0, "Trainer 0"), new PBETrainerInfo(p1, "Trainer 1"), battleTerrain: battleTerrain);
             battle.OnNewEvent += PBEBattle.ConsoleBattleEventHandler;
             battle.Begin();
 
@@ -58,8 +52,8 @@ namespace Kermalis.PokemonBattleEngineTests.Moves
             #endregion
 
             #region Use Camouflage and check
-            Assert.True(PBEBattle.SelectActionsIfValid(t0, new[] { new PBETurnAction(camouflager.Id, PBEMove.Camouflage, PBETurnTarget.AllyCenter) }));
-            Assert.True(PBEBattle.SelectActionsIfValid(t1, new[] { new PBETurnAction(magikarp.Id, PBEMove.Splash, PBETurnTarget.AllyCenter) }));
+            Assert.True(PBEBattle.SelectActionsIfValid(t0, new PBETurnAction(camouflager, PBEMove.Camouflage, PBETurnTarget.AllyCenter)));
+            Assert.True(PBEBattle.SelectActionsIfValid(t1, new PBETurnAction(magikarp, PBEMove.Splash, PBETurnTarget.AllyCenter)));
 
             battle.RunTurn();
 
@@ -79,18 +73,12 @@ namespace Kermalis.PokemonBattleEngineTests.Moves
             PBESettings settings = PBESettings.DefaultSettings;
 
             var p0 = new TestPokemonCollection(1);
-            p0[0] = new TestPokemon(PBESpecies.Staryu, 0, 100)
-            {
-                Moveset = new TestMoveset(settings, new[] { PBEMove.Camouflage })
-            };
+            p0[0] = new TestPokemon(settings, PBESpecies.Staryu, 0, 100, PBEMove.Camouflage);
 
             var p1 = new TestPokemonCollection(1);
-            p1[0] = new TestPokemon(PBESpecies.Magikarp, 0, 100)
-            {
-                Moveset = new TestMoveset(settings, new[] { PBEMove.Splash })
-            };
+            p1[0] = new TestPokemon(settings, PBESpecies.Magikarp, 0, 100, PBEMove.Splash);
 
-            var battle = new PBEBattle(PBEBattleFormat.Single, settings, new PBETrainerInfo(p0, "Team 1"), new PBETrainerInfo(p1, "Team 2"), battleTerrain: PBEBattleTerrain.Water);
+            var battle = new PBEBattle(PBEBattleFormat.Single, settings, new PBETrainerInfo(p0, "Trainer 0"), new PBETrainerInfo(p1, "Trainer 1"), battleTerrain: PBEBattleTerrain.Water);
             battle.OnNewEvent += PBEBattle.ConsoleBattleEventHandler;
             battle.Begin();
 
@@ -101,8 +89,8 @@ namespace Kermalis.PokemonBattleEngineTests.Moves
             #endregion
 
             #region Use Camouflage and check
-            Assert.True(PBEBattle.SelectActionsIfValid(t0, new[] { new PBETurnAction(staryu.Id, PBEMove.Camouflage, PBETurnTarget.AllyCenter) }));
-            Assert.True(PBEBattle.SelectActionsIfValid(t1, new[] { new PBETurnAction(magikarp.Id, PBEMove.Splash, PBETurnTarget.AllyCenter) }));
+            Assert.True(PBEBattle.SelectActionsIfValid(t0, new PBETurnAction(staryu, PBEMove.Camouflage, PBETurnTarget.AllyCenter)));
+            Assert.True(PBEBattle.SelectActionsIfValid(t1, new PBETurnAction(magikarp, PBEMove.Splash, PBETurnTarget.AllyCenter)));
 
             battle.RunTurn();
 

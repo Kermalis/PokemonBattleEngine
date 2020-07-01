@@ -24,18 +24,12 @@ namespace Kermalis.PokemonBattleEngineTests
             PBESettings settings = PBESettings.DefaultSettings;
 
             var p0 = new TestPokemonCollection(1);
-            p0[0] = new TestPokemon(PBESpecies.Golem, 0, 100)
-            {
-                Moveset = new TestMoveset(settings, new[] { move })
-            };
+            p0[0] = new TestPokemon(settings, PBESpecies.Golem, 0, 100, move);
 
             var p1 = new TestPokemonCollection(1);
-            p1[0] = new TestPokemon(PBESpecies.Magikarp, 0, 1)
-            {
-                Moveset = new TestMoveset(settings, new[] { PBEMove.Splash })
-            };
+            p1[0] = new TestPokemon(settings, PBESpecies.Magikarp, 0, 1, PBEMove.Splash);
 
-            var battle = new PBEBattle(PBEBattleFormat.Single, settings, new PBETrainerInfo(p0, "Team 1"), new PBETrainerInfo(p1, "Team 2"));
+            var battle = new PBEBattle(PBEBattleFormat.Single, settings, new PBETrainerInfo(p0, "Trainer 0"), new PBETrainerInfo(p1, "Trainer 1"));
             battle.OnNewEvent += PBEBattle.ConsoleBattleEventHandler;
             battle.Begin();
 
@@ -46,8 +40,8 @@ namespace Kermalis.PokemonBattleEngineTests
             #endregion
 
             #region Use move and check
-            Assert.True(PBEBattle.SelectActionsIfValid(t0, new[] { new PBETurnAction(golem.Id, move, PBETurnTarget.FoeCenter) }));
-            Assert.True(PBEBattle.SelectActionsIfValid(t1, new[] { new PBETurnAction(magikarp.Id, PBEMove.Splash, PBETurnTarget.AllyCenter) }));
+            Assert.True(PBEBattle.SelectActionsIfValid(t0, new PBETurnAction(golem, move, PBETurnTarget.FoeCenter)));
+            Assert.True(PBEBattle.SelectActionsIfValid(t1, new PBETurnAction(magikarp, PBEMove.Splash, PBETurnTarget.AllyCenter)));
 
             battle.RunTurn();
 

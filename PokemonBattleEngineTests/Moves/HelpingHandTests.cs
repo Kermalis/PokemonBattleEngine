@@ -29,22 +29,13 @@ namespace Kermalis.PokemonBattleEngineTests.Moves
             PBESettings settings = PBESettings.DefaultSettings;
 
             var p0 = new TestPokemonCollection(2);
-            p0[0] = new TestPokemon(PBESpecies.Minun, 0, 100)
-            {
-                Moveset = new TestMoveset(settings, new[] { PBEMove.Splash, PBEMove.HelpingHand })
-            };
-            p0[1] = new TestPokemon(PBESpecies.Giratina, 0, 1)
-            {
-                Moveset = new TestMoveset(settings, new[] { move })
-            };
+            p0[0] = new TestPokemon(settings, PBESpecies.Minun, 0, 100, PBEMove.HelpingHand, PBEMove.Splash);
+            p0[1] = new TestPokemon(settings, PBESpecies.Giratina, 0, 1, move);
 
             var p1 = new TestPokemonCollection(1);
-            p1[0] = new TestPokemon(PBESpecies.Magikarp, 0, 100)
-            {
-                Moveset = new TestMoveset(settings, new[] { PBEMove.Splash })
-            };
+            p1[0] = new TestPokemon(settings, PBESpecies.Magikarp, 0, 100, PBEMove.Splash);
 
-            var battle = new PBEBattle(PBEBattleFormat.Double, settings, new PBETrainerInfo(p0, "Team 1"), new PBETrainerInfo(p1, "Team 2"));
+            var battle = new PBEBattle(PBEBattleFormat.Double, settings, new PBETrainerInfo(p0, "Trainer 0"), new PBETrainerInfo(p1, "Trainer 1"));
             battle.OnNewEvent += PBEBattle.ConsoleBattleEventHandler;
             battle.Begin();
 
@@ -56,12 +47,11 @@ namespace Kermalis.PokemonBattleEngineTests.Moves
             #endregion
 
             #region Use Shadow Force
-            Assert.True(PBEBattle.SelectActionsIfValid(t0, new[]
-            {
-                new PBETurnAction(minun.Id, PBEMove.Splash, PBETurnTarget.AllyLeft),
-                new PBETurnAction(giratina.Id, move, PBETurnTarget.FoeLeft)
-            }));
-            Assert.True(PBEBattle.SelectActionsIfValid(t1, new[] { new PBETurnAction(magikarp.Id, PBEMove.Splash, PBETurnTarget.AllyLeft) }));
+            Assert.True(PBEBattle.SelectActionsIfValid(t0,
+                new PBETurnAction(minun, PBEMove.Splash, PBETurnTarget.AllyLeft),
+                new PBETurnAction(giratina, move, PBETurnTarget.FoeLeft)));
+            Assert.True(PBEBattle.SelectActionsIfValid(t1,
+                new PBETurnAction(magikarp, PBEMove.Splash, PBETurnTarget.AllyLeft)));
 
             battle.RunTurn();
 
@@ -69,12 +59,11 @@ namespace Kermalis.PokemonBattleEngineTests.Moves
             #endregion
 
             #region Use Helping Hand and check
-            Assert.True(PBEBattle.SelectActionsIfValid(t0, new[]
-            {
-                new PBETurnAction(minun.Id, PBEMove.HelpingHand, PBETurnTarget.AllyRight),
-                new PBETurnAction(giratina.Id, move, PBETurnTarget.FoeLeft)
-            }));
-            Assert.True(PBEBattle.SelectActionsIfValid(t1, new[] { new PBETurnAction(magikarp.Id, PBEMove.Splash, PBETurnTarget.AllyLeft) }));
+            Assert.True(PBEBattle.SelectActionsIfValid(t0,
+                new PBETurnAction(minun, PBEMove.HelpingHand, PBETurnTarget.AllyRight),
+                new PBETurnAction(giratina, move, PBETurnTarget.FoeLeft)));
+            Assert.True(PBEBattle.SelectActionsIfValid(t1,
+                new PBETurnAction(magikarp, PBEMove.Splash, PBETurnTarget.AllyLeft)));
 
             battle.RunTurn();
 

@@ -42,7 +42,7 @@ namespace Kermalis.PokemonBattleEngineExtras
             p0 = PBERandomTeamGenerator.CreateRandomTeam(settings.MaxPartySize);
             p1 = PBERandomTeamGenerator.CreateRandomTeam(settings.MaxPartySize);
 
-            _battle = new PBEBattle(PBEBattleFormat.Double, settings, new PBETrainerInfo(p0, "Team 1"), new PBETrainerInfo(p1, "Team 2"), battleTerrain: PBERandom.RandomBattleTerrain());
+            _battle = new PBEBattle(PBEBattleFormat.Double, settings, new PBETrainerInfo(p0, "Trainer 0"), new PBETrainerInfo(p1, "Trainer 1"), battleTerrain: PBERandom.RandomBattleTerrain());
             _battle.OnNewEvent += PBEBattle.ConsoleBattleEventHandler;
             _battle.OnNewEvent += Battle_OnNewEvent;
             _battle.OnStateChanged += Battle_OnStateChanged;
@@ -85,22 +85,20 @@ namespace Kermalis.PokemonBattleEngineExtras
                     {
                         PBETrainer t = arp.Trainer;
                         PBETurnAction[] actions = PBEAI.CreateActions(t);
-                        if (!PBEBattle.AreActionsValid(t, actions))
+                        if (!PBEBattle.SelectActionsIfValid(t, actions))
                         {
                             throw new Exception($"{t.Name}'s AI created invalid actions!");
                         }
-                        PBEBattle.SelectActionsIfValid(t, actions);
                         break;
                     }
                     case PBESwitchInRequestPacket sirp:
                     {
                         PBETrainer t = sirp.Trainer;
                         PBESwitchIn[] switches = PBEAI.CreateSwitches(t);
-                        if (!PBEBattle.AreSwitchesValid(t, switches))
+                        if (!PBEBattle.SelectSwitchesIfValid(t, switches))
                         {
                             throw new Exception($"{t.Name}'s AI created invalid switches!");
                         }
-                        PBEBattle.SelectSwitchesIfValid(t, switches);
                         break;
                     }
                     case PBETurnBeganPacket tbp:

@@ -35,6 +35,8 @@ namespace Kermalis.PokemonBattleEngine.Battle
                 default: throw new ArgumentOutOfRangeException(nameof(Decision));
             }
         }
+        public PBETurnAction(PBEBattlePokemon pokemon, PBEMove fightMove, PBETurnTarget fightTargets)
+            : this(pokemon.Id, fightMove, fightTargets) { }
         public PBETurnAction(byte pokemonId, PBEMove fightMove, PBETurnTarget fightTargets)
         {
             PokemonId = pokemonId;
@@ -42,6 +44,8 @@ namespace Kermalis.PokemonBattleEngine.Battle
             FightMove = fightMove;
             FightTargets = fightTargets;
         }
+        public PBETurnAction(PBEBattlePokemon pokemon, PBEBattlePokemon switchPokemon)
+            : this(pokemon.Id, switchPokemon.Id) { }
         public PBETurnAction(byte pokemonId, byte switchPokemonId)
         {
             PokemonId = pokemonId;
@@ -80,6 +84,8 @@ namespace Kermalis.PokemonBattleEngine.Battle
             PokemonId = r.ReadByte();
             Position = r.ReadEnum<PBEFieldPosition>();
         }
+        public PBESwitchIn(PBEBattlePokemon pokemon, PBEFieldPosition position)
+            : this(pokemon.Id, position) { }
         public PBESwitchIn(byte pokemonId, PBEFieldPosition position)
         {
             PokemonId = pokemonId;
@@ -94,12 +100,16 @@ namespace Kermalis.PokemonBattleEngine.Battle
     }
     public sealed partial class PBEBattle
     {
+        public static bool AreActionsValid(PBETrainer trainer, params PBETurnAction[] actions)
+        {
+            return AreActionsValid(trainer, (IReadOnlyList<PBETurnAction>)actions);
+        }
         /// <summary>Determines whether chosen actions are valid.</summary>
         /// <param name="trainer">The trainer the inputted actions belong to.</param>
         /// <param name="actions">The actions the team wishes to execute.</param>
         /// <returns>False if the team already chose actions or the actions are illegal, True otherwise.</returns>
         /// <exception cref="InvalidOperationException">Thrown when <see cref="BattleState"/> is not <see cref="PBEBattleState.WaitingForActions"/>.</exception>
-        public static bool AreActionsValid(PBETrainer trainer, IList<PBETurnAction> actions)
+        public static bool AreActionsValid(PBETrainer trainer, IReadOnlyList<PBETurnAction> actions)
         {
             if (trainer == null)
             {
@@ -163,12 +173,16 @@ namespace Kermalis.PokemonBattleEngine.Battle
             }
             return true;
         }
+        public static bool SelectActionsIfValid(PBETrainer trainer, params PBETurnAction[] actions)
+        {
+            return SelectActionsIfValid(trainer, (IReadOnlyList<PBETurnAction>)actions);
+        }
         /// <summary>Selects actions if they are valid. Changes the battle state if both teams have selected valid actions.</summary>
         /// <param name="trainer">The trainer the inputted actions belong to.</param>
         /// <param name="actions">The actions the team wishes to execute.</param>
         /// <returns>True if the actions are valid and were selected.</returns>
         /// <exception cref="InvalidOperationException">Thrown when <see cref="BattleState"/> is not <see cref="PBEBattleState.WaitingForActions"/>.</exception>
-        public static bool SelectActionsIfValid(PBETrainer trainer, IList<PBETurnAction> actions)
+        public static bool SelectActionsIfValid(PBETrainer trainer, IReadOnlyList<PBETurnAction> actions)
         {
             if (AreActionsValid(trainer, actions))
             {
@@ -258,12 +272,16 @@ namespace Kermalis.PokemonBattleEngine.Battle
             return false;
         }
 
+        public static bool AreSwitchesValid(PBETrainer trainer, params PBESwitchIn[] switches)
+        {
+            return AreSwitchesValid(trainer, (IReadOnlyList<PBESwitchIn>)switches);
+        }
         /// <summary>Determines whether chosen switches are valid.</summary>
         /// <param name="trainer">The trainer the inputted switches belong to.</param>
         /// <param name="switches">The switches the team wishes to execute.</param>
         /// <returns>False if the team already chose switches or the switches are illegal, True otherwise.</returns>
         /// <exception cref="InvalidOperationException">Thrown when <see cref="BattleState"/> is not <see cref="PBEBattleState.WaitingForSwitchIns"/>.</exception>
-        public static bool AreSwitchesValid(PBETrainer trainer, IList<PBESwitchIn> switches)
+        public static bool AreSwitchesValid(PBETrainer trainer, IReadOnlyList<PBESwitchIn> switches)
         {
             if (trainer == null)
             {
@@ -297,12 +315,16 @@ namespace Kermalis.PokemonBattleEngine.Battle
             }
             return true;
         }
+        public static bool SelectSwitchesIfValid(PBETrainer trainer, params PBESwitchIn[] switches)
+        {
+            return SelectSwitchesIfValid(trainer, (IReadOnlyList<PBESwitchIn>)switches);
+        }
         /// <summary>Selects switches if they are valid. Changes the battle state if both teams have selected valid switches.</summary>
         /// <param name="trainer">The trainer the inputted switches belong to.</param>
         /// <param name="switches">The switches the team wishes to execute.</param>
         /// <returns>True if the switches are valid and were selected.</returns>
         /// <exception cref="InvalidOperationException">Thrown when <see cref="BattleState"/> is not <see cref="PBEBattleState.WaitingForSwitchIns"/>.</exception>
-        public static bool SelectSwitchesIfValid(PBETrainer trainer, IList<PBESwitchIn> switches)
+        public static bool SelectSwitchesIfValid(PBETrainer trainer, IReadOnlyList<PBESwitchIn> switches)
         {
             if (AreSwitchesValid(trainer, switches))
             {

@@ -35,12 +35,12 @@ namespace Kermalis.PokemonBattleEngine.AI
                 // If a Pokémon is forced to struggle, it is best that it just stays in until it faints
                 if (user.IsForcedToStruggle())
                 {
-                    actions[i] = new PBETurnAction(user.Id, PBEMove.Struggle, PBEBattleUtils.GetPossibleTargets(user, user.GetMoveTargets(PBEMove.Struggle))[0]);
+                    actions[i] = new PBETurnAction(user, PBEMove.Struggle, PBEBattleUtils.GetPossibleTargets(user, user.GetMoveTargets(PBEMove.Struggle))[0]);
                 }
                 // If a Pokémon has a temp locked move (Dig, Dive, Shadow Force) it must be used
                 else if (user.TempLockedMove != PBEMove.None)
                 {
-                    actions[i] = new PBETurnAction(user.Id, user.TempLockedMove, user.TempLockedTargets);
+                    actions[i] = new PBETurnAction(user, user.TempLockedMove, user.TempLockedTargets);
                 }
                 // The Pokémon is free to switch or fight (unless it cannot switch due to Magnet Pull etc)
                 else
@@ -612,7 +612,7 @@ namespace Kermalis.PokemonBattleEngine.AI
                                     default: throw new ArgumentOutOfRangeException(nameof(PBEMoveData.Effect));
                                 }
                             }
-                            possibleActions.Add((new PBETurnAction(user.Id, move, possibleTarget), score));
+                            possibleActions.Add((new PBETurnAction(user, move, possibleTarget), score));
                         }
                     }
                     if (user.CanSwitchOut())
@@ -625,7 +625,7 @@ namespace Kermalis.PokemonBattleEngine.AI
                             // TODO: Known moves of active battlers
                             // TODO: Type effectiveness
                             double score = -10d;
-                            possibleActions.Add((new PBETurnAction(user.Id, switchPkmn.Id), score));
+                            possibleActions.Add((new PBETurnAction(user, switchPkmn), score));
                         }
                     }
 
@@ -740,7 +740,7 @@ namespace Kermalis.PokemonBattleEngine.AI
             var switches = new PBESwitchIn[trainer.SwitchInsRequired];
             for (int i = 0; i < trainer.SwitchInsRequired; i++)
             {
-                switches[i] = new PBESwitchIn(available[i].Id, availablePositions[i]);
+                switches[i] = new PBESwitchIn(available[i], availablePositions[i]);
             }
             return switches;
         }
