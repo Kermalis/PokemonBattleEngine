@@ -12,7 +12,7 @@ namespace Kermalis.PokemonBattleEngineClient.Clients
         public override BattleView BattleView { get; }
         public override bool HideNonOwned => false;
 
-        public ReplayClient(string path)
+        public ReplayClient(string path, string name) : base(name)
         {
             Battle = PBEBattle.LoadReplay(path);
             BattleView = new BattleView(this);

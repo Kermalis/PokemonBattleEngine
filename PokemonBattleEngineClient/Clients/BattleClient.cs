@@ -13,10 +13,16 @@ namespace Kermalis.PokemonBattleEngineClient.Clients
     {
         protected const int WaitMilliseconds = 1750;
 
+        public string Name { get; }
         public abstract PBEBattle Battle { get; }
         public abstract PBETrainer Trainer { get; }
         public abstract BattleView BattleView { get; }
         public abstract bool HideNonOwned { get; }
+
+        protected BattleClient(string name)
+        {
+            Name = name;
+        }
 
         public bool ShouldUseKnownInfo(PBETrainer pkmnTrainer)
         {

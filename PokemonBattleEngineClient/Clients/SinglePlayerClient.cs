@@ -16,7 +16,7 @@ namespace Kermalis.PokemonBattleEngineClient.Clients
         public override BattleView BattleView { get; }
         public override bool HideNonOwned => true;
 
-        public SinglePlayerClient(PBEBattleFormat battleFormat, PBESettings settings, IReadOnlyList<PBETrainerInfo> ti0, IReadOnlyList<PBETrainerInfo> ti1)
+        public SinglePlayerClient(PBEBattleFormat battleFormat, PBESettings settings, IReadOnlyList<PBETrainerInfo> ti0, IReadOnlyList<PBETrainerInfo> ti1, string name) : base(name)
         {
             var b = new PBEBattle(battleFormat, settings, ti0, ti1, battleTerrain: PBERandom.RandomBattleTerrain());
             Battle = b;

@@ -8,6 +8,8 @@ namespace Kermalis.PokemonBattleEngineClient.Clients
 {
     internal abstract class NonLocalClient : BattleClient
     {
+        protected NonLocalClient(string name) : base(name) { }
+
         public override void Dispose()
         {
             _stopPacketThread = true;

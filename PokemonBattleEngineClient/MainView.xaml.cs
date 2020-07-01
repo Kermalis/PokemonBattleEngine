@@ -78,7 +78,7 @@ namespace Kermalis.PokemonBattleEngineClient
                 {
                     Dispatcher.UIThread.InvokeAsync(() =>
                     {
-                        if (arg == null)
+                        if (arg is null)
                         {
                             ResetConnectButton();
                             con?.Dispose();
@@ -89,8 +89,9 @@ namespace Kermalis.PokemonBattleEngineClient
                         }
                         else
                         {
+                            // No need to dispose con because NetworkClient.Dispose disposes the same thing
                             var tup = (Tuple<PBEClient, PBEBattlePacket, byte>)arg;
-                            Add(new NetworkClient(tup.Item1, tup.Item2, tup.Item3));
+                            Add(new NetworkClient(tup.Item1, tup.Item2, tup.Item3, $"MP {_battles.Count + 1}"));
                             ResetConnectButton();
                         }
                     });
@@ -112,7 +113,7 @@ namespace Kermalis.PokemonBattleEngineClient
         {
             const string path = "SinglePlayer Battle.pbereplay";
             //const string path = @"C:\Users\Kermalis\Documents\Development\GitHub\PokeI\bin\Release\netcoreapp3.1\AI Final Replay.pbereplay";
-            Add(new ReplayClient(path));
+            Add(new ReplayClient(path, $"Replay {_battles.Count + 1}"));
         }
         public void SinglePlayer()
         {
@@ -161,7 +162,7 @@ namespace Kermalis.PokemonBattleEngineClient
                 t1 = new[] { new PBETrainerInfo(p1, "Champion Cynthia") };
                 battleFormat = triple ? PBEBattleFormat.Triple : PBEBattleFormat.Double;
             }
-            Add(new SinglePlayerClient(battleFormat, settings, t0, t1));
+            Add(new SinglePlayerClient(battleFormat, settings, t0, t1, $"SP {_battles.Count + 1}"));
         }
 
         // TODO: Removing battles (with disposing)
@@ -171,7 +172,7 @@ namespace Kermalis.PokemonBattleEngineClient
             var pages = _tabs.Items.Cast<object>().ToList();
             var tab = new TabItem
             {
-                Header = "Battle " + _battles.Count,
+                Header = client.Name,
                 Content = client.BattleView
             };
             pages.Add(tab);

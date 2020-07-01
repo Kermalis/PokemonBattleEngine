@@ -38,22 +38,22 @@ namespace Kermalis.PokemonBattleEngineClient.Clients
 
         private void OnConnected()
         {
-            Debug.WriteLine("Client connected to {0}", _client.RemoteIP);
+            Debug.WriteLine($"Connecting... connected to {_client.RemoteIP}");
             _action.Invoke("Waiting for players...");
         }
         private void OnDisconnected(object sender, EventArgs e)
         {
-            Debug.WriteLine("Client disconnected from host");
+            Debug.WriteLine("Connecting... disconnected from host");
             _action.Invoke(null);
         }
         private void OnError(object sender, Exception ex)
         {
-            Debug.WriteLine("Client error: {0}", ex);
+            Debug.WriteLine($"Connecting... error: {ex}");
         }
 
         private void OnPacketReceived(object sender, IPBEPacket packet)
         {
-            Debug.WriteLine($"Packet received (\"{packet.GetType().Name}\")");
+            Debug.WriteLine($"Connecting... received \"{packet.GetType().Name}\"");
             switch (packet)
             {
                 case PBEMatchCancelledPacket _:
@@ -108,7 +108,7 @@ namespace Kermalis.PokemonBattleEngineClient.Clients
         public override BattleView BattleView { get; }
         public override bool HideNonOwned => true;
 
-        public NetworkClient(PBEClient client, PBEBattlePacket bp, byte battleId)
+        public NetworkClient(PBEClient client, PBEBattlePacket bp, byte battleId, string name) : base(name)
         {
             var b = new PBEBattle(bp);
             Battle = b;
@@ -127,16 +127,16 @@ namespace Kermalis.PokemonBattleEngineClient.Clients
 
         private void OnDisconnected(object sender, EventArgs e)
         {
-            Debug.WriteLine("Client disconnected from host");
+            Debug.WriteLine($"{Name} disconnected from host");
             BattleView.AddMessage("Disconnected from host.", messageBox: false);
         }
         private void OnError(object sender, Exception ex)
         {
-            Debug.WriteLine("Client error: {0}", ex);
+            Debug.WriteLine($"{Name} error: {ex}");
         }
         private void OnPacketReceived(object sender, IPBEPacket packet)
         {
-            Debug.WriteLine($"Packet received (\"{packet.GetType().Name}\")");
+            Debug.WriteLine($"{Name} received \"{packet.GetType().Name}\"");
             switch (packet)
             {
                 case PBEMatchCancelledPacket _:
