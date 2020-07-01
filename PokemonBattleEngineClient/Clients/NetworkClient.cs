@@ -15,7 +15,7 @@ namespace Kermalis.PokemonBattleEngineClient.Clients
         private readonly PBEClient _client;
         private readonly PBELegalPokemonCollection _party;
         private readonly Action<object> _action;
-        private byte _battleId;
+        private byte _battleId = byte.MaxValue; // Spectator by default
 
         public NetworkClientConnection(string host, ushort port, PBELegalPokemonCollection party, Action<object> action)
         {
@@ -80,7 +80,7 @@ namespace Kermalis.PokemonBattleEngineClient.Clients
                     _client.Error -= OnError;
                     _client.PacketReceived -= OnPacketReceived;
                     _action.Invoke(Tuple.Create(_client, bp, _battleId));
-                    Send(new PBEResponsePacket());
+                    // Response will be sent in NetworkClient constructor so the server doesn't send packets between threads
                     break;
                 }
                 default: throw new ArgumentOutOfRangeException(nameof(packet));
@@ -122,6 +122,7 @@ namespace Kermalis.PokemonBattleEngineClient.Clients
             client.Disconnected += OnDisconnected;
             client.Error += OnError;
             client.PacketReceived += OnPacketReceived;
+            Send(new PBEResponsePacket());
         }
 
         private void OnDisconnected(object sender, EventArgs e)
