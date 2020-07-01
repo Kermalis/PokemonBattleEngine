@@ -108,6 +108,7 @@ namespace Kermalis.PokemonBattleEngineTests
             PBEBattlePokemon butterfree = t1.Party[1];
             PBEBattlePokemon sunkern = t1.Party[2];
             happiny.HP = 1; // Set Happiny HP to 1 so it faints on switch
+            happiny.UpdateHPPercentage();
             #endregion
 
             #region Set up Stealth Rock while lowering HP, swap Happiny for Regigigas

@@ -228,7 +228,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                 throw new ArgumentOutOfRangeException(nameof(pkmn.HP));
             }
             HP = hp;
-            HPPercentage = (double)hp / MaxHP;
+            UpdateHPPercentage();
             PBEStatus1 status1 = pkmn.Status1;
             if (status1 >= PBEStatus1.MAX)
             {
@@ -305,7 +305,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                 case PBEAbility.Regenerator:
                 {
                     HP = PBEUtils.Clamp((ushort)(HP + (MaxHP / 3)), ushort.MinValue, MaxHP);
-                    HPPercentage = (double)HP / MaxHP;
+                    UpdateHPPercentage();
                     break;
                 }
             }
@@ -377,7 +377,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                 ushort hp = PBEDataUtils.CalculateStat(pData, PBEStat.HP, nature, evs.HP, ivs.HP, level, settings);
                 MaxHP = hp;
                 HP = hp;
-                HPPercentage = 1d;
+                UpdateHPPercentage();
             }
             Attack = PBEDataUtils.CalculateStat(pData, PBEStat.Attack, nature, evs.Attack, ivs.Attack, level, settings);
             Defense = PBEDataUtils.CalculateStat(pData, PBEStat.Defense, nature, evs.Defense, ivs.Defense, level, settings);
@@ -448,6 +448,11 @@ namespace Kermalis.PokemonBattleEngine.Battle
                     knownSlot.MaxPP = PBEBattleMoveset.GetNonTransformPP(Battle.Settings, move, Battle.Settings.MaxPPUps);
                 }
             }
+        }
+        /// <summary>Divides <see cref="HP"/> by <see cref="MaxHP"/> and places the result in <see cref="HPPercentage"/>.</summary>
+        public void UpdateHPPercentage()
+        {
+            HPPercentage = (double)HP / MaxHP;
         }
         public void StartRoost()
         {

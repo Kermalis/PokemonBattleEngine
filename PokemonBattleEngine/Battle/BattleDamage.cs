@@ -64,7 +64,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                         victim.HP = 1;
                     }
                 }
-                victim.HPPercentage = (double)victim.HP / victim.MaxHP;
+                victim.UpdateHPPercentage();
                 BroadcastPkmnHPChanged(victim, oldHP, oldPercentage);
                 if (sturdyHappened)
                 {
@@ -98,7 +98,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
             ushort healAmt = (ushort)(pkmn.HP - oldHP);
             if (healAmt > 0)
             {
-                pkmn.HPPercentage = (double)pkmn.HP / pkmn.MaxHP;
+                pkmn.UpdateHPPercentage();
                 BroadcastPkmnHPChanged(pkmn, oldHP, oldPercentage);
             }
             return healAmt;
