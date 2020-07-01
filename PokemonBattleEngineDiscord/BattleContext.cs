@@ -302,15 +302,16 @@ namespace Kermalis.PokemonBattleEngineDiscord
         private string _embedTitle; // Mini performance saver
         private void SetEmbedTitle()
         {
-            _embedTitle = $"[#{BattleId}] ― {GetTrainerName(_battle.Trainers[0])} vs {GetTrainerName(_battle.Trainers[1])}";
+            string s = $"**[#{BattleId}] ― {GetTrainerName(_battle.Trainers[0])} vs {GetTrainerName(_battle.Trainers[1])}";
             if (_battle.TurnNumber > 0)
             {
-                _embedTitle += $" (Turn {_battle.TurnNumber})";
+                s += $" (Turn {_battle.TurnNumber})";
             }
             if (_battle.Weather != PBEWeather.None)
             {
-                _embedTitle += $" {Utils.WeatherEmotes[_battle.Weather]}";
+                s += $" {Utils.WeatherEmotes[_battle.Weather]}";
             }
+            _embedTitle = s + "**";
         }
         private ushort _lastSwitchinsTurn;
         private async Task SendQueuedMessages()
