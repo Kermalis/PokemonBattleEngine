@@ -29,6 +29,7 @@ namespace Kermalis.PokemonBattleEngine.Packets
         public sbyte TargetEvasionChange { get; }
         public PBEAbility TargetAbility { get; }
         public PBESpecies TargetSpecies { get; }
+        public PBEForm TargetForm { get; }
         public PBEType TargetType1 { get; }
         public PBEType TargetType2 { get; }
         public double TargetWeight { get; }
@@ -58,6 +59,7 @@ namespace Kermalis.PokemonBattleEngine.Packets
                 w.Write(TargetEvasionChange = target.EvasionChange);
                 w.Write(TargetAbility = target.Ability);
                 w.Write(TargetSpecies = target.Species);
+                w.Write(TargetForm = target.Form);
                 w.Write(TargetType1 = target.Type1);
                 w.Write(TargetType2 = target.Type2);
                 w.Write(TargetWeight = target.Weight);
@@ -90,6 +92,7 @@ namespace Kermalis.PokemonBattleEngine.Packets
             TargetEvasionChange = r.ReadSByte();
             TargetAbility = r.ReadEnum<PBEAbility>();
             TargetSpecies = r.ReadEnum<PBESpecies>();
+            TargetForm = r.ReadEnum<PBEForm>();
             TargetType1 = r.ReadEnum<PBEType>();
             TargetType2 = r.ReadEnum<PBEType>();
             TargetWeight = r.ReadDouble();

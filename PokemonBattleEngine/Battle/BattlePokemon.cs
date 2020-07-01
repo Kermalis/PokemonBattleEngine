@@ -266,18 +266,20 @@ namespace Kermalis.PokemonBattleEngine.Battle
             HPPercentage = info.HPPercentage;
             Status1 = info.Status1;
             Level = info.Level;
-            KnownAbility = PBEAbility.MAX;
-            KnownGender = info.Gender;
-            KnownItem = (PBEItem)ushort.MaxValue;
+            KnownAbility = Ability = PBEAbility.MAX;
+            KnownGender = Gender = info.Gender;
+            KnownItem = Item = (PBEItem)ushort.MaxValue;
+            Moves = new PBEBattleMoveset(Battle.Settings); // For Transform
             KnownMoves = new PBEBattleMoveset(Battle.Settings);
-            KnownNickname = info.Nickname;
-            KnownShiny = info.Shiny;
-            KnownSpecies = info.Species;
-            KnownForm = info.Form;
+            TransformBackupMoves = new PBEBattleMoveset(Battle.Settings); // For Transform
+            KnownNickname = Nickname = info.Nickname;
+            KnownShiny = Shiny = info.Shiny;
+            KnownSpecies = Species = info.Species;
+            KnownForm = Form = info.Form;
             var pData = PBEPokemonData.GetData(KnownSpecies, KnownForm);
-            KnownType1 = pData.Type1;
-            KnownType2 = pData.Type2;
-            KnownWeight = pData.Weight;
+            KnownType1 = Type1 = pData.Type1;
+            KnownType2 = Type2 = pData.Type2;
+            KnownWeight = Weight = pData.Weight;
             trainer.Party.Add(this);
             Battle.ActiveBattlers.Add(this);
         }
@@ -393,7 +395,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
             {
                 throw new ArgumentNullException(nameof(target));
             }
-            if (Team != target.Team)
+            if (Trainer != target.Trainer)
             {
                 KnownAbility = target.KnownAbility = Ability = target.Ability;
                 KnownType1 = target.KnownType1 = Type1 = target.Type1;
@@ -414,6 +416,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
             KnownGender = target.KnownGender = target.Gender;
             KnownShiny = target.KnownShiny = target.Shiny;
             KnownSpecies = target.KnownSpecies = Species = target.Species;
+            KnownForm = target.KnownForm = Form = target.Form;
             Attack = target.Attack;
             Defense = target.Defense;
             SpAttack = target.SpAttack;

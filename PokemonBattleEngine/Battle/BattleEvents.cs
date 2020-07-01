@@ -97,17 +97,20 @@ namespace Kermalis.PokemonBattleEngine.Battle
         }
         private void BroadcastMoveUsed(PBEBattlePokemon moveUser, PBEMove move)
         {
-            bool reveal;
-            if (!_calledFromOtherMove && moveUser.Moves.Contains(move) && !moveUser.KnownMoves.Contains(move))
+            bool owned;
+            if (!_calledFromOtherMove && moveUser.Moves.Contains(move))
             {
-                moveUser.KnownMoves[PBEMove.MAX].Move = move;
-                reveal = true;
+                if (!moveUser.KnownMoves.Contains(move))
+                {
+                    moveUser.KnownMoves[PBEMove.MAX].Move = move;
+                }
+                owned = true;
             }
             else
             {
-                reveal = false;
+                owned = false;
             }
-            Broadcast(new PBEMoveUsedPacket(moveUser, move, reveal));
+            Broadcast(new PBEMoveUsedPacket(moveUser, move, owned));
         }
         private void BroadcastPkmnFainted(PBEBattlePokemon pokemon, PBEBattlePokemon disguisedAsPokemon, PBEFieldPosition oldPosition)
         {

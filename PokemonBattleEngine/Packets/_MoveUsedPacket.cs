@@ -14,9 +14,9 @@ namespace Kermalis.PokemonBattleEngine.Packets
         public PBETrainer MoveUserTrainer { get; }
         public PBEFieldPosition MoveUser { get; }
         public PBEMove Move { get; }
-        public bool Reveal { get; }
+        public bool Owned { get; }
 
-        internal PBEMoveUsedPacket(PBEBattlePokemon moveUser, PBEMove move, bool reveal)
+        internal PBEMoveUsedPacket(PBEBattlePokemon moveUser, PBEMove move, bool owned)
         {
             using (var ms = new MemoryStream())
             using (var w = new EndianBinaryWriter(ms, encoding: EncodingType.UTF16))
@@ -25,7 +25,7 @@ namespace Kermalis.PokemonBattleEngine.Packets
                 w.Write((MoveUserTrainer = moveUser.Trainer).Id);
                 w.Write(MoveUser = moveUser.FieldPosition);
                 w.Write(Move = move);
-                w.Write(Reveal = reveal);
+                w.Write(Owned = owned);
                 Data = new ReadOnlyCollection<byte>(ms.ToArray());
             }
         }
@@ -35,7 +35,7 @@ namespace Kermalis.PokemonBattleEngine.Packets
             MoveUserTrainer = battle.Trainers[r.ReadByte()];
             MoveUser = r.ReadEnum<PBEFieldPosition>();
             Move = r.ReadEnum<PBEMove>();
-            Reveal = r.ReadBoolean();
+            Owned = r.ReadBoolean();
         }
     }
 }

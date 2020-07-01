@@ -108,7 +108,7 @@ namespace Kermalis.PokemonBattleEngineClient.Clients
                     pokemon.Gender = pokemon.KnownGender = ilp.ActualGender;
                     pokemon.Nickname = pokemon.KnownNickname = ilp.ActualNickname;
                     pokemon.Shiny = pokemon.KnownShiny = ilp.ActualShiny;
-                    pokemon.OriginalSpecies = pokemon.Species = pokemon.KnownSpecies = ilp.ActualSpecies;
+                    pokemon.Species = pokemon.KnownSpecies = ilp.ActualSpecies;
                     pokemon.Form = pokemon.KnownForm = ilp.ActualForm;
                     pokemon.Type1 = pokemon.KnownType1 = ilp.ActualType1;
                     pokemon.Type2 = pokemon.KnownType2 = ilp.ActualType2;
@@ -151,10 +151,15 @@ namespace Kermalis.PokemonBattleEngineClient.Clients
                 }
                 case PBEMoveUsedPacket mup:
                 {
-                    if (mup.Reveal)
+                    PBEBattlePokemon moveUser = mup.MoveUserTrainer.TryGetPokemon(mup.MoveUser);
+                    if (mup.Owned && !moveUser.KnownMoves.Contains(mup.Move))
                     {
-                        PBEBattlePokemon moveUser = mup.MoveUserTrainer.TryGetPokemon(mup.MoveUser);
                         moveUser.KnownMoves[PBEMove.MAX].Move = mup.Move;
+                        PBEBattleMoveset.PBEBattleMovesetSlot slot = moveUser.Moves[PBEMove.MAX];
+                        if (slot != null)
+                        {
+                            slot.Move = mup.Move; // Copy to Moves as well so Transform doesn't break for spectators/allies
+                        }
                     }
                     break;
                 }
@@ -299,8 +304,8 @@ namespace Kermalis.PokemonBattleEngineClient.Clients
                 {
                     PBEBattlePokemon user = rtph.UserTrainer.TryGetPokemon(rtph.User);
                     PBEBattlePokemon target = rtph.TargetTrainer.TryGetPokemon(rtph.Target);
-                    user.KnownType1 = target.KnownType1;
-                    user.KnownType2 = target.KnownType2;
+                    user.Type1 = user.KnownType1 = target.KnownType1; // Set Type1 and Type2 so Transform works
+                    user.Type2 = user.KnownType2 = target.KnownType2;
                     break;
                 }
                 case PBEStatus1Packet s1p:
@@ -442,6 +447,7 @@ namespace Kermalis.PokemonBattleEngineClient.Clients
                         target.Moves[i].Move = tp.TargetMoves[i];
                     }
                     target.Species = target.KnownSpecies = tp.TargetSpecies;
+                    target.Form = target.KnownForm = tp.TargetForm;
                     target.Type1 = target.KnownType1 = tp.TargetType1;
                     target.Type2 = target.KnownType2 = tp.TargetType2;
                     target.Weight = target.KnownWeight = tp.TargetWeight;
