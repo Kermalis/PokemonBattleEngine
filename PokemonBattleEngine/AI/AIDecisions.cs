@@ -661,7 +661,7 @@ namespace Kermalis.PokemonBattleEngine.AI
         {
             // TODO: Do we need the stat change? Physical vs special vs status users, and base stats/transform stats/power trick stats
             sbyte original = target.GetStatChange(stat);
-            sbyte maxStatChange = user.Team.Battle.Settings.MaxStatChange;
+            sbyte maxStatChange = user.Battle.Settings.MaxStatChange;
             change = Math.Max(-maxStatChange, Math.Min(maxStatChange, original + change)) - original;
             if (change != 0)
             {

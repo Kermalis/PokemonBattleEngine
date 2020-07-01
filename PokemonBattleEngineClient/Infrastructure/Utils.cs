@@ -191,7 +191,7 @@ namespace Kermalis.PokemonBattleEngineClient.Infrastructure
                 {
                     sb.AppendLine($"Disguised as: {pkmn.DisguisedAsPokemon.Nickname}");
                 }
-                if (pkmn.Team.Battle.BattleFormat != PBEBattleFormat.Single)
+                if (pkmn.Battle.BattleFormat != PBEBattleFormat.Single)
                 {
                     if (status2.HasFlag(PBEStatus2.Infatuated))
                     {
@@ -232,12 +232,12 @@ namespace Kermalis.PokemonBattleEngineClient.Infrastructure
                         AddStatus2(pkmn.KnownStatus2);
                     }
                 }
-                PBEDataUtils.GetStatRange(pData, PBEStat.HP, pkmn.Level, pkmn.Team.Battle.Settings, out ushort lowHP, out ushort highHP);
-                PBEDataUtils.GetStatRange(pData, PBEStat.Attack, pkmn.Level, pkmn.Team.Battle.Settings, out ushort lowAttack, out ushort highAttack);
-                PBEDataUtils.GetStatRange(pData, PBEStat.Defense, pkmn.Level, pkmn.Team.Battle.Settings, out ushort lowDefense, out ushort highDefense);
-                PBEDataUtils.GetStatRange(pData, PBEStat.SpAttack, pkmn.Level, pkmn.Team.Battle.Settings, out ushort lowSpAttack, out ushort highSpAttack);
-                PBEDataUtils.GetStatRange(pData, PBEStat.SpDefense, pkmn.Level, pkmn.Team.Battle.Settings, out ushort lowSpDefense, out ushort highSpDefense);
-                PBEDataUtils.GetStatRange(pData, PBEStat.Speed, pkmn.Level, pkmn.Team.Battle.Settings, out ushort lowSpeed, out ushort highSpeed);
+                PBEDataUtils.GetStatRange(pData, PBEStat.HP, pkmn.Level, pkmn.Battle.Settings, out ushort lowHP, out ushort highHP);
+                PBEDataUtils.GetStatRange(pData, PBEStat.Attack, pkmn.Level, pkmn.Battle.Settings, out ushort lowAttack, out ushort highAttack);
+                PBEDataUtils.GetStatRange(pData, PBEStat.Defense, pkmn.Level, pkmn.Battle.Settings, out ushort lowDefense, out ushort highDefense);
+                PBEDataUtils.GetStatRange(pData, PBEStat.SpAttack, pkmn.Level, pkmn.Battle.Settings, out ushort lowSpAttack, out ushort highSpAttack);
+                PBEDataUtils.GetStatRange(pData, PBEStat.SpDefense, pkmn.Level, pkmn.Battle.Settings, out ushort lowSpDefense, out ushort highSpDefense);
+                PBEDataUtils.GetStatRange(pData, PBEStat.Speed, pkmn.Level, pkmn.Battle.Settings, out ushort lowSpeed, out ushort highSpeed);
                 sb.AppendLine($"Stat range: [HP] {lowHP}-{highHP}, [A] {lowAttack}-{highAttack}, [D] {lowDefense}-{highDefense}, [SA] {lowSpAttack}-{highSpAttack}, [SD] {lowSpDefense}-{highSpDefense}, [S] {lowSpeed}-{highSpeed}, [W] {pkmn.KnownWeight:0.0}");
                 if (pkmn.FieldPosition != PBEFieldPosition.None)
                 {
@@ -253,7 +253,7 @@ namespace Kermalis.PokemonBattleEngineClient.Infrastructure
                 }
                 sb.AppendLine($"Known item: {(pkmn.KnownItem == (PBEItem)ushort.MaxValue ? "???" : PBELocalizedString.GetItemName(pkmn.KnownItem).ToString())}");
                 sb.Append("Known moves: ");
-                for (int i = 0; i < pkmn.Team.Battle.Settings.NumMoves; i++)
+                for (int i = 0; i < pkmn.Battle.Settings.NumMoves; i++)
                 {
                     PBEBattleMoveset.PBEBattleMovesetSlot slot = pkmn.KnownMoves[i];
                     PBEMove move = slot.Move;
@@ -303,10 +303,10 @@ namespace Kermalis.PokemonBattleEngineClient.Infrastructure
                 }
                 if (pkmn.Moves.Contains(PBEMoveEffect.HiddenPower))
                 {
-                    sb.AppendLine($"{PBELocalizedString.GetMoveName(PBEMove.HiddenPower)}: {PBELocalizedString.GetTypeName(pkmn.IndividualValues.GetHiddenPowerType())}|{pkmn.IndividualValues.GetHiddenPowerBasePower(pkmn.Team.Battle.Settings)}");
+                    sb.AppendLine($"{PBELocalizedString.GetMoveName(PBEMove.HiddenPower)}: {PBELocalizedString.GetTypeName(pkmn.IndividualValues.GetHiddenPowerType())}|{pkmn.IndividualValues.GetHiddenPowerBasePower(pkmn.Battle.Settings)}");
                 }
                 sb.Append("Moves: ");
-                for (int i = 0; i < pkmn.Team.Battle.Settings.NumMoves; i++)
+                for (int i = 0; i < pkmn.Battle.Settings.NumMoves; i++)
                 {
                     PBEBattleMoveset.PBEBattleMovesetSlot slot = pkmn.Moves[i];
                     PBEMove move = slot.Move;

@@ -64,7 +64,7 @@ namespace Kermalis.PokemonBattleEngineClient.Models
                 sb.AppendLine(s);
                 sb.AppendLine($"Category: {mData.Category}");
                 PBEBattleMoveset.PBEBattleMovesetSlot slot = pkmn.Moves[move];
-                if (slot != null)
+                if (slot != null) // TempLocked move you do not own (like Struggle)
                 {
                     sb.AppendLine($"PP: {slot.PP}/{slot.MaxPP}");
                 }

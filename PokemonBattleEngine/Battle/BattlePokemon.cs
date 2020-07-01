@@ -212,7 +212,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
             : this(trainer, id,
                   pkmn.Species, pkmn.Form, pkmn.Nickname, pkmn.Level, pkmn.Friendship, pkmn.Shiny,
                   pkmn.Ability, pkmn.Nature, pkmn.Gender, pkmn.Item,
-                  new PBEReadOnlyStatCollection(pkmn.EffortValues), new PBEReadOnlyStatCollection(pkmn.IndividualValues), new PBEReadOnlyPartyMoveset(trainer.Team.Battle.Settings, pkmn.Moveset))
+                  new PBEReadOnlyStatCollection(pkmn.EffortValues), new PBEReadOnlyStatCollection(pkmn.IndividualValues), new PBEReadOnlyPartyMoveset(trainer.Battle.Settings, pkmn.Moveset))
         {
             trainer.Party.Add(this);
         }

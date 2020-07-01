@@ -248,9 +248,8 @@ namespace Kermalis.PokemonBattleEngineServer
                 {
                     return;
                 }
-                PBETrainer trainer = _battle.Trainers[player.BattleId];
                 Console.WriteLine($"Received actions ({player.BattleId} {player.TrainerName})");
-                if (!PBEBattle.SelectActionsIfValid(trainer, actions))
+                if (!PBEBattle.SelectActionsIfValid(_battle.Trainers[player.BattleId], actions))
                 {
                     Console.WriteLine("Actions are invalid!");
                     CancelMatch();
@@ -269,9 +268,8 @@ namespace Kermalis.PokemonBattleEngineServer
                 {
                     return;
                 }
-                PBETrainer trainer = _battle.Trainers[player.BattleId];
                 Console.WriteLine($"Received switches ({player.BattleId} {player.TrainerName})");
-                if (!PBEBattle.SelectSwitchesIfValid(trainer, switches))
+                if (!PBEBattle.SelectSwitchesIfValid(_battle.Trainers[player.BattleId], switches))
                 {
                     Console.WriteLine("Switches are invalid!");
                     CancelMatch();
