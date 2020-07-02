@@ -44,8 +44,17 @@ namespace Kermalis.PokemonBattleEngine.Data
 
     public interface IPBEPokemonTypes
     {
+        /// <summary>The Pokémon's first type.</summary>
         PBEType Type1 { get; }
+        /// <summary>The Pokémon's second type.</summary>
         PBEType Type2 { get; }
+    }
+    public interface IPBEPokemonKnownTypes
+    {
+        /// <summary>The first type everyone believes the Pokémon has.</summary>
+        PBEType KnownType1 { get; }
+        /// <summary>The second type everyone believes the Pokémon has.</summary>
+        PBEType KnownType2 { get; }
     }
 
     public static class PBEPokemonInterfaceExtensions
@@ -62,9 +71,33 @@ namespace Kermalis.PokemonBattleEngine.Data
             }
             return pkmn.Type1 == type || pkmn.Type2 == type;
         }
+        public static bool HasType_Known(this IPBEPokemonKnownTypes pkmn, PBEType type)
+        {
+            if (pkmn == null)
+            {
+                throw new ArgumentException(nameof(pkmn));
+            }
+            if (type >= PBEType.MAX)
+            {
+                throw new ArgumentOutOfRangeException(nameof(type));
+            }
+            return pkmn.KnownType1 == type || pkmn.KnownType2 == type;
+        }
+        public static bool HasType<T>(this T pkmn, PBEType type, bool useKnownInfo) where T : IPBEPokemonKnownTypes, IPBEPokemonTypes
+        {
+            return useKnownInfo ? HasType_Known(pkmn, type) : HasType(pkmn, type);
+        }
         public static bool ReceivesSTAB(this IPBEPokemonTypes pkmn, PBEType type)
         {
             return type != PBEType.None && HasType(pkmn, type);
+        }
+        public static bool ReceivesSTAB_Known(this IPBEPokemonKnownTypes pkmn, PBEType type)
+        {
+            return type != PBEType.None && HasType_Known(pkmn, type);
+        }
+        public static bool ReceivesSTAB<T>(this T pkmn, PBEType type, bool useKnownInfo) where T : IPBEPokemonKnownTypes, IPBEPokemonTypes
+        {
+            return useKnownInfo ? ReceivesSTAB_Known(pkmn, type) : ReceivesSTAB(pkmn, type);
         }
 
         internal static void ToBytes(this IPBEPokemon pkmn, EndianBinaryWriter w)
@@ -121,7 +154,7 @@ namespace Kermalis.PokemonBattleEngine.Data
 
         internal static void ToBytes(this IPBEPokemonCollection party, EndianBinaryWriter w)
         {
-            sbyte count = (sbyte)party.Count;
+            byte count = (byte)party.Count;
             w.Write(count);
             for (int i = 0; i < count; i++)
             {

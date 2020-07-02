@@ -178,5 +178,9 @@ namespace Kermalis.PokemonBattleEngine.Utils
             }
             return fileName;
         }
+        public static string ToSymbol(this PBEGender gender)
+        {
+            return gender == PBEGender.Female ? "♀" : gender == PBEGender.Male ? "♂" : string.Empty;
+        }
     }
 }

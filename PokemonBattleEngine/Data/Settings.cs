@@ -83,10 +83,10 @@ namespace Kermalis.PokemonBattleEngine.Data
             }
         }
         /// <summary>The default value of <see cref="MaxPartySize"/>.</summary>
-        public const sbyte DefaultMaxPartySize = 6;
-        private sbyte _maxPartySize = DefaultMaxPartySize;
-        /// <summary>The maximum amount of Pokémon each team can bring into a battle.</summary>
-        public sbyte MaxPartySize
+        public const byte DefaultMaxPartySize = 6;
+        private byte _maxPartySize = DefaultMaxPartySize;
+        /// <summary>The maximum amount of Pokémon each trainer can bring into a battle.</summary>
+        public byte MaxPartySize
         {
             get => _maxPartySize;
             set
@@ -1414,7 +1414,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                 {
                     case PBESettingID.MaxLevel: MaxLevel = r.ReadByte(); break;
                     case PBESettingID.MinLevel: MinLevel = r.ReadByte(); break;
-                    case PBESettingID.MaxPartySize: MaxPartySize = r.ReadSByte(); break;
+                    case PBESettingID.MaxPartySize: MaxPartySize = r.ReadByte(); break;
                     case PBESettingID.MaxPokemonNameLength: MaxPokemonNameLength = r.ReadByte(); break;
                     case PBESettingID.MaxTrainerNameLength: MaxTrainerNameLength = r.ReadByte(); break;
                     case PBESettingID.MaxTotalEVs: MaxTotalEVs = r.ReadUInt16(); break;

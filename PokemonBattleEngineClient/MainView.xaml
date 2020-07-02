@@ -12,7 +12,7 @@
           <StackPanel Orientation="Horizontal" Spacing="5" HorizontalAlignment="Center" VerticalAlignment="Bottom">
             <TextBox Name="IP" Width="100" Text="127.0.0.1"/>
             <NumericUpDown Name="Port" Width="100" Value="8888" Minimum="0" Maximum="65535" ClipValueToMinMax="True"/>
-            <Button Width="100" Height="30" Background="White" BorderBrush="#A2A2A2" BorderThickness="4" Name="Connect" Command="{Binding Connect}">
+            <Button Width="150" Height="30" Background="White" BorderBrush="#A2A2A2" BorderThickness="4" Name="Connect" Command="{Binding Connect}">
               <Image Stretch="None" Source="{Binding ConnectText, Converter={x:Static infrastructure:ObjectToTextBitmapConverter.Instance}, ConverterParameter=MenuBlack, Mode=OneWay}"/>
             </Button>
           </StackPanel>

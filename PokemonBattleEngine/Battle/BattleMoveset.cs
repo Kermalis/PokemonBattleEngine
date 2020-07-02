@@ -185,11 +185,11 @@ namespace Kermalis.PokemonBattleEngine.Battle
         internal static void DoTransform(PBEBattlePokemon user, PBEBattlePokemon target)
         {
             PBEBattleMoveset targetKnownBackup = null;
-            if (user.Team != target.Team)
+            if (user.Trainer != target.Trainer)
             {
                 targetKnownBackup = new PBEBattleMoveset(target.KnownMoves);
             }
-            PBESettings settings = user.Team.Battle.Settings;
+            PBESettings settings = user.Battle.Settings;
             for (int i = 0; i < settings.NumMoves; i++)
             {
                 PBEBattleMovesetSlot userMove = user.Moves._list[i];
@@ -198,7 +198,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                 PBEBattleMovesetSlot targetKnownMove = target.KnownMoves._list[i];
                 PBEMove move;
                 int pp;
-                if (user.Team == target.Team)
+                if (user.Trainer == target.Trainer)
                 {
                     move = targetMove.Move;
                     pp = move == PBEMove.MAX ? 0 : GetTransformPP(settings, move);
@@ -220,8 +220,9 @@ namespace Kermalis.PokemonBattleEngine.Battle
                     userMove.PP = pp;
                     userMove.MaxPP = pp;
                     targetKnownMove.Move = move;
+                    // Try to copy known PP from previous known moves
                     PBEBattleMovesetSlot bSlot = targetKnownBackup[move];
-                    if (bSlot == null)
+                    if (bSlot == null) // bSlot is null if the current move was not previously known
                     {
                         targetKnownMove.PP = 0;
                         targetKnownMove.MaxPP = 0;

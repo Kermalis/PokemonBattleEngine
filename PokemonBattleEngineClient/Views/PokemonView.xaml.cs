@@ -31,9 +31,8 @@ namespace Kermalis.PokemonBattleEngineClient.Views
                 }
             }
         }
-        private bool _showEverything0;
-        private bool _showEverything1;
-        public string Description => Utils.CustomPokemonToString(_pokemon, _showEverything0, _showEverything1);
+        private bool _useKnownInfo;
+        public string Description => Utils.CustomPokemonToString(_pokemon, _useKnownInfo);
 
         private readonly Image _sprite;
 
@@ -45,14 +44,12 @@ namespace Kermalis.PokemonBattleEngineClient.Views
             _sprite = this.FindControl<Image>("Sprite");
         }
 
-        public void Update(PBEBattlePokemon pkmn, bool backSprite, bool showEverything0, bool showEverything1)
+        public void Update(PBEBattlePokemon pkmn, bool backSprite, bool useKnownInfo)
         {
-            _showEverything0 = showEverything0;
-            _showEverything1 = showEverything1;
+            _useKnownInfo = useKnownInfo;
             _pokemon = pkmn;
 
-            // Bounce/Fly/SkyDrop / Dig / Dive / ShadowForce
-            PBEStatus2 status2 = Utils.ShouldShowEverything(pkmn.Team, showEverything0, showEverything1) ? _pokemon.Status2 : _pokemon.KnownStatus2;
+            PBEStatus2 status2 = useKnownInfo ? _pokemon.KnownStatus2 : _pokemon.Status2;
             double opacity = 1;
             if (!status2.HasFlag(PBEStatus2.Substitute))
             {

@@ -11,8 +11,8 @@ namespace Kermalis.PokemonBattleEngine.Packets
         public const ushort Code = 0x17;
         public ReadOnlyCollection<byte> Data { get; }
 
+        public PBETrainer MoveUserTrainer { get; }
         public PBEFieldPosition MoveUser { get; }
-        public PBETeam MoveUserTeam { get; }
         public PBEMove Move { get; }
         public int AmountReduced { get; }
 
@@ -22,8 +22,8 @@ namespace Kermalis.PokemonBattleEngine.Packets
             using (var w = new EndianBinaryWriter(ms, encoding: EncodingType.UTF16))
             {
                 w.Write(Code);
+                w.Write((MoveUserTrainer = moveUser.Trainer).Id);
                 w.Write(MoveUser = moveUser.FieldPosition);
-                w.Write((MoveUserTeam = moveUser.Team).Id);
                 w.Write(Move = move);
                 w.Write(AmountReduced = amountReduced);
                 Data = new ReadOnlyCollection<byte>(ms.ToArray());
@@ -32,8 +32,8 @@ namespace Kermalis.PokemonBattleEngine.Packets
         internal PBEMovePPChangedPacket(byte[] data, EndianBinaryReader r, PBEBattle battle)
         {
             Data = new ReadOnlyCollection<byte>(data);
+            MoveUserTrainer = battle.Trainers[r.ReadByte()];
             MoveUser = r.ReadEnum<PBEFieldPosition>();
-            MoveUserTeam = battle.Teams[r.ReadByte()];
             Move = r.ReadEnum<PBEMove>();
             AmountReduced = r.ReadInt32();
         }

@@ -9,10 +9,6 @@ namespace Kermalis.PokemonBattleEngine.Packets
     {
         public static IPBEPacket CreatePacket(PBEBattle battle, byte[] data)
         {
-            if (battle == null)
-            {
-                throw new ArgumentNullException(nameof(battle));
-            }
             if (data == null)
             {
                 throw new ArgumentNullException(nameof(data));
@@ -31,7 +27,7 @@ namespace Kermalis.PokemonBattleEngine.Packets
                     case PBEMatchCancelledPacket.Code: return new PBEMatchCancelledPacket(data);
                     case PBEPartyRequestPacket.Code: return new PBEPartyRequestPacket(data, r);
                     case PBEPartyResponsePacket.Code: return new PBEPartyResponsePacket(data, r);
-                    case PBETeamPacket.Code: return new PBETeamPacket(data, r, battle);
+                    case PBEBattlePacket.Code: return new PBEBattlePacket(data, r);
                     case PBEPkmnSwitchInPacket.Code: return new PBEPkmnSwitchInPacket(data, r, battle);
                     case PBEActionsRequestPacket.Code: return new PBEActionsRequestPacket(data, r, battle);
                     case PBEActionsResponsePacket.Code: return new PBEActionsResponsePacket(data, r);
@@ -65,7 +61,7 @@ namespace Kermalis.PokemonBattleEngine.Packets
                     case PBEAutoCenterPacket.Code: return new PBEAutoCenterPacket(data, r, battle);
                     case PBETypeChangedPacket.Code: return new PBETypeChangedPacket(data, r, battle);
                     case PBEAbilityReplacedPacket.Code: return new PBEAbilityReplacedPacket(data, r, battle);
-                    case PBELegalPartyResponsePacket.Code: return new PBELegalPartyResponsePacket(data, r, battle);
+                    case PBELegalPartyResponsePacket.Code: return new PBELegalPartyResponsePacket(data, r);
                     case PBEReflectTypePacket.Code: return new PBEReflectTypePacket(data, r, battle);
                     case PBEPkmnFaintedPacket_Hidden.Code: return new PBEPkmnFaintedPacket_Hidden(data, r, battle);
                     case PBEAutoCenterPacket_Hidden0.Code: return new PBEAutoCenterPacket_Hidden0(data, r, battle);

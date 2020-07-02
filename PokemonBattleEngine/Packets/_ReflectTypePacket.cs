@@ -12,10 +12,10 @@ namespace Kermalis.PokemonBattleEngine.Packets
         public const ushort Code = 0x2E;
         public ReadOnlyCollection<byte> Data { get; }
 
+        public PBETrainer UserTrainer { get; }
         public PBEFieldPosition User { get; }
-        public PBETeam UserTeam { get; }
+        public PBETrainer TargetTrainer { get; }
         public PBEFieldPosition Target { get; }
-        public PBETeam TargetTeam { get; }
         public PBEType Type1 { get; }
         public PBEType Type2 { get; }
 
@@ -25,10 +25,10 @@ namespace Kermalis.PokemonBattleEngine.Packets
             using (var w = new EndianBinaryWriter(ms, encoding: EncodingType.UTF16))
             {
                 w.Write(Code);
+                w.Write((UserTrainer = user.Trainer).Id);
                 w.Write(User = user.FieldPosition);
-                w.Write((UserTeam = user.Team).Id);
+                w.Write((TargetTrainer = target.Trainer).Id);
                 w.Write(Target = target.FieldPosition);
-                w.Write((TargetTeam = target.Team).Id);
                 w.Write(Type1 = target.Type1);
                 w.Write(Type2 = target.Type2);
                 Data = new ReadOnlyCollection<byte>(ms.ToArray());
@@ -37,10 +37,10 @@ namespace Kermalis.PokemonBattleEngine.Packets
         internal PBEReflectTypePacket(byte[] data, EndianBinaryReader r, PBEBattle battle)
         {
             Data = new ReadOnlyCollection<byte>(data);
+            UserTrainer = battle.Trainers[r.ReadByte()];
             User = r.ReadEnum<PBEFieldPosition>();
-            UserTeam = battle.Teams[r.ReadByte()];
+            TargetTrainer = battle.Trainers[r.ReadByte()];
             Target = r.ReadEnum<PBEFieldPosition>();
-            TargetTeam = battle.Teams[r.ReadByte()];
             Type1 = r.ReadEnum<PBEType>();
             Type2 = r.ReadEnum<PBEType>();
         }
@@ -50,10 +50,10 @@ namespace Kermalis.PokemonBattleEngine.Packets
         public const ushort Code = 0x33;
         public ReadOnlyCollection<byte> Data { get; }
 
+        public PBETrainer UserTrainer { get; }
         public PBEFieldPosition User { get; }
-        public PBETeam UserTeam { get; }
+        public PBETrainer TargetTrainer { get; }
         public PBEFieldPosition Target { get; }
-        public PBETeam TargetTeam { get; }
 
         public PBEReflectTypePacket_Hidden(PBEReflectTypePacket other)
         {
@@ -65,20 +65,20 @@ namespace Kermalis.PokemonBattleEngine.Packets
             using (var w = new EndianBinaryWriter(ms, encoding: EncodingType.UTF16))
             {
                 w.Write(Code);
+                w.Write((UserTrainer = other.UserTrainer).Id);
                 w.Write(User = other.User);
-                w.Write((UserTeam = other.UserTeam).Id);
+                w.Write((TargetTrainer = other.TargetTrainer).Id);
                 w.Write(Target = other.Target);
-                w.Write((TargetTeam = other.TargetTeam).Id);
                 Data = new ReadOnlyCollection<byte>(ms.ToArray());
             }
         }
         internal PBEReflectTypePacket_Hidden(byte[] data, EndianBinaryReader r, PBEBattle battle)
         {
             Data = new ReadOnlyCollection<byte>(data);
+            UserTrainer = battle.Trainers[r.ReadByte()];
             User = r.ReadEnum<PBEFieldPosition>();
-            UserTeam = battle.Teams[r.ReadByte()];
+            TargetTrainer = battle.Trainers[r.ReadByte()];
             Target = r.ReadEnum<PBEFieldPosition>();
-            TargetTeam = battle.Teams[r.ReadByte()];
         }
     }
 }

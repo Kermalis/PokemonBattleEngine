@@ -12,8 +12,8 @@ namespace Kermalis.PokemonBattleEngine.Packets
         public const ushort Code = 0x0A;
         public ReadOnlyCollection<byte> Data { get; }
 
+        public PBETrainer PokemonTrainer { get; }
         public PBEFieldPosition Pokemon { get; }
-        public PBETeam PokemonTeam { get; }
         public ushort OldHP { get; }
         public ushort NewHP { get; }
         public double OldHPPercentage { get; }
@@ -25,8 +25,8 @@ namespace Kermalis.PokemonBattleEngine.Packets
             using (var w = new EndianBinaryWriter(ms, encoding: EncodingType.UTF16))
             {
                 w.Write(Code);
+                w.Write((PokemonTrainer = pokemon.Trainer).Id);
                 w.Write(Pokemon = pokemon.FieldPosition);
-                w.Write((PokemonTeam = pokemon.Team).Id);
                 w.Write(OldHP = oldHP);
                 w.Write(NewHP = pokemon.HP);
                 w.Write(OldHPPercentage = oldHPPercentage);
@@ -37,8 +37,8 @@ namespace Kermalis.PokemonBattleEngine.Packets
         internal PBEPkmnHPChangedPacket(byte[] data, EndianBinaryReader r, PBEBattle battle)
         {
             Data = new ReadOnlyCollection<byte>(data);
+            PokemonTrainer = battle.Trainers[r.ReadByte()];
             Pokemon = r.ReadEnum<PBEFieldPosition>();
-            PokemonTeam = battle.Teams[r.ReadByte()];
             OldHP = r.ReadUInt16();
             NewHP = r.ReadUInt16();
             OldHPPercentage = r.ReadDouble();
@@ -50,8 +50,8 @@ namespace Kermalis.PokemonBattleEngine.Packets
         public const ushort Code = 0x35;
         public ReadOnlyCollection<byte> Data { get; }
 
+        public PBETrainer PokemonTrainer { get; }
         public PBEFieldPosition Pokemon { get; }
-        public PBETeam PokemonTeam { get; }
         public double OldHPPercentage { get; }
         public double NewHPPercentage { get; }
 
@@ -65,8 +65,8 @@ namespace Kermalis.PokemonBattleEngine.Packets
             using (var w = new EndianBinaryWriter(ms, encoding: EncodingType.UTF16))
             {
                 w.Write(Code);
+                w.Write((PokemonTrainer = other.PokemonTrainer).Id);
                 w.Write(Pokemon = other.Pokemon);
-                w.Write((PokemonTeam = other.PokemonTeam).Id);
                 w.Write(OldHPPercentage = other.OldHPPercentage);
                 w.Write(NewHPPercentage = other.NewHPPercentage);
                 Data = new ReadOnlyCollection<byte>(ms.ToArray());
@@ -75,8 +75,8 @@ namespace Kermalis.PokemonBattleEngine.Packets
         internal PBEPkmnHPChangedPacket_Hidden(byte[] data, EndianBinaryReader r, PBEBattle battle)
         {
             Data = new ReadOnlyCollection<byte>(data);
+            PokemonTrainer = battle.Trainers[r.ReadByte()];
             Pokemon = r.ReadEnum<PBEFieldPosition>();
-            PokemonTeam = battle.Teams[r.ReadByte()];
             OldHPPercentage = r.ReadDouble();
             NewHPPercentage = r.ReadDouble();
         }

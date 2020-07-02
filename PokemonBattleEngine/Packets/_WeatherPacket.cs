@@ -13,8 +13,8 @@ namespace Kermalis.PokemonBattleEngine.Packets
 
         public PBEWeather Weather { get; }
         public PBEWeatherAction WeatherAction { get; }
-        public PBEFieldPosition? DamageVictim { get; }
-        public PBETeam DamageVictimTeam { get; }
+        public PBETrainer DamageVictimTrainer { get; }
+        public PBEFieldPosition DamageVictim { get; }
 
         internal PBEWeatherPacket(PBEWeather weather, PBEWeatherAction weatherAction, PBEBattlePokemon damageVictim = null)
         {
@@ -27,8 +27,8 @@ namespace Kermalis.PokemonBattleEngine.Packets
                 w.Write(damageVictim != null);
                 if (damageVictim != null)
                 {
-                    w.Write((DamageVictim = damageVictim.FieldPosition).Value);
-                    w.Write((DamageVictimTeam = damageVictim.Team).Id);
+                    w.Write((DamageVictimTrainer = damageVictim.Trainer).Id);
+                    w.Write(DamageVictim = damageVictim.FieldPosition);
                 }
                 Data = new ReadOnlyCollection<byte>(ms.ToArray());
             }
@@ -40,8 +40,8 @@ namespace Kermalis.PokemonBattleEngine.Packets
             WeatherAction = r.ReadEnum<PBEWeatherAction>();
             if (r.ReadBoolean())
             {
+                DamageVictimTrainer = battle.Trainers[r.ReadByte()];
                 DamageVictim = r.ReadEnum<PBEFieldPosition>();
-                DamageVictimTeam = battle.Teams[r.ReadByte()];
             }
         }
     }

@@ -11,10 +11,10 @@ namespace Kermalis.PokemonBattleEngine.Packets
         public const ushort Code = 0x19;
         public ReadOnlyCollection<byte> Data { get; }
 
+        public PBETrainer AbilityOwnerTrainer { get; }
         public PBEFieldPosition AbilityOwner { get; }
-        public PBETeam AbilityOwnerTeam { get; }
+        public PBETrainer Pokemon2Trainer { get; }
         public PBEFieldPosition Pokemon2 { get; }
-        public PBETeam Pokemon2Team { get; }
         public PBEAbility Ability { get; }
         public PBEAbilityAction AbilityAction { get; }
 
@@ -24,10 +24,10 @@ namespace Kermalis.PokemonBattleEngine.Packets
             using (var w = new EndianBinaryWriter(ms, encoding: EncodingType.UTF16))
             {
                 w.Write(Code);
+                w.Write((AbilityOwnerTrainer = abilityOwner.Trainer).Id);
                 w.Write(AbilityOwner = abilityOwner.FieldPosition);
-                w.Write((AbilityOwnerTeam = abilityOwner.Team).Id);
+                w.Write((Pokemon2Trainer = pokemon2.Trainer).Id);
                 w.Write(Pokemon2 = pokemon2.FieldPosition);
-                w.Write((Pokemon2Team = pokemon2.Team).Id);
                 w.Write(Ability = ability);
                 w.Write(AbilityAction = abilityAction);
                 Data = new ReadOnlyCollection<byte>(ms.ToArray());
@@ -36,10 +36,10 @@ namespace Kermalis.PokemonBattleEngine.Packets
         internal PBEAbilityPacket(byte[] data, EndianBinaryReader r, PBEBattle battle)
         {
             Data = new ReadOnlyCollection<byte>(data);
+            AbilityOwnerTrainer = battle.Trainers[r.ReadByte()];
             AbilityOwner = r.ReadEnum<PBEFieldPosition>();
-            AbilityOwnerTeam = battle.Teams[r.ReadByte()];
+            Pokemon2Trainer = battle.Trainers[r.ReadByte()];
             Pokemon2 = r.ReadEnum<PBEFieldPosition>();
-            Pokemon2Team = battle.Teams[r.ReadByte()];
             Ability = r.ReadEnum<PBEAbility>();
             AbilityAction = r.ReadEnum<PBEAbilityAction>();
         }

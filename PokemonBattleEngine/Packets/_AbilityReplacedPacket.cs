@@ -11,8 +11,8 @@ namespace Kermalis.PokemonBattleEngine.Packets
         public const ushort Code = 0x2C;
         public ReadOnlyCollection<byte> Data { get; }
 
+        public PBETrainer AbilityOwnerTrainer { get; }
         public PBEFieldPosition AbilityOwner { get; }
-        public PBETeam AbilityOwnerTeam { get; }
         public PBEAbility? OldAbility { get; }
         public PBEAbility NewAbility { get; }
 
@@ -22,8 +22,8 @@ namespace Kermalis.PokemonBattleEngine.Packets
             using (var w = new EndianBinaryWriter(ms, encoding: EncodingType.UTF16))
             {
                 w.Write(Code);
+                w.Write((AbilityOwnerTrainer = abilityOwner.Trainer).Id);
                 w.Write(AbilityOwner = abilityOwner.FieldPosition);
-                w.Write((AbilityOwnerTeam = abilityOwner.Team).Id);
                 w.Write(oldAbility.HasValue);
                 if (oldAbility.HasValue)
                 {
@@ -36,8 +36,8 @@ namespace Kermalis.PokemonBattleEngine.Packets
         internal PBEAbilityReplacedPacket(byte[] data, EndianBinaryReader r, PBEBattle battle)
         {
             Data = new ReadOnlyCollection<byte>(data);
+            AbilityOwnerTrainer = battle.Trainers[r.ReadByte()];
             AbilityOwner = r.ReadEnum<PBEFieldPosition>();
-            AbilityOwnerTeam = battle.Teams[r.ReadByte()];
             if (r.ReadBoolean())
             {
                 OldAbility = r.ReadEnum<PBEAbility>();

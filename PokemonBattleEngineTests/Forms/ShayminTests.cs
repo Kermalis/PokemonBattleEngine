@@ -22,36 +22,29 @@ namespace Kermalis.PokemonBattleEngineTests.Forms
             PBESettings settings = PBESettings.DefaultSettings;
 
             var p0 = new TestPokemonCollection(1);
-            p0[0] = new TestPokemon(PBESpecies.Happiny, 0, 100)
+            p0[0] = new TestPokemon(settings, PBESpecies.Happiny, 0, 100, PBEMove.SecretPower, PBEMove.Splash)
             {
-                Ability = PBEAbility.SereneGrace,
-                Moveset = new TestMoveset(settings, new[] { PBEMove.SecretPower, PBEMove.Splash })
+                Ability = PBEAbility.SereneGrace
             };
 
             var p1 = new TestPokemonCollection(2);
-            p1[0] = new TestPokemon(PBESpecies.Shaymin, PBEForm.Shaymin_Sky, 100)
-            {
-                Moveset = new TestMoveset(settings, new[] { PBEMove.Splash })
-            };
-            p1[1] = new TestPokemon(PBESpecies.Magikarp, 0, 100)
-            {
-                Moveset = new TestMoveset(settings, new[] { PBEMove.Splash })
-            };
+            p1[0] = new TestPokemon(settings, PBESpecies.Shaymin, PBEForm.Shaymin_Sky, 100, PBEMove.Splash);
+            p1[1] = new TestPokemon(settings, PBESpecies.Magikarp, 0, 100, PBEMove.Splash);
 
-            var battle = new PBEBattle(PBEBattleTerrain.Snow, PBEBattleFormat.Single, new PBETeamInfo(p0, "Team 1"), new PBETeamInfo(p1, "Team 2"), settings);
+            var battle = new PBEBattle(PBEBattleFormat.Single, settings, new PBETrainerInfo(p0, "Trainer 0"), new PBETrainerInfo(p1, "Trainer 1"), battleTerrain: PBEBattleTerrain.Snow);
             battle.OnNewEvent += PBEBattle.ConsoleBattleEventHandler;
             battle.Begin();
 
-            PBETeam t0 = battle.Teams[0];
-            PBETeam t1 = battle.Teams[1];
+            PBETrainer t0 = battle.Trainers[0];
+            PBETrainer t1 = battle.Trainers[1];
             PBEBattlePokemon happiny = t0.Party[0];
             PBEBattlePokemon shaymin = t1.Party[0];
             PBEBattlePokemon magikarp = t1.Party[1];
             #endregion
 
             #region Freeze Shaymin
-            Assert.True(PBEBattle.SelectActionsIfValid(t0, new[] { new PBETurnAction(happiny.Id, PBEMove.SecretPower, PBETurnTarget.FoeCenter) }));
-            Assert.True(PBEBattle.SelectActionsIfValid(t1, new[] { new PBETurnAction(shaymin.Id, PBEMove.Splash, PBETurnTarget.AllyCenter) }));
+            Assert.True(PBEBattle.SelectActionsIfValid(t0, new PBETurnAction(happiny, PBEMove.SecretPower, PBETurnTarget.FoeCenter)));
+            Assert.True(PBEBattle.SelectActionsIfValid(t1, new PBETurnAction(shaymin, PBEMove.Splash, PBETurnTarget.AllyCenter)));
 
             battle.RunTurn();
 
@@ -59,8 +52,8 @@ namespace Kermalis.PokemonBattleEngineTests.Forms
             #endregion
 
             #region Swap Shaymin for Magikarp and check
-            Assert.True(PBEBattle.SelectActionsIfValid(t0, new[] { new PBETurnAction(happiny.Id, PBEMove.Splash, PBETurnTarget.AllyCenter) }));
-            Assert.True(PBEBattle.SelectActionsIfValid(t1, new[] { new PBETurnAction(shaymin.Id, magikarp.Id) }));
+            Assert.True(PBEBattle.SelectActionsIfValid(t0, new PBETurnAction(happiny, PBEMove.Splash, PBETurnTarget.AllyCenter)));
+            Assert.True(PBEBattle.SelectActionsIfValid(t1, new PBETurnAction(shaymin, magikarp)));
 
             battle.RunTurn();
 

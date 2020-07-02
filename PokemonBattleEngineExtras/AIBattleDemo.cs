@@ -6,6 +6,7 @@ using Kermalis.PokemonBattleEngine.Packets;
 using Kermalis.PokemonBattleEngine.Utils;
 using System;
 using System.IO;
+using System.Linq;
 using System.Threading;
 
 namespace Kermalis.PokemonBattleEngineExtras
@@ -13,7 +14,7 @@ namespace Kermalis.PokemonBattleEngineExtras
     internal sealed class AIBattleDemo
     {
         private const string LogFile = "AI Demo Log.txt";
-        private const string ReplayFile = "AI Demo Replay.pbereplay";
+        private const string ReplayFile = "AI Demo.pbereplay";
         private static PBEBattle _battle;
         private static StreamWriter _writer;
         private static TextWriter _oldWriter;
@@ -41,7 +42,7 @@ namespace Kermalis.PokemonBattleEngineExtras
             p0 = PBERandomTeamGenerator.CreateRandomTeam(settings.MaxPartySize);
             p1 = PBERandomTeamGenerator.CreateRandomTeam(settings.MaxPartySize);
 
-            _battle = new PBEBattle(PBERandom.RandomBattleTerrain(), PBEBattleFormat.Double, new PBETeamInfo(p0, "Team 1"), new PBETeamInfo(p1, "Team 2"), settings);
+            _battle = new PBEBattle(PBEBattleFormat.Double, settings, new PBETrainerInfo(p0, "Trainer 0"), new PBETrainerInfo(p1, "Trainer 1"), battleTerrain: PBERandom.RandomBattleTerrain());
             _battle.OnNewEvent += PBEBattle.ConsoleBattleEventHandler;
             _battle.OnNewEvent += Battle_OnNewEvent;
             _battle.OnStateChanged += Battle_OnStateChanged;
@@ -82,24 +83,22 @@ namespace Kermalis.PokemonBattleEngineExtras
                 {
                     case PBEActionsRequestPacket arp:
                     {
-                        PBETeam team = arp.Team;
-                        PBETurnAction[] actions = PBEAI.CreateActions(team);
-                        if (!PBEBattle.AreActionsValid(team, actions))
+                        PBETrainer t = arp.Trainer;
+                        PBETurnAction[] actions = PBEAI.CreateActions(t);
+                        if (!PBEBattle.SelectActionsIfValid(t, actions))
                         {
-                            throw new Exception($"{team.TrainerName}'s AI created invalid actions!");
+                            throw new Exception($"{t.Name}'s AI created invalid actions!");
                         }
-                        PBEBattle.SelectActionsIfValid(team, actions);
                         break;
                     }
                     case PBESwitchInRequestPacket sirp:
                     {
-                        PBETeam team = sirp.Team;
-                        PBESwitchIn[] switches = PBEAI.CreateSwitches(team);
-                        if (!PBEBattle.AreSwitchesValid(team, switches))
+                        PBETrainer t = sirp.Trainer;
+                        PBESwitchIn[] switches = PBEAI.CreateSwitches(t);
+                        if (!PBEBattle.SelectSwitchesIfValid(t, switches))
                         {
-                            throw new Exception($"{team.TrainerName}'s AI created invalid switches!");
+                            throw new Exception($"{t.Name}'s AI created invalid switches!");
                         }
-                        PBEBattle.SelectSwitchesIfValid(team, switches);
                         break;
                     }
                     case PBETurnBeganPacket tbp:
@@ -159,14 +158,13 @@ namespace Kermalis.PokemonBattleEngineExtras
                     }
                     case PBEBattleState.ReadyToRunTurn:
                     {
-                        foreach (PBETeam team in _battle.Teams)
+                        foreach (PBETrainer t in _battle.Trainers)
                         {
                             Console.WriteLine();
-                            Console.WriteLine("{0}'s team:", team.TrainerName);
-                            PBEBattlePokemon[] active = team.ActiveBattlers;
-                            for (int j = 0; j < active.Length; j++)
+                            Console.WriteLine("{0}'s team:", t.Name);
+                            foreach (PBEBattlePokemon p in t.ActiveBattlers.OrderBy(p => p.FieldPosition))
                             {
-                                Console.WriteLine(active[j]);
+                                Console.WriteLine(p);
                                 Console.WriteLine();
                             }
                         }

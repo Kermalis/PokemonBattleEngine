@@ -11,10 +11,10 @@ namespace Kermalis.PokemonBattleEngine.Packets
         public const ushort Code = 0x18;
         public ReadOnlyCollection<byte> Data { get; }
 
+        public PBETrainer UserTrainer { get; }
         public PBEFieldPosition User { get; }
-        public PBETeam UserTeam { get; }
+        public PBETrainer TargetTrainer { get; }
         public PBEFieldPosition Target { get; }
-        public PBETeam TargetTeam { get; }
         public ushort TargetAttack { get; }
         public ushort TargetDefense { get; }
         public ushort TargetSpAttack { get; }
@@ -29,6 +29,7 @@ namespace Kermalis.PokemonBattleEngine.Packets
         public sbyte TargetEvasionChange { get; }
         public PBEAbility TargetAbility { get; }
         public PBESpecies TargetSpecies { get; }
+        public PBEForm TargetForm { get; }
         public PBEType TargetType1 { get; }
         public PBEType TargetType2 { get; }
         public double TargetWeight { get; }
@@ -40,10 +41,10 @@ namespace Kermalis.PokemonBattleEngine.Packets
             using (var w = new EndianBinaryWriter(ms, encoding: EncodingType.UTF16))
             {
                 w.Write(Code);
+                w.Write((UserTrainer = user.Trainer).Id);
                 w.Write(User = user.FieldPosition);
-                w.Write((UserTeam = user.Team).Id);
+                w.Write((TargetTrainer = target.Trainer).Id);
                 w.Write(Target = target.FieldPosition);
-                w.Write((TargetTeam = target.Team).Id);
                 w.Write(TargetAttack = target.Attack);
                 w.Write(TargetDefense = target.Defense);
                 w.Write(TargetSpAttack = target.SpAttack);
@@ -58,6 +59,7 @@ namespace Kermalis.PokemonBattleEngine.Packets
                 w.Write(TargetEvasionChange = target.EvasionChange);
                 w.Write(TargetAbility = target.Ability);
                 w.Write(TargetSpecies = target.Species);
+                w.Write(TargetForm = target.Form);
                 w.Write(TargetType1 = target.Type1);
                 w.Write(TargetType2 = target.Type2);
                 w.Write(TargetWeight = target.Weight);
@@ -72,10 +74,10 @@ namespace Kermalis.PokemonBattleEngine.Packets
         internal PBETransformPacket(byte[] data, EndianBinaryReader r, PBEBattle battle)
         {
             Data = new ReadOnlyCollection<byte>(data);
+            UserTrainer = battle.Trainers[r.ReadByte()];
             User = r.ReadEnum<PBEFieldPosition>();
-            UserTeam = battle.Teams[r.ReadByte()];
+            TargetTrainer = battle.Trainers[r.ReadByte()];
             Target = r.ReadEnum<PBEFieldPosition>();
-            TargetTeam = battle.Teams[r.ReadByte()];
             TargetAttack = r.ReadUInt16();
             TargetDefense = r.ReadUInt16();
             TargetSpAttack = r.ReadUInt16();
@@ -90,6 +92,7 @@ namespace Kermalis.PokemonBattleEngine.Packets
             TargetEvasionChange = r.ReadSByte();
             TargetAbility = r.ReadEnum<PBEAbility>();
             TargetSpecies = r.ReadEnum<PBESpecies>();
+            TargetForm = r.ReadEnum<PBEForm>();
             TargetType1 = r.ReadEnum<PBEType>();
             TargetType2 = r.ReadEnum<PBEType>();
             TargetWeight = r.ReadDouble();

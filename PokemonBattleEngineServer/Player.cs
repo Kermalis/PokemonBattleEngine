@@ -9,23 +9,27 @@ namespace Kermalis.PokemonBattleEngineServer
 {
     internal sealed class Player : IDisposable
     {
+        public byte BattleId { get; }
+        public string TrainerName { get; }
         public BattleServer Server { get; }
         public PBEServerClient Client { get; }
-        public string TrainerName { get; set; }
-        public int BattleId { get; set; } = int.MaxValue;
 
+        private Type _packetType;
+        private Type _actionType;
         private readonly ManualResetEvent resetEvent = new ManualResetEvent(true);
-        private bool submittedTeam;
 
-        public Player(BattleServer server, PBEServerClient client)
+        public Player(BattleServer server, PBEServerClient client, byte battleId, string name)
         {
+            BattleId = battleId;
+            TrainerName = name;
             Server = server;
             Client = client;
             Client.PacketReceived += OnPacketReceived;
         }
 
-        public bool WaitForResponse()
+        public bool WaitForResponse(Type packetType)
         {
+            _packetType = packetType;
             bool receivedResponseInTime = resetEvent.WaitOne(1000 * 5);
             if (!receivedResponseInTime)
             {
@@ -33,7 +37,10 @@ namespace Kermalis.PokemonBattleEngineServer
             }
             return receivedResponseInTime;
         }
-
+        public void SetWaitingForActions(Type packetType)
+        {
+            _actionType = packetType;
+        }
         public void Send(IPBEPacket packet)
         {
             if (Client.IsConnected)
@@ -43,57 +50,62 @@ namespace Kermalis.PokemonBattleEngineServer
                 Client.Send(packet);
             }
         }
-        private void PartySubmitted(IPBEPokemonCollection party)
+        private IPBEPokemonCollection _party;
+        public IPBEPokemonCollection AskForParty(bool requireLegal)
         {
-            Console.WriteLine($"Received party ({BattleId} {TrainerName})");
-            if (!submittedTeam)
-            {
-                submittedTeam = true;
-                Server.PartySubmitted(this, party);
-            }
-            else
-            {
-                Console.WriteLine("Party submitted multiple times!");
-            }
+            Send(new PBEPartyRequestPacket(BattleId, requireLegal));
+            WaitForResponse(requireLegal ? typeof(PBELegalPartyResponsePacket) : typeof(PBEPartyResponsePacket));
+            IPBEPokemonCollection ret = _party;
+            _party = null;
+            return ret;
         }
+
         private void OnPacketReceived(object sender, IPBEPacket packet)
         {
-            Debug.WriteLine($"Packet received ({BattleId} {TrainerName} \"{packet.GetType().Name}\")");
-            resetEvent.Set();
-            if (BattleId < 2)
+            // TODO: Kick players who are sending broken packets or sending too many
+            Type type = packet.GetType();
+            Debug.WriteLine($"Packet received ({BattleId} {TrainerName} \"{type.Name}\")");
+            if (type.Equals(_packetType))
             {
+                _packetType = null;
                 switch (packet)
                 {
-                    case PBEActionsResponsePacket arp:
-                    {
-                        Server.ActionsSubmitted(this, arp.Actions);
-                        break;
-                    }
                     case PBELegalPartyResponsePacket lprp:
                     {
-                        PartySubmitted(lprp.Party);
+                        Console.WriteLine($"Received party ({BattleId} {TrainerName})");
+                        if (!Server.Settings.Equals(lprp.Party.Settings))
+                        {
+                            Console.WriteLine("Party does not have matching settings!");
+                            Console.WriteLine("\tServer: \"{0}\"", Server.Settings);
+                            Console.WriteLine("\tParty: \"{0}\"", lprp.Party.Settings);
+                        }
+                        else
+                        {
+                            _party = lprp.Party;
+                            resetEvent.Set();
+                        }
                         break;
                     }
                     case PBEPartyResponsePacket prp:
                     {
-                        if (Server.RequireLegalParties)
-                        {
-                            Console.WriteLine("An unchecked party was submitted, despite requiring legal parties. Ignoring...");
-                        }
-                        else
-                        {
-                            PartySubmitted(prp.Party);
-                        }
+                        Console.WriteLine($"Received party ({BattleId} {TrainerName})");
+                        _party = prp.Party;
+                        resetEvent.Set();
                         break;
                     }
-                    case PBESwitchInResponsePacket sirp:
-                    {
-                        Server.SwitchesSubmitted(this, sirp.Switches);
-                        break;
-                    }
+                    default: resetEvent.Set(); break;
                 }
             }
-            // TODO: Kick players who are sending bogus packets or sending too many
+            else if (type.Equals(_actionType))
+            {
+                _actionType = null;
+                switch (packet)
+                {
+                    case PBEActionsResponsePacket arp: Server.ActionsSubmitted(this, arp.Actions); break;
+                    case PBESwitchInResponsePacket sirp: Server.SwitchesSubmitted(this, sirp.Switches); break;
+                    default: throw new ArgumentOutOfRangeException(nameof(packet));
+                }
+            }
         }
 
         public void Dispose()

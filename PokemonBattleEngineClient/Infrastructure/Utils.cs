@@ -122,17 +122,13 @@ namespace Kermalis.PokemonBattleEngineClient.Infrastructure
             }
         }
 
-        public static bool ShouldShowEverything(PBETeam team, bool showEverything0, bool showEverything1)
-        {
-            return (team.Id == 0 && showEverything0) || (team.Id == 1 && showEverything1);
-        }
-        public static string CustomPokemonToString(PBEBattlePokemon pkmn, bool showEverything0, bool showEverything1)
+        public static string CustomPokemonToString(PBEBattlePokemon pkmn, bool useKnownInfo)
         {
             var sb = new StringBuilder();
 
             string GetTeamNickname(PBEBattlePokemon p)
             {
-                return $"{p.Team.TrainerName}'s {(ShouldShowEverything(p.Team, showEverything0, showEverything1) ? p.Nickname : p.KnownNickname)}";
+                return $"{p.Trainer.Name}'s {(useKnownInfo ? p.KnownNickname : p.Nickname)}";
             }
 
             void AddStatChanges()
@@ -195,7 +191,7 @@ namespace Kermalis.PokemonBattleEngineClient.Infrastructure
                 {
                     sb.AppendLine($"Disguised as: {pkmn.DisguisedAsPokemon.Nickname}");
                 }
-                if (pkmn.Team.Battle.BattleFormat != PBEBattleFormat.Single)
+                if (pkmn.Battle.BattleFormat != PBEBattleFormat.Single)
                 {
                     if (status2.HasFlag(PBEStatus2.Infatuated))
                     {
@@ -203,7 +199,7 @@ namespace Kermalis.PokemonBattleEngineClient.Infrastructure
                     }
                     if (status2.HasFlag(PBEStatus2.LeechSeed))
                     {
-                        sb.AppendLine($"Seeded position: {pkmn.SeededTeam.TrainerName}'s {pkmn.SeededPosition}");
+                        sb.AppendLine($"Seeded position: {pkmn.SeededTeam.CombinedName}'s {pkmn.SeededPosition}");
                     }
                     if (status2.HasFlag(PBEStatus2.LockOn))
                     {
@@ -212,11 +208,11 @@ namespace Kermalis.PokemonBattleEngineClient.Infrastructure
                 }
             }
 
-            if (!ShouldShowEverything(pkmn.Team, showEverything0, showEverything1))
+            if (useKnownInfo)
             {
                 var pData = PBEPokemonData.GetData(pkmn.KnownSpecies, pkmn.KnownForm);
                 string formStr = PBEDataUtils.HasForms(pkmn.KnownSpecies, false) ? $" ({PBELocalizedString.GetFormName(pkmn.KnownSpecies, pkmn.KnownForm)})" : string.Empty;
-                sb.AppendLine($"{pkmn.KnownNickname}/{pkmn.KnownSpecies}{formStr} {(pkmn.KnownStatus2.HasFlag(PBEStatus2.Transformed) ? pkmn.GenderSymbol : pkmn.KnownGenderSymbol)} Lv.{pkmn.Level}");
+                sb.AppendLine($"{pkmn.KnownNickname}/{pkmn.KnownSpecies}{formStr} {(pkmn.KnownStatus2.HasFlag(PBEStatus2.Transformed) ? pkmn.Gender.ToSymbol() : pkmn.KnownGender.ToSymbol())} Lv.{pkmn.Level}");
                 sb.AppendLine($"HP: {pkmn.HPPercentage:P2}");
                 sb.Append($"Known types: {PBELocalizedString.GetTypeName(pkmn.KnownType1)}");
                 if (pkmn.KnownType2 != PBEType.None)
@@ -226,7 +222,7 @@ namespace Kermalis.PokemonBattleEngineClient.Infrastructure
                 sb.AppendLine();
                 if (pkmn.FieldPosition != PBEFieldPosition.None)
                 {
-                    sb.AppendLine($"Position: {pkmn.Team.TrainerName}'s {pkmn.FieldPosition}");
+                    sb.AppendLine($"Position: {pkmn.Team.CombinedName}'s {pkmn.FieldPosition}");
                 }
                 AddStatus1();
                 if (pkmn.FieldPosition != PBEFieldPosition.None)
@@ -236,12 +232,12 @@ namespace Kermalis.PokemonBattleEngineClient.Infrastructure
                         AddStatus2(pkmn.KnownStatus2);
                     }
                 }
-                PBEDataUtils.GetStatRange(pData, PBEStat.HP, pkmn.Level, pkmn.Team.Battle.Settings, out ushort lowHP, out ushort highHP);
-                PBEDataUtils.GetStatRange(pData, PBEStat.Attack, pkmn.Level, pkmn.Team.Battle.Settings, out ushort lowAttack, out ushort highAttack);
-                PBEDataUtils.GetStatRange(pData, PBEStat.Defense, pkmn.Level, pkmn.Team.Battle.Settings, out ushort lowDefense, out ushort highDefense);
-                PBEDataUtils.GetStatRange(pData, PBEStat.SpAttack, pkmn.Level, pkmn.Team.Battle.Settings, out ushort lowSpAttack, out ushort highSpAttack);
-                PBEDataUtils.GetStatRange(pData, PBEStat.SpDefense, pkmn.Level, pkmn.Team.Battle.Settings, out ushort lowSpDefense, out ushort highSpDefense);
-                PBEDataUtils.GetStatRange(pData, PBEStat.Speed, pkmn.Level, pkmn.Team.Battle.Settings, out ushort lowSpeed, out ushort highSpeed);
+                PBEDataUtils.GetStatRange(pData, PBEStat.HP, pkmn.Level, pkmn.Battle.Settings, out ushort lowHP, out ushort highHP);
+                PBEDataUtils.GetStatRange(pData, PBEStat.Attack, pkmn.Level, pkmn.Battle.Settings, out ushort lowAttack, out ushort highAttack);
+                PBEDataUtils.GetStatRange(pData, PBEStat.Defense, pkmn.Level, pkmn.Battle.Settings, out ushort lowDefense, out ushort highDefense);
+                PBEDataUtils.GetStatRange(pData, PBEStat.SpAttack, pkmn.Level, pkmn.Battle.Settings, out ushort lowSpAttack, out ushort highSpAttack);
+                PBEDataUtils.GetStatRange(pData, PBEStat.SpDefense, pkmn.Level, pkmn.Battle.Settings, out ushort lowSpDefense, out ushort highSpDefense);
+                PBEDataUtils.GetStatRange(pData, PBEStat.Speed, pkmn.Level, pkmn.Battle.Settings, out ushort lowSpeed, out ushort highSpeed);
                 sb.AppendLine($"Stat range: [HP] {lowHP}-{highHP}, [A] {lowAttack}-{highAttack}, [D] {lowDefense}-{highDefense}, [SA] {lowSpAttack}-{highSpAttack}, [SD] {lowSpDefense}-{highSpDefense}, [S] {lowSpeed}-{highSpeed}, [W] {pkmn.KnownWeight:0.0}");
                 if (pkmn.FieldPosition != PBEFieldPosition.None)
                 {
@@ -257,7 +253,7 @@ namespace Kermalis.PokemonBattleEngineClient.Infrastructure
                 }
                 sb.AppendLine($"Known item: {(pkmn.KnownItem == (PBEItem)ushort.MaxValue ? "???" : PBELocalizedString.GetItemName(pkmn.KnownItem).ToString())}");
                 sb.Append("Known moves: ");
-                for (int i = 0; i < pkmn.Team.Battle.Settings.NumMoves; i++)
+                for (int i = 0; i < pkmn.Battle.Settings.NumMoves; i++)
                 {
                     PBEBattleMoveset.PBEBattleMovesetSlot slot = pkmn.KnownMoves[i];
                     PBEMove move = slot.Move;
@@ -277,7 +273,7 @@ namespace Kermalis.PokemonBattleEngineClient.Infrastructure
             else
             {
                 string formStr = PBEDataUtils.HasForms(pkmn.Species, false) ? $" ({PBELocalizedString.GetFormName(pkmn.Species, pkmn.Form)})" : string.Empty;
-                sb.AppendLine($"{pkmn.Nickname}/{pkmn.Species}{formStr} {pkmn.GenderSymbol} Lv.{pkmn.Level}");
+                sb.AppendLine($"{pkmn.Nickname}/{pkmn.Species}{formStr} {pkmn.Gender.ToSymbol()} Lv.{pkmn.Level}");
                 sb.AppendLine($"HP: {pkmn.HP}/{pkmn.MaxHP} ({pkmn.HPPercentage:P2})");
                 sb.Append($"Types: {PBELocalizedString.GetTypeName(pkmn.Type1)}");
                 if (pkmn.Type2 != PBEType.None)
@@ -287,7 +283,7 @@ namespace Kermalis.PokemonBattleEngineClient.Infrastructure
                 sb.AppendLine();
                 if (pkmn.FieldPosition != PBEFieldPosition.None)
                 {
-                    sb.AppendLine($"Position: {pkmn.Team.TrainerName}'s {pkmn.FieldPosition}");
+                    sb.AppendLine($"Position: {pkmn.Team.CombinedName}'s {pkmn.FieldPosition}");
                 }
                 AddStatus1();
                 if (pkmn.FieldPosition != PBEFieldPosition.None && pkmn.Status2 != PBEStatus2.None)
@@ -307,10 +303,10 @@ namespace Kermalis.PokemonBattleEngineClient.Infrastructure
                 }
                 if (pkmn.Moves.Contains(PBEMoveEffect.HiddenPower))
                 {
-                    sb.AppendLine($"{PBELocalizedString.GetMoveName(PBEMove.HiddenPower)}: {PBELocalizedString.GetTypeName(pkmn.IndividualValues.GetHiddenPowerType())}|{pkmn.IndividualValues.GetHiddenPowerBasePower(pkmn.Team.Battle.Settings)}");
+                    sb.AppendLine($"{PBELocalizedString.GetMoveName(PBEMove.HiddenPower)}: {PBELocalizedString.GetTypeName(pkmn.IndividualValues.GetHiddenPowerType())}|{pkmn.IndividualValues.GetHiddenPowerBasePower(pkmn.Battle.Settings)}");
                 }
                 sb.Append("Moves: ");
-                for (int i = 0; i < pkmn.Team.Battle.Settings.NumMoves; i++)
+                for (int i = 0; i < pkmn.Battle.Settings.NumMoves; i++)
                 {
                     PBEBattleMoveset.PBEBattleMovesetSlot slot = pkmn.Moves[i];
                     PBEMove move = slot.Move;

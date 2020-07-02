@@ -1,25 +1,26 @@
-﻿using Kermalis.PokemonBattleEngine.Battle;
+﻿using Avalonia.Media.Imaging;
+using Kermalis.PokemonBattleEngine.Battle;
 using Kermalis.PokemonBattleEngine.Data;
+using Kermalis.PokemonBattleEngine.Utils;
+using Kermalis.PokemonBattleEngineClient.Clients;
 using Kermalis.PokemonBattleEngineClient.Infrastructure;
-using ReactiveUI;
-using System;
-using System.Reactive;
 
 namespace Kermalis.PokemonBattleEngineClient.Models
 {
     public sealed class PokemonInfo
     {
-        public ReactiveCommand<Unit, Unit> SelectPokemonCommand { get; }
-        public bool Enabled { get; }
+        public Bitmap MiniSprite { get; }
+        public string Name { get; }
 
-        public PBEBattlePokemon Pokemon { get; }
-        public string Description => Utils.CustomPokemonToString(Pokemon, Pokemon.Team.Id == 0, Pokemon.Team.Id == 1);
-
-        public PokemonInfo(PBEBattlePokemon pkmn, bool locked, Action<PBEBattlePokemon> clickAction)
+        internal PokemonInfo(PBEBattlePokemon pkmn, bool useKnownInfo)
         {
-            Pokemon = pkmn;
-            Enabled = !locked && pkmn.FieldPosition == PBEFieldPosition.None && pkmn.HP > 0;
-            SelectPokemonCommand = ReactiveCommand.Create(() => clickAction(pkmn));
+            if (pkmn != null)
+            {
+                MiniSprite = (Bitmap)SpeciesToMinispriteConverter.Instance.Convert(pkmn, typeof(Bitmap), useKnownInfo, PBEUtils.PBECulture);
+                Name = useKnownInfo ? pkmn.KnownNickname : pkmn.Nickname + (useKnownInfo && !pkmn.KnownStatus2.HasFlag(PBEStatus2.Transformed) ? pkmn.KnownGender : pkmn.Gender).ToSymbol();
+            }
         }
+        internal PokemonInfo(BattleClient client, PBEBattlePokemon pkmn)
+            : this(pkmn, pkmn != null && client.ShouldUseKnownInfo(pkmn.Trainer)) { }
     }
 }

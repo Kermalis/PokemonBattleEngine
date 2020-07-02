@@ -1,4 +1,5 @@
-﻿using Avalonia.Data.Converters;
+﻿using Avalonia;
+using Avalonia.Data.Converters;
 using Kermalis.PokemonBattleEngine.Battle;
 using Kermalis.PokemonBattleEngine.Data;
 using System;
@@ -15,14 +16,11 @@ namespace Kermalis.PokemonBattleEngineClient.Infrastructure
             var species = (PBESpecies)values[0];
             if (!PBEDataUtils.HasForms(species, true))
             {
-                return null;
+                return AvaloniaProperty.UnsetValue;
             }
-            else
-            {
-                PBEForm form = true ? 0 : (PBEForm)values[1]; // TODO
-                var localized = PBELocalizedString.GetFormName(species, form);
-                return StringRenderer.Render(localized.ToString(), parameter?.ToString());
-            }
+            PBEForm form = true ? 0 : (PBEForm)values[1]; // TODO
+            var localized = PBELocalizedString.GetFormName(species, form);
+            return StringRenderer.Render(localized.ToString(), parameter?.ToString());
         }
     }
     public sealed class ObjectToTextBitmapConverter : IValueConverter
@@ -30,6 +28,10 @@ namespace Kermalis.PokemonBattleEngineClient.Infrastructure
         public static ObjectToTextBitmapConverter Instance { get; } = new ObjectToTextBitmapConverter();
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
+            if (value is null)
+            {
+                return AvaloniaProperty.UnsetValue;
+            }
             PBELocalizedString localized = null;
             switch (value)
             {
@@ -43,7 +45,7 @@ namespace Kermalis.PokemonBattleEngineClient.Infrastructure
                 case PBEStat stat: localized = PBELocalizedString.GetStatName(stat); break;
                 case PBEType type: localized = PBELocalizedString.GetTypeName(type); break;
             }
-            return StringRenderer.Render(localized == null ? value?.ToString() : localized.ToString(), parameter?.ToString());
+            return StringRenderer.Render(localized == null ? value.ToString() : localized.ToString(), parameter?.ToString()) ?? AvaloniaProperty.UnsetValue;
         }
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
         {

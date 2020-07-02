@@ -11,8 +11,8 @@ namespace Kermalis.PokemonBattleEngine.Packets
         public const ushort Code = 0x10;
         public ReadOnlyCollection<byte> Data { get; }
 
+        public PBETrainer PokemonTrainer { get; }
         public PBEFieldPosition Pokemon { get; }
-        public PBETeam PokemonTeam { get; }
         public PBEStat Stat { get; }
         public sbyte OldValue { get; }
         public sbyte NewValue { get; }
@@ -23,8 +23,8 @@ namespace Kermalis.PokemonBattleEngine.Packets
             using (var w = new EndianBinaryWriter(ms, encoding: EncodingType.UTF16))
             {
                 w.Write(Code);
+                w.Write((PokemonTrainer = pokemon.Trainer).Id);
                 w.Write(Pokemon = pokemon.FieldPosition);
-                w.Write((PokemonTeam = pokemon.Team).Id);
                 w.Write(Stat = stat);
                 w.Write(OldValue = oldValue);
                 w.Write(NewValue = newValue);
@@ -34,8 +34,8 @@ namespace Kermalis.PokemonBattleEngine.Packets
         internal PBEPkmnStatChangedPacket(byte[] data, EndianBinaryReader r, PBEBattle battle)
         {
             Data = new ReadOnlyCollection<byte>(data);
+            PokemonTrainer = battle.Trainers[r.ReadByte()];
             Pokemon = r.ReadEnum<PBEFieldPosition>();
-            PokemonTeam = battle.Teams[r.ReadByte()];
             Stat = r.ReadEnum<PBEStat>();
             OldValue = r.ReadSByte();
             NewValue = r.ReadSByte();

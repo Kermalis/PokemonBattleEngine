@@ -29,12 +29,12 @@ namespace Kermalis.PokemonBattleEngineTests
         {
             foreach (IPBEPacket packet in battle.Events)
             {
-                if (packet is PBEMoveResultPacket mrp)
+                if (packet is PBEMoveResultPacket mrp
+                    && mrp.Result == result
+                    && mrp.MoveUserTrainer.TryGetPokemon(mrp.MoveUser) == moveUser
+                    && mrp.Pokemon2Trainer.TryGetPokemon(mrp.Pokemon2) == pokemon2)
                 {
-                    if (mrp.Result == result && mrp.MoveUserTeam.TryGetPokemon(mrp.MoveUser) == moveUser && mrp.Pokemon2Team.TryGetPokemon(mrp.Pokemon2) == pokemon2)
-                    {
-                        return true;
-                    }
+                    return true;
                 }
             }
             return false;
@@ -43,12 +43,13 @@ namespace Kermalis.PokemonBattleEngineTests
         {
             foreach (IPBEPacket packet in battle.Events)
             {
-                if (packet is PBEStatus2Packet s2p)
+                if (packet is PBEStatus2Packet s2p
+                    && s2p.Status2 == status2
+                    && s2p.StatusAction == statusAction
+                    && s2p.Status2ReceiverTrainer.TryGetPokemon(s2p.Status2Receiver) == status2Receiver
+                    && s2p.Pokemon2Trainer.TryGetPokemon(s2p.Pokemon2) == pokemon2)
                 {
-                    if (s2p.Status2 == status2 && s2p.StatusAction == statusAction && s2p.Status2ReceiverTeam.TryGetPokemon(s2p.Status2Receiver) == status2Receiver && s2p.Pokemon2Team.TryGetPokemon(s2p.Pokemon2) == pokemon2)
-                    {
-                        return true;
-                    }
+                    return true;
                 }
             }
             return false;
@@ -57,12 +58,13 @@ namespace Kermalis.PokemonBattleEngineTests
         {
             foreach (IPBEPacket packet in battle.Events)
             {
-                if (packet is PBETeamStatusPacket tsp)
+                if (packet is PBETeamStatusPacket tsp
+                    && tsp.Team == team
+                    && tsp.TeamStatus == teamStatus
+                    && tsp.TeamStatusAction == teamStatusAction
+                    && tsp.DamageVictimTrainer?.TryGetPokemon(tsp.DamageVictim) == damageVictim)
                 {
-                    if (tsp.Team == team && tsp.TeamStatus == teamStatus && tsp.TeamStatusAction == teamStatusAction && team.TryGetPokemon(tsp.DamageVictim) == damageVictim)
-                    {
-                        return true;
-                    }
+                    return true;
                 }
             }
             return false;
@@ -123,7 +125,7 @@ namespace Kermalis.PokemonBattleEngineTests
         }
         IPBEMovesetSlot IReadOnlyList<IPBEMovesetSlot>.this[int index] => this[index];
 
-        public TestMoveset(PBESettings settings, PBEMove[] moves)
+        public TestMoveset(PBESettings settings, params PBEMove[] moves)
         {
             int numMoves = settings.NumMoves;
             _list = new TestMovesetSlot[numMoves];
@@ -172,7 +174,7 @@ namespace Kermalis.PokemonBattleEngineTests
         public TestMoveset Moveset { get; set; }
         IPBEMoveset IPBEPokemon.Moveset => Moveset;
 
-        public TestPokemon(PBESpecies species, PBEForm form, byte level)
+        public TestPokemon(PBESettings settings, PBESpecies species, PBEForm form, byte level, params PBEMove[] moves)
         {
             Species = species;
             Form = form;
@@ -181,6 +183,7 @@ namespace Kermalis.PokemonBattleEngineTests
             Gender = PBERandom.RandomGender(PBEPokemonData.GetData(species, form).GenderRatio);
             EffortValues = new PBEStatCollection(0, 0, 0, 0, 0, 0);
             IndividualValues = new PBEStatCollection(0, 0, 0, 0, 0, 0);
+            Moveset = new TestMoveset(settings, moves);
         }
     }
     public class TestPokemonCollection : IPBEPokemonCollection, IPBEPokemonCollection<TestPokemon>

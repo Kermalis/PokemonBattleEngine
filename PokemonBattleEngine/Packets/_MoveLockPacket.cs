@@ -11,8 +11,8 @@ namespace Kermalis.PokemonBattleEngine.Packets
         public const ushort Code = 0x28;
         public ReadOnlyCollection<byte> Data { get; }
 
+        public PBETrainer MoveUserTrainer { get; }
         public PBEFieldPosition MoveUser { get; }
-        public PBETeam MoveUserTeam { get; }
         public PBEMoveLockType MoveLockType { get; }
         public PBEMove LockedMove { get; }
         public PBETurnTarget? LockedTargets { get; }
@@ -23,8 +23,8 @@ namespace Kermalis.PokemonBattleEngine.Packets
             using (var w = new EndianBinaryWriter(ms, encoding: EncodingType.UTF16))
             {
                 w.Write(Code);
+                w.Write((MoveUserTrainer = moveUser.Trainer).Id);
                 w.Write(MoveUser = moveUser.FieldPosition);
-                w.Write((MoveUserTeam = moveUser.Team).Id);
                 w.Write(MoveLockType = moveLockType);
                 w.Write(LockedMove = lockedMove);
                 w.Write(lockedTargets.HasValue);
@@ -38,8 +38,8 @@ namespace Kermalis.PokemonBattleEngine.Packets
         internal PBEMoveLockPacket(byte[] data, EndianBinaryReader r, PBEBattle battle)
         {
             Data = new ReadOnlyCollection<byte>(data);
+            MoveUserTrainer = battle.Trainers[r.ReadByte()];
             MoveUser = r.ReadEnum<PBEFieldPosition>();
-            MoveUserTeam = battle.Teams[r.ReadByte()];
             MoveLockType = r.ReadEnum<PBEMoveLockType>();
             LockedMove = r.ReadEnum<PBEMove>();
             if (r.ReadBoolean())

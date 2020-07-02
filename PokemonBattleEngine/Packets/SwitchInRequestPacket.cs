@@ -10,24 +10,24 @@ namespace Kermalis.PokemonBattleEngine.Packets
         public const ushort Code = 0x23;
         public ReadOnlyCollection<byte> Data { get; }
 
-        public PBETeam Team { get; }
+        public PBETrainer Trainer { get; }
         public byte Amount { get; }
 
-        internal PBESwitchInRequestPacket(PBETeam team)
+        internal PBESwitchInRequestPacket(PBETrainer trainer)
         {
             using (var ms = new MemoryStream())
             using (var w = new EndianBinaryWriter(ms, encoding: EncodingType.UTF16))
             {
                 w.Write(Code);
-                w.Write((Team = team).Id);
-                w.Write(Amount = Team.SwitchInsRequired);
+                w.Write((Trainer = trainer).Id);
+                w.Write(Amount = trainer.SwitchInsRequired);
                 Data = new ReadOnlyCollection<byte>(ms.ToArray());
             }
         }
         internal PBESwitchInRequestPacket(byte[] data, EndianBinaryReader r, PBEBattle battle)
         {
             Data = new ReadOnlyCollection<byte>(data);
-            Team = battle.Teams[r.ReadByte()];
+            Trainer = battle.Trainers[r.ReadByte()];
             Amount = r.ReadByte();
         }
     }

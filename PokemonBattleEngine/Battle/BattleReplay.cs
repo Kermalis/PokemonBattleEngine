@@ -16,7 +16,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
         public string GetDefaultReplayFileName()
         {
             // "2020-12-30 23-59-59 - Team 1 vs Team 2.pbereplay"
-            return PBEUtils.ToSafeFileName(new string(string.Format("{0:yyyy-MM-dd HH-mm-ss} - {1} vs {2}", DateTime.Now, Teams[0].TrainerName, Teams[1].TrainerName).Take(200).ToArray())) + ".pbereplay";
+            return PBEUtils.ToSafeFileName(new string(string.Format("{0:yyyy-MM-dd HH-mm-ss} - {1} vs {2}", DateTime.Now, Teams[0].CombinedName, Teams[1].CombinedName).Take(200).ToArray())) + ".pbereplay";
         }
 
         public void SaveReplay()
@@ -55,10 +55,6 @@ namespace Kermalis.PokemonBattleEngine.Battle
             {
                 w.Write(CurrentReplayVersion);
 
-                w.Write(Settings.ToBytes());
-                w.Write(BattleTerrain);
-                w.Write(BattleFormat);
-
                 w.Write(Events.Count);
                 for (int i = 0; i < Events.Count; i++)
                 {
@@ -96,36 +92,22 @@ namespace Kermalis.PokemonBattleEngine.Battle
                         throw new InvalidDataException();
                     }
                 }
-                return new PBEBattle(r);
-            }
-        }
-        private PBEBattle(EndianBinaryReader r)
-        {
-            ushort version = r.ReadUInt16();
-
-            Settings = new PBESettings(r);
-            Settings.MakeReadOnly();
-            BattleTerrain = r.ReadEnum<PBEBattleTerrain>();
-            BattleFormat = r.ReadEnum<PBEBattleFormat>();
-            Teams = new PBETeams(this);
-
-            int numEvents = r.ReadInt32();
-            for (int i = 0; i < numEvents; i++)
-            {
-                IPBEPacket packet = PBEPacketProcessor.CreatePacket(this, r.ReadBytes(r.ReadUInt16()));
-                switch (packet)
+                ushort version = r.ReadUInt16();
+                PBEBattle b = null;
+                int numEvents = r.ReadInt32();
+                for (int i = 0; i < numEvents; i++)
                 {
-                    case PBEWinnerPacket wp:
+                    IPBEPacket packet = PBEPacketProcessor.CreatePacket(b, r.ReadBytes(r.ReadUInt16()));
+                    if (packet is PBEBattlePacket bp)
                     {
-                        Winner = wp.WinningTeam;
-                        break;
+                        b = new PBEBattle(bp);
                     }
+                    b.Events.Add(packet);
                 }
-                Events.Add(packet);
+                b.BattleState = PBEBattleState.Ended;
+                b.OnStateChanged?.Invoke(b);
+                return b;
             }
-
-            BattleState = PBEBattleState.Ended;
-            OnStateChanged?.Invoke(this);
         }
     }
 }

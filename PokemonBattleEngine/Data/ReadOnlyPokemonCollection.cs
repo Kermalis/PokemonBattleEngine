@@ -24,7 +24,7 @@ namespace Kermalis.PokemonBattleEngine.Data
 
         internal PBEReadOnlyPokemonCollection(EndianBinaryReader r)
         {
-            sbyte count = r.ReadSByte();
+            byte count = r.ReadByte();
             _list = new PBEReadOnlyPokemon[count];
             for (int i = 0; i < count; i++)
             {

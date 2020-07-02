@@ -5,54 +5,9 @@ namespace Kermalis.PokemonBattleEngine.Battle
 {
     public static class PBEBattleUtils
     {
-        public static int GetFieldPositionIndex(PBEBattleFormat format, PBEFieldPosition position)
-        {
-            switch (format)
-            {
-                case PBEBattleFormat.Single:
-                {
-                    switch (position)
-                    {
-                        case PBEFieldPosition.Center: return 0;
-                        default: throw new ArgumentOutOfRangeException(nameof(position));
-                    }
-                }
-                case PBEBattleFormat.Double:
-                {
-                    switch (position)
-                    {
-                        case PBEFieldPosition.Left: return 0;
-                        case PBEFieldPosition.Right: return 1;
-                        default: throw new ArgumentOutOfRangeException(nameof(position));
-                    }
-                }
-                case PBEBattleFormat.Triple:
-                {
-                    switch (position)
-                    {
-                        case PBEFieldPosition.Left: return 0;
-                        case PBEFieldPosition.Center: return 1;
-                        case PBEFieldPosition.Right: return 2;
-                        default: throw new ArgumentOutOfRangeException(nameof(position));
-                    }
-                }
-                case PBEBattleFormat.Rotation:
-                {
-                    switch (position)
-                    {
-                        case PBEFieldPosition.Center: return 0;
-                        case PBEFieldPosition.Left: return 1;
-                        case PBEFieldPosition.Right: return 2;
-                        default: throw new ArgumentOutOfRangeException(nameof(position));
-                    }
-                }
-                default: throw new ArgumentOutOfRangeException(nameof(format));
-            }
-        }
-
         public static PBETurnTarget GetSpreadMoveTargets(PBEBattlePokemon pkmn, PBEMoveTarget targets)
         {
-            switch (pkmn.Team.Battle.BattleFormat)
+            switch (pkmn.Battle.BattleFormat)
             {
                 case PBEBattleFormat.Single:
                 {
@@ -272,12 +227,12 @@ namespace Kermalis.PokemonBattleEngine.Battle
                         default: throw new ArgumentOutOfRangeException(nameof(targets));
                     }
                 }
-                default: throw new ArgumentOutOfRangeException(nameof(pkmn.Team.Battle.BattleFormat));
+                default: throw new ArgumentOutOfRangeException(nameof(pkmn.Battle.BattleFormat));
             }
         }
         public static PBETurnTarget[] GetPossibleTargets(PBEBattlePokemon pkmn, PBEMoveTarget targets)
         {
-            switch (pkmn.Team.Battle.BattleFormat)
+            switch (pkmn.Battle.BattleFormat)
             {
                 case PBEBattleFormat.Single:
                 {
@@ -541,8 +496,111 @@ namespace Kermalis.PokemonBattleEngine.Battle
                         default: throw new ArgumentOutOfRangeException(nameof(targets));
                     }
                 }
-                default: throw new ArgumentOutOfRangeException(nameof(pkmn.Team.Battle.BattleFormat));
+                default: throw new ArgumentOutOfRangeException(nameof(pkmn.Battle.BattleFormat));
             }
+        }
+
+        internal static void VerifyPosition(PBEBattleFormat format, PBEFieldPosition pos)
+        {
+            if (pos != PBEFieldPosition.None && pos < PBEFieldPosition.MAX)
+            {
+                switch (format)
+                {
+                    case PBEBattleFormat.Single:
+                    case PBEBattleFormat.Rotation:
+                    {
+                        switch (pos)
+                        {
+                            case PBEFieldPosition.Center: return;
+                        }
+                        break;
+                    }
+                    case PBEBattleFormat.Double:
+                    {
+                        switch (pos)
+                        {
+                            case PBEFieldPosition.Left:
+                            case PBEFieldPosition.Right: return;
+                        }
+                        break;
+                    }
+                    case PBEBattleFormat.Triple:
+                    {
+                        return;
+                    }
+                }
+            }
+            throw new ArgumentOutOfRangeException(nameof(pos));
+        }
+
+        public static int GetFieldPositionIndex(this PBETrainer trainer, PBEFieldPosition position)
+        {
+            if (!trainer.OwnsSpot(position))
+            {
+                throw new ArgumentOutOfRangeException(nameof(position));
+            }
+            PBEBattleFormat battleFormat = trainer.Battle.BattleFormat;
+            int index = trainer.Team.Trainers.IndexOf(trainer);
+            switch (battleFormat)
+            {
+                case PBEBattleFormat.Single:
+                {
+                    switch (position)
+                    {
+                        case PBEFieldPosition.Center: return 0;
+                    }
+                    break;
+                }
+                case PBEBattleFormat.Double:
+                {
+                    switch (position)
+                    {
+                        case PBEFieldPosition.Left: return 0;
+                        case PBEFieldPosition.Right: return index == 1 ? 0 : 1;
+                    }
+                    break;
+                }
+                case PBEBattleFormat.Triple:
+                {
+                    switch (position)
+                    {
+                        case PBEFieldPosition.Left: return 0;
+                        case PBEFieldPosition.Center: return index == 1 ? 0 : 1;
+                        case PBEFieldPosition.Right: return index == 2 ? 0 : 2;
+                    }
+                    break;
+                }
+                case PBEBattleFormat.Rotation:
+                {
+                    switch (position)
+                    {
+                        case PBEFieldPosition.Center: return 0;
+                        case PBEFieldPosition.Left: return 1;
+                        case PBEFieldPosition.Right: return 2;
+                    }
+                    break;
+                }
+            }
+            throw new Exception();
+        }
+        public static bool OwnsSpot(this PBETrainer trainer, PBEFieldPosition pos)
+        {
+            return GetTrainer(trainer.Team, pos) == trainer;
+        }
+        public static PBETrainer GetTrainer(this PBETeam team, PBEFieldPosition pos)
+        {
+            PBEBattleFormat format = team.Battle.BattleFormat;
+            VerifyPosition(format, pos);
+            int i = 0;
+            if (team.Trainers.Count != 1)
+            {
+                switch (format)
+                {
+                    case PBEBattleFormat.Double: i = pos == PBEFieldPosition.Left ? 0 : 1; break;
+                    case PBEBattleFormat.Triple: i = pos == PBEFieldPosition.Left ? 0 : pos == PBEFieldPosition.Center ? 1 : 2; break;
+                }
+            }
+            return team.Trainers[i];
         }
     }
 }

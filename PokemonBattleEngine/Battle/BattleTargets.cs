@@ -81,9 +81,9 @@ namespace Kermalis.PokemonBattleEngine.Battle
             {
                 throw new ArgumentException($"\"{nameof(includeAllies)}\" and \"{nameof(includeFoes)}\" were false.");
             }
-            PBEBattlePokemon[] allies = pkmn.Team.ActiveBattlers.Where(p => p != pkmn).ToArray();
-            PBEBattlePokemon[] foes = pkmn.Team.OpposingTeam.ActiveBattlers;
-            switch (pkmn.Team.Battle.BattleFormat)
+            IEnumerable<PBEBattlePokemon> allies = pkmn.Team.ActiveBattlers.Where(p => p != pkmn);
+            IEnumerable<PBEBattlePokemon> foes = pkmn.Team.OpposingTeam.ActiveBattlers;
+            switch (pkmn.Battle.BattleFormat)
             {
                 case PBEBattleFormat.Single:
                 {
@@ -181,7 +181,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                         throw new ArgumentOutOfRangeException(nameof(pkmn.FieldPosition));
                     }
                 }
-                default: throw new ArgumentOutOfRangeException(nameof(pkmn.Team.Battle.BattleFormat));
+                default: throw new ArgumentOutOfRangeException(nameof(pkmn.Battle.BattleFormat));
             }
         }
 
@@ -209,11 +209,11 @@ namespace Kermalis.PokemonBattleEngine.Battle
                 PBEBattlePokemon pkmn = user.Team.OpposingTeam.TryGetPokemon(PBEFieldPosition.Left);
                 if (pkmn == null)
                 {
-                    if (user.Team.Battle.BattleFormat == PBEBattleFormat.Double)
+                    if (user.Battle.BattleFormat == PBEBattleFormat.Double)
                     {
                         pkmn = user.Team.OpposingTeam.TryGetPokemon(PBEFieldPosition.Right);
                     }
-                    else if (user.Team.Battle.BattleFormat == PBEBattleFormat.Triple)
+                    else if (user.Battle.BattleFormat == PBEBattleFormat.Triple)
                     {
                         pkmn = user.Team.OpposingTeam.TryGetPokemon(PBEFieldPosition.Center);
                         // Center fainted as well and user can reach far right
@@ -231,7 +231,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                 // Target fainted, fallback to its teammate
                 if (pkmn == null)
                 {
-                    if (user.Team.Battle.BattleFormat == PBEBattleFormat.Triple)
+                    if (user.Battle.BattleFormat == PBEBattleFormat.Triple)
                     {
                         if (user.FieldPosition == PBEFieldPosition.Left)
                         {
@@ -281,11 +281,11 @@ namespace Kermalis.PokemonBattleEngine.Battle
                 // Target fainted, fallback to its teammate
                 if (pkmn == null)
                 {
-                    if (user.Team.Battle.BattleFormat == PBEBattleFormat.Double)
+                    if (user.Battle.BattleFormat == PBEBattleFormat.Double)
                     {
                         pkmn = user.Team.OpposingTeam.TryGetPokemon(PBEFieldPosition.Left);
                     }
-                    else if (user.Team.Battle.BattleFormat == PBEBattleFormat.Triple)
+                    else if (user.Battle.BattleFormat == PBEBattleFormat.Triple)
                     {
                         pkmn = user.Team.OpposingTeam.TryGetPokemon(PBEFieldPosition.Center);
                         // Center fainted as well and user can reach far left
@@ -316,7 +316,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                 throw new ArgumentOutOfRangeException(nameof(move));
             }
             PBEMoveTarget possibleTargets = pkmn.GetMoveTargets(move);
-            switch (pkmn.Team.Battle.BattleFormat)
+            switch (pkmn.Battle.BattleFormat)
             {
                 case PBEBattleFormat.Single:
                 {
@@ -730,7 +730,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                         default: throw new ArgumentOutOfRangeException(nameof(possibleTargets));
                     }
                 }
-                default: throw new ArgumentOutOfRangeException(nameof(pkmn.Team.Battle.BattleFormat));
+                default: throw new ArgumentOutOfRangeException(nameof(pkmn.Battle.BattleFormat));
             }
         }
 
@@ -749,7 +749,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                 throw new ArgumentOutOfRangeException(nameof(calledMove));
             }
             PBEMoveTarget possibleTargets = pkmn.GetMoveTargets(calledMove);
-            switch (pkmn.Team.Battle.BattleFormat)
+            switch (pkmn.Battle.BattleFormat)
             {
                 case PBEBattleFormat.Single:
                 {
@@ -1212,7 +1212,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                         default: throw new ArgumentOutOfRangeException(nameof(possibleTargets));
                     }
                 }
-                default: throw new ArgumentOutOfRangeException(nameof(pkmn.Team.Battle.BattleFormat));
+                default: throw new ArgumentOutOfRangeException(nameof(pkmn.Battle.BattleFormat));
             }
         }
     }

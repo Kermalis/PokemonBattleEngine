@@ -1,5 +1,4 @@
 ﻿using Kermalis.EndianBinaryIO;
-using Kermalis.PokemonBattleEngine.Battle;
 using Kermalis.PokemonBattleEngine.Data;
 using Kermalis.PokemonBattleEngine.Data.Legality;
 using System;
@@ -52,14 +51,17 @@ namespace Kermalis.PokemonBattleEngine.Packets
             using (var w = new EndianBinaryWriter(ms, encoding: EncodingType.UTF16))
             {
                 w.Write(Code);
+                w.Write(party.Settings.ToBytes());
                 (Party = party).ToBytes(w);
                 Data = new ReadOnlyCollection<byte>(ms.ToArray());
             }
         }
-        internal PBELegalPartyResponsePacket(byte[] data, EndianBinaryReader r, PBEBattle battle)
+        internal PBELegalPartyResponsePacket(byte[] data, EndianBinaryReader r)
         {
             Data = new ReadOnlyCollection<byte>(data);
-            Party = new PBELegalPokemonCollection(battle.Settings, r);
+            var s = new PBESettings(r);
+            s.MakeReadOnly();
+            Party = new PBELegalPokemonCollection(s, r);
         }
     }
 }

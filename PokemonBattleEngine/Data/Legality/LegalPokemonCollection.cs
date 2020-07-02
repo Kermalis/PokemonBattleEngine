@@ -44,7 +44,7 @@ namespace Kermalis.PokemonBattleEngine.Data.Legality
 
         internal PBELegalPokemonCollection(PBESettings settings, EndianBinaryReader r)
         {
-            sbyte count = r.ReadSByte();
+            byte count = r.ReadByte();
             if (count < 1 || count > settings.MaxPartySize)
             {
                 throw new InvalidDataException();

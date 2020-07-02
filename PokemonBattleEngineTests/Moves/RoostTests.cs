@@ -27,23 +27,17 @@ namespace Kermalis.PokemonBattleEngineTests.Moves
             PBESettings settings = PBESettings.DefaultSettings;
 
             var p0 = new TestPokemonCollection(1);
-            p0[0] = new TestPokemon(PBESpecies.Lucario, 0, 50)
-            {
-                Moveset = new TestMoveset(settings, new[] { PBEMove.VacuumWave, PBEMove.Earthquake })
-            };
+            p0[0] = new TestPokemon(settings, PBESpecies.Lucario, 0, 50, PBEMove.Earthquake, PBEMove.VacuumWave);
 
             var p1 = new TestPokemonCollection(1);
-            p1[0] = new TestPokemon(species, 0, 100)
-            {
-                Moveset = new TestMoveset(settings, new[] { PBEMove.Splash, PBEMove.Roost })
-            };
+            p1[0] = new TestPokemon(settings, species, 0, 100, PBEMove.Roost, PBEMove.Splash);
 
-            var battle = new PBEBattle(PBEBattleTerrain.Plain, PBEBattleFormat.Single, new PBETeamInfo(p0, "Team 1"), new PBETeamInfo(p1, "Team 2"), settings);
+            var battle = new PBEBattle(PBEBattleFormat.Single, settings, new PBETrainerInfo(p0, "Trainer 0"), new PBETrainerInfo(p1, "Trainer 1"));
             battle.OnNewEvent += PBEBattle.ConsoleBattleEventHandler;
             battle.Begin();
 
-            PBETeam t0 = battle.Teams[0];
-            PBETeam t1 = battle.Teams[1];
+            PBETrainer t0 = battle.Trainers[0];
+            PBETrainer t1 = battle.Trainers[1];
             PBEBattlePokemon lucario = t0.Party[0];
             PBEBattlePokemon rooster = t1.Party[0];
             PBEType type1 = rooster.Type1;
@@ -58,15 +52,15 @@ namespace Kermalis.PokemonBattleEngineTests.Moves
             #endregion
 
             #region Use VacuumWave to lower HP
-            Assert.True(PBEBattle.SelectActionsIfValid(t0, new[] { new PBETurnAction(lucario.Id, PBEMove.VacuumWave, PBETurnTarget.FoeCenter) }));
-            Assert.True(PBEBattle.SelectActionsIfValid(t1, new[] { new PBETurnAction(rooster.Id, PBEMove.Splash, PBETurnTarget.AllyCenter) }));
+            Assert.True(PBEBattle.SelectActionsIfValid(t0, new PBETurnAction(lucario, PBEMove.VacuumWave, PBETurnTarget.FoeCenter)));
+            Assert.True(PBEBattle.SelectActionsIfValid(t1, new PBETurnAction(rooster, PBEMove.Splash, PBETurnTarget.AllyCenter)));
 
             battle.RunTurn();
             #endregion
 
             #region Use Roost and check
-            Assert.True(PBEBattle.SelectActionsIfValid(t0, new[] { new PBETurnAction(lucario.Id, PBEMove.Earthquake, PBETurnTarget.FoeCenter) }));
-            Assert.True(PBEBattle.SelectActionsIfValid(t1, new[] { new PBETurnAction(rooster.Id, PBEMove.Roost, PBETurnTarget.AllyCenter) }));
+            Assert.True(PBEBattle.SelectActionsIfValid(t0, new PBETurnAction(lucario, PBEMove.Earthquake, PBETurnTarget.FoeCenter)));
+            Assert.True(PBEBattle.SelectActionsIfValid(t1, new PBETurnAction(rooster, PBEMove.Roost, PBETurnTarget.AllyCenter)));
 
             battle.RunTurn();
 
