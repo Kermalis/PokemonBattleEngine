@@ -5,7 +5,6 @@ using Kermalis.PokemonBattleEngine.Packets;
 using Kermalis.PokemonBattleEngineClient.Views;
 using System;
 using System.Diagnostics;
-using System.Linq;
 using System.Net;
 
 namespace Kermalis.PokemonBattleEngineClient.Clients
@@ -161,6 +160,7 @@ namespace Kermalis.PokemonBattleEngineClient.Clients
                 }
                 default:
                 {
+                    BattleView.AddMessage("Communicating...", messageLog: false);
                     Battle.Events.Add(packet);
                     Send(new PBEResponsePacket());
                     break;
@@ -170,12 +170,12 @@ namespace Kermalis.PokemonBattleEngineClient.Clients
 
         protected override void OnActionsReady(PBETurnAction[] acts)
         {
-            BattleView.AddMessage($"Waiting for {Trainer.Team.OpposingTeam.CombinedName}...", messageLog: false);
+            BattleView.AddMessage("Waiting for players...", messageLog: false);
             Send(new PBEActionsResponsePacket(acts));
         }
         protected override void OnSwitchesReady()
         {
-            BattleView.AddMessage($"Waiting for {(Trainer.Team.OpposingTeam.Trainers.Sum(t => t.SwitchInsRequired) > 0 ? Trainer.Team.OpposingTeam.CombinedName : "host")}...", messageLog: false);
+            BattleView.AddMessage("Waiting for players...", messageLog: false);
             Send(new PBESwitchInResponsePacket(Switches));
         }
 
