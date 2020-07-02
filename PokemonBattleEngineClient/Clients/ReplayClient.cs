@@ -38,8 +38,6 @@ namespace Kermalis.PokemonBattleEngineClient.Clients
                     moveUser.Moves[mpcp.Move].PP -= mpcp.AmountReduced;
                     break;
                 }
-                case PBEActionsRequestPacket _:
-                case PBESwitchInRequestPacket _: return true;
             }
             return base.ProcessPacket(packet);
         }

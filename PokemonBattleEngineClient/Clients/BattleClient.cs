@@ -1295,10 +1295,11 @@ namespace Kermalis.PokemonBattleEngineClient.Clients
                 }
                 case PBEMoveLockPacket _:
                 case PBEMovePPChangedPacket _:
+                case PBEIllusionPacket _:
+                case PBETransformPacket _:
                 case PBEBattlePacket _:
-                {
-                    return true;
-                }
+                case PBEActionsRequestPacket _:
+                case PBESwitchInRequestPacket _: return true;
                 default: throw new ArgumentOutOfRangeException(nameof(packet));
             }
         }
