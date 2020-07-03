@@ -46,7 +46,7 @@ namespace Kermalis.PokemonBattleEngineTests.Abilities
 
             battle.RunTurn();
 
-            Assert.True(TestUtils.VerifyMoveResult(battle, seviper, zangoose, PBEResult.Ineffective_Ability));
+            Assert.True(battle.VerifyMoveResult(seviper, zangoose, PBEResult.Ineffective_Ability));
             #endregion
 
             #region Cleanup

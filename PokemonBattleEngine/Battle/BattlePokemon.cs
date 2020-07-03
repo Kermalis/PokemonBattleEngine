@@ -656,19 +656,30 @@ namespace Kermalis.PokemonBattleEngine.Battle
             }
             return val;
         }
-        public PBEResult IsStatChangePossible(PBEStat stat, PBEBattlePokemon other, int change, out sbyte oldValue, out sbyte newValue, bool useKnownInfo = false)
+        public PBEResult IsStatChangePossible(PBEStat stat, PBEBattlePokemon causer, int change, out sbyte oldValue, out sbyte newValue, bool useKnownInfo = false, bool ignoreSubstitute = false)
         {
+            if (causer is null)
+            {
+                throw new ArgumentNullException(nameof(causer));
+            }
+
             oldValue = GetStatChange(stat);
 
+            if (causer != this && !ignoreSubstitute && (useKnownInfo ? KnownStatus2 : Status2).HasFlag(PBEStatus2.Substitute))
+            {
+                newValue = oldValue;
+                return PBEResult.Ineffective_Substitute;
+            }
+
             // Verified: Contrary/Simple are silent
-            if (other?.HasCancellingAbility() != true)
+            if (causer != this && !causer.HasCancellingAbility())
             {
                 switch (useKnownInfo ? KnownAbility : Ability)
                 {
                     case PBEAbility.ClearBody:
                     case PBEAbility.WhiteSmoke:
                     {
-                        if (change < 0 && other != this)
+                        if (change < 0)
                         {
                             newValue = oldValue;
                             return PBEResult.Ineffective_Ability;

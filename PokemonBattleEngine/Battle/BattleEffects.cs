@@ -1258,6 +1258,21 @@ namespace Kermalis.PokemonBattleEngine.Battle
                     }
                     break;
                 }
+                case PBEAbility.Intimidate:
+                {
+                    // Verified: Do not announce if the positions are empty
+                    List<PBEBattlePokemon> targets = GetRuntimeSurrounding(pkmn, false, true);
+                    if (targets.Count > 0)
+                    {
+                        // Verified: Announce even if nobody is lowered (due to Substitute, Minimized Attack, or Ability)
+                        BroadcastAbility(pkmn, pkmn, PBEAbility.Intimidate, PBEAbilityAction.Stats);
+                        foreach (PBEBattlePokemon target in GetActingOrder(targets, true))
+                        {
+                            ApplyStatChangeIfPossible(pkmn, target, PBEStat.Attack, -1); // Verified: Substitute, Minimized Attack, and Ability are announced
+                        }
+                    }
+                    break;
+                }
                 case PBEAbility.MoldBreaker:
                 case PBEAbility.Teravolt:
                 case PBEAbility.Turboblaze:
@@ -1522,7 +1537,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
             void DoStatItem(PBEStat stat, int change)
             {
                 // Verified: Mold Breaker affects Contrary/Simple here, unlike with Belly Drum
-                if (pkmn.IsStatChangePossible(stat, forcedToEatBy, change, out sbyte oldValue, out sbyte newValue) == PBEResult.Success)
+                if (pkmn.IsStatChangePossible(stat, forcedToEatBy, change, out sbyte oldValue, out sbyte newValue, ignoreSubstitute: true) == PBEResult.Success)
                 {
                     BroadcastItem(pkmn, forcedToEatBy, pkmn.Item, PBEItemAction.Consumed);
                     SetStatAndBroadcast(pkmn, stat, oldValue, newValue);
@@ -1921,11 +1936,16 @@ namespace Kermalis.PokemonBattleEngine.Battle
                     }
                     return;
                 }
-                else
+                if (result == PBEResult.Ineffective_Substitute)
                 {
-                    // Do not broadcast "could not be lowered!" for Mud-Slap, etc
-                    broadcast = !isSecondaryEffect;
+                    if (!isSecondaryEffect)
+                    {
+                        BroadcastMoveResult(user, target, PBEResult.Ineffective_Substitute);
+                    }
+                    return;
                 }
+                // Do not broadcast "could not be lowered!" for Mud-Slap, etc
+                broadcast = !isSecondaryEffect;
             }
             if (broadcast)
             {
@@ -3724,8 +3744,15 @@ namespace Kermalis.PokemonBattleEngine.Battle
                 {
                     if (!MissCheck(user, target, mData))
                     {
-                        ApplyStatChangeIfPossible(user, target, PBEStat.SpAttack, +1);
-                        ApplyStatus2IfPossible(user, target, PBEStatus2.Confused, true);
+                        if (target.Status2.HasFlag(PBEStatus2.Substitute))
+                        {
+                            BroadcastMoveResult(user, target, PBEResult.Ineffective_Substitute);
+                        }
+                        else
+                        {
+                            ApplyStatChangeIfPossible(user, target, PBEStat.SpAttack, +1);
+                            ApplyStatus2IfPossible(user, target, PBEStatus2.Confused, true);
+                        }
                     }
                 }
             }
@@ -3899,8 +3926,15 @@ namespace Kermalis.PokemonBattleEngine.Battle
                 {
                     if (!MissCheck(user, target, mData))
                     {
-                        ApplyStatChangeIfPossible(user, target, PBEStat.Attack, +2);
-                        ApplyStatus2IfPossible(user, target, PBEStatus2.Confused, true);
+                        if (target.Status2.HasFlag(PBEStatus2.Substitute))
+                        {
+                            BroadcastMoveResult(user, target, PBEResult.Ineffective_Substitute);
+                        }
+                        else
+                        {
+                            ApplyStatChangeIfPossible(user, target, PBEStat.Attack, +2);
+                            ApplyStatus2IfPossible(user, target, PBEStatus2.Confused, true);
+                        }
                     }
                 }
             }

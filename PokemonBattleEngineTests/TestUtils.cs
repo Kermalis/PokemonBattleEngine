@@ -25,51 +25,6 @@ namespace Kermalis.PokemonBattleEngineTests
             PBEUtils.InitEngine(string.Empty);
         }
 
-        public static bool VerifyMoveResult(PBEBattle battle, PBEBattlePokemon moveUser, PBEBattlePokemon pokemon2, PBEResult result)
-        {
-            foreach (IPBEPacket packet in battle.Events)
-            {
-                if (packet is PBEMoveResultPacket mrp
-                    && mrp.Result == result
-                    && mrp.MoveUserTrainer.TryGetPokemon(mrp.MoveUser) == moveUser
-                    && mrp.Pokemon2Trainer.TryGetPokemon(mrp.Pokemon2) == pokemon2)
-                {
-                    return true;
-                }
-            }
-            return false;
-        }
-        public static bool VerifyStatus2Happened(PBEBattle battle, PBEBattlePokemon status2Receiver, PBEBattlePokemon pokemon2, PBEStatus2 status2, PBEStatusAction statusAction)
-        {
-            foreach (IPBEPacket packet in battle.Events)
-            {
-                if (packet is PBEStatus2Packet s2p
-                    && s2p.Status2 == status2
-                    && s2p.StatusAction == statusAction
-                    && s2p.Status2ReceiverTrainer.TryGetPokemon(s2p.Status2Receiver) == status2Receiver
-                    && s2p.Pokemon2Trainer.TryGetPokemon(s2p.Pokemon2) == pokemon2)
-                {
-                    return true;
-                }
-            }
-            return false;
-        }
-        public static bool VerifyTeamStatusHappened(PBEBattle battle, PBETeam team, PBETeamStatus teamStatus, PBETeamStatusAction teamStatusAction, PBEBattlePokemon damageVictim = null)
-        {
-            foreach (IPBEPacket packet in battle.Events)
-            {
-                if (packet is PBETeamStatusPacket tsp
-                    && tsp.Team == team
-                    && tsp.TeamStatus == teamStatus
-                    && tsp.TeamStatusAction == teamStatusAction
-                    && tsp.DamageVictimTrainer?.TryGetPokemon(tsp.DamageVictim) == damageVictim)
-                {
-                    return true;
-                }
-            }
-            return false;
-        }
-
         #region Output
         public void SetOutputHelper(ITestOutputHelper output)
         {
@@ -213,6 +168,69 @@ namespace Kermalis.PokemonBattleEngineTests
         public IEnumerator<TestPokemon> GetEnumerator()
         {
             return ((IEnumerable<TestPokemon>)_list).GetEnumerator();
+        }
+    }
+
+    internal static class TestExtensions
+    {
+        public static bool VerifyAbilityHappened(this PBEBattle battle, PBEBattlePokemon abilityOwner, PBEBattlePokemon pokemon2, PBEAbility ability, PBEAbilityAction abilityAction)
+        {
+            foreach (IPBEPacket packet in battle.Events)
+            {
+                if (packet is PBEAbilityPacket ap
+                    && ap.Ability == ability
+                    && ap.AbilityAction == abilityAction
+                    && ap.AbilityOwnerTrainer.TryGetPokemon(ap.AbilityOwner) == abilityOwner
+                    && ap.Pokemon2Trainer.TryGetPokemon(ap.Pokemon2) == pokemon2)
+                {
+                    return true;
+                }
+            }
+            return false;
+        }
+        public static bool VerifyMoveResult(this PBEBattle battle, PBEBattlePokemon moveUser, PBEBattlePokemon pokemon2, PBEResult result)
+        {
+            foreach (IPBEPacket packet in battle.Events)
+            {
+                if (packet is PBEMoveResultPacket mrp
+                    && mrp.Result == result
+                    && mrp.MoveUserTrainer.TryGetPokemon(mrp.MoveUser) == moveUser
+                    && mrp.Pokemon2Trainer.TryGetPokemon(mrp.Pokemon2) == pokemon2)
+                {
+                    return true;
+                }
+            }
+            return false;
+        }
+        public static bool VerifyStatus2Happened(this PBEBattle battle, PBEBattlePokemon status2Receiver, PBEBattlePokemon pokemon2, PBEStatus2 status2, PBEStatusAction statusAction)
+        {
+            foreach (IPBEPacket packet in battle.Events)
+            {
+                if (packet is PBEStatus2Packet s2p
+                    && s2p.Status2 == status2
+                    && s2p.StatusAction == statusAction
+                    && s2p.Status2ReceiverTrainer.TryGetPokemon(s2p.Status2Receiver) == status2Receiver
+                    && s2p.Pokemon2Trainer.TryGetPokemon(s2p.Pokemon2) == pokemon2)
+                {
+                    return true;
+                }
+            }
+            return false;
+        }
+        public static bool VerifyTeamStatusHappened(this PBEBattle battle, PBETeam team, PBETeamStatus teamStatus, PBETeamStatusAction teamStatusAction, PBEBattlePokemon damageVictim = null)
+        {
+            foreach (IPBEPacket packet in battle.Events)
+            {
+                if (packet is PBETeamStatusPacket tsp
+                    && tsp.Team == team
+                    && tsp.TeamStatus == teamStatus
+                    && tsp.TeamStatusAction == teamStatusAction
+                    && tsp.DamageVictimTrainer?.TryGetPokemon(tsp.DamageVictim) == damageVictim)
+                {
+                    return true;
+                }
+            }
+            return false;
         }
     }
 }

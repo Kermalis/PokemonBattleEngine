@@ -18,7 +18,6 @@ HeavyMetal
 Hydration
 HyperCutter
 Infiltrator
-Intimidate
 KeenEye
 Klutz
 LightMetal

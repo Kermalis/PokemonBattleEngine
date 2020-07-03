@@ -101,7 +101,7 @@ namespace Kermalis.PokemonBattleEngineTests.Moves
 
             battle.RunTurn();
 
-            Assert.True(TestUtils.VerifyTeamStatusHappened(battle, (ally ? t0 : t1).Team, PBETeamStatus.QuickGuard, PBETeamStatusAction.Damage, damageVictim: ally ? mienshao : mrmime) == ally);
+            Assert.True(battle.VerifyTeamStatusHappened((ally ? t0 : t1).Team, PBETeamStatus.QuickGuard, PBETeamStatusAction.Damage, damageVictim: ally ? mienshao : mrmime) == ally);
             #endregion
 
             #region Cleanup
@@ -138,7 +138,7 @@ namespace Kermalis.PokemonBattleEngineTests.Moves
 
             battle.RunTurn();
 
-            Assert.True(TestUtils.VerifyStatus2Happened(battle, mienshao, lucario, PBEStatus2.Protected, PBEStatusAction.Damage) && !mienshao.Status2.HasFlag(PBEStatus2.Protected));
+            Assert.True(battle.VerifyStatus2Happened(mienshao, lucario, PBEStatus2.Protected, PBEStatusAction.Damage) && !mienshao.Status2.HasFlag(PBEStatus2.Protected));
             #endregion
 
             #region Cleanup
@@ -177,7 +177,7 @@ namespace Kermalis.PokemonBattleEngineTests.Moves
 
             battle.RunTurn();
 
-            Assert.True(TestUtils.VerifyTeamStatusHappened(battle, t0.Team, teamStatus, PBETeamStatusAction.Damage, damageVictim: mienshao) && !t0.Team.TeamStatus.HasFlag(teamStatus));
+            Assert.True(battle.VerifyTeamStatusHappened(t0.Team, teamStatus, PBETeamStatusAction.Damage, damageVictim: mienshao) && !t0.Team.TeamStatus.HasFlag(teamStatus));
             #endregion
 
             #region Cleanup

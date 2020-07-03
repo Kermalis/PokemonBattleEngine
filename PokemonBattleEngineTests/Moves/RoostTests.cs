@@ -64,7 +64,7 @@ namespace Kermalis.PokemonBattleEngineTests.Moves
 
             battle.RunTurn();
 
-            Assert.True(!TestUtils.VerifyMoveResult(battle, lucario, rooster, PBEResult.Ineffective_Type) // Earthquake hit
+            Assert.True(!battle.VerifyMoveResult(lucario, rooster, PBEResult.Ineffective_Type) // Earthquake hit
                 && !rooster.Status2.HasFlag(PBEStatus2.Roost) // Roost ended properly
                 && rooster.Type1 == type1 && rooster.Type2 == type2 // Types restored properly
                 && rooster.KnownType1 == type1 && rooster.KnownType2 == type2);

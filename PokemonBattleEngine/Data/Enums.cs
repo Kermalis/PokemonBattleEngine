@@ -1227,7 +1227,7 @@ namespace Kermalis.PokemonBattleEngine.Data
         Infiltrator = 151, // TODO
         InnerFocus = 39,
         Insomnia = 15,
-        Intimidate = 22, // TODO (Also, does this activate when given/taken?)
+        Intimidate = 22,
         IronBarbs = 160,
         /// <summary>The power of moves with <see cref="PBEMoveFlag.AffectedByIronFist"/> is increased.</summary>
         IronFist = 89,

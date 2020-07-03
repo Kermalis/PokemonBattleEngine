@@ -67,7 +67,7 @@ namespace Kermalis.PokemonBattleEngineTests.Moves
 
             battle.RunTurn();
 
-            Assert.True(TestUtils.VerifyStatus2Happened(battle, giratina, minun, PBEStatus2.HelpingHand, PBEStatusAction.Added));
+            Assert.True(battle.VerifyStatus2Happened(giratina, minun, PBEStatus2.HelpingHand, PBEStatusAction.Added));
             #endregion
 
             #region Cleanup

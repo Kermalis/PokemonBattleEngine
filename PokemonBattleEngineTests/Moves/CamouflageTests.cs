@@ -94,7 +94,7 @@ namespace Kermalis.PokemonBattleEngineTests.Moves
 
             battle.RunTurn();
 
-            Assert.True(TestUtils.VerifyMoveResult(battle, staryu, staryu, PBEResult.InvalidConditions));
+            Assert.True(battle.VerifyMoveResult(staryu, staryu, PBEResult.InvalidConditions));
             #endregion
 
             #region Cleanup

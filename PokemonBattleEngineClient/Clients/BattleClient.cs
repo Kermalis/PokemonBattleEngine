@@ -185,6 +185,7 @@ namespace Kermalis.PokemonBattleEngineClient.Clients
                             break;
                         }
                         case PBEAbility.Download:
+                        case PBEAbility.Intimidate:
                         {
                             switch (ap.AbilityAction)
                             {
