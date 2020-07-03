@@ -2,7 +2,6 @@ Aftermath
 Analytic
 AngerPoint
 ArenaTrap
-BigPecks
 CursedBody
 Damp
 Defiant
@@ -16,7 +15,6 @@ Harvest
 HeavyMetal
 Hydration
 Infiltrator
-KeenEye
 Klutz
 LightMetal
 Lightningrod

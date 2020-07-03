@@ -1166,7 +1166,7 @@ namespace Kermalis.PokemonBattleEngine.Data
         BadDreams = 123,
         /// <summary>The Pokémon takes no critical hits.</summary>
         BattleArmor = 4,
-        BigPecks = 145, // TODO
+        BigPecks = 145,
         /// <summary>When the Pokémon has low HP, its Fire-type moves get a power boost.</summary>
         Blaze = 66,
         /// <summary>The Pokémon gets a speed boost in harsh sunlight.</summary>
@@ -1232,7 +1232,7 @@ namespace Kermalis.PokemonBattleEngine.Data
         /// <summary>The power of moves with <see cref="PBEMoveFlag.AffectedByIronFist"/> is increased.</summary>
         IronFist = 89,
         Justified = 154,
-        KeenEye = 51, // TODO
+        KeenEye = 51,
         Klutz = 103, // TODO
         LeafGuard = 102,
         /// <summary>The Pokémon is immune to Ground-type moves and most entry hazards.</summary>

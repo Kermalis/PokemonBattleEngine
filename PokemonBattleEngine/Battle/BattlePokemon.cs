@@ -676,6 +676,15 @@ namespace Kermalis.PokemonBattleEngine.Battle
             {
                 switch (useKnownInfo ? KnownAbility : Ability)
                 {
+                    case PBEAbility.BigPecks:
+                    {
+                        if (change < 0 && stat == PBEStat.Defense)
+                        {
+                            newValue = oldValue;
+                            return PBEResult.Ineffective_Ability;
+                        }
+                        break;
+                    }
                     case PBEAbility.ClearBody:
                     case PBEAbility.WhiteSmoke:
                     {
@@ -690,6 +699,15 @@ namespace Kermalis.PokemonBattleEngine.Battle
                     case PBEAbility.HyperCutter:
                     {
                         if (change < 0 && stat == PBEStat.Attack)
+                        {
+                            newValue = oldValue;
+                            return PBEResult.Ineffective_Ability;
+                        }
+                        break;
+                    }
+                    case PBEAbility.KeenEye:
+                    {
+                        if (change < 0 && stat == PBEStat.Accuracy)
                         {
                             newValue = oldValue;
                             return PBEResult.Ineffective_Ability;

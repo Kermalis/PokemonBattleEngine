@@ -147,6 +147,15 @@ namespace Kermalis.PokemonBattleEngineClient.Clients
                             }
                             break;
                         }
+                        case PBEAbility.BigPecks:
+                        {
+                            switch (ap.AbilityAction)
+                            {
+                                case PBEAbilityAction.Stats: message = $"{{0}}'s {PBELocalizedString.GetStatName(PBEStat.Defense).English} was not lowered!"; break;
+                                default: throw new ArgumentOutOfRangeException(nameof(ap.AbilityAction));
+                            }
+                            break;
+                        }
                         case PBEAbility.ClearBody:
                         case PBEAbility.WhiteSmoke:
                         {
@@ -264,6 +273,15 @@ namespace Kermalis.PokemonBattleEngineClient.Clients
                             switch (ap.AbilityAction)
                             {
                                 case PBEAbilityAction.Damage: message = "{0}'s {2} activated!"; break;
+                                default: throw new ArgumentOutOfRangeException(nameof(ap.AbilityAction));
+                            }
+                            break;
+                        }
+                        case PBEAbility.KeenEye:
+                        {
+                            switch (ap.AbilityAction)
+                            {
+                                case PBEAbilityAction.Stats: message = $"{{0}}'s {PBELocalizedString.GetStatName(PBEStat.Accuracy).English} was not lowered!"; break;
                                 default: throw new ArgumentOutOfRangeException(nameof(ap.AbilityAction));
                             }
                             break;
