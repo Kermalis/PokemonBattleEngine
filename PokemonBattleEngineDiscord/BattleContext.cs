@@ -765,6 +765,15 @@ namespace Kermalis.PokemonBattleEngineDiscord
                             }
                             break;
                         }
+                        case PBEAbility.HyperCutter:
+                        {
+                            switch (ap.AbilityAction)
+                            {
+                                case PBEAbilityAction.Stats: message = $"{{0}}'s {PBELocalizedString.GetStatName(PBEStat.Attack).English} was not lowered!"; break;
+                                default: throw new ArgumentOutOfRangeException(nameof(ap.AbilityAction));
+                            }
+                            break;
+                        }
                         case PBEAbility.IceBody:
                         case PBEAbility.RainDish:
                         {

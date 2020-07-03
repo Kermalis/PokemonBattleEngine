@@ -687,6 +687,15 @@ namespace Kermalis.PokemonBattleEngine.Battle
                         break;
                     }
                     case PBEAbility.Contrary: change *= -1; break;
+                    case PBEAbility.HyperCutter:
+                    {
+                        if (change < 0 && stat == PBEStat.Attack)
+                        {
+                            newValue = oldValue;
+                            return PBEResult.Ineffective_Ability;
+                        }
+                        break;
+                    }
                     case PBEAbility.Simple: change *= 2; break;
                 }
             }

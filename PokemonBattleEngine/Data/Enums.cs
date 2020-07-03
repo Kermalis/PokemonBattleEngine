@@ -1215,7 +1215,7 @@ namespace Kermalis.PokemonBattleEngine.Data
         /// <summary>The Pokémon's attack is boosted, but its accuracy is lower for physical moves.</summary>
         Hustle = 55,
         Hydration = 93, // TODO
-        HyperCutter = 52, // TODO
+        HyperCutter = 52,
         /// <summary>In a hailstorm, the Pokémon takes no damage from the hailstorm and restores HP at the end of each turn.</summary>
         IceBody = 115,
         /// <summary>No effect in battle.</summary>

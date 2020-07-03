@@ -16,7 +16,6 @@ Gluttony
 Harvest
 HeavyMetal
 Hydration
-HyperCutter
 Infiltrator
 KeenEye
 Klutz
