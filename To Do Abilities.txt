@@ -7,7 +7,6 @@ CursedBody
 Damp
 Defiant
 DrySkin
-FlareBoost
 FlashFire
 Forewarn
 FriendGuard

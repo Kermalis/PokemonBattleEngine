@@ -1193,7 +1193,7 @@ namespace Kermalis.PokemonBattleEngine.Data
         /// <summary>The Pokémon takes less damage from incoming super-effective moves.</summary>
         Filter = 111,
         FlameBody = 49,
-        FlareBoost = 138, // TODO
+        FlareBoost = 138,
         FlashFire = 18, // TODO
         FlowerGift = 122,
         Forecast = 59,

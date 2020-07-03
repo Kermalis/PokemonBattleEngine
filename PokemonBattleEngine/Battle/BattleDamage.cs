@@ -278,15 +278,11 @@ namespace Kermalis.PokemonBattleEngine.Battle
             }
             #endregion
 
-            #region Ability/Item-specific power boosts
+            #region Item-specific power boosts
             switch (moveType)
             {
                 case PBEType.Bug:
                 {
-                    if (user.Ability == PBEAbility.Swarm && user.HP <= user.MaxHP / 3)
-                    {
-                        basePower *= 1.5;
-                    }
                     switch (user.Item)
                     {
                         case PBEItem.InsectPlate:
@@ -792,6 +788,10 @@ namespace Kermalis.PokemonBattleEngine.Battle
             {
                 basePower *= 1.5;
             }
+            if (user.Ability == PBEAbility.FlareBoost && mData.Category == PBEMoveCategory.Special && user.Status1 == PBEStatus1.Burned)
+            {
+                basePower *= 1.5;
+            }
             if (user.Ability == PBEAbility.ToxicBoost && mData.Category == PBEMoveCategory.Physical && (user.Status1 == PBEStatus1.Poisoned || user.Status1 == PBEStatus1.BadlyPoisoned))
             {
                 basePower *= 1.5;
@@ -926,6 +926,10 @@ namespace Kermalis.PokemonBattleEngine.Battle
             {
                 attack *= 2.0;
             }
+            if (moveType == PBEType.Bug && user.Ability == PBEAbility.Swarm && user.HP <= user.MaxHP / 3)
+            {
+                attack *= 1.5;
+            }
             if (moveType == PBEType.Fire && user.Ability == PBEAbility.Blaze && user.HP <= user.MaxHP / 3)
             {
                 attack *= 1.5;
@@ -999,6 +1003,10 @@ namespace Kermalis.PokemonBattleEngine.Battle
             if (user.Item == PBEItem.LightBall && user.OriginalSpecies == PBESpecies.Pikachu)
             {
                 spAttack *= 2.0;
+            }
+            if (moveType == PBEType.Bug && user.Ability == PBEAbility.Swarm && user.HP <= user.MaxHP / 3)
+            {
+                spAttack *= 1.5;
             }
             if (moveType == PBEType.Fire && user.Ability == PBEAbility.Blaze && user.HP <= user.MaxHP / 3)
             {
