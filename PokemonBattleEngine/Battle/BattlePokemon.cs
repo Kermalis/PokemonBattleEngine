@@ -883,6 +883,10 @@ namespace Kermalis.PokemonBattleEngine.Battle
         {
             return TempLockedMove == PBEMove.None;
         }
+        public bool CanHitThroughSafeguard()
+        {
+            return Ability == PBEAbility.Infiltrator;
+        }
         public PBEResult IsAttractionPossible(PBEBattlePokemon causer, bool useKnownInfo = false, bool ignoreCurrentStatus = false)
         {
             if (causer == null)
@@ -921,7 +925,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
             {
                 return PBEResult.Ineffective_Status;
             }
-            if (!ignoreSafeguard && Team.TeamStatus.HasFlag(PBETeamStatus.Safeguard))
+            if (!ignoreSafeguard && other?.CanHitThroughSafeguard() == true && Team.TeamStatus.HasFlag(PBETeamStatus.Safeguard))
             {
                 return PBEResult.Ineffective_Safeguard;
             }
@@ -947,7 +951,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
             {
                 return PBEResult.Ineffective_Status;
             }
-            if (!ignoreSafeguard && Team.TeamStatus.HasFlag(PBETeamStatus.Safeguard))
+            if (!ignoreSafeguard && other?.CanHitThroughSafeguard() == true && Team.TeamStatus.HasFlag(PBETeamStatus.Safeguard))
             {
                 return PBEResult.Ineffective_Safeguard;
             }
@@ -969,7 +973,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
             {
                 return PBEResult.Ineffective_Status;
             }
-            if (!ignoreSafeguard && Team.TeamStatus.HasFlag(PBETeamStatus.Safeguard))
+            if (!ignoreSafeguard && other?.CanHitThroughSafeguard() == true && Team.TeamStatus.HasFlag(PBETeamStatus.Safeguard))
             {
                 return PBEResult.Ineffective_Safeguard;
             }
@@ -1057,7 +1061,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
             {
                 return PBEResult.Ineffective_Status;
             }
-            if (!ignoreSafeguard && Team.TeamStatus.HasFlag(PBETeamStatus.Safeguard))
+            if (!ignoreSafeguard && other?.CanHitThroughSafeguard() == true && Team.TeamStatus.HasFlag(PBETeamStatus.Safeguard))
             {
                 return PBEResult.Ineffective_Safeguard;
             }
@@ -1079,7 +1083,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
             {
                 return PBEResult.Ineffective_Status;
             }
-            if (!ignoreSafeguard && Team.TeamStatus.HasFlag(PBETeamStatus.Safeguard))
+            if (!ignoreSafeguard && other?.CanHitThroughSafeguard() == true && Team.TeamStatus.HasFlag(PBETeamStatus.Safeguard))
             {
                 return PBEResult.Ineffective_Safeguard;
             }
@@ -1105,7 +1109,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
             {
                 return PBEResult.Ineffective_Status;
             }
-            if (!ignoreSafeguard && Team.TeamStatus.HasFlag(PBETeamStatus.Safeguard))
+            if (!ignoreSafeguard && other?.CanHitThroughSafeguard() == true && Team.TeamStatus.HasFlag(PBETeamStatus.Safeguard))
             {
                 return PBEResult.Ineffective_Safeguard;
             }

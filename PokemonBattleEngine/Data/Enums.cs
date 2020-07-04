@@ -1224,7 +1224,7 @@ namespace Kermalis.PokemonBattleEngine.Data
         Immunity = 17,
         /// <summary>The Pokémon transforms into the foe across from it when switching in.</summary>
         Imposter = 150,
-        Infiltrator = 151, // TODO
+        Infiltrator = 151, // TODO: Mist
         InnerFocus = 39,
         Insomnia = 15,
         Intimidate = 22,
@@ -2669,7 +2669,7 @@ namespace Kermalis.PokemonBattleEngine.Data
         MirrorCoat = 243, // TODO
         MirrorMove = 119, // TODO
         MirrorShot = 429,
-        Mist = 54, // TODO
+        Mist = 54, // TODO & TODO: Infiltrator
         MistBall = 296,
         Moonlight = 236,
         MorningSun = 234,

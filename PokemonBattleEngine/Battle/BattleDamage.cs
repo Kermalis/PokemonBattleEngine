@@ -848,7 +848,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                     damageMultiplier *= 1.5;
                 }
             }
-            else
+            else if (user.Ability != PBEAbility.Infiltrator)
             {
                 if ((target.Team.TeamStatus.HasFlag(PBETeamStatus.Reflect) && mData.Category == PBEMoveCategory.Physical)
                     || (target.Team.TeamStatus.HasFlag(PBETeamStatus.LightScreen) && mData.Category == PBEMoveCategory.Special))
