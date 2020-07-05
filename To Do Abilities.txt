@@ -25,7 +25,6 @@ Moxie
 Multiscale
 Pickpocket
 Pickup
-PoisonHeal
 PoisonTouch
 Pressure
 Rivalry

@@ -202,6 +202,21 @@ namespace Kermalis.PokemonBattleEngineTests
             }
             return false;
         }
+        public static bool VerifyStatus1Happened(this PBEBattle battle, PBEBattlePokemon status1Receiver, PBEBattlePokemon pokemon2, PBEStatus1 status1, PBEStatusAction statusAction)
+        {
+            foreach (IPBEPacket packet in battle.Events)
+            {
+                if (packet is PBEStatus1Packet s1p
+                    && s1p.Status1 == status1
+                    && s1p.StatusAction == statusAction
+                    && s1p.Status1ReceiverTrainer.TryGetPokemon(s1p.Status1Receiver) == status1Receiver
+                    && s1p.Pokemon2Trainer.TryGetPokemon(s1p.Pokemon2) == pokemon2)
+                {
+                    return true;
+                }
+            }
+            return false;
+        }
         public static bool VerifyStatus2Happened(this PBEBattle battle, PBEBattlePokemon status2Receiver, PBEBattlePokemon pokemon2, PBEStatus2 status2, PBEStatusAction statusAction)
         {
             foreach (IPBEPacket packet in battle.Events)

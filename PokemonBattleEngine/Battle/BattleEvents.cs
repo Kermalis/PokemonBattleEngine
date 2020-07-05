@@ -433,6 +433,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                             break;
                         }
                         case PBEAbility.IceBody:
+                        case PBEAbility.PoisonHeal:
                         case PBEAbility.RainDish:
                         {
                             switch (ap.AbilityAction)

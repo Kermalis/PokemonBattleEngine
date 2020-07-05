@@ -784,6 +784,7 @@ namespace Kermalis.PokemonBattleEngineDiscord
                             break;
                         }
                         case PBEAbility.IceBody:
+                        case PBEAbility.PoisonHeal:
                         case PBEAbility.RainDish:
                         {
                             switch (ap.AbilityAction)

@@ -1270,7 +1270,7 @@ namespace Kermalis.PokemonBattleEngine.Data
         Pickpocket = 124, // TODO
         Pickup = 53, // TODO
         Plus = 57,
-        PoisonHeal = 90, // TODO
+        PoisonHeal = 90,
         PoisonPoint = 38,
         PoisonTouch = 143, // TODO
         Prankster = 158,

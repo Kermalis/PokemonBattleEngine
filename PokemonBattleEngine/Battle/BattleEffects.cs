@@ -386,19 +386,16 @@ namespace Kermalis.PokemonBattleEngine.Battle
                     {
                         case PBEItem.BlackSludge:
                         {
-                            if (pkmn.HasType(PBEType.Poison))
-                            {
-                                if (pkmn.HP < pkmn.MaxHP)
-                                {
-                                    BroadcastItem(pkmn, pkmn, pkmn.Item, PBEItemAction.RestoredHP);
-                                    HealDamage(pkmn, pkmn.MaxHP / Settings.BlackSludgeHealDenominator);
-                                }
-                            }
-                            else
+                            if (!pkmn.HasType(PBEType.Poison))
                             {
                                 BroadcastItem(pkmn, pkmn, pkmn.Item, PBEItemAction.Damage);
                                 DealDamage(pkmn, pkmn, pkmn.MaxHP / Settings.BlackSludgeDamageDenominator, true);
                                 FaintCheck(pkmn); // No need to call HealingBerryCheck() because if you are holding BlackSludge you are not holding a healing berry
+                            }
+                            else if (pkmn.HP < pkmn.MaxHP)
+                            {
+                                BroadcastItem(pkmn, pkmn, pkmn.Item, PBEItemAction.RestoredHP);
+                                HealDamage(pkmn, pkmn.MaxHP / Settings.BlackSludgeHealDenominator);
                             }
                             break;
                         }
@@ -415,7 +412,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                 }
             }
 
-            // Verified: LeechSeed before Status1
+            // Verified: LeechSeed before Status1/PoisonHeal
             foreach (PBEBattlePokemon pkmn in order)
             {
                 if (pkmn.HP > 0 && pkmn.Status2.HasFlag(PBEStatus2.LeechSeed))
@@ -434,16 +431,42 @@ namespace Kermalis.PokemonBattleEngine.Battle
                 }
             }
 
-            // Verified: Status1 before Curse
+            // Verified: Status1/PoisonHeal before Curse
             foreach (PBEBattlePokemon pkmn in order)
             {
                 if (pkmn.HP > 0)
                 {
                     switch (pkmn.Status1)
                     {
+                        case PBEStatus1.BadlyPoisoned:
+                        case PBEStatus1.Poisoned:
+                        {
+                            if (pkmn.Ability != PBEAbility.PoisonHeal)
+                            {
+                                BroadcastStatus1(pkmn, pkmn, pkmn.Status1, PBEStatusAction.Damage);
+                                int damage = pkmn.Status1 == PBEStatus1.BadlyPoisoned
+                                    ? pkmn.MaxHP * pkmn.Status1Counter / Settings.ToxicDamageDenominator
+                                    : pkmn.MaxHP / Settings.PoisonDamageDenominator;
+                                DealDamage(pkmn, pkmn, damage, true);
+                                if (!FaintCheck(pkmn))
+                                {
+                                    LowHPBerryCheck(pkmn);
+                                }
+                            }
+                            else if (pkmn.HP < pkmn.MaxHP)
+                            {
+                                BroadcastAbility(pkmn, pkmn, PBEAbility.PoisonHeal, PBEAbilityAction.RestoredHP);
+                                HealDamage(pkmn, pkmn.MaxHP / 8);
+                            }
+                            if (pkmn.Status1 == PBEStatus1.BadlyPoisoned)
+                            {
+                                pkmn.Status1Counter++; // Counter still increments if PoisonHeal exists
+                            }
+                            break;
+                        }
                         case PBEStatus1.Burned:
                         {
-                            BroadcastStatus1(pkmn, pkmn, PBEStatus1.Burned, PBEStatusAction.Damage);
+                            BroadcastStatus1(pkmn, pkmn, pkmn.Status1, PBEStatusAction.Damage);
                             int damage = pkmn.MaxHP / Settings.BurnDamageDenominator;
                             if (pkmn.Ability == PBEAbility.Heatproof)
                             {
@@ -452,27 +475,6 @@ namespace Kermalis.PokemonBattleEngine.Battle
                             DealDamage(pkmn, pkmn, damage, true);
                             if (!FaintCheck(pkmn))
                             {
-                                LowHPBerryCheck(pkmn);
-                            }
-                            break;
-                        }
-                        case PBEStatus1.Poisoned:
-                        {
-                            BroadcastStatus1(pkmn, pkmn, PBEStatus1.Poisoned, PBEStatusAction.Damage);
-                            DealDamage(pkmn, pkmn, pkmn.MaxHP / Settings.PoisonDamageDenominator, true);
-                            if (!FaintCheck(pkmn))
-                            {
-                                LowHPBerryCheck(pkmn);
-                            }
-                            break;
-                        }
-                        case PBEStatus1.BadlyPoisoned:
-                        {
-                            BroadcastStatus1(pkmn, pkmn, PBEStatus1.BadlyPoisoned, PBEStatusAction.Damage);
-                            DealDamage(pkmn, pkmn, pkmn.MaxHP * pkmn.Status1Counter / Settings.ToxicDamageDenominator, true);
-                            if (!FaintCheck(pkmn))
-                            {
-                                pkmn.Status1Counter++;
                                 LowHPBerryCheck(pkmn);
                             }
                             break;
