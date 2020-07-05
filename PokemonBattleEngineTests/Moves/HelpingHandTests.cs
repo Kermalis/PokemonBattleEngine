@@ -74,5 +74,43 @@ namespace Kermalis.PokemonBattleEngineTests.Moves
             battle.OnNewEvent -= PBEBattle.ConsoleBattleEventHandler;
             #endregion
         }
+
+        [Fact]
+        public void HelpingHand_Fails_If_Self()
+        {
+            #region Setup
+            PBERandom.SetSeed(0);
+            PBESettings settings = PBESettings.DefaultSettings;
+
+            var p0 = new TestPokemonCollection(1);
+            p0[0] = new TestPokemon(settings, PBESpecies.Minun, 0, 100, PBEMove.HelpingHand);
+
+            var p1 = new TestPokemonCollection(1);
+            p1[0] = new TestPokemon(settings, PBESpecies.Magikarp, 0, 100, PBEMove.Splash);
+
+            var battle = new PBEBattle(PBEBattleFormat.Single, settings, new PBETrainerInfo(p0, "Trainer 0"), new PBETrainerInfo(p1, "Trainer 1"));
+            battle.OnNewEvent += PBEBattle.ConsoleBattleEventHandler;
+            battle.Begin();
+
+            PBETrainer t0 = battle.Trainers[0];
+            PBETrainer t1 = battle.Trainers[1];
+            PBEBattlePokemon minun = t0.Party[0];
+            PBEBattlePokemon magikarp = t1.Party[0];
+            #endregion
+
+            #region Use Helping Hand and check
+            Assert.True(PBEBattle.SelectActionsIfValid(t0, new PBETurnAction(minun, PBEMove.HelpingHand, PBETurnTarget.AllyCenter)));
+            Assert.True(PBEBattle.SelectActionsIfValid(t1, new PBETurnAction(magikarp, PBEMove.Splash, PBETurnTarget.AllyCenter)));
+
+            battle.RunTurn();
+
+            Assert.True(battle.VerifyMoveResult(minun, minun, PBEResult.NoTarget) // Fail
+                && !minun.Status2.HasFlag(PBEStatus2.HelpingHand)); // No status
+            #endregion
+
+            #region Cleanup
+            battle.OnNewEvent -= PBEBattle.ConsoleBattleEventHandler;
+            #endregion
+        }
     }
 }
