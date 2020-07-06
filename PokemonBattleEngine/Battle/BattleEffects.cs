@@ -13,7 +13,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
 
         private void DoSwitchInEffects(IEnumerable<PBEBattlePokemon> battlers, PBEBattlePokemon forcedInBy = null)
         {
-            PBEBattlePokemon[] order = GetActingOrder(battlers, true);
+            IEnumerable<PBEBattlePokemon> order = GetActingOrder(battlers, true);
 
             foreach (PBEBattlePokemon pkmn in order)
             {
@@ -238,12 +238,12 @@ namespace Kermalis.PokemonBattleEngine.Battle
             {
                 BroadcastItem(user, user, PBEItem.LifeOrb, PBEItemAction.Damage);
                 DealDamage(user, user, user.MaxHP / 10, true);
-                FaintCheck(user);
+                FaintCheck(user); // No berry check because we are holding Life Orb
             }
         }
         private void DoTurnEndedEffects()
         {
-            PBEBattlePokemon[] order = GetActingOrder(ActiveBattlers, true);
+            IEnumerable<PBEBattlePokemon> order = GetActingOrder(ActiveBattlers, true);
             // Verified: Weather stops before doing damage
             if (Weather != PBEWeather.None && WeatherCounter > 0)
             {
@@ -261,76 +261,77 @@ namespace Kermalis.PokemonBattleEngine.Battle
             {
                 foreach (PBEBattlePokemon pkmn in order)
                 {
-                    if (pkmn.HP > 0)
+                    if (pkmn.HP == 0)
                     {
-                        switch (Weather)
+                        continue;
+                    }
+                    switch (Weather)
+                    {
+                        case PBEWeather.Hailstorm:
                         {
-                            case PBEWeather.Hailstorm:
+                            if (pkmn.Ability == PBEAbility.IceBody)
                             {
-                                if (pkmn.Ability == PBEAbility.IceBody)
-                                {
-                                    if (pkmn.HP < pkmn.MaxHP)
-                                    {
-                                        BroadcastAbility(pkmn, pkmn, pkmn.Ability, PBEAbilityAction.RestoredHP);
-                                        HealDamage(pkmn, pkmn.MaxHP / Settings.IceBodyHealDenominator);
-                                    }
-                                }
-                                else if (!pkmn.HasType(PBEType.Ice)
-                                    && pkmn.Ability != PBEAbility.Overcoat
-                                    && pkmn.Ability != PBEAbility.SnowCloak)
-                                {
-                                    BroadcastWeather(PBEWeather.Hailstorm, PBEWeatherAction.CausedDamage, pkmn);
-                                    DealDamage(pkmn, pkmn, pkmn.MaxHP / Settings.HailDamageDenominator, true);
-                                    if (!FaintCheck(pkmn))
-                                    {
-                                        LowHPBerryCheck(pkmn);
-                                    }
-                                }
-                                break;
-                            }
-                            case PBEWeather.HarshSunlight:
-                            {
-                                if (pkmn.Ability == PBEAbility.SolarPower)
-                                {
-                                    BroadcastAbility(pkmn, pkmn, pkmn.Ability, PBEAbilityAction.Damage);
-                                    DealDamage(pkmn, pkmn, pkmn.MaxHP / 8, true);
-                                    if (!FaintCheck(pkmn))
-                                    {
-                                        LowHPBerryCheck(pkmn);
-                                    }
-                                }
-                                break;
-                            }
-                            case PBEWeather.Rain:
-                            {
-                                if (pkmn.Ability == PBEAbility.RainDish && pkmn.HP < pkmn.MaxHP)
+                                if (pkmn.HP < pkmn.MaxHP)
                                 {
                                     BroadcastAbility(pkmn, pkmn, pkmn.Ability, PBEAbilityAction.RestoredHP);
-                                    HealDamage(pkmn, pkmn.MaxHP / 16);
+                                    HealDamage(pkmn, pkmn.MaxHP / Settings.IceBodyHealDenominator);
                                 }
-                                break;
                             }
-                            case PBEWeather.Sandstorm:
+                            else if (!pkmn.HasType(PBEType.Ice)
+                                && pkmn.Ability != PBEAbility.Overcoat
+                                && pkmn.Ability != PBEAbility.SnowCloak)
                             {
-                                if (!pkmn.HasType(PBEType.Rock)
-                                    && !pkmn.HasType(PBEType.Ground)
-                                    && !pkmn.HasType(PBEType.Steel)
-                                    && pkmn.Ability != PBEAbility.Overcoat
-                                    && pkmn.Ability != PBEAbility.SandForce
-                                    && pkmn.Ability != PBEAbility.SandRush
-                                    && pkmn.Ability != PBEAbility.SandVeil
-                                    && !pkmn.Status2.HasFlag(PBEStatus2.Underground)
-                                    && !pkmn.Status2.HasFlag(PBEStatus2.Underwater))
+                                BroadcastWeather(PBEWeather.Hailstorm, PBEWeatherAction.CausedDamage, pkmn);
+                                DealDamage(pkmn, pkmn, pkmn.MaxHP / Settings.HailDamageDenominator, true);
+                                if (!FaintCheck(pkmn))
                                 {
-                                    BroadcastWeather(PBEWeather.Sandstorm, PBEWeatherAction.CausedDamage, pkmn);
-                                    DealDamage(pkmn, pkmn, pkmn.MaxHP / Settings.SandstormDamageDenominator, true);
-                                    if (!FaintCheck(pkmn))
-                                    {
-                                        LowHPBerryCheck(pkmn);
-                                    }
+                                    LowHPBerryCheck(pkmn);
                                 }
-                                break;
                             }
+                            break;
+                        }
+                        case PBEWeather.HarshSunlight:
+                        {
+                            if (pkmn.Ability == PBEAbility.SolarPower)
+                            {
+                                BroadcastAbility(pkmn, pkmn, pkmn.Ability, PBEAbilityAction.Damage);
+                                DealDamage(pkmn, pkmn, pkmn.MaxHP / 8, true);
+                                if (!FaintCheck(pkmn))
+                                {
+                                    LowHPBerryCheck(pkmn);
+                                }
+                            }
+                            break;
+                        }
+                        case PBEWeather.Rain:
+                        {
+                            if (pkmn.Ability == PBEAbility.RainDish && pkmn.HP < pkmn.MaxHP)
+                            {
+                                BroadcastAbility(pkmn, pkmn, pkmn.Ability, PBEAbilityAction.RestoredHP);
+                                HealDamage(pkmn, pkmn.MaxHP / 16);
+                            }
+                            break;
+                        }
+                        case PBEWeather.Sandstorm:
+                        {
+                            if (!pkmn.HasType(PBEType.Rock)
+                                && !pkmn.HasType(PBEType.Ground)
+                                && !pkmn.HasType(PBEType.Steel)
+                                && pkmn.Ability != PBEAbility.Overcoat
+                                && pkmn.Ability != PBEAbility.SandForce
+                                && pkmn.Ability != PBEAbility.SandRush
+                                && pkmn.Ability != PBEAbility.SandVeil
+                                && !pkmn.Status2.HasFlag(PBEStatus2.Underground)
+                                && !pkmn.Status2.HasFlag(PBEStatus2.Underwater))
+                            {
+                                BroadcastWeather(PBEWeather.Sandstorm, PBEWeatherAction.CausedDamage, pkmn);
+                                DealDamage(pkmn, pkmn, pkmn.MaxHP / Settings.SandstormDamageDenominator, true);
+                                if (!FaintCheck(pkmn))
+                                {
+                                    LowHPBerryCheck(pkmn);
+                                }
+                            }
+                            break;
                         }
                     }
                 }
@@ -339,75 +340,76 @@ namespace Kermalis.PokemonBattleEngine.Battle
             // Verified: Healer/ShedSkin/BlackSludge/Leftovers before LeechSeed
             foreach (PBEBattlePokemon pkmn in order)
             {
-                if (pkmn.HP > 0)
+                if (pkmn.HP == 0)
                 {
-                    switch (pkmn.Ability)
+                    continue;
+                }
+                switch (pkmn.Ability)
+                {
+                    case PBEAbility.Healer:
                     {
-                        case PBEAbility.Healer:
+                        foreach (PBEBattlePokemon ally in GetRuntimeSurrounding(pkmn, true, false))
                         {
-                            foreach (PBEBattlePokemon ally in GetRuntimeSurrounding(pkmn, true, false))
+                            // TODO: #265
+                            if (ally.Status1 != PBEStatus1.None && GetManipulableChance(pkmn, 30))
                             {
-                                // TODO: #265
-                                if (ally.Status1 != PBEStatus1.None && GetManipulableChance(pkmn, 30))
-                                {
-                                    BroadcastAbility(pkmn, ally, pkmn.Ability, PBEAbilityAction.ChangedStatus);
-                                    PBEStatus1 status1 = ally.Status1;
-                                    ally.Status1 = PBEStatus1.None;
-                                    ally.Status1Counter = 0;
-                                    ally.SleepTurns = 0;
-                                    BroadcastStatus1(ally, pkmn, status1, PBEStatusAction.Cleared);
-                                    if (status1 == PBEStatus1.Asleep)
-                                    {
-                                        CureNightmare(ally, pkmn);
-                                    }
-                                }
-                            }
-                            break;
-                        }
-                        case PBEAbility.ShedSkin:
-                        {
-                            if (pkmn.Status1 != PBEStatus1.None && GetManipulableChance(pkmn, 30))
-                            {
-                                BroadcastAbility(pkmn, pkmn, pkmn.Ability, PBEAbilityAction.ChangedStatus);
-                                PBEStatus1 status1 = pkmn.Status1;
-                                pkmn.Status1 = PBEStatus1.None;
-                                pkmn.Status1Counter = 0;
-                                pkmn.SleepTurns = 0;
-                                BroadcastStatus1(pkmn, pkmn, status1, PBEStatusAction.Cleared);
+                                BroadcastAbility(pkmn, ally, pkmn.Ability, PBEAbilityAction.ChangedStatus);
+                                PBEStatus1 status1 = ally.Status1;
+                                ally.Status1 = PBEStatus1.None;
+                                ally.Status1Counter = 0;
+                                ally.SleepTurns = 0;
+                                BroadcastStatus1(ally, pkmn, status1, PBEStatusAction.Cleared);
                                 if (status1 == PBEStatus1.Asleep)
                                 {
-                                    CureNightmare(pkmn, pkmn);
+                                    CureNightmare(ally, pkmn);
                                 }
                             }
-                            break;
                         }
+                        break;
                     }
-                    switch (pkmn.Item)
+                    case PBEAbility.ShedSkin:
                     {
-                        case PBEItem.BlackSludge:
+                        if (pkmn.Status1 != PBEStatus1.None && GetManipulableChance(pkmn, 30))
                         {
-                            if (!pkmn.HasType(PBEType.Poison))
+                            BroadcastAbility(pkmn, pkmn, pkmn.Ability, PBEAbilityAction.ChangedStatus);
+                            PBEStatus1 status1 = pkmn.Status1;
+                            pkmn.Status1 = PBEStatus1.None;
+                            pkmn.Status1Counter = 0;
+                            pkmn.SleepTurns = 0;
+                            BroadcastStatus1(pkmn, pkmn, status1, PBEStatusAction.Cleared);
+                            if (status1 == PBEStatus1.Asleep)
                             {
-                                BroadcastItem(pkmn, pkmn, pkmn.Item, PBEItemAction.Damage);
-                                DealDamage(pkmn, pkmn, pkmn.MaxHP / Settings.BlackSludgeDamageDenominator, true);
-                                FaintCheck(pkmn); // No need to call HealingBerryCheck() because if you are holding BlackSludge you are not holding a healing berry
+                                CureNightmare(pkmn, pkmn);
                             }
-                            else if (pkmn.HP < pkmn.MaxHP)
-                            {
-                                BroadcastItem(pkmn, pkmn, pkmn.Item, PBEItemAction.RestoredHP);
-                                HealDamage(pkmn, pkmn.MaxHP / Settings.BlackSludgeHealDenominator);
-                            }
-                            break;
                         }
-                        case PBEItem.Leftovers:
+                        break;
+                    }
+                }
+                switch (pkmn.Item)
+                {
+                    case PBEItem.BlackSludge:
+                    {
+                        if (!pkmn.HasType(PBEType.Poison))
                         {
-                            if (pkmn.HP < pkmn.MaxHP)
-                            {
-                                BroadcastItem(pkmn, pkmn, pkmn.Item, PBEItemAction.RestoredHP);
-                                HealDamage(pkmn, pkmn.MaxHP / Settings.LeftoversHealDenominator);
-                            }
-                            break;
+                            BroadcastItem(pkmn, pkmn, pkmn.Item, PBEItemAction.Damage);
+                            DealDamage(pkmn, pkmn, pkmn.MaxHP / Settings.BlackSludgeDamageDenominator, true);
+                            FaintCheck(pkmn); // No need to call HealingBerryCheck() because if you are holding BlackSludge you are not holding a healing berry
                         }
+                        else if (pkmn.HP < pkmn.MaxHP)
+                        {
+                            BroadcastItem(pkmn, pkmn, pkmn.Item, PBEItemAction.RestoredHP);
+                            HealDamage(pkmn, pkmn.MaxHP / Settings.BlackSludgeHealDenominator);
+                        }
+                        break;
+                    }
+                    case PBEItem.Leftovers:
+                    {
+                        if (pkmn.HP < pkmn.MaxHP)
+                        {
+                            BroadcastItem(pkmn, pkmn, pkmn.Item, PBEItemAction.RestoredHP);
+                            HealDamage(pkmn, pkmn.MaxHP / Settings.LeftoversHealDenominator);
+                        }
+                        break;
                     }
                 }
             }
@@ -415,70 +417,94 @@ namespace Kermalis.PokemonBattleEngine.Battle
             // Verified: LeechSeed before Status1/PoisonHeal
             foreach (PBEBattlePokemon pkmn in order)
             {
-                if (pkmn.HP > 0 && pkmn.Status2.HasFlag(PBEStatus2.LeechSeed))
+                if (pkmn.HP == 0 || !pkmn.Status2.HasFlag(PBEStatus2.LeechSeed))
                 {
-                    PBEBattlePokemon sucker = pkmn.SeededTeam.TryGetPokemon(pkmn.SeededPosition);
-                    if (sucker != null)
+                    continue;
+                }
+                PBEBattlePokemon sucker = pkmn.SeededTeam.TryGetPokemon(pkmn.SeededPosition);
+                if (sucker is null)
+                {
+                    continue;
+                }
+                BroadcastStatus2(pkmn, sucker, PBEStatus2.LeechSeed, PBEStatusAction.Damage);
+                int restoreAmt = DealDamage(sucker, pkmn, pkmn.MaxHP / Settings.LeechSeedDenominator, true, ignoreSturdy: true); // Verified: It does ignore Sturdy
+
+                // In the games, the pkmn faints after taking damage (before liquid ooze/heal)
+                // We cannot have it faint and then still broadcast ability like the games, similar to why we can't faint before Explosion
+                // The faint order should be maintained, though, so the correct winner can be chosen
+                ApplyBigRoot(pkmn, ref restoreAmt);
+                if (pkmn.Ability == PBEAbility.LiquidOoze)
+                {
+                    BroadcastAbility(pkmn, sucker, PBEAbility.LiquidOoze, PBEAbilityAction.Damage);
+                    DealDamage(pkmn, sucker, restoreAmt, true, ignoreSturdy: true); // Verified: It does ignore Sturdy
+                    if (!FaintCheck(pkmn))
                     {
-                        BroadcastStatus2(pkmn, sucker, PBEStatus2.LeechSeed, PBEStatusAction.Damage);
-                        int amtDealt = DealDamage(sucker, pkmn, pkmn.MaxHP / Settings.LeechSeedDenominator, true);
-                        HealDamage(sucker, amtDealt);
-                        if (!FaintCheck(pkmn))
-                        {
-                            LowHPBerryCheck(pkmn);
-                        }
+                        LowHPBerryCheck(pkmn);
                     }
+                    if (!FaintCheck(sucker))
+                    {
+                        LowHPBerryCheck(sucker);
+                    }
+                }
+                else
+                {
+                    if (!FaintCheck(pkmn))
+                    {
+                        LowHPBerryCheck(pkmn);
+                    }
+                    HealDamage(sucker, restoreAmt);
                 }
             }
 
             // Verified: Status1/PoisonHeal before Curse
             foreach (PBEBattlePokemon pkmn in order)
             {
-                if (pkmn.HP > 0)
+                if (pkmn.HP == 0)
                 {
-                    switch (pkmn.Status1)
+                    continue;
+                }
+                switch (pkmn.Status1)
+                {
+                    case PBEStatus1.BadlyPoisoned:
+                    case PBEStatus1.Poisoned:
                     {
-                        case PBEStatus1.BadlyPoisoned:
-                        case PBEStatus1.Poisoned:
-                        {
-                            if (pkmn.Ability != PBEAbility.PoisonHeal)
-                            {
-                                BroadcastStatus1(pkmn, pkmn, pkmn.Status1, PBEStatusAction.Damage);
-                                int damage = pkmn.Status1 == PBEStatus1.BadlyPoisoned
-                                    ? pkmn.MaxHP * pkmn.Status1Counter / Settings.ToxicDamageDenominator
-                                    : pkmn.MaxHP / Settings.PoisonDamageDenominator;
-                                DealDamage(pkmn, pkmn, damage, true);
-                                if (!FaintCheck(pkmn))
-                                {
-                                    LowHPBerryCheck(pkmn);
-                                }
-                            }
-                            else if (pkmn.HP < pkmn.MaxHP)
-                            {
-                                BroadcastAbility(pkmn, pkmn, PBEAbility.PoisonHeal, PBEAbilityAction.RestoredHP);
-                                HealDamage(pkmn, pkmn.MaxHP / 8);
-                            }
-                            if (pkmn.Status1 == PBEStatus1.BadlyPoisoned)
-                            {
-                                pkmn.Status1Counter++; // Counter still increments if PoisonHeal exists
-                            }
-                            break;
-                        }
-                        case PBEStatus1.Burned:
+                        if (pkmn.Ability != PBEAbility.PoisonHeal)
                         {
                             BroadcastStatus1(pkmn, pkmn, pkmn.Status1, PBEStatusAction.Damage);
-                            int damage = pkmn.MaxHP / Settings.BurnDamageDenominator;
-                            if (pkmn.Ability == PBEAbility.Heatproof)
-                            {
-                                damage /= 2;
-                            }
+                            int damage = pkmn.Status1 == PBEStatus1.BadlyPoisoned
+                                    ? pkmn.MaxHP * pkmn.Status1Counter / Settings.ToxicDamageDenominator
+                                    : pkmn.MaxHP / Settings.PoisonDamageDenominator;
                             DealDamage(pkmn, pkmn, damage, true);
                             if (!FaintCheck(pkmn))
                             {
                                 LowHPBerryCheck(pkmn);
                             }
-                            break;
                         }
+                        else if (pkmn.HP < pkmn.MaxHP)
+                        {
+                            BroadcastAbility(pkmn, pkmn, PBEAbility.PoisonHeal, PBEAbilityAction.RestoredHP);
+                            HealDamage(pkmn, pkmn.MaxHP / 8);
+                        }
+                        if (pkmn.Status1 == PBEStatus1.BadlyPoisoned)
+                        {
+                            pkmn.Status1Counter++; // Counter still increments if PoisonHeal exists
+                        }
+                        break;
+                    }
+                    case PBEStatus1.Burned:
+                    {
+                        BroadcastStatus1(pkmn, pkmn, pkmn.Status1, PBEStatusAction.Damage);
+                        int damage = pkmn.MaxHP / Settings.BurnDamageDenominator;
+                        if (pkmn.Ability == PBEAbility.Heatproof)
+                        {
+                            damage /= 2;
+                        }
+                        DealDamage(pkmn, pkmn, damage, true);
+                        if (!FaintCheck(pkmn))
+                        {
+                            LowHPBerryCheck(pkmn);
+                        }
+                        break;
                     }
                 }
             }
@@ -486,135 +512,139 @@ namespace Kermalis.PokemonBattleEngine.Battle
             // Verified: Nightmare before Curse, not same loop
             foreach (PBEBattlePokemon pkmn in order)
             {
-                if (pkmn.HP > 0 && pkmn.Status2.HasFlag(PBEStatus2.Nightmare))
+                if (pkmn.HP == 0 || !pkmn.Status2.HasFlag(PBEStatus2.Nightmare))
                 {
-                    BroadcastStatus2(pkmn, pkmn, PBEStatus2.Nightmare, PBEStatusAction.Damage);
-                    DealDamage(pkmn, pkmn, pkmn.MaxHP / 4, true);
-                    if (!FaintCheck(pkmn))
-                    {
-                        LowHPBerryCheck(pkmn);
-                    }
+                    continue;
+                }
+                BroadcastStatus2(pkmn, pkmn, PBEStatus2.Nightmare, PBEStatusAction.Damage);
+                DealDamage(pkmn, pkmn, pkmn.MaxHP / 4, true);
+                if (!FaintCheck(pkmn))
+                {
+                    LowHPBerryCheck(pkmn);
                 }
             }
 
             // Verified: Curse before MagnetRise
             foreach (PBEBattlePokemon pkmn in order)
             {
-                if (pkmn.HP > 0 && pkmn.Status2.HasFlag(PBEStatus2.Cursed))
+                if (pkmn.HP == 0 || !pkmn.Status2.HasFlag(PBEStatus2.Cursed))
                 {
-                    BroadcastStatus2(pkmn, pkmn, PBEStatus2.Cursed, PBEStatusAction.Damage);
-                    DealDamage(pkmn, pkmn, pkmn.MaxHP / Settings.CurseDenominator, true);
-                    if (!FaintCheck(pkmn))
-                    {
-                        LowHPBerryCheck(pkmn);
-                    }
+                    continue;
+                }
+                BroadcastStatus2(pkmn, pkmn, PBEStatus2.Cursed, PBEStatusAction.Damage);
+                DealDamage(pkmn, pkmn, pkmn.MaxHP / Settings.CurseDenominator, true);
+                if (!FaintCheck(pkmn))
+                {
+                    LowHPBerryCheck(pkmn);
                 }
             }
 
             // Verified: MagnetRise before Abilities/Orbs
             foreach (PBEBattlePokemon pkmn in order)
             {
-                if (pkmn.HP > 0 && pkmn.Status2.HasFlag(PBEStatus2.MagnetRise) && pkmn.MagnetRiseTurns > 0)
+                if (pkmn.HP == 0 || !pkmn.Status2.HasFlag(PBEStatus2.MagnetRise) || pkmn.MagnetRiseTurns == 0)
                 {
-                    pkmn.MagnetRiseTurns--;
-                    if (pkmn.MagnetRiseTurns == 0)
-                    {
-                        BroadcastStatus2(pkmn, pkmn, PBEStatus2.MagnetRise, PBEStatusAction.Ended);
-                    }
+                    continue;
+                }
+                pkmn.MagnetRiseTurns--;
+                if (pkmn.MagnetRiseTurns == 0)
+                {
+                    BroadcastStatus2(pkmn, pkmn, PBEStatus2.MagnetRise, PBEStatusAction.Ended);
                 }
             }
 
             // Verified: BadDreams/Moody/SlowStart/SpeedBoost before Orbs, but activate together
             foreach (PBEBattlePokemon pkmn in order)
             {
-                if (pkmn.HP > 0)
+                if (pkmn.HP == 0)
                 {
-                    // Ability before Orb
-                    switch (pkmn.Ability)
+                    continue;
+                }
+                // Ability before Orb
+                switch (pkmn.Ability)
+                {
+                    case PBEAbility.BadDreams:
                     {
-                        case PBEAbility.BadDreams:
+                        foreach (PBEBattlePokemon victim in GetRuntimeSurrounding(pkmn, false, true).Where(p => p.Status1 == PBEStatus1.Asleep))
                         {
-                            foreach (PBEBattlePokemon victim in GetRuntimeSurrounding(pkmn, false, true).Where(p => p.Status1 == PBEStatus1.Asleep))
+                            BroadcastAbility(pkmn, victim, PBEAbility.BadDreams, PBEAbilityAction.Damage);
+                            DealDamage(pkmn, victim, pkmn.MaxHP / 8, true);
+                            if (!FaintCheck(victim))
                             {
-                                BroadcastAbility(pkmn, victim, PBEAbility.BadDreams, PBEAbilityAction.Damage);
-                                DealDamage(pkmn, victim, pkmn.MaxHP / 8, true);
-                                if (!FaintCheck(victim))
-                                {
-                                    LowHPBerryCheck(victim);
-                                }
+                                LowHPBerryCheck(victim);
                             }
-                            break;
                         }
-                        case PBEAbility.Moody:
+                        break;
+                    }
+                    case PBEAbility.Moody:
+                    {
+                        PBEStat[] statsThatCanGoUp = PBEDataUtils.MoodyStats.Where(s => pkmn.GetStatChange(s) < Settings.MaxStatChange).ToArray();
+                        PBEStat? upStat = statsThatCanGoUp.Length == 0 ? (PBEStat?)null : statsThatCanGoUp.RandomElement();
+                        var statsThatCanGoDown = PBEDataUtils.MoodyStats.Where(s => pkmn.GetStatChange(s) > -Settings.MaxStatChange).ToList();
+                        if (upStat.HasValue)
                         {
-                            PBEStat[] statsThatCanGoUp = PBEDataUtils.MoodyStats.Where(s => pkmn.GetStatChange(s) < Settings.MaxStatChange).ToArray();
-                            PBEStat? upStat = statsThatCanGoUp.Length == 0 ? (PBEStat?)null : statsThatCanGoUp.RandomElement();
-                            var statsThatCanGoDown = PBEDataUtils.MoodyStats.Where(s => pkmn.GetStatChange(s) > -Settings.MaxStatChange).ToList();
+                            statsThatCanGoDown.Remove(upStat.Value);
+                        }
+                        PBEStat? downStat = statsThatCanGoDown.Count == 0 ? (PBEStat?)null : statsThatCanGoDown.RandomElement();
+                        if (upStat.HasValue || downStat.HasValue)
+                        {
+                            BroadcastAbility(pkmn, pkmn, pkmn.Ability, PBEAbilityAction.Stats);
                             if (upStat.HasValue)
                             {
-                                statsThatCanGoDown.Remove(upStat.Value);
+                                ApplyStatChangeIfPossible(pkmn, pkmn, upStat.Value, +2);
                             }
-                            PBEStat? downStat = statsThatCanGoDown.Count == 0 ? (PBEStat?)null : statsThatCanGoDown.RandomElement();
-                            if (upStat.HasValue || downStat.HasValue)
+                            if (downStat.HasValue)
                             {
-                                BroadcastAbility(pkmn, pkmn, pkmn.Ability, PBEAbilityAction.Stats);
-                                if (upStat.HasValue)
-                                {
-                                    ApplyStatChangeIfPossible(pkmn, pkmn, upStat.Value, +2);
-                                }
-                                if (downStat.HasValue)
-                                {
-                                    ApplyStatChangeIfPossible(pkmn, pkmn, downStat.Value, -1);
-                                }
+                                ApplyStatChangeIfPossible(pkmn, pkmn, downStat.Value, -1);
                             }
-                            break;
                         }
-                        case PBEAbility.SlowStart:
-                        {
-                            if (pkmn.SlowStart_HinderTurnsLeft > 0)
-                            {
-                                pkmn.SlowStart_HinderTurnsLeft--;
-                                if (pkmn.SlowStart_HinderTurnsLeft == 0)
-                                {
-                                    BroadcastAbility(pkmn, pkmn, PBEAbility.SlowStart, PBEAbilityAction.SlowStart_Ended);
-                                }
-                            }
-                            break;
-                        }
-                        case PBEAbility.SpeedBoost:
-                        {
-                            if (pkmn.SpeedBoost_AbleToSpeedBoostThisTurn && pkmn.SpeedChange < Settings.MaxStatChange)
-                            {
-                                BroadcastAbility(pkmn, pkmn, pkmn.Ability, PBEAbilityAction.Stats);
-                                ApplyStatChangeIfPossible(pkmn, pkmn, PBEStat.Speed, +1);
-                            }
-                            break;
-                        }
+                        break;
                     }
-                    // Orb
-                    switch (pkmn.Item)
+                    case PBEAbility.SlowStart:
                     {
-                        case PBEItem.FlameOrb:
+                        if (pkmn.SlowStart_HinderTurnsLeft > 0)
                         {
-                            if (pkmn.IsBurnPossible(null, ignoreSubstitute: true, ignoreSafeguard: true) == PBEResult.Success)
+                            pkmn.SlowStart_HinderTurnsLeft--;
+                            if (pkmn.SlowStart_HinderTurnsLeft == 0)
                             {
-                                pkmn.Status1 = PBEStatus1.Burned;
-                                BroadcastItem(pkmn, pkmn, pkmn.Item, PBEItemAction.ChangedStatus);
-                                BroadcastStatus1(pkmn, pkmn, PBEStatus1.Burned, PBEStatusAction.Added);
+                                BroadcastAbility(pkmn, pkmn, PBEAbility.SlowStart, PBEAbilityAction.SlowStart_Ended);
                             }
-                            break;
                         }
-                        case PBEItem.ToxicOrb:
+                        break;
+                    }
+                    case PBEAbility.SpeedBoost:
+                    {
+                        if (pkmn.SpeedBoost_AbleToSpeedBoostThisTurn && pkmn.SpeedChange < Settings.MaxStatChange)
                         {
-                            if (pkmn.IsPoisonPossible(null, ignoreSubstitute: true, ignoreSafeguard: true) == PBEResult.Success)
-                            {
-                                pkmn.Status1 = PBEStatus1.BadlyPoisoned;
-                                pkmn.Status1Counter = 1;
-                                BroadcastItem(pkmn, pkmn, pkmn.Item, PBEItemAction.ChangedStatus);
-                                BroadcastStatus1(pkmn, pkmn, PBEStatus1.BadlyPoisoned, PBEStatusAction.Added);
-                            }
-                            break;
+                            BroadcastAbility(pkmn, pkmn, pkmn.Ability, PBEAbilityAction.Stats);
+                            ApplyStatChangeIfPossible(pkmn, pkmn, PBEStat.Speed, +1);
                         }
+                        break;
+                    }
+                }
+                // Orb
+                switch (pkmn.Item)
+                {
+                    case PBEItem.FlameOrb:
+                    {
+                        if (pkmn.IsBurnPossible(null, ignoreSubstitute: true, ignoreSafeguard: true) == PBEResult.Success)
+                        {
+                            pkmn.Status1 = PBEStatus1.Burned;
+                            BroadcastItem(pkmn, pkmn, pkmn.Item, PBEItemAction.ChangedStatus);
+                            BroadcastStatus1(pkmn, pkmn, PBEStatus1.Burned, PBEStatusAction.Added);
+                        }
+                        break;
+                    }
+                    case PBEItem.ToxicOrb:
+                    {
+                        if (pkmn.IsPoisonPossible(null, ignoreSubstitute: true, ignoreSafeguard: true) == PBEResult.Success)
+                        {
+                            pkmn.Status1 = PBEStatus1.BadlyPoisoned;
+                            pkmn.Status1Counter = 1;
+                            BroadcastItem(pkmn, pkmn, pkmn.Item, PBEItemAction.ChangedStatus);
+                            BroadcastStatus1(pkmn, pkmn, PBEStatus1.BadlyPoisoned, PBEStatusAction.Added);
+                        }
+                        break;
                     }
                 }
             }
@@ -1312,7 +1342,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
         {
             CastformCherrimCheck(GetActingOrder(ActiveBattlers, true));
         }
-        private void CastformCherrimCheck(PBEBattlePokemon[] order)
+        private void CastformCherrimCheck(IEnumerable<PBEBattlePokemon> order)
         {
             foreach (PBEBattlePokemon pkmn in order)
             {
@@ -1649,6 +1679,13 @@ namespace Kermalis.PokemonBattleEngine.Battle
             }
         }
 
+        private void ApplyBigRoot(PBEBattlePokemon pkmn, ref int restoreAmt)
+        {
+            if (pkmn.Item == PBEItem.BigRoot)
+            {
+                restoreAmt += (int)(restoreAmt * 0.3);
+            }
+        }
         private void CureNightmare(PBEBattlePokemon wakingUp, PBEBattlePokemon pokemon2)
         {
             if (wakingUp.Status2.HasFlag(PBEStatus2.Nightmare))
@@ -2103,7 +2140,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                 beforeTargetsFaint?.Invoke();
                 foreach (PBEBattlePokemon target in targets)
                 {
-                    FaintCheck(target);
+                    FaintCheck(target); // TODO: Berry check?
                 }
             }
             if (user.HP > 0)
@@ -2150,7 +2187,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                 beforeTargetsFaint?.Invoke();
                 foreach (PBEBattlePokemon target in targets)
                 {
-                    FaintCheck(target);
+                    FaintCheck(target); // TODO: Berry check?
                 }
             }
             if (user.HP > 0)
@@ -3036,7 +3073,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
             {
                 BasicHit(user, targets, mData, hitRegardlessOfUserConciousness: true);
             }
-            FaintCheck(user);
+            FaintCheck(user); // No berry check because we are always fainted
             RecordExecutedMove(user, move, mData);
         }
         private void Ef_SmellingSalt(PBEBattlePokemon user, PBEBattlePokemon[] targets, PBEMove move, PBEMoveData mData)
@@ -3204,7 +3241,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                     if (user.HP > 0)
                     {
                         DealDamage(user, user, oldHP, true);
-                        FaintCheck(user);
+                        FaintCheck(user); // No berry check because we are always fainted
                     }
                     return oldHP;
                 }
@@ -3341,32 +3378,27 @@ namespace Kermalis.PokemonBattleEngine.Battle
                         BroadcastMoveResult(user, target, result);
                         return result;
                     }
-                    else
-                    {
-                        return PBEResult.Success;
-                    }
+                    return PBEResult.Success;
                 }
                 void AfterPostHit(PBEBattlePokemon target, ushort damageDealt)
                 {
                     if (user.HP > 0)
                     {
                         int restoreAmt = (int)(damageDealt * (mData.EffectParam / 100.0));
-                        if (user.Item == PBEItem.BigRoot)
-                        {
-                            restoreAmt += (int)(restoreAmt * 0.3);
-                        }
+                        // Read comment at Leech Seed logic for why we cannot faint here like the games do
+                        ApplyBigRoot(user, ref restoreAmt);
                         if (target.Ability == PBEAbility.LiquidOoze)
                         {
-                            DealDamage(target, user, restoreAmt, true, ignoreSturdy: true); // Verified: It does ignore Sturdy
                             BroadcastAbility(target, user, PBEAbility.LiquidOoze, PBEAbilityAction.Damage);
-                            FaintCheck(user);
-                        }
-                        else
-                        {
-                            if (HealDamage(user, restoreAmt) > 0)
+                            DealDamage(target, user, restoreAmt, true, ignoreSturdy: true); // Verified: It does ignore Sturdy
+                            if (!FaintCheck(user))
                             {
-                                BroadcastHPDrained(target);
+                                LowHPBerryCheck(user);
                             }
+                        }
+                        else if (HealDamage(user, restoreAmt) > 0)
+                        {
+                            BroadcastHPDrained(target);
                         }
                     }
                 }
@@ -3402,8 +3434,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                 {
                     if (!MissCheck(user, target, mData))
                     {
-                        ushort amtRestored = HealDamage(user, user.MaxHP / denominator);
-                        if (amtRestored == 0)
+                        if (HealDamage(user, user.MaxHP / denominator) == 0)
                         {
                             BroadcastMoveResult(user, user, PBEResult.Ineffective_Stat);
                         }
@@ -3510,8 +3541,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                         }
                         else
                         {
-                            ushort amtRestored = HealDamage(target, (int)(target.MaxHP * (mData.EffectParam / 100.0)));
-                            if (amtRestored == 0)
+                            if (HealDamage(target, (int)(target.MaxHP * (mData.EffectParam / 100.0))) == 0)
                             {
                                 BroadcastMoveResult(user, target, PBEResult.Ineffective_Stat);
                             }
@@ -3541,8 +3571,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                         }
                         else
                         {
-                            ushort amtRestored = HealDamage(target, (int)(target.MaxHP * (mData.EffectParam / 100.0)));
-                            if (amtRestored == 0)
+                            if (HealDamage(target, (int)(target.MaxHP * (mData.EffectParam / 100.0))) == 0)
                             {
                                 BroadcastMoveResult(user, target, PBEResult.Ineffective_Stat);
                             }

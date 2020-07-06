@@ -398,7 +398,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                 }
             }
         }
-        private PBEBattlePokemon[] GetActingOrder(IEnumerable<PBEBattlePokemon> pokemon, bool ignoreItemsThatActivate)
+        private IEnumerable<PBEBattlePokemon> GetActingOrder(IEnumerable<PBEBattlePokemon> pokemon, bool ignoreItemsThatActivate)
         {
             var evaluated = new List<(PBEBattlePokemon Pokemon, double Speed)>(); // TODO: Full Incense, Lagging Tail, Stall, Quick Claw
             foreach (PBEBattlePokemon pkmn in pokemon)
@@ -517,7 +517,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                 }
                 Debug.WriteLine(evaluated.Select(t => $"{t.Pokemon.Team.Id} {t.Pokemon.Nickname} {t.Speed}").Print());
             }
-            return evaluated.Select(t => t.Pokemon).ToArray();
+            return evaluated.Select(t => t.Pokemon);
         }
         private void DetermineTurnOrder()
         {

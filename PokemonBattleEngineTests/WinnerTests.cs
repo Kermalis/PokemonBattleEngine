@@ -45,7 +45,50 @@ namespace Kermalis.PokemonBattleEngineTests
 
             battle.RunTurn();
 
-            Assert.True(battle.Winner == battle.Teams[1]);
+            Assert.True(golem.HP == 0 && magikarp.HP == 0 // Both faint
+                && battle.Winner == battle.Teams[1]); // Magikarp's team wins
+            #endregion
+
+            #region Cleanup
+            battle.OnNewEvent -= PBEBattle.ConsoleBattleEventHandler;
+            #endregion
+        }
+
+        [Fact]
+        public void LeechSeed_And_LiquidOoze()
+        {
+            #region Setup
+            PBERandom.SetSeed(0); // Seed ensures LeechSeed doesn't miss
+            var settings = new PBESettings { LeechSeedDenominator = 1 };
+            settings.MakeReadOnly();
+
+            var p0 = new TestPokemonCollection(1);
+            p0[0] = new TestPokemon(settings, PBESpecies.Shroomish, 0, 1, PBEMove.LeechSeed);
+
+            var p1 = new TestPokemonCollection(1);
+            p1[0] = new TestPokemon(settings, PBESpecies.Tentacruel, 0, 100, PBEMove.Splash)
+            {
+                Ability = PBEAbility.LiquidOoze
+            };
+
+            var battle = new PBEBattle(PBEBattleFormat.Single, settings, new PBETrainerInfo(p0, "Trainer 0"), new PBETrainerInfo(p1, "Trainer 1"));
+            battle.OnNewEvent += PBEBattle.ConsoleBattleEventHandler;
+            battle.Begin();
+
+            PBETrainer t0 = battle.Trainers[0];
+            PBETrainer t1 = battle.Trainers[1];
+            PBEBattlePokemon shroomish = t0.Party[0];
+            PBEBattlePokemon tentacruel = t1.Party[0];
+            #endregion
+
+            #region Use LeechSeed and check
+            Assert.True(PBEBattle.SelectActionsIfValid(t0, new PBETurnAction(shroomish, PBEMove.LeechSeed, PBETurnTarget.FoeCenter)));
+            Assert.True(PBEBattle.SelectActionsIfValid(t1, new PBETurnAction(tentacruel, PBEMove.Splash, PBETurnTarget.AllyCenter)));
+
+            battle.RunTurn();
+
+            Assert.True(shroomish.HP == 0 && tentacruel.HP == 0 // Both fainted
+                && battle.Winner == battle.Teams[0]); // Shroomish's team wins
             #endregion
 
             #region Cleanup
