@@ -269,6 +269,12 @@ namespace Kermalis.PokemonBattleEngine.Battle
             }
             #endregion
 
+            // Technician goes before any other power boosts
+            if (user.Ability == PBEAbility.Technician && basePower <= 60)
+            {
+                basePower *= 1.5;
+            }
+
             #region Item-specific power boosts
             switch (moveType)
             {

@@ -1339,7 +1339,7 @@ namespace Kermalis.PokemonBattleEngine.Data
         SwiftSwim = 33,
         Synchronize = 28, // TODO
         TangledFeet = 77,
-        Technician = 101, // TODO
+        Technician = 101,
         Telepathy = 140, // TODO
         Teravolt = 164,
         /// <summary>The Pokémon takes less damage from Ice- and Fire-type moves.</summary>

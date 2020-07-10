@@ -39,7 +39,6 @@ StickyHold
 StormDrain
 SuctionCups
 Synchronize
-Technician
 Telepathy
 Trace
 Truant
