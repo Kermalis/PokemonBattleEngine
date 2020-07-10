@@ -884,7 +884,7 @@ namespace Kermalis.PokemonBattleEngine.Data
         }
         public const bool DefaultBugFix = false;
         private bool _bugFix = DefaultBugFix;
-        /// <summary>The minimum base power of <see cref="PBEMoveEffect.HiddenPower"/>.</summary>
+        /// <summary>Whether bugfixes should be applied or not.</summary>
         public bool BugFix
         {
             get => _bugFix;
