@@ -155,6 +155,7 @@ namespace Kermalis.PokemonBattleEngine.AI
                                     case PBEMoveEffect.HPDrain:
                                     case PBEMoveEffect.Judgment:
                                     case PBEMoveEffect.Magnitude:
+                                    case PBEMoveEffect.Payback:
                                     case PBEMoveEffect.PayDay:
                                     case PBEMoveEffect.Psyshock:
                                     case PBEMoveEffect.Punishment:

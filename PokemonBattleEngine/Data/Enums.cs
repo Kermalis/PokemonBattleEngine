@@ -2295,6 +2295,7 @@ namespace Kermalis.PokemonBattleEngine.Data
         OneHitKnockout,
         PainSplit,
         Paralyze,
+        Payback,
         PayDay,
         Poison,
         PowerTrick,
@@ -2694,7 +2695,7 @@ namespace Kermalis.PokemonBattleEngine.Data
         Outrage = 200, // TODO
         Overheat = 315,
         PainSplit = 220,
-        Payback = 371, // TODO
+        Payback = 371, // TODO: If the target used an item instead of a move
         PayDay = 6,
         Peck = 64,
         PerishSong = 195, // TODO

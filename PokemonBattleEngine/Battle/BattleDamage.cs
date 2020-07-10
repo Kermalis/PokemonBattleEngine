@@ -696,6 +696,14 @@ namespace Kermalis.PokemonBattleEngine.Battle
                     }
                     break;
                 }
+                case PBEMoveEffect.Payback:
+                {
+                    if (targets.Any(t => t.HasUsedMoveThisTurn))
+                    {
+                        basePower *= 2.0;
+                    }
+                    break;
+                }
                 case PBEMoveEffect.Retaliate:
                 {
                     if (user.Team.MonFaintedLastTurn)

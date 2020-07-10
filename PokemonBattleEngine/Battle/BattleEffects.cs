@@ -714,6 +714,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                 case PBEMoveEffect.Hit:
                 case PBEMoveEffect.Judgment:
                 case PBEMoveEffect.Magnitude:
+                case PBEMoveEffect.Payback:
                 case PBEMoveEffect.Psyshock:
                 case PBEMoveEffect.Punishment:
                 case PBEMoveEffect.Retaliate:
