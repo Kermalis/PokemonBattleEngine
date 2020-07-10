@@ -6,6 +6,7 @@ using System.IO;
 
 namespace Kermalis.PokemonBattleEngine.Data
 {
+#pragma warning disable CS0618 // Type or member is obsolete
     /// <summary>The various engine settings.</summary>
     public sealed class PBESettings : INotifyPropertyChanged
     {
@@ -881,6 +882,22 @@ namespace Kermalis.PokemonBattleEngine.Data
                 }
             }
         }
+        public const bool DefaultBugFix = false;
+        private bool _bugFix = DefaultBugFix;
+        /// <summary>The minimum base power of <see cref="PBEMoveEffect.HiddenPower"/>.</summary>
+        public bool BugFix
+        {
+            get => _bugFix;
+            set
+            {
+                ReadOnlyCheck();
+                if (_bugFix != value)
+                {
+                    _bugFix = value;
+                    OnPropertyChanged(nameof(BugFix));
+                }
+            }
+        }
 
         /// <summary>Creates a new <see cref="PBESettings"/> object where every setting is pre-set to the values used in official games.</summary>
         public PBESettings() { }
@@ -950,6 +967,7 @@ namespace Kermalis.PokemonBattleEngine.Data
             HeatRockTurnExtension = other._heatRockTurnExtension;
             HiddenPowerMax = other._hiddenPowerMax;
             HiddenPowerMin = other._hiddenPowerMin;
+            BugFix = other._bugFix;
         }
         internal PBESettings(EndianBinaryReader r)
         {
@@ -1018,6 +1036,9 @@ namespace Kermalis.PokemonBattleEngine.Data
                 hash = (hash * 31) + _smoothRockTurnExtension.GetHashCode();
                 hash = (hash * 31) + _sunTurns.GetHashCode();
                 hash = (hash * 31) + _heatRockTurnExtension.GetHashCode();
+                hash = (hash * 31) + _hiddenPowerMax.GetHashCode();
+                hash = (hash * 31) + _hiddenPowerMin.GetHashCode();
+                hash = (hash * 31) + _bugFix.GetHashCode();
                 return hash;
             }
         }
@@ -1088,7 +1109,8 @@ namespace Kermalis.PokemonBattleEngine.Data
                     && other._sunTurns.Equals(_sunTurns)
                     && other._heatRockTurnExtension.Equals(_heatRockTurnExtension)
                     && other._hiddenPowerMax.Equals(_hiddenPowerMax)
-                    && other._hiddenPowerMin.Equals(_hiddenPowerMin);
+                    && other._hiddenPowerMin.Equals(_hiddenPowerMin)
+                    && other._bugFix.Equals(_bugFix);
             }
             return false;
         }
@@ -1135,7 +1157,8 @@ namespace Kermalis.PokemonBattleEngine.Data
             SunTurns,
             HeatRockTurnExtension,
             HiddenPowerMax,
-            HiddenPowerMin
+            HiddenPowerMin,
+            BugFix
         }
 
         /// <summary>Converts this <see cref="PBESettings"/> object into a unique code <see cref="string"/>.</summary>
@@ -1397,6 +1420,12 @@ namespace Kermalis.PokemonBattleEngine.Data
                     w.Write(_hiddenPowerMin);
                     numChanged++;
                 }
+                if (_bugFix != DefaultBugFix)
+                {
+                    w.Write(PBESettingID.BugFix);
+                    w.Write(_bugFix);
+                    numChanged++;
+                }
                 data = ms.ToArray();
             }
             byte[] ret = new byte[data.Length + 2];
@@ -1453,9 +1482,11 @@ namespace Kermalis.PokemonBattleEngine.Data
                     case PBESettingID.HeatRockTurnExtension: HeatRockTurnExtension = r.ReadByte(); break;
                     case PBESettingID.HiddenPowerMax: HiddenPowerMax = r.ReadByte(); break;
                     case PBESettingID.HiddenPowerMin: HiddenPowerMin = r.ReadByte(); break;
+                    case PBESettingID.BugFix: BugFix = r.ReadBoolean(); break;
                     default: throw new InvalidDataException();
                 }
             }
         }
     }
+#pragma warning restore CS0618 // Type or member is obsolete
 }

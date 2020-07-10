@@ -104,7 +104,7 @@ namespace Kermalis.PokemonBattleEngineTests.Moves
 
             battle.RunTurn();
 
-            Assert.True(battle.VerifyMoveResult(minun, minun, PBEResult.NoTarget) // Fail
+            Assert.True(battle.VerifyMoveResultHappened(minun, minun, PBEResult.NoTarget) // Fail
                 && !minun.Status2.HasFlag(PBEStatus2.HelpingHand)); // No status
             #endregion
 

@@ -192,18 +192,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
         private static PBEBattlePokemon[] GetRuntimeTargets(PBEBattlePokemon user, PBETurnTarget requestedTargets, bool canHitFarCorners)
         {
             var targets = new List<PBEBattlePokemon>();
-            if (requestedTargets.HasFlag(PBETurnTarget.AllyLeft))
-            {
-                targets.Add(user.Team.TryGetPokemon(PBEFieldPosition.Left));
-            }
-            if (requestedTargets.HasFlag(PBETurnTarget.AllyCenter))
-            {
-                targets.Add(user.Team.TryGetPokemon(PBEFieldPosition.Center));
-            }
-            if (requestedTargets.HasFlag(PBETurnTarget.AllyRight))
-            {
-                targets.Add(user.Team.TryGetPokemon(PBEFieldPosition.Right));
-            }
+            // Foes first, then allies (since initial attack effects run that way)
             if (requestedTargets.HasFlag(PBETurnTarget.FoeLeft))
             {
                 PBEBattlePokemon pkmn = user.Team.OpposingTeam.TryGetPokemon(PBEFieldPosition.Left);
@@ -296,6 +285,18 @@ namespace Kermalis.PokemonBattleEngine.Battle
                     }
                 }
                 targets.Add(pkmn);
+            }
+            if (requestedTargets.HasFlag(PBETurnTarget.AllyLeft))
+            {
+                targets.Add(user.Team.TryGetPokemon(PBEFieldPosition.Left));
+            }
+            if (requestedTargets.HasFlag(PBETurnTarget.AllyCenter))
+            {
+                targets.Add(user.Team.TryGetPokemon(PBEFieldPosition.Center));
+            }
+            if (requestedTargets.HasFlag(PBETurnTarget.AllyRight))
+            {
+                targets.Add(user.Team.TryGetPokemon(PBEFieldPosition.Right));
             }
             return targets.Where(p => p != null).Distinct().ToArray(); // Remove duplicate targets
         }

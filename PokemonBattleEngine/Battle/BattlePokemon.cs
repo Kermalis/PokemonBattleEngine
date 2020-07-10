@@ -671,7 +671,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                 return PBEResult.Ineffective_Substitute;
             }
 
-            // Verified: Contrary/Simple are silent
+            // These abilities do not activate when the Pokémon changes its own stat
             if (causer != this && !causer.HasCancellingAbility())
             {
                 switch (useKnownInfo ? KnownAbility : Ability)
@@ -695,7 +695,6 @@ namespace Kermalis.PokemonBattleEngine.Battle
                         }
                         break;
                     }
-                    case PBEAbility.Contrary: change *= -1; break;
                     case PBEAbility.HyperCutter:
                     {
                         if (change < 0 && stat == PBEStat.Attack)
@@ -714,6 +713,16 @@ namespace Kermalis.PokemonBattleEngine.Battle
                         }
                         break;
                     }
+                }
+            }
+
+            // Verified: Contrary/Simple are silent
+            // These abilities activate when the Pokémon changes its own stat
+            if (causer == this || !causer.HasCancellingAbility())
+            {
+                switch (useKnownInfo ? KnownAbility : Ability)
+                {
+                    case PBEAbility.Contrary: change *= -1; break;
                     case PBEAbility.Simple: change *= 2; break;
                 }
             }

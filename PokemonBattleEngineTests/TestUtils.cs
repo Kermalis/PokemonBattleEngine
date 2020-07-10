@@ -188,7 +188,22 @@ namespace Kermalis.PokemonBattleEngineTests
             }
             return false;
         }
-        public static bool VerifyMoveResult(this PBEBattle battle, PBEBattlePokemon moveUser, PBEBattlePokemon pokemon2, PBEResult result)
+        public static bool VerifyItemHappened(this PBEBattle battle, PBEBattlePokemon itemHolder, PBEBattlePokemon pokemon2, PBEItem item, PBEItemAction itemAction)
+        {
+            foreach (IPBEPacket packet in battle.Events)
+            {
+                if (packet is PBEItemPacket ip
+                    && ip.Item == item
+                    && ip.ItemAction == itemAction
+                    && ip.ItemHolderTrainer.TryGetPokemon(ip.ItemHolder) == itemHolder
+                    && ip.Pokemon2Trainer.TryGetPokemon(ip.Pokemon2) == pokemon2)
+                {
+                    return true;
+                }
+            }
+            return false;
+        }
+        public static bool VerifyMoveResultHappened(this PBEBattle battle, PBEBattlePokemon moveUser, PBEBattlePokemon pokemon2, PBEResult result)
         {
             foreach (IPBEPacket packet in battle.Events)
             {
@@ -199,6 +214,28 @@ namespace Kermalis.PokemonBattleEngineTests
                 {
                     return true;
                 }
+            }
+            return false;
+        }
+        public static bool VerifySpecialMessageHappened(this PBEBattle battle, PBESpecialMessage message, params object[] p)
+        {
+            foreach (IPBEPacket packet in battle.Events)
+            {
+                if (packet is PBESpecialMessagePacket smp
+                    && smp.Message == message
+                    && p.Length == smp.Params.Count)
+                {
+                    for (int i = 0; i < p.Length; i++)
+                    {
+                        if (!p[i].Equals(smp.Params[i]))
+                        {
+                            goto nope;
+                        }
+                    }
+                    return true;
+                }
+            nope:
+                ;
             }
             return false;
         }

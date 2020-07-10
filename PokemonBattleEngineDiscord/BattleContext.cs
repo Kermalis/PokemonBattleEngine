@@ -1122,35 +1122,30 @@ namespace Kermalis.PokemonBattleEngineDiscord
                     _queuedMessages.AppendLine(string.Format("A critical hit on {0}!", NameForTrainer(victim)));
                     break;
                 }
-                case PBEMoveMissedPacket mmp:
-                {
-                    PBEBattlePokemon moveUser = mmp.MoveUserTrainer.TryGetPokemon(mmp.MoveUser);
-                    PBEBattlePokemon pokemon2 = mmp.Pokemon2Trainer.TryGetPokemon(mmp.Pokemon2);
-                    _queuedMessages.AppendLine(string.Format("{0}'s attack missed {1}!", NameForTrainer(moveUser), NameForTrainer(pokemon2)));
-                    break;
-                }
                 case PBEMoveResultPacket mrp:
                 {
+                    PBEBattlePokemon moveUser = mrp.MoveUserTrainer.TryGetPokemon(mrp.MoveUser);
                     PBEBattlePokemon pokemon2 = mrp.Pokemon2Trainer.TryGetPokemon(mrp.Pokemon2);
                     string message;
                     switch (mrp.Result)
                     {
-                        case PBEResult.Ineffective_Ability: message = "{0} is protected by its Ability!"; break;
-                        case PBEResult.Ineffective_Gender: message = "It doesn't affect {0}..."; break;
-                        case PBEResult.Ineffective_Level: message = "{0} is protected by its level!"; break;
-                        case PBEResult.Ineffective_MagnetRise: message = $"{{0}} is protected by {PBELocalizedString.GetMoveName(PBEMove.MagnetRise).English}!"; break;
-                        case PBEResult.Ineffective_Safeguard: message = $"{{0}} is protected by {PBELocalizedString.GetMoveName(PBEMove.Safeguard).English}!"; break;
+                        case PBEResult.Ineffective_Ability: message = "{1} is protected by its Ability!"; break;
+                        case PBEResult.Ineffective_Gender: message = "It doesn't affect {1}..."; break;
+                        case PBEResult.Ineffective_Level: message = "{1} is protected by its level!"; break;
+                        case PBEResult.Ineffective_MagnetRise: message = $"{{1}} is protected by {PBELocalizedString.GetMoveName(PBEMove.MagnetRise).English}!"; break;
+                        case PBEResult.Ineffective_Safeguard: message = $"{{1}} is protected by {PBELocalizedString.GetMoveName(PBEMove.Safeguard).English}!"; break;
                         case PBEResult.Ineffective_Stat:
                         case PBEResult.Ineffective_Status:
                         case PBEResult.InvalidConditions: message = "But it failed!"; break;
-                        case PBEResult.Ineffective_Substitute: message = $"{{0}} is protected by {PBELocalizedString.GetMoveName(PBEMove.Substitute).English}!"; break;
-                        case PBEResult.Ineffective_Type: message = "{0} is protected by its Type!"; break;
+                        case PBEResult.Ineffective_Substitute: message = $"{{1}} is protected by {PBELocalizedString.GetMoveName(PBEMove.Substitute).English}!"; break;
+                        case PBEResult.Ineffective_Type: message = "{1} is protected by its Type!"; break;
+                        case PBEResult.Missed: message = "{0}'s attack missed {1}!"; break;
                         case PBEResult.NoTarget: message = "But there was no target..."; break;
-                        case PBEResult.NotVeryEffective_Type: message = "It's not very effective on {0}..."; break;
-                        case PBEResult.SuperEffective_Type: message = "It's super effective on {0}!"; break;
+                        case PBEResult.NotVeryEffective_Type: message = "It's not very effective on {1}..."; break;
+                        case PBEResult.SuperEffective_Type: message = "It's super effective on {1}!"; break;
                         default: throw new ArgumentOutOfRangeException(nameof(mrp.Result));
                     }
-                    _queuedMessages.AppendLine(string.Format(message, NameForTrainer(pokemon2)));
+                    _queuedMessages.AppendLine(string.Format(message, NameForTrainer(moveUser), NameForTrainer(pokemon2)));
                     break;
                 }
                 case PBEMoveUsedPacket mup:

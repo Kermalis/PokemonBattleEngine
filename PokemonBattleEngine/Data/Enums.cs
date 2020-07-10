@@ -455,12 +455,14 @@ namespace Kermalis.PokemonBattleEngine.Data
         Ineffective_Type = 9,
         /// <summary>Failure due to the intention's unmet special conditions.</summary>
         InvalidConditions = 10,
+        /// <summary>Failure due to accuracy and/or evasion.</summary>
+        Missed = 11,
         /// <summary>Failure due to having no available targets.</summary>
-        NoTarget = 11,
+        NoTarget = 12,
         /// <summary>Limited success due to a Pokémon's <see cref="PBEType"/>.</summary>
-        NotVeryEffective_Type = 12,
+        NotVeryEffective_Type = 13,
         /// <summary>Great success due to a Pokémon's <see cref="PBEType"/>.</summary>
-        SuperEffective_Type = 13
+        SuperEffective_Type = 14
     }
     /// <summary>Represents an action regarding a <see cref="PBEWeather"/>.</summary>
     public enum PBEWeatherAction : byte

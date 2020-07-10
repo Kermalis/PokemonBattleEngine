@@ -18,14 +18,8 @@ namespace Kermalis.PokemonBattleEngine.Battle
             return numerator / denominator;
         }
 
-        /// <summary>Deals damage to <paramref name="victim"/> and broadcasts the HP changing and substitute damage.</summary>
-        /// <param name="culprit">The Pokémon responsible for the damage.</param>
-        /// <param name="victim">The Pokémon receiving the damage.</param>
-        /// <param name="hp">The amount of HP <paramref name="victim"/> will try to lose.</param>
-        /// <param name="ignoreSubstitute">Whether the damage should ignore <paramref name="victim"/>'s <see cref="PBEStatus2.Substitute"/>.</param>
-        /// <param name="ignoreSturdy">Whether the damage should ignore <paramref name="victim"/>'s <see cref="PBEAbility.Sturdy"/>, <see cref="PBEItem.FocusBand"/>, or <see cref="PBEItem.FocusSash"/>.</param>
-        /// <returns>The amount of damage dealt.</returns>
-        private ushort DealDamage(PBEBattlePokemon culprit, PBEBattlePokemon victim, int hp, bool ignoreSubstitute, bool ignoreSturdy = false)
+        // Verified: Sturdy and Substitute only activate on damaging attacks (so draining HP or liquid ooze etc can bypass sturdy)
+        private ushort DealDamage(PBEBattlePokemon culprit, PBEBattlePokemon victim, int hp, bool ignoreSubstitute = true, bool ignoreSturdy = true)
         {
             if (hp < 1)
             {
@@ -33,54 +27,51 @@ namespace Kermalis.PokemonBattleEngine.Battle
             }
             if (!ignoreSubstitute && victim.Status2.HasFlag(PBEStatus2.Substitute))
             {
-                ushort oldHP = victim.SubstituteHP;
+                ushort oldSubHP = victim.SubstituteHP;
                 victim.SubstituteHP = (ushort)Math.Max(0, victim.SubstituteHP - hp);
-                ushort damageAmt = (ushort)(oldHP - victim.SubstituteHP);
+                ushort damageAmt = (ushort)(oldSubHP - victim.SubstituteHP);
                 BroadcastStatus2(victim, culprit, PBEStatus2.Substitute, PBEStatusAction.Damage);
                 return damageAmt;
             }
-            else
+            ushort oldHP = victim.HP;
+            double oldPercentage = victim.HPPercentage;
+            victim.HP = (ushort)Math.Max(0, victim.HP - hp);
+            bool sturdyHappened = false, focusBandHappened = false, focusSashHappened = false;
+            if (!ignoreSturdy && victim.HP == 0)
             {
-                ushort oldHP = victim.HP;
-                double oldPercentage = victim.HPPercentage;
-                victim.HP = (ushort)Math.Max(0, victim.HP - hp);
-                bool sturdyHappened = false, focusBandHappened = false, focusSashHappened = false;
-                if (!ignoreSturdy && victim.HP == 0)
+                // TODO: Endure
+                if (oldHP == victim.MaxHP && victim.Ability == PBEAbility.Sturdy && !culprit.HasCancellingAbility())
                 {
-                    // TODO: Endure
-                    if (oldHP == victim.MaxHP && victim.Ability == PBEAbility.Sturdy && !culprit.HasCancellingAbility())
-                    {
-                        sturdyHappened = true;
-                        victim.HP = 1;
-                    }
-                    else if (victim.Item == PBEItem.FocusBand && PBERandom.RandomBool(10, 100))
-                    {
-                        focusBandHappened = true;
-                        victim.HP = 1;
-                    }
-                    else if (oldHP == victim.MaxHP && victim.Item == PBEItem.FocusSash)
-                    {
-                        focusSashHappened = true;
-                        victim.HP = 1;
-                    }
+                    sturdyHappened = true;
+                    victim.HP = 1;
                 }
-                victim.UpdateHPPercentage();
-                BroadcastPkmnHPChanged(victim, oldHP, oldPercentage);
-                if (sturdyHappened)
+                else if (victim.Item == PBEItem.FocusBand && PBERandom.RandomBool(10, 100))
                 {
-                    BroadcastAbility(victim, culprit, PBEAbility.Sturdy, PBEAbilityAction.Damage);
-                    BroadcastEndure(victim);
+                    focusBandHappened = true;
+                    victim.HP = 1;
                 }
-                else if (focusBandHappened)
+                else if (oldHP == victim.MaxHP && victim.Item == PBEItem.FocusSash)
                 {
-                    BroadcastItem(victim, culprit, PBEItem.FocusBand, PBEItemAction.Damage);
+                    focusSashHappened = true;
+                    victim.HP = 1;
                 }
-                else if (focusSashHappened)
-                {
-                    BroadcastItem(victim, culprit, PBEItem.FocusSash, PBEItemAction.Consumed);
-                }
-                return (ushort)(oldHP - victim.HP);
             }
+            victim.UpdateHPPercentage();
+            BroadcastPkmnHPChanged(victim, oldHP, oldPercentage);
+            if (sturdyHappened)
+            {
+                BroadcastAbility(victim, culprit, PBEAbility.Sturdy, PBEAbilityAction.Damage);
+                BroadcastEndure(victim);
+            }
+            else if (focusBandHappened)
+            {
+                BroadcastItem(victim, culprit, PBEItem.FocusBand, PBEItemAction.Damage);
+            }
+            else if (focusSashHappened)
+            {
+                BroadcastItem(victim, culprit, PBEItem.FocusSash, PBEItemAction.Consumed);
+            }
+            return (ushort)(oldHP - victim.HP);
         }
         /// <summary>Restores HP to <paramref name="pkmn"/> and broadcasts the HP changing if it changes.</summary>
         /// <param name="pkmn">The Pokémon receiving the HP.</param>
@@ -1078,16 +1069,16 @@ namespace Kermalis.PokemonBattleEngine.Battle
             return spDefense;
         }
 
-        private ushort CalculateDamage(PBEBattlePokemon user, double a, double d, double basePower)
+        private int CalculateDamage(PBEBattlePokemon user, double a, double d, double basePower)
         {
-            ushort damage;
-            damage = (ushort)((2 * user.Level / 5) + 2);
-            damage = (ushort)(damage * a * basePower / d);
+            double damage;
+            damage = (2 * user.Level / 5) + 2;
+            damage = damage * a * basePower / d;
             damage /= 50;
             damage += 2;
-            return (ushort)(damage * (100 - PBERandom.RandomInt(0, 15)) / 100);
+            return (int)(damage * ((100d - PBERandom.RandomInt(0, 15)) / 100));
         }
-        private ushort CalculateConfusionDamage(PBEBattlePokemon pkmn)
+        private int CalculateConfusionDamage(PBEBattlePokemon pkmn)
         {
             // Verified: Unaware has no effect on confusion damage
             double m = GetStatChangeModifier(pkmn.AttackChange, false);
@@ -1096,7 +1087,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
             double d = CalculateDefense(pkmn, pkmn, pkmn.Defense * m);
             return CalculateDamage(pkmn, a, d, 40);
         }
-        private ushort CalculateDamage(PBEBattlePokemon user, PBEBattlePokemon target, PBEMoveData mData, PBEType moveType, double basePower, bool criticalHit)
+        private int CalculateDamage(PBEBattlePokemon user, PBEBattlePokemon target, PBEMoveData mData, PBEType moveType, double basePower, bool criticalHit)
         {
             PBEBattlePokemon aPkmn;
             PBEMoveCategory aCat = mData.Category, dCat;

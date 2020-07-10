@@ -22,22 +22,22 @@ namespace Kermalis.PokemonBattleEngine.Battle
                 if (grounded && pkmn.Team.TeamStatus.HasFlag(PBETeamStatus.Spikes))
                 {
                     BroadcastTeamStatus(pkmn.Team, PBETeamStatus.Spikes, PBETeamStatusAction.Damage, damageVictim: pkmn);
-                    DealDamage(pkmn, pkmn, (int)(pkmn.MaxHP / (10.0 - (2 * pkmn.Team.SpikeCount))), true, ignoreSturdy: true);
+                    DealDamage(pkmn, pkmn, (int)(pkmn.MaxHP / (10.0 - (2 * pkmn.Team.SpikeCount))));
                     if (FaintCheck(pkmn))
                     {
                         continue;
                     }
-                    LowHPBerryCheck(pkmn, forcedInBy);
+                    LowHPBerryCheck(pkmn, forcedToEatBy: forcedInBy);
                 }
                 if (pkmn.Team.TeamStatus.HasFlag(PBETeamStatus.StealthRock))
                 {
                     BroadcastTeamStatus(pkmn.Team, PBETeamStatus.StealthRock, PBETeamStatusAction.Damage, damageVictim: pkmn);
-                    DealDamage(pkmn, pkmn, (int)(pkmn.MaxHP * PBETypeEffectiveness.GetStealthRockMultiplier(pkmn.Type1, pkmn.Type2)), true, ignoreSturdy: true);
+                    DealDamage(pkmn, pkmn, (int)(pkmn.MaxHP * PBETypeEffectiveness.GetStealthRockMultiplier(pkmn.Type1, pkmn.Type2)));
                     if (FaintCheck(pkmn))
                     {
                         continue;
                     }
-                    LowHPBerryCheck(pkmn, forcedInBy);
+                    LowHPBerryCheck(pkmn, forcedToEatBy: forcedInBy);
                 }
                 if (grounded && pkmn.Team.TeamStatus.HasFlag(PBETeamStatus.ToxicSpikes))
                 {
@@ -70,176 +70,182 @@ namespace Kermalis.PokemonBattleEngine.Battle
         }
         private void DoPostHitEffects(PBEBattlePokemon user, PBEBattlePokemon victim, PBEMoveData mData, PBEType moveType)
         {
-            if (victim.Status2.HasFlag(PBEStatus2.Substitute))
+            IllusionBreak(victim, user); // Verified: Illusion before Rocky Helmet
+            if (victim.HP > 0 && victim.Ability == PBEAbility.Justified && moveType == PBEType.Dark) // Verified: Justified before Rocky Helmet
             {
-                if (victim.SubstituteHP == 0)
-                {
-                    BroadcastStatus2(victim, user, PBEStatus2.Substitute, PBEStatusAction.Ended);
-                }
+                BroadcastAbility(victim, user, PBEAbility.Justified, PBEAbilityAction.Damage);
+                ApplyStatChangeIfPossible(victim, victim, PBEStat.Attack, +1);
             }
-            else
+            if (victim.HP > 0 && victim.Ability == PBEAbility.Rattled && (moveType == PBEType.Bug || moveType == PBEType.Dark || moveType == PBEType.Ghost)) // Verified: Rattled before Rocky Helmet
             {
-                IllusionBreak(victim, user); // Verified: Illusion before Rocky Helmet
-                if (victim.HP > 0 && victim.Ability == PBEAbility.Justified && moveType == PBEType.Dark) // Verified: Justified before Rocky Helmet
-                {
-                    BroadcastAbility(victim, user, PBEAbility.Justified, PBEAbilityAction.Damage);
-                    ApplyStatChangeIfPossible(victim, victim, PBEStat.Attack, +1);
-                }
-                if (victim.HP > 0 && victim.Ability == PBEAbility.Rattled && (moveType == PBEType.Bug || moveType == PBEType.Dark || moveType == PBEType.Ghost)) // Verified: Rattled before Rocky Helmet
-                {
-                    BroadcastAbility(victim, user, PBEAbility.Rattled, PBEAbilityAction.Damage);
-                    ApplyStatChangeIfPossible(victim, victim, PBEStat.Speed, +1);
-                }
-                if (victim.HP > 0 && victim.Ability == PBEAbility.WeakArmor && mData.Category == PBEMoveCategory.Physical) // Verified: Weak Armor before Rocky Helmet
-                {
-                    BroadcastAbility(victim, user, PBEAbility.WeakArmor, PBEAbilityAction.Damage);
-                    ApplyStatChangeIfPossible(victim, victim, PBEStat.Defense, -1);
-                    ApplyStatChangeIfPossible(victim, victim, PBEStat.Speed, +1);
-                }
+                BroadcastAbility(victim, user, PBEAbility.Rattled, PBEAbilityAction.Damage);
+                ApplyStatChangeIfPossible(victim, victim, PBEStat.Speed, +1);
+            }
+            if (victim.HP > 0 && victim.Ability == PBEAbility.WeakArmor && mData.Category == PBEMoveCategory.Physical) // Verified: Weak Armor before Rocky Helmet
+            {
+                BroadcastAbility(victim, user, PBEAbility.WeakArmor, PBEAbilityAction.Damage);
+                ApplyStatChangeIfPossible(victim, victim, PBEStat.Defense, -1);
+                ApplyStatChangeIfPossible(victim, victim, PBEStat.Speed, +1);
+            }
 
-                if (mData.Flags.HasFlag(PBEMoveFlag.MakesContact))
+            if (mData.Flags.HasFlag(PBEMoveFlag.MakesContact))
+            {
+                if (user.HP > 0 && victim.Ability == PBEAbility.Mummy && user.Ability != PBEAbility.Multitype && user.Ability != PBEAbility.Mummy && user.Ability != PBEAbility.ZenMode)
                 {
-                    if (user.HP > 0 && victim.Ability == PBEAbility.Mummy && user.Ability != PBEAbility.Multitype && user.Ability != PBEAbility.Mummy && user.Ability != PBEAbility.ZenMode)
+                    BroadcastAbility(victim, user, PBEAbility.Mummy, PBEAbilityAction.Damage);
+                    SetAbility(victim, user, PBEAbility.Mummy);
+                }
+                if (user.HP > 0 && (victim.Ability == PBEAbility.IronBarbs || victim.Ability == PBEAbility.RoughSkin))
+                {
+                    BroadcastAbility(victim, user, victim.Ability, PBEAbilityAction.Damage);
+                    DealDamage(victim, user, user.MaxHP / 8);
+                    if (!FaintCheck(user))
                     {
-                        BroadcastAbility(victim, user, PBEAbility.Mummy, PBEAbilityAction.Damage);
-                        SetAbility(victim, user, PBEAbility.Mummy);
+                        LowHPBerryCheck(user);
                     }
-                    if (user.HP > 0 && (victim.Ability == PBEAbility.IronBarbs || victim.Ability == PBEAbility.RoughSkin))
+                }
+                // Verified: Cute Charm can activate when victim is about to faint
+                if (user.HP > 0 && victim.Ability == PBEAbility.CuteCharm && user.IsAttractionPossible(victim) == PBEResult.Success && GetManipulableChance(victim, 30))
+                {
+                    BroadcastAbility(victim, user, PBEAbility.CuteCharm, PBEAbilityAction.ChangedStatus);
+                    CauseInfatuation(user, victim);
+                }
+                if (user.HP > 0 && victim.Ability == PBEAbility.EffectSpore && user.Status1 == PBEStatus1.None)
+                {
+                    // Commented in case the Rainbow affects Effect Spore
+                    //int randomNum = PBERandom.RandomInt(0, 99);
+                    if (GetManipulableChance(victim, 30))
                     {
-                        BroadcastAbility(victim, user, victim.Ability, PBEAbilityAction.Damage);
-                        DealDamage(victim, user, user.MaxHP / 8, true);
-                        if (!FaintCheck(user))
+                        // Spaghetti code taken from the assembly in generation 5 games
+                        PBEStatus1 status = PBEStatus1.None;
+                        int randomNum = PBERandom.RandomInt(0, 29);
+                        if (randomNum <= 20)
                         {
-                            LowHPBerryCheck(user);
-                        }
-                    }
-                    // Verified: Cute Charm can activate when victim is about to faint
-                    if (user.HP > 0 && victim.Ability == PBEAbility.CuteCharm && user.IsAttractionPossible(victim) == PBEResult.Success && GetManipulableChance(victim, 30))
-                    {
-                        BroadcastAbility(victim, user, PBEAbility.CuteCharm, PBEAbilityAction.ChangedStatus);
-                        CauseInfatuation(user, victim);
-                    }
-                    if (user.HP > 0 && victim.Ability == PBEAbility.EffectSpore && user.Status1 == PBEStatus1.None)
-                    {
-                        // Commented in case the Rainbow affects Effect Spore
-                        //int randomNum = PBERandom.RandomInt(0, 99);
-                        if (GetManipulableChance(victim, 30))
-                        {
-                            // Spaghetti code taken from the assembly in generation 5 games
-                            PBEStatus1 status = PBEStatus1.None;
-                            int randomNum = PBERandom.RandomInt(0, 29);
-                            if (randomNum <= 20)
+                            if (randomNum > 10) // 11-20 (10%)
                             {
-                                if (randomNum > 10) // 11-20 (10%)
+                                // TODO: Can it really not paralyze electric? I thought that's gen 6+
+                                if (!user.HasType(PBEType.Electric) && user.IsParalysisPossible(victim) == PBEResult.Success)
                                 {
-                                    if (!user.HasType(PBEType.Electric) && user.IsParalysisPossible(victim) == PBEResult.Success)
-                                    {
-                                        status = PBEStatus1.Paralyzed;
-                                    }
-                                }
-                                else // 0-10 (11%)
-                                {
-                                    if (user.IsSleepPossible(victim) == PBEResult.Success)
-                                    {
-                                        status = PBEStatus1.Asleep;
-                                    }
+                                    status = PBEStatus1.Paralyzed;
                                 }
                             }
-                            else // 21-29 (9%)
+                            else // 0-10 (11%)
                             {
-                                if (user.IsPoisonPossible(victim) == PBEResult.Success)
+                                if (user.IsSleepPossible(victim) == PBEResult.Success)
                                 {
-                                    status = PBEStatus1.Poisoned;
+                                    status = PBEStatus1.Asleep;
                                 }
-                            }
-                            if (status != PBEStatus1.None)
-                            {
-                                BroadcastAbility(victim, user, PBEAbility.EffectSpore, PBEAbilityAction.ChangedStatus);
-                                user.Status1 = status;
-                                if (status == PBEStatus1.Asleep)
-                                {
-                                    SetSleepTurns(user, Settings.SleepMinTurns, Settings.SleepMaxTurns);
-                                }
-                                user.Status1Counter = 0;
-                                BroadcastStatus1(user, victim, status, PBEStatusAction.Added);
-                                AntiStatusAbilityCheck(user);
                             }
                         }
-                    }
-                    if (user.HP > 0 && victim.Ability == PBEAbility.FlameBody && user.IsBurnPossible(victim) == PBEResult.Success && GetManipulableChance(victim, 30))
-                    {
-                        BroadcastAbility(victim, user, PBEAbility.FlameBody, PBEAbilityAction.ChangedStatus);
-                        user.Status1 = PBEStatus1.Burned;
-                        BroadcastStatus1(user, victim, PBEStatus1.Burned, PBEStatusAction.Added);
-                        AntiStatusAbilityCheck(user);
-                    }
-                    if (user.HP > 0 && victim.Ability == PBEAbility.PoisonPoint && user.IsPoisonPossible(victim) == PBEResult.Success && GetManipulableChance(victim, 30))
-                    {
-                        BroadcastAbility(victim, user, PBEAbility.PoisonPoint, PBEAbilityAction.ChangedStatus);
-                        user.Status1 = PBEStatus1.Poisoned;
-                        BroadcastStatus1(user, victim, PBEStatus1.Poisoned, PBEStatusAction.Added);
-                        AntiStatusAbilityCheck(user);
-                    }
-                    if (user.HP > 0 && victim.Ability == PBEAbility.Static && user.IsParalysisPossible(victim) == PBEResult.Success && GetManipulableChance(victim, 30))
-                    {
-                        BroadcastAbility(victim, user, PBEAbility.Static, PBEAbilityAction.ChangedStatus);
-                        user.Status1 = PBEStatus1.Paralyzed;
-                        BroadcastStatus1(user, victim, PBEStatus1.Paralyzed, PBEStatusAction.Added);
-                        AntiStatusAbilityCheck(user);
-                    }
-                    // Verified: Above abilities before Rocky Helmet
-                    if (user.HP > 0 && victim.Item == PBEItem.RockyHelmet)
-                    {
-                        BroadcastItem(victim, user, PBEItem.RockyHelmet, PBEItemAction.Damage);
-                        DealDamage(victim, user, user.MaxHP / 6, true);
-                        if (!FaintCheck(user))
+                        else // 21-29 (9%)
                         {
-                            LowHPBerryCheck(user);
+                            if (user.IsPoisonPossible(victim) == PBEResult.Success)
+                            {
+                                status = PBEStatus1.Poisoned;
+                            }
+                        }
+                        if (status != PBEStatus1.None)
+                        {
+                            BroadcastAbility(victim, user, PBEAbility.EffectSpore, PBEAbilityAction.ChangedStatus);
+                            user.Status1 = status;
+                            if (status == PBEStatus1.Asleep)
+                            {
+                                SetSleepTurns(user, Settings.SleepMinTurns, Settings.SleepMaxTurns);
+                            }
+                            user.Status1Counter = 0;
+                            BroadcastStatus1(user, victim, status, PBEStatusAction.Added);
+                            AntiStatusAbilityCheck(user);
                         }
                     }
                 }
-            }
-
-            if (victim.HP > 0)
-            {
-                // Verified: Berry after Rough Skin (for victim)
-                // Verified: Own Tempo will be ignored if hit, and will not cure until the move is complete
-                LowHPBerryCheck(victim, user);
-            }
-
-            // TODO: King's Rock, Stench, etc
-            // TODO?: Cell Battery
-        }
-        private void DoPostAttackedTargetEffects(PBEBattlePokemon victim, PBEType colorChangeType = PBEType.None)
-        {
-            if (victim.HP > 0)
-            {
-                if (victim.Ability == PBEAbility.ColorChange && colorChangeType != PBEType.None && !victim.HasType(colorChangeType))
+                if (user.HP > 0 && victim.Ability == PBEAbility.FlameBody && user.IsBurnPossible(victim) == PBEResult.Success && GetManipulableChance(victim, 30))
                 {
-                    BroadcastAbility(victim, victim, PBEAbility.ColorChange, PBEAbilityAction.ChangedAppearance);
-                    BroadcastTypeChanged(victim, colorChangeType, PBEType.None);
+                    BroadcastAbility(victim, user, PBEAbility.FlameBody, PBEAbilityAction.ChangedStatus);
+                    user.Status1 = PBEStatus1.Burned;
+                    BroadcastStatus1(user, victim, PBEStatus1.Burned, PBEStatusAction.Added);
+                    AntiStatusAbilityCheck(user);
                 }
-                AntiStatusAbilityCheck(victim); // Heal a status that was given with the user's Mold Breaker
+                if (user.HP > 0 && victim.Ability == PBEAbility.PoisonPoint && user.IsPoisonPossible(victim) == PBEResult.Success && GetManipulableChance(victim, 30))
+                {
+                    BroadcastAbility(victim, user, PBEAbility.PoisonPoint, PBEAbilityAction.ChangedStatus);
+                    user.Status1 = PBEStatus1.Poisoned;
+                    BroadcastStatus1(user, victim, PBEStatus1.Poisoned, PBEStatusAction.Added);
+                    AntiStatusAbilityCheck(user);
+                }
+                if (user.HP > 0 && victim.Ability == PBEAbility.Static && user.IsParalysisPossible(victim) == PBEResult.Success && GetManipulableChance(victim, 30))
+                {
+                    BroadcastAbility(victim, user, PBEAbility.Static, PBEAbilityAction.ChangedStatus);
+                    user.Status1 = PBEStatus1.Paralyzed;
+                    BroadcastStatus1(user, victim, PBEStatus1.Paralyzed, PBEStatusAction.Added);
+                    AntiStatusAbilityCheck(user);
+                }
+                // Verified: Above abilities before Rocky Helmet
+                if (user.HP > 0 && victim.Item == PBEItem.RockyHelmet)
+                {
+                    BroadcastItem(victim, user, PBEItem.RockyHelmet, PBEItemAction.Damage);
+                    DealDamage(victim, user, user.MaxHP / 6);
+                    if (!FaintCheck(user))
+                    {
+                        LowHPBerryCheck(user);
+                    }
+                }
             }
         }
-        private void DoPostAttackedUserEffects(PBEBattlePokemon user, bool doLifeOrb, int? recoilDamage = null)
+        private void DoPostAttackedEffects(PBEBattlePokemon user, IEnumerable<PBEAttackVictim> allies, IEnumerable<PBEAttackVictim> foes, bool doLifeOrb,
+            int? recoilDamage = null,
+            PBEType colorChangeType = PBEType.None)
         {
-            if (user.HP > 0 && recoilDamage.HasValue)
+            #region User
+            if (user.HP > 0)
             {
-                BroadcastRecoil(user);
-                DealDamage(user, user, recoilDamage.Value, true, ignoreSturdy: true);
-                if (!FaintCheck(user))
+                // Verified: Recoil before LifeOrb
+                // Verified: Recoil calls berry check directly, and both can faint here
+                if (recoilDamage.HasValue)
                 {
-                    LowHPBerryCheck(user);
+                    BroadcastRecoil(user);
+                    DealDamage(user, user, recoilDamage.Value);
+                    if (!FaintCheck(user))
+                    {
+                        LowHPBerryCheck(user);
+                    }
+                }
+                if (user.HP > 0 && doLifeOrb && user.Item == PBEItem.LifeOrb)
+                {
+                    BroadcastItem(user, user, PBEItem.LifeOrb, PBEItemAction.Damage);
+                    DealDamage(user, user, user.MaxHP / 10);
+                    FaintCheck(user); // No berry check because we are holding Life Orb
+                }
+            }
+            #endregion
+
+            #region Victims
+            void DoColorChange(IEnumerable<PBEBattlePokemon> order)
+            {
+                foreach (PBEBattlePokemon pkmn in order)
+                {
+                    if (pkmn.Ability == PBEAbility.ColorChange && !pkmn.HasType(colorChangeType))
+                    {
+                        BroadcastAbility(pkmn, pkmn, PBEAbility.ColorChange, PBEAbilityAction.ChangedAppearance);
+                        BroadcastTypeChanged(pkmn, colorChangeType, PBEType.None);
+                    }
                 }
             }
 
-            if (user.HP > 0 && doLifeOrb && user.Item == PBEItem.LifeOrb)
+            IEnumerable<PBEBattlePokemon> a = allies.Select(v => v.Pkmn).Where(p => p.HP > 0);
+            IEnumerable<PBEBattlePokemon> f = foes.Select(v => v.Pkmn).Where(p => p.HP > 0);
+            // Verified: ColorChange (foes, allies) before Berry
+            if (colorChangeType != PBEType.None)
             {
-                BroadcastItem(user, user, PBEItem.LifeOrb, PBEItemAction.Damage);
-                DealDamage(user, user, user.MaxHP / 10, true);
-                FaintCheck(user); // No berry check because we are holding Life Orb
+                DoColorChange(f);
+                DoColorChange(a);
             }
+            // Verified: Berry (allies, foes) before AntiStatusAbility
+            LowHPBerryCheck(a, forcedToEatBy: user);
+            LowHPBerryCheck(f, forcedToEatBy: user);
+            // Verified: AntiStatusAbility (allies, foes)
+            AntiStatusAbilityCheck(a); // Heal a status that was given with the user's Mold Breaker
+            AntiStatusAbilityCheck(f);
+            #endregion
         }
         private void DoTurnEndedEffects()
         {
@@ -282,7 +288,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                                 && pkmn.Ability != PBEAbility.SnowCloak)
                             {
                                 BroadcastWeather(PBEWeather.Hailstorm, PBEWeatherAction.CausedDamage, pkmn);
-                                DealDamage(pkmn, pkmn, pkmn.MaxHP / Settings.HailDamageDenominator, true);
+                                DealDamage(pkmn, pkmn, pkmn.MaxHP / Settings.HailDamageDenominator);
                                 if (!FaintCheck(pkmn))
                                 {
                                     LowHPBerryCheck(pkmn);
@@ -295,7 +301,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                             if (pkmn.Ability == PBEAbility.SolarPower)
                             {
                                 BroadcastAbility(pkmn, pkmn, pkmn.Ability, PBEAbilityAction.Damage);
-                                DealDamage(pkmn, pkmn, pkmn.MaxHP / 8, true);
+                                DealDamage(pkmn, pkmn, pkmn.MaxHP / 8);
                                 if (!FaintCheck(pkmn))
                                 {
                                     LowHPBerryCheck(pkmn);
@@ -325,7 +331,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                                 && !pkmn.Status2.HasFlag(PBEStatus2.Underwater))
                             {
                                 BroadcastWeather(PBEWeather.Sandstorm, PBEWeatherAction.CausedDamage, pkmn);
-                                DealDamage(pkmn, pkmn, pkmn.MaxHP / Settings.SandstormDamageDenominator, true);
+                                DealDamage(pkmn, pkmn, pkmn.MaxHP / Settings.SandstormDamageDenominator);
                                 if (!FaintCheck(pkmn))
                                 {
                                     LowHPBerryCheck(pkmn);
@@ -392,7 +398,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                         if (!pkmn.HasType(PBEType.Poison))
                         {
                             BroadcastItem(pkmn, pkmn, pkmn.Item, PBEItemAction.Damage);
-                            DealDamage(pkmn, pkmn, pkmn.MaxHP / Settings.BlackSludgeDamageDenominator, true);
+                            DealDamage(pkmn, pkmn, pkmn.MaxHP / Settings.BlackSludgeDamageDenominator);
                             FaintCheck(pkmn); // No need to call HealingBerryCheck() because if you are holding BlackSludge you are not holding a healing berry
                         }
                         else if (pkmn.HP < pkmn.MaxHP)
@@ -427,7 +433,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                     continue;
                 }
                 BroadcastStatus2(pkmn, sucker, PBEStatus2.LeechSeed, PBEStatusAction.Damage);
-                int restoreAmt = DealDamage(sucker, pkmn, pkmn.MaxHP / Settings.LeechSeedDenominator, true, ignoreSturdy: true); // Verified: It does ignore Sturdy
+                int restoreAmt = DealDamage(sucker, pkmn, pkmn.MaxHP / Settings.LeechSeedDenominator);
 
                 // In the games, the pkmn faints after taking damage (before liquid ooze/heal)
                 // We cannot have it faint and then still broadcast ability like the games, similar to why we can't faint before Explosion
@@ -436,7 +442,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                 if (pkmn.Ability == PBEAbility.LiquidOoze)
                 {
                     BroadcastAbility(pkmn, sucker, PBEAbility.LiquidOoze, PBEAbilityAction.Damage);
-                    DealDamage(pkmn, sucker, restoreAmt, true, ignoreSturdy: true); // Verified: It does ignore Sturdy
+                    DealDamage(pkmn, sucker, restoreAmt);
                     if (!FaintCheck(pkmn))
                     {
                         LowHPBerryCheck(pkmn);
@@ -474,7 +480,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                             int damage = pkmn.Status1 == PBEStatus1.BadlyPoisoned
                                     ? pkmn.MaxHP * pkmn.Status1Counter / Settings.ToxicDamageDenominator
                                     : pkmn.MaxHP / Settings.PoisonDamageDenominator;
-                            DealDamage(pkmn, pkmn, damage, true);
+                            DealDamage(pkmn, pkmn, damage);
                             if (!FaintCheck(pkmn))
                             {
                                 LowHPBerryCheck(pkmn);
@@ -499,7 +505,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                         {
                             damage /= 2;
                         }
-                        DealDamage(pkmn, pkmn, damage, true);
+                        DealDamage(pkmn, pkmn, damage);
                         if (!FaintCheck(pkmn))
                         {
                             LowHPBerryCheck(pkmn);
@@ -517,7 +523,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                     continue;
                 }
                 BroadcastStatus2(pkmn, pkmn, PBEStatus2.Nightmare, PBEStatusAction.Damage);
-                DealDamage(pkmn, pkmn, pkmn.MaxHP / 4, true);
+                DealDamage(pkmn, pkmn, pkmn.MaxHP / 4);
                 if (!FaintCheck(pkmn))
                 {
                     LowHPBerryCheck(pkmn);
@@ -532,7 +538,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                     continue;
                 }
                 BroadcastStatus2(pkmn, pkmn, PBEStatus2.Cursed, PBEStatusAction.Damage);
-                DealDamage(pkmn, pkmn, pkmn.MaxHP / Settings.CurseDenominator, true);
+                DealDamage(pkmn, pkmn, pkmn.MaxHP / Settings.CurseDenominator);
                 if (!FaintCheck(pkmn))
                 {
                     LowHPBerryCheck(pkmn);
@@ -568,7 +574,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                         foreach (PBEBattlePokemon victim in GetRuntimeSurrounding(pkmn, false, true).Where(p => p.Status1 == PBEStatus1.Asleep))
                         {
                             BroadcastAbility(pkmn, victim, PBEAbility.BadDreams, PBEAbilityAction.Damage);
-                            DealDamage(pkmn, victim, pkmn.MaxHP / 8, true);
+                            DealDamage(pkmn, victim, pkmn.MaxHP / 8);
                             if (!FaintCheck(victim))
                             {
                                 LowHPBerryCheck(victim);
@@ -922,14 +928,12 @@ namespace Kermalis.PokemonBattleEngine.Battle
                     if (PBERandom.RandomBool(50, 100))
                     {
                         BroadcastStatus2(user, user, PBEStatus2.Confused, PBEStatusAction.Damage);
-                        ushort damage = CalculateConfusionDamage(user);
-                        DealDamage(user, user, damage, true);
-                        if (!FaintCheck(user))
+                        int damage = CalculateConfusionDamage(user);
+                        DealDamage(user, user, damage, ignoreSturdy: false);
+                        // BUG: Confusion damage does not activate these items
+                        if (!FaintCheck(user) && Settings.BugFix)
                         {
-                            // BUG: In generation 5+, confusion damage does not activate these items
-#if BUGFIX
                             LowHPBerryCheck(user);
-#endif
                         }
                         return true;
                     }
@@ -959,11 +963,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
             {
                 return false;
             }
-            if (target.Status2.HasFlag(PBEStatus2.Protected) && mData.Flags.HasFlag(PBEMoveFlag.AffectedByProtect))
-            {
-                BroadcastStatus2(target, user, PBEStatus2.Protected, PBEStatusAction.Damage);
-                return true;
-            }
+            // Verified: WideGuard happens before Protect
             if (target.Team.TeamStatus.HasFlag(PBETeamStatus.WideGuard) && mData.Category != PBEMoveCategory.Status && PBEMoveData.IsSpreadMove(user.GetMoveTargets(mData)))
             {
                 BroadcastTeamStatus(target.Team, PBETeamStatus.WideGuard, PBETeamStatusAction.Damage, damageVictim: target);
@@ -973,6 +973,11 @@ namespace Kermalis.PokemonBattleEngine.Battle
             if (target.Team.TeamStatus.HasFlag(PBETeamStatus.QuickGuard) && mData.Priority > 0 && (mData.Effect != PBEMoveEffect.Feint || user.Team == target.Team))
             {
                 BroadcastTeamStatus(target.Team, PBETeamStatus.QuickGuard, PBETeamStatusAction.Damage, damageVictim: target);
+                return true;
+            }
+            if (target.Status2.HasFlag(PBEStatus2.Protected) && mData.Flags.HasFlag(PBEMoveFlag.AffectedByProtect))
+            {
+                BroadcastStatus2(target, user, PBEStatus2.Protected, PBEStatusAction.Damage);
                 return true;
             }
             if (user.Status2.HasFlag(PBEStatus2.LockOn) && user.LockOnPokemon == target)
@@ -1098,7 +1103,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                 return false;
             }
         miss:
-            BroadcastMoveMissed(user, target);
+            BroadcastMoveResult(user, target, PBEResult.Missed);
             return true;
         }
         private bool AttackTypeCheck(PBEBattlePokemon user, PBEBattlePokemon target, PBEType moveType, out PBEResult result, out double damageMultiplier)
@@ -1106,7 +1111,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
             result = PBETypeEffectiveness.IsAffectedByAttack(user, target, moveType, out damageMultiplier);
             if (result == PBEResult.Ineffective_Ability)
             {
-                BroadcastAbility(target, target, target.Ability, PBEAbilityAction.Damage);
+                BroadcastAbility(target, user, target.Ability, PBEAbilityAction.Damage);
             }
             if (result != PBEResult.NotVeryEffective_Type && result != PBEResult.Success && result != PBEResult.SuperEffective_Type)
             {
@@ -1419,6 +1424,13 @@ namespace Kermalis.PokemonBattleEngine.Battle
                 BroadcastStatus2(pkmn, breaker, PBEStatus2.Disguised, PBEStatusAction.Ended);
             }
         }
+        private void AntiStatusAbilityCheck(IEnumerable<PBEBattlePokemon> order)
+        {
+            foreach (PBEBattlePokemon pkmn in order)
+            {
+                AntiStatusAbilityCheck(pkmn);
+            }
+        }
         private void AntiStatusAbilityCheck(PBEBattlePokemon pkmn)
         {
             switch (pkmn.Ability)
@@ -1545,6 +1557,13 @@ namespace Kermalis.PokemonBattleEngine.Battle
                 return true;
             }
             return false;
+        }
+        private void LowHPBerryCheck(IEnumerable<PBEBattlePokemon> order, PBEBattlePokemon forcedToEatBy = null)
+        {
+            foreach (PBEBattlePokemon pkmn in order)
+            {
+                LowHPBerryCheck(pkmn, forcedToEatBy: forcedToEatBy);
+            }
         }
         private void LowHPBerryCheck(PBEBattlePokemon pkmn, PBEBattlePokemon forcedToEatBy = null)
         {
@@ -1768,7 +1787,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                     if (!target.Status2.HasFlag(PBEStatus2.Cursed))
                     {
                         BroadcastStatus2(target, user, PBEStatus2.Cursed, PBEStatusAction.Added);
-                        DealDamage(user, user, user.MaxHP / 2, true);
+                        DealDamage(user, user, user.MaxHP / 2);
                         if (!FaintCheck(user))
                         {
                             LowHPBerryCheck(user);
@@ -1928,8 +1947,8 @@ namespace Kermalis.PokemonBattleEngine.Battle
                     if (result == PBEResult.Success)
                     {
                         int hpRequired = target.MaxHP / 4;
-                        DealDamage(user, target, hpRequired, true);
-                        LowHPBerryCheck(target);
+                        DealDamage(user, target, hpRequired);
+                        LowHPBerryCheck(target); // Verified: Berry is eaten between damage and substitute
                         target.SubstituteHP = (ushort)hpRequired;
                         BroadcastStatus2(target, user, PBEStatus2.Substitute, PBEStatusAction.Added);
                     }
@@ -2068,199 +2087,9 @@ namespace Kermalis.PokemonBattleEngine.Battle
             }
         }
 
-        // Should there be two versions of BasicHit, one for single target and another for multi target?
-        // The games probably have two (some move types like MakesContact/Recoil are guaranteed to be single target), but we might not need two so we can support editing moves/adding moves
-        // Some moves types will need to throw an exception if they bypass the rule, so they do not violate behavior (pickpocket and life orb interaction, for example)
-        private void BasicHit(PBEBattlePokemon user, PBEBattlePokemon[] targets, PBEMoveData mData,
-            Func<int, int?> recoilFunc = null,
-            Func<PBEBattlePokemon, PBEResult> beforeDoingDamage = null,
-            Action<PBEBattlePokemon> beforePostHit = null,
-            Action<PBEBattlePokemon, ushort> afterPostHit = null,
-            Action beforeTargetsFaint = null,
-            bool hitRegardlessOfUserConciousness = false)
-        {
-            // TODO: Rocky Helmet tests for user fainting, winner, etc [force battle subway battle flag? or actually do link battles]
-
-            bool hitSomeone = false;
-            int totalDamageDealt = 0;
-            PBEType moveType = user.GetMoveType(mData);
-            double basePower = CalculateBasePower(user, targets, mData, moveType);
-            foreach (PBEBattlePokemon target in targets)
-            {
-                if (!MissCheck(user, target, mData))
-                {
-                    if (AttackTypeCheck(user, target, moveType, out PBEResult result, out double damageMultiplier))
-                    {
-                        // Brick Break destroys Light Screen and Reflect before doing damage
-                        // Dream Eater checks for sleep before doing damage
-                        // Sucker Punch fails before doing damage
-                        // Feint destroys protection
-                        if (beforeDoingDamage == null || beforeDoingDamage.Invoke(target) == PBEResult.Success)
-                        {
-                            if (targets.Length > 1)
-                            {
-                                damageMultiplier *= 0.75;
-                            }
-                            bool crit = CritCheck(user, target, mData);
-                            damageMultiplier *= CalculateDamageMultiplier(user, target, mData, moveType, result, crit);
-                            int damage = (int)(damageMultiplier * CalculateDamage(user, target, mData, moveType, basePower, crit));
-                            ushort damageDealt = DealDamage(user, target, damage, false);
-                            totalDamageDealt += damageDealt;
-                            if (result != PBEResult.Success)
-                            {
-                                BroadcastMoveResult(user, target, result);
-                            }
-                            if (crit)
-                            {
-                                BroadcastMoveCrit(target);
-                            }
-                            // Target's statuses are assigned and target's stats are changed before post-hit effects
-                            // Snore has a chance to flinch
-                            beforePostHit?.Invoke(target);
-                            DoPostHitEffects(user, target, mData, moveType); // User faints here
-                            // HP-draining moves restore HP after post-hit effects
-                            // Shadow Force destroys protection
-                            // SmellingSalt cures paralysis
-                            afterPostHit?.Invoke(target, damageDealt);
-                            DoPostAttackedTargetEffects(target, colorChangeType: moveType);
-                            hitSomeone = true;
-                            // This is not necessary for any official move since no contact moves hit multiple targets, but keeping it here for custom moves
-                            if (!hitRegardlessOfUserConciousness && (user.HP == 0 || user.Status1 == PBEStatus1.Asleep))
-                            {
-                                break;
-                            }
-                        }
-                    }
-                }
-            }
-
-            if (hitSomeone)
-            {
-                // User's stats change before the targets faint if at least one was hit
-                beforeTargetsFaint?.Invoke();
-                foreach (PBEBattlePokemon target in targets)
-                {
-                    FaintCheck(target); // TODO: Berry check?
-                }
-            }
-            if (user.HP > 0)
-            {
-                DoPostAttackedUserEffects(user, hitSomeone, recoilDamage: recoilFunc?.Invoke(totalDamageDealt));
-            }
-            // Official order: target faints (each target), recoil, Life Orb, user faints/target eats berry (each target), target AntiStatusAbilityCheck() (each target)
-        }
-        // None of these moves are multi-target
-        private void FixedDamageHit(PBEBattlePokemon user, PBEBattlePokemon[] targets, PBEMoveData mData, Func<PBEBattlePokemon, int> damageFunc,
-            Func<PBEBattlePokemon, PBEResult> beforeMissCheck = null,
-            Action beforeTargetsFaint = null)
-        {
-            bool hitSomeone = false;
-            PBEType moveType = user.GetMoveType(mData);
-            foreach (PBEBattlePokemon target in targets)
-            {
-                // Endeavor fails if the target's HP is <= the user's HP
-                // One hit knockout moves fail if the target's level is > the user's level
-                if (beforeMissCheck == null || beforeMissCheck.Invoke(target) == PBEResult.Success)
-                {
-                    if (!MissCheck(user, target, mData))
-                    {
-                        if (AttackTypeCheck(user, target, moveType, out PBEResult _, out double _))
-                        {
-                            // Damage func is run and the output is dealt to target
-                            DealDamage(user, target, damageFunc.Invoke(target), false);
-
-                            DoPostHitEffects(user, target, mData, moveType); // User faints here
-                            DoPostAttackedTargetEffects(target, colorChangeType: moveType);
-                            hitSomeone = true;
-                            // This is not necessary for any official move since no contact moves hit multiple targets, but keeping it here for custom moves
-                            if (user.HP == 0 || user.Status1 == PBEStatus1.Asleep)
-                            {
-                                break;
-                            }
-                        }
-                    }
-                }
-            }
-            if (hitSomeone)
-            {
-                // "It's a one-hit KO!"
-                beforeTargetsFaint?.Invoke();
-                foreach (PBEBattlePokemon target in targets)
-                {
-                    FaintCheck(target); // TODO: Berry check?
-                }
-            }
-            if (user.HP > 0)
-            {
-                DoPostAttackedUserEffects(user, hitSomeone);
-            }
-            // Official order: target faints, Life Orb, user faints/target eats berry, target AntiStatusAbilityCheck()
-        }
-        // None of these moves are multi-target
-        private void MultiHit(PBEBattlePokemon user, PBEBattlePokemon[] targets, PBEMoveData mData, byte numHits,
-            bool subsequentMissChecks = false,
-            Action<PBEBattlePokemon> beforePostHit = null)
-        {
-            bool hitSomeone = false;
-            PBEType moveType = user.GetMoveType(mData);
-            double basePower = CalculateBasePower(user, targets, mData, moveType); // Verified: Gem boost applies to all hits
-            foreach (PBEBattlePokemon target in targets)
-            {
-                if (!MissCheck(user, target, mData))
-                {
-                    if (AttackTypeCheck(user, target, moveType, out PBEResult result, out double damageMultiplier))
-                    {
-                        if (targets.Length > 1)
-                        {
-                            damageMultiplier *= 0.75;
-                        }
-                        byte hit = 0;
-                        for (int hitNumber = 0; hitNumber < numHits; hitNumber++)
-                        {
-                            bool crit = CritCheck(user, target, mData);
-                            double curDamageMultiplier = damageMultiplier * CalculateDamageMultiplier(user, target, mData, moveType, result, crit);
-                            int damage = (int)(curDamageMultiplier * CalculateDamage(user, target, mData, moveType, basePower, crit));
-                            DealDamage(user, target, damage, false);
-                            if (crit)
-                            {
-                                BroadcastMoveCrit(target);
-                            }
-                            // Twineedle has a chance to poison on each strike
-                            beforePostHit?.Invoke(target);
-                            DoPostHitEffects(user, target, mData, moveType); // User faints here
-                            hit++;
-                            hitSomeone = true;
-                            if (user.HP == 0 || user.Status1 == PBEStatus1.Asleep || target.HP == 0)
-                            {
-                                break;
-                            }
-                        }
-                        if (result != PBEResult.Success)
-                        {
-                            BroadcastMoveResult(user, target, result);
-                        }
-                        BroadcastMultiHit(hit);
-                        if (!FaintCheck(target))
-                        {
-                            DoPostAttackedTargetEffects(target, colorChangeType: moveType); // AntiStatusAbilityCheck() in DoPostAttackedTargetEffects()?
-                        }
-                        // This is not necessary for any official move since no contact moves hit multiple targets, but keeping it here for custom moves
-                        if (user.HP == 0 || user.Status1 == PBEStatus1.Asleep)
-                        {
-                            break;
-                        }
-                    }
-                }
-            }
-            if (user.HP > 0)
-            {
-                DoPostAttackedUserEffects(user, hitSomeone);
-            }
-            // Official order: user faints/target eats berry, effectiveness, "Hit 4 times!", target faints, Life Orb, target AntiStatusAbilityCheck()
-        }
         private void SemiInvulnerableChargeMove(PBEBattlePokemon user, PBEBattlePokemon[] targets, PBEMove move, PBEMoveData mData, PBETurnTarget requestedTargets, PBEStatus2 status2,
-            Action<PBEBattlePokemon> beforePostHit = null,
-            Action<PBEBattlePokemon, ushort> afterPostHit = null)
+            Action<PBEBattlePokemon, ushort> beforePostHit = null,
+            Action<PBEBattlePokemon> afterPostHit = null)
         {
             BroadcastMoveUsed(user, move);
         top:
@@ -2314,7 +2143,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                             }
                         }
                         ApplyStatus1IfPossible(user, target, status, true);
-                        DoPostAttackedTargetEffects(target); // Only necessary for AntiStatusCheck() right now
+                        AntiStatusAbilityCheck(target);
                     }
                 }
             }
@@ -2336,7 +2165,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                     if (!MissCheck(user, target, mData))
                     {
                         ApplyStatus2IfPossible(user, target, status, true);
-                        DoPostAttackedTargetEffects(target); // Only necessary for AntiStatusCheck() right now
+                        AntiStatusAbilityCheck(target);
                     }
                 }
             }
@@ -2621,15 +2450,16 @@ namespace Kermalis.PokemonBattleEngine.Battle
             }
             else
             {
-                void BeforePostHit(PBEBattlePokemon target)
+                void BeforePostHit(PBEBattlePokemon target, ushort damageDealt)
                 {
-                    if (target.HP > 0 && !target.Status2.HasFlag(PBEStatus2.Substitute) && GetManipulableChance(user, chanceToChangeStats))
+                    if (target.HP == 0 || !GetManipulableChance(user, chanceToChangeStats))
                     {
-                        for (int i = 0; i < statChanges.Length; i++)
-                        {
-                            (PBEStat stat, int change) = statChanges[i];
-                            ApplyStatChangeIfPossible(user, target, stat, change, isSecondaryEffect: true);
-                        }
+                        return;
+                    }
+                    for (int i = 0; i < statChanges.Length; i++)
+                    {
+                        (PBEStat stat, int change) = statChanges[i];
+                        ApplyStatChangeIfPossible(user, target, stat, change, isSecondaryEffect: true);
                     }
                 }
                 BasicHit(user, targets, mData, beforePostHit: BeforePostHit);
@@ -2646,7 +2476,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
             }
             else
             {
-                void BeforeTargetsFaint()
+                void BeforePostHit(PBEBattlePokemon target, ushort damageDealt)
                 {
                     if (user.HP > 0 && GetManipulableChance(user, chanceToChangeStats))
                     {
@@ -2657,7 +2487,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                         }
                     }
                 }
-                BasicHit(user, targets, mData, beforeTargetsFaint: BeforeTargetsFaint);
+                BasicHit(user, targets, mData, beforePostHit: BeforePostHit);
             }
             RecordExecutedMove(user, move, mData);
         }
@@ -2763,7 +2593,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
 
         private void Ef_Bounce(PBEBattlePokemon user, PBEBattlePokemon[] targets, PBEMove move, PBEMoveData mData, PBETurnTarget requestedTargets)
         {
-            void BeforePostHit(PBEBattlePokemon target)
+            void BeforePostHit(PBEBattlePokemon target, ushort damageDealt)
             {
                 if (target.HP > 0 && GetManipulableChance(user, mData.EffectParam))
                 {
@@ -2774,7 +2604,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
         }
         private void Ef_ShadowForce(PBEBattlePokemon user, PBEBattlePokemon[] targets, PBEMove move, PBEMoveData mData, PBETurnTarget requestedTargets)
         {
-            void AfterPostHit(PBEBattlePokemon target, ushort damageDealt)
+            void AfterPostHit(PBEBattlePokemon target)
             {
                 if (target.HP > 0 && target.Status2.HasFlag(PBEStatus2.Protected))
                 {
@@ -2802,7 +2632,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
             }
             else
             {
-                PBEResult BeforeDoingDamage(PBEBattlePokemon target)
+                void BeforeDoingDamage(PBEBattlePokemon target)
                 {
                     // Verified: Reflect then Light Screen
                     if (target.Team.TeamStatus.HasFlag(PBETeamStatus.Reflect))
@@ -2815,7 +2645,6 @@ namespace Kermalis.PokemonBattleEngine.Battle
                         target.Team.LightScreenCount = 0;
                         BroadcastTeamStatus(target.Team, PBETeamStatus.LightScreen, PBETeamStatusAction.Cleared);
                     }
-                    return PBEResult.Success;
                 }
                 BasicHit(user, targets, mData, beforeDoingDamage: BeforeDoingDamage);
             }
@@ -2831,7 +2660,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
             }
             else
             {
-                PBEResult BeforeDoingDamage(PBEBattlePokemon target)
+                void BeforeDoingDamage(PBEBattlePokemon target)
                 {
                     if (target.HP > 0 && target.Status2.HasFlag(PBEStatus2.Protected))
                     {
@@ -2848,7 +2677,6 @@ namespace Kermalis.PokemonBattleEngine.Battle
                             BroadcastTeamStatus(target.Team, PBETeamStatus.WideGuard, PBETeamStatusAction.Cleared, damageVictim: target);
                         }
                     }
-                    return PBEResult.Success;
                 }
                 BasicHit(user, targets, mData, beforeDoingDamage: BeforeDoingDamage);
             }
@@ -2864,21 +2692,22 @@ namespace Kermalis.PokemonBattleEngine.Battle
             }
             else
             {
-                void BeforePostHit(PBEBattlePokemon target)
+                void BeforePostHit(PBEBattlePokemon target, ushort damageDealt)
                 {
-                    if (target.HP > 0)
+                    if (target.HP == 0)
                     {
-                        if (status1 != PBEStatus1.None && GetManipulableChance(user, chanceToInflictStatus1))
-                        {
-                            ApplyStatus1IfPossible(user, target, status1, false);
-                        }
-                        if (status2 != PBEStatus2.None && GetManipulableChance(user, chanceToInflictStatus2))
-                        {
-                            ApplyStatus2IfPossible(user, target, status2, false);
-                        }
+                        return;
+                    }
+                    if (status1 != PBEStatus1.None && GetManipulableChance(user, chanceToInflictStatus1))
+                    {
+                        ApplyStatus1IfPossible(user, target, status1, false);
+                    }
+                    if (status2 != PBEStatus2.None && GetManipulableChance(user, chanceToInflictStatus2))
+                    {
+                        ApplyStatus2IfPossible(user, target, status2, false);
                     }
                 }
-                BasicHit(user, targets, mData, beforePostHit: status1 != PBEStatus1.None || status2 != PBEStatus2.None ? BeforePostHit : (Action<PBEBattlePokemon>)null);
+                BasicHit(user, targets, mData, beforePostHit: status1 != PBEStatus1.None || status2 != PBEStatus2.None ? BeforePostHit : (Action<PBEBattlePokemon, ushort>)null);
             }
             RecordExecutedMove(user, move, mData);
         }
@@ -2892,26 +2721,27 @@ namespace Kermalis.PokemonBattleEngine.Battle
             }
             else
             {
-                void BeforePostHit(PBEBattlePokemon target)
+                void BeforePostHit(PBEBattlePokemon target, ushort damageDealt)
                 {
-                    if (target.HP > 0 && GetManipulableChance(user, mData.EffectParam))
+                    if (target.HP == 0 || !GetManipulableChance(user, mData.EffectParam))
                     {
-                        PBEStatus1 status1;
-                        int val = PBERandom.RandomInt(0, 2);
-                        if (val == 0)
-                        {
-                            status1 = PBEStatus1.Burned;
-                        }
-                        else if (val == 1)
-                        {
-                            status1 = PBEStatus1.Frozen;
-                        }
-                        else
-                        {
-                            status1 = PBEStatus1.Paralyzed;
-                        }
-                        ApplyStatus1IfPossible(user, target, status1, false);
+                        return;
                     }
+                    PBEStatus1 status1;
+                    int val = PBERandom.RandomInt(0, 2);
+                    if (val == 0)
+                    {
+                        status1 = PBEStatus1.Burned;
+                    }
+                    else if (val == 1)
+                    {
+                        status1 = PBEStatus1.Frozen;
+                    }
+                    else
+                    {
+                        status1 = PBEStatus1.Paralyzed;
+                    }
+                    ApplyStatus1IfPossible(user, target, status1, false);
                 }
                 BasicHit(user, targets, mData, beforePostHit: BeforePostHit);
             }
@@ -2977,10 +2807,9 @@ namespace Kermalis.PokemonBattleEngine.Battle
             }
             else
             {
-                PBEResult BeforeDoingDamage(PBEBattlePokemon target)
+                void BeforeDoingDamage(PBEBattlePokemon target)
                 {
                     BroadcastPayDay();
-                    return PBEResult.Success;
                 }
                 BasicHit(user, targets, mData, beforeDoingDamage: BeforeDoingDamage);
             }
@@ -3000,21 +2829,22 @@ namespace Kermalis.PokemonBattleEngine.Battle
                 {
                     return user.Ability == PBEAbility.RockHead || totalDamageDealt == 0 ? (int?)null : totalDamageDealt / mData.EffectParam;
                 }
-                void BeforePostHit(PBEBattlePokemon target)
+                void BeforePostHit(PBEBattlePokemon target, ushort damageDealt)
                 {
-                    if (target.HP > 0)
+                    if (target.HP == 0)
                     {
-                        if (status1 != PBEStatus1.None && GetManipulableChance(user, chanceToInflictStatus1))
-                        {
-                            ApplyStatus1IfPossible(user, target, status1, false);
-                        }
-                        if (status2 != PBEStatus2.None && GetManipulableChance(user, chanceToInflictStatus2))
-                        {
-                            ApplyStatus2IfPossible(user, target, status2, false);
-                        }
+                        return;
+                    }
+                    if (status1 != PBEStatus1.None && GetManipulableChance(user, chanceToInflictStatus1))
+                    {
+                        ApplyStatus1IfPossible(user, target, status1, false);
+                    }
+                    if (status2 != PBEStatus2.None && GetManipulableChance(user, chanceToInflictStatus2))
+                    {
+                        ApplyStatus2IfPossible(user, target, status2, false);
                     }
                 }
-                BasicHit(user, targets, mData, recoilFunc: RecoilFunc, beforePostHit: status1 != PBEStatus1.None || status2 != PBEStatus2.None ? BeforePostHit : (Action<PBEBattlePokemon>)null);
+                BasicHit(user, targets, mData, recoilFunc: RecoilFunc, beforePostHit: status1 != PBEStatus1.None || status2 != PBEStatus2.None ? BeforePostHit : (Action<PBEBattlePokemon, ushort>)null);
             }
             RecordExecutedMove(user, move, mData);
         }
@@ -3028,15 +2858,13 @@ namespace Kermalis.PokemonBattleEngine.Battle
             }
             else
             {
-                void BeforePostHit(PBEBattlePokemon target)
+                void BeforePostHit(PBEBattlePokemon target, ushort damageDealt)
                 {
-                    // BUG: In Generation 5, Secret Power is unaffected by Serene Grace and the Rainbow
-                    if (target.HP > 0 &&
-#if !BUGFIX
-                        PBERandom.RandomBool(mData.EffectParam, 100)
-#else
-                        GetManipulableChance(user, mData.EffectParam)
-#endif
+                    // BUG: SecretPower is unaffected by SereneGrace and the Rainbow
+                    if (target.HP > 0
+                        && (Settings.BugFix
+                        ? GetManipulableChance(user, mData.EffectParam)
+                        : PBERandom.RandomBool(mData.EffectParam, 100))
                         )
                     {
                         switch (BattleTerrain)
@@ -3063,7 +2891,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
             PPReduce(user, move);
             // In gen 5, the user faints first (and loses if possible)
             // Due to technical limitations, we cannot faint first, but we should still make the user lose so it is the same behavior
-            DealDamage(user, user, user.MaxHP, true, ignoreSturdy: true);
+            DealDamage(user, user, user.MaxHP);
             TrySetLoser(user);
             if (targets.Length == 0) // You still faint if there are no targets
             {
@@ -3071,7 +2899,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
             }
             else
             {
-                BasicHit(user, targets, mData, hitRegardlessOfUserConciousness: true);
+                BasicHit(user, targets, mData);
             }
             FaintCheck(user); // No berry check because we are always fainted
             RecordExecutedMove(user, move, mData);
@@ -3086,7 +2914,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
             }
             else
             {
-                void AfterPostHit(PBEBattlePokemon target, ushort damageDealt)
+                void AfterPostHit(PBEBattlePokemon target)
                 {
                     if (target.HP > 0 && target.Status1 == PBEStatus1.Paralyzed)
                     {
@@ -3100,6 +2928,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
         }
         private void Ef_Snore(PBEBattlePokemon user, PBEBattlePokemon[] targets, PBEMove move, PBEMoveData mData)
         {
+            // TODO: Snore etc fail in BasicHit?
             BroadcastMoveUsed(user, move);
             PPReduce(user, move);
             if (targets.Length == 0)
@@ -3112,7 +2941,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
             }
             else
             {
-                void BeforePostHit(PBEBattlePokemon target)
+                void BeforePostHit(PBEBattlePokemon target, ushort damageDealt)
                 {
                     if (target.HP > 0 && GetManipulableChance(user, mData.EffectParam))
                     {
@@ -3151,23 +2980,20 @@ namespace Kermalis.PokemonBattleEngine.Battle
             }
             else
             {
-                PBEResult BeforeDoingDamage(PBEBattlePokemon target)
+                PBEResult FailFunc(PBEBattlePokemon target)
                 {
                     if (target.TurnAction == null // Just switched in
                         || target.HasUsedMoveThisTurn
                         || target.TurnAction.Decision != PBETurnDecision.Fight
                         || PBEMoveData.Data[target.TurnAction.FightMove].Category == PBEMoveCategory.Status)
                     {
-                        PBEResult result = PBEResult.InvalidConditions;
+                        const PBEResult result = PBEResult.InvalidConditions;
                         BroadcastMoveResult(user, target, result);
                         return result;
                     }
-                    else
-                    {
-                        return PBEResult.Success;
-                    }
+                    return PBEResult.Success;
                 }
-                BasicHit(user, targets, mData, beforeDoingDamage: BeforeDoingDamage);
+                BasicHit(user, targets, mData, failFunc: FailFunc);
             }
             RecordExecutedMove(user, move, mData);
         }
@@ -3181,7 +3007,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
             }
             else
             {
-                void AfterPostHit(PBEBattlePokemon target, ushort damageDealt)
+                void AfterPostHit(PBEBattlePokemon target)
                 {
                     if (target.HP > 0 && target.Status1 == PBEStatus1.Asleep)
                     {
@@ -3211,17 +3037,17 @@ namespace Kermalis.PokemonBattleEngine.Battle
                 {
                     return target.HP - user.HP;
                 }
-                PBEResult BeforeMissCheck(PBEBattlePokemon target)
+                PBEResult FailFunc(PBEBattlePokemon target)
                 {
                     if (target.HP <= user.HP)
                     {
-                        PBEResult result = PBEResult.InvalidConditions;
+                        const PBEResult result = PBEResult.InvalidConditions;
                         BroadcastMoveResult(user, target, result);
                         return result;
                     }
                     return PBEResult.Success;
                 }
-                FixedDamageHit(user, targets, mData, DamageFunc, beforeMissCheck: BeforeMissCheck);
+                FixedDamageHit(user, targets, mData, DamageFunc, failFunc: FailFunc);
             }
             RecordExecutedMove(user, move, mData);
         }
@@ -3238,9 +3064,10 @@ namespace Kermalis.PokemonBattleEngine.Battle
                 int oldHP = user.HP;
                 int DamageFunc(PBEBattlePokemon target)
                 {
+                    // Only faint/deal damage first time
                     if (user.HP > 0)
                     {
-                        DealDamage(user, user, oldHP, true);
+                        DealDamage(user, user, oldHP);
                         FaintCheck(user); // No berry check because we are always fainted
                     }
                     return oldHP;
@@ -3263,11 +3090,11 @@ namespace Kermalis.PokemonBattleEngine.Battle
                 {
                     return target.HP;
                 }
-                PBEResult BeforeMissCheck(PBEBattlePokemon target)
+                PBEResult FailFunc(PBEBattlePokemon target)
                 {
                     if (target.Level > user.Level)
                     {
-                        PBEResult result = PBEResult.Ineffective_Level;
+                        const PBEResult result = PBEResult.Ineffective_Level;
                         BroadcastMoveResult(user, target, result);
                         return result;
                     }
@@ -3276,14 +3103,15 @@ namespace Kermalis.PokemonBattleEngine.Battle
                         return PBEResult.Success;
                     }
                 }
-                void BeforeTargetsFaint()
+                void BeforePostHit()
                 {
+                    // This Any is for Sturdy survivors
                     if (targets.Any(p => p.HP == 0))
                     {
                         BroadcastOneHitKnockout();
                     }
                 }
-                FixedDamageHit(user, targets, mData, DamageFunc, beforeMissCheck: BeforeMissCheck, beforeTargetsFaint: BeforeTargetsFaint);
+                FixedDamageHit(user, targets, mData, DamageFunc, failFunc: FailFunc, beforePostHit: BeforePostHit);
             }
             RecordExecutedMove(user, move, mData);
         }
@@ -3370,39 +3198,40 @@ namespace Kermalis.PokemonBattleEngine.Battle
             }
             else
             {
-                PBEResult BeforeDoingDamage(PBEBattlePokemon target)
+                PBEResult FailFunc(PBEBattlePokemon target)
                 {
                     if (target.Status1 != PBEStatus1.Asleep)
                     {
-                        PBEResult result = PBEResult.Ineffective_Status;
+                        const PBEResult result = PBEResult.Ineffective_Status;
                         BroadcastMoveResult(user, target, result);
                         return result;
                     }
                     return PBEResult.Success;
                 }
-                void AfterPostHit(PBEBattlePokemon target, ushort damageDealt)
+                void BeforePostHit(PBEBattlePokemon target, ushort damageDealt)
                 {
-                    if (user.HP > 0)
+                    if (user.HP == 0)
                     {
-                        int restoreAmt = (int)(damageDealt * (mData.EffectParam / 100.0));
-                        // Read comment at Leech Seed logic for why we cannot faint here like the games do
-                        ApplyBigRoot(user, ref restoreAmt);
-                        if (target.Ability == PBEAbility.LiquidOoze)
+                        return;
+                    }
+                    int restoreAmt = (int)(damageDealt * (mData.EffectParam / 100.0));
+                    ApplyBigRoot(user, ref restoreAmt);
+                    if (target.Ability == PBEAbility.LiquidOoze)
+                    {
+                        // Verified: User faints first here, target faints at normal spot afterwards
+                        BroadcastAbility(target, user, PBEAbility.LiquidOoze, PBEAbilityAction.Damage);
+                        DealDamage(target, user, restoreAmt);
+                        if (!FaintCheck(user))
                         {
-                            BroadcastAbility(target, user, PBEAbility.LiquidOoze, PBEAbilityAction.Damage);
-                            DealDamage(target, user, restoreAmt, true, ignoreSturdy: true); // Verified: It does ignore Sturdy
-                            if (!FaintCheck(user))
-                            {
-                                LowHPBerryCheck(user);
-                            }
-                        }
-                        else if (HealDamage(user, restoreAmt) > 0)
-                        {
-                            BroadcastHPDrained(target);
+                            LowHPBerryCheck(user);
                         }
                     }
+                    else if (HealDamage(user, restoreAmt) > 0)
+                    {
+                        BroadcastHPDrained(target);
+                    }
                 }
-                BasicHit(user, targets, mData, beforeDoingDamage: requireSleep ? BeforeDoingDamage : (Func<PBEBattlePokemon, PBEResult>)null, afterPostHit: AfterPostHit);
+                BasicHit(user, targets, mData, failFunc: requireSleep ? FailFunc : (Func<PBEBattlePokemon, PBEResult>)null, beforePostHit: BeforePostHit);
             }
             RecordExecutedMove(user, move, mData);
         }
@@ -3473,17 +3302,16 @@ namespace Kermalis.PokemonBattleEngine.Battle
                                 }
                                 else if (hp < pkmn.HP)
                                 {
-                                    DealDamage(user, pkmn, pkmn.HP - hp, true);
+                                    DealDamage(user, pkmn, pkmn.HP - hp);
                                 }
                             }
                             BroadcastPainSplit(user, target);
                             LowHPBerryCheck(user);
-                            LowHPBerryCheck(target, user); // Verified: Berry is activated but no illusion breaking
-                            DoPostAttackedTargetEffects(target); // Verified: Color Change is ignored
+                            LowHPBerryCheck(target, forcedToEatBy: user); // Verified: Berry is activated but no illusion breaking
+                            // Verified: ColorChange/LifeOrb is ignored
                         }
                     }
                 }
-                //DoPostAttackedUserEffects(user, false); // Do we need this? Life Orb doesn't activate.
             }
             RecordExecutedMove(user, move, mData);
         }
@@ -3603,22 +3431,26 @@ namespace Kermalis.PokemonBattleEngine.Battle
                     {
                         int requirement = target.MaxHP / 2;
                         // BUG: The games do not check if the target has Contrary
-#if !BUGFIX
-                        if (target.HP <= requirement || target.AttackChange == Settings.MaxStatChange)
-#else
-                        if (target.HP <= requirement || target.IsStatChangePossible(PBEStat.Attack, user, byte.MaxValue, out sbyte oldValue, out sbyte newValue) != PBEResult.Success)
-#endif
+                        sbyte oldValue = 0, newValue = 0;
+                        if (target.HP <= requirement
+                            || (Settings.BugFix
+                            ? target.IsStatChangePossible(PBEStat.Attack, user, byte.MaxValue, out oldValue, out newValue) != PBEResult.Success
+                            : target.AttackChange == Settings.MaxStatChange)
+                            )
                         {
                             BroadcastMoveResult(user, target, PBEResult.InvalidConditions);
                         }
                         else
                         {
-                            DealDamage(user, target, requirement, true);
-#if !BUGFIX
-                            ApplyStatChangeIfPossible(user, target, PBEStat.Attack, byte.MaxValue); // byte.MaxValue will work for all PBESettings
-#else
-                            SetStatAndBroadcast(target, PBEStat.Attack, oldValue, newValue);
-#endif
+                            DealDamage(user, target, requirement);
+                            if (Settings.BugFix)
+                            {
+                                SetStatAndBroadcast(target, PBEStat.Attack, oldValue, newValue);
+                            }
+                            else
+                            {
+                                ApplyStatChangeIfPossible(user, target, PBEStat.Attack, byte.MaxValue); // byte.MaxValue will work for all PBESettings
+                            }
                         }
                     }
                 }

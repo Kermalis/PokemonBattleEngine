@@ -83,10 +83,6 @@ namespace Kermalis.PokemonBattleEngine.Battle
             moveUser.TempLockedTargets = lockedTargets;
             Broadcast(new PBEMoveLockPacket(moveUser, PBEMoveLockType.Temporary, lockedMove, lockedTargets));
         }
-        private void BroadcastMoveMissed(PBEBattlePokemon moveUser, PBEBattlePokemon pokemon2)
-        {
-            Broadcast(new PBEMoveMissedPacket(moveUser, pokemon2));
-        }
         private void BroadcastMovePPChanged(PBEBattlePokemon moveUser, PBEMove move, int amountReduced)
         {
             Broadcast(new PBEMovePPChangedPacket(moveUser, move, amountReduced));
@@ -139,13 +135,11 @@ namespace Kermalis.PokemonBattleEngine.Battle
             pokemon.Weight = weight;
             pokemon.KnownWeight = weight;
             Broadcast(new PBEPkmnFormChangedPacket(pokemon, isRevertForm));
-            // BUG: PBEStatus2.PowerTrick is not cleared when changing form in any game
-#if BUGFIX
-            if (pokemon.Status2.HasFlag(PBEStatus2.PowerTrick))
+            // BUG: PBEStatus2.PowerTrick is not cleared when changing form
+            if (Settings.BugFix && pokemon.Status2.HasFlag(PBEStatus2.PowerTrick))
             {
                 BroadcastStatus2(pokemon, pokemon, PBEStatus2.PowerTrick, PBEStatusAction.Ended);
             }
-#endif
         }
         private void BroadcastPkmnHPChanged(PBEBattlePokemon pokemon, ushort oldHP, double oldHPPercentage)
         {
@@ -771,13 +765,6 @@ namespace Kermalis.PokemonBattleEngine.Battle
                     Console.WriteLine("A critical hit on {0}!", NameForTrainer(victim));
                     break;
                 }
-                case PBEMoveMissedPacket mmp:
-                {
-                    PBEBattlePokemon moveUser = mmp.MoveUserTrainer.TryGetPokemon(mmp.MoveUser);
-                    PBEBattlePokemon pokemon2 = mmp.Pokemon2Trainer.TryGetPokemon(mmp.Pokemon2);
-                    Console.WriteLine("{0}'s attack missed {1}!", NameForTrainer(moveUser), NameForTrainer(pokemon2));
-                    break;
-                }
                 case PBEMovePPChangedPacket mpcp:
                 {
                     PBEBattlePokemon moveUser = mpcp.MoveUserTrainer.TryGetPokemon(mpcp.MoveUser);
@@ -790,26 +777,28 @@ namespace Kermalis.PokemonBattleEngine.Battle
                 }
                 case PBEMoveResultPacket mrp:
                 {
+                    PBEBattlePokemon moveUser = mrp.MoveUserTrainer.TryGetPokemon(mrp.MoveUser);
                     PBEBattlePokemon pokemon2 = mrp.Pokemon2Trainer.TryGetPokemon(mrp.Pokemon2);
                     string message;
                     switch (mrp.Result)
                     {
-                        case PBEResult.Ineffective_Ability: message = "{0} is protected by its Ability!"; break;
-                        case PBEResult.Ineffective_Gender: message = "It doesn't affect {0}..."; break;
-                        case PBEResult.Ineffective_Level: message = "{0} is protected by its level!"; break;
-                        case PBEResult.Ineffective_MagnetRise: message = $"{{0}} is protected by {PBELocalizedString.GetMoveName(PBEMove.MagnetRise).English}!"; break;
-                        case PBEResult.Ineffective_Safeguard: message = $"{{0}} is protected by {PBELocalizedString.GetMoveName(PBEMove.Safeguard).English}!"; break;
+                        case PBEResult.Ineffective_Ability: message = "{1} is protected by its Ability!"; break;
+                        case PBEResult.Ineffective_Gender: message = "It doesn't affect {1}..."; break;
+                        case PBEResult.Ineffective_Level: message = "{1} is protected by its level!"; break;
+                        case PBEResult.Ineffective_MagnetRise: message = $"{{1}} is protected by {PBELocalizedString.GetMoveName(PBEMove.MagnetRise).English}!"; break;
+                        case PBEResult.Ineffective_Safeguard: message = $"{{1}} is protected by {PBELocalizedString.GetMoveName(PBEMove.Safeguard).English}!"; break;
                         case PBEResult.Ineffective_Stat:
                         case PBEResult.Ineffective_Status:
                         case PBEResult.InvalidConditions: message = "But it failed!"; break;
-                        case PBEResult.Ineffective_Substitute: message = $"{{0}} is protected by {PBELocalizedString.GetMoveName(PBEMove.Substitute).English}!"; break;
-                        case PBEResult.Ineffective_Type: message = "{0} is protected by its Type!"; break;
+                        case PBEResult.Ineffective_Substitute: message = $"{{1}} is protected by {PBELocalizedString.GetMoveName(PBEMove.Substitute).English}!"; break;
+                        case PBEResult.Ineffective_Type: message = "{1} is protected by its Type!"; break;
+                        case PBEResult.Missed: message = "{0}'s attack missed {1}!"; break;
                         case PBEResult.NoTarget: message = "But there was no target..."; break;
-                        case PBEResult.NotVeryEffective_Type: message = "It's not very effective on {0}..."; break;
-                        case PBEResult.SuperEffective_Type: message = "It's super effective on {0}!"; break;
+                        case PBEResult.NotVeryEffective_Type: message = "It's not very effective on {1}..."; break;
+                        case PBEResult.SuperEffective_Type: message = "It's super effective on {1}!"; break;
                         default: throw new ArgumentOutOfRangeException(nameof(mrp.Result));
                     }
-                    Console.WriteLine(message, NameForTrainer(pokemon2));
+                    Console.WriteLine(message, NameForTrainer(moveUser), NameForTrainer(pokemon2));
                     break;
                 }
                 case PBEMoveUsedPacket mup:

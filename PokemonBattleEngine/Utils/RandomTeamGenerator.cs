@@ -1152,7 +1152,7 @@ namespace Kermalis.PokemonBattleEngine.Utils
                     counter.DamagingMoves++;
                 }
                 // Moves with secondary effects:
-                if (mData.HasSecondaryEffects())
+                if (mData.HasSecondaryEffects(PBESettings.DefaultSettings))
                 {
                     counter[PBEAbility.SheerForce]++;
                     if (mData.EffectParam >= 20 && mData.EffectParam < 100)

@@ -25,8 +25,16 @@ namespace Kermalis.PokemonBattleEngine.Data
             Flags = flags;
         }
 
-        public bool HasSecondaryEffects()
+        public bool HasSecondaryEffects(PBESettings settings)
         {
+            if (settings == null)
+            {
+                throw new ArgumentNullException(nameof(settings));
+            }
+            if (!settings.IsReadOnly)
+            {
+                throw new ArgumentException("Settings must be read-only.", nameof(settings));
+            }
             switch (Effect)
             {
                 case PBEMoveEffect.Hit__MaybeBurn:
@@ -56,10 +64,9 @@ namespace Kermalis.PokemonBattleEngine.Data
                 case PBEMoveEffect.Hit__MaybeRaiseUser_SPATK_By1:
                 case PBEMoveEffect.Hit__MaybeRaiseUser_SPE_By1:
                 case PBEMoveEffect.Hit__MaybeToxic:
-#if BUGFIX
-                case PBEMoveEffect.SecretPower:
-#endif
                 case PBEMoveEffect.Snore: return true;
+                // BUG: SecretPower is unaffected by SereneGrace and the Rainbow
+                case PBEMoveEffect.SecretPower: return settings.BugFix;
                 default: return false;
             }
         }

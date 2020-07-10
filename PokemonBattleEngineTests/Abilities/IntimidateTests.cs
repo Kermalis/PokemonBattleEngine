@@ -138,7 +138,7 @@ namespace Kermalis.PokemonBattleEngineTests.Abilities
             battle.RunTurn();
 
             Assert.True(battle.VerifyAbilityHappened(luxray, luxray, PBEAbility.Intimidate, PBEAbilityAction.Stats) // Activated
-                && battle.VerifyMoveResult(luxray, shuckle, PBEResult.Ineffective_Substitute) && shuckle.AttackChange == 0); // Did not affect
+                && battle.VerifyMoveResultHappened(luxray, shuckle, PBEResult.Ineffective_Substitute) && shuckle.AttackChange == 0); // Did not affect
             #endregion
 
             #region Cleanup

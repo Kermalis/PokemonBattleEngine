@@ -455,7 +455,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                 return PBEResult.SuperEffective_Type;
             }
             PBEAbility kAbility = useKnownInfo ? target.KnownAbility : target.Ability;
-            if (!user.HasCancellingAbility() && kAbility == PBEAbility.WonderGuard)
+            if (kAbility == PBEAbility.WonderGuard && !user.HasCancellingAbility())
             {
                 damageMultiplier = 0;
                 result = PBEResult.Ineffective_Ability;

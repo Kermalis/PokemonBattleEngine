@@ -9,7 +9,6 @@
     <RepositoryUrl>https://github.com/Kermalis/PokemonBattleEngine</RepositoryUrl>
     <DocumentationFile>bin\$(Configuration)\$(TargetFramework)\$(AssemblyName).xml</DocumentationFile>
     <NoWarn>1591</NoWarn>
-    <DefineConstants>BUGFIX</DefineConstants>
   </PropertyGroup>
 
   <ItemGroup>

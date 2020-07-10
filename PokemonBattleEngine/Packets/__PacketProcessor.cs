@@ -35,7 +35,7 @@ namespace Kermalis.PokemonBattleEngine.Packets
                     case PBEPkmnHPChangedPacket.Code: return new PBEPkmnHPChangedPacket(data, r, battle);
                     case PBEHazePacket.Code: return new PBEHazePacket(data);
                     case PBEPkmnSwitchOutPacket.Code: return new PBEPkmnSwitchOutPacket(data, r, battle);
-                    case PBEMoveMissedPacket.Code: return new PBEMoveMissedPacket(data, r, battle);
+                    //case PBEMoveMissedPacket.Code: return new PBEMoveMissedPacket(data, r, battle);
                     case PBEPkmnFaintedPacket.Code: return new PBEPkmnFaintedPacket(data, r, battle);
                     case PBEMoveCritPacket.Code: return new PBEMoveCritPacket(data, r, battle);
                     case PBEPkmnStatChangedPacket.Code: return new PBEPkmnStatChangedPacket(data, r, battle);
