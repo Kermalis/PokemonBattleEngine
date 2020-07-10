@@ -842,6 +842,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                 }
             }
         }
+        /// <summary>The default value of <see cref="HiddenPowerMax"/>.</summary>
         public const byte DefaultHiddenPowerMax = 70;
         private byte _hiddenPowerMax = DefaultHiddenPowerMax;
         /// <summary>The maximum base power of <see cref="PBEMoveEffect.HiddenPower"/>.</summary>
@@ -862,6 +863,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                 }
             }
         }
+        /// <summary>The default value of <see cref="HiddenPowerMin"/>.</summary>
         public const byte DefaultHiddenPowerMin = 30;
         private byte _hiddenPowerMin = DefaultHiddenPowerMin;
         /// <summary>The minimum base power of <see cref="PBEMoveEffect.HiddenPower"/>.</summary>
@@ -882,6 +884,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                 }
             }
         }
+        /// <summary>The default value of <see cref="BugFix"/>.</summary>
         public const bool DefaultBugFix = false;
         private bool _bugFix = DefaultBugFix;
         /// <summary>Whether bugfixes should be applied or not.</summary>
