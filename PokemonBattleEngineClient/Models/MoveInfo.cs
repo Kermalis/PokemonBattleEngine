@@ -16,24 +16,24 @@ namespace Kermalis.PokemonBattleEngineClient.Models
         {
             _typeToBrush = new Dictionary<PBEType, (SolidColorBrush Brush, SolidColorBrush BorderBrush)>
             {
-                { PBEType.None, (new SolidColorBrush(Color.FromRgb(173, 165, 148)), new SolidColorBrush(Color.FromRgb(82, 82, 82))) },
-                { PBEType.Bug, (new SolidColorBrush(Color.FromRgb(173, 189, 31)), new SolidColorBrush(Color.FromRgb(66, 107, 57))) },
-                { PBEType.Dark, (new SolidColorBrush(Color.FromRgb(115, 90, 74)), new SolidColorBrush(Color.FromRgb(74, 57, 49))) },
-                { PBEType.Dragon, (new SolidColorBrush(Color.FromRgb(123, 99, 231)), new SolidColorBrush(Color.FromRgb(74, 57, 148))) },
-                { PBEType.Electric, (new SolidColorBrush(Color.FromRgb(255, 198, 49)), new SolidColorBrush(Color.FromRgb(115, 82, 24))) },
-                { PBEType.Fighting, (new SolidColorBrush(Color.FromRgb(165, 82, 57)), new SolidColorBrush(Color.FromRgb(74, 57, 49))) },
-                { PBEType.Fire, (new SolidColorBrush(Color.FromRgb(247, 82, 49)), new SolidColorBrush(Color.FromRgb(115, 33, 8))) },
-                { PBEType.Flying, (new SolidColorBrush(Color.FromRgb(156, 173, 247)), new SolidColorBrush(Color.FromRgb(66, 82, 148))) },
-                { PBEType.Ghost, (new SolidColorBrush(Color.FromRgb(99, 99, 181)), new SolidColorBrush(Color.FromRgb(74, 57, 82))) },
-                { PBEType.Grass, (new SolidColorBrush(Color.FromRgb(123, 206, 82)), new SolidColorBrush(Color.FromRgb(66, 107, 57))) },
-                { PBEType.Ground, (new SolidColorBrush(Color.FromRgb(214, 181, 90)), new SolidColorBrush(Color.FromRgb(115, 82, 24))) },
-                { PBEType.Ice, (new SolidColorBrush(Color.FromRgb(90, 206, 231)), new SolidColorBrush(Color.FromRgb(66, 82, 148))) },
-                { PBEType.Normal, (new SolidColorBrush(Color.FromRgb(173, 165, 148)), new SolidColorBrush(Color.FromRgb(82, 82, 82))) },
-                { PBEType.Poison, (new SolidColorBrush(Color.FromRgb(181, 90, 165)), new SolidColorBrush(Color.FromRgb(74, 57, 82))) },
-                { PBEType.Psychic, (new SolidColorBrush(Color.FromRgb(255, 115, 165)), new SolidColorBrush(Color.FromRgb(107, 57, 57))) },
-                { PBEType.Rock, (new SolidColorBrush(Color.FromRgb(189, 165, 90)), new SolidColorBrush(Color.FromRgb(115, 82, 24))) },
-                { PBEType.Steel, (new SolidColorBrush(Color.FromRgb(173, 173, 198)), new SolidColorBrush(Color.FromRgb(82, 82, 82))) },
-                { PBEType.Water, (new SolidColorBrush(Color.FromRgb(57, 156, 255)), new SolidColorBrush(Color.FromRgb(66, 82, 148))) }
+                { PBEType.None, (new SolidColorBrush(Color.FromRgb(146, 154, 156)), new SolidColorBrush(Color.FromRgb(83, 89, 88))) },
+                { PBEType.Bug, (new SolidColorBrush(Color.FromRgb(162, 212, 56)), new SolidColorBrush(Color.FromRgb(87, 127, 12))) },
+                { PBEType.Dark, (new SolidColorBrush(Color.FromRgb(106, 122, 156)), new SolidColorBrush(Color.FromRgb(64, 79, 109))) },
+                { PBEType.Dragon, (new SolidColorBrush(Color.FromRgb(80, 136, 188)), new SolidColorBrush(Color.FromRgb(6, 83, 137))) },
+                { PBEType.Electric, (new SolidColorBrush(Color.FromRgb(246, 216, 48)), new SolidColorBrush(Color.FromRgb(173, 148, 24))) },
+                { PBEType.Fighting, (new SolidColorBrush(Color.FromRgb(244, 100, 138)), new SolidColorBrush(Color.FromRgb(153, 62, 86))) },
+                { PBEType.Fire, (new SolidColorBrush(Color.FromRgb(255, 152, 56)), new SolidColorBrush(Color.FromRgb(196, 86, 13))) },
+                { PBEType.Flying, (new SolidColorBrush(Color.FromRgb(80, 124, 212)), new SolidColorBrush(Color.FromRgb(36, 75, 153))) },
+                { PBEType.Ghost, (new SolidColorBrush(Color.FromRgb(94, 100, 208)), new SolidColorBrush(Color.FromRgb(49, 56, 137))) },
+                { PBEType.Grass, (new SolidColorBrush(Color.FromRgb(64, 208, 112)), new SolidColorBrush(Color.FromRgb(27, 135, 63))) },
+                { PBEType.Ground, (new SolidColorBrush(Color.FromRgb(232, 130, 68)), new SolidColorBrush(Color.FromRgb(150, 83, 45))) },
+                { PBEType.Ice, (new SolidColorBrush(Color.FromRgb(98, 204, 212)), new SolidColorBrush(Color.FromRgb(52, 128, 145))) },
+                { PBEType.Normal, (new SolidColorBrush(Color.FromRgb(146, 154, 156)), new SolidColorBrush(Color.FromRgb(83, 89, 88))) },
+                { PBEType.Poison, (new SolidColorBrush(Color.FromRgb(188, 82, 232)), new SolidColorBrush(Color.FromRgb(117, 52, 145))) },
+                { PBEType.Psychic, (new SolidColorBrush(Color.FromRgb(255, 136, 130)), new SolidColorBrush(Color.FromRgb(173, 81, 89))) },
+                { PBEType.Rock, (new SolidColorBrush(Color.FromRgb(196, 174, 112)), new SolidColorBrush(Color.FromRgb(114, 101, 66))) },
+                { PBEType.Steel, (new SolidColorBrush(Color.FromRgb(94, 160, 178)), new SolidColorBrush(Color.FromRgb(66, 105, 114))) },
+                { PBEType.Water, (new SolidColorBrush(Color.FromRgb(58, 176, 232)), new SolidColorBrush(Color.FromRgb(34, 106, 137))) }
             };
         }
 
