@@ -46,6 +46,10 @@ namespace Kermalis.PokemonBattleEngine.Utils
         public T RandomElement<T>(IReadOnlyList<T> source)
         {
             int count = source.Count - 1;
+            if (count == 0)
+            {
+                return source[0];
+            }
             if (count < 0)
             {
                 throw new ArgumentOutOfRangeException(nameof(source), $"\"{nameof(source)}\" must have at least one element.");
@@ -75,6 +79,10 @@ namespace Kermalis.PokemonBattleEngine.Utils
         /// <summary>Returns a random <see cref="int"/> value between the inclusive <paramref name="minValue"/> and inclusive <paramref name="maxValue"/>.</summary>
         public int RandomInt(int minValue, int maxValue)
         {
+            if (minValue == maxValue)
+            {
+                return minValue;
+            }
             if (minValue > maxValue)
             {
                 throw new ArgumentOutOfRangeException(nameof(minValue), $"\"{nameof(minValue)}\" cannot exceed \"{nameof(maxValue)}\".");

@@ -4,7 +4,6 @@ using Kermalis.PokemonBattleEngine.Data;
 using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 using System.Net;
 
 namespace Kermalis.PokemonBattleEngineDiscord
@@ -107,6 +106,10 @@ namespace Kermalis.PokemonBattleEngineDiscord
         public static T RandomElement<T>(this IReadOnlyList<T> source)
         {
             int count = source.Count;
+            if (count == 1)
+            {
+                return source[0];
+            }
             if (count < 1)
             {
                 throw new ArgumentOutOfRangeException(nameof(source), $"\"{nameof(source)}\" must have at least one element.");
