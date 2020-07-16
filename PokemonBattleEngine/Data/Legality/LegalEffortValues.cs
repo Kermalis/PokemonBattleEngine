@@ -216,7 +216,7 @@ namespace Kermalis.PokemonBattleEngine.Data.Legality
             {
                 byte[] vals = new byte[6];
                 int[] a = Enumerable.Repeat(0, 6 - 1)
-                    .Select(x => PBERandom.RandomInt(1, Settings.MaxTotalEVs - 1))
+                    .Select(x => PBEUtils.GlobalRandom.RandomInt(1, Settings.MaxTotalEVs - 1))
                     .Concat(new int[] { Settings.MaxTotalEVs })
                     .OrderBy(x => x)
                     .ToArray();
@@ -239,7 +239,7 @@ namespace Kermalis.PokemonBattleEngine.Data.Legality
                             notMax.Add(i);
                         }
                     }
-                    int index = notMax.RandomElement();
+                    int index = PBEUtils.GlobalRandom.RandomElement(notMax);
                     byte old = vals[index];
                     byte b = (byte)Math.Min(byte.MaxValue, old + (Settings.MaxTotalEVs - total));
                     vals[index] = b;

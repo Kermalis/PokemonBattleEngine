@@ -18,7 +18,7 @@ namespace Kermalis.PokemonBattleEngineTests.Abilities
         public void Illusion_Does_Not_Copy_Same_Species()
         {
             #region Setup
-            PBERandom.SetSeed(0);
+            PBEUtils.GlobalRandom.Seed = 0;
             PBESettings settings = PBESettings.DefaultSettings;
 
             var p0 = new TestPokemonCollection(1);
@@ -51,7 +51,7 @@ namespace Kermalis.PokemonBattleEngineTests.Abilities
         public void Illusion_Copies_Shaymin_Reversion()
         {
             #region Setup
-            PBERandom.SetSeed(0); // Seed ensures SecretPower freezes
+            PBEUtils.GlobalRandom.Seed = 4; // Seed ensures SecretPower freezes
             PBESettings settings = PBESettings.DefaultSettings;
 
             var p0 = new TestPokemonCollection(1);
@@ -68,7 +68,8 @@ namespace Kermalis.PokemonBattleEngineTests.Abilities
             };
             p1[2] = new TestPokemon(settings, PBESpecies.Magikarp, 0, 100, PBEMove.Splash);
 
-            var battle = new PBEBattle(PBEBattleFormat.Single, settings, new PBETrainerInfo(p0, "Trainer 0"), new PBETrainerInfo(p1, "Trainer 1"), battleTerrain: PBEBattleTerrain.Snow);
+            var battle = new PBEBattle(PBEBattleFormat.Single, settings, new PBETrainerInfo(p0, "Trainer 0"), new PBETrainerInfo(p1, "Trainer 1"),
+                battleTerrain: PBEBattleTerrain.Snow);
             battle.OnNewEvent += PBEBattle.ConsoleBattleEventHandler;
             battle.Begin();
 

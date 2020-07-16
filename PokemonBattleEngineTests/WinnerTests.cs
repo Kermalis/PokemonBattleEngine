@@ -20,7 +20,7 @@ namespace Kermalis.PokemonBattleEngineTests
         public void Explosion_User_Loses_Single()
         {
             #region Setup
-            PBERandom.SetSeed(0);
+            PBEUtils.GlobalRandom.Seed = 0;
             PBESettings settings = PBESettings.DefaultSettings;
 
             var p0 = new TestPokemonCollection(1);
@@ -58,7 +58,7 @@ namespace Kermalis.PokemonBattleEngineTests
         public void Explosion_User_Loses_Multiple()
         {
             #region Setup
-            PBERandom.SetSeed(0);
+            PBEUtils.GlobalRandom.Seed = 0;
             PBESettings settings = PBESettings.DefaultSettings;
 
             var p0 = new TestPokemonCollection(3);
@@ -110,7 +110,7 @@ namespace Kermalis.PokemonBattleEngineTests
         public void FinalGambit_User_Loses()
         {
             #region Setup
-            PBERandom.SetSeed(0);
+            PBEUtils.GlobalRandom.Seed = 0;
             PBESettings settings = PBESettings.DefaultSettings;
 
             var p0 = new TestPokemonCollection(1);
@@ -148,7 +148,7 @@ namespace Kermalis.PokemonBattleEngineTests
         public void HPDrain_And_LiquidOoze()
         {
             #region Setup
-            PBERandom.SetSeed(0);
+            PBEUtils.GlobalRandom.Seed = 0;
             PBESettings settings = PBESettings.DefaultSettings;
 
             var p0 = new TestPokemonCollection(1);
@@ -190,7 +190,7 @@ namespace Kermalis.PokemonBattleEngineTests
         public void IronBarbs_User_Loses()
         {
             #region Setup
-            PBERandom.SetSeed(0);
+            PBEUtils.GlobalRandom.Seed = 0;
             PBESettings settings = PBESettings.DefaultSettings;
 
             var p0 = new TestPokemonCollection(1);
@@ -233,7 +233,7 @@ namespace Kermalis.PokemonBattleEngineTests
         public void LeechSeed_And_LiquidOoze()
         {
             #region Setup
-            PBERandom.SetSeed(0); // Seed ensures LeechSeed doesn't miss
+            PBEUtils.GlobalRandom.Seed = 0; // Seed ensures LeechSeed doesn't miss
             var settings = new PBESettings { LeechSeedDenominator = 1 };
             settings.MakeReadOnly();
 
@@ -275,7 +275,7 @@ namespace Kermalis.PokemonBattleEngineTests
         public void LifeOrb_User_Wins()
         {
             #region Setup
-            PBERandom.SetSeed(0);
+            PBEUtils.GlobalRandom.Seed = 0;
             PBESettings settings = PBESettings.DefaultSettings;
 
             var p0 = new TestPokemonCollection(1);
@@ -318,7 +318,7 @@ namespace Kermalis.PokemonBattleEngineTests
         public void Recoil_User_Wins()
         {
             #region Setup
-            PBERandom.SetSeed(0);
+            PBEUtils.GlobalRandom.Seed = 0;
             PBESettings settings = PBESettings.DefaultSettings;
 
             var p0 = new TestPokemonCollection(1);

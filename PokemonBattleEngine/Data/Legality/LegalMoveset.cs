@@ -426,13 +426,13 @@ namespace Kermalis.PokemonBattleEngine.Data.Legality
                 }
                 else
                 {
-                    PBEMove move = allowed.RandomElement();
+                    PBEMove move = PBEUtils.GlobalRandom.RandomElement(allowed);
                     if (i < Settings.NumMoves - 1)
                     {
                         blacklist.Add(move);
                     }
                     slot.Move = move;
-                    slot.PPUps = (byte)PBERandom.RandomInt(0, Settings.MaxPPUps);
+                    slot.PPUps = (byte)PBEUtils.GlobalRandom.RandomInt(0, Settings.MaxPPUps);
                 }
             }
             SetEditables();

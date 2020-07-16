@@ -113,8 +113,8 @@ namespace Kermalis.PokemonBattleEngine.Data.Legality
 
         private void InsertRandom(bool setToMaxLevel, bool fireEvent, int index)
         {
-            (PBESpecies species, PBEForm form) = PBERandom.RandomSpecies(true);
-            Insert(species, form, setToMaxLevel ? Settings.MaxLevel : PBERandom.RandomLevel(Settings), fireEvent, index);
+            (PBESpecies species, PBEForm form) = PBEUtils.GlobalRandom.RandomSpecies(true);
+            Insert(species, form, setToMaxLevel ? Settings.MaxLevel : PBEUtils.GlobalRandom.RandomLevel(Settings), fireEvent, index);
         }
         private void Insert(PBESpecies species, PBEForm form, byte level, bool fireEvent, int index)
         {

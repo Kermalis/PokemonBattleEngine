@@ -28,6 +28,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
         /// <summary>The winner of the battle. null if <see cref="BattleState"/> is not <see cref="PBEBattleState.Ended"/>.</summary>
         public PBETeam Winner { get; set; }
 
+        private readonly PBERandom _rand;
         public PBEBattleTerrain BattleTerrain { get; }
         public PBEBattleFormat BattleFormat { get; }
         public PBESettings Settings { get; }
@@ -43,9 +44,11 @@ namespace Kermalis.PokemonBattleEngine.Battle
 
         public List<IPBEPacket> Events { get; } = new List<IPBEPacket>();
 
-        public PBEBattle(PBEBattleFormat battleFormat, PBESettings settings, PBETrainerInfo ti0, PBETrainerInfo ti1, PBEBattleTerrain battleTerrain = PBEBattleTerrain.Plain, PBEWeather weather = PBEWeather.None)
-            : this(battleFormat, settings, new[] { ti0 }, new[] { ti1 }, battleTerrain: battleTerrain, weather: weather) { }
-        public PBEBattle(PBEBattleFormat battleFormat, PBESettings settings, IReadOnlyList<PBETrainerInfo> ti0, IReadOnlyList<PBETrainerInfo> ti1, PBEBattleTerrain battleTerrain = PBEBattleTerrain.Plain, PBEWeather weather = PBEWeather.None)
+        public PBEBattle(PBEBattleFormat battleFormat, PBESettings settings, PBETrainerInfo ti0, PBETrainerInfo ti1,
+            PBEBattleTerrain battleTerrain = PBEBattleTerrain.Plain, PBEWeather weather = PBEWeather.None, int? randomSeed = null)
+            : this(battleFormat, settings, new[] { ti0 }, new[] { ti1 }, battleTerrain: battleTerrain, weather: weather, randomSeed: randomSeed) { }
+        public PBEBattle(PBEBattleFormat battleFormat, PBESettings settings, IReadOnlyList<PBETrainerInfo> ti0, IReadOnlyList<PBETrainerInfo> ti1,
+            PBEBattleTerrain battleTerrain = PBEBattleTerrain.Plain, PBEWeather weather = PBEWeather.None, int? randomSeed = null)
         {
             if (battleFormat >= PBEBattleFormat.MAX)
             {
@@ -75,6 +78,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
             {
                 throw new ArgumentNullException(nameof(ti1));
             }
+            _rand = new PBERandom(randomSeed ?? PBEUtils.GlobalRandom.RandomInt());
             BattleTerrain = battleTerrain;
             BattleFormat = battleFormat;
             Settings = settings;
@@ -486,7 +490,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                     int pkmnTiedWith = evaluated.FindIndex(t => t.Speed == speed);
                     if (pkmnTiedWith != -1) // Speed tie - randomly go before or after the Pokémon it tied with
                     {
-                        if (PBERandom.RandomBool())
+                        if (_rand.RandomBool())
                         {
                             if (pkmnTiedWith == evaluated.Count - 1)
                             {

@@ -325,16 +325,5 @@ namespace Kermalis.PokemonBattleEngineClient.Infrastructure
             }
             return sb.ToString();
         }
-
-        private static readonly Random _rand = new Random();
-        public static T RandomElement<T>(this T[] source)
-        {
-            int count = source.Length;
-            if (count < 1)
-            {
-                throw new ArgumentOutOfRangeException(nameof(source), $"\"{nameof(source)}\" must have at least one element.");
-            }
-            return source[_rand.Next(count)];
-        }
     }
 }

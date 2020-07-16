@@ -32,7 +32,7 @@ namespace Kermalis.PokemonBattleEngineTests.Moves
         public void Camouflage_Works(PBEBattleTerrain battleTerrain, PBEType expectedType, PBESpecies species)
         {
             #region Setup
-            PBERandom.SetSeed(0);
+            PBEUtils.GlobalRandom.Seed = 0;
             PBESettings settings = PBESettings.DefaultSettings;
 
             var p0 = new TestPokemonCollection(1);
@@ -41,7 +41,8 @@ namespace Kermalis.PokemonBattleEngineTests.Moves
             var p1 = new TestPokemonCollection(1);
             p1[0] = new TestPokemon(settings, PBESpecies.Magikarp, 0, 100, PBEMove.Splash);
 
-            var battle = new PBEBattle(PBEBattleFormat.Single, settings, new PBETrainerInfo(p0, "Trainer 0"), new PBETrainerInfo(p1, "Trainer 1"), battleTerrain: battleTerrain);
+            var battle = new PBEBattle(PBEBattleFormat.Single, settings, new PBETrainerInfo(p0, "Trainer 0"), new PBETrainerInfo(p1, "Trainer 1"),
+                battleTerrain: battleTerrain);
             battle.OnNewEvent += PBEBattle.ConsoleBattleEventHandler;
             battle.Begin();
 
@@ -69,7 +70,7 @@ namespace Kermalis.PokemonBattleEngineTests.Moves
         public void Camouflage_Fails()
         {
             #region Setup
-            PBERandom.SetSeed(0);
+            PBEUtils.GlobalRandom.Seed = 0;
             PBESettings settings = PBESettings.DefaultSettings;
 
             var p0 = new TestPokemonCollection(1);
@@ -78,7 +79,8 @@ namespace Kermalis.PokemonBattleEngineTests.Moves
             var p1 = new TestPokemonCollection(1);
             p1[0] = new TestPokemon(settings, PBESpecies.Magikarp, 0, 100, PBEMove.Splash);
 
-            var battle = new PBEBattle(PBEBattleFormat.Single, settings, new PBETrainerInfo(p0, "Trainer 0"), new PBETrainerInfo(p1, "Trainer 1"), battleTerrain: PBEBattleTerrain.Water);
+            var battle = new PBEBattle(PBEBattleFormat.Single, settings, new PBETrainerInfo(p0, "Trainer 0"), new PBETrainerInfo(p1, "Trainer 1"),
+                battleTerrain: PBEBattleTerrain.Water);
             battle.OnNewEvent += PBEBattle.ConsoleBattleEventHandler;
             battle.Begin();
 

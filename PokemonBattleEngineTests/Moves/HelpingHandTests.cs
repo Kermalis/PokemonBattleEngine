@@ -25,7 +25,7 @@ namespace Kermalis.PokemonBattleEngineTests.Moves
         public void HelpingHand_HitsSemiInvulnerable(PBEMove move, PBEStatus2 status2)
         {
             #region Setup
-            PBERandom.SetSeed(0);
+            PBEUtils.GlobalRandom.Seed = 0;
             PBESettings settings = PBESettings.DefaultSettings;
 
             var p0 = new TestPokemonCollection(2);
@@ -79,7 +79,7 @@ namespace Kermalis.PokemonBattleEngineTests.Moves
         public void HelpingHand_Fails_If_Self()
         {
             #region Setup
-            PBERandom.SetSeed(0);
+            PBEUtils.GlobalRandom.Seed = 0;
             PBESettings settings = PBESettings.DefaultSettings;
 
             var p0 = new TestPokemonCollection(1);

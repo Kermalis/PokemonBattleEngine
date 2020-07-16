@@ -23,7 +23,7 @@ namespace Kermalis.PokemonBattleEngineTests.Moves
         public void Roost_Works(PBESpecies species, bool swapTypes) // Swap types around since there's no primary flying-type
         {
             #region Setup
-            PBERandom.SetSeed(0);
+            PBEUtils.GlobalRandom.Seed = 0;
             PBESettings settings = PBESettings.DefaultSettings;
 
             var p0 = new TestPokemonCollection(1);

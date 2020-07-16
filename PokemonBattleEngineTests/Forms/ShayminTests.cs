@@ -18,7 +18,7 @@ namespace Kermalis.PokemonBattleEngineTests.Forms
         public void Shaymin_Reverts_To_Normal_Form_Forever()
         {
             #region Setup
-            PBERandom.SetSeed(1); // Seed ensures SecretPower freezes
+            PBEUtils.GlobalRandom.Seed = 40703; // Seed ensures SecretPower freezes
             PBESettings settings = PBESettings.DefaultSettings;
 
             var p0 = new TestPokemonCollection(1);
@@ -31,7 +31,8 @@ namespace Kermalis.PokemonBattleEngineTests.Forms
             p1[0] = new TestPokemon(settings, PBESpecies.Shaymin, PBEForm.Shaymin_Sky, 100, PBEMove.Splash);
             p1[1] = new TestPokemon(settings, PBESpecies.Magikarp, 0, 100, PBEMove.Splash);
 
-            var battle = new PBEBattle(PBEBattleFormat.Single, settings, new PBETrainerInfo(p0, "Trainer 0"), new PBETrainerInfo(p1, "Trainer 1"), battleTerrain: PBEBattleTerrain.Snow);
+            var battle = new PBEBattle(PBEBattleFormat.Single, settings, new PBETrainerInfo(p0, "Trainer 0"), new PBETrainerInfo(p1, "Trainer 1"),
+                battleTerrain: PBEBattleTerrain.Snow);
             battle.OnNewEvent += PBEBattle.ConsoleBattleEventHandler;
             battle.Begin();
 

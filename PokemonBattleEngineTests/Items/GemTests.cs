@@ -38,7 +38,7 @@ namespace Kermalis.PokemonBattleEngineTests.Items
         public void Gem_Works(PBEMove move, PBEItem item)
         {
             #region Setup
-            PBERandom.SetSeed(1); // Seed ensures all moves do not miss
+            PBEUtils.GlobalRandom.Seed = 1; // Seed ensures all moves do not miss
             PBESettings settings = PBESettings.DefaultSettings;
 
             var p0 = new TestPokemonCollection(1);
@@ -82,7 +82,7 @@ namespace Kermalis.PokemonBattleEngineTests.Items
         public void Gem_Activates__FixedDamage__Bug(bool bugFix)
         {
             #region Setup
-            PBERandom.SetSeed(0);
+            PBEUtils.GlobalRandom.Seed = 0;
             var settings = new PBESettings { BugFix = bugFix };
             settings.MakeReadOnly();
 
@@ -132,7 +132,7 @@ namespace Kermalis.PokemonBattleEngineTests.Items
         public void Gem_Does_Not_Activate__Effectiveness()
         {
             #region Setup
-            PBERandom.SetSeed(0);
+            PBEUtils.GlobalRandom.Seed = 0;
             PBESettings settings = PBESettings.DefaultSettings;
 
             var p0 = new TestPokemonCollection(2);
@@ -190,7 +190,7 @@ namespace Kermalis.PokemonBattleEngineTests.Items
         public void Gem_Does_Not_Activate__Fail()
         {
             #region Setup
-            PBERandom.SetSeed(0);
+            PBEUtils.GlobalRandom.Seed = 0;
             PBESettings settings = PBESettings.DefaultSettings;
 
             var p0 = new TestPokemonCollection(1);
@@ -231,7 +231,7 @@ namespace Kermalis.PokemonBattleEngineTests.Items
         public void Gem_Does_Not_Activate__Miss()
         {
             #region Setup
-            PBERandom.SetSeed(1); // Seed ensures all miss
+            PBEUtils.GlobalRandom.Seed = 1; // Seed ensures all miss
             PBESettings settings = PBESettings.DefaultSettings;
 
             var p0 = new TestPokemonCollection(2);
@@ -288,7 +288,7 @@ namespace Kermalis.PokemonBattleEngineTests.Items
         public void Gem_Does_Not_Activate__Protection()
         {
             #region Setup
-            PBERandom.SetSeed(0);
+            PBEUtils.GlobalRandom.Seed = 0;
             PBESettings settings = PBESettings.DefaultSettings;
 
             var p0 = new TestPokemonCollection(1);

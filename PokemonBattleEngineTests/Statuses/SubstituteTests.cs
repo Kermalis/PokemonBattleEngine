@@ -18,7 +18,7 @@ namespace Kermalis.PokemonBattleEngineTests.Statuses
         public void ColorChange_Does_Not_Activate()
         {
             #region Setup
-            PBERandom.SetSeed(0);
+            PBEUtils.GlobalRandom.Seed = 0;
             PBESettings settings = PBESettings.DefaultSettings;
 
             var p0 = new TestPokemonCollection(1);

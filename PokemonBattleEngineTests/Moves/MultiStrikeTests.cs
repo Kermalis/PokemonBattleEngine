@@ -20,7 +20,7 @@ namespace Kermalis.PokemonBattleEngineTests.Moves
         public void SkillLink_Works__2To5(PBEAbility ability, byte numHits)
         {
             #region Setup
-            PBERandom.SetSeed(1); // Seed ensures hits would normally not be 5
+            PBEUtils.GlobalRandom.Seed = 1230; // Seed ensures hits would normally not be 5
             PBESettings settings = PBESettings.DefaultSettings;
 
             var p0 = new TestPokemonCollection(1);

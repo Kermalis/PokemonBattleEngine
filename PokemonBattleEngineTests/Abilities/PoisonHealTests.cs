@@ -18,7 +18,7 @@ namespace Kermalis.PokemonBattleEngineTests.Abilities
         public void PoisonHeal_BadlyPoisoned_Counter_Works()
         {
             #region Setup
-            PBERandom.SetSeed(0); // Seed prevents Toxic from missing
+            PBEUtils.GlobalRandom.Seed = 0; // Seed prevents Toxic from missing
             PBESettings settings = PBESettings.DefaultSettings;
 
             var p0 = new TestPokemonCollection(1);

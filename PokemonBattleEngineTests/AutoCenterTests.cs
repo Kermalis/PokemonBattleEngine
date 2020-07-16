@@ -20,7 +20,7 @@ namespace Kermalis.PokemonBattleEngineTests
         public void AutoCenter_Works(bool left)
         {
             #region Setup
-            PBERandom.SetSeed(0);
+            PBEUtils.GlobalRandom.Seed = 0;
             PBESettings settings = PBESettings.DefaultSettings;
 
             var p = new TestPokemonCollection(3);
@@ -66,7 +66,7 @@ namespace Kermalis.PokemonBattleEngineTests
         public void AutoCenter_ActivatesFromHazard()
         {
             #region Setup
-            PBERandom.SetSeed(0);
+            PBEUtils.GlobalRandom.Seed = 0;
             PBESettings settings = PBESettings.DefaultSettings;
 
             var p0 = new TestPokemonCollection(5);
@@ -163,7 +163,7 @@ namespace Kermalis.PokemonBattleEngineTests
         public void AutoCenter_Works_MultiBattle(bool left)
         {
             #region Setup
-            PBERandom.SetSeed(0);
+            PBEUtils.GlobalRandom.Seed = 0;
             PBESettings settings = PBESettings.DefaultSettings;
 
             var pM = new TestPokemonCollection(1);

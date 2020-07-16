@@ -20,7 +20,7 @@ namespace Kermalis.PokemonBattleEngineTests.Moves
         public void BellyDrum_Contrary__Bug(bool bugFix)
         {
             #region Setup
-            PBERandom.SetSeed(0);
+            PBEUtils.GlobalRandom.Seed = 0;
             var settings = new PBESettings { BugFix = bugFix };
             settings.MakeReadOnly();
 

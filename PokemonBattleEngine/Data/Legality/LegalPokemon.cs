@@ -263,9 +263,9 @@ namespace Kermalis.PokemonBattleEngine.Data.Legality
             _species = species;
             _form = form;
             _level = level;
-            _friendship = (byte)PBERandom.RandomInt(0, byte.MaxValue);
-            _shiny = PBERandom.RandomShiny();
-            _nature = PBEDataUtils.AllNatures.RandomElement();
+            _friendship = (byte)PBEUtils.GlobalRandom.RandomInt(0, byte.MaxValue);
+            _shiny = PBEUtils.GlobalRandom.RandomShiny();
+            _nature = PBEUtils.GlobalRandom.RandomElement(PBEDataUtils.AllNatures);
             EffortValues = new PBELegalEffortValues(Settings, true);
             IndividualValues = new PBELegalIndividualValues(Settings, true);
             Moveset = new PBELegalMoveset(_species, _form, _level, Settings, true);
@@ -284,11 +284,11 @@ namespace Kermalis.PokemonBattleEngine.Data.Legality
             SetSelectable();
             if (!SelectableAbilities.Contains(_ability))
             {
-                Ability = SelectableAbilities.RandomElement();
+                Ability = PBEUtils.GlobalRandom.RandomElement(SelectableAbilities);
             }
             if (!SelectableItems.Contains(_item))
             {
-                Item = SelectableItems.RandomElement();
+                Item = PBEUtils.GlobalRandom.RandomElement(SelectableItems);
             }
             Moveset.Form = _form;
         }
@@ -306,15 +306,15 @@ namespace Kermalis.PokemonBattleEngine.Data.Legality
             }
             if (oldSpecies == 0 || !SelectableAbilities.Contains(_ability))
             {
-                Ability = SelectableAbilities.RandomElement();
+                Ability = PBEUtils.GlobalRandom.RandomElement(SelectableAbilities);
             }
             if (oldSpecies == 0 || !SelectableGenders.Contains(_gender))
             {
-                Gender = PBERandom.RandomGender(_pData.GenderRatio);
+                Gender = PBEUtils.GlobalRandom.RandomGender(_pData.GenderRatio);
             }
             if (oldSpecies == 0 || !SelectableItems.Contains(_item))
             {
-                Item = SelectableItems.RandomElement();
+                Item = PBEUtils.GlobalRandom.RandomElement(SelectableItems);
             }
             if (oldSpecies != 0)
             {

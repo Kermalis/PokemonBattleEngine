@@ -45,7 +45,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                     sturdyHappened = true;
                     victim.HP = 1;
                 }
-                else if (victim.Item == PBEItem.FocusBand && PBERandom.RandomBool(10, 100))
+                else if (victim.Item == PBEItem.FocusBand && _rand.RandomBool(10, 100))
                 {
                     focusBandHappened = true;
                     victim.HP = 1;
@@ -206,7 +206,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                 }
                 case PBEMoveEffect.Magnitude:
                 {
-                    int val = PBERandom.RandomInt(0, 99);
+                    int val = _rand.RandomInt(0, 99);
                     byte magnitude;
                     if (val < 5) // Magnitude 4 - 5%
                     {
@@ -1090,7 +1090,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
             damage = damage * a * basePower / d;
             damage /= 50;
             damage += 2;
-            return (int)(damage * ((100d - PBERandom.RandomInt(0, 15)) / 100));
+            return (int)(damage * ((100d - _rand.RandomInt(0, 15)) / 100));
         }
         private int CalculateConfusionDamage(PBEBattlePokemon pkmn)
         {

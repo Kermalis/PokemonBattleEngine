@@ -20,7 +20,7 @@ namespace Kermalis.PokemonBattleEngineTests.Forms
         public void CastformCherrim_Interacts_With_AirLock(PBESpecies species, PBEAbility ability, PBEForm form)
         {
             #region Setup
-            PBERandom.SetSeed(0);
+            PBEUtils.GlobalRandom.Seed = 0;
             PBESettings settings = PBESettings.DefaultSettings;
 
             var p0 = new TestPokemonCollection(2);
@@ -36,7 +36,8 @@ namespace Kermalis.PokemonBattleEngineTests.Forms
                 Ability = ability
             };
 
-            var battle = new PBEBattle(PBEBattleFormat.Single, settings, new PBETrainerInfo(p0, "Trainer 0"), new PBETrainerInfo(p1, "Trainer 1"), weather: PBEWeather.HarshSunlight);
+            var battle = new PBEBattle(PBEBattleFormat.Single, settings, new PBETrainerInfo(p0, "Trainer 0"), new PBETrainerInfo(p1, "Trainer 1"),
+                weather: PBEWeather.HarshSunlight);
             battle.OnNewEvent += PBEBattle.ConsoleBattleEventHandler;
             battle.Begin();
 
@@ -80,7 +81,7 @@ namespace Kermalis.PokemonBattleEngineTests.Forms
         public void CastformCherrim_Loses_Form(PBESpecies species, PBEAbility ability, PBEForm form)
         {
             #region Setup
-            PBERandom.SetSeed(0);
+            PBEUtils.GlobalRandom.Seed = 0;
             PBESettings settings = PBESettings.DefaultSettings;
 
             var p0 = new TestPokemonCollection(1);

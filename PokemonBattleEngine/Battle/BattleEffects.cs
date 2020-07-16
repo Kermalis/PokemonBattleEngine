@@ -1,6 +1,5 @@
 ﻿using Kermalis.PokemonBattleEngine.Data;
 using Kermalis.PokemonBattleEngine.Packets;
-using Kermalis.PokemonBattleEngine.Utils;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -118,7 +117,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                     {
                         // Spaghetti code taken from the assembly in generation 5 games
                         PBEStatus1 status = PBEStatus1.None;
-                        int randomNum = PBERandom.RandomInt(0, 29);
+                        int randomNum = _rand.RandomInt(0, 29);
                         if (randomNum <= 20)
                         {
                             if (randomNum > 10) // 11-20 (10%)
@@ -585,13 +584,13 @@ namespace Kermalis.PokemonBattleEngine.Battle
                     case PBEAbility.Moody:
                     {
                         PBEStat[] statsThatCanGoUp = PBEDataUtils.MoodyStats.Where(s => pkmn.GetStatChange(s) < Settings.MaxStatChange).ToArray();
-                        PBEStat? upStat = statsThatCanGoUp.Length == 0 ? (PBEStat?)null : statsThatCanGoUp.RandomElement();
+                        PBEStat? upStat = statsThatCanGoUp.Length == 0 ? (PBEStat?)null : _rand.RandomElement(statsThatCanGoUp);
                         var statsThatCanGoDown = PBEDataUtils.MoodyStats.Where(s => pkmn.GetStatChange(s) > -Settings.MaxStatChange).ToList();
                         if (upStat.HasValue)
                         {
                             statsThatCanGoDown.Remove(upStat.Value);
                         }
-                        PBEStat? downStat = statsThatCanGoDown.Count == 0 ? (PBEStat?)null : statsThatCanGoDown.RandomElement();
+                        PBEStat? downStat = statsThatCanGoDown.Count == 0 ? (PBEStat?)null : _rand.RandomElement(statsThatCanGoDown);
                         if (upStat.HasValue || downStat.HasValue)
                         {
                             BroadcastAbility(pkmn, pkmn, pkmn.Ability, PBEAbilityAction.Stats);
@@ -695,7 +694,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                 return;
             }
             PBEMoveData mData = PBEMoveData.Data[move];
-            PBEBattlePokemon[] targets = GetRuntimeTargets(user, requestedTargets, user.GetMoveTargets(mData) == PBEMoveTarget.SingleNotSelf);
+            PBEBattlePokemon[] targets = GetRuntimeTargets(user, requestedTargets, user.GetMoveTargets(mData) == PBEMoveTarget.SingleNotSelf, _rand);
             switch (mData.Effect)
             {
                 case PBEMoveEffect.Acrobatics:
@@ -891,7 +890,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
             }
             else if (user.Status1 == PBEStatus1.Frozen)
             {
-                if (mData.Flags.HasFlag(PBEMoveFlag.DefrostsUser) || PBERandom.RandomBool(20, 100))
+                if (mData.Flags.HasFlag(PBEMoveFlag.DefrostsUser) || _rand.RandomBool(20, 100))
                 {
                     user.Status1 = PBEStatus1.None;
                     BroadcastStatus1(user, user, PBEStatus1.Frozen, PBEStatusAction.Ended);
@@ -926,7 +925,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                 else
                 {
                     BroadcastStatus2(user, user, PBEStatus2.Confused, PBEStatusAction.Announced);
-                    if (PBERandom.RandomBool(50, 100))
+                    if (_rand.RandomBool(50, 100))
                     {
                         BroadcastStatus2(user, user, PBEStatus2.Confused, PBEStatusAction.Damage);
                         int damage = CalculateConfusionDamage(user);
@@ -941,7 +940,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                 }
             }
             // Verified: Paralysis before Infatuation
-            if (user.Status1 == PBEStatus1.Paralyzed && PBERandom.RandomBool(25, 100))
+            if (user.Status1 == PBEStatus1.Paralyzed && _rand.RandomBool(25, 100))
             {
                 BroadcastStatus1(user, user, PBEStatus1.Paralyzed, PBEStatusAction.CausedImmobility);
                 return true;
@@ -950,7 +949,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
             if (user.Status2.HasFlag(PBEStatus2.Infatuated))
             {
                 BroadcastStatus2(user, user.InfatuatedWithPokemon, PBEStatus2.Infatuated, PBEStatusAction.Announced);
-                if (PBERandom.RandomBool(50, 100))
+                if (_rand.RandomBool(50, 100))
                 {
                     BroadcastStatus2(user, user.InfatuatedWithPokemon, PBEStatus2.Infatuated, PBEStatusAction.CausedImmobility);
                     return true;
@@ -1099,7 +1098,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                 chance *= 0.5;
             }
         roll:
-            if (PBERandom.RandomBool((int)chance, 100))
+            if (_rand.RandomBool((int)chance, 100))
             {
                 return false;
             }
@@ -1166,7 +1165,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                 case 3: chance = 33.3; break;
                 default: chance = 50; break;
             }
-            return PBERandom.RandomBool((int)(chance * 100), 100 * 100);
+            return _rand.RandomBool((int)(chance * 100), 100 * 100);
         }
         private void TrySetLoser(PBEBattlePokemon pkmn)
         {
@@ -1201,7 +1200,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
             {
                 chance *= 2;
             }
-            return PBERandom.RandomBool(chance, 100);
+            return _rand.RandomBool(chance, 100);
         }
 
         private void ActivateAbility(PBEBattlePokemon pkmn, bool switchIn)
@@ -1518,7 +1517,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
         private void CauseConfusion(PBEBattlePokemon target, PBEBattlePokemon other)
         {
             target.ConfusionCounter = 0;
-            target.ConfusionTurns = (byte)PBERandom.RandomInt(Settings.ConfusionMinTurns, Settings.ConfusionMaxTurns);
+            target.ConfusionTurns = (byte)_rand.RandomInt(Settings.ConfusionMinTurns, Settings.ConfusionMaxTurns);
             BroadcastStatus2(target, other, PBEStatus2.Confused, PBEStatusAction.Added);
             AntiStatusAbilityCheck(target);
         }
@@ -1611,7 +1610,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                         PBEStat[] statsThatCanGoUp = PBEDataUtils.StarfBerryStats.Where(s => pkmn.GetStatChange(s) < Settings.MaxStatChange).ToArray();
                         if (statsThatCanGoUp.Length > 0)
                         {
-                            DoStatItem(statsThatCanGoUp.RandomElement(), +2);
+                            DoStatItem(_rand.RandomElement(statsThatCanGoUp), +2);
                         }
                         break;
                     }
@@ -1715,7 +1714,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
         }
         private void SetSleepTurns(PBEBattlePokemon pkmn, int minTurns, int maxTurns)
         {
-            pkmn.SleepTurns = (byte)(PBERandom.RandomInt(minTurns, maxTurns) / (pkmn.Ability == PBEAbility.EarlyBird ? 2 : 1));
+            pkmn.SleepTurns = (byte)(_rand.RandomInt(minTurns, maxTurns) / (pkmn.Ability == PBEAbility.EarlyBird ? 2 : 1));
         }
         private void DoTransform(PBEBattlePokemon user, PBEBattlePokemon target)
         {
@@ -1917,7 +1916,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                 case PBEStatus2.Protected:
                 {
                     // TODO: If the user goes last, fail
-                    if (PBERandom.RandomBool(user.GetProtectionChance(), ushort.MaxValue))
+                    if (_rand.RandomBool(user.GetProtectionChance(), ushort.MaxValue))
                     {
                         user.Protection_Used = true;
                         BroadcastStatus2(user, user, PBEStatus2.Protected, PBEStatusAction.Added);
@@ -2233,7 +2232,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                 }
                 case PBETeamStatus.QuickGuard:
                 {
-                    if (!user.Team.TeamStatus.HasFlag(PBETeamStatus.QuickGuard) && PBERandom.RandomBool(user.GetProtectionChance(), ushort.MaxValue))
+                    if (!user.Team.TeamStatus.HasFlag(PBETeamStatus.QuickGuard) && _rand.RandomBool(user.GetProtectionChance(), ushort.MaxValue))
                     {
                         user.Protection_Used = true;
                         BroadcastTeamStatus(user.Team, PBETeamStatus.QuickGuard, PBETeamStatusAction.Added);
@@ -2330,7 +2329,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                 }
                 case PBETeamStatus.WideGuard:
                 {
-                    if (!user.Team.TeamStatus.HasFlag(PBETeamStatus.WideGuard) && PBERandom.RandomBool(user.GetProtectionChance(), ushort.MaxValue))
+                    if (!user.Team.TeamStatus.HasFlag(PBETeamStatus.WideGuard) && _rand.RandomBool(user.GetProtectionChance(), ushort.MaxValue))
                     {
                         user.Protection_Used = true;
                         BroadcastTeamStatus(user.Team, PBETeamStatus.WideGuard, PBETeamStatusAction.Added);
@@ -2729,7 +2728,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                         return;
                     }
                     PBEStatus1 status1;
-                    int val = PBERandom.RandomInt(0, 2);
+                    int val = _rand.RandomInt(0, 2);
                     if (val == 0)
                     {
                         status1 = PBEStatus1.Burned;
@@ -2778,7 +2777,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
             }
             else
             {
-                int val = PBERandom.RandomInt(0, 5);
+                int val = _rand.RandomInt(0, 5);
                 if (val < 2)
                 {
                     numHits = 2;
@@ -2865,7 +2864,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                     if (target.HP > 0
                         && (Settings.BugFix
                         ? GetManipulableChance(user, mData.EffectParam)
-                        : PBERandom.RandomBool(mData.EffectParam, 100))
+                        : _rand.RandomBool(mData.EffectParam, 100))
                         )
                     {
                         switch (BattleTerrain)
@@ -3128,7 +3127,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
             {
                 int DamageFunc(PBEBattlePokemon target)
                 {
-                    return user.Level * (PBERandom.RandomInt(0, 100) + 50) / 100;
+                    return user.Level * (_rand.RandomInt(0, 100) + 50) / 100;
                 }
                 FixedDamageHit(user, targets, mData, DamageFunc);
             }
@@ -3533,7 +3532,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                         }
                         else
                         {
-                            BroadcastTypeChanged(target, available.RandomElement(), PBEType.None);
+                            BroadcastTypeChanged(target, _rand.RandomElement(available), PBEType.None);
                         }
                     }
                 }
@@ -3556,7 +3555,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                     {
                         PBEFieldPosition prioritizedPos = GetPositionAcross(BattleFormat, user.FieldPosition);
                         PBETurnTarget moveTarget = prioritizedPos == PBEFieldPosition.Left ? PBETurnTarget.FoeLeft : prioritizedPos == PBEFieldPosition.Center ? PBETurnTarget.FoeCenter : PBETurnTarget.FoeRight;
-                        targets = GetRuntimeTargets(user, moveTarget, false);
+                        targets = GetRuntimeTargets(user, moveTarget, false, _rand);
                     }
                     if (targets.Length == 0)
                     {
@@ -3666,9 +3665,9 @@ namespace Kermalis.PokemonBattleEngine.Battle
             // Record before the called move is recorded
             RecordExecutedMove(user, move, mData);
 
-            PBEMove calledMove = PBEDataUtils.MetronomeMoves.RandomElement();
+            PBEMove calledMove = _rand.RandomElement(PBEDataUtils.MetronomeMoves);
             _calledFromOtherMove = true;
-            UseMove(user, calledMove, GetRandomTargetForMetronome(user, calledMove));
+            UseMove(user, calledMove, GetRandomTargetForMetronome(user, calledMove, _rand));
             _calledFromOtherMove = false;
         }
         private void Ef_Nothing(PBEBattlePokemon user, PBEMove move, PBEMoveData mData)
@@ -3832,7 +3831,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                         }
                         else
                         {
-                            SwitchTwoPokemon(target, possibleSwitcheroonies.RandomElement(), user);
+                            SwitchTwoPokemon(target, _rand.RandomElement(possibleSwitcheroonies), user);
                         }
                     }
                 }

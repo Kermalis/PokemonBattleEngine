@@ -51,7 +51,7 @@ namespace Kermalis.PokemonBattleEngineTests
         #endregion
     }
 
-    public class TestMoveset : IPBEMoveset, IPBEMoveset<TestMoveset.TestMovesetSlot>
+    internal sealed class TestMoveset : IPBEMoveset, IPBEMoveset<TestMoveset.TestMovesetSlot>
     {
         public sealed class TestMovesetSlot : IPBEMovesetSlot
         {
@@ -112,7 +112,7 @@ namespace Kermalis.PokemonBattleEngineTests
             return GetEnumerator();
         }
     }
-    public class TestPokemon : IPBEPokemon
+    internal sealed class TestPokemon : IPBEPokemon
     {
         public PBESpecies Species { get; set; }
         public PBEForm Form { get; set; }
@@ -135,13 +135,13 @@ namespace Kermalis.PokemonBattleEngineTests
             Form = form;
             Level = level;
             Nickname = species.ToString();
-            Gender = PBERandom.RandomGender(PBEPokemonData.GetData(species, form).GenderRatio);
+            Gender = PBEUtils.GlobalRandom.RandomGender(PBEPokemonData.GetData(species, form).GenderRatio);
             EffortValues = new PBEStatCollection(0, 0, 0, 0, 0, 0);
             IndividualValues = new PBEStatCollection(0, 0, 0, 0, 0, 0);
             Moveset = new TestMoveset(settings, moves);
         }
     }
-    public class TestPokemonCollection : IPBEPokemonCollection, IPBEPokemonCollection<TestPokemon>
+    internal sealed class TestPokemonCollection : IPBEPokemonCollection, IPBEPokemonCollection<TestPokemon>
     {
         private readonly TestPokemon[] _list;
         public int Count => _list.Length;

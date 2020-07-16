@@ -54,6 +54,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
             using (var w = new EndianBinaryWriter(ms, encoding: EncodingType.UTF16))
             {
                 w.Write(CurrentReplayVersion);
+                w.Write(_rand.Seed);
 
                 w.Write(Events.Count);
                 for (int i = 0; i < Events.Count; i++)
@@ -92,7 +93,8 @@ namespace Kermalis.PokemonBattleEngine.Battle
                         throw new InvalidDataException();
                     }
                 }
-                ushort version = r.ReadUInt16();
+                ushort version = r.ReadUInt16(); // Unused for now
+                int seed = r.ReadInt32(); // Unused for now
                 PBEBattle b = null;
                 int numEvents = r.ReadInt32();
                 for (int i = 0; i < numEvents; i++)

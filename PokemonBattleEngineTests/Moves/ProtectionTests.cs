@@ -23,7 +23,7 @@ namespace Kermalis.PokemonBattleEngineTests.Moves
         public void Protection_Counter_Resets(PBEMove move)
         {
             #region Setup
-            PBERandom.SetSeed(0);
+            PBEUtils.GlobalRandom.Seed = 0;
             PBESettings settings = PBESettings.DefaultSettings;
 
             var p0 = new TestPokemonCollection(1);
@@ -71,7 +71,7 @@ namespace Kermalis.PokemonBattleEngineTests.Moves
         public void Feint_And_QuickGuard(bool ally)
         {
             #region Setup
-            PBERandom.SetSeed(0);
+            PBEUtils.GlobalRandom.Seed = 0;
             PBESettings settings = PBESettings.DefaultSettings;
 
             var p0 = new TestPokemonCollection(2);
@@ -113,7 +113,7 @@ namespace Kermalis.PokemonBattleEngineTests.Moves
         public void UserProtection_Works()
         {
             #region Setup
-            PBERandom.SetSeed(0);
+            PBEUtils.GlobalRandom.Seed = 0;
             PBESettings settings = PBESettings.DefaultSettings;
 
             var p0 = new TestPokemonCollection(1);
@@ -152,7 +152,7 @@ namespace Kermalis.PokemonBattleEngineTests.Moves
         public void TeamProtection_Works(PBEMove move, PBEMove move2, PBETeamStatus teamStatus)
         {
             #region Setup
-            PBERandom.SetSeed(0);
+            PBEUtils.GlobalRandom.Seed = 0;
             PBESettings settings = PBESettings.DefaultSettings;
 
             var p0 = new TestPokemonCollection(1);

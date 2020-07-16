@@ -647,7 +647,7 @@ namespace Kermalis.PokemonBattleEngine.AI
                     IOrderedEnumerable<(PBETurnAction Action, double Score)> byScore = possibleActions.OrderByDescending(t => t.Score);
                     Debug.WriteLine("{0}'s possible actions: {1}", user.Nickname, byScore.Select(t => ToDebugString(t)).Print());
                     double bestScore = byScore.First().Score;
-                    actions[i] = byScore.Where(t => t.Score == bestScore).ToArray().RandomElement().Action; // Pick random action of the ones that tied for best score
+                    actions[i] = PBEUtils.GlobalRandom.RandomElement(byScore.Where(t => t.Score == bestScore).ToArray()).Action; // Pick random action of the ones that tied for best score
                 }
                 // Action was chosen, finish up for this Pokémon
                 if (actions[i].Decision == PBETurnDecision.SwitchOut)
@@ -698,7 +698,7 @@ namespace Kermalis.PokemonBattleEngine.AI
                 throw new InvalidOperationException($"{nameof(trainer)} must require switch-ins.");
             }
             PBEBattlePokemon[] available = trainer.Party.Where(p => p.FieldPosition == PBEFieldPosition.None && p.HP > 0).ToArray();
-            available.Shuffle();
+            PBEUtils.GlobalRandom.Shuffle(available);
             var availablePositions = new List<PBEFieldPosition>();
             switch (trainer.Battle.BattleFormat)
             {

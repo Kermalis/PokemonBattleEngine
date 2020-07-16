@@ -90,7 +90,7 @@ namespace Kermalis.PokemonBattleEngineServer
                     // Wait for the server to be in a state where no events will be sent
                     _resetEvent.WaitOne();
 
-                    string name = Utils.RandomElement(new string[] { "Sasha", "Nikki", "Lara", "Violet", "Naomi", "Rose", "Sabrina", "Nicole" });
+                    string name = PBEUtils.GlobalRandom.RandomElement(new string[] { "Sasha", "Nikki", "Lara", "Violet", "Naomi", "Rose", "Sabrina", "Nicole" });
                     if (_battlerCounter < NumBattlers)
                     {
                         byte i = _battlerCounter;

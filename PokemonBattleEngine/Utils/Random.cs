@@ -4,33 +4,46 @@ using System.Collections.Generic;
 
 namespace Kermalis.PokemonBattleEngine.Utils
 {
-    public static class PBERandom
+    public class PBERandom
     {
-        private static readonly object _randLockObj = new object();
-        private static Random _rand;
-
-        internal static void Init()
+        private readonly object _randLockObj = new object();
+        private Random _rand;
+        private int _seed;
+        /// <summary>Gets or sets the seed of this <see cref="PBERandom"/>. The chain will be reset even if the seed is the same as the previous seed.</summary>
+        public int Seed
         {
-            _rand = new Random();
+            get => _seed;
+            set
+            {
+                lock (_randLockObj)
+                {
+                    _rand = new Random(value);
+                    _seed = value;
+                }
+            }
         }
-        internal static void Init(int seed)
+
+        public PBERandom() : this(Environment.TickCount) { }
+        public PBERandom(int? seed) : this(seed ?? Environment.TickCount) { }
+        public PBERandom(int seed)
         {
             _rand = new Random(seed);
+            _seed = seed;
         }
 
-        public static PBEBattleTerrain RandomBattleTerrain()
+        public PBEBattleTerrain RandomBattleTerrain()
         {
             return (PBEBattleTerrain)RandomInt(0, (int)PBEBattleTerrain.MAX - 1);
         }
-        internal static bool RandomBool()
+        public bool RandomBool()
         {
             return RandomInt(0, 1) == 1;
         }
-        internal static bool RandomBool(int chanceNumerator, int chanceDenominator)
+        public bool RandomBool(int chanceNumerator, int chanceDenominator)
         {
             return RandomInt(0, chanceDenominator - 1) < chanceNumerator;
         }
-        internal static T RandomElement<T>(this IReadOnlyList<T> source)
+        public T RandomElement<T>(IReadOnlyList<T> source)
         {
             int count = source.Count - 1;
             if (count < 0)
@@ -41,7 +54,7 @@ namespace Kermalis.PokemonBattleEngine.Utils
         }
         /// <summary>Returns a random <see cref="PBEGender"/> for the given <paramref name="genderRatio"/>.</summary>
         /// <exception cref="ArgumentOutOfRangeException">Thrown when <paramref name="genderRatio"/> is invalid.</exception>
-        public static PBEGender RandomGender(PBEGenderRatio genderRatio)
+        public PBEGender RandomGender(PBEGenderRatio genderRatio)
         {
             switch (genderRatio)
             {
@@ -55,30 +68,34 @@ namespace Kermalis.PokemonBattleEngine.Utils
                 default: throw new ArgumentOutOfRangeException(nameof(genderRatio));
             }
         }
+        public int RandomInt()
+        {
+            return RandomInt(int.MinValue, int.MaxValue);
+        }
         /// <summary>Returns a random <see cref="int"/> value between the inclusive <paramref name="minValue"/> and inclusive <paramref name="maxValue"/>.</summary>
-        internal static int RandomInt(int minValue, int maxValue)
+        public int RandomInt(int minValue, int maxValue)
         {
             if (minValue > maxValue)
             {
                 throw new ArgumentOutOfRangeException(nameof(minValue), $"\"{nameof(minValue)}\" cannot exceed \"{nameof(maxValue)}\".");
             }
-            uint scale = uint.MaxValue;
             byte[] bytes = new byte[sizeof(uint)];
-            while (scale == uint.MaxValue) // "d" should not be 1.0
+            uint scale;
+            do
             {
                 lock (_randLockObj)
                 {
                     _rand.NextBytes(bytes);
                 }
-                scale = BitConverter.ToUInt32(bytes, 0);
-            }
+                scale = (uint)((bytes[3] << 24) | (bytes[2] << 16) | (bytes[1] << 8) | bytes[0]); // Always convert as little-endian so all systems get the same result
+            } while (scale == uint.MaxValue); // "d" should not be 1.0
             double d = scale / (double)uint.MaxValue;
             return (int)(minValue + (((long)maxValue + 1 - minValue) * d)); // Remove "+ 1" for exclusive maxValue
         }
         /// <summary>Returns a random <see cref="byte"/> value that is between <paramref name="settings"/>'s <see cref="PBESettings.MinLevel"/> and <see cref="PBESettings.MaxLevel"/>.</summary>
         /// <param name="settings">The <see cref="PBESettings"/> object to use.</param>
         /// <exception cref="ArgumentNullException">Thrown when <paramref name="settings"/> == null.</exception>
-        public static byte RandomLevel(PBESettings settings)
+        public byte RandomLevel(PBESettings settings)
         {
             if (settings == null)
             {
@@ -91,31 +108,24 @@ namespace Kermalis.PokemonBattleEngine.Utils
             return (byte)RandomInt(settings.MinLevel, settings.MaxLevel);
         }
         /// <summary>Returns a random <see cref="bool"/> value that represents shininess using shiny odds.</summary>
-        public static bool RandomShiny()
+        public bool RandomShiny()
         {
             return RandomBool(8, 65536);
         }
         /// <summary>Returns a random <see cref="PBESpecies"/> with a random <see cref="PBEForm"/>.</summary>
-        public static (PBESpecies, PBEForm) RandomSpecies(bool requireUsableOutsideOfBattle)
+        public (PBESpecies, PBEForm) RandomSpecies(bool requireUsableOutsideOfBattle)
         {
-            return PBEDataUtils.AllSpecies.RandomSpecies(requireUsableOutsideOfBattle);
+            return RandomSpecies(PBEDataUtils.AllSpecies, requireUsableOutsideOfBattle);
         }
-        public static (PBESpecies, PBEForm) RandomSpecies(this IReadOnlyList<PBESpecies> eligible, bool requireUsableOutsideOfBattle)
+        public (PBESpecies, PBEForm) RandomSpecies(IReadOnlyList<PBESpecies> eligible, bool requireUsableOutsideOfBattle)
         {
-            PBESpecies species = eligible.RandomElement();
+            PBESpecies species = RandomElement(eligible);
             IReadOnlyList<PBEForm> forms = PBEDataUtils.GetForms(species, requireUsableOutsideOfBattle);
-            PBEForm form = forms.Count > 0 ? forms.RandomElement() : 0;
+            PBEForm form = forms.Count > 0 ? RandomElement(forms) : 0;
             return (species, form);
         }
-        public static void SetSeed(int seed)
-        {
-            lock (_randLockObj)
-            {
-                _rand = new Random(seed);
-            }
-        }
         /// <summary>Shuffles the items in <paramref name="source"/> using the Fisher-Yates Shuffle algorithm.</summary>
-        internal static void Shuffle<T>(this IList<T> source)
+        public void Shuffle<T>(IList<T> source)
         {
             int count = source.Count - 1;
             for (int a = 0; a < count; a++)

@@ -304,7 +304,7 @@ namespace Kermalis.PokemonBattleEngineDiscord
                         .AddField("Type Weaknesses", weaknesses, true)
                         .AddField("Type Resistances", resistances, true)
                         .AddField("Type Immunities", immunities, true)
-                        .WithImageUrl(Utils.GetPokemonSprite(species, form, PBERandom.RandomShiny(), PBERandom.RandomGender(pData.GenderRatio), false, false));
+                        .WithImageUrl(Utils.GetPokemonSprite(species, form, PBEUtils.GlobalRandom.RandomShiny(), PBEUtils.GlobalRandom.RandomGender(pData.GenderRatio), false, false));
                         await Context.Channel.SendMessageAsync(string.Empty, embed: embed.Build());
                     }
                 }

@@ -20,7 +20,7 @@ namespace Kermalis.PokemonBattleEngineTests
         public void Basic_Actions()
         {
             #region Setup
-            PBERandom.SetSeed(0);
+            PBEUtils.GlobalRandom.Seed = 0;
             PBESettings settings = PBESettings.DefaultSettings;
 
             var p0 = new TestPokemonCollection(2);
