@@ -372,7 +372,9 @@ namespace Kermalis.PokemonBattleEngine.Battle
                     trainer.ActionsRequired.AddRange(trainer.ActiveBattlers);
                 }
 
-                if (BattleFormat == PBEBattleFormat.Triple && Teams.All(t => t.NumConsciousPkmn == 1))
+                // #318 - We check pkmn on the field instead of conscious pkmn because of multi-battles
+                // It still works if there's only one trainer on the team since we check for available switch-ins above
+                if (BattleFormat == PBEBattleFormat.Triple && Teams.All(t => t.NumPkmnOnField == 1))
                 {
                     PBEBattlePokemon pkmn0 = ActiveBattlers[0],
                         pkmn1 = ActiveBattlers[1];
