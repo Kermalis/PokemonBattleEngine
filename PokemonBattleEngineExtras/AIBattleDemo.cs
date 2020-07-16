@@ -42,7 +42,8 @@ namespace Kermalis.PokemonBattleEngineExtras
             p0 = PBERandomTeamGenerator.CreateRandomTeam(settings.MaxPartySize);
             p1 = PBERandomTeamGenerator.CreateRandomTeam(settings.MaxPartySize);
 
-            _battle = new PBEBattle(PBEBattleFormat.Double, settings, new PBETrainerInfo(p0, "Trainer 0"), new PBETrainerInfo(p1, "Trainer 1"), battleTerrain: PBEUtils.GlobalRandom.RandomBattleTerrain());
+            _battle = new PBEBattle(PBEBattleFormat.Double, settings, new PBETrainerInfo(p0, "Trainer 0"), new PBETrainerInfo(p1, "Trainer 1"),
+                battleTerrain: PBEUtils.GlobalRandom.RandomBattleTerrain());
             _battle.OnNewEvent += PBEBattle.ConsoleBattleEventHandler;
             _battle.OnNewEvent += Battle_OnNewEvent;
             _battle.OnStateChanged += Battle_OnStateChanged;

@@ -927,9 +927,9 @@ namespace Kermalis.PokemonBattleEngine.Battle
                     BroadcastStatus2(user, user, PBEStatus2.Confused, PBEStatusAction.Announced);
                     if (_rand.RandomBool(50, 100))
                     {
-                        BroadcastStatus2(user, user, PBEStatus2.Confused, PBEStatusAction.Damage);
                         int damage = CalculateConfusionDamage(user);
                         DealDamage(user, user, damage, ignoreSturdy: false);
+                        BroadcastStatus2(user, user, PBEStatus2.Confused, PBEStatusAction.Damage);
                         // BUG: Confusion damage does not activate these items
                         if (!FaintCheck(user) && Settings.BugFix)
                         {

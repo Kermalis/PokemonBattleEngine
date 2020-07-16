@@ -18,7 +18,8 @@ namespace Kermalis.PokemonBattleEngineClient.Clients
 
         public SinglePlayerClient(PBEBattleFormat battleFormat, PBESettings settings, IReadOnlyList<PBETrainerInfo> ti0, IReadOnlyList<PBETrainerInfo> ti1, string name) : base(name)
         {
-            var b = new PBEBattle(battleFormat, settings, ti0, ti1, battleTerrain: PBEUtils.GlobalRandom.RandomBattleTerrain());
+            var b = new PBEBattle(battleFormat, settings, ti0, ti1,
+                battleTerrain: PBEUtils.GlobalRandom.RandomBattleTerrain());
             Battle = b;
             Trainer = b.Trainers[0];
             BattleView = new BattleView(this);

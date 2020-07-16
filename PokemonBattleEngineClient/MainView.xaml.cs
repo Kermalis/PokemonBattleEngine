@@ -112,6 +112,7 @@ namespace Kermalis.PokemonBattleEngineClient
         public void WatchReplay()
         {
             const string path = "SinglePlayer Battle.pbereplay";
+            //const string path = @"C:\Users\Kermalis\Documents\Development\GitHub\PokemonBattleEngine\PokemonBattleEngineExtras\bin\Debug\netcoreapp3.1\AI Demo.pbereplay";
             //const string path = @"C:\Users\Kermalis\Documents\Development\GitHub\PokeI\bin\Release\netcoreapp3.1\AI Final Replay.pbereplay";
             Add(new ReplayClient(path, $"Replay {_battles.Count + 1}"));
         }

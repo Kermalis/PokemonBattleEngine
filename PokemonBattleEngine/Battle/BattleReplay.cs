@@ -56,8 +56,9 @@ namespace Kermalis.PokemonBattleEngine.Battle
                 w.Write(CurrentReplayVersion);
                 w.Write(_rand.Seed);
 
-                w.Write(Events.Count);
-                for (int i = 0; i < Events.Count; i++)
+                int numEvents = Events.Count;
+                w.Write(numEvents);
+                for (int i = 0; i < numEvents; i++)
                 {
                     byte[] data = Events[i].Data.ToArray();
                     int len = data.Length;
@@ -79,7 +80,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
         {
             byte[] fileBytes = File.ReadAllBytes(path);
             using (var s = new MemoryStream(fileBytes))
-            using (var r = new EndianBinaryReader(s))
+            using (var r = new EndianBinaryReader(s, encoding: EncodingType.UTF16))
             {
                 byte[] hash;
                 using (var md5 = MD5.Create())

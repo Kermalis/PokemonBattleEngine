@@ -87,7 +87,7 @@ namespace Kermalis.PokemonBattleEngine.Utils
                 {
                     _rand.NextBytes(bytes);
                 }
-                scale = (uint)((bytes[3] << 24) | (bytes[2] << 16) | (bytes[1] << 8) | bytes[0]); // Always convert as little-endian so all systems get the same result
+                scale = (uint)((bytes[3] << 24) | (bytes[2] << 16) | (bytes[1] << 8) | bytes[0]); // Convert as little endian each time regardless of system endianness
             } while (scale == uint.MaxValue); // "d" should not be 1.0
             double d = scale / (double)uint.MaxValue;
             return (int)(minValue + (((long)maxValue + 1 - minValue) * d)); // Remove "+ 1" for exclusive maxValue
