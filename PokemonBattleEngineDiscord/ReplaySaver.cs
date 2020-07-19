@@ -56,7 +56,7 @@ namespace Kermalis.PokemonBattleEngineDiscord
                         if (timePassed.Days >= NumDaysTillRemoval)
                         {
                             Console.WriteLine("Deleting old replay directory: {0}", dirName);
-                            Directory.Delete(dir);
+                            Directory.Delete(dir, true);
                         }
                     }
                 }
