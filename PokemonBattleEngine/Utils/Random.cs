@@ -41,10 +41,22 @@ namespace Kermalis.PokemonBattleEngine.Utils
         }
         public bool RandomBool(int chanceNumerator, int chanceDenominator)
         {
+            if (chanceDenominator < 1)
+            {
+                throw new ArgumentOutOfRangeException(nameof(chanceDenominator), $"\"{nameof(chanceDenominator)}\" must be at least 1.");
+            }
+            if (chanceNumerator == 0)
+            {
+                return false;
+            }
             return RandomInt(0, chanceDenominator - 1) < chanceNumerator;
         }
         public T RandomElement<T>(IReadOnlyList<T> source)
         {
+            if (source is null)
+            {
+                throw new ArgumentNullException(nameof(source));
+            }
             int count = source.Count - 1;
             if (count == 0)
             {
@@ -105,7 +117,7 @@ namespace Kermalis.PokemonBattleEngine.Utils
         /// <exception cref="ArgumentNullException">Thrown when <paramref name="settings"/> == null.</exception>
         public byte RandomLevel(PBESettings settings)
         {
-            if (settings == null)
+            if (settings is null)
             {
                 throw new ArgumentNullException(nameof(settings));
             }
@@ -135,6 +147,10 @@ namespace Kermalis.PokemonBattleEngine.Utils
         /// <summary>Shuffles the items in <paramref name="source"/> using the Fisher-Yates Shuffle algorithm.</summary>
         public void Shuffle<T>(IList<T> source)
         {
+            if (source is null)
+            {
+                throw new ArgumentNullException(nameof(source));
+            }
             int count = source.Count - 1;
             for (int a = 0; a < count; a++)
             {
