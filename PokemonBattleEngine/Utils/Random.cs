@@ -45,6 +45,10 @@ namespace Kermalis.PokemonBattleEngine.Utils
             {
                 throw new ArgumentOutOfRangeException(nameof(chanceDenominator), $"\"{nameof(chanceDenominator)}\" must be at least 1.");
             }
+            if (chanceNumerator >= chanceDenominator)
+            {
+                return true;
+            }
             if (chanceNumerator == 0)
             {
                 return false;
@@ -152,6 +156,10 @@ namespace Kermalis.PokemonBattleEngine.Utils
                 throw new ArgumentNullException(nameof(source));
             }
             int count = source.Count - 1;
+            if (count < 0)
+            {
+                throw new ArgumentOutOfRangeException(nameof(source), $"\"{nameof(source)}\" must have at least one element.");
+            }
             for (int a = 0; a < count; a++)
             {
                 int b = RandomInt(a, count);
