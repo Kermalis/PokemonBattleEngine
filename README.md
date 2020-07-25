@@ -10,7 +10,7 @@ The engine does not send information a player should not know; information only 
 For example, a client has no way of knowing if the opponent has sent out a Pokémon with Illusion, the opponent's nature, stats, Hidden Power damage/type, unused item/moves, etc.
 Therefore, a custom/modified client cannot do anything more than an ordinary player unless it is hosting the battle. A lot of work has been done to prevent any cheating.
 
-Join our _(new)_ [Discord server](https://discord.gg/Z4Mn9qX) to talk or try out the battle bot!
+Join our _(new-ish)_ [Discord server](https://discord.gg/Z4Mn9qX) to talk or try out the battle bot!
 
 ![Discord Preview](Discord%20Preview.png)
 
@@ -32,6 +32,7 @@ Join our _(new)_ [Discord server](https://discord.gg/Z4Mn9qX) to talk or try out
 
 ----
 # PokemonBattleEngine Uses:
+* [EndianBinaryIO](https://github.com/Kermalis/EndianBinaryIO)
 * [Microsoft.Data.Sqlite](https://docs.microsoft.com/en-us/ef/core)
 * [Newtonsoft.Json](https://github.com/JamesNK/Newtonsoft.Json)
 * [SQLitePCLRaw](https://github.com/ericsink/SQLitePCL.raw)
@@ -45,5 +46,4 @@ Join our _(new)_ [Discord server](https://discord.gg/Z4Mn9qX) to talk or try out
 * [Discord.Net](https://github.com/RogueException/Discord.Net)
 
 # PokemonBattleEngineExtras Uses:
-* [EndianBinaryIO](https://github.com/Kermalis/EndianBinaryIO)
 * [SimpleNARC](https://github.com/Kermalis/SimpleNARC)
