@@ -4,7 +4,7 @@ Pokémon Battle Engine is a C# library that can emulate Pokémon battles.
 This repository includes the engine library, a Windows/Linux/MacOS/Android/iOS client, a server, a Discord bot, and some extra code to rip data from the official games.
 The engine only emulates Pokémon B2W2 versions, so nothing introduced after generation 5 is included and neither are generation 1/2 exclusive items, event Pokémon, and move compatibility.
 
-![Client Preview](Client%20Preview.gif)
+![ClientPreview](Client%20Preview.gif)
 
 The engine does not send information a player should not know; information only gets sent to each player/spectator when it is revealed.
 For example, a client has no way of knowing if the opponent has sent out a Pokémon with Illusion, the opponent's nature, stats, Hidden Power damage/type, unused item/moves, etc.
@@ -12,7 +12,7 @@ Therefore, a custom/modified client cannot do anything more than an ordinary pla
 
 Join our _(new-ish)_ [Discord server](https://discord.gg/Z4Mn9qX) to talk or try out the battle bot!
 
-![Discord Preview](Discord%20Preview.png)
+![DiscordPreview](Discord%20Preview.png)
 
 # Other Features:
 * There are [settings](PokemonBattleEngine/Data/Settings.cs) that you can change, such as having more moves, a higher maximum level, or weaker poison.
@@ -29,6 +29,10 @@ Join our _(new-ish)_ [Discord server](https://discord.gg/Z4Mn9qX) to talk or try
 * Add the remaining vanilla [abilities](To%20Do%20Abilities.txt), [held items](To%20Do%20Items.txt), and [moves](To%20Do%20Moves.txt)
 * Finish adding all event Pokémon
 * Add previews of the Android/iOS apps
+
+----
+# PokemonBattleEngine Is Used By:
+* [PokemonGameEngine](https://github.com/Kermalis/PokemonGameEngine)
 
 ----
 # PokemonBattleEngine Uses:
