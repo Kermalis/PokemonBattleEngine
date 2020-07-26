@@ -2,9 +2,7 @@
 using Kermalis.PokemonBattleEngine.Battle;
 using Kermalis.PokemonBattleEngine.Data;
 using Kermalis.PokemonBattleEngine.Packets;
-using Kermalis.PokemonBattleEngine.Utils;
 using Kermalis.PokemonBattleEngineClient.Views;
-using System.Collections.Generic;
 using System.Threading;
 
 namespace Kermalis.PokemonBattleEngineClient.Clients
@@ -17,10 +15,8 @@ namespace Kermalis.PokemonBattleEngineClient.Clients
         public override BattleView BattleView { get; }
         public override bool HideNonOwned => true;
 
-        public SinglePlayerClient(PBEBattleFormat battleFormat, PBESettings settings, IReadOnlyList<PBETrainerInfo> ti0, IReadOnlyList<PBETrainerInfo> ti1, string name) : base(name)
+        public SinglePlayerClient(PBEBattle b, string name) : base(name)
         {
-            var b = new PBEBattle(battleFormat, settings, ti0, ti1,
-                battleTerrain: PBEUtils.GlobalRandom.RandomBattleTerrain());
             Battle = b;
             Trainer = b.Trainers[0];
             BattleView = new BattleView(this);

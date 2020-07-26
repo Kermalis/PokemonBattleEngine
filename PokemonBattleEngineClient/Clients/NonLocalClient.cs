@@ -234,7 +234,7 @@ namespace Kermalis.PokemonBattleEngineClient.Clients
                 }
                 case PBEPkmnSwitchInPacket psip:
                 {
-                    foreach (PBEPkmnSwitchInPacket.PBESwitchInInfo info in psip.SwitchIns)
+                    foreach (PBEPkmnSwitchInPacket.PBEPkmnSwitchInInfo info in psip.SwitchIns)
                     {
                         PBEBattlePokemon pokemon = psip.Trainer.TryGetPokemon(info.Pokemon);
                         PBEBattlePokemon disguisedAsPokemon = psip.Trainer.TryGetPokemon(info.DisguisedAsPokemon);
@@ -259,7 +259,7 @@ namespace Kermalis.PokemonBattleEngineClient.Clients
                 }
                 case PBEPkmnSwitchInPacket_Hidden psiph:
                 {
-                    foreach (PBEPkmnSwitchInPacket_Hidden.PBESwitchInInfo info in psiph.SwitchIns)
+                    foreach (PBEPkmnSwitchInPacket_Hidden.PBEPkmnSwitchInInfo info in psiph.SwitchIns)
                     {
                         new PBEBattlePokemon(psiph.Trainer, info);
                     }
@@ -473,6 +473,14 @@ namespace Kermalis.PokemonBattleEngineClient.Clients
                     }
                     break;
                 }
+                case PBEWildPkmnAppearedPacket wpap:
+                {
+                    foreach (PBEWildPkmnAppearedPacket.PBEWildPkmnInfo info in wpap.Pokemon)
+                    {
+                        new PBEBattlePokemon(Battle, info);
+                    }
+                    break;
+                }
                 case IPBEAutoCenterPacket acp:
                 {
                     PBEBattlePokemon pokemon0 = acp.Pokemon0Trainer.TryGetPokemon(acp.Pokemon0OldPosition);
@@ -481,14 +489,14 @@ namespace Kermalis.PokemonBattleEngineClient.Clients
                     pokemon1.FieldPosition = PBEFieldPosition.Center;
                     break;
                 }
+                case PBEBattleResultPacket brp:
+                {
+                    Battle.BattleResult = brp.BattleResult;
+                    break;
+                }
                 case PBETurnBeganPacket tbp:
                 {
                     Battle.TurnNumber = tbp.TurnNumber;
-                    break;
-                }
-                case PBEWinnerPacket win:
-                {
-                    Battle.Winner = win.WinningTeam;
                     break;
                 }
             }

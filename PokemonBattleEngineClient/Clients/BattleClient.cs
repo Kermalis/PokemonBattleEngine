@@ -199,6 +199,14 @@ namespace Kermalis.PokemonBattleEngineClient.Clients
                     }
                     break;
                 }
+                case PBEWildPkmnAppearedPacket wpap:
+                {
+                    foreach (PBEWildPkmnAppearedPacket.PBEWildPkmnInfo info in wpap.Pokemon)
+                    {
+                        BattleView.Field.ShowPokemon(Battle.Teams[1].Trainers[0].TryGetPokemon(info.FieldPosition));
+                    }
+                    break;
+                }
                 case IPBEAutoCenterPacket acp:
                 {
                     PBEBattlePokemon pokemon0 = acp is IPBEAutoCenterPacket_0 acp0

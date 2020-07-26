@@ -149,7 +149,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
         {
             Broadcast(new PBEPkmnStatChangedPacket(pokemon, stat, oldValue, newValue));
         }
-        private void BroadcastPkmnSwitchIn(PBETrainer trainer, PBEPkmnSwitchInPacket.PBESwitchInInfo[] switchIns, PBEBattlePokemon forcedByPokemon = null)
+        private void BroadcastPkmnSwitchIn(PBETrainer trainer, PBEPkmnSwitchInPacket.PBEPkmnSwitchInInfo[] switchIns, PBEBattlePokemon forcedByPokemon = null)
         {
             Broadcast(new PBEPkmnSwitchInPacket(trainer, switchIns, forcedByPokemon));
         }
@@ -266,6 +266,10 @@ namespace Kermalis.PokemonBattleEngine.Battle
         {
             Broadcast(new PBEWeatherPacket(weather, weatherAction, damageVictim));
         }
+        private void BroadcastWildPkmnAppeared(PBEWildPkmnAppearedPacket.PBEWildPkmnInfo[] appearances)
+        {
+            Broadcast(new PBEWildPkmnAppearedPacket(appearances));
+        }
         private void BroadcastActionsRequest(PBETrainer trainer)
         {
             Broadcast(new PBEActionsRequestPacket(trainer));
@@ -278,6 +282,10 @@ namespace Kermalis.PokemonBattleEngine.Battle
         {
             Broadcast(new PBEBattlePacket(this));
         }
+        private void BroadcastBattleResult()
+        {
+            Broadcast(new PBEBattleResultPacket(BattleResult.Value));
+        }
         private void BroadcastSwitchInRequest(PBETrainer trainer)
         {
             Broadcast(new PBESwitchInRequestPacket(trainer));
@@ -285,10 +293,6 @@ namespace Kermalis.PokemonBattleEngine.Battle
         private void BroadcastTurnBegan()
         {
             Broadcast(new PBETurnBeganPacket(TurnNumber));
-        }
-        private void BroadcastWinner(PBETeam winningTeam)
-        {
-            Broadcast(new PBEWinnerPacket(winningTeam));
         }
 
         public static string GetDefaultMessage(PBEBattle battle, IPBEPacket packet, bool showRawHP = false, PBETrainer userTrainer = null,
@@ -303,7 +307,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                 throw new ArgumentNullException(nameof(packet));
             }
 
-            // This is not used by switching in or out; those always use the known nickname
+            // This is not used by switching in or out or wild Pokémon appearing; those always use the known nickname
             string GetPkmnName(PBEBattlePokemon pkmn, bool firstLetterCapitalized)
             {
                 if (pkmnNameFunc != null)
@@ -313,6 +317,11 @@ namespace Kermalis.PokemonBattleEngine.Battle
                 if (pkmn is null)
                 {
                     return string.Empty;
+                }
+                if (pkmn.IsWild)
+                {
+                    string wildPrefix = firstLetterCapitalized ? "The wild " : "the wild ";
+                    return wildPrefix + pkmn.KnownNickname;
                 }
                 // Replay/spectator always see prefix, but if you're battling a multi-battle, your Pokémon should still have no prefix
                 if (userTrainer is null || (pkmn.Trainer != userTrainer && pkmn.Team.Trainers.Count > 1))
@@ -332,7 +341,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                 }
                 return trainer.Name;
             }
-            // This is not used by PBEWinnerPacket; those always use the combined name
+            // This is not used by PBEBattleResultPacket; those always use the combined name
             string GetTeamName(PBETeam team, bool firstLetterCapitalized)
             {
                 if (teamNameFunc != null)
@@ -1482,6 +1491,10 @@ namespace Kermalis.PokemonBattleEngine.Battle
                     }
                     return string.Format(message, GetPkmnName(damageVictim, true));
                 }
+                case PBEWildPkmnAppearedPacket wpap:
+                {
+                    return string.Format("{0}{1} appeared!", wpap.Pokemon.Count == 1 ? "A wild " : "Oh! A wild ", wpap.Pokemon.Select(s => s.Nickname).ToArray().Andify());
+                }
                 case PBEActionsRequestPacket arp:
                 {
                     return string.Format("{0} must submit actions for {1} Pokémon.", GetTrainerName(arp.Trainer), arp.Pokemon.Count);
@@ -1490,6 +1503,22 @@ namespace Kermalis.PokemonBattleEngine.Battle
                 {
                     return "The battlers shifted to the center!";
                 }
+                case PBEBattleResultPacket brp:
+                {
+                    string message;
+                    switch (brp.BattleResult)
+                    {
+                        case PBEBattleResult.Team0Forfeit: message = "{0} forfeited."; break;
+                        case PBEBattleResult.Team0Win: message = "{0} defeated {1}!"; break;
+                        case PBEBattleResult.Team1Forfeit: message = "{1} forfeited."; break;
+                        case PBEBattleResult.Team1Win: message = "{1} defeated {0}!"; break;
+                        case PBEBattleResult.WildCapture: message = "{1} defeated {0}!"; break; // TODO
+                        case PBEBattleResult.WildEscape: message = "{1} defeated {0}!"; break; // TODO
+                        case PBEBattleResult.WildFlee: message = "{1} defeated {0}!"; break; // TODO
+                        default: throw new ArgumentOutOfRangeException(nameof(brp.BattleResult));
+                    }
+                    return string.Format(message, battle.Teams[0].CombinedName, battle.Teams[1].CombinedName);
+                }
                 case PBESwitchInRequestPacket sirp:
                 {
                     return string.Format("{0} must send in {1} Pokémon.", GetTrainerName(sirp.Trainer), sirp.Amount);
@@ -1497,10 +1526,6 @@ namespace Kermalis.PokemonBattleEngine.Battle
                 case PBETurnBeganPacket tbp:
                 {
                     return string.Format("Turn {0} is starting.", tbp.TurnNumber);
-                }
-                case PBEWinnerPacket win:
-                {
-                    return string.Format("{0} defeated {1}!", win.WinningTeam.CombinedName, win.WinningTeam.OpposingTeam.CombinedName);
                 }
             }
         bottom:

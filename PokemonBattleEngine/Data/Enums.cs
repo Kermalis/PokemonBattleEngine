@@ -81,6 +81,11 @@ namespace Kermalis.PokemonBattleEngine.Data
         /// <summary>Invalid battle format.</summary>
         MAX
     }
+    public enum PBEBattleType : byte
+    {
+        Trainer,
+        Wild
+    }
     /// <summary>Represents the current state of a specific battle.</summary>
     public enum PBEBattleState : byte
     {
@@ -100,6 +105,28 @@ namespace Kermalis.PokemonBattleEngine.Data
         ReadyToRunSwitches,
         /// <summary>The battle ended.</summary>
         Ended
+    }
+    /// <summary>Represents the result of an ended battle.</summary>
+    public enum PBEBattleResult : byte
+    {
+        /// <summary>Team 0 forfeited.</summary>
+        Team0Forfeit,
+        /// <summary>Team 0 defeated Team 1.</summary>
+        Team0Win,
+        /// <summary>Team 1 forfeited.</summary>
+        Team1Forfeit,
+        /// <summary>Team 1 defeated Team 0.</summary>
+        Team1Win,
+        /// <summary>A wild Pokémon was captured.</summary>
+        WildCapture,
+        ///// <summary>The trainer(s) were defeated by the wild Pokémon.</summary>
+        //WildDefeat,
+        /// <summary>The trainer(s) escaped from the wild Pokémon.</summary>
+        WildEscape,
+        /// <summary>A wild Pokémon escaped from the trainer(s).</summary>
+        WildFlee,
+        ///// <summary>The wild Pokémon were defeated by the trainer(s).</summary>
+        //WildWin
     }
     /// <summary>Represents the weather in a specific battle.</summary>
     public enum PBEWeather : byte

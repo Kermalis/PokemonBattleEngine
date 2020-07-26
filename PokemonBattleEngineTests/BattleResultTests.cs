@@ -7,9 +7,9 @@ using Xunit.Abstractions;
 namespace Kermalis.PokemonBattleEngineTests
 {
     [Collection("Utils")]
-    public class WinnerTests
+    public class BattleResultTests
     {
-        public WinnerTests(TestUtils utils, ITestOutputHelper output)
+        public BattleResultTests(TestUtils utils, ITestOutputHelper output)
         {
             utils.SetOutputHelper(output);
         }
@@ -46,7 +46,7 @@ namespace Kermalis.PokemonBattleEngineTests
             battle.RunTurn();
 
             Assert.True(golem.HP == 0 && magikarp.HP == 0 // All faint
-                && battle.Winner == battle.Teams[1]); // Golem's team loses
+                && battle.BattleResult == PBEBattleResult.Team1Win); // Golem's team loses
             #endregion
 
             #region Cleanup
@@ -98,7 +98,7 @@ namespace Kermalis.PokemonBattleEngineTests
             battle.RunTurn();
 
             Assert.True(qwilfish.HP == 0 && golem.HP == 0 && magikarp.HP == 0 && patrat.HP == 0 && lickilicky.HP == 0 && happiny.HP == 0 // All faint
-                && battle.Winner == battle.Teams[1]); // Golem's team loses
+                && battle.BattleResult == PBEBattleResult.Team1Win); // Golem's team loses
             #endregion
 
             #region Cleanup
@@ -136,7 +136,7 @@ namespace Kermalis.PokemonBattleEngineTests
             battle.RunTurn();
 
             Assert.True(staraptor.HP == 0 && magikarp.HP == 0 // Both fainted
-                && battle.Winner == battle.Teams[1]); // Magikarp's team wins
+                && battle.BattleResult == PBEBattleResult.Team1Win); // Magikarp's team wins
             #endregion
 
             #region Cleanup
@@ -177,7 +177,7 @@ namespace Kermalis.PokemonBattleEngineTests
             battle.RunTurn();
 
             Assert.True(deoxys.HP == 0 && blissey.HP == 0 // Both fainted
-                && battle.Winner == battle.Teams[1]); // Blissey's team wins
+                && battle.BattleResult == PBEBattleResult.Team1Win); // Blissey's team wins
             #endregion
 
             #region Cleanup
@@ -221,7 +221,7 @@ namespace Kermalis.PokemonBattleEngineTests
             battle.RunTurn();
 
             Assert.True(lucario.HP == 0 && ferroseed.HP == 0 // Both fainted
-                && battle.Winner == battle.Teams[1]); // Ferroseed's team wins
+                && battle.BattleResult == PBEBattleResult.Team1Win); // Ferroseed's team wins
             #endregion
 
             #region Cleanup
@@ -263,7 +263,7 @@ namespace Kermalis.PokemonBattleEngineTests
             battle.RunTurn();
 
             Assert.True(shroomish.HP == 0 && tentacruel.HP == 0 // Both fainted
-                && battle.Winner == battle.Teams[0]); // Shroomish's team wins
+                && battle.BattleResult == PBEBattleResult.Team0Win); // Shroomish's team wins
             #endregion
 
             #region Cleanup
@@ -306,7 +306,7 @@ namespace Kermalis.PokemonBattleEngineTests
             battle.RunTurn();
 
             Assert.True(riolu.HP == 0 && magikarp.HP == 0 // Both fainted
-                && battle.Winner == battle.Teams[0]); // Bouffalant's team wins
+                && battle.BattleResult == PBEBattleResult.Team0Win); // Bouffalant's team wins
             #endregion
 
             #region Cleanup
@@ -346,7 +346,7 @@ namespace Kermalis.PokemonBattleEngineTests
             battle.RunTurn();
 
             Assert.True(bouffalant.HP == 0 && magikarp.HP == 0 // Both fainted
-                && battle.Winner == battle.Teams[0]); // Bouffalant's team wins
+                && battle.BattleResult == PBEBattleResult.Team0Win); // Bouffalant's team wins
             #endregion
 
             #region Cleanup

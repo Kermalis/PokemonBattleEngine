@@ -17,6 +17,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
         public PBETeam Team { get; }
         public PBETrainer Trainer { get; }
         public byte Id { get; }
+        public bool IsWild => Team.IsWild;
 
         #region Basic Properties
         /// <summary>The Pokémon's current HP.</summary>
@@ -249,13 +250,13 @@ namespace Kermalis.PokemonBattleEngine.Battle
                   info.Ability, info.Nature, info.Gender, info.Item,
                   info.EffortValues, info.IndividualValues, info.Moveset)
         { }
-        public PBEBattlePokemon(PBETrainer trainer, PBEPkmnSwitchInPacket_Hidden.PBESwitchInInfo info)
+        private PBEBattlePokemon(PBETrainer trainer, IPBEPkmnSwitchInInfo info)
         {
-            if (trainer == null)
+            if (trainer is null)
             {
                 throw new ArgumentNullException(nameof(trainer));
             }
-            if (info == null)
+            if (info is null)
             {
                 throw new ArgumentNullException(nameof(info));
             }
@@ -283,6 +284,10 @@ namespace Kermalis.PokemonBattleEngine.Battle
             trainer.Party.Add(this);
             Battle.ActiveBattlers.Add(this);
         }
+        public PBEBattlePokemon(PBETrainer trainer, PBEPkmnSwitchInPacket_Hidden.PBEPkmnSwitchInInfo info)
+            : this(trainer, (IPBEPkmnSwitchInInfo)info) { }
+        public PBEBattlePokemon(PBEBattle battle, PBEWildPkmnAppearedPacket.PBEWildPkmnInfo info)
+            : this(battle.Teams[1].Trainers[0], info) { }
         #endregion
 
         public void ApplyPowerTrickChange()

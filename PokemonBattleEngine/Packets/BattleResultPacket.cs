@@ -1,31 +1,31 @@
 ﻿using Kermalis.EndianBinaryIO;
-using Kermalis.PokemonBattleEngine.Battle;
+using Kermalis.PokemonBattleEngine.Data;
 using System.Collections.ObjectModel;
 using System.IO;
 
 namespace Kermalis.PokemonBattleEngine.Packets
 {
-    public sealed class PBEWinnerPacket : IPBEPacket
+    public sealed class PBEBattleResultPacket : IPBEPacket
     {
         public const ushort Code = 0x26;
         public ReadOnlyCollection<byte> Data { get; }
 
-        public PBETeam WinningTeam { get; }
+        public PBEBattleResult BattleResult { get; }
 
-        internal PBEWinnerPacket(PBETeam winningTeam)
+        internal PBEBattleResultPacket(PBEBattleResult battleResult)
         {
             using (var ms = new MemoryStream())
             using (var w = new EndianBinaryWriter(ms, encoding: EncodingType.UTF16))
             {
                 w.Write(Code);
-                w.Write((WinningTeam = winningTeam).Id);
+                w.Write(BattleResult = battleResult);
                 Data = new ReadOnlyCollection<byte>(ms.ToArray());
             }
         }
-        internal PBEWinnerPacket(byte[] data, EndianBinaryReader r, PBEBattle battle)
+        internal PBEBattleResultPacket(byte[] data, EndianBinaryReader r)
         {
             Data = new ReadOnlyCollection<byte>(data);
-            WinningTeam = battle.Teams[r.ReadByte()];
+            BattleResult = r.ReadEnum<PBEBattleResult>();
         }
     }
 }

@@ -19,13 +19,17 @@ namespace Kermalis.PokemonBattleEngine.AI
         /// <exception cref="ArgumentOutOfRangeException">Thrown when a Pokémon has no moves, the AI tries to use a move with invalid targets, or <paramref name="trainer"/>'s <see cref="PBETrainer.Battle"/>'s <see cref="PBEBattle.BattleFormat"/> is invalid.</exception>
         public static PBETurnAction[] CreateActions(PBETrainer trainer)
         {
-            if (trainer == null)
+            if (trainer is null)
             {
                 throw new ArgumentNullException(nameof(trainer));
             }
             if (trainer.Battle.BattleState != PBEBattleState.WaitingForActions)
             {
                 throw new InvalidOperationException($"{nameof(trainer.Battle.BattleState)} must be {PBEBattleState.WaitingForActions} to create actions.");
+            }
+            if (trainer.IsWild)
+            {
+                return PBEWildAI.CreateActions(trainer);
             }
             var actions = new PBETurnAction[trainer.ActionsRequired.Count];
             var standBy = new List<PBEBattlePokemon>();
@@ -37,7 +41,7 @@ namespace Kermalis.PokemonBattleEngine.AI
                 {
                     actions[i] = new PBETurnAction(user, PBEMove.Struggle, PBEBattleUtils.GetPossibleTargets(user, user.GetMoveTargets(PBEMove.Struggle))[0]);
                 }
-                // If a Pokémon has a temp locked move (Dig, Dive, Shadow Force) it must be used
+                // If a Pokémon has a temp locked move (Dig, Dive, ShadowForce) it must be used
                 else if (user.TempLockedMove != PBEMove.None)
                 {
                     actions[i] = new PBETurnAction(user, user.TempLockedMove, user.TempLockedTargets);

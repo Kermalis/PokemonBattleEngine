@@ -826,9 +826,16 @@ namespace Kermalis.PokemonBattleEngineDiscord
                     await SendActiveBattlerEmbeds();
                     return;
                 }
-                case PBEWinnerPacket win: // We do not want the default message since it uses the combined name
+                case PBEBattleResultPacket brp: // We do not want the default message since it uses the combined name
                 {
-                    _queuedMessages.AppendLine(string.Format("{0} defeated {1}!", GetTeamName(win.WinningTeam), GetTeamName(win.WinningTeam.OpposingTeam)));
+                    string m;
+                    switch (brp.BattleResult)
+                    {
+                        case PBEBattleResult.Team0Win: m = "{0} defeated {1}!"; break;
+                        case PBEBattleResult.Team1Win: m = "{1} defeated {0}!"; break;
+                        default: throw new ArgumentOutOfRangeException(nameof(brp.BattleResult));
+                    }
+                    _queuedMessages.AppendLine(string.Format(m, GetTeamName(_battle.Teams[0]), GetTeamName(_battle.Teams[1])));
                     await SendQueuedMessages();
                     return;
                 }

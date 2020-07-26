@@ -151,7 +151,7 @@ namespace Kermalis.PokemonBattleEngineClient.Clients
                 }
                 case PBEActionsRequestPacket _:
                 case PBESwitchInRequestPacket _:
-                case PBEWinnerPacket _:
+                case PBEBattleResultPacket _:
                 {
                     Battle.Events.Add(packet);
                     Send(new PBEResponsePacket());

@@ -1169,9 +1169,9 @@ namespace Kermalis.PokemonBattleEngine.Battle
         }
         private void TrySetLoser(PBEBattlePokemon pkmn)
         {
-            if (Winner == null && pkmn.Team.NumConsciousPkmn == 0)
+            if (!BattleResult.HasValue && pkmn.Team.NumConsciousPkmn == 0)
             {
-                Winner = pkmn.Team.OpposingTeam;
+                BattleResult = pkmn.Team.Id == 0 ? PBEBattleResult.Team1Win : PBEBattleResult.Team0Win;
             }
         }
         private bool FaintCheck(PBEBattlePokemon pkmn)
@@ -2016,7 +2016,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
             BroadcastPkmnStatChanged(pkmn, stat, oldValue, newValue);
         }
 
-        private PBEPkmnSwitchInPacket.PBESwitchInInfo CreateSwitchInInfo(PBEBattlePokemon pkmn)
+        private PBEPkmnSwitchInPacket.PBEPkmnSwitchInInfo CreateSwitchInInfo(PBEBattlePokemon pkmn)
         {
             if (pkmn.Ability == PBEAbility.Illusion)
             {
@@ -2045,7 +2045,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                     }
                 }
             }
-            return new PBEPkmnSwitchInPacket.PBESwitchInInfo(pkmn);
+            return new PBEPkmnSwitchInPacket.PBEPkmnSwitchInInfo(pkmn);
         }
         private void SwitchTwoPokemon(PBEBattlePokemon pkmnLeaving, PBEBattlePokemon pkmnComing, PBEBattlePokemon forcedByPkmn = null)
         {
@@ -2058,7 +2058,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
             BroadcastPkmnSwitchOut(pkmnLeaving, disguisedAsPokemon, pos, forcedByPkmn);
             RemoveInfatuationsAndLockOns(pkmnLeaving);
             pkmnComing.FieldPosition = pos;
-            var switches = new PBEPkmnSwitchInPacket.PBESwitchInInfo[] { CreateSwitchInInfo(pkmnComing) };
+            var switches = new PBEPkmnSwitchInPacket.PBEPkmnSwitchInInfo[] { CreateSwitchInInfo(pkmnComing) };
             PBETrainer.SwitchTwoPokemon(pkmnLeaving, pkmnComing);
             ActiveBattlers.Add(pkmnComing); // Add to active before broadcast
             BroadcastPkmnSwitchIn(pkmnComing.Trainer, switches, forcedByPkmn);
