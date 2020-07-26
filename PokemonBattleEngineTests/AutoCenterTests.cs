@@ -69,7 +69,7 @@ namespace Kermalis.PokemonBattleEngineTests
         public void AutoCenter_Works_Despite_Available(bool faintLeft)
         {
             #region Setup
-            PBEUtils.GlobalRandom.Seed = 1114; // Seed ensures protect doesn't fail
+            PBEUtils.GlobalRandom.Seed = 2; // Seed ensures protect doesn't fail
             PBESettings settings = PBESettings.DefaultSettings;
 
             var p0L = new TestPokemonCollection(faintLeft ? 1 : 2);
@@ -147,7 +147,7 @@ namespace Kermalis.PokemonBattleEngineTests
         public void AutoCenter_ActivatesFromHazard()
         {
             #region Setup
-            PBEUtils.GlobalRandom.Seed = 0;
+            PBEUtils.GlobalRandom.Seed = 2; // Seed ensures Regigigas doesn't flinch and Rock Slide hits
             PBESettings settings = PBESettings.DefaultSettings;
 
             var p0 = new TestPokemonCollection(5);

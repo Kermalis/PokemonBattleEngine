@@ -51,7 +51,7 @@ namespace Kermalis.PokemonBattleEngineTests.Abilities
         public void Illusion_Copies_Shaymin_Reversion()
         {
             #region Setup
-            PBEUtils.GlobalRandom.Seed = 4; // Seed ensures SecretPower freezes
+            PBEUtils.GlobalRandom.Seed = 0; // Seed ensures SecretPower freezes
             PBESettings settings = PBESettings.DefaultSettings;
 
             var p0 = new TestPokemonCollection(1);
