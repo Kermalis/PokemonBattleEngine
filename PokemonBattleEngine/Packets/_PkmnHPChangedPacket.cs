@@ -7,7 +7,14 @@ using System.IO;
 
 namespace Kermalis.PokemonBattleEngine.Packets
 {
-    public sealed class PBEPkmnHPChangedPacket : IPBEPacket
+    public interface IPBEPkmnHPChangedPacket : IPBEPacket
+    {
+        PBETrainer PokemonTrainer { get; }
+        PBEFieldPosition Pokemon { get; }
+        double OldHPPercentage { get; }
+        double NewHPPercentage { get; }
+    }
+    public sealed class PBEPkmnHPChangedPacket : IPBEPkmnHPChangedPacket
     {
         public const ushort Code = 0x0A;
         public ReadOnlyCollection<byte> Data { get; }
@@ -45,7 +52,7 @@ namespace Kermalis.PokemonBattleEngine.Packets
             NewHPPercentage = r.ReadDouble();
         }
     }
-    public sealed class PBEPkmnHPChangedPacket_Hidden : IPBEPacket
+    public sealed class PBEPkmnHPChangedPacket_Hidden : IPBEPkmnHPChangedPacket
     {
         public const ushort Code = 0x35;
         public ReadOnlyCollection<byte> Data { get; }
