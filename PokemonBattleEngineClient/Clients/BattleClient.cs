@@ -42,7 +42,7 @@ namespace Kermalis.PokemonBattleEngineClient.Clients
                     pkmn.TurnAction = null;
                 }
                 _actions.Clear();
-                _actions.AddRange(Trainer.ActiveBattlers);
+                _actions.AddRange(Trainer.ActiveBattlers.OrderBy(p => p.FieldPosition));
                 StandBy.Clear();
             }
             int i = _actions.FindIndex(p => p.TurnAction == null);
