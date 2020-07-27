@@ -1,4 +1,5 @@
 ﻿using Kermalis.EndianBinaryIO;
+using Kermalis.PokemonBattleEngine.Battle;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;

@@ -1,5 +1,5 @@
 ﻿using Kermalis.EndianBinaryIO;
-using Kermalis.PokemonBattleEngine.Data;
+using Kermalis.PokemonBattleEngine.Battle;
 using System.Collections.ObjectModel;
 using System.IO;
 
