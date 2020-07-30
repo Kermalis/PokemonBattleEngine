@@ -273,6 +273,7 @@ namespace Kermalis.PokemonBattleEngine.AI
                                         break;
                                     }
                                     case PBEMoveEffect.ChangeTarget_EVA:
+                                    case PBEMoveEffect.Minimize:
                                     {
                                         foreach (PBEBattlePokemon target in targets)
                                         {
@@ -596,6 +597,7 @@ namespace Kermalis.PokemonBattleEngine.AI
                                     case PBEMoveEffect.Selfdestruct:
                                     case PBEMoveEffect.SetDamage:
                                     case PBEMoveEffect.SimpleBeam:
+                                    case PBEMoveEffect.Sketch:
                                     case PBEMoveEffect.Snore:
                                     case PBEMoveEffect.Soak:
                                     case PBEMoveEffect.Spikes:
