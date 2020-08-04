@@ -98,18 +98,15 @@ namespace Kermalis.PokemonBattleEngineTests
 
         public IEnumerator<TestMovesetSlot> GetEnumerator()
         {
-            for (int i = 0; i < _list.Length; i++)
-            {
-                yield return _list[i];
-            }
+            return ((IEnumerable<TestMovesetSlot>)_list).GetEnumerator();
         }
         IEnumerator<IPBEMovesetSlot> IEnumerable<IPBEMovesetSlot>.GetEnumerator()
         {
-            return GetEnumerator();
+            return ((IEnumerable<TestMovesetSlot>)_list).GetEnumerator();
         }
         IEnumerator IEnumerable.GetEnumerator()
         {
-            return GetEnumerator();
+            return _list.GetEnumerator();
         }
     }
     internal sealed class TestPokemon : IPBEPokemon
@@ -157,17 +154,17 @@ namespace Kermalis.PokemonBattleEngineTests
             _list = new TestPokemon[count];
         }
 
-        IEnumerator IEnumerable.GetEnumerator()
+        public IEnumerator<TestPokemon> GetEnumerator()
         {
-            return _list.GetEnumerator();
+            return ((IEnumerable<TestPokemon>)_list).GetEnumerator();
         }
         IEnumerator<IPBEPokemon> IEnumerable<IPBEPokemon>.GetEnumerator()
         {
             return ((IEnumerable<TestPokemon>)_list).GetEnumerator();
         }
-        public IEnumerator<TestPokemon> GetEnumerator()
+        IEnumerator IEnumerable.GetEnumerator()
         {
-            return ((IEnumerable<TestPokemon>)_list).GetEnumerator();
+            return _list.GetEnumerator();
         }
     }
 
