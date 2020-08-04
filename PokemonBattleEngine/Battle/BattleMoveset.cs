@@ -119,8 +119,8 @@ namespace Kermalis.PokemonBattleEngine.Battle
             {
                 PBEReadOnlyPartyMoveset.PBEReadOnlyPartyMovesetSlot slot = moveset[i];
                 PBEMove move = slot.Move;
-                int pp = PBEDataUtils.CalcMaxPP(move, slot.PPUps, settings);
-                _list[i] = new PBEBattleMovesetSlot(move, pp, pp);
+                int maxPP = PBEDataUtils.CalcMaxPP(move, slot.PPUps, settings);
+                _list[i] = new PBEBattleMovesetSlot(move, slot.PP, maxPP);
             }
         }
         internal PBEBattleMoveset(PBEBattleMoveset other)
