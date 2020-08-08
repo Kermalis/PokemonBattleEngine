@@ -14,7 +14,7 @@ Join our _(new-ish)_ [Discord server](https://discord.gg/Z4Mn9qX) to talk or try
 
 ![DiscordPreview](Discord%20Preview.png)
 
-# Other Features:
+## Other Features:
 * There are [settings](PokemonBattleEngine/Data/Settings.cs) that you can change, such as having more moves, a higher maximum level, or weaker poison.
 * There are helper classes to build legal Pokémon, as well as require legality for a battle.
 * Alternatively, you can represent the Pokémon in any way you wish, as long as you have the basic info to start the battle. This works well with custom games.
@@ -24,33 +24,33 @@ Join our _(new-ish)_ [Discord server](https://discord.gg/Z4Mn9qX) to talk or try
 * Multi-Battles exist, but they can be customized to work in 2v1, 2v2, 3v1, or 3v3 battles.
 
 ----
-# To Do:
+## To Do:
 * Triple-battle shifting, Wild-battles, Rotation-battles, and "Bag" items
 * Add the remaining vanilla [abilities](To%20Do%20Abilities.txt), [held items](To%20Do%20Items.txt), and [moves](To%20Do%20Moves.txt)
 * Finish adding all event Pokémon
 * Add previews of the Android/iOS apps
 
 ----
-# PokemonBattleEngine Is Used By:
+## PokemonBattleEngine Is Used By:
 * [PokemonGameEngine](https://github.com/Kermalis/PokemonGameEngine)
 
 ----
-# PokemonBattleEngine Uses:
+## PokemonBattleEngine Uses:
 * [EndianBinaryIO](https://github.com/Kermalis/EndianBinaryIO)
 * [Microsoft.Data.Sqlite](https://docs.microsoft.com/en-us/ef/core)
 * [Newtonsoft.Json](https://github.com/JamesNK/Newtonsoft.Json)
 * [SQLitePCLRaw](https://github.com/ericsink/SQLitePCL.raw)
 * [TCP networking insprired by EasyTcp](https://github.com/Job79/EasyTcp)
 
-# PokemonBattleEngineClient Uses:
+## PokemonBattleEngineClient Uses:
 * [Avalonia](https://github.com/AvaloniaUI/Avalonia)
 * [AvaloniaGif](https://github.com/jmacato/AvaloniaGif)
 
-# PokemonBattleEngineDiscord Uses:
+## PokemonBattleEngineDiscord Uses:
 * [Discord.Net](https://github.com/RogueException/Discord.Net)
 
-# PokemonBattleEngineExtras Uses:
+## PokemonBattleEngineExtras Uses:
 * [SimpleNARC](https://github.com/Kermalis/SimpleNARC)
 
-# PokemonBattleEngineTests Uses:
+## PokemonBattleEngineTests Uses:
 * [xUnit.net](https://github.com/xunit/xunit)
