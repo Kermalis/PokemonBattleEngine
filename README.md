@@ -51,3 +51,6 @@ Join our _(new-ish)_ [Discord server](https://discord.gg/Z4Mn9qX) to talk or try
 
 # PokemonBattleEngineExtras Uses:
 * [SimpleNARC](https://github.com/Kermalis/SimpleNARC)
+
+# PokemonBattleEngineTests Uses:
+* [xUnit.net](https://github.com/xunit/xunit)
