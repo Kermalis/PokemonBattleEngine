@@ -98,6 +98,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
         public PBEForm OriginalForm { get; set; }
         public PBEForm RevertForm { get; set; }
         public PBEStatus1 Status1 { get; set; }
+        public PBEStatus1 OriginalStatus1 { get; set; }
         public PBEStatus2 Status2 { get; set; }
         public PBEStatus2 KnownStatus2 { get; set; }
         /// <summary>The Pokémon's first type.</summary>
@@ -235,7 +236,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
             {
                 throw new ArgumentOutOfRangeException(nameof(pkmn.Status1));
             }
-            Status1 = status1;
+            Status1 = OriginalStatus1 = status1;
             byte sleepTurns = pkmn.SleepTurns;
             if (status1 != PBEStatus1.Asleep && sleepTurns != 0)
             {

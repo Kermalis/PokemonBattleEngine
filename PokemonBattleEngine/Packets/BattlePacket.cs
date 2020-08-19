@@ -17,7 +17,7 @@ namespace Kermalis.PokemonBattleEngine.Packets
         {
             public sealed class PBETrainerInfo
             {
-                public sealed class PBEBattlePokemonInfo // Status1, SleepTurns?
+                public sealed class PBEBattlePokemonInfo // SleepTurns would be too much info for a client to have
                 {
                     public byte Id { get; }
                     public PBESpecies Species { get; }
@@ -30,6 +30,7 @@ namespace Kermalis.PokemonBattleEngine.Packets
                     public PBENature Nature { get; }
                     public PBEGender Gender { get; }
                     public PBEItem Item { get; }
+                    public PBEStatus1 Status1 { get; }
                     public PBEReadOnlyStatCollection EffortValues { get; }
                     public PBEReadOnlyStatCollection IndividualValues { get; }
                     public PBEReadOnlyPartyMoveset Moveset { get; }
@@ -47,6 +48,7 @@ namespace Kermalis.PokemonBattleEngine.Packets
                         Nature = pkmn.Nature;
                         Gender = pkmn.Gender;
                         Item = pkmn.OriginalItem;
+                        Status1 = pkmn.OriginalStatus1;
                         EffortValues = pkmn.OriginalEffortValues;
                         IndividualValues = pkmn.IndividualValues;
                         Moveset = pkmn.OriginalMoveset;
@@ -64,6 +66,7 @@ namespace Kermalis.PokemonBattleEngine.Packets
                         Nature = r.ReadEnum<PBENature>();
                         Gender = r.ReadEnum<PBEGender>();
                         Item = r.ReadEnum<PBEItem>();
+                        Status1 = r.ReadEnum<PBEStatus1>();
                         EffortValues = new PBEReadOnlyStatCollection(r);
                         IndividualValues = new PBEReadOnlyStatCollection(r);
                         Moveset = new PBEReadOnlyPartyMoveset(r);
@@ -82,6 +85,7 @@ namespace Kermalis.PokemonBattleEngine.Packets
                         w.Write(Nature);
                         w.Write(Gender);
                         w.Write(Item);
+                        w.Write(Status1);
                         EffortValues.ToBytes(w);
                         IndividualValues.ToBytes(w);
                         Moveset.ToBytes(w);
