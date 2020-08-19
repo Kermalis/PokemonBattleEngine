@@ -1174,6 +1174,10 @@ namespace Kermalis.PokemonBattleEngine.Battle
                 BattleResult = pkmn.Team.Id == 0 ? PBEBattleResult.Team1Win : PBEBattleResult.Team0Win;
             }
         }
+        private void SetEscaped(PBEBattlePokemon pkmn)
+        {
+            BattleResult = pkmn.IsWild ? PBEBattleResult.WildFlee : PBEBattleResult.WildEscape;
+        }
         private bool FaintCheck(PBEBattlePokemon pkmn)
         {
             if (pkmn.HP == 0)
@@ -3807,7 +3811,16 @@ namespace Kermalis.PokemonBattleEngine.Battle
         {
             BroadcastMoveUsed(user, move);
             PPReduce(user, move);
-            BroadcastMoveResult(user, user, PBEResult.InvalidConditions);
+            // TODO: Trapping effects, SmokeBall
+            // In gen 5 there is a bug that prevents wild Pokémon holding a SmokeBall from escaping if they are affected by trapping effects
+            if (BattleType == PBEBattleType.Wild && BattleFormat == PBEBattleFormat.Single)
+            {
+                SetEscaped(user);
+            }
+            else
+            {
+                BroadcastMoveResult(user, user, PBEResult.InvalidConditions);
+            }
             RecordExecutedMove(user, move, mData);
         }
         private void Ef_Whirlwind(PBEBattlePokemon user, PBEBattlePokemon[] targets, PBEMove move, PBEMoveData mData)
@@ -3822,17 +3835,43 @@ namespace Kermalis.PokemonBattleEngine.Battle
             {
                 foreach (PBEBattlePokemon target in targets)
                 {
-                    if (!MissCheck(user, target, mData))
+                    if (MissCheck(user, target, mData))
                     {
-                        PBEBattlePokemon[] possibleSwitcheroonies = target.Trainer.Party.Where(p => p.FieldPosition == PBEFieldPosition.None && p.HP > 0).ToArray();
-                        if (possibleSwitcheroonies.Length == 0)
+                        continue;
+                    }
+                    // TODO: Trapping effects
+                    if (BattleType == PBEBattleType.Wild)
+                    {
+                        if (BattleFormat == PBEBattleFormat.Single)
                         {
-                            BroadcastMoveResult(user, target, PBEResult.InvalidConditions);
+                            // Wild single battle requires user's level to be >= target's level, then it'll end the battle
+                            if (user.Level < target.Level)
+                            {
+                                BroadcastMoveResult(user, target, PBEResult.Ineffective_Level);
+                                continue;
+                            }
+                            SetEscaped(target);
+                            break;
                         }
                         else
                         {
-                            SwitchTwoPokemon(target, _rand.RandomElement(possibleSwitcheroonies), user);
+                            // Trainer using whirlwind in a wild double+ battle will cause it to fail (even if there's only one wild Pokémon left)
+                            if (!user.IsWild)
+                            {
+                                BroadcastMoveResult(user, target, PBEResult.InvalidConditions);
+                                continue;
+                            }
+                            // A wild Pokémon using it will cause it to switch the target out (as normal below)
                         }
+                    }
+                    PBEBattlePokemon[] possibleSwitcheroonies = target.Trainer.Party.Where(p => p.FieldPosition == PBEFieldPosition.None && p.HP > 0).ToArray();
+                    if (possibleSwitcheroonies.Length == 0)
+                    {
+                        BroadcastMoveResult(user, target, PBEResult.InvalidConditions);
+                    }
+                    else
+                    {
+                        SwitchTwoPokemon(target, _rand.RandomElement(possibleSwitcheroonies), user);
                     }
                 }
             }

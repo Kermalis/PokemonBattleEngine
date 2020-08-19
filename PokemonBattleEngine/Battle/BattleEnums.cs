@@ -69,14 +69,10 @@ namespace Kermalis.PokemonBattleEngine.Battle
         Team1Win,
         /// <summary>A wild Pokémon was captured.</summary>
         WildCapture,
-        ///// <summary>The trainer(s) were defeated by the wild Pokémon.</summary>
-        //WildDefeat,
         /// <summary>The trainer(s) escaped from the wild Pokémon.</summary>
         WildEscape,
         /// <summary>A wild Pokémon escaped from the trainer(s).</summary>
-        WildFlee,
-        ///// <summary>The wild Pokémon were defeated by the trainer(s).</summary>
-        //WildWin
+        WildFlee
     }
     /// <summary>Represents the weather in a specific battle.</summary>
     public enum PBEWeather : byte

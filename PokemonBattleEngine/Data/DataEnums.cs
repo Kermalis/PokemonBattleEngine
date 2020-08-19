@@ -2007,7 +2007,7 @@ namespace Kermalis.PokemonBattleEngine.Data
         Venoshock,
         WakeUpSlap,
         WeatherBall,
-        Whirlwind,
+        Whirlwind, // TODO: Trapping effects
         WideGuard,
         WorrySeed,
         TODOMOVE // Moves that are not added yet

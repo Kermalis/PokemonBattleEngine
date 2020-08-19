@@ -1509,12 +1509,12 @@ namespace Kermalis.PokemonBattleEngine.Battle
                     switch (brp.BattleResult)
                     {
                         case PBEBattleResult.Team0Forfeit: message = "{0} forfeited."; break;
-                        case PBEBattleResult.Team0Win: message = "{0} defeated {1}!"; break;
+                        case PBEBattleResult.Team0Win: message = "{0} defeated {1}!"; break; // TODO: X defeated The wild Pokémon! (capital T in the)
                         case PBEBattleResult.Team1Forfeit: message = "{1} forfeited."; break;
                         case PBEBattleResult.Team1Win: message = "{1} defeated {0}!"; break;
-                        case PBEBattleResult.WildCapture: message = "{1} defeated {0}!"; break; // TODO
-                        case PBEBattleResult.WildEscape: message = "{1} defeated {0}!"; break; // TODO
-                        case PBEBattleResult.WildFlee: message = "{1} defeated {0}!"; break; // TODO
+                        case PBEBattleResult.WildCapture: message = "{1} was captured!"; break; // TODO
+                        case PBEBattleResult.WildEscape: message = "{0} got away!"; break;
+                        case PBEBattleResult.WildFlee: message = "{1} got away!"; break;
                         default: throw new ArgumentOutOfRangeException(nameof(brp.BattleResult));
                     }
                     return string.Format(message, battle.Teams[0].CombinedName, battle.Teams[1].CombinedName);
