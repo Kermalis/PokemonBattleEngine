@@ -76,6 +76,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
         public bool IsWild => Team.IsWild;
 
         public IEnumerable<PBEBattlePokemon> ActiveBattlers => Battle.ActiveBattlers.Where(p => p.Trainer == this);
+        public IEnumerable<PBEBattlePokemon> ActiveBattlersOrdered => ActiveBattlers.OrderBy(p => p.FieldPosition);
         public int NumConsciousPkmn => Party.Count(p => p.HP > 0);
         public int NumPkmnOnField => Party.Count(p => p.FieldPosition != PBEFieldPosition.None);
 

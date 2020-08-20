@@ -163,7 +163,7 @@ namespace Kermalis.PokemonBattleEngineExtras
                         {
                             Console.WriteLine();
                             Console.WriteLine("{0}'s team:", t.Name);
-                            foreach (PBEBattlePokemon p in t.ActiveBattlers.OrderBy(p => p.FieldPosition))
+                            foreach (PBEBattlePokemon p in t.ActiveBattlersOrdered)
                             {
                                 Console.WriteLine(p);
                                 Console.WriteLine();

@@ -361,6 +361,12 @@ namespace Kermalis.PokemonBattleEngine.Battle
                 {
                     return false;
                 }
+                PBEBattlePokemon pkmn = trainer.ActiveBattlersOrdered.First();
+                // Cannot flee if temp locked move is active
+                if (!pkmn.CanSwitchOut())
+                {
+                    return false;
+                }
             }
             else if (trainer.Battle.BattleState != PBEBattleState.WaitingForSwitchIns)
             {
