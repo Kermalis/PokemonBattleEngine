@@ -738,9 +738,8 @@ namespace Kermalis.PokemonBattleEngine.Battle
             {
                 if (trainer.RequestedFlee)
                 {
-                    PBEBattlePokemon pkmn = trainer.ActiveBattlersOrdered.First();
-                    // Do not check this if we are supposed to send in switches
-                    if (pkmn.HP > 0)
+                    PBEBattlePokemon pkmn = trainer.ActiveBattlersOrdered.FirstOrDefault();
+                    if (pkmn != null)
                     {
                         // TODO: Announce ability or item
                         if (pkmn.Ability == PBEAbility.RunAway
@@ -753,6 +752,10 @@ namespace Kermalis.PokemonBattleEngine.Battle
                             SetEscaped(pkmn);
                             return;
                         }
+                    }
+                    else
+                    {
+                        pkmn = trainer.Party[0]; // Use the first fainted Pokémon's speed if there's no active battler
                     }
                     // TODO: I'm using the gen 3/4 formula below.
                     // TODO: Figure out the gen 5 formula, as well as what to use in a double wild battle
