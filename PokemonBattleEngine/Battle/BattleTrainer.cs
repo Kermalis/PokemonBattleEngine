@@ -79,6 +79,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
         public int NumConsciousPkmn => Party.Count(p => p.HP > 0);
         public int NumPkmnOnField => Party.Count(p => p.FieldPosition != PBEFieldPosition.None);
 
+        public bool RequestedFlee { get; set; }
         public List<PBEBattlePokemon> ActionsRequired { get; } = new List<PBEBattlePokemon>(3); // PBEBattleState.WaitingForActions
         public byte SwitchInsRequired { get; set; } // PBEBattleState.WaitingForSwitchIns
         public List<(PBEBattlePokemon, PBEFieldPosition)> SwitchInQueue { get; } = new List<(PBEBattlePokemon, PBEFieldPosition)>(3); // PBEBattleState.WaitingForSwitchIns

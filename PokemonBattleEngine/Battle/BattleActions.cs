@@ -34,6 +34,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                 default: throw new ArgumentOutOfRangeException(nameof(Decision));
             }
         }
+        // Fight
         public PBETurnAction(PBEBattlePokemon pokemon, PBEMove fightMove, PBETurnTarget fightTargets)
             : this(pokemon.Id, fightMove, fightTargets) { }
         public PBETurnAction(byte pokemonId, PBEMove fightMove, PBETurnTarget fightTargets)
@@ -43,6 +44,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
             FightMove = fightMove;
             FightTargets = fightTargets;
         }
+        // Switch
         public PBETurnAction(PBEBattlePokemon pokemon, PBEBattlePokemon switchPokemon)
             : this(pokemon.Id, switchPokemon.Id) { }
         public PBETurnAction(byte pokemonId, byte switchPokemonId)
@@ -337,6 +339,64 @@ namespace Kermalis.PokemonBattleEngine.Battle
                 {
                     trainer.Battle.BattleState = PBEBattleState.ReadyToRunSwitches;
                     trainer.Battle.OnStateChanged?.Invoke(trainer.Battle);
+                }
+                return true;
+            }
+            return false;
+        }
+
+        public static bool IsFleeValid(PBETrainer trainer)
+        {
+            if (trainer is null)
+            {
+                throw new ArgumentNullException(nameof(trainer));
+            }
+            if (trainer.Battle.BattleType != PBEBattleType.Wild)
+            {
+                throw new InvalidOperationException($"{nameof(BattleType)} must be {PBEBattleType.Wild} to flee.");
+            }
+            if (trainer.Battle.BattleState == PBEBattleState.WaitingForActions)
+            {
+                if (trainer.ActionsRequired.Count == 0)
+                {
+                    return false;
+                }
+            }
+            else if (trainer.Battle.BattleState != PBEBattleState.WaitingForSwitchIns)
+            {
+                if (trainer.SwitchInsRequired == 0)
+                {
+                    return false;
+                }
+            }
+            else
+            {
+                throw new InvalidOperationException($"{nameof(BattleState)} must be {PBEBattleState.WaitingForActions} or {PBEBattleState.WaitingForSwitchIns} to flee.");
+            }
+            return true;
+        }
+        public static bool SelectFleeIfValid(PBETrainer trainer)
+        {
+            if (IsFleeValid(trainer))
+            {
+                trainer.RequestedFlee = true;
+                if (trainer.Battle.BattleState == PBEBattleState.WaitingForActions)
+                {
+                    trainer.ActionsRequired.Clear();
+                    if (trainer.Battle.Trainers.All(t => t.ActionsRequired.Count == 0))
+                    {
+                        trainer.Battle.BattleState = PBEBattleState.ReadyToRunTurn;
+                        trainer.Battle.OnStateChanged?.Invoke(trainer.Battle);
+                    }
+                }
+                else
+                {
+                    trainer.SwitchInsRequired = 0;
+                    if (trainer.Battle.Trainers.All(t => t.SwitchInsRequired == 0))
+                    {
+                        trainer.Battle.BattleState = PBEBattleState.ReadyToRunSwitches;
+                        trainer.Battle.OnStateChanged?.Invoke(trainer.Battle);
+                    }
                 }
                 return true;
             }

@@ -390,7 +390,6 @@ namespace Kermalis.PokemonBattleEngine.Data
         FlameOrb = 273,
         FlamePlate = 298,
         FloatStone = 539, // TODO
-        /// <summary>No effect.</summary>
         FluffyTail = 64,
         FlyingGem = 556,
         FocusBand = 230,
@@ -585,9 +584,7 @@ namespace Kermalis.PokemonBattleEngine.Data
         PoisonGem = 554,
         /// <summary>No effect.</summary>
         PokeBall = 4,
-        /// <summary>No effect.</summary>
         PokeDoll = 63,
-        /// <summary>No effect.</summary>
         PokeToy = 577,
         PomegBerry = 169, // TODO
         /// <summary>No effect.</summary>
@@ -704,7 +701,6 @@ namespace Kermalis.PokemonBattleEngine.Data
         /// <summary>No effect.</summary>
         SkullFossil = 105,
         SkyPlate = 306,
-        /// <summary>No effect.</summary>
         SmokeBall = 228,
         SmoothRock = 283,
         /// <summary>No effect.</summary>
@@ -935,7 +931,6 @@ namespace Kermalis.PokemonBattleEngine.Data
         Rivalry = 79, // TODO
         RockHead = 69,
         RoughSkin = 24,
-        /// <summary>No effect in battle.</summary>
         RunAway = 50,
         /// <summary>In a sandstorm, the Pokémon takes no damage from the sandstorm and its Rock-, Ground-, and Steel-type moves get a power boost.</summary>
         SandForce = 159,

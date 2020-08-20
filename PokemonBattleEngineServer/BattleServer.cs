@@ -256,6 +256,26 @@ namespace Kermalis.PokemonBattleEngineServer
                 }
             }
         }
+        public void FleeSubmitted(Player player)
+        {
+            if (_state != ServerState.WaitingForActions && _state != ServerState.WaitingForSwitchIns)
+            {
+                return;
+            }
+            lock (this)
+            {
+                if (_state != ServerState.WaitingForActions && _state != ServerState.WaitingForSwitchIns)
+                {
+                    return;
+                }
+                Console.WriteLine($"Received flee request ({player.BattleId} {player.TrainerName})");
+                if (!PBEBattle.SelectFleeIfValid(_battle.Trainers[player.BattleId]))
+                {
+                    Console.WriteLine("Flee is invalid!");
+                    CancelMatch();
+                }
+            }
+        }
         public void SwitchesSubmitted(Player player, IReadOnlyList<PBESwitchIn> switches)
         {
             if (_state != ServerState.WaitingForSwitchIns)

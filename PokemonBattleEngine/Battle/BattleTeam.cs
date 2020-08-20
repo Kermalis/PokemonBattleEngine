@@ -87,6 +87,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
         public int NumConsciousPkmn => Trainers.Sum(t => t.NumConsciousPkmn);
         public int NumPkmnOnField => Trainers.Sum(t => t.NumPkmnOnField);
 
+        public int NumTimesTriedToFlee { get; set; }
         public PBETeamStatus TeamStatus { get; set; }
         public byte LightScreenCount { get; set; }
         public byte LuckyChantCount { get; set; }

@@ -41,6 +41,10 @@ namespace Kermalis.PokemonBattleEngine.Battle
             }
             Broadcast(new PBEBattleStatusPacket(battleStatus, battleStatusAction));
         }
+        private void BroadcastFleeFailed(PBEBattlePokemon pokemon)
+        {
+            Broadcast(new PBEFleeFailedPacket(pokemon));
+        }
         private void BroadcastHaze()
         {
             Broadcast(new PBEHazePacket());
@@ -643,6 +647,20 @@ namespace Kermalis.PokemonBattleEngine.Battle
                         default: throw new ArgumentOutOfRangeException(nameof(bsp.BattleStatus));
                     }
                     return message;
+                }
+                case PBEFleeFailedPacket ffp:
+                {
+                    string name;
+                    if (ffp.Pokemon == PBEFieldPosition.None)
+                    {
+                        name = GetTrainerName(ffp.PokemonTrainer);
+                    }
+                    else
+                    {
+                        PBEBattlePokemon pokemon = ffp.PokemonTrainer.TryGetPokemon(ffp.Pokemon);
+                        name = GetPkmnName(pokemon, true);
+                    }
+                    return string.Format("{0} could not get away!", name);
                 }
                 case PBEHazePacket _:
                 {

@@ -232,6 +232,11 @@ namespace Kermalis.PokemonBattleEngine.Battle
             }
             BattleState = PBEBattleState.Processing;
             OnStateChanged?.Invoke(this);
+            FleeCheck();
+            if (EndCheck())
+            {
+                return;
+            }
             DetermineTurnOrder();
             RunActionsInOrder();
             TurnEnded();
@@ -244,6 +249,11 @@ namespace Kermalis.PokemonBattleEngine.Battle
             }
             BattleState = PBEBattleState.Processing;
             OnStateChanged?.Invoke(this);
+            FleeCheck();
+            if (EndCheck())
+            {
+                return;
+            }
             SwitchesOrActions();
         }
 
@@ -603,6 +613,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
         private void DetermineTurnOrder()
         {
             _turnOrder.Clear();
+            // TODO: Pursuit has a higher priority (+7) than switching (switching is actually +6 priority with rotating, so this should make it easier to add pursuit)
             IEnumerable<PBEBattlePokemon> pkmnSwitchingOut = ActiveBattlers.Where(p => p.TurnAction.Decision == PBETurnDecision.SwitchOut);
             IEnumerable<PBEBattlePokemon> pkmnFighting = ActiveBattlers.Where(p => p.TurnAction.Decision == PBETurnDecision.Fight);
             // Switching happens first:
@@ -720,6 +731,47 @@ namespace Kermalis.PokemonBattleEngine.Battle
             }
 
             SwitchesOrActions();
+        }
+        private void FleeCheck()
+        {
+            foreach (PBETrainer trainer in Trainers)
+            {
+                if (trainer.RequestedFlee)
+                {
+                    PBEBattlePokemon pkmn = trainer.Party[0];
+                    // Do not check this if we are supposed to send in switches
+                    if (pkmn.HP > 0)
+                    {
+                        // TODO: Announce ability or item
+                        if (pkmn.Ability == PBEAbility.RunAway
+                        // The below three items need to be used according to Serebii
+                        /*|| pkmn.Item == PBEItem.FluffyTail
+                        || pkmn.Item == PBEItem.PokeDoll
+                        || pkmn.Item == PBEItem.PokeToy*/
+                        || pkmn.Item == PBEItem.SmokeBall)
+                        {
+                            SetEscaped(pkmn);
+                            return;
+                        }
+                    }
+                    // TODO: I'm using the gen 3/4 formula below.
+                    // TODO: Figure out the gen 5 formula, as well as what to use in a double wild battle
+                    int a = pkmn.Speed;
+                    int b = (int)trainer.Team.OpposingTeam.ActiveBattlers.Average(p => p.Speed);
+                    int c = ++trainer.Team.NumTimesTriedToFlee;
+                    int f = ((a * 128 / b) + (30 * c)) % 256;
+                    if (_rand.RandomInt(0, 255) < f)
+                    {
+                        SetEscaped(pkmn);
+                        return;
+                    }
+                    else
+                    {
+                        BroadcastFleeFailed(pkmn);
+                    }
+                    trainer.RequestedFlee = false;
+                }
+            }
         }
     }
 }

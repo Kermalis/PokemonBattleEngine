@@ -72,6 +72,8 @@ namespace Kermalis.PokemonBattleEngine.Packets
                     case PBEPkmnHPChangedPacket_Hidden.Code: return new PBEPkmnHPChangedPacket_Hidden(data, r, battle);
                     case PBEPkmnSwitchInPacket_Hidden.Code: return new PBEPkmnSwitchInPacket_Hidden(data, r, battle);
                     case PBEPkmnSwitchOutPacket_Hidden.Code: return new PBEPkmnSwitchOutPacket_Hidden(data, r, battle);
+                    case PBEFleeResponsePacket.Code: return new PBEFleeResponsePacket(data);
+                    case PBEFleeFailedPacket.Code: return new PBEFleeFailedPacket(data, r, battle);
                     default: throw new InvalidDataException();
                 }
             }

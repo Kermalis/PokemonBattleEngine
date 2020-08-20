@@ -8,6 +8,7 @@ namespace Kermalis.PokemonBattleEngine.AI
     public static class PBEWildAI
     {
         // Wild Pokémon always select a random usable move (unless they are forced to use a move)
+        // TODO: Fleeing (but never in a double+ battle)
         public static PBETurnAction[] CreateActions(PBETrainer trainer)
         {
             if (trainer is null)
