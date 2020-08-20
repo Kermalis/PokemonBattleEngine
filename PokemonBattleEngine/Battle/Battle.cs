@@ -614,8 +614,8 @@ namespace Kermalis.PokemonBattleEngine.Battle
         {
             _turnOrder.Clear();
             // TODO: Pursuit has a higher priority (+7) than switching (switching is actually +6 priority with rotating, so this should make it easier to add pursuit)
-            IEnumerable<PBEBattlePokemon> pkmnSwitchingOut = ActiveBattlers.Where(p => p.TurnAction.Decision == PBETurnDecision.SwitchOut);
-            IEnumerable<PBEBattlePokemon> pkmnFighting = ActiveBattlers.Where(p => p.TurnAction.Decision == PBETurnDecision.Fight);
+            IEnumerable<PBEBattlePokemon> pkmnSwitchingOut = ActiveBattlers.Where(p => p.TurnAction?.Decision == PBETurnDecision.SwitchOut);
+            IEnumerable<PBEBattlePokemon> pkmnFighting = ActiveBattlers.Where(p => p.TurnAction?.Decision == PBETurnDecision.Fight);
             // Switching happens first:
             _turnOrder.AddRange(GetActingOrder(pkmnSwitchingOut, true));
             // Moves:

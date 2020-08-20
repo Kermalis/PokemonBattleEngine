@@ -2986,7 +2986,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
             {
                 PBEResult FailFunc(PBEBattlePokemon target)
                 {
-                    if (target.TurnAction == null // Just switched in
+                    if (target.TurnAction == null // Just switched in (or tried to flee)
                         || target.HasUsedMoveThisTurn
                         || target.TurnAction.Decision != PBETurnDecision.Fight
                         || PBEMoveData.Data[target.TurnAction.FightMove].Category == PBEMoveCategory.Status)
