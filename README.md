@@ -22,10 +22,11 @@ Join our _(new-ish)_ [Discord server](https://discord.gg/Z4Mn9qX) to talk or try
 * There is a work-in-progress random team generator inspired by [Pokémon Showdown](https://github.com/smogon/pokemon-showdown)'s which aims to work well with custom settings and moves.
 * The library has classes which automatically use the correct language from the games, meaning you can see the Pokémon's names, items, etc in your language, as long as your language was one supported by Pokémon B2W2.
 * Multi-Battles exist, but they can be customized to work in 2v1, 2v2, 3v1, or 3v3 battles.
+* Wild-Battles exist
 
 ----
 ## To Do:
-* Triple-battle shifting, Wild-battles, Rotation-battles, and "Bag" items
+* Triple-battle shifting, Rotation-battles, and "Bag" items
 * Add the remaining vanilla [abilities](To%20Do%20Abilities.txt), [held items](To%20Do%20Items.txt), and [moves](To%20Do%20Moves.txt)
 * Finish adding all event Pokémon
 * Add previews of the Android/iOS apps
