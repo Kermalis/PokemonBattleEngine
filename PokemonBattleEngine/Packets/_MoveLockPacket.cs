@@ -32,7 +32,7 @@ namespace Kermalis.PokemonBattleEngine.Packets
                 {
                     w.Write((LockedTargets = lockedTargets).Value);
                 }
-                Data = new ReadOnlyCollection<byte>(ms.ToArray());
+                Data = new ReadOnlyCollection<byte>(ms.GetBuffer());
             }
         }
         internal PBEMoveLockPacket(byte[] data, EndianBinaryReader r, PBEBattle battle)

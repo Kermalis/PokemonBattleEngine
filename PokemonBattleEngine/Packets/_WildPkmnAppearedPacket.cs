@@ -77,7 +77,7 @@ namespace Kermalis.PokemonBattleEngine.Packets
                 {
                     Pokemon[i].ToBytes(w);
                 }
-                Data = new ReadOnlyCollection<byte>(ms.ToArray());
+                Data = new ReadOnlyCollection<byte>(ms.GetBuffer());
             }
         }
         internal PBEWildPkmnAppearedPacket(byte[] data, EndianBinaryReader r)

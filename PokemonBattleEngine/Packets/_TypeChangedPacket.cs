@@ -26,7 +26,7 @@ namespace Kermalis.PokemonBattleEngine.Packets
                 w.Write(Pokemon = pokemon.FieldPosition);
                 w.Write(Type1 = type1);
                 w.Write(Type2 = type2);
-                Data = new ReadOnlyCollection<byte>(ms.ToArray());
+                Data = new ReadOnlyCollection<byte>(ms.GetBuffer());
             }
         }
         internal PBETypeChangedPacket(byte[] data, EndianBinaryReader r, PBEBattle battle)

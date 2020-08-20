@@ -26,7 +26,7 @@ namespace Kermalis.PokemonBattleEngine.Packets
                 w.Write(MoveUser = moveUser.FieldPosition);
                 w.Write(Move = move);
                 w.Write(Owned = owned);
-                Data = new ReadOnlyCollection<byte>(ms.ToArray());
+                Data = new ReadOnlyCollection<byte>(ms.GetBuffer());
             }
         }
         internal PBEMoveUsedPacket(byte[] data, EndianBinaryReader r, PBEBattle battle)

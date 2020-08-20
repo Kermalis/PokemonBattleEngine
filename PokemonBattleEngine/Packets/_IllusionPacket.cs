@@ -38,7 +38,7 @@ namespace Kermalis.PokemonBattleEngine.Packets
                 w.Write(ActualType1 = pokemon.Type1);
                 w.Write(ActualType2 = pokemon.Type2);
                 w.Write(ActualWeight = pokemon.Weight);
-                Data = new ReadOnlyCollection<byte>(ms.ToArray());
+                Data = new ReadOnlyCollection<byte>(ms.GetBuffer());
             }
         }
         internal PBEIllusionPacket(byte[] data, EndianBinaryReader r, PBEBattle battle)

@@ -32,7 +32,7 @@ namespace Kermalis.PokemonBattleEngine.Packets
                     w.Write((DamageVictimTrainer = damageVictim.Trainer).Id);
                     w.Write(DamageVictim = damageVictim.FieldPosition);
                 }
-                Data = new ReadOnlyCollection<byte>(ms.ToArray());
+                Data = new ReadOnlyCollection<byte>(ms.GetBuffer());
             }
         }
         internal PBETeamStatusPacket(byte[] data, EndianBinaryReader r, PBEBattle battle)

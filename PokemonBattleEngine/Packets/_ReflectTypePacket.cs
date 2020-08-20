@@ -31,7 +31,7 @@ namespace Kermalis.PokemonBattleEngine.Packets
                 w.Write(Target = target.FieldPosition);
                 w.Write(Type1 = target.Type1);
                 w.Write(Type2 = target.Type2);
-                Data = new ReadOnlyCollection<byte>(ms.ToArray());
+                Data = new ReadOnlyCollection<byte>(ms.GetBuffer());
             }
         }
         internal PBEReflectTypePacket(byte[] data, EndianBinaryReader r, PBEBattle battle)
@@ -69,7 +69,7 @@ namespace Kermalis.PokemonBattleEngine.Packets
                 w.Write(User = other.User);
                 w.Write((TargetTrainer = other.TargetTrainer).Id);
                 w.Write(Target = other.Target);
-                Data = new ReadOnlyCollection<byte>(ms.ToArray());
+                Data = new ReadOnlyCollection<byte>(ms.GetBuffer());
             }
         }
         internal PBEReflectTypePacket_Hidden(byte[] data, EndianBinaryReader r, PBEBattle battle)

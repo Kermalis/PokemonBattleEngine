@@ -46,7 +46,7 @@ namespace Kermalis.PokemonBattleEngine.Packets
                 w.Write((Pokemon1Trainer = pokemon1.Trainer).Id);
                 w.Write(Pokemon1 = pokemon1.Id);
                 w.Write(Pokemon1OldPosition = pokemon1OldPosition);
-                Data = new ReadOnlyCollection<byte>(ms.ToArray());
+                Data = new ReadOnlyCollection<byte>(ms.GetBuffer());
             }
         }
         internal PBEAutoCenterPacket(byte[] data, EndianBinaryReader r, PBEBattle battle)
@@ -86,7 +86,7 @@ namespace Kermalis.PokemonBattleEngine.Packets
                 w.Write((Pokemon1Trainer = other.Pokemon1Trainer).Id);
                 w.Write(Pokemon1 = other.Pokemon1);
                 w.Write(Pokemon1OldPosition = other.Pokemon1OldPosition);
-                Data = new ReadOnlyCollection<byte>(ms.ToArray());
+                Data = new ReadOnlyCollection<byte>(ms.GetBuffer());
             }
         }
         internal PBEAutoCenterPacket_Hidden0(byte[] data, EndianBinaryReader r, PBEBattle battle)
@@ -125,7 +125,7 @@ namespace Kermalis.PokemonBattleEngine.Packets
                 w.Write(Pokemon0OldPosition = other.Pokemon0OldPosition);
                 w.Write((Pokemon1Trainer = other.Pokemon1Trainer).Id);
                 w.Write(Pokemon1OldPosition = other.Pokemon1OldPosition);
-                Data = new ReadOnlyCollection<byte>(ms.ToArray());
+                Data = new ReadOnlyCollection<byte>(ms.GetBuffer());
             }
         }
         internal PBEAutoCenterPacket_Hidden1(byte[] data, EndianBinaryReader r, PBEBattle battle)
@@ -162,7 +162,7 @@ namespace Kermalis.PokemonBattleEngine.Packets
                 w.Write(Pokemon0OldPosition = other.Pokemon0OldPosition);
                 w.Write((Pokemon1Trainer = other.Pokemon1Trainer).Id);
                 w.Write(Pokemon1OldPosition = other.Pokemon1OldPosition);
-                Data = new ReadOnlyCollection<byte>(ms.ToArray());
+                Data = new ReadOnlyCollection<byte>(ms.GetBuffer());
             }
         }
         internal PBEAutoCenterPacket_Hidden01(byte[] data, EndianBinaryReader r, PBEBattle battle)

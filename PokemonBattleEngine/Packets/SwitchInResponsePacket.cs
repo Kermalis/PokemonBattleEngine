@@ -39,7 +39,7 @@ namespace Kermalis.PokemonBattleEngine.Packets
                 {
                     Switches[i].ToBytes(w);
                 }
-                Data = new ReadOnlyCollection<byte>(ms.ToArray());
+                Data = new ReadOnlyCollection<byte>(ms.GetBuffer());
             }
         }
         internal PBESwitchInResponsePacket(byte[] data, EndianBinaryReader r)

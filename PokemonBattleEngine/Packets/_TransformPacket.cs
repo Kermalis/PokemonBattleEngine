@@ -68,7 +68,7 @@ namespace Kermalis.PokemonBattleEngine.Packets
                 {
                     w.Write(TargetMoves[i]);
                 }
-                Data = new ReadOnlyCollection<byte>(ms.ToArray());
+                Data = new ReadOnlyCollection<byte>(ms.GetBuffer());
             }
         }
         internal PBETransformPacket(byte[] data, EndianBinaryReader r, PBEBattle battle)
