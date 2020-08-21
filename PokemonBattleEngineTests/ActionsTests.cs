@@ -18,7 +18,7 @@ namespace Kermalis.PokemonBattleEngineTests
 
         // TODO: bad field position to switch into, bad move, bad targets, bad targets with templockedmove, battle status, bad pkmn id,
         // TODO: wrong team pkmn id, duplicate pkmn id, can't switch out but tried, invalid switch mon (null hp pos), duplicate switch mon
-        // TODO: Too many items, items we do not have
+        // TODO: Too many items, items we do not have, items when in templockedmove
         [Fact]
         public void Basic_Actions()
         {

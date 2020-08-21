@@ -154,7 +154,9 @@ namespace Kermalis.PokemonBattleEngine.Battle
             foreach (PBETurnAction action in actions)
             {
                 PBEBattlePokemon pkmn = trainer.TryGetPokemon(action.PokemonId);
-                if (pkmn == null || !trainer.ActionsRequired.Contains(pkmn) || verified.Contains(pkmn))
+                if (pkmn == null // Invalid ID
+                    || !trainer.ActionsRequired.Contains(pkmn) // Not looking for actions from this mon
+                    || verified.Contains(pkmn)) // Multiple actions for this mon
                 {
                     return false;
                 }
@@ -162,9 +164,9 @@ namespace Kermalis.PokemonBattleEngine.Battle
                 {
                     case PBETurnDecision.Fight:
                     {
-                        if (Array.IndexOf(pkmn.GetUsableMoves(), action.FightMove) == -1
-                            || (action.FightMove == pkmn.TempLockedMove && action.FightTargets != pkmn.TempLockedTargets)
-                            || !AreTargetsValid(pkmn, action.FightMove, action.FightTargets)
+                        if (Array.IndexOf(pkmn.GetUsableMoves(), action.FightMove) == -1 // Move is not usable
+                            || (action.FightMove == pkmn.TempLockedMove && action.FightTargets != pkmn.TempLockedTargets) // TempLockedMove but with wrong targets
+                            || !AreTargetsValid(pkmn, action.FightMove, action.FightTargets) // Invalid targets for move
                             )
                         {
                             return false;
@@ -173,6 +175,10 @@ namespace Kermalis.PokemonBattleEngine.Battle
                     }
                     case PBETurnDecision.Item:
                     {
+                        if (!pkmn.CanSwitchOut())
+                        {
+                            return false; // Has TempLockedMove
+                        }
                         if (!trainer.Inventory.TryGetValue(action.UseItem, out PBEBattleInventory.PBEBattleInventorySlot slot))
                         {
                             return false; // Does not have item
@@ -202,13 +208,13 @@ namespace Kermalis.PokemonBattleEngine.Battle
                     {
                         if (!pkmn.CanSwitchOut())
                         {
-                            return false;
+                            return false; // Has TempLockedMove
                         }
                         PBEBattlePokemon switchPkmn = trainer.TryGetPokemon(action.SwitchPokemonId);
-                        if (switchPkmn == null
-                            || switchPkmn.HP == 0
-                            || switchPkmn.FieldPosition != PBEFieldPosition.None // Also takes care of trying to switch into yourself
-                            || standBy.Contains(switchPkmn)
+                        if (switchPkmn == null // Invalid ID
+                            || switchPkmn.HP == 0 // Fainted
+                            || switchPkmn.FieldPosition != PBEFieldPosition.None // Someone already on the field, also takes care of trying to switch into yourself
+                            || standBy.Contains(switchPkmn) // Already asked to switch in
                             )
                         {
                             return false;
@@ -216,7 +222,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                         standBy.Add(switchPkmn);
                         break;
                     }
-                    default: return false;
+                    default: return false; // Invalid turn action
                 }
                 verified.Add(pkmn);
             }
