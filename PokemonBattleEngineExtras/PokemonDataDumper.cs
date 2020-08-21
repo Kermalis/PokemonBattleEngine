@@ -153,6 +153,7 @@ namespace Kermalis.PokemonBattleEngineExtras
                                         pkmn.Abilities.Add(ability);
                                     }
                                 }
+                                pkmn.FleeRate = pokedata.ReadByte(0x1B);
                                 pkmn.Weight = Math.Round(pokedata.ReadUInt16(0x26) * 0.1, 1);
                                 // Evolution
                                 for (int i = 0; i < 7; i++)
@@ -694,6 +695,7 @@ namespace Kermalis.PokemonBattleEngineExtras
                         pkmn.Type2 = basePkmn.Type2;
                         pkmn.GenderRatio = basePkmn.GenderRatio;
                         pkmn.Abilities = basePkmn.Abilities;
+                        pkmn.FleeRate = basePkmn.FleeRate;
                         pkmn.Weight = basePkmn.Weight;
                         pkmn.LevelUpMoves = basePkmn.LevelUpMoves;
                         pkmn.OtherMoves = basePkmn.OtherMoves;
@@ -767,6 +769,7 @@ namespace Kermalis.PokemonBattleEngineExtras
                         pkmn.Type2 = basePkmn.Type2;
                         pkmn.GenderRatio = basePkmn.GenderRatio;
                         pkmn.Abilities = basePkmn.Abilities;
+                        pkmn.FleeRate = basePkmn.FleeRate;
                         pkmn.Weight = basePkmn.Weight;
                         pkmn.Evolutions = basePkmn.Evolutions;
                         pkmn.PreEvolutions = basePkmn.PreEvolutions;
@@ -958,11 +961,11 @@ namespace Kermalis.PokemonBattleEngineExtras
                     cmd.ExecuteNonQuery();
                     cmd.CommandText = "CREATE TABLE PokemonData(Species INTEGER, Form INTEGER"
                         + ", HP INTEGER, Attack INTEGER, Defense INTEGER, SpAttack INTEGER, SpDefense INTEGER, Speed INTEGER"
-                        + ", Type1 INTEGER, Type2 INTEGER, GenderRatio INTEGER, Weight FLOAT"
+                        + ", Type1 INTEGER, Type2 INTEGER, GenderRatio INTEGER, FleeRate INTEGER, Weight FLOAT"
                         + ", PreEvolutions TEXT, Evolutions TEXT, Abilities TEXT, LevelUpMoves TEXT, OtherMoves TEXT"
                         + ")";
                     cmd.ExecuteNonQuery();
-                    cmd.CommandText = "INSERT INTO PokemonData VALUES(@0, @1, @2, @3, @4, @5, @6, @7, @8, @9, @10, @11, @12, @13, @14, @15, @16)";
+                    cmd.CommandText = "INSERT INTO PokemonData VALUES(@0, @1, @2, @3, @4, @5, @6, @7, @8, @9, @10, @11, @12, @13, @14, @15, @16, @17)";
                     var list = new List<string>();
                     foreach (KeyValuePair<(PBESpecies, PBEForm), Pokemon> tup in dict)
                     {
@@ -979,37 +982,38 @@ namespace Kermalis.PokemonBattleEngineExtras
                         cmd.Parameters.AddWithValue("@8", (byte)pkmn.Type1);
                         cmd.Parameters.AddWithValue("@9", (byte)pkmn.Type2);
                         cmd.Parameters.AddWithValue("@10", pkmn.GenderRatio);
-                        cmd.Parameters.AddWithValue("@11", pkmn.Weight);
+                        cmd.Parameters.AddWithValue("@11", pkmn.FleeRate);
+                        cmd.Parameters.AddWithValue("@12", pkmn.Weight);
                         list.Clear();
                         foreach ((PBESpecies, PBEForm) key in pkmn.PreEvolutions)
                         {
                             list.Add($"{(ushort)key.Item1},{(byte)key.Item2}");
                         }
-                        cmd.Parameters.AddWithValue("@12", string.Join('|', list));
+                        cmd.Parameters.AddWithValue("@13", string.Join('|', list));
                         list.Clear();
                         foreach ((PBESpecies, PBEForm) key in pkmn.Evolutions)
                         {
                             list.Add($"{(ushort)key.Item1},{(byte)key.Item2}");
                         }
-                        cmd.Parameters.AddWithValue("@13", string.Join('|', list));
+                        cmd.Parameters.AddWithValue("@14", string.Join('|', list));
                         list.Clear();
                         foreach (PBEAbility ab in pkmn.Abilities)
                         {
                             list.Add($"{(byte)ab}");
                         }
-                        cmd.Parameters.AddWithValue("@14", string.Join('|', list));
+                        cmd.Parameters.AddWithValue("@15", string.Join('|', list));
                         list.Clear();
                         foreach (KeyValuePair<(PBEMove Move, byte Level), PBEMoveObtainMethod> levelUpMove in pkmn.LevelUpMoves)
                         {
                             list.Add($"{(ushort)levelUpMove.Key.Move},{levelUpMove.Key.Level},{(ulong)levelUpMove.Value}");
                         }
-                        cmd.Parameters.AddWithValue("@15", string.Join('|', list));
+                        cmd.Parameters.AddWithValue("@16", string.Join('|', list));
                         list.Clear();
                         foreach (KeyValuePair<PBEMove, PBEMoveObtainMethod> otherMove in pkmn.OtherMoves)
                         {
                             list.Add($"{(ushort)otherMove.Key},{(ulong)otherMove.Value}");
                         }
-                        cmd.Parameters.AddWithValue("@16", string.Join('|', list));
+                        cmd.Parameters.AddWithValue("@17", string.Join('|', list));
                         cmd.ExecuteNonQuery();
                         cmd.Parameters.Clear();
                     }

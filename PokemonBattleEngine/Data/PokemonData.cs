@@ -13,6 +13,7 @@ namespace Kermalis.PokemonBattleEngine.Data
         public PBEType Type1 { get; }
         public PBEType Type2 { get; }
         public PBEGenderRatio GenderRatio { get; }
+        public byte FleeRate { get; }
         /// <summary>Weight in Kilograms</summary>
         public double Weight { get; }
         public ReadOnlyCollection<(PBESpecies Species, PBEForm Form)> PreEvolutions { get; }
@@ -22,7 +23,7 @@ namespace Kermalis.PokemonBattleEngine.Data
         public ReadOnlyCollection<(PBEMove Move, PBEMoveObtainMethod ObtainMethod)> OtherMoves { get; }
 
         private PBEPokemonData(PBESpecies species, PBEForm form, PBEReadOnlyStatCollection baseStats,
-            PBEType type1, PBEType type2, PBEGenderRatio genderRatio, double weight,
+            PBEType type1, PBEType type2, PBEGenderRatio genderRatio, byte fleeRate, double weight,
             (PBESpecies, PBEForm)[] preEvolutions,
             (PBESpecies, PBEForm)[] evolutions,
             PBEAbility[] abilities,
@@ -30,7 +31,7 @@ namespace Kermalis.PokemonBattleEngine.Data
             (PBEMove, PBEMoveObtainMethod)[] otherMoves)
         {
             Species = species; Form = form; BaseStats = baseStats;
-            Type1 = type1; Type2 = type2; GenderRatio = genderRatio; Weight = weight;
+            Type1 = type1; Type2 = type2; GenderRatio = genderRatio; FleeRate = fleeRate; Weight = weight;
             PreEvolutions = new ReadOnlyCollection<(PBESpecies, PBEForm)>(preEvolutions);
             Evolutions = new ReadOnlyCollection<(PBESpecies, PBEForm)>(evolutions);
             Abilities = new ReadOnlyCollection<PBEAbility>(abilities);
@@ -62,6 +63,7 @@ namespace Kermalis.PokemonBattleEngine.Data
             public byte Type1 { get; set; }
             public byte Type2 { get; set; }
             public byte GenderRatio { get; set; }
+            public byte FleeRate { get; set; }
             public double Weight { get; set; }
             public string PreEvolutions { get; set; }
             public string Evolutions { get; set; }
@@ -81,6 +83,7 @@ namespace Kermalis.PokemonBattleEngine.Data
             var type1 = (PBEType)result.Type1;
             var type2 = (PBEType)result.Type2;
             var genderRatio = (PBEGenderRatio)result.GenderRatio;
+            byte fleeRate = result.FleeRate;
             double weight = result.Weight;
 
             string[] split1 = result.PreEvolutions.Split(_split1Chars, StringSplitOptions.RemoveEmptyEntries);
@@ -121,7 +124,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                 string[] split2 = split1[i].Split(_split2Chars);
                 otherMoves[i] = ((PBEMove)ushort.Parse(split2[0]), (PBEMoveObtainMethod)ulong.Parse(split2[1]));
             }
-            return new PBEPokemonData(species, form, baseStats, type1, type2, genderRatio, weight, preEvolutions, evolutions, abilities, levelUpMoves, otherMoves); // TODO: Cache
+            return new PBEPokemonData(species, form, baseStats, type1, type2, genderRatio, fleeRate, weight, preEvolutions, evolutions, abilities, levelUpMoves, otherMoves); // TODO: Cache
         }
 
         #endregion

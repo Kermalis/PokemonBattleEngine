@@ -68,7 +68,7 @@ namespace Kermalis.PokemonBattleEngineClient.Clients
                     }
                     else
                     {
-                        new Thread(() => PBEBattle.SelectActionsIfValid(t, PBEAI.CreateActions(t))) { Name = ThreadName }.Start();
+                        new Thread(() => PBEAI.CreateActions(t)) { Name = ThreadName }.Start();
                     }
                     return true;
                 }
@@ -82,7 +82,7 @@ namespace Kermalis.PokemonBattleEngineClient.Clients
                     }
                     else
                     {
-                        new Thread(() => PBEBattle.SelectSwitchesIfValid(t, PBEAI.CreateSwitches(t))) { Name = ThreadName }.Start();
+                        new Thread(() => PBEAI.CreateSwitches(t)) { Name = ThreadName }.Start();
                     }
                     return true;
                 }

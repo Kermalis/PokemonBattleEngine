@@ -6,7 +6,6 @@ using Kermalis.PokemonBattleEngine.Packets;
 using Kermalis.PokemonBattleEngine.Utils;
 using System;
 using System.IO;
-using System.Linq;
 using System.Threading;
 
 namespace Kermalis.PokemonBattleEngineExtras
@@ -84,22 +83,12 @@ namespace Kermalis.PokemonBattleEngineExtras
                 {
                     case PBEActionsRequestPacket arp:
                     {
-                        PBETrainer t = arp.Trainer;
-                        PBETurnAction[] actions = PBEAI.CreateActions(t);
-                        if (!PBEBattle.SelectActionsIfValid(t, actions))
-                        {
-                            throw new Exception($"{t.Name}'s AI created invalid actions!");
-                        }
+                        PBEAI.CreateActions(arp.Trainer);
                         break;
                     }
                     case PBESwitchInRequestPacket sirp:
                     {
-                        PBETrainer t = sirp.Trainer;
-                        PBESwitchIn[] switches = PBEAI.CreateSwitches(t);
-                        if (!PBEBattle.SelectSwitchesIfValid(t, switches))
-                        {
-                            throw new Exception($"{t.Name}'s AI created invalid switches!");
-                        }
+                        PBEAI.CreateSwitches(sirp.Trainer);
                         break;
                     }
                     case PBETurnBeganPacket tbp:

@@ -675,7 +675,7 @@ namespace Kermalis.PokemonBattleEngineDiscord
                     SocketUser user = GetBattler(trainer);
                     if (user == null) // PBEAI
                     {
-                        PBEBattle.SelectActionsIfValid(trainer, PBEAI.CreateActions(trainer));
+                        PBEAI.CreateActions(trainer);
                     }
                     else
                     {
@@ -773,7 +773,7 @@ namespace Kermalis.PokemonBattleEngineDiscord
                         SocketUser user = GetBattler(trainer);
                         if (user == null) // PBEAI
                         {
-                            PBEBattle.SelectSwitchesIfValid(trainer, PBEAI.CreateSwitches(trainer));
+                            PBEAI.CreateSwitches(trainer);
                         }
                         else
                         {
