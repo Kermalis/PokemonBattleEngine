@@ -78,5 +78,10 @@ namespace Kermalis.PokemonBattleEngine.Battle
         {
             return _empty;
         }
+
+        internal void Remove(PBEItem item)
+        {
+            _slots[item].Quantity--;
+        }
     }
 }

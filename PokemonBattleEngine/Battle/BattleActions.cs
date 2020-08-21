@@ -12,6 +12,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
         public PBETurnDecision Decision { get; }
         public PBEMove FightMove { get; }
         public PBETurnTarget FightTargets { get; internal set; } // Internal set because of PBEMoveTarget.RandomFoeSurrounding (Shouldn't this happen at runtime?)
+        public PBEItem UseItem { get; }
         public byte SwitchPokemonId { get; }
 
         internal PBETurnAction(EndianBinaryReader r)
@@ -24,6 +25,11 @@ namespace Kermalis.PokemonBattleEngine.Battle
                 {
                     FightMove = r.ReadEnum<PBEMove>();
                     FightTargets = r.ReadEnum<PBETurnTarget>();
+                    break;
+                }
+                case PBETurnDecision.Item:
+                {
+                    UseItem = r.ReadEnum<PBEItem>();
                     break;
                 }
                 case PBETurnDecision.SwitchOut:
@@ -43,6 +49,15 @@ namespace Kermalis.PokemonBattleEngine.Battle
             Decision = PBETurnDecision.Fight;
             FightMove = fightMove;
             FightTargets = fightTargets;
+        }
+        // Item
+        public PBETurnAction(PBEBattlePokemon pokemon, PBEItem item)
+            : this(pokemon.Id, item) { }
+        public PBETurnAction(byte pokemonId, PBEItem item)
+        {
+            PokemonId = pokemonId;
+            Decision = PBETurnDecision.Item;
+            UseItem = item;
         }
         // Switch
         public PBETurnAction(PBEBattlePokemon pokemon, PBEBattlePokemon switchPokemon)
@@ -64,6 +79,11 @@ namespace Kermalis.PokemonBattleEngine.Battle
                 {
                     w.Write(FightMove);
                     w.Write(FightTargets);
+                    break;
+                }
+                case PBETurnDecision.Item:
+                {
+                    w.Write(UseItem);
                     break;
                 }
                 case PBETurnDecision.SwitchOut:
@@ -130,6 +150,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
             }
             var verified = new List<PBEBattlePokemon>(trainer.ActionsRequired.Count);
             var standBy = new List<PBEBattlePokemon>(trainer.ActionsRequired.Count);
+            var items = new Dictionary<PBEItem, int>(trainer.ActionsRequired.Count);
             foreach (PBETurnAction action in actions)
             {
                 PBEBattlePokemon pkmn = trainer.TryGetPokemon(action.PokemonId);
@@ -147,6 +168,33 @@ namespace Kermalis.PokemonBattleEngine.Battle
                             )
                         {
                             return false;
+                        }
+                        break;
+                    }
+                    case PBETurnDecision.Item:
+                    {
+                        if (!trainer.Inventory.TryGetValue(action.UseItem, out PBEBattleInventory.PBEBattleInventorySlot slot))
+                        {
+                            return false; // Does not have item
+                        }
+                        bool used = items.TryGetValue(action.UseItem, out int amtUsed);
+                        if (!used)
+                        {
+                            amtUsed = 0;
+                        }
+                        long newAmt = slot.Quantity - amtUsed;
+                        if (newAmt <= 0)
+                        {
+                            return false; // Trying to use more than we have
+                        }
+                        amtUsed++;
+                        if (used)
+                        {
+                            items[action.UseItem] = amtUsed;
+                        }
+                        else
+                        {
+                            items.Add(action.UseItem, amtUsed);
                         }
                         break;
                     }

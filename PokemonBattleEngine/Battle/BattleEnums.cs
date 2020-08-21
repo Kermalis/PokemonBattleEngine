@@ -128,6 +128,8 @@ namespace Kermalis.PokemonBattleEngine.Battle
         None,
         /// <summary>The Pokémon has chosen to use a move.</summary>
         Fight,
+        /// <summary>The Pokémon has chosen to use an item.</summary>
+        Item,
         /// <summary>The Pokémon has chosen to switch out for another Pokémon.</summary>
         SwitchOut
     }
@@ -271,6 +273,12 @@ namespace Kermalis.PokemonBattleEngine.Battle
         Damage = 2,
         /// <summary>The item restored HP to a Pokémon.</summary>
         RestoredHP = 3
+    }
+    public enum PBEItemTurnAction : byte
+    {
+        NoEffect = 0,
+        Attempt = 1,
+        Success = 2
     }
     /// <summary>Represents an action regarding a <see cref="PBEStatus1"/> or <see cref="PBEStatus2"/>.</summary>
     public enum PBEStatusAction : byte

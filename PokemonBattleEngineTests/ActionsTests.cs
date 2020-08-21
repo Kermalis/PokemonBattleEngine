@@ -16,6 +16,9 @@ namespace Kermalis.PokemonBattleEngineTests
             utils.SetOutputHelper(output);
         }
 
+        // TODO: bad field position to switch into, bad move, bad targets, bad targets with templockedmove, battle status, bad pkmn id,
+        // TODO: wrong team pkmn id, duplicate pkmn id, can't switch out but tried, invalid switch mon (null hp pos), duplicate switch mon
+        // TODO: Too many items, items we do not have
         [Fact]
         public void Basic_Actions()
         {
@@ -48,7 +51,6 @@ namespace Kermalis.PokemonBattleEngineTests
             Assert.Throws<ArgumentNullException>(() => PBEBattle.SelectActionsIfValid(t0, new PBETurnAction[] { null })); // Throw for null elements
             Assert.False(PBEBattle.SelectActionsIfValid(t0, a, a)); // False for too many actions
             Assert.True(PBEBattle.SelectActionsIfValid(t0, a)); // True for good actions
-                                                                // TODO: bad field position to switch into, bad move, bad targets, bad targets with templockedmove, battle status, bad pkmn id, wrong team pkmn id, duplicate pkmn id, can't switch out but tried, invalid switch mon (null hp pos), duplicate switch mon
             Assert.False(PBEBattle.SelectActionsIfValid(t0, a)); // False because actions were already submitted
             Assert.False(PBEBattle.SelectActionsIfValid(t0, Array.Empty<PBETurnAction>())); // False for 0 despite us now needing 0 additional actions
 

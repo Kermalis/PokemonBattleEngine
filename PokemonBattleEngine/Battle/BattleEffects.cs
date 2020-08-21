@@ -666,6 +666,27 @@ namespace Kermalis.PokemonBattleEngine.Battle
             return ShouldDoWeatherEffects() && Weather == PBEWeather.HarshSunlight;
         }
 
+        private void UseItem(PBEBattlePokemon user, PBEItem item)
+        {
+            BroadcastItemTurn(user, item, PBEItemTurnAction.Attempt);
+            switch (item)
+            {
+                case PBEItem.FluffyTail:
+                case PBEItem.PokeDoll:
+                case PBEItem.PokeToy:
+                {
+                    if (BattleType == PBEBattleType.Wild)
+                    {
+                        SetEscaped(user);
+                        user.Trainer.Inventory.Remove(item);
+                        return;
+                    }
+                    break; // Go below
+                }
+            }
+            BroadcastItemTurn(user, item, PBEItemTurnAction.NoEffect);
+        }
+
         private void UseMove(PBEBattlePokemon user, PBEMove move, PBETurnTarget requestedTargets)
         {
             // Cancel the semi-invulnerable move if the user is affected by its status1

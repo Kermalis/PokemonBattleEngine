@@ -72,6 +72,10 @@ namespace Kermalis.PokemonBattleEngine.Battle
             }
             Broadcast(new PBEItemPacket(itemHolder, pokemon2, item, itemAction));
         }
+        private void BroadcastItemTurn(PBEBattlePokemon itemUser, PBEItem item, PBEItemTurnAction itemAction)
+        {
+            Broadcast(new PBEItemTurnPacket(itemUser, item, itemAction));
+        }
         private void BroadcastMoveCrit(PBEBattlePokemon victim)
         {
             Broadcast(new PBEMoveCritPacket(victim));
@@ -824,6 +828,27 @@ namespace Kermalis.PokemonBattleEngine.Battle
                         default: throw new ArgumentOutOfRangeException(nameof(ip.Item));
                     }
                     return string.Format(message, GetPkmnName(itemHolder, itemHolderCaps), GetPkmnName(pokemon2, pokemon2Caps), PBELocalizedString.GetItemName(ip.Item).English);
+                }
+                case PBEItemTurnPacket itp:
+                {
+                    PBEBattlePokemon itemUser = itp.ItemUserTrainer.TryGetPokemon(itp.ItemUser);
+                    string itemEnglish = PBELocalizedString.GetItemName(itp.Item).English;
+                    switch (itp.ItemAction)
+                    {
+                        case PBEItemTurnAction.Attempt: return string.Format("{0} used the {1}.", GetTrainerName(itemUser.Trainer), itemEnglish);
+                        case PBEItemTurnAction.NoEffect: return string.Format("The {0} had no effect.", itemEnglish);
+                        case PBEItemTurnAction.Success:
+                        {
+                            string message;
+                            switch (itp.Item)
+                            {
+                                // No "success" items yet
+                                default: throw new ArgumentOutOfRangeException(nameof(itp.Item));
+                            }
+                            return string.Format(message, GetPkmnName(itemUser, true), itemEnglish);
+                        }
+                        default: throw new ArgumentOutOfRangeException(nameof(itp.ItemAction));
+                    }
                 }
                 case PBEMoveCritPacket mcp:
                 {

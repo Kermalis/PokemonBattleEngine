@@ -614,9 +614,12 @@ namespace Kermalis.PokemonBattleEngine.Battle
         {
             _turnOrder.Clear();
             // TODO: Pursuit has a higher priority (+7) than switching (switching is actually +6 priority with rotating, so this should make it easier to add pursuit)
+            IEnumerable<PBEBattlePokemon> pkmnUsingItem = ActiveBattlers.Where(p => p.TurnAction?.Decision == PBETurnDecision.Item);
             IEnumerable<PBEBattlePokemon> pkmnSwitchingOut = ActiveBattlers.Where(p => p.TurnAction?.Decision == PBETurnDecision.SwitchOut);
             IEnumerable<PBEBattlePokemon> pkmnFighting = ActiveBattlers.Where(p => p.TurnAction?.Decision == PBETurnDecision.Fight);
-            // Switching happens first:
+            // Item happens first:
+            _turnOrder.AddRange(GetActingOrder(pkmnUsingItem, true));
+            // Switching happens next:
             _turnOrder.AddRange(GetActingOrder(pkmnSwitchingOut, true));
             // Moves:
             sbyte GetPrio(PBEBattlePokemon p)
@@ -649,6 +652,11 @@ namespace Kermalis.PokemonBattleEngine.Battle
                         case PBETurnDecision.Fight:
                         {
                             UseMove(pkmn, pkmn.TurnAction.FightMove, pkmn.TurnAction.FightTargets);
+                            break;
+                        }
+                        case PBETurnDecision.Item:
+                        {
+                            UseItem(pkmn, pkmn.TurnAction.UseItem);
                             break;
                         }
                         case PBETurnDecision.SwitchOut:
@@ -742,12 +750,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                     if (pkmn != null)
                     {
                         // TODO: Announce ability or item
-                        if (pkmn.Ability == PBEAbility.RunAway
-                        // The below three items need to be used according to Serebii
-                        /*|| pkmn.Item == PBEItem.FluffyTail
-                        || pkmn.Item == PBEItem.PokeDoll
-                        || pkmn.Item == PBEItem.PokeToy*/
-                        || pkmn.Item == PBEItem.SmokeBall)
+                        if (pkmn.Ability == PBEAbility.RunAway || pkmn.Item == PBEItem.SmokeBall)
                         {
                             SetEscaped(pkmn);
                             return;
