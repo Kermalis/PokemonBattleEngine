@@ -249,9 +249,10 @@ namespace Kermalis.PokemonBattleEngineServer
                     return;
                 }
                 Console.WriteLine($"Received actions ({player.BattleId} {player.TrainerName})");
-                if (!PBEBattle.SelectActionsIfValid(_battle.Trainers[player.BattleId], actions))
+                string valid = _battle.Trainers[player.BattleId].SelectActionsIfValid(actions);
+                if (valid != null)
                 {
-                    Console.WriteLine("Actions are invalid!");
+                    Console.WriteLine("Actions are invalid! - {0}", valid);
                     CancelMatch();
                 }
             }
@@ -269,9 +270,10 @@ namespace Kermalis.PokemonBattleEngineServer
                     return;
                 }
                 Console.WriteLine($"Received flee request ({player.BattleId} {player.TrainerName})");
-                if (!PBEBattle.SelectFleeIfValid(_battle.Trainers[player.BattleId]))
+                string valid = _battle.Trainers[player.BattleId].SelectFleeIfValid();
+                if (valid != null)
                 {
-                    Console.WriteLine("Flee is invalid!");
+                    Console.WriteLine("Flee is invalid! - {0}", valid);
                     CancelMatch();
                 }
             }
@@ -289,9 +291,10 @@ namespace Kermalis.PokemonBattleEngineServer
                     return;
                 }
                 Console.WriteLine($"Received switches ({player.BattleId} {player.TrainerName})");
-                if (!PBEBattle.SelectSwitchesIfValid(_battle.Trainers[player.BattleId], switches))
+                string valid = _battle.Trainers[player.BattleId].SelectSwitchesIfValid(switches);
+                if (valid != null)
                 {
-                    Console.WriteLine("Switches are invalid!");
+                    Console.WriteLine("Switches are invalid! - {0}", valid);
                     CancelMatch();
                 }
             }

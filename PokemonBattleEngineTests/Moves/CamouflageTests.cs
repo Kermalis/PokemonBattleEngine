@@ -53,8 +53,8 @@ namespace Kermalis.PokemonBattleEngineTests.Moves
             #endregion
 
             #region Use Camouflage and check
-            Assert.True(PBEBattle.SelectActionsIfValid(t0, new PBETurnAction(camouflager, PBEMove.Camouflage, PBETurnTarget.AllyCenter)));
-            Assert.True(PBEBattle.SelectActionsIfValid(t1, new PBETurnAction(magikarp, PBEMove.Splash, PBETurnTarget.AllyCenter)));
+            Assert.Null(t0.SelectActionsIfValid(new PBETurnAction(camouflager, PBEMove.Camouflage, PBETurnTarget.AllyCenter)));
+            Assert.Null(t1.SelectActionsIfValid(new PBETurnAction(magikarp, PBEMove.Splash, PBETurnTarget.AllyCenter)));
 
             battle.RunTurn();
 
@@ -91,8 +91,8 @@ namespace Kermalis.PokemonBattleEngineTests.Moves
             #endregion
 
             #region Use Camouflage and check
-            Assert.True(PBEBattle.SelectActionsIfValid(t0, new PBETurnAction(staryu, PBEMove.Camouflage, PBETurnTarget.AllyCenter)));
-            Assert.True(PBEBattle.SelectActionsIfValid(t1, new PBETurnAction(magikarp, PBEMove.Splash, PBETurnTarget.AllyCenter)));
+            Assert.Null(t0.SelectActionsIfValid(new PBETurnAction(staryu, PBEMove.Camouflage, PBETurnTarget.AllyCenter)));
+            Assert.Null(t1.SelectActionsIfValid(new PBETurnAction(magikarp, PBEMove.Splash, PBETurnTarget.AllyCenter)));
 
             battle.RunTurn();
 

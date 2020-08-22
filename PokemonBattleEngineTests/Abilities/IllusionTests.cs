@@ -82,8 +82,8 @@ namespace Kermalis.PokemonBattleEngineTests.Abilities
             #endregion
 
             #region Freeze Shaymin
-            Assert.True(PBEBattle.SelectActionsIfValid(t0, new PBETurnAction(happiny, PBEMove.SecretPower, PBETurnTarget.FoeCenter)));
-            Assert.True(PBEBattle.SelectActionsIfValid(t1, new PBETurnAction(shaymin, PBEMove.Splash, PBETurnTarget.AllyCenter)));
+            Assert.Null(t0.SelectActionsIfValid(new PBETurnAction(happiny, PBEMove.SecretPower, PBETurnTarget.FoeCenter)));
+            Assert.Null(t1.SelectActionsIfValid(new PBETurnAction(shaymin, PBEMove.Splash, PBETurnTarget.AllyCenter)));
 
             battle.RunTurn();
 
@@ -91,8 +91,8 @@ namespace Kermalis.PokemonBattleEngineTests.Abilities
             #endregion
 
             #region Swap Shaymin for Magikarp
-            Assert.True(PBEBattle.SelectActionsIfValid(t0, new PBETurnAction(happiny, PBEMove.Splash, PBETurnTarget.AllyCenter)));
-            Assert.True(PBEBattle.SelectActionsIfValid(t1, new PBETurnAction(shaymin, magikarp)));
+            Assert.Null(t0.SelectActionsIfValid(new PBETurnAction(happiny, PBEMove.Splash, PBETurnTarget.AllyCenter)));
+            Assert.Null(t1.SelectActionsIfValid(new PBETurnAction(shaymin, magikarp)));
 
             battle.RunTurn();
 
@@ -100,8 +100,8 @@ namespace Kermalis.PokemonBattleEngineTests.Abilities
             #endregion
 
             #region Swap Magikarp for Zoroark and check
-            Assert.True(PBEBattle.SelectActionsIfValid(t0, new PBETurnAction(happiny, PBEMove.Splash, PBETurnTarget.AllyCenter)));
-            Assert.True(PBEBattle.SelectActionsIfValid(t1, new PBETurnAction(magikarp, zoroark)));
+            Assert.Null(t0.SelectActionsIfValid(new PBETurnAction(happiny, PBEMove.Splash, PBETurnTarget.AllyCenter)));
+            Assert.Null(t1.SelectActionsIfValid(new PBETurnAction(magikarp, zoroark)));
 
             battle.RunTurn();
 

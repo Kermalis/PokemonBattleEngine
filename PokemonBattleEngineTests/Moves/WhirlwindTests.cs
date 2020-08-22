@@ -38,8 +38,8 @@ namespace Kermalis.PokemonBattleEngineTests.Moves
             #endregion
 
             #region Use Whirlwind and check
-            Assert.True(PBEBattle.SelectActionsIfValid(t0, new PBETurnAction(tropius, PBEMove.Whirlwind, PBETurnTarget.FoeCenter)));
-            Assert.True(PBEBattle.SelectActionsIfValid(t1, new PBETurnAction(magikarp, PBEMove.Splash, PBETurnTarget.AllyCenter)));
+            Assert.Null(t0.SelectActionsIfValid(new PBETurnAction(tropius, PBEMove.Whirlwind, PBETurnTarget.FoeCenter)));
+            Assert.Null(t1.SelectActionsIfValid(new PBETurnAction(magikarp, PBEMove.Splash, PBETurnTarget.AllyCenter)));
 
             battle.RunTurn();
 
@@ -78,9 +78,9 @@ namespace Kermalis.PokemonBattleEngineTests.Moves
             #endregion
 
             #region Use Whirlwind and check
-            Assert.True(PBEBattle.SelectActionsIfValid(t0,
+            Assert.Null(t0.SelectActionsIfValid(
                 new PBETurnAction(tropius, PBEMove.Whirlwind, PBETurnTarget.FoeLeft)));
-            Assert.True(PBEBattle.SelectActionsIfValid(t1,
+            Assert.Null(t1.SelectActionsIfValid(
                 new PBETurnAction(magikarp, PBEMove.Splash, PBETurnTarget.AllyLeft),
                 new PBETurnAction(happiny, PBEMove.Splash, PBETurnTarget.AllyRight)));
 
@@ -119,8 +119,8 @@ namespace Kermalis.PokemonBattleEngineTests.Moves
             #endregion
 
             #region Use Whirlwind and check
-            Assert.True(PBEBattle.SelectActionsIfValid(t0, new PBETurnAction(tropius, PBEMove.Whirlwind, PBETurnTarget.FoeCenter)));
-            Assert.True(PBEBattle.SelectActionsIfValid(t1, new PBETurnAction(magikarp, PBEMove.Splash, PBETurnTarget.AllyCenter)));
+            Assert.Null(t0.SelectActionsIfValid(new PBETurnAction(tropius, PBEMove.Whirlwind, PBETurnTarget.FoeCenter)));
+            Assert.Null(t1.SelectActionsIfValid(new PBETurnAction(magikarp, PBEMove.Splash, PBETurnTarget.AllyCenter)));
 
             battle.RunTurn();
 
@@ -163,10 +163,10 @@ namespace Kermalis.PokemonBattleEngineTests.Moves
             #endregion
 
             #region Use Whirlwind and check
-            Assert.True(PBEBattle.SelectActionsIfValid(t0,
+            Assert.Null(t0.SelectActionsIfValid(
                 new PBETurnAction(diglett, PBEMove.Splash, PBETurnTarget.AllyLeft),
                 new PBETurnAction(geodude, PBEMove.Splash, PBETurnTarget.AllyRight)));
-            Assert.True(PBEBattle.SelectActionsIfValid(t1,
+            Assert.Null(t1.SelectActionsIfValid(
                 new PBETurnAction(starly, PBEMove.Whirlwind, PBETurnTarget.FoeLeft),
                 new PBETurnAction(magikarp, PBEMove.Splash, PBETurnTarget.AllyRight)));
 

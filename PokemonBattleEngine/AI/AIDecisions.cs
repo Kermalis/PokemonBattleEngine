@@ -9,7 +9,7 @@ using System.Linq;
 namespace Kermalis.PokemonBattleEngine.AI
 {
     /// <summary>Creates valid decisions for a team in a battle. Decisions may not be valid for custom settings and/or move changes.</summary>
-    public static class PBEAI
+    public static partial class PBEAI
     {
         // TODO: Control multiple trainers of a multi battle team
 
@@ -17,7 +17,7 @@ namespace Kermalis.PokemonBattleEngine.AI
         /// <param name="trainer">The trainer to create actions for.</param>
         /// <exception cref="InvalidOperationException">Thrown when <paramref name="trainer"/> has no active battlers or <paramref name="trainer"/>'s <see cref="PBETrainer.Battle"/>'s <see cref="PBEBattle.BattleState"/> is not <see cref="PBEBattleState.WaitingForActions"/>.</exception>
         /// <exception cref="ArgumentOutOfRangeException">Thrown when a Pokémon has no moves, the AI tries to use a move with invalid targets, or <paramref name="trainer"/>'s <see cref="PBETrainer.Battle"/>'s <see cref="PBEBattle.BattleFormat"/> is invalid.</exception>
-        public static void CreateActions(PBETrainer trainer)
+        public static void CreateAIActions(this PBETrainer trainer)
         {
             if (trainer is null)
             {
@@ -29,7 +29,7 @@ namespace Kermalis.PokemonBattleEngine.AI
             }
             if (trainer.IsWild)
             {
-                PBEWildAI.CreateActions(trainer);
+                trainer.CreateWildAIActions();
                 return;
             }
             var actions = new PBETurnAction[trainer.ActionsRequired.Count];
@@ -662,9 +662,10 @@ namespace Kermalis.PokemonBattleEngine.AI
                     standBy.Add(trainer.TryGetPokemon(actions[i].SwitchPokemonId));
                 }
             }
-            if (!PBEBattle.SelectActionsIfValid(trainer, actions))
+            string valid = trainer.SelectActionsIfValid(actions);
+            if (valid != null)
             {
-                throw new Exception("AI created bad actions.");
+                throw new Exception("AI created bad actions. - " + valid);
             }
         }
 
@@ -693,7 +694,7 @@ namespace Kermalis.PokemonBattleEngine.AI
         /// <param name="trainer">The trainer to create switches for.</param>
         /// <exception cref="InvalidOperationException">Thrown when <paramref name="trainer"/> does not require switch-ins or <paramref name="trainer"/>'s <see cref="PBETrainer.Battle"/>'s <see cref="PBEBattle.BattleState"/> is not <see cref="PBEBattleState.WaitingForActions"/>.</exception>
         /// <exception cref="ArgumentOutOfRangeException">Thrown when <paramref name="trainer"/>'s <see cref="PBETrainer.Battle"/>'s <see cref="PBEBattle.BattleFormat"/> is invalid.</exception>
-        public static void CreateSwitches(PBETrainer trainer)
+        public static void CreateAISwitches(this PBETrainer trainer)
         {
             if (trainer == null)
             {
@@ -753,9 +754,10 @@ namespace Kermalis.PokemonBattleEngine.AI
             {
                 switches[i] = new PBESwitchIn(available[i], availablePositions[i]);
             }
-            if (!PBEBattle.SelectSwitchesIfValid(trainer, switches))
+            string valid = trainer.SelectSwitchesIfValid(switches);
+            if (valid != null)
             {
-                throw new Exception("AI created bad switches.");
+                throw new Exception("AI created bad switches. - " + valid);
             }
         }
     }

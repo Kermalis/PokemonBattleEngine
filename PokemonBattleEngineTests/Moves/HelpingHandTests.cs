@@ -47,10 +47,10 @@ namespace Kermalis.PokemonBattleEngineTests.Moves
             #endregion
 
             #region Use Shadow Force
-            Assert.True(PBEBattle.SelectActionsIfValid(t0,
+            Assert.Null(t0.SelectActionsIfValid(
                 new PBETurnAction(minun, PBEMove.Splash, PBETurnTarget.AllyLeft),
                 new PBETurnAction(giratina, move, PBETurnTarget.FoeLeft)));
-            Assert.True(PBEBattle.SelectActionsIfValid(t1,
+            Assert.Null(t1.SelectActionsIfValid(
                 new PBETurnAction(magikarp, PBEMove.Splash, PBETurnTarget.AllyLeft)));
 
             battle.RunTurn();
@@ -59,10 +59,10 @@ namespace Kermalis.PokemonBattleEngineTests.Moves
             #endregion
 
             #region Use Helping Hand and check
-            Assert.True(PBEBattle.SelectActionsIfValid(t0,
+            Assert.Null(t0.SelectActionsIfValid(
                 new PBETurnAction(minun, PBEMove.HelpingHand, PBETurnTarget.AllyRight),
                 new PBETurnAction(giratina, move, PBETurnTarget.FoeLeft)));
-            Assert.True(PBEBattle.SelectActionsIfValid(t1,
+            Assert.Null(t1.SelectActionsIfValid(
                 new PBETurnAction(magikarp, PBEMove.Splash, PBETurnTarget.AllyLeft)));
 
             battle.RunTurn();
@@ -99,8 +99,8 @@ namespace Kermalis.PokemonBattleEngineTests.Moves
             #endregion
 
             #region Use Helping Hand and check
-            Assert.True(PBEBattle.SelectActionsIfValid(t0, new PBETurnAction(minun, PBEMove.HelpingHand, PBETurnTarget.AllyCenter)));
-            Assert.True(PBEBattle.SelectActionsIfValid(t1, new PBETurnAction(magikarp, PBEMove.Splash, PBETurnTarget.AllyCenter)));
+            Assert.Null(t0.SelectActionsIfValid(new PBETurnAction(minun, PBEMove.HelpingHand, PBETurnTarget.AllyCenter)));
+            Assert.Null(t1.SelectActionsIfValid(new PBETurnAction(magikarp, PBEMove.Splash, PBETurnTarget.AllyCenter)));
 
             battle.RunTurn();
 

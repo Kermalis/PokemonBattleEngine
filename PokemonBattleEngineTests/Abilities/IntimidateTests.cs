@@ -122,8 +122,8 @@ namespace Kermalis.PokemonBattleEngineTests.Abilities
             #endregion
 
             #region Use Substitute
-            Assert.True(PBEBattle.SelectActionsIfValid(t0, new PBETurnAction(shuckle, PBEMove.Substitute, PBETurnTarget.AllyCenter)));
-            Assert.True(PBEBattle.SelectActionsIfValid(t1, new PBETurnAction(skitty, PBEMove.Splash, PBETurnTarget.AllyCenter)));
+            Assert.Null(t0.SelectActionsIfValid(new PBETurnAction(shuckle, PBEMove.Substitute, PBETurnTarget.AllyCenter)));
+            Assert.Null(t1.SelectActionsIfValid(new PBETurnAction(skitty, PBEMove.Splash, PBETurnTarget.AllyCenter)));
 
             battle.RunTurn();
 
@@ -131,8 +131,8 @@ namespace Kermalis.PokemonBattleEngineTests.Abilities
             #endregion
 
             #region Switch in Luxray and check
-            Assert.True(PBEBattle.SelectActionsIfValid(t0, new PBETurnAction(shuckle, PBEMove.Splash, PBETurnTarget.AllyCenter)));
-            Assert.True(PBEBattle.SelectActionsIfValid(t1, new PBETurnAction(skitty, luxray)));
+            Assert.Null(t0.SelectActionsIfValid(new PBETurnAction(shuckle, PBEMove.Splash, PBETurnTarget.AllyCenter)));
+            Assert.Null(t1.SelectActionsIfValid(new PBETurnAction(skitty, luxray)));
 
             battle.RunTurn();
 

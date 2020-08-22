@@ -76,7 +76,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
         public PBEWildInfo(IPBEPokemonCollection party)
             : base(party) { }
     }
-    public sealed class PBETrainer
+    public sealed partial class PBETrainer
     {
         public PBEBattle Battle { get; }
         public PBETeam Team { get; }

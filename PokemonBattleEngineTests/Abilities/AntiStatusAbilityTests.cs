@@ -41,8 +41,8 @@ namespace Kermalis.PokemonBattleEngineTests.Abilities
             #endregion
 
             #region Badly Poison Zangoose and check
-            Assert.True(PBEBattle.SelectActionsIfValid(t0, new PBETurnAction(seviper, PBEMove.Toxic, PBETurnTarget.FoeCenter)));
-            Assert.True(PBEBattle.SelectActionsIfValid(t1, new PBETurnAction(zangoose, PBEMove.Splash, PBETurnTarget.AllyCenter)));
+            Assert.Null(t0.SelectActionsIfValid(new PBETurnAction(seviper, PBEMove.Toxic, PBETurnTarget.FoeCenter)));
+            Assert.Null(t1.SelectActionsIfValid(new PBETurnAction(zangoose, PBEMove.Splash, PBETurnTarget.AllyCenter)));
 
             battle.RunTurn();
 

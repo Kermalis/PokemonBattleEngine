@@ -52,15 +52,15 @@ namespace Kermalis.PokemonBattleEngineTests.Moves
             #endregion
 
             #region Use VacuumWave to lower HP
-            Assert.True(PBEBattle.SelectActionsIfValid(t0, new PBETurnAction(lucario, PBEMove.VacuumWave, PBETurnTarget.FoeCenter)));
-            Assert.True(PBEBattle.SelectActionsIfValid(t1, new PBETurnAction(rooster, PBEMove.Splash, PBETurnTarget.AllyCenter)));
+            Assert.Null(t0.SelectActionsIfValid(new PBETurnAction(lucario, PBEMove.VacuumWave, PBETurnTarget.FoeCenter)));
+            Assert.Null(t1.SelectActionsIfValid(new PBETurnAction(rooster, PBEMove.Splash, PBETurnTarget.AllyCenter)));
 
             battle.RunTurn();
             #endregion
 
             #region Use Roost and check
-            Assert.True(PBEBattle.SelectActionsIfValid(t0, new PBETurnAction(lucario, PBEMove.Earthquake, PBETurnTarget.FoeCenter)));
-            Assert.True(PBEBattle.SelectActionsIfValid(t1, new PBETurnAction(rooster, PBEMove.Roost, PBETurnTarget.AllyCenter)));
+            Assert.Null(t0.SelectActionsIfValid(new PBETurnAction(lucario, PBEMove.Earthquake, PBETurnTarget.FoeCenter)));
+            Assert.Null(t1.SelectActionsIfValid(new PBETurnAction(rooster, PBEMove.Roost, PBETurnTarget.AllyCenter)));
 
             battle.RunTurn();
 

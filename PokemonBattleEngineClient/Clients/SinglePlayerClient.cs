@@ -43,11 +43,11 @@ namespace Kermalis.PokemonBattleEngineClient.Clients
 
         protected override void OnActionsReady(PBETurnAction[] acts)
         {
-            new Thread(() => PBEBattle.SelectActionsIfValid(Trainer, acts)) { Name = ThreadName }.Start();
+            new Thread(() => Trainer.SelectActionsIfValid(acts)) { Name = ThreadName }.Start();
         }
         protected override void OnSwitchesReady()
         {
-            new Thread(() => PBEBattle.SelectSwitchesIfValid(Trainer, Switches)) { Name = ThreadName }.Start();
+            new Thread(() => Trainer.SelectSwitchesIfValid(Switches)) { Name = ThreadName }.Start();
         }
 
         public override void Dispose()
@@ -68,7 +68,7 @@ namespace Kermalis.PokemonBattleEngineClient.Clients
                     }
                     else
                     {
-                        new Thread(() => PBEAI.CreateActions(t)) { Name = ThreadName }.Start();
+                        new Thread(t.CreateAIActions) { Name = ThreadName }.Start();
                     }
                     return true;
                 }
@@ -82,7 +82,7 @@ namespace Kermalis.PokemonBattleEngineClient.Clients
                     }
                     else
                     {
-                        new Thread(() => PBEAI.CreateSwitches(t)) { Name = ThreadName }.Start();
+                        new Thread(t.CreateAISwitches) { Name = ThreadName }.Start();
                     }
                     return true;
                 }

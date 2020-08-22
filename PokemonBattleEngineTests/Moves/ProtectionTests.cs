@@ -43,8 +43,8 @@ namespace Kermalis.PokemonBattleEngineTests.Moves
             #endregion
 
             #region Use move
-            Assert.True(PBEBattle.SelectActionsIfValid(t0, new PBETurnAction(mienshao, move, PBETurnTarget.AllyCenter)));
-            Assert.True(PBEBattle.SelectActionsIfValid(t1, new PBETurnAction(magikarp, PBEMove.Splash, PBETurnTarget.AllyCenter)));
+            Assert.Null(t0.SelectActionsIfValid(new PBETurnAction(mienshao, move, PBETurnTarget.AllyCenter)));
+            Assert.Null(t1.SelectActionsIfValid(new PBETurnAction(magikarp, PBEMove.Splash, PBETurnTarget.AllyCenter)));
 
             battle.RunTurn();
 
@@ -52,8 +52,8 @@ namespace Kermalis.PokemonBattleEngineTests.Moves
             #endregion
 
             #region Use Calm Mind and check
-            Assert.True(PBEBattle.SelectActionsIfValid(t0, new PBETurnAction(mienshao, PBEMove.CalmMind, PBETurnTarget.AllyCenter)));
-            Assert.True(PBEBattle.SelectActionsIfValid(t1, new PBETurnAction(magikarp, PBEMove.Splash, PBETurnTarget.AllyCenter)));
+            Assert.Null(t0.SelectActionsIfValid(new PBETurnAction(mienshao, PBEMove.CalmMind, PBETurnTarget.AllyCenter)));
+            Assert.Null(t1.SelectActionsIfValid(new PBETurnAction(magikarp, PBEMove.Splash, PBETurnTarget.AllyCenter)));
 
             battle.RunTurn();
 
@@ -93,10 +93,10 @@ namespace Kermalis.PokemonBattleEngineTests.Moves
             #endregion
 
             #region Use move and check
-            Assert.True(PBEBattle.SelectActionsIfValid(t0,
+            Assert.Null(t0.SelectActionsIfValid(
                 new PBETurnAction(lucario, PBEMove.Feint, ally ? PBETurnTarget.AllyRight : PBETurnTarget.FoeLeft),
                 new PBETurnAction(mienshao, PBEMove.QuickGuard, PBETurnTarget.AllyLeft | PBETurnTarget.AllyRight)));
-            Assert.True(PBEBattle.SelectActionsIfValid(t1,
+            Assert.Null(t1.SelectActionsIfValid(
                 new PBETurnAction(mrmime, PBEMove.QuickGuard, PBETurnTarget.AllyLeft | PBETurnTarget.AllyRight)));
 
             battle.RunTurn();
@@ -133,8 +133,8 @@ namespace Kermalis.PokemonBattleEngineTests.Moves
             #endregion
 
             #region Use move and check
-            Assert.True(PBEBattle.SelectActionsIfValid(t0, new PBETurnAction(lucario, PBEMove.Tackle, PBETurnTarget.FoeCenter)));
-            Assert.True(PBEBattle.SelectActionsIfValid(t1, new PBETurnAction(mienshao, PBEMove.Protect, PBETurnTarget.AllyCenter)));
+            Assert.Null(t0.SelectActionsIfValid(new PBETurnAction(lucario, PBEMove.Tackle, PBETurnTarget.FoeCenter)));
+            Assert.Null(t1.SelectActionsIfValid(new PBETurnAction(mienshao, PBEMove.Protect, PBETurnTarget.AllyCenter)));
 
             battle.RunTurn();
 
@@ -172,8 +172,8 @@ namespace Kermalis.PokemonBattleEngineTests.Moves
             #endregion
 
             #region Use move and check
-            Assert.True(PBEBattle.SelectActionsIfValid(t0, new PBETurnAction(mienshao, move, PBETurnTarget.AllyCenter)));
-            Assert.True(PBEBattle.SelectActionsIfValid(t1, new PBETurnAction(lucario, move2, PBETurnTarget.FoeCenter)));
+            Assert.Null(t0.SelectActionsIfValid(new PBETurnAction(mienshao, move, PBETurnTarget.AllyCenter)));
+            Assert.Null(t1.SelectActionsIfValid(new PBETurnAction(lucario, move2, PBETurnTarget.FoeCenter)));
 
             battle.RunTurn();
 

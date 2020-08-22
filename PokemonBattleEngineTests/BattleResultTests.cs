@@ -40,8 +40,8 @@ namespace Kermalis.PokemonBattleEngineTests
             #endregion
 
             #region Use move and check
-            Assert.True(PBEBattle.SelectActionsIfValid(t0, new PBETurnAction(golem, PBEMove.Explosion, PBETurnTarget.FoeCenter)));
-            Assert.True(PBEBattle.SelectActionsIfValid(t1, new PBETurnAction(magikarp, PBEMove.Splash, PBETurnTarget.AllyCenter)));
+            Assert.Null(t0.SelectActionsIfValid(new PBETurnAction(golem, PBEMove.Explosion, PBETurnTarget.FoeCenter)));
+            Assert.Null(t1.SelectActionsIfValid(new PBETurnAction(magikarp, PBEMove.Splash, PBETurnTarget.AllyCenter)));
 
             battle.RunTurn();
 
@@ -86,11 +86,11 @@ namespace Kermalis.PokemonBattleEngineTests
             #endregion
 
             #region Use move and check
-            Assert.True(PBEBattle.SelectActionsIfValid(t0,
+            Assert.Null(t0.SelectActionsIfValid(
                 new PBETurnAction(qwilfish, PBEMove.Splash, PBETurnTarget.AllyLeft),
                 new PBETurnAction(golem, PBEMove.Explosion, PBETurnTarget.AllyLeft | PBETurnTarget.AllyRight | PBETurnTarget.FoeLeft | PBETurnTarget.FoeCenter | PBETurnTarget.FoeRight),
                 new PBETurnAction(magikarp, PBEMove.Splash, PBETurnTarget.AllyRight)));
-            Assert.True(PBEBattle.SelectActionsIfValid(t1,
+            Assert.Null(t1.SelectActionsIfValid(
                 new PBETurnAction(patrat, PBEMove.Splash, PBETurnTarget.AllyLeft),
                 new PBETurnAction(lickilicky, PBEMove.Splash, PBETurnTarget.AllyCenter),
                 new PBETurnAction(happiny, PBEMove.Splash, PBETurnTarget.AllyRight)));
@@ -130,8 +130,8 @@ namespace Kermalis.PokemonBattleEngineTests
             #endregion
 
             #region Use FinalGambit and check
-            Assert.True(PBEBattle.SelectActionsIfValid(t0, new PBETurnAction(staraptor, PBEMove.FinalGambit, PBETurnTarget.FoeCenter)));
-            Assert.True(PBEBattle.SelectActionsIfValid(t1, new PBETurnAction(magikarp, PBEMove.Splash, PBETurnTarget.AllyCenter)));
+            Assert.Null(t0.SelectActionsIfValid(new PBETurnAction(staraptor, PBEMove.FinalGambit, PBETurnTarget.FoeCenter)));
+            Assert.Null(t1.SelectActionsIfValid(new PBETurnAction(magikarp, PBEMove.Splash, PBETurnTarget.AllyCenter)));
 
             battle.RunTurn();
 
@@ -171,8 +171,8 @@ namespace Kermalis.PokemonBattleEngineTests
             #endregion
 
             #region Use DrainPunch and check
-            Assert.True(PBEBattle.SelectActionsIfValid(t0, new PBETurnAction(deoxys, PBEMove.DrainPunch, PBETurnTarget.FoeCenter)));
-            Assert.True(PBEBattle.SelectActionsIfValid(t1, new PBETurnAction(blissey, PBEMove.Splash, PBETurnTarget.AllyCenter)));
+            Assert.Null(t0.SelectActionsIfValid(new PBETurnAction(deoxys, PBEMove.DrainPunch, PBETurnTarget.FoeCenter)));
+            Assert.Null(t1.SelectActionsIfValid(new PBETurnAction(blissey, PBEMove.Splash, PBETurnTarget.AllyCenter)));
 
             battle.RunTurn();
 
@@ -215,8 +215,8 @@ namespace Kermalis.PokemonBattleEngineTests
             #endregion
 
             #region Use Pound and check
-            Assert.True(PBEBattle.SelectActionsIfValid(t0, new PBETurnAction(lucario, PBEMove.Pound, PBETurnTarget.FoeCenter)));
-            Assert.True(PBEBattle.SelectActionsIfValid(t1, new PBETurnAction(ferroseed, PBEMove.Splash, PBETurnTarget.AllyCenter)));
+            Assert.Null(t0.SelectActionsIfValid(new PBETurnAction(lucario, PBEMove.Pound, PBETurnTarget.FoeCenter)));
+            Assert.Null(t1.SelectActionsIfValid(new PBETurnAction(ferroseed, PBEMove.Splash, PBETurnTarget.AllyCenter)));
 
             battle.RunTurn();
 
@@ -257,8 +257,8 @@ namespace Kermalis.PokemonBattleEngineTests
             #endregion
 
             #region Use LeechSeed and check
-            Assert.True(PBEBattle.SelectActionsIfValid(t0, new PBETurnAction(shroomish, PBEMove.LeechSeed, PBETurnTarget.FoeCenter)));
-            Assert.True(PBEBattle.SelectActionsIfValid(t1, new PBETurnAction(tentacruel, PBEMove.Splash, PBETurnTarget.AllyCenter)));
+            Assert.Null(t0.SelectActionsIfValid(new PBETurnAction(shroomish, PBEMove.LeechSeed, PBETurnTarget.FoeCenter)));
+            Assert.Null(t1.SelectActionsIfValid(new PBETurnAction(tentacruel, PBEMove.Splash, PBETurnTarget.AllyCenter)));
 
             battle.RunTurn();
 
@@ -300,8 +300,8 @@ namespace Kermalis.PokemonBattleEngineTests
             #endregion
 
             #region Use HeadCharge and check
-            Assert.True(PBEBattle.SelectActionsIfValid(t0, new PBETurnAction(riolu, PBEMove.VacuumWave, PBETurnTarget.FoeCenter)));
-            Assert.True(PBEBattle.SelectActionsIfValid(t1, new PBETurnAction(magikarp, PBEMove.Splash, PBETurnTarget.AllyCenter)));
+            Assert.Null(t0.SelectActionsIfValid(new PBETurnAction(riolu, PBEMove.VacuumWave, PBETurnTarget.FoeCenter)));
+            Assert.Null(t1.SelectActionsIfValid(new PBETurnAction(magikarp, PBEMove.Splash, PBETurnTarget.AllyCenter)));
 
             battle.RunTurn();
 
@@ -340,8 +340,8 @@ namespace Kermalis.PokemonBattleEngineTests
             #endregion
 
             #region Use HeadCharge and check
-            Assert.True(PBEBattle.SelectActionsIfValid(t0, new PBETurnAction(bouffalant, PBEMove.HeadCharge, PBETurnTarget.FoeCenter)));
-            Assert.True(PBEBattle.SelectActionsIfValid(t1, new PBETurnAction(magikarp, PBEMove.Splash, PBETurnTarget.AllyCenter)));
+            Assert.Null(t0.SelectActionsIfValid(new PBETurnAction(bouffalant, PBEMove.HeadCharge, PBETurnTarget.FoeCenter)));
+            Assert.Null(t1.SelectActionsIfValid(new PBETurnAction(magikarp, PBEMove.Splash, PBETurnTarget.AllyCenter)));
 
             battle.RunTurn();
 

@@ -41,8 +41,8 @@ namespace Kermalis.PokemonBattleEngineTests.Statuses
             #endregion
 
             #region Use and check
-            Assert.True(PBEBattle.SelectActionsIfValid(t0, new PBETurnAction(conkeldurr, PBEMove.CloseCombat, PBETurnTarget.FoeCenter)));
-            Assert.True(PBEBattle.SelectActionsIfValid(t1, new PBETurnAction(kecleon, PBEMove.Substitute, PBETurnTarget.AllyCenter)));
+            Assert.Null(t0.SelectActionsIfValid(new PBETurnAction(conkeldurr, PBEMove.CloseCombat, PBETurnTarget.FoeCenter)));
+            Assert.Null(t1.SelectActionsIfValid(new PBETurnAction(kecleon, PBEMove.Substitute, PBETurnTarget.AllyCenter)));
 
             battle.RunTurn();
 

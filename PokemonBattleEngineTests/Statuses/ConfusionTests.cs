@@ -44,8 +44,8 @@ namespace Kermalis.PokemonBattleEngineTests.Statuses
             #endregion
 
             #region Use and check
-            Assert.True(PBEBattle.SelectActionsIfValid(t0, new PBETurnAction(deoxys, PBEMove.Splash, PBETurnTarget.AllyCenter)));
-            Assert.True(PBEBattle.SelectActionsIfValid(t1, new PBETurnAction(accelgor, PBEMove.Swagger, PBETurnTarget.FoeCenter)));
+            Assert.Null(t0.SelectActionsIfValid(new PBETurnAction(deoxys, PBEMove.Splash, PBETurnTarget.AllyCenter)));
+            Assert.Null(t1.SelectActionsIfValid(new PBETurnAction(accelgor, PBEMove.Swagger, PBETurnTarget.FoeCenter)));
 
             battle.RunTurn();
 
@@ -95,8 +95,8 @@ namespace Kermalis.PokemonBattleEngineTests.Statuses
             #endregion
 
             #region Use and check
-            Assert.True(PBEBattle.SelectActionsIfValid(t0, new PBETurnAction(deoxys, PBEMove.Splash, PBETurnTarget.AllyCenter)));
-            Assert.True(PBEBattle.SelectActionsIfValid(t1, new PBETurnAction(accelgor, PBEMove.Swagger, PBETurnTarget.FoeCenter)));
+            Assert.Null(t0.SelectActionsIfValid(new PBETurnAction(deoxys, PBEMove.Splash, PBETurnTarget.AllyCenter)));
+            Assert.Null(t1.SelectActionsIfValid(new PBETurnAction(accelgor, PBEMove.Swagger, PBETurnTarget.FoeCenter)));
 
             battle.RunTurn();
 

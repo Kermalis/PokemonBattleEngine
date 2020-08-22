@@ -83,12 +83,12 @@ namespace Kermalis.PokemonBattleEngineExtras
                 {
                     case PBEActionsRequestPacket arp:
                     {
-                        PBEAI.CreateActions(arp.Trainer);
+                        arp.Trainer.CreateAIActions();
                         break;
                     }
                     case PBESwitchInRequestPacket sirp:
                     {
-                        PBEAI.CreateSwitches(sirp.Trainer);
+                        sirp.Trainer.CreateAISwitches();
                         break;
                     }
                     case PBETurnBeganPacket tbp:

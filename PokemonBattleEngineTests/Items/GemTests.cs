@@ -61,8 +61,8 @@ namespace Kermalis.PokemonBattleEngineTests.Items
             #endregion
 
             #region Use and check
-            Assert.True(PBEBattle.SelectActionsIfValid(t0, new PBETurnAction(mew, move, PBETurnTarget.FoeCenter)));
-            Assert.True(PBEBattle.SelectActionsIfValid(t1, new PBETurnAction(magikarp, PBEMove.Splash, PBETurnTarget.AllyCenter)));
+            Assert.Null(t0.SelectActionsIfValid(new PBETurnAction(mew, move, PBETurnTarget.FoeCenter)));
+            Assert.Null(t1.SelectActionsIfValid(new PBETurnAction(magikarp, PBEMove.Splash, PBETurnTarget.AllyCenter)));
 
             battle.RunTurn();
 
@@ -106,8 +106,8 @@ namespace Kermalis.PokemonBattleEngineTests.Items
             #endregion
 
             #region Use and check
-            Assert.True(PBEBattle.SelectActionsIfValid(t0, new PBETurnAction(swellow, PBEMove.Endeavor, PBETurnTarget.FoeCenter)));
-            Assert.True(PBEBattle.SelectActionsIfValid(t1, new PBETurnAction(magikarp, PBEMove.Splash, PBETurnTarget.AllyCenter)));
+            Assert.Null(t0.SelectActionsIfValid(new PBETurnAction(swellow, PBEMove.Endeavor, PBETurnTarget.FoeCenter)));
+            Assert.Null(t1.SelectActionsIfValid(new PBETurnAction(magikarp, PBEMove.Splash, PBETurnTarget.AllyCenter)));
 
             battle.RunTurn();
 
@@ -165,10 +165,10 @@ namespace Kermalis.PokemonBattleEngineTests.Items
             #endregion
 
             #region Use and check
-            Assert.True(PBEBattle.SelectActionsIfValid(t0,
+            Assert.Null(t0.SelectActionsIfValid(
                 new PBETurnAction(excadrill, PBEMove.Earthquake, PBETurnTarget.AllyRight | PBETurnTarget.FoeLeft | PBETurnTarget.FoeRight),
                 new PBETurnAction(starly, PBEMove.Splash, PBETurnTarget.AllyRight)));
-            Assert.True(PBEBattle.SelectActionsIfValid(t1,
+            Assert.Null(t1.SelectActionsIfValid(
                 new PBETurnAction(rotom, PBEMove.Splash, PBETurnTarget.AllyLeft),
                 new PBETurnAction(shedinja, PBEMove.Splash, PBETurnTarget.AllyRight)));
 
@@ -213,8 +213,8 @@ namespace Kermalis.PokemonBattleEngineTests.Items
             #endregion
 
             #region Use and check
-            Assert.True(PBEBattle.SelectActionsIfValid(t0, new PBETurnAction(spiritomb, PBEMove.SuckerPunch, PBETurnTarget.FoeCenter)));
-            Assert.True(PBEBattle.SelectActionsIfValid(t1, new PBETurnAction(magikarp, PBEMove.Splash, PBETurnTarget.AllyCenter)));
+            Assert.Null(t0.SelectActionsIfValid(new PBETurnAction(spiritomb, PBEMove.SuckerPunch, PBETurnTarget.FoeCenter)));
+            Assert.Null(t1.SelectActionsIfValid(new PBETurnAction(magikarp, PBEMove.Splash, PBETurnTarget.AllyCenter)));
 
             battle.RunTurn();
 
@@ -263,10 +263,10 @@ namespace Kermalis.PokemonBattleEngineTests.Items
             #endregion
 
             #region Use and check
-            Assert.True(PBEBattle.SelectActionsIfValid(t0,
+            Assert.Null(t0.SelectActionsIfValid(
                 new PBETurnAction(corsola, PBEMove.Earthquake, PBETurnTarget.AllyRight | PBETurnTarget.FoeLeft | PBETurnTarget.FoeRight),
                 new PBETurnAction(magikarp, PBEMove.Splash, PBETurnTarget.AllyRight)));
-            Assert.True(PBEBattle.SelectActionsIfValid(t1,
+            Assert.Null(t1.SelectActionsIfValid(
                 new PBETurnAction(happiny, PBEMove.Splash, PBETurnTarget.AllyLeft),
                 new PBETurnAction(qwilfish, PBEMove.Splash, PBETurnTarget.AllyRight)));
 
@@ -313,9 +313,9 @@ namespace Kermalis.PokemonBattleEngineTests.Items
             #endregion
 
             #region Use and check
-            Assert.True(PBEBattle.SelectActionsIfValid(t0,
+            Assert.Null(t0.SelectActionsIfValid(
                 new PBETurnAction(excadrill, PBEMove.Earthquake, PBETurnTarget.AllyRight | PBETurnTarget.FoeLeft | PBETurnTarget.FoeRight)));
-            Assert.True(PBEBattle.SelectActionsIfValid(t1,
+            Assert.Null(t1.SelectActionsIfValid(
                 new PBETurnAction(happiny, PBEMove.WideGuard, PBETurnTarget.AllyLeft | PBETurnTarget.AllyRight),
                 new PBETurnAction(qwilfish, PBEMove.Splash, PBETurnTarget.AllyRight)));
 
