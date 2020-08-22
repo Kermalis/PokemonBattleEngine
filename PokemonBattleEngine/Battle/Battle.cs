@@ -454,7 +454,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                 foreach (PBETrainer trainer in Trainers)
                 {
                     trainer.ActionsRequired.Clear();
-                    trainer.ActionsRequired.AddRange(trainer.ActiveBattlers);
+                    trainer.ActionsRequired.AddRange(trainer.ActiveBattlersOrdered);
                 }
 
                 // #318 - We check pkmn on the field instead of conscious pkmn because of multi-battles
