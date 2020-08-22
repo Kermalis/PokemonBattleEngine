@@ -31,6 +31,7 @@ namespace Kermalis.PokemonBattleEngine.AI
                     {
                         throw new Exception("Wild AI tried to flee but couldn't. - " + valid);
                     }
+                    return;
                 }
             }
             var actions = new PBETurnAction[trainer.ActionsRequired.Count];
