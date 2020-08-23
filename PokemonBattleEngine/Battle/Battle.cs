@@ -5,7 +5,6 @@ using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
-using System.Diagnostics;
 using System.Linq;
 
 namespace Kermalis.PokemonBattleEngine.Battle
@@ -566,7 +565,6 @@ namespace Kermalis.PokemonBattleEngine.Battle
                     speed *= 2.0;
                 }
 
-                Debug.WriteLine("Team {0}'s {1}'s evaluated speed: {2}", pkmn.Team.Id, pkmn.Nickname, speed);
                 (PBEBattlePokemon Pokemon, double Speed) tup = (pkmn, speed);
                 if (evaluated.Count == 0)
                 {
@@ -606,35 +604,43 @@ namespace Kermalis.PokemonBattleEngine.Battle
                         }
                     }
                 }
-                Debug.WriteLine(evaluated.Select(t => $"{t.Pokemon.Team.Id} {t.Pokemon.Nickname} {t.Speed}").Print());
             }
             return evaluated.Select(t => t.Pokemon);
         }
         private void DetermineTurnOrder()
         {
+            int GetMovePrio(PBEBattlePokemon p)
+            {
+                PBEMoveData mData = PBEMoveData.Data[p.TurnAction.FightMove];
+                int priority = mData.Priority;
+                if (p.Ability == PBEAbility.Prankster && mData.Category == PBEMoveCategory.Status)
+                {
+                    priority++;
+                }
+                return priority;
+            }
+
             _turnOrder.Clear();
-            // TODO: Pursuit has a higher priority (+7) than switching (switching is actually +6 priority with rotating, so this should make it easier to add pursuit)
+            //const int PursuitPriority = +7;
+            const int SwitchRotatePriority = +6;
+            const int WildFleePriority = -7;
             IEnumerable<PBEBattlePokemon> pkmnUsingItem = ActiveBattlers.Where(p => p.TurnAction?.Decision == PBETurnDecision.Item);
             IEnumerable<PBEBattlePokemon> pkmnSwitchingOut = ActiveBattlers.Where(p => p.TurnAction?.Decision == PBETurnDecision.SwitchOut);
             IEnumerable<PBEBattlePokemon> pkmnFighting = ActiveBattlers.Where(p => p.TurnAction?.Decision == PBETurnDecision.Fight);
-            // Item happens first:
+            IEnumerable<PBEBattlePokemon> wildFleeing = ActiveBattlers.Where(p => p.TurnAction?.Decision == PBETurnDecision.WildFlee);
+            // Item use happens first:
             _turnOrder.AddRange(GetActingOrder(pkmnUsingItem, true));
-            // Switching happens next:
-            _turnOrder.AddRange(GetActingOrder(pkmnSwitchingOut, true));
-            // Moves:
-            sbyte GetPrio(PBEBattlePokemon p)
+            // Get move/switch/rotate/wildflee priority sorted
+            IOrderedEnumerable<IGrouping<int, PBEBattlePokemon>> prios =
+                pkmnSwitchingOut.Select(p => (p, SwitchRotatePriority))
+                .Concat(pkmnFighting.Select(p => (p, GetMovePrio(p)))) // Get move priority
+                .Concat(wildFleeing.Select(p => (p, WildFleePriority)))
+                .GroupBy(t => t.Item2, t => t.p)
+                .OrderByDescending(t => t.Key);
+            foreach (IGrouping<int, PBEBattlePokemon> bracket in prios)
             {
-                PBEMoveData mData = PBEMoveData.Data[p.TurnAction.FightMove];
-                return (sbyte)PBEUtils.Clamp(mData.Priority + (p.Ability == PBEAbility.Prankster && mData.Category == PBEMoveCategory.Status ? 1 : 0), sbyte.MinValue, sbyte.MaxValue);
-            }
-            foreach (sbyte priority in pkmnFighting.Select(p => GetPrio(p)).Distinct().OrderByDescending(p => p))
-            {
-                PBEBattlePokemon[] pkmnWithThisPriority = pkmnFighting.Where(p => GetPrio(p) == priority).ToArray();
-                if (pkmnWithThisPriority.Length > 0)
-                {
-                    Debug.WriteLine("Priority {0} bracket...", priority);
-                    _turnOrder.AddRange(GetActingOrder(pkmnWithThisPriority, false));
-                }
+                bool ignoreItemsThatActivate = bracket.Key == SwitchRotatePriority || bracket.Key == WildFleePriority;
+                _turnOrder.AddRange(GetActingOrder(bracket, ignoreItemsThatActivate));
             }
         }
         private void RunActionsInOrder()
@@ -662,6 +668,11 @@ namespace Kermalis.PokemonBattleEngine.Battle
                         case PBETurnDecision.SwitchOut:
                         {
                             SwitchTwoPokemon(pkmn, pkmn.Trainer.TryGetPokemon(pkmn.TurnAction.SwitchPokemonId));
+                            break;
+                        }
+                        case PBETurnDecision.WildFlee:
+                        {
+                            WildFleeCheck(pkmn);
                             break;
                         }
                         default: throw new ArgumentOutOfRangeException(nameof(pkmn.TurnAction.Decision));
@@ -739,45 +750,6 @@ namespace Kermalis.PokemonBattleEngine.Battle
             }
 
             SwitchesOrActions();
-        }
-        private void FleeCheck()
-        {
-            foreach (PBETrainer trainer in Trainers)
-            {
-                if (trainer.RequestedFlee)
-                {
-                    PBEBattlePokemon pkmn = trainer.ActiveBattlersOrdered.FirstOrDefault();
-                    if (pkmn != null)
-                    {
-                        // TODO: Announce ability or item
-                        if (pkmn.Ability == PBEAbility.RunAway || pkmn.Item == PBEItem.SmokeBall)
-                        {
-                            SetEscaped(pkmn);
-                            return;
-                        }
-                    }
-                    else
-                    {
-                        pkmn = trainer.Party[0]; // Use the first fainted Pokémon's speed if there's no active battler
-                    }
-                    // TODO: I'm using the gen 3/4 formula below.
-                    // TODO: Figure out the gen 5 formula, as well as what to use in a double wild battle
-                    int a = pkmn.Speed;
-                    int b = (int)trainer.Team.OpposingTeam.ActiveBattlers.Average(p => p.Speed);
-                    int c = ++trainer.Team.NumTimesTriedToFlee;
-                    int f = ((a * 128 / b) + (30 * c)) % 256;
-                    if (_rand.RandomInt(0, 255) < f)
-                    {
-                        SetEscaped(pkmn);
-                        return;
-                    }
-                    else
-                    {
-                        BroadcastFleeFailed(pkmn);
-                    }
-                    trainer.RequestedFlee = false;
-                }
-            }
         }
     }
 }

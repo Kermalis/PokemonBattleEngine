@@ -37,6 +37,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                     SwitchPokemonId = r.ReadByte();
                     break;
                 }
+                case PBETurnDecision.WildFlee: break;
                 default: throw new ArgumentOutOfRangeException(nameof(Decision));
             }
         }
@@ -68,6 +69,14 @@ namespace Kermalis.PokemonBattleEngine.Battle
             Decision = PBETurnDecision.SwitchOut;
             SwitchPokemonId = switchPokemonId;
         }
+        // Internal wild flee
+        internal PBETurnAction(PBEBattlePokemon pokemon)
+            : this(pokemon.Id) { }
+        internal PBETurnAction(byte pokemonId)
+        {
+            PokemonId = pokemonId;
+            Decision = PBETurnDecision.WildFlee;
+        }
 
         internal void ToBytes(EndianBinaryWriter w)
         {
@@ -91,7 +100,8 @@ namespace Kermalis.PokemonBattleEngine.Battle
                     w.Write(SwitchPokemonId);
                     break;
                 }
-                throw new ArgumentOutOfRangeException(nameof(Decision));
+                case PBETurnDecision.WildFlee: break;
+                default: throw new ArgumentOutOfRangeException(nameof(Decision));
             }
         }
     }

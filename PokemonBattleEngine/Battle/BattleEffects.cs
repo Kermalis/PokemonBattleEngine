@@ -666,6 +666,58 @@ namespace Kermalis.PokemonBattleEngine.Battle
             return ShouldDoWeatherEffects() && Weather == PBEWeather.HarshSunlight;
         }
 
+        private void FleeCheck()
+        {
+            foreach (PBETrainer trainer in Trainers)
+            {
+                if (!trainer.RequestedFlee)
+                {
+                    continue;
+                }
+                if (trainer.IsWild)
+                {
+                    PBEBattlePokemon wildPkmn = trainer.ActiveBattlersOrdered.First();
+                    wildPkmn.TurnAction = new PBETurnAction(wildPkmn); // Convert into a WildFlee turn action for the first Pokémon
+                    continue;
+                }
+                PBEBattlePokemon pkmn = trainer.ActiveBattlersOrdered.FirstOrDefault();
+                if (pkmn != null)
+                {
+                    // TODO: Announce ability or item
+                    if (pkmn.Ability == PBEAbility.RunAway || pkmn.Item == PBEItem.SmokeBall)
+                    {
+                        SetEscaped(pkmn);
+                        return;
+                    }
+                }
+                else
+                {
+                    pkmn = trainer.Party[0]; // Use the first fainted Pokémon's speed if there's no active battler
+                }
+                // TODO: I'm using the gen 3/4 formula below.
+                // TODO: Figure out the gen 5 formula, as well as what to use in a double wild battle
+                int a = pkmn.Speed;
+                int b = (int)trainer.Team.OpposingTeam.ActiveBattlers.Average(p => p.Speed);
+                int c = ++trainer.Team.NumTimesTriedToFlee;
+                int f = ((a * 128 / b) + (30 * c)) % 256;
+                if (_rand.RandomInt(0, 255) < f)
+                {
+                    SetEscaped(pkmn);
+                    return;
+                }
+                else
+                {
+                    BroadcastFleeFailed(pkmn);
+                }
+                trainer.RequestedFlee = false;
+            }
+        }
+        private void WildFleeCheck(PBEBattlePokemon pkmn)
+        {
+            // TODO: Trapping effects
+            SetEscaped(pkmn);
+        }
+
         private void UseItem(PBEBattlePokemon user, PBEItem item)
         {
             BroadcastItemTurn(user, item, PBEItemTurnAction.Attempt);
@@ -3007,7 +3059,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
             {
                 PBEResult FailFunc(PBEBattlePokemon target)
                 {
-                    if (target.TurnAction == null // Just switched in (or tried to flee)
+                    if (target.TurnAction == null // Just switched in, used item, etc
                         || target.HasUsedMoveThisTurn
                         || target.TurnAction.Decision != PBETurnDecision.Fight
                         || PBEMoveData.Data[target.TurnAction.FightMove].Category == PBEMoveCategory.Status)

@@ -131,7 +131,9 @@ namespace Kermalis.PokemonBattleEngine.Battle
         /// <summary>The Pokémon has chosen to use an item.</summary>
         Item,
         /// <summary>The Pokémon has chosen to switch out for another Pokémon.</summary>
-        SwitchOut
+        SwitchOut,
+        /// <summary>The wild Pokémon has chosen to use flee.</summary>
+        WildFlee
     }
     /// <summary>Represents a specific Pokémon's non-volatile status.</summary>
     public enum PBEStatus1 : byte
