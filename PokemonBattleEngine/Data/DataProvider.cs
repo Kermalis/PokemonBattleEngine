@@ -103,16 +103,16 @@ namespace Kermalis.PokemonBattleEngine.Data
         }
         #endregion
 
-        public bool IsBerry(PBEItem item)
+        public virtual bool IsBerry(PBEItem item)
         {
             return PBEBerryData.Data.ContainsKey(item);
         }
 
-        public IPBEBerryData GetBerryData(PBEItem item, bool cache = true)
+        public virtual IPBEBerryData GetBerryData(PBEItem item, bool cache = true)
         {
             return PBEBerryData.Data[item];
         }
-        public bool TryGetBerryData(PBEItem item, out IPBEBerryData bData, bool cache = true)
+        public virtual bool TryGetBerryData(PBEItem item, out IPBEBerryData bData, bool cache = true)
         {
             if (IsBerry(item))
             {
@@ -122,117 +122,117 @@ namespace Kermalis.PokemonBattleEngine.Data
             bData = default;
             return false;
         }
-        public IPBEItemData GetItemData(PBEItem item, bool cache = true)
+        public virtual IPBEItemData GetItemData(PBEItem item, bool cache = true)
         {
             return PBEItemData.Data[item];
         }
-        public IPBEMoveData GetMoveData(PBEMove move, bool cache = true)
+        public virtual IPBEMoveData GetMoveData(PBEMove move, bool cache = true)
         {
             return PBEMoveData.Data[move];
         }
-        public IPBEPokemonData GetPokemonData(IPBESpeciesForm pkmn, bool cache = true)
+        public virtual IPBEPokemonData GetPokemonData(IPBESpeciesForm pkmn, bool cache = true)
         {
             return GetPokemonData(pkmn.Species, pkmn.Form, cache);
         }
-        public IPBEPokemonData GetPokemonData(PBESpecies species, PBEForm form, bool cache = true)
+        public virtual IPBEPokemonData GetPokemonData(PBESpecies species, PBEForm form, bool cache = true)
         {
             return PBEPokemonData.GetData(species, form, cache);
         }
 
         #region LocalizedString
-        public PBEAbility? GetAbilityByName(string abilityName)
+        public virtual PBEAbility? GetAbilityByName(string abilityName)
         {
             return PBELocalizedString.GetAbilityByName(abilityName);
         }
-        public IPBELocalizedString GetAbilityDescription(PBEAbility ability)
+        public virtual IPBELocalizedString GetAbilityDescription(PBEAbility ability)
         {
             return PBELocalizedString.GetAbilityDescription(ability);
         }
-        public IPBELocalizedString GetAbilityName(PBEAbility ability)
+        public virtual IPBELocalizedString GetAbilityName(PBEAbility ability)
         {
             return PBELocalizedString.GetAbilityName(ability);
         }
-        public PBEForm? GetFormByName(PBESpecies species, string formName)
+        public virtual PBEForm? GetFormByName(PBESpecies species, string formName)
         {
             return PBELocalizedString.GetFormByName(species, formName);
         }
-        public IPBELocalizedString GetFormName(IPBESpeciesForm pkmn)
+        public virtual IPBELocalizedString GetFormName(IPBESpeciesForm pkmn)
         {
             return GetFormName(pkmn.Species, pkmn.Form);
         }
-        public IPBELocalizedString GetFormName(PBESpecies species, PBEForm form)
+        public virtual IPBELocalizedString GetFormName(PBESpecies species, PBEForm form)
         {
             return PBELocalizedString.GetFormName(species, form);
         }
-        public PBEGender? GetGenderByName(string genderName)
+        public virtual PBEGender? GetGenderByName(string genderName)
         {
             return PBELocalizedString.GetGenderByName(genderName);
         }
-        public IPBELocalizedString GetGenderName(PBEGender gender)
+        public virtual IPBELocalizedString GetGenderName(PBEGender gender)
         {
             return PBELocalizedString.GetGenderName(gender);
         }
-        public PBEItem? GetItemByName(string itemName)
+        public virtual PBEItem? GetItemByName(string itemName)
         {
             return PBELocalizedString.GetItemByName(itemName);
         }
-        public IPBELocalizedString GetItemDescription(PBEItem item)
+        public virtual IPBELocalizedString GetItemDescription(PBEItem item)
         {
             return PBELocalizedString.GetItemDescription(item);
         }
-        public IPBELocalizedString GetItemName(PBEItem item)
+        public virtual IPBELocalizedString GetItemName(PBEItem item)
         {
             return PBELocalizedString.GetItemName(item);
         }
-        public PBEMove? GetMoveByName(string moveName)
+        public virtual PBEMove? GetMoveByName(string moveName)
         {
             return PBELocalizedString.GetMoveByName(moveName);
         }
-        public IPBELocalizedString GetMoveDescription(PBEMove move)
+        public virtual IPBELocalizedString GetMoveDescription(PBEMove move)
         {
             return PBELocalizedString.GetMoveDescription(move);
         }
-        public IPBELocalizedString GetMoveName(PBEMove move)
+        public virtual IPBELocalizedString GetMoveName(PBEMove move)
         {
             return PBELocalizedString.GetMoveName(move);
         }
-        public PBENature? GetNatureByName(string natureName)
+        public virtual PBENature? GetNatureByName(string natureName)
         {
             return PBELocalizedString.GetNatureByName(natureName);
         }
-        public IPBELocalizedString GetNatureName(PBENature nature)
+        public virtual IPBELocalizedString GetNatureName(PBENature nature)
         {
             return PBELocalizedString.GetNatureName(nature);
         }
-        public PBESpecies? GetSpeciesByName(string speciesName)
+        public virtual PBESpecies? GetSpeciesByName(string speciesName)
         {
             return PBELocalizedString.GetSpeciesByName(speciesName);
         }
-        public IPBELocalizedString GetSpeciesCategory(PBESpecies species)
+        public virtual IPBELocalizedString GetSpeciesCategory(PBESpecies species)
         {
             return PBELocalizedString.GetSpeciesCategory(species);
         }
-        public IPBELocalizedString GetSpeciesEntry(PBESpecies species)
+        public virtual IPBELocalizedString GetSpeciesEntry(PBESpecies species)
         {
             return PBELocalizedString.GetSpeciesEntry(species);
         }
-        public IPBELocalizedString GetSpeciesName(PBESpecies species)
+        public virtual IPBELocalizedString GetSpeciesName(PBESpecies species)
         {
             return PBELocalizedString.GetSpeciesName(species);
         }
-        public PBEStat? GetStatByName(string statName)
+        public virtual PBEStat? GetStatByName(string statName)
         {
             return PBELocalizedString.GetStatByName(statName);
         }
-        public IPBELocalizedString GetStatName(PBEStat stat)
+        public virtual IPBELocalizedString GetStatName(PBEStat stat)
         {
             return PBELocalizedString.GetStatName(stat);
         }
-        public PBEType? GetTypeByName(string typeName)
+        public virtual PBEType? GetTypeByName(string typeName)
         {
             return PBELocalizedString.GetTypeByName(typeName);
         }
-        public IPBELocalizedString GetTypeName(PBEType type)
+        public virtual IPBELocalizedString GetTypeName(PBEType type)
         {
             return PBELocalizedString.GetTypeName(type);
         }
