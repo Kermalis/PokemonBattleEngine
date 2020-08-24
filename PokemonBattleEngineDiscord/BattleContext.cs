@@ -414,7 +414,7 @@ namespace Kermalis.PokemonBattleEngineDiscord
         private static void CreatePokemonEmbed(PBEBattlePokemon pkmn, bool addReactionChars, out string outStr, out EmbedFieldBuilder[] outFields)
         {
             var sb = new StringBuilder();
-            string formStr = PBEDataUtils.HasForms(pkmn.Species, false) ? $" ({PBELocalizedString.GetFormName(pkmn.Species, pkmn.Form)})" : string.Empty;
+            string formStr = PBEDataUtils.HasForms(pkmn.Species, false) ? $" ({PBEDataProvider.Instance.GetFormName(pkmn).English})" : string.Empty;
             sb.AppendLine($"{pkmn.Nickname}/{pkmn.Species}{formStr} {pkmn.Gender.ToSymbol()} Lv.{pkmn.Level}{(pkmn.Shiny ? $" {_shinyEmoji}" : string.Empty)}");
             sb.AppendLine($"**HP:** {pkmn.HP}/{pkmn.MaxHP} ({pkmn.HPPercentage:P2})");
             sb.Append($"**Types:** {Utils.TypeEmotes[pkmn.Type1]}");
@@ -459,15 +459,15 @@ namespace Kermalis.PokemonBattleEngineDiscord
             {
                 AddStatChanges(pkmn, sb);
             }
-            sb.AppendLine($"**Ability:** {PBELocalizedString.GetAbilityName(pkmn.Ability).English}");
-            sb.AppendLine($"**Item:** {PBELocalizedString.GetItemName(pkmn.Item).English}");
+            sb.AppendLine($"**Ability:** {PBEDataProvider.Instance.GetAbilityName(pkmn.Ability).English}");
+            sb.AppendLine($"**Item:** {PBEDataProvider.Instance.GetItemName(pkmn.Item).English}");
             if (pkmn.Moves.Contains(PBEMoveEffect.Frustration) || pkmn.Moves.Contains(PBEMoveEffect.Return))
             {
                 sb.AppendLine($"**Friendship:** {pkmn.Friendship} ({pkmn.Friendship / (double)byte.MaxValue:P2})");
             }
             if (pkmn.Moves.Contains(PBEMoveEffect.HiddenPower))
             {
-                sb.AppendLine($"**{PBELocalizedString.GetMoveName(PBEMove.HiddenPower).English}:** {Utils.TypeEmotes[pkmn.IndividualValues.GetHiddenPowerType()]}|{pkmn.IndividualValues.GetHiddenPowerBasePower(PBESettings.DefaultSettings)}");
+                sb.AppendLine($"**{PBEDataProvider.Instance.GetMoveName(PBEMove.HiddenPower).English}:** {Utils.TypeEmotes[pkmn.IndividualValues.GetHiddenPowerType()]}|{pkmn.IndividualValues.GetHiddenPowerBasePower(PBESettings.DefaultSettings)}");
             }
             outStr = sb.ToString();
             sb.Clear();
@@ -483,7 +483,7 @@ namespace Kermalis.PokemonBattleEngineDiscord
                 if (move != PBEMove.None)
                 {
                     PBEType moveType = pkmn.GetMoveType(move);
-                    sb.Append($"{Utils.TypeEmotes[moveType]} {PBELocalizedString.GetMoveName(move).English} ({slot.PP}/{slot.MaxPP})");
+                    sb.Append($"{Utils.TypeEmotes[moveType]} {PBEDataProvider.Instance.GetMoveName(move).English} ({slot.PP}/{slot.MaxPP})");
                     if (i < PBESettings.DefaultNumMoves - 1)
                     {
                         sb.AppendLine();
@@ -509,7 +509,7 @@ namespace Kermalis.PokemonBattleEngineDiscord
                 {
                     sb.Append($"{Utils.TypeEmotes[moveType]} ");
                 }
-                sb.Append(PBELocalizedString.GetMoveName(move).English);
+                sb.Append(PBEDataProvider.Instance.GetMoveName(move).English);
                 if (i < usableMoves.Length - 1)
                 {
                     sb.AppendLine();
@@ -521,7 +521,7 @@ namespace Kermalis.PokemonBattleEngineDiscord
         {
             IPBEPokemonData pData = PBEDataProvider.Instance.GetPokemonData(pkmn.KnownSpecies, pkmn.KnownForm);
             var sb = new StringBuilder();
-            string formStr = PBEDataUtils.HasForms(pkmn.KnownSpecies, false) ? $" ({PBELocalizedString.GetFormName(pkmn.KnownSpecies, pkmn.KnownForm)})" : string.Empty;
+            string formStr = PBEDataUtils.HasForms(pkmn.KnownSpecies, false) ? $" ({PBEDataProvider.Instance.GetFormName(pkmn.KnownSpecies, pkmn.KnownForm).English})" : string.Empty;
             sb.AppendLine($"{GetTrainerName(pkmn.Trainer)}'s {pkmn.KnownNickname}/{pkmn.KnownSpecies}{formStr} {(pkmn.KnownStatus2.HasFlag(PBEStatus2.Transformed) ? pkmn.Gender.ToSymbol() : pkmn.KnownGender.ToSymbol())} Lv.{pkmn.Level}{(pkmn.KnownShiny ? $" {_shinyEmoji}" : string.Empty)}");
             sb.AppendLine($"**HP:** {pkmn.HPPercentage:P2}");
             sb.Append($"**Known types:** {Utils.TypeEmotes[pkmn.KnownType1]}");
@@ -560,13 +560,13 @@ namespace Kermalis.PokemonBattleEngineDiscord
             AddStatChanges(pkmn, sb);
             if (pkmn.KnownAbility == PBEAbility.MAX)
             {
-                sb.AppendLine($"**Possible abilities:** {string.Join(", ", pData.Abilities.Select(a => PBELocalizedString.GetAbilityName(a).English))}");
+                sb.AppendLine($"**Possible abilities:** {string.Join(", ", pData.Abilities.Select(a => PBEDataProvider.Instance.GetAbilityName(a).English))}");
             }
             else
             {
-                sb.AppendLine($"**Known ability:** {PBELocalizedString.GetAbilityName(pkmn.KnownAbility).English}");
+                sb.AppendLine($"**Known ability:** {PBEDataProvider.Instance.GetAbilityName(pkmn.KnownAbility).English}");
             }
-            sb.AppendLine($"**Known item:** {(pkmn.KnownItem == (PBEItem)ushort.MaxValue ? "???" : PBELocalizedString.GetItemName(pkmn.KnownItem).English)}");
+            sb.AppendLine($"**Known item:** {(pkmn.KnownItem == (PBEItem)ushort.MaxValue ? "???" : PBEDataProvider.Instance.GetItemName(pkmn.KnownItem).English)}");
             sb.Append("**Known moves:** ");
             for (int i = 0; i < PBESettings.DefaultNumMoves; i++)
             {
@@ -586,7 +586,7 @@ namespace Kermalis.PokemonBattleEngineDiscord
                     }
                     else
                     {
-                        sb.Append($"{Utils.TypeEmotes[pkmn.GetMoveType(move, useKnownInfo: true)]} {PBELocalizedString.GetMoveName(move).English} ({pp}{(maxPP == 0 ? ")" : $"/{maxPP})")}");
+                        sb.Append($"{Utils.TypeEmotes[pkmn.GetMoveType(move, useKnownInfo: true)]} {PBEDataProvider.Instance.GetMoveName(move).English} ({pp}{(maxPP == 0 ? ")" : $"/{maxPP})")}");
                     }
                 }
             }
@@ -704,7 +704,7 @@ namespace Kermalis.PokemonBattleEngineDiscord
                         }
 
                         CreatePokemonEmbed(mainPkmn, true, out description, out fields);
-                        IUserMessage mainMsg = await CreateAndSendEmbedAsync($"{description}\nTo check a move: `!move info {PBELocalizedString.GetMoveName(Utils.RandomElement(PBEDataUtils.AllMoves)).English}`", pkmn: mainPkmn, useUpperImage: false, fields: fields, userToSendTo: user);
+                        IUserMessage mainMsg = await CreateAndSendEmbedAsync($"{description}\nTo check a move: `!move info {PBEDataProvider.Instance.GetMoveName(Utils.RandomElement(PBEDataUtils.AllMoves)).English}`", pkmn: mainPkmn, useUpperImage: false, fields: fields, userToSendTo: user);
 
                         async Task MoveReactionClicked(PBEMove move)
                         {

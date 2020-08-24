@@ -138,5 +138,104 @@ namespace Kermalis.PokemonBattleEngine.Data
         {
             return PBEPokemonData.GetData(species, form, cache);
         }
+
+        #region LocalizedString
+        public PBEAbility? GetAbilityByName(string abilityName)
+        {
+            return PBELocalizedString.GetAbilityByName(abilityName);
+        }
+        public IPBELocalizedString GetAbilityDescription(PBEAbility ability)
+        {
+            return PBELocalizedString.GetAbilityDescription(ability);
+        }
+        public IPBELocalizedString GetAbilityName(PBEAbility ability)
+        {
+            return PBELocalizedString.GetAbilityName(ability);
+        }
+        public PBEForm? GetFormByName(PBESpecies species, string formName)
+        {
+            return PBELocalizedString.GetFormByName(species, formName);
+        }
+        public IPBELocalizedString GetFormName(IPBESpeciesForm pkmn)
+        {
+            return GetFormName(pkmn.Species, pkmn.Form);
+        }
+        public IPBELocalizedString GetFormName(PBESpecies species, PBEForm form)
+        {
+            return PBELocalizedString.GetFormName(species, form);
+        }
+        public PBEGender? GetGenderByName(string genderName)
+        {
+            return PBELocalizedString.GetGenderByName(genderName);
+        }
+        public IPBELocalizedString GetGenderName(PBEGender gender)
+        {
+            return PBELocalizedString.GetGenderName(gender);
+        }
+        public PBEItem? GetItemByName(string itemName)
+        {
+            return PBELocalizedString.GetItemByName(itemName);
+        }
+        public IPBELocalizedString GetItemDescription(PBEItem item)
+        {
+            return PBELocalizedString.GetItemDescription(item);
+        }
+        public IPBELocalizedString GetItemName(PBEItem item)
+        {
+            return PBELocalizedString.GetItemName(item);
+        }
+        public PBEMove? GetMoveByName(string moveName)
+        {
+            return PBELocalizedString.GetMoveByName(moveName);
+        }
+        public IPBELocalizedString GetMoveDescription(PBEMove move)
+        {
+            return PBELocalizedString.GetMoveDescription(move);
+        }
+        public IPBELocalizedString GetMoveName(PBEMove move)
+        {
+            return PBELocalizedString.GetMoveName(move);
+        }
+        public PBENature? GetNatureByName(string natureName)
+        {
+            return PBELocalizedString.GetNatureByName(natureName);
+        }
+        public IPBELocalizedString GetNatureName(PBENature nature)
+        {
+            return PBELocalizedString.GetNatureName(nature);
+        }
+        public PBESpecies? GetSpeciesByName(string speciesName)
+        {
+            return PBELocalizedString.GetSpeciesByName(speciesName);
+        }
+        public IPBELocalizedString GetSpeciesCategory(PBESpecies species)
+        {
+            return PBELocalizedString.GetSpeciesCategory(species);
+        }
+        public IPBELocalizedString GetSpeciesEntry(PBESpecies species)
+        {
+            return PBELocalizedString.GetSpeciesEntry(species);
+        }
+        public IPBELocalizedString GetSpeciesName(PBESpecies species)
+        {
+            return PBELocalizedString.GetSpeciesName(species);
+        }
+        public PBEStat? GetStatByName(string statName)
+        {
+            return PBELocalizedString.GetStatByName(statName);
+        }
+        public IPBELocalizedString GetStatName(PBEStat stat)
+        {
+            return PBELocalizedString.GetStatName(stat);
+        }
+        public PBEType? GetTypeByName(string typeName)
+        {
+            return PBELocalizedString.GetTypeByName(typeName);
+        }
+        public IPBELocalizedString GetTypeName(PBEType type)
+        {
+            return PBELocalizedString.GetTypeName(type);
+        }
+        #endregion
     }
 }

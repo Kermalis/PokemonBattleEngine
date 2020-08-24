@@ -1206,19 +1206,19 @@ namespace Kermalis.PokemonBattleEngine.Battle
         public override string ToString()
         {
             var sb = new StringBuilder();
-            string formStr = PBEDataUtils.HasForms(Species, false) ? $" ({PBELocalizedString.GetFormName(Species, Form)})" : string.Empty;
+            string formStr = PBEDataUtils.HasForms(Species, false) ? $" ({PBEDataProvider.Instance.GetFormName(this).English})" : string.Empty;
             sb.AppendLine($"{Nickname}/{Species}{formStr} {Gender.ToSymbol()} Lv.{Level}");
             sb.AppendLine($"HP: {HP}/{MaxHP} ({HPPercentage:P2})");
-            sb.Append($"Types: {PBELocalizedString.GetTypeName(Type1).English}");
+            sb.Append($"Types: {PBEDataProvider.Instance.GetTypeName(Type1).English}");
             if (Type2 != PBEType.None)
             {
-                sb.Append($"/{PBELocalizedString.GetTypeName(Type2).English}");
+                sb.Append($"/{PBEDataProvider.Instance.GetTypeName(Type2).English}");
             }
             sb.AppendLine();
-            sb.Append($"Known types: {PBELocalizedString.GetTypeName(KnownType1).English}");
+            sb.Append($"Known types: {PBEDataProvider.Instance.GetTypeName(KnownType1).English}");
             if (KnownType2 != PBEType.None)
             {
-                sb.Append($"/{PBELocalizedString.GetTypeName(KnownType2).English}");
+                sb.Append($"/{PBEDataProvider.Instance.GetTypeName(KnownType2).English}");
             }
             sb.AppendLine();
             sb.AppendLine($"Position: {Team.CombinedName}'s {FieldPosition}");
@@ -1294,17 +1294,17 @@ namespace Kermalis.PokemonBattleEngine.Battle
                 }
                 sb.AppendLine($"Stat changes: {string.Join(", ", statStrs)}");
             }
-            sb.AppendLine($"Ability: {PBELocalizedString.GetAbilityName(Ability).English}");
-            sb.AppendLine($"Known ability: {(KnownAbility == PBEAbility.MAX ? "???" : PBELocalizedString.GetAbilityName(KnownAbility).English)}");
-            sb.AppendLine($"Item: {PBELocalizedString.GetItemName(Item).English}");
-            sb.AppendLine($"Known item: {(KnownItem == (PBEItem)ushort.MaxValue ? "???" : PBELocalizedString.GetItemName(KnownItem).English)}");
+            sb.AppendLine($"Ability: {PBEDataProvider.Instance.GetAbilityName(Ability).English}");
+            sb.AppendLine($"Known ability: {(KnownAbility == PBEAbility.MAX ? "???" : PBEDataProvider.Instance.GetAbilityName(KnownAbility).English)}");
+            sb.AppendLine($"Item: {PBEDataProvider.Instance.GetItemName(Item).English}");
+            sb.AppendLine($"Known item: {(KnownItem == (PBEItem)ushort.MaxValue ? "???" : PBEDataProvider.Instance.GetItemName(KnownItem).English)}");
             if (Moves.Contains(PBEMoveEffect.Frustration) || Moves.Contains(PBEMoveEffect.Return))
             {
                 sb.AppendLine($"Friendship: {Friendship} ({Friendship / byte.MaxValue:P2})");
             }
             if (Moves.Contains(PBEMoveEffect.HiddenPower))
             {
-                sb.AppendLine($"{PBELocalizedString.GetMoveName(PBEMove.HiddenPower).English}: {PBELocalizedString.GetTypeName(IndividualValues.GetHiddenPowerType()).English}|{IndividualValues.GetHiddenPowerBasePower(Battle.Settings)}");
+                sb.AppendLine($"{PBEDataProvider.Instance.GetMoveName(PBEMove.HiddenPower).English}: {PBEDataProvider.Instance.GetTypeName(IndividualValues.GetHiddenPowerType()).English}|{IndividualValues.GetHiddenPowerBasePower(Battle.Settings)}");
             }
             sb.Append("Moves: ");
             for (int i = 0; i < Battle.Settings.NumMoves; i++)
@@ -1315,7 +1315,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                 {
                     sb.Append(", ");
                 }
-                sb.Append(PBELocalizedString.GetMoveName(slot.Move).English);
+                sb.Append(PBEDataProvider.Instance.GetMoveName(slot.Move).English);
                 if (move != PBEMove.None)
                 {
                     sb.Append($" ({slot.PP}/{slot.MaxPP})");
@@ -1333,14 +1333,14 @@ namespace Kermalis.PokemonBattleEngine.Battle
                 {
                     sb.Append(", ");
                 }
-                sb.Append(move == PBEMove.MAX ? "???" : PBELocalizedString.GetMoveName(move).English);
+                sb.Append(move == PBEMove.MAX ? "???" : PBEDataProvider.Instance.GetMoveName(move).English);
                 if (move != PBEMove.None && move != PBEMove.MAX)
                 {
                     sb.Append($" ({pp}{(maxPP == 0 ? ")" : $"/{maxPP})")}");
                 }
             }
             sb.AppendLine();
-            sb.Append($"Usable moves: {string.Join(", ", GetUsableMoves().Select(m => PBELocalizedString.GetMoveName(m).English))}");
+            sb.Append($"Usable moves: {string.Join(", ", GetUsableMoves().Select(m => PBEDataProvider.Instance.GetMoveName(m).English))}");
             return sb.ToString();
         }
     }

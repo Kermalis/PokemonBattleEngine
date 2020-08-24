@@ -55,10 +55,10 @@ namespace Kermalis.PokemonBattleEngineClient.Models
             else
             {
                 IPBEMoveData mData = PBEDataProvider.Instance.GetMoveData(move);
-                string s = $"Type: {PBELocalizedString.GetTypeName(mData.Type)}";
+                string s = $"Type: {PBEDataProvider.Instance.GetTypeName(mData.Type).FromPBECultureInfo()}";
                 if (mData.Type != moveType)
                 {
-                    s += $" → {PBELocalizedString.GetTypeName(moveType)}";
+                    s += $" → {PBEDataProvider.Instance.GetTypeName(moveType).FromPBECultureInfo()}";
                 }
                 var sb = new StringBuilder();
                 sb.AppendLine(s);
@@ -87,7 +87,7 @@ namespace Kermalis.PokemonBattleEngineClient.Models
                     case PBEMoveEffect.Struggle: sb.AppendLine("Recoil: 1/4 user's max HP"); break;
                 }
                 sb.AppendLine();
-                sb.Append(PBELocalizedString.GetMoveDescription(move).ToString().Replace('\n', ' '));
+                sb.Append(PBEDataProvider.Instance.GetMoveDescription(move).FromPBECultureInfo().Replace('\n', ' '));
                 Description = sb.ToString();
             }
             SelectMoveCommand = ReactiveCommand.Create(() => clickAction(move));

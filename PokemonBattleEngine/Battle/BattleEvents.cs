@@ -416,7 +416,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                         {
                             switch (ap.AbilityAction)
                             {
-                                case PBEAbilityAction.Stats: message = $"{{0}}'s {PBELocalizedString.GetStatName(PBEStat.Defense).English} was not lowered!"; break;
+                                case PBEAbilityAction.Stats: message = $"{{0}}'s {PBEDataProvider.Instance.GetStatName(PBEStat.Defense).English} was not lowered!"; break;
                                 default: throw new ArgumentOutOfRangeException(nameof(ap.AbilityAction));
                             }
                             break;
@@ -484,7 +484,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                         {
                             switch (ap.AbilityAction)
                             {
-                                case PBEAbilityAction.Stats: message = $"{{0}}'s {PBELocalizedString.GetStatName(PBEStat.Attack).English} was not lowered!"; break;
+                                case PBEAbilityAction.Stats: message = $"{{0}}'s {PBEDataProvider.Instance.GetStatName(PBEStat.Attack).English} was not lowered!"; break;
                                 default: throw new ArgumentOutOfRangeException(nameof(ap.AbilityAction));
                             }
                             break;
@@ -547,7 +547,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                         {
                             switch (ap.AbilityAction)
                             {
-                                case PBEAbilityAction.Stats: message = $"{{0}}'s {PBELocalizedString.GetStatName(PBEStat.Accuracy).English} was not lowered!"; break;
+                                case PBEAbilityAction.Stats: message = $"{{0}}'s {PBEDataProvider.Instance.GetStatName(PBEStat.Accuracy).English} was not lowered!"; break;
                                 default: throw new ArgumentOutOfRangeException(nameof(ap.AbilityAction));
                             }
                             break;
@@ -620,7 +620,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                         }
                         default: throw new ArgumentOutOfRangeException(nameof(ap.Ability));
                     }
-                    return string.Format(message, GetPkmnName(abilityOwner, abilityOwnerCaps), GetPkmnName(pokemon2, pokemon2Caps), PBELocalizedString.GetAbilityName(ap.Ability).English);
+                    return string.Format(message, GetPkmnName(abilityOwner, abilityOwnerCaps), GetPkmnName(pokemon2, pokemon2Caps), PBEDataProvider.Instance.GetAbilityName(ap.Ability).English);
                 }
                 case PBEAbilityReplacedPacket arp:
                 {
@@ -633,8 +633,8 @@ namespace Kermalis.PokemonBattleEngine.Battle
                     }
                     return string.Format(message,
                         GetPkmnName(abilityOwner, true),
-                        arp.OldAbility.HasValue ? PBELocalizedString.GetAbilityName(arp.OldAbility.Value).English : "Ability",
-                        PBELocalizedString.GetAbilityName(arp.NewAbility).English);
+                        arp.OldAbility.HasValue ? PBEDataProvider.Instance.GetAbilityName(arp.OldAbility.Value).English : "Ability",
+                        PBEDataProvider.Instance.GetAbilityName(arp.NewAbility).English);
                 }
                 case PBEBattleStatusPacket bsp:
                 {
@@ -659,7 +659,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                 case PBECapturePacket cp:
                 {
                     PBEBattlePokemon pokemon = cp.PokemonTrainer.TryGetPokemon(cp.Pokemon);
-                    string ballEnglish = PBELocalizedString.GetItemName(cp.Ball).English;
+                    string ballEnglish = PBEDataProvider.Instance.GetItemName(cp.Ball).English;
                     if (cp.Success)
                     {
                         return string.Format("Gotcha! {0} was caught with the {1} after {2} shake{3}!", pokemon.Nickname, ballEnglish, cp.NumShakes, cp.NumShakes == 1 ? string.Empty : "s");
@@ -845,12 +845,12 @@ namespace Kermalis.PokemonBattleEngine.Battle
                         }
                         default: throw new ArgumentOutOfRangeException(nameof(ip.Item));
                     }
-                    return string.Format(message, GetPkmnName(itemHolder, itemHolderCaps), GetPkmnName(pokemon2, pokemon2Caps), PBELocalizedString.GetItemName(ip.Item).English);
+                    return string.Format(message, GetPkmnName(itemHolder, itemHolderCaps), GetPkmnName(pokemon2, pokemon2Caps), PBEDataProvider.Instance.GetItemName(ip.Item).English);
                 }
                 case PBEItemTurnPacket itp:
                 {
                     PBEBattlePokemon itemUser = itp.ItemUserTrainer.TryGetPokemon(itp.ItemUser);
-                    string itemEnglish = PBELocalizedString.GetItemName(itp.Item).English;
+                    string itemEnglish = PBEDataProvider.Instance.GetItemName(itp.Item).English;
                     switch (itp.ItemAction)
                     {
                         case PBEItemTurnAction.Attempt:
@@ -897,7 +897,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                     PBEBattlePokemon moveUser = mpcp.MoveUserTrainer.TryGetPokemon(mpcp.MoveUser);
                     return string.Format("{0}'s {1} {3} {2} PP!",
                         GetPkmnName(moveUser, true),
-                        PBELocalizedString.GetMoveName(mpcp.Move).English,
+                        PBEDataProvider.Instance.GetMoveName(mpcp.Move).English,
                         Math.Abs(mpcp.AmountReduced),
                         mpcp.AmountReduced >= 0 ? "lost" : "gained");
                 }
@@ -912,12 +912,12 @@ namespace Kermalis.PokemonBattleEngine.Battle
                         case PBEResult.Ineffective_Ability: message = "{1} is protected by its Ability!"; break;
                         case PBEResult.Ineffective_Gender: message = "It doesn't affect {1}..."; pokemon2Caps = false; break;
                         case PBEResult.Ineffective_Level: message = "{1} is protected by its level!"; break;
-                        case PBEResult.Ineffective_MagnetRise: message = $"{{1}} is protected by {PBELocalizedString.GetMoveName(PBEMove.MagnetRise).English}!"; break;
-                        case PBEResult.Ineffective_Safeguard: message = $"{{1}} is protected by {PBELocalizedString.GetMoveName(PBEMove.Safeguard).English}!"; break;
+                        case PBEResult.Ineffective_MagnetRise: message = $"{{1}} is protected by {PBEDataProvider.Instance.GetMoveName(PBEMove.MagnetRise).English}!"; break;
+                        case PBEResult.Ineffective_Safeguard: message = $"{{1}} is protected by {PBEDataProvider.Instance.GetMoveName(PBEMove.Safeguard).English}!"; break;
                         case PBEResult.Ineffective_Stat:
                         case PBEResult.Ineffective_Status:
                         case PBEResult.InvalidConditions: message = "But it failed!"; break;
-                        case PBEResult.Ineffective_Substitute: message = $"{{1}} is protected by {PBELocalizedString.GetMoveName(PBEMove.Substitute).English}!"; break;
+                        case PBEResult.Ineffective_Substitute: message = $"{{1}} is protected by {PBEDataProvider.Instance.GetMoveName(PBEMove.Substitute).English}!"; break;
                         case PBEResult.Ineffective_Type: message = "{1} is protected by its Type!"; break;
                         case PBEResult.Missed: message = "{0}'s attack missed {1}!"; pokemon2Caps = false; break;
                         case PBEResult.NoTarget: message = "But there was no target..."; break;
@@ -930,7 +930,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                 case PBEMoveUsedPacket mup:
                 {
                     PBEBattlePokemon moveUser = mup.MoveUserTrainer.TryGetPokemon(mup.MoveUser);
-                    return string.Format("{0} used {1}!", GetPkmnName(moveUser, true), PBELocalizedString.GetMoveName(mup.Move).English);
+                    return string.Format("{0} used {1}!", GetPkmnName(moveUser, true), PBEDataProvider.Instance.GetMoveName(mup.Move).English);
                 }
                 case PBEPkmnFaintedPacket pfp:
                 {
@@ -945,7 +945,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                 case IPBEPkmnFormChangedPacket pfcp:
                 {
                     PBEBattlePokemon pokemon = pfcp.PokemonTrainer.TryGetPokemon(pfcp.Pokemon);
-                    return string.Format("{0}'s new form is {1}!", GetPkmnName(pokemon, true), PBELocalizedString.GetFormName(pokemon.Species, pfcp.NewForm).English);
+                    return string.Format("{0}'s new form is {1}!", GetPkmnName(pokemon, true), PBEDataProvider.Instance.GetFormName(pokemon.Species, pfcp.NewForm).English);
                 }
                 case PBEPkmnHPChangedPacket phcp:
                 {
@@ -1052,11 +1052,11 @@ namespace Kermalis.PokemonBattleEngine.Battle
                 {
                     PBEBattlePokemon user = rtp.UserTrainer.TryGetPokemon(rtp.User);
                     PBEBattlePokemon target = rtp.TargetTrainer.TryGetPokemon(rtp.Target);
-                    string type1Str = PBELocalizedString.GetTypeName(rtp.Type1).English;
+                    string type1Str = PBEDataProvider.Instance.GetTypeName(rtp.Type1).English;
                     return string.Format("{0} copied {1}'s {2}",
                         GetPkmnName(user, true),
                         GetPkmnName(target, false),
-                        rtp.Type2 == PBEType.None ? $"{type1Str} type!" : $"{type1Str} and {PBELocalizedString.GetTypeName(rtp.Type2).English} types!");
+                        rtp.Type2 == PBEType.None ? $"{type1Str} type!" : $"{type1Str} and {PBEDataProvider.Instance.GetTypeName(rtp.Type2).English} types!");
                 }
                 case PBEReflectTypePacket_Hidden rtph:
                 {
@@ -1514,10 +1514,10 @@ namespace Kermalis.PokemonBattleEngine.Battle
                 case PBETypeChangedPacket tcp:
                 {
                     PBEBattlePokemon pokemon = tcp.PokemonTrainer.TryGetPokemon(tcp.Pokemon);
-                    string type1Str = PBELocalizedString.GetTypeName(tcp.Type1).English;
+                    string type1Str = PBEDataProvider.Instance.GetTypeName(tcp.Type1).English;
                     return string.Format("{0} transformed into the {1}",
                         GetPkmnName(pokemon, true),
-                        tcp.Type2 == PBEType.None ? $"{type1Str} type!" : $"{type1Str} and {PBELocalizedString.GetTypeName(tcp.Type2).English} types!");
+                        tcp.Type2 == PBEType.None ? $"{type1Str} type!" : $"{type1Str} and {PBEDataProvider.Instance.GetTypeName(tcp.Type2).English} types!");
                 }
                 case PBEWeatherPacket wp:
                 {

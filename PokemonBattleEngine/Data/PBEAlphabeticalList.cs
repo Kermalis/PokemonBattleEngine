@@ -12,21 +12,21 @@ namespace Kermalis.PokemonBattleEngine.Data
         private sealed class PBEAlphabeticalListEntry
         {
             public T Key { get; }
-            public PBELocalizedString Value { get; }
+            public IPBELocalizedString Value { get; }
 
             public PBEAlphabeticalListEntry(T key, object parameter)
             {
                 switch (key)
                 {
-                    case PBEAbility ability: Value = PBELocalizedString.GetAbilityName(ability); break;
-                    case PBEForm form: Value = PBELocalizedString.GetFormName((PBESpecies)parameter, form); break;
-                    case PBEGender gender: Value = PBELocalizedString.GetGenderName(gender); break;
-                    case PBEItem item: Value = PBELocalizedString.GetItemName(item); break;
-                    case PBEMove move: Value = PBELocalizedString.GetMoveName(move); break;
-                    case PBENature nature: Value = PBELocalizedString.GetNatureName(nature); break;
-                    case PBESpecies species: Value = PBELocalizedString.GetSpeciesName(species); break;
-                    case PBEStat stat: Value = PBELocalizedString.GetStatName(stat); break;
-                    case PBEType type: Value = PBELocalizedString.GetTypeName(type); break;
+                    case PBEAbility ability: Value = PBEDataProvider.Instance.GetAbilityName(ability); break;
+                    case PBEForm form: Value = PBEDataProvider.Instance.GetFormName((PBESpecies)parameter, form); break;
+                    case PBEGender gender: Value = PBEDataProvider.Instance.GetGenderName(gender); break;
+                    case PBEItem item: Value = PBEDataProvider.Instance.GetItemName(item); break;
+                    case PBEMove move: Value = PBEDataProvider.Instance.GetMoveName(move); break;
+                    case PBENature nature: Value = PBEDataProvider.Instance.GetNatureName(nature); break;
+                    case PBESpecies species: Value = PBEDataProvider.Instance.GetSpeciesName(species); break;
+                    case PBEStat stat: Value = PBEDataProvider.Instance.GetStatName(stat); break;
+                    case PBEType type: Value = PBEDataProvider.Instance.GetTypeName(type); break;
                     default: throw new ArgumentOutOfRangeException(nameof(key));
                 }
                 Key = key;
@@ -73,7 +73,7 @@ namespace Kermalis.PokemonBattleEngine.Data
             {
                 old = (PBEAlphabeticalListEntry[])_list.Clone();
             }
-            Array.Sort(_list, (x, y) => x.Value.ToString().CompareTo(y.Value.ToString()));
+            Array.Sort(_list, (x, y) => x.Value.FromPBECultureInfo().CompareTo(y.Value.FromPBECultureInfo()));
             if (!_list.SequenceEqual(old))
             {
                 OnPropertyChanged("Item[]");

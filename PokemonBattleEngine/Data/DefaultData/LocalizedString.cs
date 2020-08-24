@@ -5,7 +5,7 @@ using System.Globalization;
 
 namespace Kermalis.PokemonBattleEngine.Data
 {
-    public sealed class PBELocalizedString
+    public sealed class PBELocalizedString : IPBELocalizedString
     {
         public string English { get; }
         public string French { get; }
@@ -16,37 +16,18 @@ namespace Kermalis.PokemonBattleEngine.Data
         public string Korean { get; }
         public string Spanish { get; }
 
-        private PBELocalizedString(ISearchResult result)
+        private PBELocalizedString(IPBELocalizedString other)
         {
-            English = result.English;
-            French = result.French;
-            German = result.German;
-            Italian = result.Italian;
-            Japanese_Kana = result.Japanese_Kana;
-            Japanese_Kanji = result.Japanese_Kanji;
-            Korean = result.Korean;
-            Spanish = result.Spanish;
+            English = other.English;
+            French = other.French;
+            German = other.German;
+            Italian = other.Italian;
+            Japanese_Kana = other.Japanese_Kana;
+            Japanese_Kanji = other.Japanese_Kanji;
+            Korean = other.Korean;
+            Spanish = other.Spanish;
         }
 
-        public string FromCultureInfo(CultureInfo cultureInfo)
-        {
-            if (cultureInfo == null)
-            {
-                throw new ArgumentNullException(nameof(cultureInfo));
-            }
-            string id = cultureInfo.TwoLetterISOLanguageName;
-            switch (id)
-            {
-                case "en": return English;
-                case "fr": return French;
-                case "de": return German;
-                case "it": return Italian;
-                case "ja": return Japanese_Kana;
-                case "ko": return Korean;
-                case "es": return Spanish;
-                default: throw new ArgumentOutOfRangeException(nameof(cultureInfo));
-            }
-        }
         public static bool IsCultureValid(CultureInfo cultureInfo)
         {
             if (cultureInfo == null)
@@ -59,21 +40,21 @@ namespace Kermalis.PokemonBattleEngine.Data
 
         public override string ToString()
         {
-            return FromCultureInfo(PBEDataProvider.PBECulture);
+            return this.FromPBECultureInfo();
         }
 
         #region Database Querying
 
-        private interface ISearchResult
+        private interface ISearchResult : IPBELocalizedString
         {
-            string English { get; set; }
-            string French { get; set; }
-            string German { get; set; }
-            string Italian { get; set; }
-            string Japanese_Kana { get; set; }
-            string Japanese_Kanji { get; set; }
-            string Korean { get; set; }
-            string Spanish { get; set; }
+            new string English { get; set; }
+            new string French { get; set; }
+            new string German { get; set; }
+            new string Italian { get; set; }
+            new string Japanese_Kana { get; set; }
+            new string Japanese_Kanji { get; set; }
+            new string Korean { get; set; }
+            new string Spanish { get; set; }
         }
         private class SearchResult : ISearchResult
         {
@@ -104,7 +85,7 @@ namespace Kermalis.PokemonBattleEngine.Data
         private const string QueryId = "SELECT * FROM {0} WHERE Id={1}";
         private const string QuerySpeciesAndText = "SELECT * FROM {0} WHERE (StrCmp(English,'{1}') OR StrCmp(French,'{1}') OR StrCmp(German,'{1}') OR StrCmp(Italian,'{1}') OR StrCmp(Japanese_Kana,'{1}') OR StrCmp(Japanese_Kanji,'{1}') OR StrCmp(Korean,'{1}') OR StrCmp(Spanish,'{1}')) AND (Species={2})";
         private const string QuerySpecies = "SELECT * FROM {0} WHERE Species={1} AND Form={2}";
-        private static bool GetEnumValue<TEnum>(string value, out TEnum result) where TEnum : struct
+        private static bool GetEnumValue<TEnum>(string value, out TEnum result) where TEnum : struct, Enum
         {
             foreach (TEnum v in Enum.GetValues(typeof(TEnum)))
             {

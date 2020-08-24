@@ -19,7 +19,7 @@ namespace Kermalis.PokemonBattleEngineDiscord
             [Alias("data")]
             public async Task Info([Remainder] string abilityName)
             {
-                PBEAbility? nAbility = PBELocalizedString.GetAbilityByName(abilityName);
+                PBEAbility? nAbility = PBEDataProvider.Instance.GetAbilityByName(abilityName);
                 if (!nAbility.HasValue || nAbility.Value == PBEAbility.None)
                 {
                     await Context.Channel.SendMessageAsync($"{Context.User.Mention} ― Invalid ability!");
@@ -30,9 +30,9 @@ namespace Kermalis.PokemonBattleEngineDiscord
                     EmbedBuilder embed = new EmbedBuilder()
                         .WithAuthor(Context.User)
                         .WithColor(Utils.RandomColor())
-                        .WithTitle(PBELocalizedString.GetAbilityName(ability).English)
+                        .WithTitle(PBEDataProvider.Instance.GetAbilityName(ability).English)
                         .WithUrl(Utils.URL)
-                        .WithDescription(PBELocalizedString.GetAbilityDescription(ability).English.Replace('\n', ' '));
+                        .WithDescription(PBEDataProvider.Instance.GetAbilityDescription(ability).English.Replace('\n', ' '));
                     await Context.Channel.SendMessageAsync(string.Empty, embed: embed.Build());
                 }
             }
@@ -80,7 +80,7 @@ namespace Kermalis.PokemonBattleEngineDiscord
             [Alias("data")]
             public async Task Info([Remainder] string itemName)
             {
-                PBEItem? nItem = PBELocalizedString.GetItemByName(itemName);
+                PBEItem? nItem = PBEDataProvider.Instance.GetItemByName(itemName);
                 if (!nItem.HasValue || nItem.Value == PBEItem.None)
                 {
                     await Context.Channel.SendMessageAsync($"{Context.User.Mention} ― Invalid item!");
@@ -101,9 +101,9 @@ namespace Kermalis.PokemonBattleEngineDiscord
                     EmbedBuilder embed = new EmbedBuilder()
                         .WithAuthor(Context.User)
                         .WithColor(color)
-                        .WithTitle(PBELocalizedString.GetItemName(item).English)
+                        .WithTitle(PBEDataProvider.Instance.GetItemName(item).English)
                         .WithUrl(Utils.URL)
-                        .WithDescription(PBELocalizedString.GetItemDescription(item).English.Replace('\n', ' '));
+                        .WithDescription(PBEDataProvider.Instance.GetItemDescription(item).English.Replace('\n', ' '));
                     if (iData.FlingPower > 0)
                     {
                         embed.AddField("Fling Power", iData.FlingPower, true);
@@ -146,7 +146,7 @@ namespace Kermalis.PokemonBattleEngineDiscord
             [Alias("data")]
             public async Task Info([Remainder] string moveName)
             {
-                PBEMove? nMove = PBELocalizedString.GetMoveByName(moveName);
+                PBEMove? nMove = PBEDataProvider.Instance.GetMoveByName(moveName);
                 if (!nMove.HasValue || nMove.Value == PBEMove.None)
                 {
                     await Context.Channel.SendMessageAsync($"{Context.User.Mention} ― Invalid move!");
@@ -154,14 +154,14 @@ namespace Kermalis.PokemonBattleEngineDiscord
                 else
                 {
                     PBEMove move = nMove.Value;
-                    moveName = PBELocalizedString.GetMoveName(move).English;
+                    moveName = PBEDataProvider.Instance.GetMoveName(move).English;
                     IPBEMoveData mData = PBEDataProvider.Instance.GetMoveData(move);
                     EmbedBuilder embed = new EmbedBuilder()
                         .WithAuthor(Context.User)
                         .WithColor(Utils.TypeColors[mData.Type])
                         .WithTitle(moveName)
                         .WithUrl(Utils.URL)
-                        .WithDescription(PBELocalizedString.GetMoveDescription(move).English.Replace('\n', ' '))
+                        .WithDescription(PBEDataProvider.Instance.GetMoveDescription(move).English.Replace('\n', ' '))
                         .AddField("Type", Utils.TypeEmotes[mData.Type], true)
                         .AddField("Category", mData.Category, true)
                         .AddField("Priority", mData.Priority, true)
@@ -205,7 +205,7 @@ namespace Kermalis.PokemonBattleEngineDiscord
                     speciesName = input;
                     formName = null;
                 }
-                PBESpecies? nSpecies = PBELocalizedString.GetSpeciesByName(speciesName);
+                PBESpecies? nSpecies = PBEDataProvider.Instance.GetSpeciesByName(speciesName);
                 if (!nSpecies.HasValue)
                 {
                     await Context.Channel.SendMessageAsync($"{Context.User.Mention} ― Invalid species!");
@@ -213,8 +213,8 @@ namespace Kermalis.PokemonBattleEngineDiscord
                 else
                 {
                     PBESpecies species = nSpecies.Value;
-                    speciesName = PBELocalizedString.GetSpeciesName(species).English;
-                    PBEForm? nForm = formName == null ? 0 : PBELocalizedString.GetFormByName(species, formName);
+                    speciesName = PBEDataProvider.Instance.GetSpeciesName(species).English;
+                    PBEForm? nForm = formName == null ? 0 : PBEDataProvider.Instance.GetFormByName(species, formName);
                     if (!nForm.HasValue)
                     {
                         await Context.Channel.SendMessageAsync($"{Context.User.Mention} ― Invalid form for {speciesName}!");
@@ -222,7 +222,7 @@ namespace Kermalis.PokemonBattleEngineDiscord
                     else
                     {
                         PBEForm form = nForm.Value;
-                        formName = PBEDataUtils.HasForms(species, false) ? $" ({PBELocalizedString.GetFormName(species, form).English})" : string.Empty;
+                        formName = PBEDataUtils.HasForms(species, false) ? $" ({PBEDataProvider.Instance.GetFormName(species, form).English})" : string.Empty;
                         IPBEPokemonData pData = PBEDataProvider.Instance.GetPokemonData(species, form);
                         string types = $"{Utils.TypeEmotes[pData.Type1]}";
                         if (pData.Type2 != PBEType.None)
@@ -288,13 +288,13 @@ namespace Kermalis.PokemonBattleEngineDiscord
                         EmbedBuilder embed = new EmbedBuilder()
                         .WithAuthor(Context.User)
                         .WithColor(Utils.GetColor(pData.Type1, pData.Type2))
-                        .WithTitle($"{speciesName}{formName} ― {PBELocalizedString.GetSpeciesCategory(species).English}")
+                        .WithTitle($"{speciesName}{formName} ― {PBEDataProvider.Instance.GetSpeciesCategory(species).English}")
                         .WithUrl(Utils.URL)
-                        .WithDescription(PBELocalizedString.GetSpeciesEntry(species).English.Replace('\n', ' '))
+                        .WithDescription(PBEDataProvider.Instance.GetSpeciesEntry(species).English.Replace('\n', ' '))
                         .AddField("Types", types, true)
                         .AddField("Gender Ratio", ratio, true)
                         .AddField("Weight", $"{pData.Weight:N1} kg", true)
-                        .AddField("Abilities", string.Join(", ", pData.Abilities.Select(a => PBELocalizedString.GetAbilityName(a).English)), false)
+                        .AddField("Abilities", string.Join(", ", pData.Abilities.Select(a => PBEDataProvider.Instance.GetAbilityName(a).English)), false)
                         .AddField("HP", pData.BaseStats.HP, true)
                         .AddField("Attack", pData.BaseStats.Attack, true)
                         .AddField("Defense", pData.BaseStats.Defense, true)
@@ -327,7 +327,7 @@ namespace Kermalis.PokemonBattleEngineDiscord
             [Alias("data, effectiveness, weaknesses")]
             public async Task Info([Remainder] string typeName)
             {
-                PBEType? nType = PBELocalizedString.GetTypeByName(typeName);
+                PBEType? nType = PBEDataProvider.Instance.GetTypeByName(typeName);
                 if (!nType.HasValue || nType.Value == PBEType.None)
                 {
                     await Context.Channel.SendMessageAsync($"{Context.User.Mention} ― Invalid type!");
@@ -373,7 +373,7 @@ namespace Kermalis.PokemonBattleEngineDiscord
                     EmbedBuilder embed = new EmbedBuilder()
                     .WithAuthor(Context.User)
                     .WithColor(Utils.TypeColors[type])
-                    .WithTitle(PBELocalizedString.GetTypeName(type).English)
+                    .WithTitle(PBEDataProvider.Instance.GetTypeName(type).English)
                     .WithUrl(Utils.URL)
                     .WithDescription(description);
                     await Context.Channel.SendMessageAsync(string.Empty, embed: embed.Build());

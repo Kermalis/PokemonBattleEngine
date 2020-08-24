@@ -51,7 +51,7 @@ namespace Kermalis.PokemonBattleEngine.Data
             for (int i = 0; i < count; i++)
             {
                 JToken jToken = jArray[i];
-                PBEMove move = PBELocalizedString.GetMoveByName(jToken[nameof(IPBEMovesetSlot.Move)].Value<string>()).Value;
+                PBEMove move = PBEDataProvider.Instance.GetMoveByName(jToken[nameof(IPBEMovesetSlot.Move)].Value<string>()).Value;
                 byte ppUps = jToken[nameof(IPBEMovesetSlot.PPUps)].Value<byte>();
                 _list[i] = new PBEReadOnlyMovesetSlot(move, ppUps);
             }
@@ -141,7 +141,7 @@ namespace Kermalis.PokemonBattleEngine.Data
             for (int i = 0; i < count; i++)
             {
                 JToken jToken = jArray[i];
-                PBEMove move = PBELocalizedString.GetMoveByName(jToken[nameof(IPBEPartyMovesetSlot.Move)].Value<string>()).Value;
+                PBEMove move = PBEDataProvider.Instance.GetMoveByName(jToken[nameof(IPBEPartyMovesetSlot.Move)].Value<string>()).Value;
                 int pp = jToken[nameof(IPBEPartyMovesetSlot.PP)].Value<int>();
                 byte ppUps = jToken[nameof(IPBEPartyMovesetSlot.PPUps)].Value<byte>();
                 _list[i] = new PBEReadOnlyPartyMovesetSlot(move, pp, ppUps);

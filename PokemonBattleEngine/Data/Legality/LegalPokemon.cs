@@ -233,13 +233,13 @@ namespace Kermalis.PokemonBattleEngine.Data.Legality
             string nickname = jToken[nameof(Nickname)].Value<string>();
             PBELegalityChecker.ValidateNickname(nickname, Settings);
             _nickname = nickname;
-            PBENature nature = PBELocalizedString.GetNatureByName(jToken[nameof(Nature)].Value<string>()).Value;
+            PBENature nature = PBEDataProvider.Instance.GetNatureByName(jToken[nameof(Nature)].Value<string>()).Value;
             PBELegalityChecker.ValidateNature(nature);
             _nature = nature;
-            PBEItem caughtBall = PBELocalizedString.GetItemByName(jToken[nameof(CaughtBall)].Value<string>()).Value;
+            PBEItem caughtBall = PBEDataProvider.Instance.GetItemByName(jToken[nameof(CaughtBall)].Value<string>()).Value;
             PBELegalityChecker.ValidateCaughtBall(caughtBall);
             _caughtBall = caughtBall;
-            PBESpecies species = PBELocalizedString.GetSpeciesByName(jToken[nameof(Species)].Value<string>()).Value;
+            PBESpecies species = PBEDataProvider.Instance.GetSpeciesByName(jToken[nameof(Species)].Value<string>()).Value;
             PBEForm form;
             if (PBEDataUtils.HasForms(species, true))
             {
@@ -253,13 +253,13 @@ namespace Kermalis.PokemonBattleEngine.Data.Legality
             _species = species;
             _form = form;
             SetSelectable();
-            PBEAbility ability = PBELocalizedString.GetAbilityByName(jToken[nameof(Ability)].Value<string>()).Value;
+            PBEAbility ability = PBEDataProvider.Instance.GetAbilityByName(jToken[nameof(Ability)].Value<string>()).Value;
             PBELegalityChecker.ValidateAbility(SelectableAbilities, ability);
             _ability = ability;
-            PBEGender gender = PBELocalizedString.GetGenderByName(jToken[nameof(Gender)].Value<string>()).Value;
+            PBEGender gender = PBEDataProvider.Instance.GetGenderByName(jToken[nameof(Gender)].Value<string>()).Value;
             PBELegalityChecker.ValidateGender(SelectableGenders, gender);
             _gender = gender;
-            PBEItem item = PBELocalizedString.GetItemByName(jToken[nameof(Item)].Value<string>()).Value;
+            PBEItem item = PBEDataProvider.Instance.GetItemByName(jToken[nameof(Item)].Value<string>()).Value;
             PBELegalityChecker.ValidateItem(SelectableItems, item);
             _item = item;
             EffortValues = new PBELegalEffortValues(Settings, jToken[nameof(EffortValues)]);
@@ -315,9 +315,9 @@ namespace Kermalis.PokemonBattleEngine.Data.Legality
         private void OnSpeciesChanged(PBESpecies oldSpecies)
         {
             SetSelectable();
-            if (oldSpecies == 0 || _nickname == PBELocalizedString.GetSpeciesName(oldSpecies).ToString())
+            if (oldSpecies == 0 || _nickname == PBEDataProvider.Instance.GetSpeciesName(oldSpecies).FromPBECultureInfo())
             {
-                string newNickname = PBELocalizedString.GetSpeciesName(_species).ToString();
+                string newNickname = PBEDataProvider.Instance.GetSpeciesName(_species).FromPBECultureInfo();
                 if (newNickname.Length > Settings.MaxPokemonNameLength)
                 {
                     newNickname = newNickname.Substring(0, Settings.MaxPokemonNameLength);
