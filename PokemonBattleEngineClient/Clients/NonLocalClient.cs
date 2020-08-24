@@ -94,6 +94,16 @@ namespace Kermalis.PokemonBattleEngineClient.Clients
                     }
                     break;
                 }
+                case PBECapturePacket cp:
+                {
+                    if (cp.Success)
+                    {
+                        PBEBattlePokemon pokemon = cp.PokemonTrainer.TryGetPokemon(cp.Pokemon);
+                        pokemon.CaughtBall = cp.Ball;
+                        pokemon.KnownCaughtBall = cp.Ball;
+                    }
+                    break;
+                }
                 case PBEHazePacket _:
                 {
                     foreach (PBEBattlePokemon pkmn in Battle.ActiveBattlers)

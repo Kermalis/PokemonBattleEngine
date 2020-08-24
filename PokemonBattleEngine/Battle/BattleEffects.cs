@@ -938,6 +938,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                 BroadcastCapture(wildPkmn, item, numShakes, success, critical);
                 if (success)
                 {
+                    wildPkmn.CaughtBall = wildPkmn.KnownCaughtBall = item;
                     BattleResult = PBEBattleResult.WildCapture;
                 }
                 return;
