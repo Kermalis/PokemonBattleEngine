@@ -26,8 +26,8 @@ Join our _(new-ish)_ [Discord server](https://discord.gg/Z4Mn9qX) to talk or try
 
 ----
 ## To Do:
-* Triple-battle shifting, Rotation-battles, and "Bag" items
-* Add the remaining vanilla [abilities](To%20Do%20Abilities.txt), [held items](To%20Do%20Items.txt), and [moves](To%20Do%20Moves.txt)
+* Triple-battle shifting, Rotation-battles
+* Add the remaining vanilla [abilities](To%20Do%20Abilities.txt), [items](To%20Do%20Items.txt), and [moves](To%20Do%20Moves.txt)
 * Finish adding all event Pokémon
 * Add previews of the Android/iOS apps
 

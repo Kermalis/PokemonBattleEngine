@@ -1,5 +1,6 @@
 ﻿using Kermalis.PokemonBattleEngine.Data;
 using Kermalis.PokemonBattleEngine.Packets;
+using Kermalis.PokemonBattleEngine.Utils;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -721,21 +722,222 @@ namespace Kermalis.PokemonBattleEngine.Battle
         private void UseItem(PBEBattlePokemon user, PBEItem item)
         {
             BroadcastItemTurn(user, item, PBEItemTurnAction.Attempt);
-            switch (item)
+            if (PBEDataUtils.AllBalls.Contains(item))
             {
-                case PBEItem.FluffyTail:
-                case PBEItem.PokeDoll:
-                case PBEItem.PokeToy:
+                if (BattleType != PBEBattleType.Wild)
                 {
-                    if (BattleType == PBEBattleType.Wild)
+                    goto fail;
+                }
+                // Wild - Dream ball has no special effect, and there's no "Entree Forest" guaranteed catch right now
+                // No capture powers, no dark grass
+                PBEBattlePokemon wildPkmn = user.Team.OpposingTeam.ActiveBattlers.Single();
+                var pData = PBEPokemonData.GetData(wildPkmn.Species, wildPkmn.Form);
+                int rate = pData.CatchRate;
+                double bonusBall = 1;
+                switch (item)
+                {
+                    case PBEItem.GreatBall:
+                    case PBEItem.SafariBall:
+                    case PBEItem.SportBall: bonusBall = 1.5; break;
+                    case PBEItem.UltraBall: bonusBall = 2; break;
+                    case PBEItem.MasterBall:
+                    case PBEItem.ParkBall: bonusBall = 255; break;
+                    case PBEItem.FastBall:
                     {
-                        SetEscaped(user);
-                        user.Trainer.Inventory.Remove(item);
-                        return;
+                        if (wildPkmn.Speed >= 100)
+                        {
+                            rate *= 4;
+                        }
+                        break;
                     }
-                    break; // Go below
+                    case PBEItem.LevelBall:
+                    {
+                        int wl = wildPkmn.Level;
+                        int ul = user.Level;
+                        if (ul > wl * 4)
+                        {
+                            rate *= 8;
+                        }
+                        else if (ul > wl * 2)
+                        {
+                            rate *= 4;
+                        }
+                        else if (ul > wl)
+                        {
+                            rate *= 2;
+                        }
+                        break;
+                    }
+                    case PBEItem.LureBall:
+                    {
+                        // TODO
+                        bool isFishing = false;
+                        if (isFishing)
+                        {
+                            rate *= 3;
+                        }
+                        break;
+                    }
+                    case PBEItem.HeavyBall:
+                    {
+                        double weight = pData.Weight;
+                        if (weight >= 409.6)
+                        {
+                            rate += 40;
+                        }
+                        else if (weight >= 307.2)
+                        {
+                            rate += 30;
+                        }
+                        else if (weight >= 204.8)
+                        {
+                            rate += 20;
+                        }
+                        else
+                        {
+                            rate -= 20;
+                        }
+                        break;
+                    }
+                    case PBEItem.LoveBall:
+                    {
+                        if (user.Species == wildPkmn.Species && user.Gender.IsOppositeGender(wildPkmn.Gender))
+                        {
+                            rate *= 8;
+                        }
+                        break;
+                    }
+                    case PBEItem.MoonBall:
+                    {
+                        // TODO
+                        bool familyEvolvesByMoonStone = false;
+                        if (familyEvolvesByMoonStone)
+                        {
+                            rate *= 4;
+                        }
+                        break;
+                    }
+                    case PBEItem.NetBall:
+                    {
+                        if (wildPkmn.HasType(PBEType.Bug) || wildPkmn.HasType(PBEType.Water))
+                        {
+                            bonusBall = 3;
+                        }
+                        break;
+                    }
+                    case PBEItem.NestBall:
+                    {
+                        bonusBall = Math.Max(1, (41 - wildPkmn.Level) / 10);
+                        break;
+                    }
+                    case PBEItem.RepeatBall:
+                    {
+                        // TODO
+                        bool caughtBefore = false;
+                        if (caughtBefore)
+                        {
+                            bonusBall = 3;
+                        }
+                        break;
+                    }
+                    case PBEItem.TimerBall:
+                    {
+                        const double mod = 1229 / 4096d; // Roughly 0.3
+                        bonusBall = Math.Min(4, 1 + (TurnNumber * mod));
+                        break;
+                    }
+                    case PBEItem.DiveBall:
+                    {
+                        // TODO
+                        bool isSurfingFishingUnderwater = false;
+                        if (isSurfingFishingUnderwater)
+                        {
+                            bonusBall = 3.5;
+                        }
+                        break;
+                    }
+                    case PBEItem.DuskBall:
+                    {
+                        // TODO
+                        bool isCaveNight = false;
+                        if (isCaveNight)
+                        {
+                            bonusBall = 3.5;
+                        }
+                        break;
+                    }
+                    case PBEItem.QuickBall:
+                    {
+                        if (TurnNumber == 1)
+                        {
+                            bonusBall = 5;
+                        }
+                        break;
+                    }
+                }
+                rate = PBEUtils.Clamp(rate, 1, 255);
+                double bonusStatus;
+                switch (wildPkmn.Status1)
+                {
+                    case PBEStatus1.Asleep:
+                    case PBEStatus1.Frozen: bonusStatus = 2.5; break;
+                    case PBEStatus1.None: bonusStatus = 1; break;
+                    default: bonusStatus = 1.5; break;
+                }
+                double a = ((3 * wildPkmn.MaxHP) - (2 * wildPkmn.HP)) * rate * bonusBall / (3 * wildPkmn.MaxHP) * bonusStatus;
+                // Shakes
+                bool isCriticalCapture = false; // TODO
+                byte numShakes = isCriticalCapture ? (byte)1 : (byte)3;
+                byte shakes;
+                bool success;
+                if (a >= 0xFF)
+                {
+                    shakes = numShakes; // Skip shake checks
+                    success = true;
+                }
+                else
+                {
+                    double b = 0x10000 / Math.Sqrt(Math.Sqrt(0xFF / a));
+                    for (shakes = 0; shakes < numShakes; shakes++)
+                    {
+                        int r = _rand.RandomInt(0, 0xFFFF);
+                        if (r >= b)
+                        {
+                            break; // Shake check fails
+                        }
+                    }
+                    success = shakes == numShakes;
+                    if (shakes == 2)
+                    {
+                        shakes = 3; // If there are only 2 shakes and a failure, shake three times and still fail
+                    }
+                }
+                BroadcastCapture(wildPkmn, item, shakes, success, isCriticalCapture);
+                if (success)
+                {
+                    BattleResult = PBEBattleResult.WildCapture;
+                }
+                return;
+            }
+            else
+            {
+                switch (item)
+                {
+                    case PBEItem.FluffyTail:
+                    case PBEItem.PokeDoll:
+                    case PBEItem.PokeToy:
+                    {
+                        if (BattleType == PBEBattleType.Wild)
+                        {
+                            SetEscaped(user);
+                            user.Trainer.Inventory.Remove(item);
+                            return;
+                        }
+                        goto fail;
+                    }
                 }
             }
+        fail:
             BroadcastItemTurn(user, item, PBEItemTurnAction.NoEffect);
         }
 

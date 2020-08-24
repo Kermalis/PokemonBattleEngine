@@ -15,7 +15,9 @@ CobaBerry
 ColburBerry
 CornnBerry
 CustapBerry
+DiveBall
 DurinBerry
+DuskBall
 EjectButton
 EnigmaBerry
 FloatStone
@@ -34,10 +36,12 @@ LaggingTail
 LansatBerry
 LeppaBerry
 LumBerry
+LureBall
 MagostBerry
 MentalHerb
 Metronome
 MicleBerry
+MoonBall
 NanabBerry
 NomelBerry
 OccaBerry
@@ -55,6 +59,7 @@ RawstBerry
 RazorFang
 RazzBerry
 RedCard
+RepeatBall
 RindoBerry
 RingTarget
 RowapBerry

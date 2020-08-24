@@ -75,6 +75,7 @@ namespace Kermalis.PokemonBattleEngine.Packets
                     case PBEFleeResponsePacket.Code: return new PBEFleeResponsePacket(data);
                     case PBEFleeFailedPacket.Code: return new PBEFleeFailedPacket(data, r, battle);
                     case PBEItemTurnPacket.Code: return new PBEItemTurnPacket(data, r, battle);
+                    case PBECapturePacket.Code: return new PBECapturePacket(data, r, battle);
                     default: throw new InvalidDataException();
                 }
             }

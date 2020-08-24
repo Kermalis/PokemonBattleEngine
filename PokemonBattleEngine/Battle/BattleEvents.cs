@@ -41,6 +41,10 @@ namespace Kermalis.PokemonBattleEngine.Battle
             }
             Broadcast(new PBEBattleStatusPacket(battleStatus, battleStatusAction));
         }
+        private void BroadcastCapture(PBEBattlePokemon pokemon, PBEItem ball, byte numShakes, bool success, bool critical)
+        {
+            Broadcast(new PBECapturePacket(pokemon, ball, numShakes, success, critical));
+        }
         private void BroadcastFleeFailed(PBEBattlePokemon pokemon)
         {
             Broadcast(new PBEFleeFailedPacket(pokemon));
@@ -652,6 +656,20 @@ namespace Kermalis.PokemonBattleEngine.Battle
                     }
                     return message;
                 }
+                case PBECapturePacket cp:
+                {
+                    PBEBattlePokemon pokemon = cp.PokemonTrainer.TryGetPokemon(cp.Pokemon);
+                    string ballEnglish = PBELocalizedString.GetItemName(cp.Ball).English;
+                    if (cp.Success)
+                    {
+                        return string.Format("Gotcha! {0} was caught with the {1} after {2} shake{3}!", pokemon.Nickname, ballEnglish, cp.NumShakes, cp.NumShakes == 1 ? string.Empty : "s");
+                    }
+                    if (cp.NumShakes == 0)
+                    {
+                        return "The Pokémon broke free without shaking!";
+                    }
+                    return string.Format("The Pokémon broke free after {0} shake{1}!", cp.NumShakes, cp.NumShakes == 1 ? string.Empty : "s");
+                }
                 case PBEFleeFailedPacket ffp:
                 {
                     string name;
@@ -835,8 +853,27 @@ namespace Kermalis.PokemonBattleEngine.Battle
                     string itemEnglish = PBELocalizedString.GetItemName(itp.Item).English;
                     switch (itp.ItemAction)
                     {
-                        case PBEItemTurnAction.Attempt: return string.Format("{0} used the {1}.", GetTrainerName(itemUser.Trainer), itemEnglish);
-                        case PBEItemTurnAction.NoEffect: return string.Format("The {0} had no effect.", itemEnglish);
+                        case PBEItemTurnAction.Attempt:
+                        {
+                            string word;
+                            if (PBEDataUtils.AllBalls.Contains(itp.Item))
+                            {
+                                word = "threw";
+                            }
+                            else
+                            {
+                                word = "used";
+                            }
+                            return string.Format("{0} {1} the {2}.", GetTrainerName(itemUser.Trainer), word, itemEnglish);
+                        }
+                        case PBEItemTurnAction.NoEffect:
+                        {
+                            if (PBEDataUtils.AllBalls.Contains(itp.Item))
+                            {
+                                return "The trainer blocked the ball! Don't be a thief!";
+                            }
+                            return string.Format("The {0} had no effect.", itemEnglish);
+                        }
                         case PBEItemTurnAction.Success:
                         {
                             string message;
@@ -1555,7 +1592,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                         case PBEBattleResult.Team0Win: message = "{0} defeated {1}!"; break; // TODO: X defeated The wild Pokémon! (capital T in the)
                         case PBEBattleResult.Team1Forfeit: message = "{1} forfeited."; break;
                         case PBEBattleResult.Team1Win: message = "{1} defeated {0}!"; break;
-                        case PBEBattleResult.WildCapture: message = "{1} was captured!"; break; // TODO
+                        case PBEBattleResult.WildCapture: goto bottom;
                         case PBEBattleResult.WildEscape: message = "{0} got away!"; break;
                         case PBEBattleResult.WildFlee: message = "{1} got away!"; break;
                         default: throw new ArgumentOutOfRangeException(nameof(brp.BattleResult));

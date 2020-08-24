@@ -193,7 +193,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                         }
                         if (!trainer.Inventory.TryGetValue(action.UseItem, out PBEBattleInventory.PBEBattleInventorySlot slot))
                         {
-                            return $"Trainer \"{trainer.Name}\" does not have any {action.UseItem}";
+                            return $"Trainer \"{trainer.Name}\" does not have any {action.UseItem}"; // Handles wild Pokémon
                         }
                         bool used = items.TryGetValue(action.UseItem, out int amtUsed);
                         if (!used)
@@ -204,6 +204,11 @@ namespace Kermalis.PokemonBattleEngine.Battle
                         if (newAmt <= 0)
                         {
                             return $"Tried to use too many {action.UseItem}";
+                        }
+                        if (trainer.Battle.BattleType == PBEBattleType.Wild && trainer.Team.OpposingTeam.ActiveBattlers.Count() > 1
+                            && PBEDataUtils.AllBalls.Contains(action.UseItem))
+                        {
+                            return $"Cannot throw a ball at multiple wild Pokémon";
                         }
                         amtUsed++;
                         if (used)
