@@ -917,7 +917,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                 return PBEResult.Ineffective_Status;
             }
             PBEGender kGender = useKnownInfo ? KnownGender : Gender;
-            if (kGender == PBEGender.Genderless || causer.Gender == PBEGender.Genderless || kGender == causer.Gender)
+            if (!kGender.IsOppositeGender(causer.Gender))
             {
                 return PBEResult.Ineffective_Gender;
             }
