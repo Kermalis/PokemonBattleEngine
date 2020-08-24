@@ -58,7 +58,7 @@ namespace Kermalis.PokemonBattleEngine.AI
                         PBEMove move = usableMoves[m];
                         PBEType moveType = user.GetMoveType(move);
                         PBEMoveTarget moveTargets = user.GetMoveTargets(move);
-                        PBETurnTarget[] possibleTargets = PBEMoveData.IsSpreadMove(moveTargets)
+                        PBETurnTarget[] possibleTargets = PBEDataUtils.IsSpreadMove(moveTargets)
                             ? new PBETurnTarget[] { PBEBattleUtils.GetSpreadMoveTargets(user, moveTargets) }
                             : PBEBattleUtils.GetPossibleTargets(user, moveTargets);
                         foreach (PBETurnTarget possibleTarget in possibleTargets)
@@ -99,7 +99,7 @@ namespace Kermalis.PokemonBattleEngine.AI
                             {
                                 score = 0;
                                 targets.RemoveAll(p => p == null);
-                                PBEMoveData mData = PBEMoveData.Data[move];
+                                IPBEMoveData mData = PBEDataProvider.Instance.GetMoveData(move);
                                 if (!mData.IsMoveUsable())
                                 {
                                     throw new ArgumentOutOfRangeException(nameof(trainer), $"{move} is not yet implemented in Pokémon Battle Engine.");
@@ -617,7 +617,7 @@ namespace Kermalis.PokemonBattleEngine.AI
                                         // TODO
                                         break;
                                     }
-                                    default: throw new ArgumentOutOfRangeException(nameof(PBEMoveData.Effect));
+                                    default: throw new ArgumentOutOfRangeException(nameof(IPBEMoveData.Effect));
                                 }
                             }
                             possibleActions.Add((new PBETurnAction(user, move, possibleTarget), score));
@@ -654,7 +654,7 @@ namespace Kermalis.PokemonBattleEngine.AI
                     IOrderedEnumerable<(PBETurnAction Action, double Score)> byScore = possibleActions.OrderByDescending(t => t.Score);
                     Debug.WriteLine("{0}'s possible actions: {1}", user.Nickname, byScore.Select(t => ToDebugString(t)).Print());
                     double bestScore = byScore.First().Score;
-                    actions[i] = PBEUtils.GlobalRandom.RandomElement(byScore.Where(t => t.Score == bestScore).ToArray()).Action; // Pick random action of the ones that tied for best score
+                    actions[i] = PBEDataProvider.GlobalRandom.RandomElement(byScore.Where(t => t.Score == bestScore).ToArray()).Action; // Pick random action of the ones that tied for best score
                 }
                 // Action was chosen, finish up for this Pokémon
                 if (actions[i].Decision == PBETurnDecision.SwitchOut)
@@ -683,7 +683,7 @@ namespace Kermalis.PokemonBattleEngine.AI
         }
         private static bool IsTeammateUsingEffect(IEnumerable<PBETurnAction> actions, PBEMoveEffect effect)
         {
-            return actions.Any(a => a != null && a.Decision == PBETurnDecision.Fight && PBEMoveData.Data[a.FightMove].Effect == effect);
+            return actions.Any(a => a != null && a.Decision == PBETurnDecision.Fight && PBEDataProvider.Instance.GetMoveData(a.FightMove).Effect == effect);
         }
         private static double HPAware(double hpPercentage, double zeroPercentScore, double hundredPercentScore)
         {
@@ -709,7 +709,7 @@ namespace Kermalis.PokemonBattleEngine.AI
                 throw new InvalidOperationException($"{nameof(trainer)} must require switch-ins.");
             }
             PBEBattlePokemon[] available = trainer.Party.Where(p => p.FieldPosition == PBEFieldPosition.None && p.HP > 0).ToArray();
-            PBEUtils.GlobalRandom.Shuffle(available);
+            PBEDataProvider.GlobalRandom.Shuffle(available);
             var availablePositions = new List<PBEFieldPosition>();
             switch (trainer.Battle.BattleFormat)
             {

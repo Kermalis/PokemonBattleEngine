@@ -10,10 +10,8 @@ namespace Kermalis.PokemonBattleEngine.Data
     // 1: A lot of work to do that
     // 2: If someone wants to do pal park or catch released Pokémon etc, they'd need all these things
     // 3: If they want just some things (like effort values pre-seeded) they'd also need this
-    public interface IPBEPokemon
+    public interface IPBEPokemon : IPBESpeciesForm
     {
-        PBESpecies Species { get; }
-        PBEForm Form { get; }
         PBEGender Gender { get; }
         string Nickname { get; }
         bool Shiny { get; }
@@ -61,6 +59,11 @@ namespace Kermalis.PokemonBattleEngine.Data
         PBEType KnownType1 { get; }
         /// <summary>The second type everyone believes the Pokémon has.</summary>
         PBEType KnownType2 { get; }
+    }
+    public interface IPBESpeciesForm
+    {
+        PBESpecies Species { get; }
+        PBEForm Form { get; }
     }
 
     public static class PBEPokemonInterfaceExtensions

@@ -54,7 +54,7 @@ namespace Kermalis.PokemonBattleEngineClient.Models
             }
             else
             {
-                PBEMoveData mData = PBEMoveData.Data[move];
+                IPBEMoveData mData = PBEDataProvider.Instance.GetMoveData(move);
                 string s = $"Type: {PBELocalizedString.GetTypeName(mData.Type)}";
                 if (mData.Type != moveType)
                 {

@@ -79,7 +79,7 @@ namespace Kermalis.PokemonBattleEngineClient.Infrastructure
         public static string WorkingDirectory { get; private set; }
         public static void SetWorkingDirectory(string workingDirectory)
         {
-            PBEUtils.InitEngine(workingDirectory);
+            PBEDataProvider.InitEngine(workingDirectory);
             WorkingDirectory = workingDirectory;
         }
 
@@ -210,7 +210,7 @@ namespace Kermalis.PokemonBattleEngineClient.Infrastructure
 
             if (useKnownInfo)
             {
-                var pData = PBEPokemonData.GetData(pkmn.KnownSpecies, pkmn.KnownForm);
+                IPBEPokemonData pData = PBEDataProvider.Instance.GetPokemonData(pkmn.KnownSpecies, pkmn.KnownForm);
                 string formStr = PBEDataUtils.HasForms(pkmn.KnownSpecies, false) ? $" ({PBELocalizedString.GetFormName(pkmn.KnownSpecies, pkmn.KnownForm)})" : string.Empty;
                 sb.AppendLine($"{pkmn.KnownNickname}/{pkmn.KnownSpecies}{formStr} {(pkmn.KnownStatus2.HasFlag(PBEStatus2.Transformed) ? pkmn.Gender.ToSymbol() : pkmn.KnownGender.ToSymbol())} Lv.{pkmn.Level}");
                 sb.AppendLine($"HP: {pkmn.HPPercentage:P2}");

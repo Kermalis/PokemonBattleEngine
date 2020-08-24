@@ -15,7 +15,7 @@ namespace Kermalis.PokemonBattleEngine.Data
             PBEItem.QuickBall, PBEItem.CherishBall, PBEItem.FastBall, PBEItem.LevelBall, PBEItem.LureBall, PBEItem.HeavyBall, PBEItem.LoveBall, PBEItem.FriendBall, PBEItem.MoonBall, PBEItem.SportBall,
             PBEItem.ParkBall, PBEItem.DreamBall });
         public static PBEAlphabeticalList<PBESpecies> AllSpecies { get; } = new PBEAlphabeticalList<PBESpecies>(Enum.GetValues(typeof(PBESpecies)).Cast<PBESpecies>().Except(new[] { PBESpecies.MAX }));
-        public static PBEAlphabeticalList<PBESpecies> FullyEvolvedSpecies { get; } = new PBEAlphabeticalList<PBESpecies>(AllSpecies.Where(s => PBEPokemonData.GetData(s, 0).Evolutions.Count == 0));
+        public static PBEAlphabeticalList<PBESpecies> FullyEvolvedSpecies { get; } = new PBEAlphabeticalList<PBESpecies>(AllSpecies.Where(s => PBEDataProvider.Instance.GetPokemonData(s, 0).Evolutions.Count == 0));
         public static ReadOnlyDictionary<PBEType, PBEItem> TypeToGem { get; } = new ReadOnlyDictionary<PBEType, PBEItem>(new Dictionary<PBEType, PBEItem>()
         {
             { PBEType.Bug, PBEItem.BugGem },

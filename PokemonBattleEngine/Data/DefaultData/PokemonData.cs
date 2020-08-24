@@ -1,15 +1,16 @@
 ﻿using Kermalis.PokemonBattleEngine.Data.Legality;
-using Kermalis.PokemonBattleEngine.Utils;
 using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 
 namespace Kermalis.PokemonBattleEngine.Data
 {
-    public sealed class PBEPokemonData : IPBEPokemonTypes
+    public sealed class PBEPokemonData : IPBEPokemonData
     {
         public PBESpecies Species { get; }
         public PBEForm Form { get; }
         public PBEReadOnlyStatCollection BaseStats { get; }
+        IPBEReadOnlyStatCollection IPBEPokemonData.BaseStats => BaseStats;
         public PBEType Type1 { get; }
         public PBEType Type2 { get; }
         public PBEGenderRatio GenderRatio { get; }
@@ -17,11 +18,16 @@ namespace Kermalis.PokemonBattleEngine.Data
         public byte FleeRate { get; }
         /// <summary>Weight in Kilograms</summary>
         public double Weight { get; }
-        public ReadOnlyCollection<(PBESpecies Species, PBEForm Form)> PreEvolutions { get; }
-        public ReadOnlyCollection<(PBESpecies Species, PBEForm Form)> Evolutions { get; }
         public ReadOnlyCollection<PBEAbility> Abilities { get; }
+        IReadOnlyList<PBEAbility> IPBEPokemonData.Abilities => Abilities;
+        public ReadOnlyCollection<(PBESpecies Species, PBEForm Form)> PreEvolutions { get; }
+        IReadOnlyList<(PBESpecies Species, PBEForm Form)> IPBEPokemonData.PreEvolutions => PreEvolutions;
+        public ReadOnlyCollection<(PBESpecies Species, PBEForm Form)> Evolutions { get; }
+        IReadOnlyList<(PBESpecies Species, PBEForm Form)> IPBEPokemonData.Evolutions => Evolutions;
         public ReadOnlyCollection<(PBEMove Move, byte Level, PBEMoveObtainMethod ObtainMethod)> LevelUpMoves { get; }
+        IReadOnlyList<(PBEMove Move, byte Level, PBEMoveObtainMethod ObtainMethod)> IPBEPokemonData.LevelUpMoves => LevelUpMoves;
         public ReadOnlyCollection<(PBEMove Move, PBEMoveObtainMethod ObtainMethod)> OtherMoves { get; }
+        IReadOnlyList<(PBEMove Move, PBEMoveObtainMethod ObtainMethod)> IPBEPokemonData.OtherMoves => OtherMoves;
 
         private PBEPokemonData(SearchResult result)
         {
@@ -78,15 +84,6 @@ namespace Kermalis.PokemonBattleEngine.Data
             OtherMoves = new ReadOnlyCollection<(PBEMove, PBEMoveObtainMethod)>(otherMoves);
         }
 
-        public bool HasAbility(PBEAbility ability)
-        {
-            if (ability >= PBEAbility.MAX)
-            {
-                throw new ArgumentOutOfRangeException(nameof(ability));
-            }
-            return Abilities.Contains(ability);
-        }
-
         #region Database Querying
 
         private class SearchResult : IPBEStatCollection
@@ -117,7 +114,7 @@ namespace Kermalis.PokemonBattleEngine.Data
         public static PBEPokemonData GetData(PBESpecies species, PBEForm form, bool cache = true)
         {
             PBELegalityChecker.ValidateSpecies(species, form, false);
-            SearchResult result = PBEUtils.QueryDatabase<SearchResult>($"SELECT * FROM PokemonData WHERE Species={(ushort)species} AND Form={(byte)form}")[0];
+            SearchResult result = PBEDataProvider.QueryDatabase<SearchResult>($"SELECT * FROM PokemonData WHERE Species={(ushort)species} AND Form={(byte)form}")[0];
             return new PBEPokemonData(result); // TODO: Cache
         }
 

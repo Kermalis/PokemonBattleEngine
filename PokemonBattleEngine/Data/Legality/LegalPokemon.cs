@@ -1,5 +1,4 @@
 ﻿using Kermalis.EndianBinaryIO;
-using Kermalis.PokemonBattleEngine.Utils;
 using Newtonsoft.Json.Linq;
 using System;
 using System.ComponentModel;
@@ -16,7 +15,7 @@ namespace Kermalis.PokemonBattleEngine.Data.Legality
 
         public PBESettings Settings { get; }
 
-        private PBEPokemonData _pData;
+        private IPBEPokemonData _pData;
         public PBEAlphabeticalList<PBEAbility> SelectableAbilities { get; } = new PBEAlphabeticalList<PBEAbility>();
         public PBEAlphabeticalList<PBEForm> SelectableForms { get; } = new PBEAlphabeticalList<PBEForm>();
         public PBEAlphabeticalList<PBEGender> SelectableGenders { get; } = new PBEAlphabeticalList<PBEGender>();
@@ -283,10 +282,10 @@ namespace Kermalis.PokemonBattleEngine.Data.Legality
             _species = species;
             _form = form;
             _level = level;
-            _friendship = (byte)PBEUtils.GlobalRandom.RandomInt(0, byte.MaxValue);
-            _shiny = PBEUtils.GlobalRandom.RandomShiny();
-            _nature = PBEUtils.GlobalRandom.RandomElement(PBEDataUtils.AllNatures);
-            _caughtBall = PBEUtils.GlobalRandom.RandomElement(PBEDataUtils.AllBalls);
+            _friendship = (byte)PBEDataProvider.GlobalRandom.RandomInt(0, byte.MaxValue);
+            _shiny = PBEDataProvider.GlobalRandom.RandomShiny();
+            _nature = PBEDataProvider.GlobalRandom.RandomElement(PBEDataUtils.AllNatures);
+            _caughtBall = PBEDataProvider.GlobalRandom.RandomElement(PBEDataUtils.AllBalls);
             EffortValues = new PBELegalEffortValues(Settings, true);
             IndividualValues = new PBELegalIndividualValues(Settings, true);
             Moveset = new PBELegalMoveset(_species, _form, _level, Settings, true);
@@ -294,7 +293,7 @@ namespace Kermalis.PokemonBattleEngine.Data.Legality
         }
         private void SetSelectable()
         {
-            _pData = PBEPokemonData.GetData(_species, _form);
+            _pData = PBEDataProvider.Instance.GetPokemonData(_species, _form);
             SelectableAbilities.Reset(_pData.Abilities);
             SelectableForms.Reset(PBEDataUtils.GetForms(_species, true));
             SelectableGenders.Reset(PBEDataUtils.GetValidGenders(_pData.GenderRatio));
@@ -305,11 +304,11 @@ namespace Kermalis.PokemonBattleEngine.Data.Legality
             SetSelectable();
             if (!SelectableAbilities.Contains(_ability))
             {
-                Ability = PBEUtils.GlobalRandom.RandomElement(SelectableAbilities);
+                Ability = PBEDataProvider.GlobalRandom.RandomElement(SelectableAbilities);
             }
             if (!SelectableItems.Contains(_item))
             {
-                Item = PBEUtils.GlobalRandom.RandomElement(SelectableItems);
+                Item = PBEDataProvider.GlobalRandom.RandomElement(SelectableItems);
             }
             Moveset.Form = _form;
         }
@@ -327,15 +326,15 @@ namespace Kermalis.PokemonBattleEngine.Data.Legality
             }
             if (oldSpecies == 0 || !SelectableAbilities.Contains(_ability))
             {
-                Ability = PBEUtils.GlobalRandom.RandomElement(SelectableAbilities);
+                Ability = PBEDataProvider.GlobalRandom.RandomElement(SelectableAbilities);
             }
             if (oldSpecies == 0 || !SelectableGenders.Contains(_gender))
             {
-                Gender = PBEUtils.GlobalRandom.RandomGender(_pData.GenderRatio);
+                Gender = PBEDataProvider.GlobalRandom.RandomGender(_pData.GenderRatio);
             }
             if (oldSpecies == 0 || !SelectableItems.Contains(_item))
             {
-                Item = PBEUtils.GlobalRandom.RandomElement(SelectableItems);
+                Item = PBEDataProvider.GlobalRandom.RandomElement(SelectableItems);
             }
             if (oldSpecies != 0)
             {

@@ -24,7 +24,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
         }
 
         // TODO: TripleKick miss logic
-        private void Hit_GetVictims(PBEBattlePokemon user, PBEBattlePokemon[] targets, PBEMoveData mData, PBEType moveType, out List<PBEAttackVictim> victims,
+        private void Hit_GetVictims(PBEBattlePokemon user, PBEBattlePokemon[] targets, IPBEMoveData mData, PBEType moveType, out List<PBEAttackVictim> victims,
             Func<PBEBattlePokemon, PBEResult> failFunc = null)
         {
             victims = new List<PBEAttackVictim>(targets.Length);
@@ -106,7 +106,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
             }
         }
 
-        private void BasicHit(PBEBattlePokemon user, PBEBattlePokemon[] targets, PBEMoveData mData,
+        private void BasicHit(PBEBattlePokemon user, PBEBattlePokemon[] targets, IPBEMoveData mData,
             Func<PBEBattlePokemon, PBEResult> failFunc = null,
             Action<PBEBattlePokemon> beforeDoingDamage = null,
             Action<PBEBattlePokemon, ushort> beforePostHit = null,
@@ -196,7 +196,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
             DoPostAttackedEffects(user, allies, foes, true, recoilDamage: recoilFunc?.Invoke(totalDamageDealt), colorChangeType: moveType);
         }
         // None of these moves are multi-target
-        private void FixedDamageHit(PBEBattlePokemon user, PBEBattlePokemon[] targets, PBEMoveData mData, Func<PBEBattlePokemon, int> damageFunc,
+        private void FixedDamageHit(PBEBattlePokemon user, PBEBattlePokemon[] targets, IPBEMoveData mData, Func<PBEBattlePokemon, int> damageFunc,
             Func<PBEBattlePokemon, PBEResult> failFunc = null,
             Action beforePostHit = null)
         {
@@ -251,7 +251,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
             DoPostAttackedEffects(user, allies, foes, false, colorChangeType: moveType);
         }
         // None of these moves are multi-target
-        private void MultiHit(PBEBattlePokemon user, PBEBattlePokemon[] targets, PBEMoveData mData, byte numHits,
+        private void MultiHit(PBEBattlePokemon user, PBEBattlePokemon[] targets, IPBEMoveData mData, byte numHits,
             bool subsequentMissChecks = false,
             Action<PBEBattlePokemon> beforePostHit = null)
         {

@@ -519,7 +519,7 @@ namespace Kermalis.PokemonBattleEngineDiscord
         }
         private string CreateKnownPokemonEmbed(PBEBattlePokemon pkmn)
         {
-            var pData = PBEPokemonData.GetData(pkmn.KnownSpecies, pkmn.KnownForm);
+            IPBEPokemonData pData = PBEDataProvider.Instance.GetPokemonData(pkmn.KnownSpecies, pkmn.KnownForm);
             var sb = new StringBuilder();
             string formStr = PBEDataUtils.HasForms(pkmn.KnownSpecies, false) ? $" ({PBELocalizedString.GetFormName(pkmn.KnownSpecies, pkmn.KnownForm)})" : string.Empty;
             sb.AppendLine($"{GetTrainerName(pkmn.Trainer)}'s {pkmn.KnownNickname}/{pkmn.KnownSpecies}{formStr} {(pkmn.KnownStatus2.HasFlag(PBEStatus2.Transformed) ? pkmn.Gender.ToSymbol() : pkmn.KnownGender.ToSymbol())} Lv.{pkmn.Level}{(pkmn.KnownShiny ? $" {_shinyEmoji}" : string.Empty)}");

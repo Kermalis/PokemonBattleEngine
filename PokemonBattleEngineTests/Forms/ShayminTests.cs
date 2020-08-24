@@ -1,6 +1,5 @@
 ﻿using Kermalis.PokemonBattleEngine.Battle;
 using Kermalis.PokemonBattleEngine.Data;
-using Kermalis.PokemonBattleEngine.Utils;
 using Xunit;
 using Xunit.Abstractions;
 
@@ -18,7 +17,7 @@ namespace Kermalis.PokemonBattleEngineTests.Forms
         public void Shaymin_Reverts_To_Normal_Form_Forever()
         {
             #region Setup
-            PBEUtils.GlobalRandom.Seed = 40703; // Seed ensures SecretPower freezes
+            PBEDataProvider.GlobalRandom.Seed = 40703; // Seed ensures SecretPower freezes
             PBESettings settings = PBESettings.DefaultSettings;
 
             var p0 = new TestPokemonCollection(1);

@@ -2,7 +2,6 @@
 using Kermalis.PokemonBattleEngine.Data;
 using Kermalis.PokemonBattleEngine.Network;
 using Kermalis.PokemonBattleEngine.Packets;
-using Kermalis.PokemonBattleEngine.Utils;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -52,7 +51,7 @@ namespace Kermalis.PokemonBattleEngineServer
             }
             else
             {
-                PBEUtils.InitEngine(string.Empty);
+                PBEDataProvider.InitEngine(string.Empty);
                 new BattleServer(args);
             }
         }
@@ -90,7 +89,7 @@ namespace Kermalis.PokemonBattleEngineServer
                     // Wait for the server to be in a state where no events will be sent
                     _resetEvent.WaitOne();
 
-                    string name = PBEUtils.GlobalRandom.RandomElement(new string[] { "Sasha", "Nikki", "Lara", "Violet", "Naomi", "Rose", "Sabrina", "Nicole" });
+                    string name = PBEDataProvider.GlobalRandom.RandomElement(new string[] { "Sasha", "Nikki", "Lara", "Violet", "Naomi", "Rose", "Sabrina", "Nicole" });
                     if (_battlerCounter < NumBattlers)
                     {
                         byte i = _battlerCounter;

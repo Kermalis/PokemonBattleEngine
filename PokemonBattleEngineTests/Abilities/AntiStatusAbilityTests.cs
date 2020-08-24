@@ -1,6 +1,5 @@
 ﻿using Kermalis.PokemonBattleEngine.Battle;
 using Kermalis.PokemonBattleEngine.Data;
-using Kermalis.PokemonBattleEngine.Utils;
 using Xunit;
 using Xunit.Abstractions;
 
@@ -18,7 +17,7 @@ namespace Kermalis.PokemonBattleEngineTests.Abilities
         public void Immunity_Works()
         {
             #region Setup
-            PBEUtils.GlobalRandom.Seed = 0; // Seed prevents Toxic from missing
+            PBEDataProvider.GlobalRandom.Seed = 0; // Seed prevents Toxic from missing
             PBESettings settings = PBESettings.DefaultSettings;
 
             var p0 = new TestPokemonCollection(1);

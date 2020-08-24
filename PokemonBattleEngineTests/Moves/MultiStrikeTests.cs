@@ -1,6 +1,5 @@
 ﻿using Kermalis.PokemonBattleEngine.Battle;
 using Kermalis.PokemonBattleEngine.Data;
-using Kermalis.PokemonBattleEngine.Utils;
 using Xunit;
 using Xunit.Abstractions;
 
@@ -20,7 +19,7 @@ namespace Kermalis.PokemonBattleEngineTests.Moves
         public void SkillLink_Works__2To5(PBEAbility ability, byte numHits)
         {
             #region Setup
-            PBEUtils.GlobalRandom.Seed = 1230; // Seed ensures hits would normally not be 5
+            PBEDataProvider.GlobalRandom.Seed = 1230; // Seed ensures hits would normally not be 5
             PBESettings settings = PBESettings.DefaultSettings;
 
             var p0 = new TestPokemonCollection(1);

@@ -3,32 +3,8 @@ using System.Collections.ObjectModel;
 
 namespace Kermalis.PokemonBattleEngine.Data
 {
-    public sealed class PBEBerryData
+    public sealed partial class PBEBerryData
     {
-        public byte Bitterness { get; }
-        public byte Dryness { get; }
-        public byte Sourness { get; }
-        public byte Spicyness { get; }
-        public byte Sweetness { get; }
-
-        /// <summary>The power <see cref="PBEMoveEffect.NaturalGift"/> has when the user is holding this item.</summary>
-        public byte NaturalGiftPower { get; }
-        /// <summary>The type <see cref="PBEMoveEffect.NaturalGift"/> becomes when the user is holding this item.</summary>
-        public PBEType NaturalGiftType { get; }
-
-        private PBEBerryData(byte naturalGiftPower, PBEType naturalGiftType,
-            byte bitterness = 0, byte dryness = 0, byte sourness = 0, byte spicyness = 0, byte sweetness = 0)
-        {
-            Bitterness = bitterness;
-            Dryness = dryness;
-            Sourness = sourness;
-            Spicyness = spicyness;
-            Sweetness = sweetness;
-
-            NaturalGiftPower = naturalGiftPower;
-            NaturalGiftType = naturalGiftType;
-        }
-
         public static ReadOnlyDictionary<PBEItem, PBEBerryData> Data { get; } = new ReadOnlyDictionary<PBEItem, PBEBerryData>(new Dictionary<PBEItem, PBEBerryData>
         {
             { PBEItem.AguavBerry, new PBEBerryData(60, PBEType.Dragon, bitterness: 15) },

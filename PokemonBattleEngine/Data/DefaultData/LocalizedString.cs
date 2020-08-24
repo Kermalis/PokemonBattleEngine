@@ -1,5 +1,4 @@
 ﻿using Kermalis.PokemonBattleEngine.Data.Legality;
-using Kermalis.PokemonBattleEngine.Utils;
 using System;
 using System.Collections.Generic;
 using System.Globalization;
@@ -60,7 +59,7 @@ namespace Kermalis.PokemonBattleEngine.Data
 
         public override string ToString()
         {
-            return FromCultureInfo(PBEUtils.PBECulture);
+            return FromCultureInfo(PBEDataProvider.PBECulture);
         }
 
         #region Database Querying
@@ -122,7 +121,7 @@ namespace Kermalis.PokemonBattleEngine.Data
         public static PBEAbility? GetAbilityByName(string abilityName)
         {
             PBEAbility ability;
-            List<SearchResult> results = PBEUtils.QueryDatabase<SearchResult>(string.Format(QueryText, "AbilityNames", abilityName));
+            List<SearchResult> results = PBEDataProvider.QueryDatabase<SearchResult>(string.Format(QueryText, "AbilityNames", abilityName));
             if (results.Count == 1)
             {
                 ability = (PBEAbility)results[0].Id;
@@ -139,7 +138,7 @@ namespace Kermalis.PokemonBattleEngine.Data
             {
                 throw new ArgumentOutOfRangeException(nameof(ability));
             }
-            return new PBELocalizedString(PBEUtils.QueryDatabase<SearchResult>(string.Format(QueryId, "AbilityDescriptions", (byte)ability))[0]);
+            return new PBELocalizedString(PBEDataProvider.QueryDatabase<SearchResult>(string.Format(QueryId, "AbilityDescriptions", (byte)ability))[0]);
         }
         public static PBELocalizedString GetAbilityName(PBEAbility ability)
         {
@@ -147,12 +146,12 @@ namespace Kermalis.PokemonBattleEngine.Data
             {
                 throw new ArgumentOutOfRangeException(nameof(ability));
             }
-            return new PBELocalizedString(PBEUtils.QueryDatabase<SearchResult>(string.Format(QueryId, "AbilityNames", (byte)ability))[0]);
+            return new PBELocalizedString(PBEDataProvider.QueryDatabase<SearchResult>(string.Format(QueryId, "AbilityNames", (byte)ability))[0]);
         }
         public static PBEForm? GetFormByName(PBESpecies species, string formName)
         {
             PBEForm form;
-            List<FormNameSearchResult> results = PBEUtils.QueryDatabase<FormNameSearchResult>(string.Format(QuerySpeciesAndText, "FormNames", formName, (ushort)species));
+            List<FormNameSearchResult> results = PBEDataProvider.QueryDatabase<FormNameSearchResult>(string.Format(QuerySpeciesAndText, "FormNames", formName, (ushort)species));
             if (results.Count == 1)
             {
                 form = (PBEForm)results[0].Form;
@@ -166,12 +165,12 @@ namespace Kermalis.PokemonBattleEngine.Data
         public static PBELocalizedString GetFormName(PBESpecies species, PBEForm form)
         {
             PBELegalityChecker.ValidateSpecies(species, form, false);
-            return new PBELocalizedString(PBEUtils.QueryDatabase<FormNameSearchResult>(string.Format(QuerySpecies, "FormNames", (ushort)species, (byte)form))[0]);
+            return new PBELocalizedString(PBEDataProvider.QueryDatabase<FormNameSearchResult>(string.Format(QuerySpecies, "FormNames", (ushort)species, (byte)form))[0]);
         }
         public static PBEGender? GetGenderByName(string genderName)
         {
             PBEGender gender;
-            List<SearchResult> results = PBEUtils.QueryDatabase<SearchResult>(string.Format(QueryText, "GenderNames", genderName));
+            List<SearchResult> results = PBEDataProvider.QueryDatabase<SearchResult>(string.Format(QueryText, "GenderNames", genderName));
             if (results.Count == 1)
             {
                 gender = (PBEGender)results[0].Id;
@@ -188,12 +187,12 @@ namespace Kermalis.PokemonBattleEngine.Data
             {
                 throw new ArgumentOutOfRangeException(nameof(gender));
             }
-            return new PBELocalizedString(PBEUtils.QueryDatabase<SearchResult>(string.Format(QueryId, "GenderNames", (byte)gender))[0]);
+            return new PBELocalizedString(PBEDataProvider.QueryDatabase<SearchResult>(string.Format(QueryId, "GenderNames", (byte)gender))[0]);
         }
         public static PBEItem? GetItemByName(string itemName)
         {
             PBEItem item;
-            List<SearchResult> results = PBEUtils.QueryDatabase<SearchResult>(string.Format(QueryText, "ItemNames", itemName));
+            List<SearchResult> results = PBEDataProvider.QueryDatabase<SearchResult>(string.Format(QueryText, "ItemNames", itemName));
             if (results.Count == 1)
             {
                 item = (PBEItem)results[0].Id;
@@ -210,7 +209,7 @@ namespace Kermalis.PokemonBattleEngine.Data
             {
                 throw new ArgumentOutOfRangeException(nameof(item));
             }
-            return new PBELocalizedString(PBEUtils.QueryDatabase<SearchResult>(string.Format(QueryId, "ItemDescriptions", (ushort)item))[0]);
+            return new PBELocalizedString(PBEDataProvider.QueryDatabase<SearchResult>(string.Format(QueryId, "ItemDescriptions", (ushort)item))[0]);
         }
         public static PBELocalizedString GetItemName(PBEItem item)
         {
@@ -218,12 +217,12 @@ namespace Kermalis.PokemonBattleEngine.Data
             {
                 throw new ArgumentOutOfRangeException(nameof(item));
             }
-            return new PBELocalizedString(PBEUtils.QueryDatabase<SearchResult>(string.Format(QueryId, "ItemNames", (ushort)item))[0]);
+            return new PBELocalizedString(PBEDataProvider.QueryDatabase<SearchResult>(string.Format(QueryId, "ItemNames", (ushort)item))[0]);
         }
         public static PBEMove? GetMoveByName(string moveName)
         {
             PBEMove move;
-            List<SearchResult> results = PBEUtils.QueryDatabase<SearchResult>(string.Format(QueryText, "MoveNames", moveName));
+            List<SearchResult> results = PBEDataProvider.QueryDatabase<SearchResult>(string.Format(QueryText, "MoveNames", moveName));
             if (results.Count == 1)
             {
                 move = (PBEMove)results[0].Id;
@@ -240,7 +239,7 @@ namespace Kermalis.PokemonBattleEngine.Data
             {
                 throw new ArgumentOutOfRangeException(nameof(move));
             }
-            return new PBELocalizedString(PBEUtils.QueryDatabase<SearchResult>(string.Format(QueryId, "MoveDescriptions", (ushort)move))[0]);
+            return new PBELocalizedString(PBEDataProvider.QueryDatabase<SearchResult>(string.Format(QueryId, "MoveDescriptions", (ushort)move))[0]);
         }
         public static PBELocalizedString GetMoveName(PBEMove move)
         {
@@ -248,12 +247,12 @@ namespace Kermalis.PokemonBattleEngine.Data
             {
                 throw new ArgumentOutOfRangeException(nameof(move));
             }
-            return new PBELocalizedString(PBEUtils.QueryDatabase<SearchResult>(string.Format(QueryId, "MoveNames", (ushort)move))[0]);
+            return new PBELocalizedString(PBEDataProvider.QueryDatabase<SearchResult>(string.Format(QueryId, "MoveNames", (ushort)move))[0]);
         }
         public static PBENature? GetNatureByName(string natureName)
         {
             PBENature nature;
-            List<SearchResult> results = PBEUtils.QueryDatabase<SearchResult>(string.Format(QueryText, "NatureNames", natureName));
+            List<SearchResult> results = PBEDataProvider.QueryDatabase<SearchResult>(string.Format(QueryText, "NatureNames", natureName));
             if (results.Count == 1)
             {
                 nature = (PBENature)results[0].Id;
@@ -270,12 +269,12 @@ namespace Kermalis.PokemonBattleEngine.Data
             {
                 throw new ArgumentOutOfRangeException(nameof(nature));
             }
-            return new PBELocalizedString(PBEUtils.QueryDatabase<SearchResult>(string.Format(QueryId, "NatureNames", (byte)nature))[0]);
+            return new PBELocalizedString(PBEDataProvider.QueryDatabase<SearchResult>(string.Format(QueryId, "NatureNames", (byte)nature))[0]);
         }
         public static PBESpecies? GetSpeciesByName(string speciesName)
         {
             PBESpecies species;
-            List<SearchResult> results = PBEUtils.QueryDatabase<SearchResult>(string.Format(QueryText, "SpeciesNames", speciesName));
+            List<SearchResult> results = PBEDataProvider.QueryDatabase<SearchResult>(string.Format(QueryText, "SpeciesNames", speciesName));
             if (results.Count == 1)
             {
                 species = (PBESpecies)results[0].Id;
@@ -292,7 +291,7 @@ namespace Kermalis.PokemonBattleEngine.Data
             {
                 throw new ArgumentOutOfRangeException(nameof(species));
             }
-            return new PBELocalizedString(PBEUtils.QueryDatabase<SearchResult>(string.Format(QueryId, "SpeciesCategories", (ushort)species))[0]);
+            return new PBELocalizedString(PBEDataProvider.QueryDatabase<SearchResult>(string.Format(QueryId, "SpeciesCategories", (ushort)species))[0]);
         }
         public static PBELocalizedString GetSpeciesEntry(PBESpecies species)
         {
@@ -300,7 +299,7 @@ namespace Kermalis.PokemonBattleEngine.Data
             {
                 throw new ArgumentOutOfRangeException(nameof(species));
             }
-            return new PBELocalizedString(PBEUtils.QueryDatabase<SearchResult>(string.Format(QueryId, "SpeciesEntries", (ushort)species))[0]);
+            return new PBELocalizedString(PBEDataProvider.QueryDatabase<SearchResult>(string.Format(QueryId, "SpeciesEntries", (ushort)species))[0]);
         }
         public static PBELocalizedString GetSpeciesName(PBESpecies species)
         {
@@ -308,12 +307,12 @@ namespace Kermalis.PokemonBattleEngine.Data
             {
                 throw new ArgumentOutOfRangeException(nameof(species));
             }
-            return new PBELocalizedString(PBEUtils.QueryDatabase<SearchResult>(string.Format(QueryId, "SpeciesNames", (ushort)species))[0]);
+            return new PBELocalizedString(PBEDataProvider.QueryDatabase<SearchResult>(string.Format(QueryId, "SpeciesNames", (ushort)species))[0]);
         }
         public static PBEStat? GetStatByName(string statName)
         {
             PBEStat stat;
-            List<SearchResult> results = PBEUtils.QueryDatabase<SearchResult>(string.Format(QueryText, "StatNames", statName));
+            List<SearchResult> results = PBEDataProvider.QueryDatabase<SearchResult>(string.Format(QueryText, "StatNames", statName));
             if (results.Count == 1)
             {
                 stat = (PBEStat)results[0].Id;
@@ -330,12 +329,12 @@ namespace Kermalis.PokemonBattleEngine.Data
             {
                 throw new ArgumentOutOfRangeException(nameof(stat));
             }
-            return new PBELocalizedString(PBEUtils.QueryDatabase<SearchResult>(string.Format(QueryId, "StatNames", (byte)stat))[0]);
+            return new PBELocalizedString(PBEDataProvider.QueryDatabase<SearchResult>(string.Format(QueryId, "StatNames", (byte)stat))[0]);
         }
         public static PBEType? GetTypeByName(string typeName)
         {
             PBEType type;
-            List<SearchResult> results = PBEUtils.QueryDatabase<SearchResult>(string.Format(QueryText, "TypeNames", typeName));
+            List<SearchResult> results = PBEDataProvider.QueryDatabase<SearchResult>(string.Format(QueryText, "TypeNames", typeName));
             if (results.Count == 1)
             {
                 type = (PBEType)results[0].Id;
@@ -352,7 +351,7 @@ namespace Kermalis.PokemonBattleEngine.Data
             {
                 throw new ArgumentOutOfRangeException(nameof(type));
             }
-            return new PBELocalizedString(PBEUtils.QueryDatabase<SearchResult>(string.Format(QueryId, "TypeNames", (byte)type))[0]);
+            return new PBELocalizedString(PBEDataProvider.QueryDatabase<SearchResult>(string.Format(QueryId, "TypeNames", (byte)type))[0]);
         }
 
         #endregion

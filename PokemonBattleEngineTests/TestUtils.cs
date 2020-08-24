@@ -1,7 +1,6 @@
 ﻿using Kermalis.PokemonBattleEngine.Battle;
 using Kermalis.PokemonBattleEngine.Data;
 using Kermalis.PokemonBattleEngine.Packets;
-using Kermalis.PokemonBattleEngine.Utils;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -22,7 +21,7 @@ namespace Kermalis.PokemonBattleEngineTests
     {
         public TestUtils()
         {
-            PBEUtils.InitEngine(string.Empty);
+            PBEDataProvider.InitEngine(string.Empty);
         }
 
         #region Output
@@ -133,7 +132,7 @@ namespace Kermalis.PokemonBattleEngineTests
             Form = form;
             Level = level;
             Nickname = species.ToString();
-            Gender = PBEUtils.GlobalRandom.RandomGender(PBEPokemonData.GetData(species, form).GenderRatio);
+            Gender = PBEDataProvider.GlobalRandom.RandomGender(PBEDataProvider.Instance.GetPokemonData(species, form).GenderRatio);
             CaughtBall = PBEItem.PokeBall;
             EffortValues = new PBEStatCollection(0, 0, 0, 0, 0, 0);
             IndividualValues = new PBEStatCollection(0, 0, 0, 0, 0, 0);

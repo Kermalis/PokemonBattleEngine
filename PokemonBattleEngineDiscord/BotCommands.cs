@@ -1,8 +1,8 @@
 ﻿using Discord;
 using Discord.Commands;
 using Discord.WebSocket;
+using Kermalis.PokemonBattleEngine.Battle;
 using Kermalis.PokemonBattleEngine.Data;
-using Kermalis.PokemonBattleEngine.Utils;
 using System;
 using System.Linq;
 using System.Text.RegularExpressions;
@@ -88,9 +88,9 @@ namespace Kermalis.PokemonBattleEngineDiscord
                 else
                 {
                     PBEItem item = nItem.Value;
-                    PBEItemData iData = PBEItemData.Data[item];
+                    IPBEItemData iData = PBEDataProvider.Instance.GetItemData(item);
                     Color color;
-                    if (PBEBerryData.Data.TryGetValue(item, out PBEBerryData bData))
+                    if (PBEDataProvider.Instance.TryGetBerryData(item, out IPBEBerryData bData))
                     {
                         color = Utils.TypeColors[bData.NaturalGiftType];
                     }
@@ -155,7 +155,7 @@ namespace Kermalis.PokemonBattleEngineDiscord
                 {
                     PBEMove move = nMove.Value;
                     moveName = PBELocalizedString.GetMoveName(move).English;
-                    PBEMoveData mData = PBEMoveData.Data[move];
+                    IPBEMoveData mData = PBEDataProvider.Instance.GetMoveData(move);
                     EmbedBuilder embed = new EmbedBuilder()
                         .WithAuthor(Context.User)
                         .WithColor(Utils.TypeColors[mData.Type])
@@ -223,7 +223,7 @@ namespace Kermalis.PokemonBattleEngineDiscord
                     {
                         PBEForm form = nForm.Value;
                         formName = PBEDataUtils.HasForms(species, false) ? $" ({PBELocalizedString.GetFormName(species, form).English})" : string.Empty;
-                        var pData = PBEPokemonData.GetData(species, form);
+                        IPBEPokemonData pData = PBEDataProvider.Instance.GetPokemonData(species, form);
                         string types = $"{Utils.TypeEmotes[pData.Type1]}";
                         if (pData.Type2 != PBEType.None)
                         {
@@ -304,7 +304,7 @@ namespace Kermalis.PokemonBattleEngineDiscord
                         .AddField("Type Weaknesses", weaknesses, true)
                         .AddField("Type Resistances", resistances, true)
                         .AddField("Type Immunities", immunities, true)
-                        .WithImageUrl(Utils.GetPokemonSprite(species, form, PBEUtils.GlobalRandom.RandomShiny(), PBEUtils.GlobalRandom.RandomGender(pData.GenderRatio), false, false));
+                        .WithImageUrl(Utils.GetPokemonSprite(species, form, PBEDataProvider.GlobalRandom.RandomShiny(), PBEDataProvider.GlobalRandom.RandomGender(pData.GenderRatio), false, false));
                         await Context.Channel.SendMessageAsync(string.Empty, embed: embed.Build());
                     }
                 }

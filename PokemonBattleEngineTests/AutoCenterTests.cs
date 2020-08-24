@@ -1,6 +1,5 @@
 ﻿using Kermalis.PokemonBattleEngine.Battle;
 using Kermalis.PokemonBattleEngine.Data;
-using Kermalis.PokemonBattleEngine.Utils;
 using Xunit;
 using Xunit.Abstractions;
 
@@ -20,7 +19,7 @@ namespace Kermalis.PokemonBattleEngineTests
         public void AutoCenter_Works(bool faintLeft)
         {
             #region Setup
-            PBEUtils.GlobalRandom.Seed = 0;
+            PBEDataProvider.GlobalRandom.Seed = 0;
             PBESettings settings = PBESettings.DefaultSettings;
 
             var p = new TestPokemonCollection(3);
@@ -69,7 +68,7 @@ namespace Kermalis.PokemonBattleEngineTests
         public void AutoCenter_Works_Despite_Available(bool faintLeft)
         {
             #region Setup
-            PBEUtils.GlobalRandom.Seed = 2; // Seed ensures protect doesn't fail
+            PBEDataProvider.GlobalRandom.Seed = 2; // Seed ensures protect doesn't fail
             PBESettings settings = PBESettings.DefaultSettings;
 
             var p0L = new TestPokemonCollection(faintLeft ? 1 : 2);
@@ -147,7 +146,7 @@ namespace Kermalis.PokemonBattleEngineTests
         public void AutoCenter_ActivatesFromHazard()
         {
             #region Setup
-            PBEUtils.GlobalRandom.Seed = 2; // Seed ensures Regigigas doesn't flinch and Rock Slide hits
+            PBEDataProvider.GlobalRandom.Seed = 2; // Seed ensures Regigigas doesn't flinch and Rock Slide hits
             PBESettings settings = PBESettings.DefaultSettings;
 
             var p0 = new TestPokemonCollection(5);
@@ -244,7 +243,7 @@ namespace Kermalis.PokemonBattleEngineTests
         public void AutoCenter_Works_MultiBattle(bool faintLeft)
         {
             #region Setup
-            PBEUtils.GlobalRandom.Seed = 0;
+            PBEDataProvider.GlobalRandom.Seed = 0;
             PBESettings settings = PBESettings.DefaultSettings;
 
             var pL = new TestPokemonCollection(1);

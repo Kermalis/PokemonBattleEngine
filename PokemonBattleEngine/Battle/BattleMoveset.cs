@@ -148,13 +148,13 @@ namespace Kermalis.PokemonBattleEngine.Battle
             {
                 return 0;
             }
-            else if (move >= PBEMove.MAX || !PBEMoveData.IsMoveUsable(move))
+            else if (move >= PBEMove.MAX || !PBEDataUtils.IsMoveUsable(move))
             {
                 throw new ArgumentOutOfRangeException(nameof(move));
             }
             else
             {
-                return PBEMoveData.Data[move].PPTier == 0 ? 1 : settings.PPMultiplier;
+                return PBEDataProvider.Instance.GetMoveData(move).PPTier == 0 ? 1 : settings.PPMultiplier;
             }
         }
         public static int GetNonTransformPP(PBESettings settings, PBEMove move, byte ppUps)
@@ -171,13 +171,13 @@ namespace Kermalis.PokemonBattleEngine.Battle
             {
                 return 0;
             }
-            else if (move >= PBEMove.MAX || !PBEMoveData.IsMoveUsable(move))
+            else if (move >= PBEMove.MAX || !PBEDataUtils.IsMoveUsable(move))
             {
                 throw new ArgumentOutOfRangeException(nameof(move));
             }
             else
             {
-                byte tier = PBEMoveData.Data[move].PPTier;
+                byte tier = PBEDataProvider.Instance.GetMoveData(move).PPTier;
                 return Math.Max(1, (tier * settings.PPMultiplier) + (tier * ppUps));
             }
         }
@@ -278,7 +278,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
             for (int i = 0; i < _list.Length; i++)
             {
                 PBEMove move = _list[i].Move;
-                if (move != PBEMove.None && move != PBEMove.MAX && PBEMoveData.Data[move].Effect == effect)
+                if (move != PBEMove.None && move != PBEMove.MAX && PBEDataProvider.Instance.GetMoveData(move).Effect == effect)
                 {
                     return true;
                 }

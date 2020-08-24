@@ -165,7 +165,7 @@ namespace Kermalis.PokemonBattleEngineClient
                 battleFormat = triple ? PBEBattleFormat.Triple : PBEBattleFormat.Double;
             }
             var b = new PBEBattle(battleFormat, settings, t0, t1,
-                battleTerrain: PBEUtils.GlobalRandom.RandomBattleTerrain());
+                battleTerrain: PBEDataProvider.GlobalRandom.RandomBattleTerrain());
             Add(new SinglePlayerClient(b, $"SP {_battles.Count + 1}"));
         }*/
         // Wild battle
@@ -215,7 +215,7 @@ namespace Kermalis.PokemonBattleEngineClient
                 battleFormat = triple ? PBEBattleFormat.Triple : PBEBattleFormat.Double;
             }
             var b = new PBEBattle(battleFormat, settings, t0, wi,
-                battleTerrain: PBEUtils.GlobalRandom.RandomBattleTerrain());
+                battleTerrain: PBEDataProvider.GlobalRandom.RandomBattleTerrain());
             Add(new SinglePlayerClient(b, $"SP {_battles.Count + 1}"));
         }
 

@@ -1,6 +1,5 @@
 ﻿using Kermalis.PokemonBattleEngine.Battle;
 using Kermalis.PokemonBattleEngine.Data;
-using Kermalis.PokemonBattleEngine.Utils;
 using System;
 
 namespace Kermalis.PokemonBattleEngine.AI
@@ -23,8 +22,8 @@ namespace Kermalis.PokemonBattleEngine.AI
             if (trainer.IsWild && trainer.Battle.BattleFormat == PBEBattleFormat.Single && trainer.IsFleeValid() is null)
             {
                 PBEBattlePokemon user = trainer.ActionsRequired[0];
-                var pData = PBEPokemonData.GetData(user.Species, user.Form);
-                if (PBEUtils.GlobalRandom.RandomBool(pData.FleeRate, 255))
+                IPBEPokemonData pData = PBEDataProvider.Instance.GetPokemonData(user);
+                if (PBEDataProvider.GlobalRandom.RandomBool(pData.FleeRate, 255))
                 {
                     string valid = trainer.SelectFleeIfValid();
                     if (valid != null)
@@ -52,8 +51,8 @@ namespace Kermalis.PokemonBattleEngine.AI
                 }
                 // The Pokémon is free to fight
                 PBEMove[] usableMoves = user.GetUsableMoves();
-                PBEMove move = PBEUtils.GlobalRandom.RandomElement(usableMoves);
-                actions[i] = new PBETurnAction(user, move, PBEBattle.GetRandomTargetForMetronome(user, move, PBEUtils.GlobalRandom));
+                PBEMove move = PBEDataProvider.GlobalRandom.RandomElement(usableMoves);
+                actions[i] = new PBETurnAction(user, move, PBEBattle.GetRandomTargetForMetronome(user, move, PBEDataProvider.GlobalRandom));
             }
             string valid2 = trainer.SelectActionsIfValid(actions);
             if (valid2 != null)

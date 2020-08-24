@@ -19,7 +19,7 @@ namespace Kermalis.PokemonBattleEngine.Data
         {
             return AllMoves.Where(m =>
             {
-                PBEMoveData mData = PBEMoveData.Data[m];
+                IPBEMoveData mData = PBEDataProvider.Instance.GetMoveData(m);
                 if (!mData.IsMoveUsable())
                 {
                     return false;

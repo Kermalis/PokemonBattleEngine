@@ -250,7 +250,7 @@ namespace Kermalis.PokemonBattleEngineClient.Clients
                             pokemon.KnownShiny = pokemon.DisguisedAsPokemon.Shiny;
                             pokemon.KnownSpecies = pokemon.DisguisedAsPokemon.OriginalSpecies;
                             pokemon.KnownForm = pokemon.DisguisedAsPokemon.Form;
-                            var pData = PBEPokemonData.GetData(pokemon.KnownSpecies, pokemon.KnownForm);
+                            IPBEPokemonData pData = PBEDataProvider.Instance.GetPokemonData(pokemon.KnownSpecies, pokemon.KnownForm);
                             pokemon.KnownType1 = pData.Type1;
                             pokemon.KnownType2 = pData.Type2;
                         }

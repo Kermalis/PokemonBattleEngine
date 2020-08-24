@@ -94,7 +94,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
             return healAmt;
         }
 
-        private double CalculateBasePower(PBEBattlePokemon user, PBEBattlePokemon[] targets, PBEMoveData mData, PBEType moveType)
+        private double CalculateBasePower(PBEBattlePokemon user, PBEBattlePokemon[] targets, IPBEMoveData mData, PBEType moveType)
         {
             double basePower;
 
@@ -824,7 +824,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
 
             return basePower;
         }
-        private double CalculateDamageMultiplier(PBEBattlePokemon user, PBEBattlePokemon target, PBEMoveData mData, PBEType moveType, PBEResult moveResult, bool criticalHit)
+        private double CalculateDamageMultiplier(PBEBattlePokemon user, PBEBattlePokemon target, IPBEMoveData mData, PBEType moveType, PBEResult moveResult, bool criticalHit)
         {
             double damageMultiplier = 1;
             if (target.Status2.HasFlag(PBEStatus2.Airborne) && mData.Flags.HasFlag(PBEMoveFlag.DoubleDamageAirborne))
@@ -989,7 +989,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
             {
                 defense *= 1.5;
             }
-            if (target.Item == PBEItem.Eviolite && PBEPokemonData.GetData(target.OriginalSpecies, target.RevertForm).Evolutions.Count > 0)
+            if (target.Item == PBEItem.Eviolite && PBEDataProvider.Instance.GetPokemonData(target.OriginalSpecies, target.RevertForm).Evolutions.Count > 0)
             {
                 defense *= 1.5;
             }
@@ -1063,7 +1063,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
             {
                 spDefense *= 1.5;
             }
-            if (target.Item == PBEItem.Eviolite && PBEPokemonData.GetData(target.OriginalSpecies, target.RevertForm).Evolutions.Count > 0)
+            if (target.Item == PBEItem.Eviolite && PBEDataProvider.Instance.GetPokemonData(target.OriginalSpecies, target.RevertForm).Evolutions.Count > 0)
             {
                 spDefense *= 1.5;
             }
@@ -1100,7 +1100,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
             double d = CalculateDefense(pkmn, pkmn, pkmn.Defense * m);
             return CalculateDamage(pkmn, a, d, 40);
         }
-        private int CalculateDamage(PBEBattlePokemon user, PBEBattlePokemon target, PBEMoveData mData, PBEType moveType, double basePower, bool criticalHit)
+        private int CalculateDamage(PBEBattlePokemon user, PBEBattlePokemon target, IPBEMoveData mData, PBEType moveType, double basePower, bool criticalHit)
         {
             PBEBattlePokemon aPkmn;
             PBEMoveCategory aCat = mData.Category, dCat;

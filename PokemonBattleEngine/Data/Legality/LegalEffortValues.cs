@@ -1,5 +1,4 @@
 ﻿using Kermalis.EndianBinaryIO;
-using Kermalis.PokemonBattleEngine.Utils;
 using Newtonsoft.Json.Linq;
 using System;
 using System.Collections;
@@ -216,7 +215,7 @@ namespace Kermalis.PokemonBattleEngine.Data.Legality
             {
                 byte[] vals = new byte[6];
                 int[] a = Enumerable.Repeat(0, 6 - 1)
-                    .Select(x => PBEUtils.GlobalRandom.RandomInt(1, Settings.MaxTotalEVs - 1))
+                    .Select(x => PBEDataProvider.GlobalRandom.RandomInt(1, Settings.MaxTotalEVs - 1))
                     .Concat(new int[] { Settings.MaxTotalEVs })
                     .OrderBy(x => x)
                     .ToArray();
@@ -239,7 +238,7 @@ namespace Kermalis.PokemonBattleEngine.Data.Legality
                             notMax.Add(i);
                         }
                     }
-                    int index = PBEUtils.GlobalRandom.RandomElement(notMax);
+                    int index = PBEDataProvider.GlobalRandom.RandomElement(notMax);
                     byte old = vals[index];
                     byte b = (byte)Math.Min(byte.MaxValue, old + (Settings.MaxTotalEVs - total));
                     vals[index] = b;

@@ -136,7 +136,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                 pokemon.RevertAbility = newAbility;
             }
             pokemon.SetStats(false);
-            var pData = PBEPokemonData.GetData(pokemon.Species, newForm);
+            IPBEPokemonData pData = PBEDataProvider.Instance.GetPokemonData(pokemon.Species, newForm);
             PBEType type1 = pData.Type1;
             pokemon.Type1 = type1;
             pokemon.KnownType1 = type1;

@@ -1,6 +1,5 @@
 ﻿using Kermalis.PokemonBattleEngine.Battle;
 using Kermalis.PokemonBattleEngine.Data;
-using Kermalis.PokemonBattleEngine.Utils;
 using Xunit;
 using Xunit.Abstractions;
 
@@ -20,7 +19,7 @@ namespace Kermalis.PokemonBattleEngineTests.Moves
         public void SecretPower_SereneGrace__Bug(bool bugFix)
         {
             #region Setup
-            PBEUtils.GlobalRandom.Seed = 473; // Seed ensures SecretPower does not freeze without the bugfix
+            PBEDataProvider.GlobalRandom.Seed = 473; // Seed ensures SecretPower does not freeze without the bugfix
             var settings = new PBESettings { BugFix = bugFix };
             settings.MakeReadOnly();
 

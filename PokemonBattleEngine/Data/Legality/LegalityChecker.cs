@@ -29,7 +29,7 @@ namespace Kermalis.PokemonBattleEngine.Data.Legality
             }
             void Add2(PBESpecies s, PBEForm f)
             {
-                foreach ((PBESpecies cs, PBEForm cf) in PBEPokemonData.GetData(s, f).PreEvolutions)
+                foreach ((PBESpecies cs, PBEForm cf) in PBEDataProvider.Instance.GetPokemonData(s, f).PreEvolutions)
                 {
                     Add1(cs, cf);
                 }
@@ -56,7 +56,7 @@ namespace Kermalis.PokemonBattleEngine.Data.Legality
             var moves = new List<PBEMove>();
             foreach ((PBESpecies spe, PBEForm fo) in speciesToStealFrom)
             {
-                var pData = PBEPokemonData.GetData(spe, fo);
+                IPBEPokemonData pData = PBEDataProvider.Instance.GetPokemonData(spe, fo);
                 // Disallow moves learned after the current level
                 moves.AddRange(pData.LevelUpMoves.Where(t => t.Level <= level).Select(t => t.Move));
                 // Disallow form-specific moves from other forms (Rotom)
@@ -67,12 +67,12 @@ namespace Kermalis.PokemonBattleEngine.Data.Legality
                     // Disallow moves learned after the current level
                     moves.AddRange(events.Where(e => e.Level <= level).SelectMany(e => e.Moves).Where(m => m != PBEMove.None));
                 }
-                if (moves.Any(m => PBEMoveData.Data[m].Effect == PBEMoveEffect.Sketch))
+                if (moves.Any(m => PBEDataProvider.Instance.GetMoveData(m).Effect == PBEMoveEffect.Sketch))
                 {
                     return PBEDataUtils.SketchLegalMoves;
                 }
             }
-            return moves.Distinct().Where(m => PBEMoveData.IsMoveUsable(m)).ToArray();
+            return moves.Distinct().Where(m => PBEDataUtils.IsMoveUsable(m)).ToArray();
         }
 
         internal static void ValidateSpecies(PBESpecies species, PBEForm form, bool requireUsableOutsideOfBattle)

@@ -1,6 +1,5 @@
 ﻿using Kermalis.PokemonBattleEngine.Battle;
 using Kermalis.PokemonBattleEngine.Data;
-using Kermalis.PokemonBattleEngine.Utils;
 using System;
 using Xunit;
 using Xunit.Abstractions;
@@ -29,7 +28,7 @@ namespace Kermalis.PokemonBattleEngineTests
         public void Wild_Battle_Throws_For_Illegal_Party_Size(PBEBattleFormat format, int count, bool expectException)
         {
             #region Setup and check
-            PBEUtils.GlobalRandom.Seed = 0;
+            PBEDataProvider.GlobalRandom.Seed = 0;
             PBESettings settings = PBESettings.DefaultSettings;
 
             var p0 = new TestPokemonCollection(1);

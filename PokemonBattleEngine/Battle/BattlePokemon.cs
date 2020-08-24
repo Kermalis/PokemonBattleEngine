@@ -10,7 +10,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
 {
     // TODO: INPC
     /// <summary>Represents a specific Pokémon during a battle.</summary>
-    public sealed class PBEBattlePokemon : IPBEPokemonKnownTypes, IPBEPokemonTypes
+    public sealed class PBEBattlePokemon : IPBEPokemonKnownTypes, IPBEPokemonTypes, IPBESpeciesForm
     {
         public PBEBattle Battle { get; }
         public PBETeam Team { get; }
@@ -183,7 +183,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
             Id = id;
             Species = OriginalSpecies = KnownSpecies = species;
             Form = OriginalForm = KnownForm = RevertForm = form;
-            var pData = PBEPokemonData.GetData(species, form);
+            IPBEPokemonData pData = PBEDataProvider.Instance.GetPokemonData(species, form);
             KnownType1 = Type1 = pData.Type1;
             KnownType2 = Type2 = pData.Type2;
             KnownWeight = Weight = pData.Weight;
@@ -277,7 +277,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
             KnownShiny = Shiny = info.Shiny;
             KnownSpecies = Species = info.Species;
             KnownForm = Form = info.Form;
-            var pData = PBEPokemonData.GetData(KnownSpecies, KnownForm);
+            IPBEPokemonData pData = PBEDataProvider.Instance.GetPokemonData(KnownSpecies, KnownForm);
             KnownType1 = Type1 = pData.Type1;
             KnownType2 = Type2 = pData.Type2;
             KnownWeight = Weight = pData.Weight;
@@ -319,7 +319,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
             Species = KnownSpecies = OriginalSpecies;
             Form = KnownForm = RevertForm;
             Ability = KnownAbility = RevertAbility;
-            var pData = PBEPokemonData.GetData(Species, Form);
+            IPBEPokemonData pData = PBEDataProvider.Instance.GetPokemonData(this);
             KnownAbility = PBEAbility.MAX;
             KnownGender = Gender;
             KnownItem = (PBEItem)ushort.MaxValue;
@@ -373,7 +373,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
         }
         public void SetStats(bool calculateHP)
         {
-            var pData = PBEPokemonData.GetData(Species, Form);
+            IPBEPokemonData pData = PBEDataProvider.Instance.GetPokemonData(this);
             PBENature nature = Nature;
             PBEStatCollection evs = EffortValues;
             PBEReadOnlyStatCollection ivs = IndividualValues;
@@ -439,7 +439,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
         }
         public void UpdateKnownPP(PBEMove move, int amountReduced)
         {
-            if (move == PBEMove.None || move >= PBEMove.MAX || !PBEMoveData.IsMoveUsable(move))
+            if (move == PBEMove.None || move >= PBEMove.MAX || !PBEDataUtils.IsMoveUsable(move))
             {
                 throw new ArgumentOutOfRangeException(nameof(move));
             }
@@ -756,7 +756,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
         {
             return GetStatsGreaterThan(0).Sum(s => GetStatChange(s));
         }
-        public PBEType GetMoveType(PBEMoveData mData, bool useKnownInfo = false)
+        public PBEType GetMoveType(IPBEMoveData mData, bool useKnownInfo = false)
         {
             if (mData == null)
             {
@@ -841,9 +841,9 @@ namespace Kermalis.PokemonBattleEngine.Battle
             {
                 throw new ArgumentOutOfRangeException(nameof(move));
             }
-            return GetMoveType(PBEMoveData.Data[move], useKnownInfo: useKnownInfo);
+            return GetMoveType(PBEDataProvider.Instance.GetMoveData(move), useKnownInfo: useKnownInfo);
         }
-        public PBEMoveTarget GetMoveTargets(PBEMoveData mData)
+        public PBEMoveTarget GetMoveTargets(IPBEMoveData mData)
         {
             if (mData == null)
             {
@@ -872,7 +872,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
             {
                 throw new ArgumentOutOfRangeException(nameof(move));
             }
-            return GetMoveTargets(PBEMoveData.Data[move]);
+            return GetMoveTargets(PBEDataProvider.Instance.GetMoveData(move));
         }
         /// <summary>Returns True if the Pokémon is only able to use <see cref="PBEMove.Struggle"/>.</summary>
         public bool IsForcedToStruggle()

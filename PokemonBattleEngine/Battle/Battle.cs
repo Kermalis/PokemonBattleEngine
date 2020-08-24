@@ -78,7 +78,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
             {
                 throw new ArgumentNullException(nameof(ti1));
             }
-            _rand = new PBERandom(randomSeed ?? PBEUtils.GlobalRandom.RandomInt());
+            _rand = new PBERandom(randomSeed ?? PBEDataProvider.GlobalRandom.RandomInt());
             BattleType = PBEBattleType.Trainer;
             BattleTerrain = battleTerrain;
             BattleFormat = battleFormat;
@@ -123,7 +123,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
             {
                 throw new ArgumentNullException(nameof(wi));
             }
-            _rand = new PBERandom(randomSeed ?? PBEUtils.GlobalRandom.RandomInt());
+            _rand = new PBERandom(randomSeed ?? PBEDataProvider.GlobalRandom.RandomInt());
             BattleType = PBEBattleType.Wild;
             BattleTerrain = battleTerrain;
             BattleFormat = battleFormat;
@@ -611,7 +611,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
         {
             int GetMovePrio(PBEBattlePokemon p)
             {
-                PBEMoveData mData = PBEMoveData.Data[p.TurnAction.FightMove];
+                IPBEMoveData mData = PBEDataProvider.Instance.GetMoveData(p.TurnAction.FightMove);
                 int priority = mData.Priority;
                 if (p.Ability == PBEAbility.Prankster && mData.Category == PBEMoveCategory.Status)
                 {
