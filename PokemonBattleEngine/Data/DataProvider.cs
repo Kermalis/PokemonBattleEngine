@@ -104,11 +104,11 @@ namespace Kermalis.PokemonBattleEngine.Data
         }
         #endregion
 
+        #region Data
         public virtual bool IsBerry(PBEItem item)
         {
             return PBEBerryData.Data.ContainsKey(item);
         }
-
         public virtual IPBEBerryData GetBerryData(PBEItem item, bool cache = true)
         {
             return PBEBerryData.Data[item];
@@ -140,6 +140,11 @@ namespace Kermalis.PokemonBattleEngine.Data
             return PBEPokemonData.GetData(species, form, cache);
         }
 
+        public virtual int GetSpeciesCaught()
+        {
+            return 300;
+        }
+        #endregion
 
         #region Catching
         public virtual bool IsDarkGrass(PBEBattle battle)
@@ -151,6 +156,14 @@ namespace Kermalis.PokemonBattleEngine.Data
             return battle.BattleTerrain == PBEBattleTerrain.Cave;
         }
         public virtual bool IsFishing(PBEBattle battle)
+        {
+            return false;
+        }
+        public virtual bool IsGuaranteedCapture(PBEBattle battle, IPBESpeciesForm pkmn)
+        {
+            return IsGuaranteedCapture(battle, pkmn.Species, pkmn.Form);
+        }
+        public virtual bool IsGuaranteedCapture(PBEBattle battle, PBESpecies species, PBEForm form)
         {
             return false;
         }
@@ -173,6 +186,11 @@ namespace Kermalis.PokemonBattleEngine.Data
         public virtual bool IsUnderwater(PBEBattle battle)
         {
             return false;
+        }
+        /// <summary>This is the boost to the catch rate. In generation 5, Capture Powers boost the catch rate.</summary>
+        public virtual double GetCatchRateModifier(PBEBattle battle)
+        {
+            return 1;
         }
         #endregion
 

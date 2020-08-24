@@ -719,6 +719,211 @@ namespace Kermalis.PokemonBattleEngine.Battle
             SetEscaped(pkmn);
         }
 
+        private double PokedexCountTable(int count, double g600, double g450, double g300, double g150, double g30, double ge0)
+        {
+            if (count > 600)
+            {
+                return g600;
+            }
+            if (count > 450)
+            {
+                return g450;
+            }
+            if (count > 300)
+            {
+                return g300;
+            }
+            if (count > 150)
+            {
+                return g150;
+            }
+            if (count > 30)
+            {
+                return g30;
+            }
+            return ge0;
+        }
+        private void GenerateCapture(PBEBattlePokemon user, PBEBattlePokemon wildPkmn, PBEItem ball, out byte shakes, out bool success, out bool isCriticalCapture)
+        {
+            if (PBEDataProvider.Instance.IsGuaranteedCapture(this, wildPkmn.OriginalSpecies, wildPkmn.RevertForm))
+            {
+                shakes = 3;
+                success = true;
+                isCriticalCapture = false;
+                return;
+            }
+            IPBEPokemonData pData = PBEDataProvider.Instance.GetPokemonData(wildPkmn.OriginalSpecies, wildPkmn.RevertForm);
+            double rate = pData.CatchRate * PBEDataProvider.Instance.GetCatchRateModifier(this);
+            double bonusBall = 1;
+            switch (ball)
+            {
+                case PBEItem.GreatBall:
+                case PBEItem.SafariBall:
+                case PBEItem.SportBall: bonusBall = 1.5; break;
+                case PBEItem.UltraBall: bonusBall = 2; break;
+                case PBEItem.MasterBall:
+                case PBEItem.ParkBall: bonusBall = 255; break;
+                case PBEItem.FastBall:
+                {
+                    if (wildPkmn.Speed >= 100)
+                    {
+                        rate *= 4;
+                    }
+                    break;
+                }
+                case PBEItem.LevelBall:
+                {
+                    int wl = wildPkmn.Level;
+                    int ul = user.Level;
+                    if (ul > wl * 4)
+                    {
+                        rate *= 8;
+                    }
+                    else if (ul > wl * 2)
+                    {
+                        rate *= 4;
+                    }
+                    else if (ul > wl)
+                    {
+                        rate *= 2;
+                    }
+                    break;
+                }
+                case PBEItem.LureBall:
+                {
+                    if (PBEDataProvider.Instance.IsFishing(this))
+                    {
+                        rate *= 3;
+                    }
+                    break;
+                }
+                case PBEItem.HeavyBall:
+                {
+                    double weight = pData.Weight;
+                    if (weight >= 409.6)
+                    {
+                        rate += 40;
+                    }
+                    else if (weight >= 307.2)
+                    {
+                        rate += 30;
+                    }
+                    else if (weight >= 204.8)
+                    {
+                        rate += 20;
+                    }
+                    else
+                    {
+                        rate -= 20;
+                    }
+                    break;
+                }
+                case PBEItem.LoveBall:
+                {
+                    if (user.Species == wildPkmn.Species && user.Gender.IsOppositeGender(wildPkmn.Gender))
+                    {
+                        rate *= 8;
+                    }
+                    break;
+                }
+                case PBEItem.MoonBall:
+                {
+                    if (PBEDataProvider.Instance.IsMoonBallFamily(wildPkmn.OriginalSpecies, wildPkmn.RevertForm))
+                    {
+                        rate *= 4;
+                    }
+                    break;
+                }
+                case PBEItem.NetBall:
+                {
+                    if (wildPkmn.HasType(PBEType.Bug) || wildPkmn.HasType(PBEType.Water))
+                    {
+                        bonusBall = 3;
+                    }
+                    break;
+                }
+                case PBEItem.NestBall:
+                {
+                    bonusBall = Math.Max(1, (41 - wildPkmn.Level) / 10);
+                    break;
+                }
+                case PBEItem.RepeatBall:
+                {
+                    if (PBEDataProvider.Instance.IsRepeatBallSpecies(wildPkmn.OriginalSpecies))
+                    {
+                        bonusBall = 3;
+                    }
+                    break;
+                }
+                case PBEItem.TimerBall:
+                {
+                    bonusBall = Math.Min(4, 1 + (TurnNumber * 0.3));
+                    break;
+                }
+                case PBEItem.DiveBall:
+                {
+                    if (PBEDataProvider.Instance.IsFishing(this) || PBEDataProvider.Instance.IsSurfing(this) || PBEDataProvider.Instance.IsUnderwater(this))
+                    {
+                        bonusBall = 3.5;
+                    }
+                    break;
+                }
+                case PBEItem.DuskBall:
+                {
+                    if (PBEDataProvider.Instance.IsDuskBallSetting(this))
+                    {
+                        bonusBall = 3.5;
+                    }
+                    break;
+                }
+                case PBEItem.QuickBall:
+                {
+                    if (TurnNumber == 1)
+                    {
+                        bonusBall = 5;
+                    }
+                    break;
+                }
+            }
+            rate = PBEUtils.Clamp(rate, 1, 255);
+            double bonusStatus;
+            switch (wildPkmn.Status1)
+            {
+                case PBEStatus1.Asleep:
+                case PBEStatus1.Frozen: bonusStatus = 2.5; break;
+                case PBEStatus1.None: bonusStatus = 1; break;
+                default: bonusStatus = 1.5; break;
+            }
+            double pkmnFactor = (3 * wildPkmn.MaxHP) - (2 * wildPkmn.HP);
+            int pkmnCaught = PBEDataProvider.Instance.GetSpeciesCaught();
+            if (PBEDataProvider.Instance.IsDarkGrass(this))
+            {
+                pkmnFactor *= PokedexCountTable(pkmnCaught, 1, 0.9, 0.8, 0.7, 0.5, 0.3);
+            }
+            double a = pkmnFactor * rate * bonusBall / (3 * wildPkmn.MaxHP) * bonusStatus;
+            a *= PokedexCountTable(pkmnCaught, 2.5, 2, 1.5, 1, 0.5, 0); // Critical capture modifier
+            isCriticalCapture = _rand.RandomInt(0, 0xFF) < a / 6;
+            byte numShakes = isCriticalCapture ? (byte)1 : (byte)3;
+            if (a >= 0xFF)
+            {
+                shakes = numShakes; // Skip shake checks
+                success = true;
+                return;
+            }
+            double b = 0x10000 / Math.Sqrt(Math.Sqrt(0xFF / a));
+            for (shakes = 0; shakes < numShakes; shakes++)
+            {
+                if (_rand.RandomInt(0, 0xFFFF) >= b)
+                {
+                    break; // Shake check fails
+                }
+            }
+            success = shakes == numShakes;
+            if (shakes == 2)
+            {
+                shakes = 3; // If there are only 2 shakes and a failure, shake three times and still fail
+            }
+        }
         private void UseItem(PBEBattlePokemon user, PBEItem item)
         {
             BroadcastItemTurn(user, item, PBEItemTurnAction.Attempt);
@@ -728,181 +933,9 @@ namespace Kermalis.PokemonBattleEngine.Battle
                 {
                     goto fail;
                 }
-                // Wild - Dream ball has no special effect, and there's no "Entree Forest" guaranteed catch right now
-                // No capture powers, no dark grass
                 PBEBattlePokemon wildPkmn = user.Team.OpposingTeam.ActiveBattlers.Single();
-                IPBEPokemonData pData = PBEDataProvider.Instance.GetPokemonData(wildPkmn.OriginalSpecies, wildPkmn.RevertForm);
-                int rate = pData.CatchRate;
-                double bonusBall = 1;
-                switch (item)
-                {
-                    case PBEItem.GreatBall:
-                    case PBEItem.SafariBall:
-                    case PBEItem.SportBall: bonusBall = 1.5; break;
-                    case PBEItem.UltraBall: bonusBall = 2; break;
-                    case PBEItem.MasterBall:
-                    case PBEItem.ParkBall: bonusBall = 255; break;
-                    case PBEItem.FastBall:
-                    {
-                        if (wildPkmn.Speed >= 100)
-                        {
-                            rate *= 4;
-                        }
-                        break;
-                    }
-                    case PBEItem.LevelBall:
-                    {
-                        int wl = wildPkmn.Level;
-                        int ul = user.Level;
-                        if (ul > wl * 4)
-                        {
-                            rate *= 8;
-                        }
-                        else if (ul > wl * 2)
-                        {
-                            rate *= 4;
-                        }
-                        else if (ul > wl)
-                        {
-                            rate *= 2;
-                        }
-                        break;
-                    }
-                    case PBEItem.LureBall:
-                    {
-                        if (PBEDataProvider.Instance.IsFishing(this))
-                        {
-                            rate *= 3;
-                        }
-                        break;
-                    }
-                    case PBEItem.HeavyBall:
-                    {
-                        double weight = pData.Weight;
-                        if (weight >= 409.6)
-                        {
-                            rate += 40;
-                        }
-                        else if (weight >= 307.2)
-                        {
-                            rate += 30;
-                        }
-                        else if (weight >= 204.8)
-                        {
-                            rate += 20;
-                        }
-                        else
-                        {
-                            rate -= 20;
-                        }
-                        break;
-                    }
-                    case PBEItem.LoveBall:
-                    {
-                        if (user.Species == wildPkmn.Species && user.Gender.IsOppositeGender(wildPkmn.Gender))
-                        {
-                            rate *= 8;
-                        }
-                        break;
-                    }
-                    case PBEItem.MoonBall:
-                    {
-                        if (PBEDataProvider.Instance.IsMoonBallFamily(wildPkmn.OriginalSpecies, wildPkmn.RevertForm))
-                        {
-                            rate *= 4;
-                        }
-                        break;
-                    }
-                    case PBEItem.NetBall:
-                    {
-                        if (wildPkmn.HasType(PBEType.Bug) || wildPkmn.HasType(PBEType.Water))
-                        {
-                            bonusBall = 3;
-                        }
-                        break;
-                    }
-                    case PBEItem.NestBall:
-                    {
-                        bonusBall = Math.Max(1, (41 - wildPkmn.Level) / 10);
-                        break;
-                    }
-                    case PBEItem.RepeatBall:
-                    {
-                        if (PBEDataProvider.Instance.IsRepeatBallSpecies(wildPkmn.OriginalSpecies))
-                        {
-                            bonusBall = 3;
-                        }
-                        break;
-                    }
-                    case PBEItem.TimerBall:
-                    {
-                        const double Mod = 1229 / 4096d; // Roughly 0.3
-                        bonusBall = Math.Min(4, 1 + (TurnNumber * Mod));
-                        break;
-                    }
-                    case PBEItem.DiveBall:
-                    {
-                        if (PBEDataProvider.Instance.IsFishing(this) || PBEDataProvider.Instance.IsSurfing(this) || PBEDataProvider.Instance.IsUnderwater(this))
-                        {
-                            bonusBall = 3.5;
-                        }
-                        break;
-                    }
-                    case PBEItem.DuskBall:
-                    {
-                        if (PBEDataProvider.Instance.IsDuskBallSetting(this))
-                        {
-                            bonusBall = 3.5;
-                        }
-                        break;
-                    }
-                    case PBEItem.QuickBall:
-                    {
-                        if (TurnNumber == 1)
-                        {
-                            bonusBall = 5;
-                        }
-                        break;
-                    }
-                }
-                rate = PBEUtils.Clamp(rate, 1, 255);
-                double bonusStatus;
-                switch (wildPkmn.Status1)
-                {
-                    case PBEStatus1.Asleep:
-                    case PBEStatus1.Frozen: bonusStatus = 2.5; break;
-                    case PBEStatus1.None: bonusStatus = 1; break;
-                    default: bonusStatus = 1.5; break;
-                }
-                double a = ((3 * wildPkmn.MaxHP) - (2 * wildPkmn.HP)) * rate * bonusBall / (3 * wildPkmn.MaxHP) * bonusStatus;
-                // Shakes
-                bool isCriticalCapture = false; // TODO
-                byte numShakes = isCriticalCapture ? (byte)1 : (byte)3;
-                byte shakes;
-                bool success;
-                if (a >= 0xFF)
-                {
-                    shakes = numShakes; // Skip shake checks
-                    success = true;
-                }
-                else
-                {
-                    double b = 0x10000 / Math.Sqrt(Math.Sqrt(0xFF / a));
-                    for (shakes = 0; shakes < numShakes; shakes++)
-                    {
-                        int r = _rand.RandomInt(0, 0xFFFF);
-                        if (r >= b)
-                        {
-                            break; // Shake check fails
-                        }
-                    }
-                    success = shakes == numShakes;
-                    if (shakes == 2)
-                    {
-                        shakes = 3; // If there are only 2 shakes and a failure, shake three times and still fail
-                    }
-                }
-                BroadcastCapture(wildPkmn, item, shakes, success, isCriticalCapture);
+                GenerateCapture(user, wildPkmn, item, out byte numShakes, out bool success, out bool critical);
+                BroadcastCapture(wildPkmn, item, numShakes, success, critical);
                 if (success)
                 {
                     BattleResult = PBEBattleResult.WildCapture;
