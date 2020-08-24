@@ -13,6 +13,7 @@ namespace Kermalis.PokemonBattleEngine.Data
         public PBEType Type1 { get; }
         public PBEType Type2 { get; }
         public PBEGenderRatio GenderRatio { get; }
+        public byte CatchRate { get; }
         public byte FleeRate { get; }
         /// <summary>Weight in Kilograms</summary>
         public double Weight { get; }
@@ -22,20 +23,58 @@ namespace Kermalis.PokemonBattleEngine.Data
         public ReadOnlyCollection<(PBEMove Move, byte Level, PBEMoveObtainMethod ObtainMethod)> LevelUpMoves { get; }
         public ReadOnlyCollection<(PBEMove Move, PBEMoveObtainMethod ObtainMethod)> OtherMoves { get; }
 
-        private PBEPokemonData(PBESpecies species, PBEForm form, PBEReadOnlyStatCollection baseStats,
-            PBEType type1, PBEType type2, PBEGenderRatio genderRatio, byte fleeRate, double weight,
-            (PBESpecies, PBEForm)[] preEvolutions,
-            (PBESpecies, PBEForm)[] evolutions,
-            PBEAbility[] abilities,
-            (PBEMove, byte, PBEMoveObtainMethod)[] levelUpMoves,
-            (PBEMove, PBEMoveObtainMethod)[] otherMoves)
+        private PBEPokemonData(SearchResult result)
         {
-            Species = species; Form = form; BaseStats = baseStats;
-            Type1 = type1; Type2 = type2; GenderRatio = genderRatio; FleeRate = fleeRate; Weight = weight;
+            BaseStats = new PBEReadOnlyStatCollection(result);
+            Type1 = (PBEType)result.Type1;
+            Type2 = (PBEType)result.Type2;
+            GenderRatio = (PBEGenderRatio)result.GenderRatio;
+            CatchRate = result.CatchRate;
+            FleeRate = result.FleeRate;
+            Weight = result.Weight;
+
+            string[] split1 = result.PreEvolutions.Split(_split1Chars, StringSplitOptions.RemoveEmptyEntries);
+            var preEvolutions = new (PBESpecies, PBEForm)[split1.Length];
+            for (int i = 0; i < preEvolutions.Length; i++)
+            {
+                string[] split2 = split1[i].Split(_split2Chars);
+                preEvolutions[i] = ((PBESpecies)ushort.Parse(split2[0]), (PBEForm)byte.Parse(split2[1]));
+            }
             PreEvolutions = new ReadOnlyCollection<(PBESpecies, PBEForm)>(preEvolutions);
+
+            split1 = result.Evolutions.Split(_split1Chars, StringSplitOptions.RemoveEmptyEntries);
+            var evolutions = new (PBESpecies, PBEForm)[split1.Length];
+            for (int i = 0; i < evolutions.Length; i++)
+            {
+                string[] split2 = split1[i].Split(_split2Chars);
+                evolutions[i] = ((PBESpecies)ushort.Parse(split2[0]), (PBEForm)byte.Parse(split2[1]));
+            }
             Evolutions = new ReadOnlyCollection<(PBESpecies, PBEForm)>(evolutions);
+
+            split1 = result.Abilities.Split(_split1Chars, StringSplitOptions.RemoveEmptyEntries);
+            var abilities = new PBEAbility[split1.Length];
+            for (int i = 0; i < abilities.Length; i++)
+            {
+                abilities[i] = (PBEAbility)byte.Parse(split1[i]);
+            }
             Abilities = new ReadOnlyCollection<PBEAbility>(abilities);
+
+            split1 = result.LevelUpMoves.Split(_split1Chars, StringSplitOptions.RemoveEmptyEntries);
+            var levelUpMoves = new (PBEMove, byte, PBEMoveObtainMethod)[split1.Length];
+            for (int i = 0; i < levelUpMoves.Length; i++)
+            {
+                string[] split2 = split1[i].Split(_split2Chars);
+                levelUpMoves[i] = ((PBEMove)ushort.Parse(split2[0]), byte.Parse(split2[1]), (PBEMoveObtainMethod)ulong.Parse(split2[2]));
+            }
             LevelUpMoves = new ReadOnlyCollection<(PBEMove, byte, PBEMoveObtainMethod)>(levelUpMoves);
+
+            split1 = result.OtherMoves.Split(_split1Chars, StringSplitOptions.RemoveEmptyEntries);
+            var otherMoves = new (PBEMove, PBEMoveObtainMethod)[split1.Length];
+            for (int i = 0; i < otherMoves.Length; i++)
+            {
+                string[] split2 = split1[i].Split(_split2Chars);
+                otherMoves[i] = ((PBEMove)ushort.Parse(split2[0]), (PBEMoveObtainMethod)ulong.Parse(split2[1]));
+            }
             OtherMoves = new ReadOnlyCollection<(PBEMove, PBEMoveObtainMethod)>(otherMoves);
         }
 
@@ -63,6 +102,7 @@ namespace Kermalis.PokemonBattleEngine.Data
             public byte Type1 { get; set; }
             public byte Type2 { get; set; }
             public byte GenderRatio { get; set; }
+            public byte CatchRate { get; set; }
             public byte FleeRate { get; set; }
             public double Weight { get; set; }
             public string PreEvolutions { get; set; }
@@ -78,53 +118,7 @@ namespace Kermalis.PokemonBattleEngine.Data
         {
             PBELegalityChecker.ValidateSpecies(species, form, false);
             SearchResult result = PBEUtils.QueryDatabase<SearchResult>($"SELECT * FROM PokemonData WHERE Species={(ushort)species} AND Form={(byte)form}")[0];
-
-            var baseStats = new PBEReadOnlyStatCollection(result);
-            var type1 = (PBEType)result.Type1;
-            var type2 = (PBEType)result.Type2;
-            var genderRatio = (PBEGenderRatio)result.GenderRatio;
-            byte fleeRate = result.FleeRate;
-            double weight = result.Weight;
-
-            string[] split1 = result.PreEvolutions.Split(_split1Chars, StringSplitOptions.RemoveEmptyEntries);
-            var preEvolutions = new (PBESpecies, PBEForm)[split1.Length];
-            for (int i = 0; i < preEvolutions.Length; i++)
-            {
-                string[] split2 = split1[i].Split(_split2Chars);
-                preEvolutions[i] = ((PBESpecies)ushort.Parse(split2[0]), (PBEForm)byte.Parse(split2[1]));
-            }
-
-            split1 = result.Evolutions.Split(_split1Chars, StringSplitOptions.RemoveEmptyEntries);
-            var evolutions = new (PBESpecies, PBEForm)[split1.Length];
-            for (int i = 0; i < evolutions.Length; i++)
-            {
-                string[] split2 = split1[i].Split(_split2Chars);
-                evolutions[i] = ((PBESpecies)ushort.Parse(split2[0]), (PBEForm)byte.Parse(split2[1]));
-            }
-
-            split1 = result.Abilities.Split(_split1Chars, StringSplitOptions.RemoveEmptyEntries);
-            var abilities = new PBEAbility[split1.Length];
-            for (int i = 0; i < abilities.Length; i++)
-            {
-                abilities[i] = (PBEAbility)byte.Parse(split1[i]);
-            }
-
-            split1 = result.LevelUpMoves.Split(_split1Chars, StringSplitOptions.RemoveEmptyEntries);
-            var levelUpMoves = new (PBEMove, byte, PBEMoveObtainMethod)[split1.Length];
-            for (int i = 0; i < levelUpMoves.Length; i++)
-            {
-                string[] split2 = split1[i].Split(_split2Chars);
-                levelUpMoves[i] = ((PBEMove)ushort.Parse(split2[0]), byte.Parse(split2[1]), (PBEMoveObtainMethod)ulong.Parse(split2[2]));
-            }
-
-            split1 = result.OtherMoves.Split(_split1Chars, StringSplitOptions.RemoveEmptyEntries);
-            var otherMoves = new (PBEMove, PBEMoveObtainMethod)[split1.Length];
-            for (int i = 0; i < otherMoves.Length; i++)
-            {
-                string[] split2 = split1[i].Split(_split2Chars);
-                otherMoves[i] = ((PBEMove)ushort.Parse(split2[0]), (PBEMoveObtainMethod)ulong.Parse(split2[1]));
-            }
-            return new PBEPokemonData(species, form, baseStats, type1, type2, genderRatio, fleeRate, weight, preEvolutions, evolutions, abilities, levelUpMoves, otherMoves); // TODO: Cache
+            return new PBEPokemonData(result); // TODO: Cache
         }
 
         #endregion
