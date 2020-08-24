@@ -9,6 +9,9 @@ namespace Kermalis.PokemonBattleEngine.Data
     {
         #region Static Collections
         public static PBEAlphabeticalList<PBENature> AllNatures { get; } = new PBEAlphabeticalList<PBENature>(Enum.GetValues(typeof(PBENature)).Cast<PBENature>().Except(new[] { PBENature.MAX }));
+        public static PBEAlphabeticalList<PBESpecies> MoonStoneSpecies { get; } = new PBEAlphabeticalList<PBESpecies>(new[] { PBESpecies.Nidoran_F, PBESpecies.Nidorina, PBESpecies.Nidoqueen,
+            PBESpecies.Nidoran_M, PBESpecies.Nidorino, PBESpecies.Nidoking, PBESpecies.Cleffa, PBESpecies.Clefairy, PBESpecies.Clefable, PBESpecies.Igglybuff, PBESpecies.Jigglypuff,
+            PBESpecies.Wigglytuff, PBESpecies.Skitty, PBESpecies.Delcatty, PBESpecies.Munna, PBESpecies.Musharna });
         private static readonly Dictionary<PBENature, (PBEFlavor Favored, PBEFlavor Disliked)> _natureBoosts = new Dictionary<PBENature, (PBEFlavor Favored, PBEFlavor Disliked)>
         {
             { PBENature.Adamant, (PBEFlavor.Spicy, PBEFlavor.Dry) },

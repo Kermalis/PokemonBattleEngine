@@ -770,9 +770,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                     }
                     case PBEItem.LureBall:
                     {
-                        // TODO
-                        bool isFishing = false;
-                        if (isFishing)
+                        if (PBEDataProvider.Instance.IsFishing(this))
                         {
                             rate *= 3;
                         }
@@ -809,9 +807,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                     }
                     case PBEItem.MoonBall:
                     {
-                        // TODO
-                        bool familyEvolvesByMoonStone = false;
-                        if (familyEvolvesByMoonStone)
+                        if (PBEDataProvider.Instance.IsMoonBallFamily(wildPkmn.OriginalSpecies, wildPkmn.RevertForm))
                         {
                             rate *= 4;
                         }
@@ -832,9 +828,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                     }
                     case PBEItem.RepeatBall:
                     {
-                        // TODO
-                        bool caughtBefore = false;
-                        if (caughtBefore)
+                        if (PBEDataProvider.Instance.IsRepeatBallSpecies(wildPkmn.OriginalSpecies))
                         {
                             bonusBall = 3;
                         }
@@ -842,15 +836,13 @@ namespace Kermalis.PokemonBattleEngine.Battle
                     }
                     case PBEItem.TimerBall:
                     {
-                        const double mod = 1229 / 4096d; // Roughly 0.3
-                        bonusBall = Math.Min(4, 1 + (TurnNumber * mod));
+                        const double Mod = 1229 / 4096d; // Roughly 0.3
+                        bonusBall = Math.Min(4, 1 + (TurnNumber * Mod));
                         break;
                     }
                     case PBEItem.DiveBall:
                     {
-                        // TODO
-                        bool isSurfingFishingUnderwater = false;
-                        if (isSurfingFishingUnderwater)
+                        if (PBEDataProvider.Instance.IsFishing(this) || PBEDataProvider.Instance.IsSurfing(this) || PBEDataProvider.Instance.IsUnderwater(this))
                         {
                             bonusBall = 3.5;
                         }
@@ -858,9 +850,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                     }
                     case PBEItem.DuskBall:
                     {
-                        // TODO
-                        bool isCaveNight = false;
-                        if (isCaveNight)
+                        if (PBEDataProvider.Instance.IsDuskBallSetting(this))
                         {
                             bonusBall = 3.5;
                         }

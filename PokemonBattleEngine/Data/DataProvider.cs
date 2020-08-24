@@ -1,4 +1,5 @@
-﻿using Kermalis.PokemonBattleEngine.Utils;
+﻿using Kermalis.PokemonBattleEngine.Battle;
+using Kermalis.PokemonBattleEngine.Utils;
 using Microsoft.Data.Sqlite;
 using System;
 using System.Collections.Generic;
@@ -138,6 +139,42 @@ namespace Kermalis.PokemonBattleEngine.Data
         {
             return PBEPokemonData.GetData(species, form, cache);
         }
+
+
+        #region Catching
+        public virtual bool IsDarkGrass(PBEBattle battle)
+        {
+            return false;
+        }
+        public virtual bool IsDuskBallSetting(PBEBattle battle)
+        {
+            return battle.BattleTerrain == PBEBattleTerrain.Cave;
+        }
+        public virtual bool IsFishing(PBEBattle battle)
+        {
+            return false;
+        }
+        public virtual bool IsMoonBallFamily(IPBESpeciesForm pkmn)
+        {
+            return IsMoonBallFamily(pkmn.Species, pkmn.Form);
+        }
+        public virtual bool IsMoonBallFamily(PBESpecies species, PBEForm form)
+        {
+            return PBEDataUtils.MoonStoneSpecies.Contains(species);
+        }
+        public virtual bool IsRepeatBallSpecies(PBESpecies species)
+        {
+            return false;
+        }
+        public virtual bool IsSurfing(PBEBattle battle)
+        {
+            return battle.BattleTerrain == PBEBattleTerrain.Water;
+        }
+        public virtual bool IsUnderwater(PBEBattle battle)
+        {
+            return false;
+        }
+        #endregion
 
         #region LocalizedString
         public virtual PBEAbility? GetAbilityByName(string abilityName)
