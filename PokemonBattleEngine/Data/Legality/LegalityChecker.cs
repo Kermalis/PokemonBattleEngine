@@ -67,7 +67,7 @@ namespace Kermalis.PokemonBattleEngine.Data.Legality
                     // Disallow moves learned after the current level
                     moves.AddRange(events.Where(e => e.Level <= level).SelectMany(e => e.Moves).Where(m => m != PBEMove.None));
                 }
-                if (moves.Any(m => PBEDataProvider.Instance.GetMoveData(m).Effect == PBEMoveEffect.Sketch))
+                if (moves.Any(m => PBEDataProvider.Instance.GetMoveData(m, cache: false).Effect == PBEMoveEffect.Sketch))
                 {
                     return PBEDataUtils.SketchLegalMoves;
                 }
