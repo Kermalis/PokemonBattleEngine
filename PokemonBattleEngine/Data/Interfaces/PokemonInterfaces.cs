@@ -6,6 +6,10 @@ using System.Collections.Generic;
 
 namespace Kermalis.PokemonBattleEngine.Data
 {
+    // Not separating this into IPBEWildPokemon for these reasons:
+    // 1: A lot of work to do that
+    // 2: If someone wants to do pal park or catch released Pokémon etc, they'd need all these things
+    // 3: If they want just some things (like effort values pre-seeded) they'd also need this
     public interface IPBEPokemon
     {
         PBESpecies Species { get; }
@@ -19,6 +23,7 @@ namespace Kermalis.PokemonBattleEngine.Data
         byte Friendship { get; }
         PBEAbility Ability { get; }
         PBENature Nature { get; }
+        PBEItem CaughtBall { get; }
         IPBEStatCollection EffortValues { get; }
         IPBEReadOnlyStatCollection IndividualValues { get; }
         IPBEMoveset Moveset { get; }
@@ -111,6 +116,7 @@ namespace Kermalis.PokemonBattleEngine.Data
             w.Write(pkmn.Shiny);
             w.Write(pkmn.Ability);
             w.Write(pkmn.Nature);
+            w.Write(pkmn.CaughtBall);
             w.Write(pkmn.Gender);
             w.Write(pkmn.Item);
             pkmn.EffortValues.ToBytes(w);
@@ -140,6 +146,8 @@ namespace Kermalis.PokemonBattleEngine.Data
             w.WriteValue(pkmn.Ability.ToString());
             w.WritePropertyName(nameof(IPBEPokemon.Nature));
             w.WriteValue(pkmn.Nature.ToString());
+            w.WritePropertyName(nameof(IPBEPokemon.CaughtBall));
+            w.WriteValue(pkmn.CaughtBall.ToString());
             w.WritePropertyName(nameof(IPBEPokemon.Gender));
             w.WriteValue(pkmn.Gender.ToString());
             w.WritePropertyName(nameof(IPBEPokemon.Item));

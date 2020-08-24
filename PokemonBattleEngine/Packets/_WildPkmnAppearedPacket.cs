@@ -20,6 +20,7 @@ namespace Kermalis.PokemonBattleEngine.Packets
             public byte Level { get; }
             public bool Shiny { get; }
             public PBEGender Gender { get; }
+            public PBEItem CaughtBall { get; }
             public double HPPercentage { get; }
             public PBEStatus1 Status1 { get; }
             public PBEFieldPosition FieldPosition { get; }
@@ -32,6 +33,7 @@ namespace Kermalis.PokemonBattleEngine.Packets
                 Level = pkmn.Level;
                 Shiny = pkmn.KnownShiny;
                 Gender = pkmn.KnownGender;
+                CaughtBall = pkmn.KnownCaughtBall;
                 HPPercentage = pkmn.HPPercentage;
                 Status1 = pkmn.Status1;
                 FieldPosition = pkmn.FieldPosition;
@@ -44,6 +46,7 @@ namespace Kermalis.PokemonBattleEngine.Packets
                 Level = r.ReadByte();
                 Shiny = r.ReadBoolean();
                 Gender = r.ReadEnum<PBEGender>();
+                CaughtBall = r.ReadEnum<PBEItem>();
                 HPPercentage = r.ReadDouble();
                 Status1 = r.ReadEnum<PBEStatus1>();
                 FieldPosition = r.ReadEnum<PBEFieldPosition>();
@@ -57,6 +60,7 @@ namespace Kermalis.PokemonBattleEngine.Packets
                 w.Write(Level);
                 w.Write(Shiny);
                 w.Write(Gender);
+                w.Write(CaughtBall);
                 w.Write(HPPercentage);
                 w.Write(Status1);
                 w.Write(FieldPosition);

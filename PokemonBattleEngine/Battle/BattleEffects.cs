@@ -1491,6 +1491,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
             {
                 pkmn.DisguisedAsPokemon = null;
                 pkmn.KnownGender = pkmn.Gender;
+                pkmn.KnownCaughtBall = pkmn.CaughtBall;
                 pkmn.KnownNickname = pkmn.Nickname;
                 pkmn.KnownShiny = pkmn.Shiny;
                 pkmn.KnownSpecies = pkmn.Species;
@@ -2110,6 +2111,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                             pkmn.Status2 |= PBEStatus2.Disguised; // No broadcast, not known
                             pkmn.DisguisedAsPokemon = p;
                             pkmn.KnownGender = p.Gender;
+                            pkmn.KnownCaughtBall = p.CaughtBall;
                             pkmn.KnownNickname = p.Nickname;
                             pkmn.KnownShiny = p.Shiny;
                             pkmn.KnownSpecies = p.OriginalSpecies;

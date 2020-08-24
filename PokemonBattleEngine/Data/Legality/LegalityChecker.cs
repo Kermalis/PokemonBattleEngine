@@ -128,5 +128,12 @@ namespace Kermalis.PokemonBattleEngine.Data.Legality
                 throw new ArgumentOutOfRangeException(nameof(value));
             }
         }
+        internal static void ValidateCaughtBall(PBEItem value)
+        {
+            if (!PBEDataUtils.AllBalls.Contains(value))
+            {
+                throw new ArgumentOutOfRangeException(nameof(value));
+            }
+        }
     }
 }

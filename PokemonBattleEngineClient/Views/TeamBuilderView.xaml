@@ -46,6 +46,7 @@
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
           </Grid.RowDefinitions>
           <Grid.ColumnDefinitions>
             <ColumnDefinition Width="Auto"/>
@@ -81,6 +82,8 @@
           <ComboBox Grid.Row="8" Grid.Column="1" Name="Gender" Items="{Binding Pkmn.SelectableGenders, Mode=OneWay}" ItemTemplate="{StaticResource MenuBlack}"/>
           <Image Grid.Row="9" Grid.Column="0" Stretch="None" HorizontalAlignment="Left" Source="{Binding Source='Item:', Converter={x:Static infrastructure:ObjectToTextBitmapConverter.Instance}, ConverterParameter=MenuWhite, Mode=OneWay}"/>
           <ComboBox Grid.Row="9" Grid.Column="1" Name="Item" Items="{Binding Pkmn.SelectableItems, Mode=OneWay}" ItemTemplate="{StaticResource MenuBlack}"/>
+          <Image Grid.Row="10" Grid.Column="0" Stretch="None" HorizontalAlignment="Left" Source="{Binding Source='Ball:', Converter={x:Static infrastructure:ObjectToTextBitmapConverter.Instance}, ConverterParameter=MenuWhite, Mode=OneWay}"/>
+          <ComboBox Grid.Row="10" Grid.Column="1" Items="{x:Static pbedata:PBEDataUtils.AllBalls}" ItemTemplate="{StaticResource MenuBlack}" SelectedItem="{Binding Pkmn.CaughtBall}"/>
         </Grid>
         <Panel Width="192" Height="192">
           <Image Stretch="None" HorizontalAlignment="Center" VerticalAlignment="Center" RenderOptions.BitmapInterpolationMode="Default" gif:GifImage.SourceUri="{Binding SpriteUri}">

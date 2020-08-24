@@ -121,6 +121,7 @@ namespace Kermalis.PokemonBattleEngineTests
         public byte Friendship { get; set; }
         public PBEAbility Ability { get; set; }
         public PBENature Nature { get; set; }
+        public PBEItem CaughtBall { get; set; }
         public IPBEStatCollection EffortValues { get; set; }
         public IPBEReadOnlyStatCollection IndividualValues { get; set; }
         public TestMoveset Moveset { get; set; }
@@ -133,6 +134,7 @@ namespace Kermalis.PokemonBattleEngineTests
             Level = level;
             Nickname = species.ToString();
             Gender = PBEUtils.GlobalRandom.RandomGender(PBEPokemonData.GetData(species, form).GenderRatio);
+            CaughtBall = PBEItem.PokeBall;
             EffortValues = new PBEStatCollection(0, 0, 0, 0, 0, 0);
             IndividualValues = new PBEStatCollection(0, 0, 0, 0, 0, 0);
             Moveset = new TestMoveset(settings, moves);

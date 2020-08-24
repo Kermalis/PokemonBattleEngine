@@ -138,6 +138,20 @@ namespace Kermalis.PokemonBattleEngine.Data.Legality
                 }
             }
         }
+        private PBEItem _caughtBall;
+        public PBEItem CaughtBall
+        {
+            get => _caughtBall;
+            set
+            {
+                if (value != _caughtBall)
+                {
+                    PBELegalityChecker.ValidateCaughtBall(value);
+                    _caughtBall = value;
+                    OnPropertyChanged(nameof(CaughtBall));
+                }
+            }
+        }
         private PBEGender _gender;
         public PBEGender Gender
         {
@@ -196,6 +210,9 @@ namespace Kermalis.PokemonBattleEngine.Data.Legality
             PBENature nature = r.ReadEnum<PBENature>();
             PBELegalityChecker.ValidateNature(nature);
             _nature = nature;
+            PBEItem caughtBall = r.ReadEnum<PBEItem>();
+            PBELegalityChecker.ValidateCaughtBall(caughtBall);
+            _caughtBall = caughtBall;
             PBEGender gender = r.ReadEnum<PBEGender>();
             PBELegalityChecker.ValidateGender(SelectableGenders, gender);
             _gender = gender;
@@ -220,6 +237,9 @@ namespace Kermalis.PokemonBattleEngine.Data.Legality
             PBENature nature = PBELocalizedString.GetNatureByName(jToken[nameof(Nature)].Value<string>()).Value;
             PBELegalityChecker.ValidateNature(nature);
             _nature = nature;
+            PBEItem caughtBall = PBELocalizedString.GetItemByName(jToken[nameof(CaughtBall)].Value<string>()).Value;
+            PBELegalityChecker.ValidateCaughtBall(caughtBall);
+            _caughtBall = caughtBall;
             PBESpecies species = PBELocalizedString.GetSpeciesByName(jToken[nameof(Species)].Value<string>()).Value;
             PBEForm form;
             if (PBEDataUtils.HasForms(species, true))
@@ -266,6 +286,7 @@ namespace Kermalis.PokemonBattleEngine.Data.Legality
             _friendship = (byte)PBEUtils.GlobalRandom.RandomInt(0, byte.MaxValue);
             _shiny = PBEUtils.GlobalRandom.RandomShiny();
             _nature = PBEUtils.GlobalRandom.RandomElement(PBEDataUtils.AllNatures);
+            _caughtBall = PBEUtils.GlobalRandom.RandomElement(PBEDataUtils.AllBalls);
             EffortValues = new PBELegalEffortValues(Settings, true);
             IndividualValues = new PBELegalIndividualValues(Settings, true);
             Moveset = new PBELegalMoveset(_species, _form, _level, Settings, true);

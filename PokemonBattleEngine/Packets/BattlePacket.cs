@@ -30,6 +30,7 @@ namespace Kermalis.PokemonBattleEngine.Packets
                     public PBENature Nature { get; }
                     public PBEGender Gender { get; }
                     public PBEItem Item { get; }
+                    public PBEItem CaughtBall { get; }
                     public PBEStatus1 Status1 { get; }
                     public PBEReadOnlyStatCollection EffortValues { get; }
                     public PBEReadOnlyStatCollection IndividualValues { get; }
@@ -48,6 +49,7 @@ namespace Kermalis.PokemonBattleEngine.Packets
                         Nature = pkmn.Nature;
                         Gender = pkmn.Gender;
                         Item = pkmn.OriginalItem;
+                        CaughtBall = pkmn.OriginalCaughtBall;
                         Status1 = pkmn.OriginalStatus1;
                         EffortValues = pkmn.OriginalEffortValues;
                         IndividualValues = pkmn.IndividualValues;
@@ -66,6 +68,7 @@ namespace Kermalis.PokemonBattleEngine.Packets
                         Nature = r.ReadEnum<PBENature>();
                         Gender = r.ReadEnum<PBEGender>();
                         Item = r.ReadEnum<PBEItem>();
+                        CaughtBall = r.ReadEnum<PBEItem>();
                         Status1 = r.ReadEnum<PBEStatus1>();
                         EffortValues = new PBEReadOnlyStatCollection(r);
                         IndividualValues = new PBEReadOnlyStatCollection(r);
@@ -85,6 +88,7 @@ namespace Kermalis.PokemonBattleEngine.Packets
                         w.Write(Nature);
                         w.Write(Gender);
                         w.Write(Item);
+                        w.Write(CaughtBall);
                         w.Write(Status1);
                         EffortValues.ToBytes(w);
                         IndividualValues.ToBytes(w);

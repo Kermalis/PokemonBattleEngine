@@ -108,6 +108,7 @@ namespace Kermalis.PokemonBattleEngineClient.Clients
                     pokemon.DisguisedAsPokemon = null;
                     pokemon.Ability = pokemon.KnownAbility = PBEAbility.Illusion;
                     pokemon.Gender = pokemon.KnownGender = ilp.ActualGender;
+                    pokemon.CaughtBall = pokemon.KnownCaughtBall = ilp.ActualCaughtBall;
                     pokemon.Nickname = pokemon.KnownNickname = ilp.ActualNickname;
                     pokemon.Shiny = pokemon.KnownShiny = ilp.ActualShiny;
                     pokemon.Species = pokemon.KnownSpecies = ilp.ActualSpecies;

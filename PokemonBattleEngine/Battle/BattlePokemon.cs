@@ -1,5 +1,4 @@
-﻿using Kermalis.EndianBinaryIO;
-using Kermalis.PokemonBattleEngine.Data;
+﻿using Kermalis.PokemonBattleEngine.Data;
 using Kermalis.PokemonBattleEngine.Packets;
 using Kermalis.PokemonBattleEngine.Utils;
 using System;
@@ -61,9 +60,9 @@ namespace Kermalis.PokemonBattleEngine.Battle
         public PBEAbility Ability { get; set; }
         /// <summary>The ability the Pokémon is known to have.</summary>
         public PBEAbility KnownAbility { get; set; }
-        /// <summary>The ability the Pokémon had upon entering battle. </summary>
+        /// <summary>The ability the Pokémon had upon entering battle.</summary>
         public PBEAbility OriginalAbility { get; set; }
-        /// <summary>The ability the Pokémon will regain upon switching out, fainting, or the battle ending. </summary>
+        /// <summary>The ability the Pokémon will regain upon switching out, fainting, or the battle ending.</summary>
         public PBEAbility RevertAbility { get; set; }
         /// <summary>The Pokémon's gender.</summary>
         public PBEGender Gender { get; set; }
@@ -75,6 +74,12 @@ namespace Kermalis.PokemonBattleEngine.Battle
         public PBEItem KnownItem { get; set; }
         /// <summary>The item the Pokémon had upon entering battle.</summary>
         public PBEItem OriginalItem { get; set; }
+        /// <summary>The Pokémon's current ball (affected by catching).</summary>
+        public PBEItem CaughtBall { get; set; }
+        /// <summary>The ball the Pokémon is known to be in (affected by disguising).</summary>
+        public PBEItem KnownCaughtBall { get; set; }
+        /// <summary>The ball the Pokémon was in upon entering battle.</summary>
+        public PBEItem OriginalCaughtBall { get; set; }
         /// <summary>The moves the Pokémon currently has.</summary>
         public PBEBattleMoveset Moves { get; }
         /// <summary>The moves the Pokémon is known to have.</summary>
@@ -169,7 +174,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
         #region Constructors
         private PBEBattlePokemon(PBETrainer trainer, byte id,
             PBESpecies species, PBEForm form, string nickname, byte level, byte friendship, bool shiny,
-            PBEAbility ability, PBENature nature, PBEGender gender, PBEItem item,
+            PBEAbility ability, PBENature nature, PBEGender gender, PBEItem item, PBEItem caughtBall,
             PBEReadOnlyStatCollection evs, PBEReadOnlyStatCollection ivs, PBEReadOnlyPartyMoveset moves)
         {
             Battle = trainer.Battle;
@@ -192,6 +197,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
             Gender = KnownGender = gender;
             Item = OriginalItem = item;
             KnownItem = (PBEItem)ushort.MaxValue;
+            KnownCaughtBall = CaughtBall = OriginalCaughtBall = caughtBall;
             OriginalEffortValues = evs;
             EffortValues = new PBEStatCollection(evs);
             IndividualValues = new PBEReadOnlyStatCollection(ivs);
@@ -202,27 +208,19 @@ namespace Kermalis.PokemonBattleEngine.Battle
             KnownMoves = new PBEBattleMoveset(settings);
             TransformBackupMoves = new PBEBattleMoveset(settings);
         }
-        internal PBEBattlePokemon(EndianBinaryReader r, PBETrainer trainer)
-            : this(trainer, r.ReadByte(),
-                  r.ReadEnum<PBESpecies>(), r.ReadEnum<PBEForm>(), r.ReadStringNullTerminated(), r.ReadByte(), r.ReadByte(), r.ReadBoolean(),
-                  r.ReadEnum<PBEAbility>(), r.ReadEnum<PBENature>(), r.ReadEnum<PBEGender>(), r.ReadEnum<PBEItem>(),
-                  new PBEReadOnlyStatCollection(r), new PBEReadOnlyStatCollection(r), new PBEReadOnlyPartyMoveset(r))
-        {
-            trainer.Party.Add(this);
-        }
-        internal PBEBattlePokemon(PBETrainer trainer, byte id, IPBEPokemon pkmn)
+        private PBEBattlePokemon(PBETrainer trainer, byte id, IPBEPokemon pkmn, PBEReadOnlyPartyMoveset moves)
             : this(trainer, id,
                   pkmn.Species, pkmn.Form, pkmn.Nickname, pkmn.Level, pkmn.Friendship, pkmn.Shiny,
-                  pkmn.Ability, pkmn.Nature, pkmn.Gender, pkmn.Item,
-                  new PBEReadOnlyStatCollection(pkmn.EffortValues), new PBEReadOnlyStatCollection(pkmn.IndividualValues), new PBEReadOnlyPartyMoveset(trainer.Battle.Settings, pkmn.Moveset))
+                  pkmn.Ability, pkmn.Nature, pkmn.Gender, pkmn.Item, pkmn.CaughtBall,
+                  new PBEReadOnlyStatCollection(pkmn.EffortValues), new PBEReadOnlyStatCollection(pkmn.IndividualValues), moves)
+        { }
+        internal PBEBattlePokemon(PBETrainer trainer, byte id, IPBEPokemon pkmn)
+            : this(trainer, id, pkmn, new PBEReadOnlyPartyMoveset(trainer.Battle.Settings, pkmn.Moveset))
         {
             trainer.Party.Add(this);
         }
         internal PBEBattlePokemon(PBETrainer trainer, byte id, IPBEPartyPokemon pkmn)
-            : this(trainer, id,
-                  pkmn.Species, pkmn.Form, pkmn.Nickname, pkmn.Level, pkmn.Friendship, pkmn.Shiny,
-                  pkmn.Ability, pkmn.Nature, pkmn.Gender, pkmn.Item,
-                  new PBEReadOnlyStatCollection(pkmn.EffortValues), new PBEReadOnlyStatCollection(pkmn.IndividualValues), new PBEReadOnlyPartyMoveset(pkmn.Moveset))
+            : this(trainer, id, pkmn, new PBEReadOnlyPartyMoveset(pkmn.Moveset))
         {
             ushort hp = pkmn.HP;
             if (hp > MaxHP)
@@ -248,7 +246,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
         internal PBEBattlePokemon(PBETrainer trainer, PBEBattlePacket.PBETeamInfo.PBETrainerInfo.PBEBattlePokemonInfo info)
             : this(trainer, info.Id,
                   info.Species, info.Form, info.Nickname, info.Level, info.Friendship, info.Shiny,
-                  info.Ability, info.Nature, info.Gender, info.Item,
+                  info.Ability, info.Nature, info.Gender, info.Item, info.CaughtBall,
                   info.EffortValues, info.IndividualValues, info.Moveset)
         { }
         private PBEBattlePokemon(PBETrainer trainer, IPBEPkmnSwitchInInfo info)
@@ -271,6 +269,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
             KnownAbility = Ability = PBEAbility.MAX;
             KnownGender = Gender = info.Gender;
             KnownItem = Item = (PBEItem)ushort.MaxValue;
+            KnownCaughtBall = CaughtBall = info.CaughtBall;
             Moves = new PBEBattleMoveset(Battle.Settings); // For Transform
             KnownMoves = new PBEBattleMoveset(Battle.Settings);
             TransformBackupMoves = new PBEBattleMoveset(Battle.Settings); // For Transform
