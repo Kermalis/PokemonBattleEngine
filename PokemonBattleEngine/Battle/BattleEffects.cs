@@ -731,7 +731,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                 // Wild - Dream ball has no special effect, and there's no "Entree Forest" guaranteed catch right now
                 // No capture powers, no dark grass
                 PBEBattlePokemon wildPkmn = user.Team.OpposingTeam.ActiveBattlers.Single();
-                IPBEPokemonData pData = PBEDataProvider.Instance.GetPokemonData(wildPkmn.OriginalSpecies, wildPkmn.OriginalForm);
+                IPBEPokemonData pData = PBEDataProvider.Instance.GetPokemonData(wildPkmn.OriginalSpecies, wildPkmn.RevertForm);
                 int rate = pData.CatchRate;
                 double bonusBall = 1;
                 switch (item)
