@@ -189,7 +189,8 @@ namespace Kermalis.PokemonBattleEngineClient.Infrastructure
                 sb.AppendLine($"Volatile status: {status2}");
                 if (status2.HasFlag(PBEStatus2.Disguised))
                 {
-                    sb.AppendLine($"Disguised as: {pkmn.DisguisedAsPokemon.Nickname}");
+                    string formStr = PBEDataUtils.HasForms(pkmn.KnownSpecies, false) ? $" ({PBEDataProvider.Instance.GetFormName(pkmn.KnownSpecies, pkmn.KnownForm).FromPBECultureInfo()})" : string.Empty;
+                    sb.AppendLine($"Disguised as: {pkmn.KnownNickname}/{PBEDataProvider.Instance.GetSpeciesName(pkmn.KnownSpecies).FromPBECultureInfo()}{formStr} {pkmn.KnownGender.ToSymbol()}");
                 }
                 if (pkmn.Battle.BattleFormat != PBEBattleFormat.Single)
                 {

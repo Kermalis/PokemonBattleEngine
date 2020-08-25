@@ -120,9 +120,9 @@ namespace Kermalis.PokemonBattleEngine.Battle
             }
             Broadcast(new PBEMoveUsedPacket(moveUser, move, owned));
         }
-        private void BroadcastPkmnFainted(PBEBattlePokemon pokemon, PBEBattlePokemon disguisedAsPokemon, PBEFieldPosition oldPosition)
+        private void BroadcastPkmnFainted(PBEBattlePokemon pokemon, PBEFieldPosition oldPosition)
         {
-            Broadcast(new PBEPkmnFaintedPacket(pokemon, disguisedAsPokemon, oldPosition));
+            Broadcast(new PBEPkmnFaintedPacket(pokemon, oldPosition));
         }
         private void BroadcastPkmnFormChanged(PBEBattlePokemon pokemon, PBEForm newForm, PBEAbility newAbility, PBEAbility newKnownAbility, bool isRevertForm)
         {
@@ -165,9 +165,9 @@ namespace Kermalis.PokemonBattleEngine.Battle
         {
             Broadcast(new PBEPkmnSwitchInPacket(trainer, switchIns, forcedByPokemon));
         }
-        private void BroadcastPkmnSwitchOut(PBEBattlePokemon pokemon, PBEBattlePokemon disguisedAsPokemon, PBEFieldPosition oldPosition, PBEBattlePokemon forcedByPokemon = null)
+        private void BroadcastPkmnSwitchOut(PBEBattlePokemon pokemon, PBEFieldPosition oldPosition, PBEBattlePokemon forcedByPokemon = null)
         {
-            Broadcast(new PBEPkmnSwitchOutPacket(pokemon, disguisedAsPokemon, oldPosition, forcedByPokemon));
+            Broadcast(new PBEPkmnSwitchOutPacket(pokemon, oldPosition, forcedByPokemon));
         }
         private void BroadcastPsychUp(PBEBattlePokemon user, PBEBattlePokemon target)
         {
@@ -934,8 +934,8 @@ namespace Kermalis.PokemonBattleEngine.Battle
                 }
                 case PBEPkmnFaintedPacket pfp:
                 {
-                    PBEBattlePokemon disguisedAsPokemon = pfp.PokemonTrainer.TryGetPokemon(pfp.DisguisedAsPokemon);
-                    return string.Format("{0} fainted!", GetPkmnName(disguisedAsPokemon, true));
+                    PBEBattlePokemon pokemon = pfp.PokemonTrainer.TryGetPokemon(pfp.Pokemon);
+                    return string.Format("{0} fainted!", GetPkmnName(pokemon, true));
                 }
                 case PBEPkmnFaintedPacket_Hidden pfph:
                 {
@@ -1028,8 +1028,8 @@ namespace Kermalis.PokemonBattleEngine.Battle
                 {
                     if (!psop.Forced)
                     {
-                        PBEBattlePokemon disguisedAsPokemon = psop.PokemonTrainer.TryGetPokemon(psop.DisguisedAsPokemon);
-                        return string.Format("{1} withdrew {0}!", disguisedAsPokemon.KnownNickname, GetTrainerName(psop.PokemonTrainer));
+                        PBEBattlePokemon pokemon = psop.PokemonTrainer.TryGetPokemon(psop.Pokemon);
+                        return string.Format("{1} withdrew {0}!", pokemon.KnownNickname, GetTrainerName(psop.PokemonTrainer));
                     }
                     goto bottom;
                 }

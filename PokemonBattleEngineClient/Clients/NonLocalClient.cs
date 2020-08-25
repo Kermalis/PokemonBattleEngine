@@ -115,7 +115,6 @@ namespace Kermalis.PokemonBattleEngineClient.Clients
                 case PBEIllusionPacket ilp:
                 {
                     PBEBattlePokemon pokemon = ilp.PokemonTrainer.TryGetPokemon(ilp.Pokemon);
-                    pokemon.DisguisedAsPokemon = null;
                     pokemon.Ability = pokemon.KnownAbility = PBEAbility.Illusion;
                     pokemon.Gender = pokemon.KnownGender = ilp.ActualGender;
                     pokemon.CaughtBall = pokemon.KnownCaughtBall = ilp.ActualCaughtBall;
@@ -248,19 +247,17 @@ namespace Kermalis.PokemonBattleEngineClient.Clients
                     foreach (PBEPkmnSwitchInPacket.PBEPkmnSwitchInInfo info in psip.SwitchIns)
                     {
                         PBEBattlePokemon pokemon = psip.Trainer.TryGetPokemon(info.Pokemon);
-                        PBEBattlePokemon disguisedAsPokemon = psip.Trainer.TryGetPokemon(info.DisguisedAsPokemon);
                         pokemon.FieldPosition = info.FieldPosition;
                         PBETrainer.SwitchTwoPokemon(pokemon, info.FieldPosition);
-                        if (disguisedAsPokemon != pokemon)
+                        if (info.IsDisguised)
                         {
                             pokemon.Status2 |= PBEStatus2.Disguised;
-                            pokemon.DisguisedAsPokemon = disguisedAsPokemon;
-                            pokemon.KnownGender = pokemon.DisguisedAsPokemon.Gender;
-                            pokemon.KnownNickname = pokemon.DisguisedAsPokemon.Nickname;
-                            pokemon.KnownShiny = pokemon.DisguisedAsPokemon.Shiny;
-                            pokemon.KnownSpecies = pokemon.DisguisedAsPokemon.OriginalSpecies;
-                            pokemon.KnownForm = pokemon.DisguisedAsPokemon.Form;
-                            IPBEPokemonData pData = PBEDataProvider.Instance.GetPokemonData(pokemon.KnownSpecies, pokemon.KnownForm);
+                            pokemon.KnownGender = info.Gender;
+                            pokemon.KnownNickname = info.Nickname;
+                            pokemon.KnownShiny = info.Shiny;
+                            pokemon.KnownSpecies = info.Species;
+                            pokemon.KnownForm = info.Form;
+                            IPBEPokemonData pData = PBEDataProvider.Instance.GetPokemonData(info);
                             pokemon.KnownType1 = pData.Type1;
                             pokemon.KnownType2 = pData.Type2;
                         }

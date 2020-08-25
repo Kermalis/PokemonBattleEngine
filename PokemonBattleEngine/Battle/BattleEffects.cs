@@ -1484,9 +1484,8 @@ namespace Kermalis.PokemonBattleEngine.Battle
                 _turnOrder.Remove(pkmn);
                 ActiveBattlers.Remove(pkmn);
                 PBEFieldPosition oldPos = pkmn.FieldPosition;
-                PBEBattlePokemon disguisedAsPokemon = pkmn.Status2.HasFlag(PBEStatus2.Disguised) ? pkmn.DisguisedAsPokemon : pkmn;
                 pkmn.FieldPosition = PBEFieldPosition.None;
-                BroadcastPkmnFainted(pkmn, disguisedAsPokemon, oldPos);
+                BroadcastPkmnFainted(pkmn, oldPos);
                 RemoveInfatuationsAndLockOns(pkmn);
                 pkmn.Team.MonFaintedThisTurn = true;
                 TrySetLoser(pkmn);
@@ -1715,7 +1714,6 @@ namespace Kermalis.PokemonBattleEngine.Battle
         {
             if (pkmn.Status2.HasFlag(PBEStatus2.Disguised))
             {
-                pkmn.DisguisedAsPokemon = null;
                 pkmn.KnownGender = pkmn.Gender;
                 pkmn.KnownCaughtBall = pkmn.CaughtBall;
                 pkmn.KnownNickname = pkmn.Nickname;
@@ -2335,7 +2333,6 @@ namespace Kermalis.PokemonBattleEngine.Battle
                         if (p.OriginalSpecies != pkmn.OriginalSpecies)
                         {
                             pkmn.Status2 |= PBEStatus2.Disguised; // No broadcast, not known
-                            pkmn.DisguisedAsPokemon = p;
                             pkmn.KnownGender = p.Gender;
                             pkmn.KnownCaughtBall = p.CaughtBall;
                             pkmn.KnownNickname = p.Nickname;
@@ -2358,9 +2355,8 @@ namespace Kermalis.PokemonBattleEngine.Battle
             pkmnLeaving.FieldPosition = PBEFieldPosition.None;
             _turnOrder.Remove(pkmnLeaving);
             ActiveBattlers.Remove(pkmnLeaving);
-            PBEBattlePokemon disguisedAsPokemon = pkmnLeaving.Status2.HasFlag(PBEStatus2.Disguised) ? pkmnLeaving.DisguisedAsPokemon : pkmnLeaving;
             pkmnLeaving.ClearForSwitch();
-            BroadcastPkmnSwitchOut(pkmnLeaving, disguisedAsPokemon, pos, forcedByPkmn);
+            BroadcastPkmnSwitchOut(pkmnLeaving, pos, forcedByPkmn);
             RemoveInfatuationsAndLockOns(pkmnLeaving);
             pkmnComing.FieldPosition = pos;
             var switches = new PBEPkmnSwitchInPacket.PBEPkmnSwitchInInfo[] { CreateSwitchInInfo(pkmnComing) };

@@ -446,7 +446,8 @@ namespace Kermalis.PokemonBattleEngineDiscord
                     }
                     if (pkmn.Status2.HasFlag(PBEStatus2.Disguised))
                     {
-                        sb.AppendLine($"**Disguised as:** {pkmn.DisguisedAsPokemon.Nickname}");
+                        formStr = PBEDataUtils.HasForms(pkmn.KnownSpecies, false) ? $" ({PBEDataProvider.Instance.GetFormName(pkmn.KnownSpecies, pkmn.KnownForm).English})" : string.Empty;
+                        sb.AppendLine($"**Disguised as:** {pkmn.KnownNickname}/{PBEDataProvider.Instance.GetSpeciesName(pkmn.KnownSpecies).English}{formStr} {pkmn.KnownGender.ToSymbol()}");
                     }
                     if (pkmn.Status2.HasFlag(PBEStatus2.Substitute))
                     {

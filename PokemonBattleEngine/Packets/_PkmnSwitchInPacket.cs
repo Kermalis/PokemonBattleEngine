@@ -8,10 +8,8 @@ using System.IO;
 
 namespace Kermalis.PokemonBattleEngine.Packets
 {
-    public interface IPBEPkmnSwitchInInfo
+    public interface IPBEPkmnSwitchInInfo : IPBESpeciesForm
     {
-        PBESpecies Species { get; }
-        PBEForm Form { get; }
         string Nickname { get; }
         byte Level { get; }
         bool Shiny { get; }
@@ -37,7 +35,7 @@ namespace Kermalis.PokemonBattleEngine.Packets
         public sealed class PBEPkmnSwitchInInfo : IPBEPkmnSwitchInInfo
         {
             public byte Pokemon { get; }
-            public byte DisguisedAsPokemon { get; }
+            public bool IsDisguised { get; }
             public PBESpecies Species { get; }
             public PBEForm Form { get; }
             public string Nickname { get; }
@@ -54,7 +52,7 @@ namespace Kermalis.PokemonBattleEngine.Packets
             internal PBEPkmnSwitchInInfo(PBEBattlePokemon pkmn)
             {
                 Pokemon = pkmn.Id;
-                DisguisedAsPokemon = (pkmn.Status2.HasFlag(PBEStatus2.Disguised) ? pkmn.DisguisedAsPokemon : pkmn).Id;
+                IsDisguised = pkmn.Status2.HasFlag(PBEStatus2.Disguised);
                 Species = pkmn.KnownSpecies;
                 Form = pkmn.KnownForm;
                 Nickname = pkmn.KnownNickname;
@@ -71,7 +69,7 @@ namespace Kermalis.PokemonBattleEngine.Packets
             internal PBEPkmnSwitchInInfo(EndianBinaryReader r)
             {
                 Pokemon = r.ReadByte();
-                DisguisedAsPokemon = r.ReadByte();
+                IsDisguised = r.ReadBoolean();
                 Species = r.ReadEnum<PBESpecies>();
                 Form = r.ReadEnum<PBEForm>();
                 Nickname = r.ReadStringNullTerminated();
@@ -89,7 +87,7 @@ namespace Kermalis.PokemonBattleEngine.Packets
             internal void ToBytes(EndianBinaryWriter w)
             {
                 w.Write(Pokemon);
-                w.Write(DisguisedAsPokemon);
+                w.Write(IsDisguised);
                 w.Write(Species);
                 w.Write(Form);
                 w.Write(Nickname, true);

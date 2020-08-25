@@ -127,8 +127,6 @@ namespace Kermalis.PokemonBattleEngine.Battle
         public byte ConfusionCounter { get; set; }
         /// <summary>The amount of turns the Pokémon will be confused for before snapping out of it.</summary>
         public byte ConfusionTurns { get; set; }
-        /// <summary>The Pokémon that <see cref="PBEStatus2.Disguised"/> is disguised as.</summary>
-        public PBEBattlePokemon DisguisedAsPokemon { get; set; }
         /// <summary>The Pokémon that <see cref="PBEStatus2.Infatuated"/> is bound to.</summary>
         public PBEBattlePokemon InfatuatedWithPokemon { get; set; }
         /// <summary>The amount of turns until <see cref="PBEStatus2.MagnetRise"/> ends.</summary>
@@ -342,7 +340,6 @@ namespace Kermalis.PokemonBattleEngine.Battle
 
             ConfusionCounter = 0;
             ConfusionTurns = 0;
-            DisguisedAsPokemon = null;
             LockOnPokemon = null;
             LockOnTurns = 0;
             MagnetRiseTurns = 0;
@@ -1238,7 +1235,8 @@ namespace Kermalis.PokemonBattleEngine.Battle
             }
             if (Status2.HasFlag(PBEStatus2.Disguised))
             {
-                sb.AppendLine($"Disguised as: {DisguisedAsPokemon.Trainer.Name}'s {DisguisedAsPokemon.Nickname}");
+                formStr = PBEDataUtils.HasForms(KnownSpecies, false) ? $" ({PBEDataProvider.Instance.GetFormName(KnownSpecies, KnownForm).English})" : string.Empty;
+                sb.AppendLine($"Disguised as: {KnownNickname}/{PBEDataProvider.Instance.GetSpeciesName(KnownSpecies).English}{formStr} {KnownGender.ToSymbol()}");
             }
             if (Battle.BattleFormat != PBEBattleFormat.Single)
             {

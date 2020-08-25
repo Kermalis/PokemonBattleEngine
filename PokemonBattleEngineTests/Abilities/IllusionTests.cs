@@ -13,6 +13,9 @@ namespace Kermalis.PokemonBattleEngineTests.Abilities
             utils.SetOutputHelper(output);
         }
 
+        // TODO: Wild Pkmn can be disguised (and shows in wild packet)
+        // TODO: Wild Pkmn does not disguise as teammate
+
         [Fact]
         public void Illusion_Does_Not_Copy_Same_Species()
         {
@@ -38,7 +41,7 @@ namespace Kermalis.PokemonBattleEngineTests.Abilities
             #endregion
 
             #region Check
-            Assert.True(zoroark1.DisguisedAsPokemon == null);
+            Assert.False(zoroark1.Status2.HasFlag(PBEStatus2.Disguised));
             #endregion
 
             #region Cleanup
@@ -104,7 +107,7 @@ namespace Kermalis.PokemonBattleEngineTests.Abilities
 
             battle.RunTurn();
 
-            Assert.True(zoroark.DisguisedAsPokemon == shaymin && zoroark.KnownForm == PBEForm.Shaymin);
+            Assert.True(zoroark.KnownSpecies == PBESpecies.Shaymin && zoroark.KnownForm == PBEForm.Shaymin);
             #endregion
 
             #region Cleanup
