@@ -415,7 +415,7 @@ namespace Kermalis.PokemonBattleEngineDiscord
         {
             var sb = new StringBuilder();
             string formStr = PBEDataUtils.HasForms(pkmn.Species, false) ? $" ({PBEDataProvider.Instance.GetFormName(pkmn).English})" : string.Empty;
-            sb.AppendLine($"{pkmn.Nickname}/{pkmn.Species}{formStr} {pkmn.Gender.ToSymbol()} Lv.{pkmn.Level}{(pkmn.Shiny ? $" {_shinyEmoji}" : string.Empty)}");
+            sb.AppendLine($"{pkmn.Nickname}/{PBEDataProvider.Instance.GetSpeciesName(pkmn.Species).English}{formStr} {pkmn.Gender.ToSymbol()} Lv.{pkmn.Level}{(pkmn.Shiny ? $" {_shinyEmoji}" : string.Empty)}");
             sb.AppendLine($"**HP:** {pkmn.HP}/{pkmn.MaxHP} ({pkmn.HPPercentage:P2})");
             sb.Append($"**Types:** {Utils.TypeEmotes[pkmn.Type1]}");
             if (pkmn.Type2 != PBEType.None)

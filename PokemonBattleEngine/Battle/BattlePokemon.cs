@@ -1207,7 +1207,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
         {
             var sb = new StringBuilder();
             string formStr = PBEDataUtils.HasForms(Species, false) ? $" ({PBEDataProvider.Instance.GetFormName(this).English})" : string.Empty;
-            sb.AppendLine($"{Nickname}/{Species}{formStr} {Gender.ToSymbol()} Lv.{Level}");
+            sb.AppendLine($"{Nickname}/{PBEDataProvider.Instance.GetSpeciesName(Species).English}{formStr} {Gender.ToSymbol()} Lv.{Level}");
             sb.AppendLine($"HP: {HP}/{MaxHP} ({HPPercentage:P2})");
             sb.Append($"Types: {PBEDataProvider.Instance.GetTypeName(Type1).English}");
             if (Type2 != PBEType.None)
