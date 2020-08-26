@@ -163,6 +163,11 @@ namespace Kermalis.PokemonBattleEngine.Battle
                 {
                     PBEBattlePokemon p = party[i];
                     p.Trainer.SwitchInQueue.Add((p, pos));
+                    if (team.IsWild)
+                    {
+                        p.FieldPosition = pos;
+                        ActiveBattlers.Add(p);
+                    }
                 }
             }
             switch (BattleFormat)
@@ -219,6 +224,20 @@ namespace Kermalis.PokemonBattleEngine.Battle
                 throw new InvalidOperationException($"{nameof(BattleState)} must be {PBEBattleState.ReadyToBegin} to begin the battle.");
             }
             BroadcastBattle(); // The first packet sent is PBEBattlePacket which replays rely on
+            // Wild Pokémon appearing
+            if (BattleType == PBEBattleType.Wild)
+            {
+                PBETeam team = Teams[1];
+                PBETrainer trainer = team.Trainers[0];
+                int count = trainer.SwitchInQueue.Count;
+                var appearances = new PBEPkmnAppearedInfo[count];
+                for (int i = 0; i < count; i++)
+                {
+                    appearances[i] = new PBEPkmnAppearedInfo(trainer.SwitchInQueue[i].Pkmn);
+                }
+                trainer.SwitchInQueue.Clear();
+                BroadcastWildPkmnAppeared(appearances);
+            }
             SwitchesOrActions();
         }
         /// <summary>Runs a turn.</summary>
@@ -281,29 +300,6 @@ namespace Kermalis.PokemonBattleEngine.Battle
         {
             BattleState = PBEBattleState.Processing;
             OnStateChanged?.Invoke(this);
-
-            // Wild Pokémon appearing
-            if (TurnNumber == 0 && BattleType == PBEBattleType.Wild)
-            {
-                PBETeam team = Teams[1];
-                PBETrainer trainer = team.Trainers[0];
-                int count = trainer.SwitchInQueue.Count;
-                // If for some reason the non-wild team needs to send something else in on turn 0 (something fainted immediately),
-                // this func will be called again, so we need to make sure it doesn't bug out
-                if (count > 0)
-                {
-                    var appearances = new PBEPkmnAppearedInfo[count];
-                    for (int i = 0; i < count; i++)
-                    {
-                        (PBEBattlePokemon pkmn, PBEFieldPosition pos) = trainer.SwitchInQueue[i];
-                        pkmn.FieldPosition = pos;
-                        appearances[i] = new PBEPkmnAppearedInfo(pkmn);
-                        ActiveBattlers.Add(pkmn); // Add before broadcast
-                    }
-                    trainer.SwitchInQueue.Clear();
-                    BroadcastWildPkmnAppeared(appearances);
-                }
-            }
 
             // Checking SwitchInQueue count since SwitchInsRequired is set to 0 after submitting switches
             PBETrainer[] trainersWithSwitchIns = Trainers.Where(t => t.SwitchInQueue.Count > 0).ToArray();

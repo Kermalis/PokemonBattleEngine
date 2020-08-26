@@ -94,7 +94,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
         public bool RequestedFlee { get; set; }
         public List<PBEBattlePokemon> ActionsRequired { get; } = new List<PBEBattlePokemon>(3); // PBEBattleState.WaitingForActions
         public byte SwitchInsRequired { get; set; } // PBEBattleState.WaitingForSwitchIns
-        public List<(PBEBattlePokemon, PBEFieldPosition)> SwitchInQueue { get; } = new List<(PBEBattlePokemon, PBEFieldPosition)>(3); // PBEBattleState.WaitingForSwitchIns
+        public List<(PBEBattlePokemon Pkmn, PBEFieldPosition Pos)> SwitchInQueue { get; } = new List<(PBEBattlePokemon, PBEFieldPosition)>(3); // PBEBattleState.WaitingForSwitchIns
 
         // Trainer battle / wild battle
         private PBETrainer(PBETeam team, PBETrainerInfoBase ti, string name, ReadOnlyCollection<(PBEItem Item, uint Quantity)> inventory, List<PBETrainer> trainers)
