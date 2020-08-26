@@ -136,7 +136,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
 
         public static int GetTransformPP(PBESettings settings, PBEMove move)
         {
-            if (settings == null)
+            if (settings is null)
             {
                 throw new ArgumentNullException(nameof(settings));
             }
@@ -144,18 +144,20 @@ namespace Kermalis.PokemonBattleEngine.Battle
             {
                 throw new ArgumentException("Settings must be read-only.", nameof(settings));
             }
-            else if (move == PBEMove.None)
+            if (move == PBEMove.None)
             {
                 return 0;
             }
-            else if (move >= PBEMove.MAX || !PBEDataUtils.IsMoveUsable(move))
+            if (move >= PBEMove.MAX)
             {
                 throw new ArgumentOutOfRangeException(nameof(move));
             }
-            else
+            IPBEMoveData mData = PBEDataProvider.Instance.GetMoveData(move);
+            if (!mData.IsMoveUsable())
             {
-                return PBEDataProvider.Instance.GetMoveData(move).PPTier == 0 ? 1 : settings.PPMultiplier;
+                throw new ArgumentOutOfRangeException(nameof(move));
             }
+            return mData.PPTier == 0 ? 1 : settings.PPMultiplier;
         }
         public static int GetNonTransformPP(PBESettings settings, PBEMove move, byte ppUps)
         {
@@ -167,19 +169,21 @@ namespace Kermalis.PokemonBattleEngine.Battle
             {
                 throw new ArgumentException("Settings must be read-only.", nameof(settings));
             }
-            else if (move == PBEMove.None)
+            if (move == PBEMove.None)
             {
                 return 0;
             }
-            else if (move >= PBEMove.MAX || !PBEDataUtils.IsMoveUsable(move))
+            if (move >= PBEMove.MAX)
             {
                 throw new ArgumentOutOfRangeException(nameof(move));
             }
-            else
+            IPBEMoveData mData = PBEDataProvider.Instance.GetMoveData(move);
+            if (!mData.IsMoveUsable())
             {
-                byte tier = PBEDataProvider.Instance.GetMoveData(move).PPTier;
-                return Math.Max(1, (tier * settings.PPMultiplier) + (tier * ppUps));
+                throw new ArgumentOutOfRangeException(nameof(move));
             }
+            byte tier = mData.PPTier;
+            return Math.Max(1, (tier * settings.PPMultiplier) + (tier * ppUps));
         }
 
         internal static void DoTransform(PBEBattlePokemon user, PBEBattlePokemon target)

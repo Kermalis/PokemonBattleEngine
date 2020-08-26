@@ -308,15 +308,32 @@ namespace Kermalis.PokemonBattleEngine.Battle
         /// <exception cref="ArgumentOutOfRangeException">Thrown when <paramref name="targets"/>, <paramref name="move"/>, <paramref name="pkmn"/>'s <see cref="PBEBattlePokemon.FieldPosition"/>, or <paramref name="pkmn"/>'s <see cref="PBEBattle"/>'s <see cref="BattleFormat"/> is invalid.</exception>
         public static bool AreTargetsValid(PBEBattlePokemon pkmn, PBEMove move, PBETurnTarget targets)
         {
-            if (pkmn == null)
+            if (pkmn is null)
             {
                 throw new ArgumentNullException(nameof(pkmn));
             }
-            if (move == PBEMove.None || move >= PBEMove.MAX || !PBEDataUtils.IsMoveUsable(move))
+            if (move == PBEMove.None || move >= PBEMove.MAX)
             {
                 throw new ArgumentOutOfRangeException(nameof(move));
             }
-            PBEMoveTarget possibleTargets = pkmn.GetMoveTargets(move);
+            IPBEMoveData mData = PBEDataProvider.Instance.GetMoveData(move);
+            if (!mData.IsMoveUsable())
+            {
+                throw new ArgumentOutOfRangeException(nameof(move));
+            }
+            return AreTargetsValid(pkmn, mData, targets);
+        }
+        public static bool AreTargetsValid(PBEBattlePokemon pkmn, IPBEMoveData mData, PBETurnTarget targets)
+        {
+            if (pkmn is null)
+            {
+                throw new ArgumentNullException(nameof(pkmn));
+            }
+            if (mData is null)
+            {
+                throw new ArgumentNullException(nameof(mData));
+            }
+            PBEMoveTarget possibleTargets = pkmn.GetMoveTargets(mData);
             switch (pkmn.Battle.BattleFormat)
             {
                 case PBEBattleFormat.Single:
@@ -749,7 +766,12 @@ namespace Kermalis.PokemonBattleEngine.Battle
             {
                 throw new ArgumentOutOfRangeException(nameof(calledMove));
             }
-            PBEMoveTarget possibleTargets = pkmn.GetMoveTargets(calledMove);
+            IPBEMoveData mData = PBEDataProvider.Instance.GetMoveData(calledMove);
+            if (!mData.IsMoveUsable())
+            {
+                throw new ArgumentOutOfRangeException(nameof(calledMove));
+            }
+            PBEMoveTarget possibleTargets = pkmn.GetMoveTargets(mData);
             switch (pkmn.Battle.BattleFormat)
             {
                 case PBEBattleFormat.Single:
