@@ -353,7 +353,16 @@ namespace Kermalis.PokemonBattleEngine.Battle
                 }
                 return trainer.Name;
             }
-            // This is not used by PBEBattleResultPacket; those always use the combined name
+            string GetRawCombinedName(PBETeam team, bool firstLetterCapitalized)
+            {
+                if (team.IsWild)
+                {
+                    string prefix = firstLetterCapitalized ? "The" : "the";
+                    return prefix + " wild Pokémon";
+                }
+                return team.CombinedName;
+            }
+            // This is not used by PBEBattleResultPacket; those use GetRawCombinedName()
             string GetTeamName(PBETeam team, bool firstLetterCapitalized)
             {
                 if (teamNameFunc != null)
@@ -362,7 +371,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                 }
                 if (userTrainer is null)
                 {
-                    return $"{team.CombinedName}'s";
+                    return $"{GetRawCombinedName(team, firstLetterCapitalized)}'s";
                 }
                 string ownerPrefix = firstLetterCapitalized ? "Your" : "your";
                 string foePrefix = firstLetterCapitalized ? "The opposing" : "the opposing";
@@ -1589,7 +1598,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                     switch (brp.BattleResult)
                     {
                         case PBEBattleResult.Team0Forfeit: message = "{0} forfeited."; break;
-                        case PBEBattleResult.Team0Win: message = "{0} defeated {1}!"; break; // TODO: X defeated The wild Pokémon! (capital T in the)
+                        case PBEBattleResult.Team0Win: message = "{0} defeated {1}!"; break;
                         case PBEBattleResult.Team1Forfeit: message = "{1} forfeited."; break;
                         case PBEBattleResult.Team1Win: message = "{1} defeated {0}!"; break;
                         case PBEBattleResult.WildCapture: goto bottom;
@@ -1597,7 +1606,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                         case PBEBattleResult.WildFlee: message = "{1} got away!"; break;
                         default: throw new ArgumentOutOfRangeException(nameof(brp.BattleResult));
                     }
-                    return string.Format(message, battle.Teams[0].CombinedName, battle.Teams[1].CombinedName);
+                    return string.Format(message, GetRawCombinedName(battle.Teams[0], true), GetRawCombinedName(battle.Teams[1], false));
                 }
                 case PBESwitchInRequestPacket sirp:
                 {

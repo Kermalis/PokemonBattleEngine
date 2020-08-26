@@ -133,14 +133,13 @@ namespace Kermalis.PokemonBattleEngine.Battle
         // Wild battle
         internal PBETrainer(PBETeam team, PBEWildInfo wi, List<PBETrainer> trainers)
             : this(team, wi, "The wild Pokémon", null, trainers) { }
-        // Remote trainer battle
-        // TODO: Remote wild battle/replay
+        // Remote battle
         internal PBETrainer(PBETeam team, PBEBattlePacket.PBETeamInfo.PBETrainerInfo info, List<PBETrainer> trainers)
         {
             Battle = team.Battle;
             Team = team;
             Id = info.Id;
-            Name = info.Name;
+            Name = team.IsWild ? "The wild Pokémon" : info.Name;
             Inventory = info.Inventory.Count == 0 ? PBEBattleInventory.Empty() : new PBEBattleInventory(info.Inventory);
             Party = new PBEList<PBEBattlePokemon>(info.Party.Select(p => new PBEBattlePokemon(this, p)));
             trainers.Add(this);
