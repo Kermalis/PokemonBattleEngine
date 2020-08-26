@@ -1,6 +1,5 @@
 ﻿using Kermalis.EndianBinaryIO;
 using Kermalis.PokemonBattleEngine.Battle;
-using Kermalis.PokemonBattleEngine.Data;
 using System;
 using System.Collections.ObjectModel;
 using System.IO;
@@ -22,13 +21,12 @@ namespace Kermalis.PokemonBattleEngine.Packets
 
         public PBETrainer PokemonTrainer { get; }
         public byte Pokemon { get; }
-        public byte DisguisedAsPokemon { get; }
         public PBEFieldPosition OldPosition { get; }
         public bool Forced { get; }
         public PBETrainer ForcedByPokemonTrainer { get; }
         public PBEFieldPosition ForcedByPokemon { get; }
 
-        internal PBEPkmnSwitchOutPacket(PBEBattlePokemon pokemon, PBEBattlePokemon disguisedAsPokemon, PBEFieldPosition oldPosition, PBEBattlePokemon forcedByPokemon = null)
+        internal PBEPkmnSwitchOutPacket(PBEBattlePokemon pokemon, PBEFieldPosition oldPosition, PBEBattlePokemon forcedByPokemon = null)
         {
             using (var ms = new MemoryStream())
             using (var w = new EndianBinaryWriter(ms, encoding: EncodingType.UTF16))
@@ -36,7 +34,6 @@ namespace Kermalis.PokemonBattleEngine.Packets
                 w.Write(Code);
                 w.Write((PokemonTrainer = pokemon.Trainer).Id);
                 w.Write(Pokemon = pokemon.Id);
-                w.Write(DisguisedAsPokemon = disguisedAsPokemon.Id);
                 w.Write(OldPosition = oldPosition);
                 w.Write(Forced = forcedByPokemon != null);
                 if (Forced)
@@ -44,7 +41,7 @@ namespace Kermalis.PokemonBattleEngine.Packets
                     w.Write((ForcedByPokemonTrainer = forcedByPokemon.Trainer).Id);
                     w.Write(ForcedByPokemon = forcedByPokemon.FieldPosition);
                 }
-                Data = new ReadOnlyCollection<byte>(ms.ToArray());
+                Data = new ReadOnlyCollection<byte>(ms.GetBuffer());
             }
         }
         internal PBEPkmnSwitchOutPacket(byte[] data, EndianBinaryReader r, PBEBattle battle)
@@ -52,7 +49,6 @@ namespace Kermalis.PokemonBattleEngine.Packets
             Data = new ReadOnlyCollection<byte>(data);
             PokemonTrainer = battle.Trainers[r.ReadByte()];
             Pokemon = r.ReadByte();
-            DisguisedAsPokemon = r.ReadByte();
             OldPosition = r.ReadEnum<PBEFieldPosition>();
             Forced = r.ReadBoolean();
             if (Forced)
@@ -91,7 +87,7 @@ namespace Kermalis.PokemonBattleEngine.Packets
                     w.Write((ForcedByPokemonTrainer = other.ForcedByPokemonTrainer).Id);
                     w.Write(ForcedByPokemon = other.ForcedByPokemon);
                 }
-                Data = new ReadOnlyCollection<byte>(ms.ToArray());
+                Data = new ReadOnlyCollection<byte>(ms.GetBuffer());
             }
         }
         internal PBEPkmnSwitchOutPacket_Hidden(byte[] data, EndianBinaryReader r, PBEBattle battle)

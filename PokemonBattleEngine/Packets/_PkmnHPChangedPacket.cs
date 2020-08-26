@@ -1,6 +1,5 @@
 ﻿using Kermalis.EndianBinaryIO;
 using Kermalis.PokemonBattleEngine.Battle;
-using Kermalis.PokemonBattleEngine.Data;
 using System;
 using System.Collections.ObjectModel;
 using System.IO;
@@ -38,7 +37,7 @@ namespace Kermalis.PokemonBattleEngine.Packets
                 w.Write(NewHP = pokemon.HP);
                 w.Write(OldHPPercentage = oldHPPercentage);
                 w.Write(NewHPPercentage = pokemon.HPPercentage);
-                Data = new ReadOnlyCollection<byte>(ms.ToArray());
+                Data = new ReadOnlyCollection<byte>(ms.GetBuffer());
             }
         }
         internal PBEPkmnHPChangedPacket(byte[] data, EndianBinaryReader r, PBEBattle battle)
@@ -76,7 +75,7 @@ namespace Kermalis.PokemonBattleEngine.Packets
                 w.Write(Pokemon = other.Pokemon);
                 w.Write(OldHPPercentage = other.OldHPPercentage);
                 w.Write(NewHPPercentage = other.NewHPPercentage);
-                Data = new ReadOnlyCollection<byte>(ms.ToArray());
+                Data = new ReadOnlyCollection<byte>(ms.GetBuffer());
             }
         }
         internal PBEPkmnHPChangedPacket_Hidden(byte[] data, EndianBinaryReader r, PBEBattle battle)

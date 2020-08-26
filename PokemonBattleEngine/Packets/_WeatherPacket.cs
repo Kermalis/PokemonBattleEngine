@@ -1,6 +1,5 @@
 ﻿using Kermalis.EndianBinaryIO;
 using Kermalis.PokemonBattleEngine.Battle;
-using Kermalis.PokemonBattleEngine.Data;
 using System.Collections.ObjectModel;
 using System.IO;
 
@@ -30,7 +29,7 @@ namespace Kermalis.PokemonBattleEngine.Packets
                     w.Write((DamageVictimTrainer = damageVictim.Trainer).Id);
                     w.Write(DamageVictim = damageVictim.FieldPosition);
                 }
-                Data = new ReadOnlyCollection<byte>(ms.ToArray());
+                Data = new ReadOnlyCollection<byte>(ms.GetBuffer());
             }
         }
         internal PBEWeatherPacket(byte[] data, EndianBinaryReader r, PBEBattle battle)

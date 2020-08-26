@@ -16,7 +16,7 @@ namespace Kermalis.PokemonBattleEngineClient.Models
         {
             if (pkmn != null)
             {
-                MiniSprite = (Bitmap)SpeciesToMinispriteConverter.Instance.Convert(pkmn, typeof(Bitmap), useKnownInfo, PBEUtils.PBECulture);
+                MiniSprite = (Bitmap)SpeciesToMinispriteConverter.Instance.Convert(pkmn, typeof(Bitmap), useKnownInfo, PBEDataProvider.PBECulture);
                 Name = useKnownInfo ? pkmn.KnownNickname : pkmn.Nickname + (useKnownInfo && !pkmn.KnownStatus2.HasFlag(PBEStatus2.Transformed) ? pkmn.KnownGender : pkmn.Gender).ToSymbol();
             }
         }

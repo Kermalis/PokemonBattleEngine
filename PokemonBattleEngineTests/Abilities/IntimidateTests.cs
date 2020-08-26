@@ -1,6 +1,5 @@
 ﻿using Kermalis.PokemonBattleEngine.Battle;
 using Kermalis.PokemonBattleEngine.Data;
-using Kermalis.PokemonBattleEngine.Utils;
 using Xunit;
 using Xunit.Abstractions;
 
@@ -18,7 +17,7 @@ namespace Kermalis.PokemonBattleEngineTests.Abilities
         public void Intimidate_Works()
         {
             #region Setup
-            PBEUtils.GlobalRandom.Seed = 0;
+            PBEDataProvider.GlobalRandom.Seed = 0;
             PBESettings settings = PBESettings.DefaultSettings;
 
             var p0 = new TestPokemonCollection(3);
@@ -35,7 +34,6 @@ namespace Kermalis.PokemonBattleEngineTests.Abilities
 
             var battle = new PBEBattle(PBEBattleFormat.Triple, settings, new PBETrainerInfo(p0, "Trainer 0"), new PBETrainerInfo(p1, "Trainer 1"));
             battle.OnNewEvent += PBEBattle.ConsoleBattleEventHandler;
-            battle.Begin();
 
             PBETrainer t0 = battle.Trainers[0];
             PBETrainer t1 = battle.Trainers[1];
@@ -44,6 +42,8 @@ namespace Kermalis.PokemonBattleEngineTests.Abilities
             PBEBattlePokemon happiny = t0.Party[2];
             PBEBattlePokemon luxray = t1.Party[0];
             PBEBattlePokemon skitty = t1.Party[1];
+
+            battle.Begin();
             #endregion
 
             #region Check
@@ -60,7 +60,7 @@ namespace Kermalis.PokemonBattleEngineTests.Abilities
         public void Intimidate_Does_Not_Announce_If_No_Foes()
         {
             #region Setup
-            PBEUtils.GlobalRandom.Seed = 0;
+            PBEDataProvider.GlobalRandom.Seed = 0;
             PBESettings settings = PBESettings.DefaultSettings;
 
             var p0 = new TestPokemonCollection(1);
@@ -75,13 +75,14 @@ namespace Kermalis.PokemonBattleEngineTests.Abilities
 
             var battle = new PBEBattle(PBEBattleFormat.Triple, settings, new PBETrainerInfo(p0, "Trainer 0"), new PBETrainerInfo(p1, "Trainer 1"));
             battle.OnNewEvent += PBEBattle.ConsoleBattleEventHandler;
-            battle.Begin();
 
             PBETrainer t0 = battle.Trainers[0];
             PBETrainer t1 = battle.Trainers[1];
             PBEBattlePokemon shuckle = t0.Party[0];
             PBEBattlePokemon luxray = t1.Party[0];
             PBEBattlePokemon skitty = t1.Party[1];
+
+            battle.Begin();
             #endregion
 
             #region Check
@@ -97,7 +98,7 @@ namespace Kermalis.PokemonBattleEngineTests.Abilities
         public void Intimidate_Does_Not_Hit_Through_Substitute()
         {
             #region Setup
-            PBEUtils.GlobalRandom.Seed = 0;
+            PBEDataProvider.GlobalRandom.Seed = 0;
             PBESettings settings = PBESettings.DefaultSettings;
 
             var p0 = new TestPokemonCollection(1);
@@ -112,18 +113,19 @@ namespace Kermalis.PokemonBattleEngineTests.Abilities
 
             var battle = new PBEBattle(PBEBattleFormat.Single, settings, new PBETrainerInfo(p0, "Trainer 0"), new PBETrainerInfo(p1, "Trainer 1"));
             battle.OnNewEvent += PBEBattle.ConsoleBattleEventHandler;
-            battle.Begin();
 
             PBETrainer t0 = battle.Trainers[0];
             PBETrainer t1 = battle.Trainers[1];
             PBEBattlePokemon shuckle = t0.Party[0];
             PBEBattlePokemon skitty = t1.Party[0];
             PBEBattlePokemon luxray = t1.Party[1];
+
+            battle.Begin();
             #endregion
 
             #region Use Substitute
-            Assert.True(PBEBattle.SelectActionsIfValid(t0, new PBETurnAction(shuckle, PBEMove.Substitute, PBETurnTarget.AllyCenter)));
-            Assert.True(PBEBattle.SelectActionsIfValid(t1, new PBETurnAction(skitty, PBEMove.Splash, PBETurnTarget.AllyCenter)));
+            Assert.Null(t0.SelectActionsIfValid(new PBETurnAction(shuckle, PBEMove.Substitute, PBETurnTarget.AllyCenter)));
+            Assert.Null(t1.SelectActionsIfValid(new PBETurnAction(skitty, PBEMove.Splash, PBETurnTarget.AllyCenter)));
 
             battle.RunTurn();
 
@@ -131,8 +133,8 @@ namespace Kermalis.PokemonBattleEngineTests.Abilities
             #endregion
 
             #region Switch in Luxray and check
-            Assert.True(PBEBattle.SelectActionsIfValid(t0, new PBETurnAction(shuckle, PBEMove.Splash, PBETurnTarget.AllyCenter)));
-            Assert.True(PBEBattle.SelectActionsIfValid(t1, new PBETurnAction(skitty, luxray)));
+            Assert.Null(t0.SelectActionsIfValid(new PBETurnAction(shuckle, PBEMove.Splash, PBETurnTarget.AllyCenter)));
+            Assert.Null(t1.SelectActionsIfValid(new PBETurnAction(skitty, luxray)));
 
             battle.RunTurn();
 

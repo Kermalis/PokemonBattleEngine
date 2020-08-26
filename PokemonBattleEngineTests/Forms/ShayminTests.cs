@@ -1,6 +1,5 @@
 ﻿using Kermalis.PokemonBattleEngine.Battle;
 using Kermalis.PokemonBattleEngine.Data;
-using Kermalis.PokemonBattleEngine.Utils;
 using Xunit;
 using Xunit.Abstractions;
 
@@ -18,7 +17,7 @@ namespace Kermalis.PokemonBattleEngineTests.Forms
         public void Shaymin_Reverts_To_Normal_Form_Forever()
         {
             #region Setup
-            PBEUtils.GlobalRandom.Seed = 40703; // Seed ensures SecretPower freezes
+            PBEDataProvider.GlobalRandom.Seed = 40703; // Seed ensures SecretPower freezes
             PBESettings settings = PBESettings.DefaultSettings;
 
             var p0 = new TestPokemonCollection(1);
@@ -34,18 +33,19 @@ namespace Kermalis.PokemonBattleEngineTests.Forms
             var battle = new PBEBattle(PBEBattleFormat.Single, settings, new PBETrainerInfo(p0, "Trainer 0"), new PBETrainerInfo(p1, "Trainer 1"),
                 battleTerrain: PBEBattleTerrain.Snow);
             battle.OnNewEvent += PBEBattle.ConsoleBattleEventHandler;
-            battle.Begin();
 
             PBETrainer t0 = battle.Trainers[0];
             PBETrainer t1 = battle.Trainers[1];
             PBEBattlePokemon happiny = t0.Party[0];
             PBEBattlePokemon shaymin = t1.Party[0];
             PBEBattlePokemon magikarp = t1.Party[1];
+
+            battle.Begin();
             #endregion
 
             #region Freeze Shaymin
-            Assert.True(PBEBattle.SelectActionsIfValid(t0, new PBETurnAction(happiny, PBEMove.SecretPower, PBETurnTarget.FoeCenter)));
-            Assert.True(PBEBattle.SelectActionsIfValid(t1, new PBETurnAction(shaymin, PBEMove.Splash, PBETurnTarget.AllyCenter)));
+            Assert.Null(t0.SelectActionsIfValid(new PBETurnAction(happiny, PBEMove.SecretPower, PBETurnTarget.FoeCenter)));
+            Assert.Null(t1.SelectActionsIfValid(new PBETurnAction(shaymin, PBEMove.Splash, PBETurnTarget.AllyCenter)));
 
             battle.RunTurn();
 
@@ -53,8 +53,8 @@ namespace Kermalis.PokemonBattleEngineTests.Forms
             #endregion
 
             #region Swap Shaymin for Magikarp and check
-            Assert.True(PBEBattle.SelectActionsIfValid(t0, new PBETurnAction(happiny, PBEMove.Splash, PBETurnTarget.AllyCenter)));
-            Assert.True(PBEBattle.SelectActionsIfValid(t1, new PBETurnAction(shaymin, magikarp)));
+            Assert.Null(t0.SelectActionsIfValid(new PBETurnAction(happiny, PBEMove.Splash, PBETurnTarget.AllyCenter)));
+            Assert.Null(t1.SelectActionsIfValid(new PBETurnAction(shaymin, magikarp)));
 
             battle.RunTurn();
 

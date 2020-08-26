@@ -1,6 +1,5 @@
 ﻿using Kermalis.PokemonBattleEngine.Battle;
 using Kermalis.PokemonBattleEngine.Data;
-using Kermalis.PokemonBattleEngine.Utils;
 using Xunit;
 using Xunit.Abstractions;
 
@@ -38,7 +37,7 @@ namespace Kermalis.PokemonBattleEngineTests.Items
         public void Gem_Works(PBEMove move, PBEItem item)
         {
             #region Setup
-            PBEUtils.GlobalRandom.Seed = 1; // Seed ensures all moves do not miss
+            PBEDataProvider.GlobalRandom.Seed = 1; // Seed ensures all moves do not miss
             PBESettings settings = PBESettings.DefaultSettings;
 
             var p0 = new TestPokemonCollection(1);
@@ -52,17 +51,18 @@ namespace Kermalis.PokemonBattleEngineTests.Items
 
             var battle = new PBEBattle(PBEBattleFormat.Single, settings, new PBETrainerInfo(p0, "Trainer 0"), new PBETrainerInfo(p1, "Trainer 1"));
             battle.OnNewEvent += PBEBattle.ConsoleBattleEventHandler;
-            battle.Begin();
 
             PBETrainer t0 = battle.Trainers[0];
             PBETrainer t1 = battle.Trainers[1];
             PBEBattlePokemon mew = t0.Party[0];
             PBEBattlePokemon magikarp = t1.Party[0];
+
+            battle.Begin();
             #endregion
 
             #region Use and check
-            Assert.True(PBEBattle.SelectActionsIfValid(t0, new PBETurnAction(mew, move, PBETurnTarget.FoeCenter)));
-            Assert.True(PBEBattle.SelectActionsIfValid(t1, new PBETurnAction(magikarp, PBEMove.Splash, PBETurnTarget.AllyCenter)));
+            Assert.Null(t0.SelectActionsIfValid(new PBETurnAction(mew, move, PBETurnTarget.FoeCenter)));
+            Assert.Null(t1.SelectActionsIfValid(new PBETurnAction(magikarp, PBEMove.Splash, PBETurnTarget.AllyCenter)));
 
             battle.RunTurn();
 
@@ -82,7 +82,7 @@ namespace Kermalis.PokemonBattleEngineTests.Items
         public void Gem_Activates__FixedDamage__Bug(bool bugFix)
         {
             #region Setup
-            PBEUtils.GlobalRandom.Seed = 0;
+            PBEDataProvider.GlobalRandom.Seed = 0;
             var settings = new PBESettings { BugFix = bugFix };
             settings.MakeReadOnly();
 
@@ -97,17 +97,18 @@ namespace Kermalis.PokemonBattleEngineTests.Items
 
             var battle = new PBEBattle(PBEBattleFormat.Single, settings, new PBETrainerInfo(p0, "Trainer 0"), new PBETrainerInfo(p1, "Trainer 1"));
             battle.OnNewEvent += PBEBattle.ConsoleBattleEventHandler;
-            battle.Begin();
 
             PBETrainer t0 = battle.Trainers[0];
             PBETrainer t1 = battle.Trainers[1];
             PBEBattlePokemon swellow = t0.Party[0];
             PBEBattlePokemon magikarp = t1.Party[0];
+
+            battle.Begin();
             #endregion
 
             #region Use and check
-            Assert.True(PBEBattle.SelectActionsIfValid(t0, new PBETurnAction(swellow, PBEMove.Endeavor, PBETurnTarget.FoeCenter)));
-            Assert.True(PBEBattle.SelectActionsIfValid(t1, new PBETurnAction(magikarp, PBEMove.Splash, PBETurnTarget.AllyCenter)));
+            Assert.Null(t0.SelectActionsIfValid(new PBETurnAction(swellow, PBEMove.Endeavor, PBETurnTarget.FoeCenter)));
+            Assert.Null(t1.SelectActionsIfValid(new PBETurnAction(magikarp, PBEMove.Splash, PBETurnTarget.AllyCenter)));
 
             battle.RunTurn();
 
@@ -132,7 +133,7 @@ namespace Kermalis.PokemonBattleEngineTests.Items
         public void Gem_Does_Not_Activate__Effectiveness()
         {
             #region Setup
-            PBEUtils.GlobalRandom.Seed = 0;
+            PBEDataProvider.GlobalRandom.Seed = 0;
             PBESettings settings = PBESettings.DefaultSettings;
 
             var p0 = new TestPokemonCollection(2);
@@ -154,7 +155,6 @@ namespace Kermalis.PokemonBattleEngineTests.Items
 
             var battle = new PBEBattle(PBEBattleFormat.Double, settings, new PBETrainerInfo(p0, "Trainer 0"), new PBETrainerInfo(p1, "Trainer 1"));
             battle.OnNewEvent += PBEBattle.ConsoleBattleEventHandler;
-            battle.Begin();
 
             PBETrainer t0 = battle.Trainers[0];
             PBETrainer t1 = battle.Trainers[1];
@@ -162,13 +162,15 @@ namespace Kermalis.PokemonBattleEngineTests.Items
             PBEBattlePokemon starly = t0.Party[1];
             PBEBattlePokemon rotom = t1.Party[0];
             PBEBattlePokemon shedinja = t1.Party[1];
+
+            battle.Begin();
             #endregion
 
             #region Use and check
-            Assert.True(PBEBattle.SelectActionsIfValid(t0,
+            Assert.Null(t0.SelectActionsIfValid(
                 new PBETurnAction(excadrill, PBEMove.Earthquake, PBETurnTarget.AllyRight | PBETurnTarget.FoeLeft | PBETurnTarget.FoeRight),
                 new PBETurnAction(starly, PBEMove.Splash, PBETurnTarget.AllyRight)));
-            Assert.True(PBEBattle.SelectActionsIfValid(t1,
+            Assert.Null(t1.SelectActionsIfValid(
                 new PBETurnAction(rotom, PBEMove.Splash, PBETurnTarget.AllyLeft),
                 new PBETurnAction(shedinja, PBEMove.Splash, PBETurnTarget.AllyRight)));
 
@@ -190,7 +192,7 @@ namespace Kermalis.PokemonBattleEngineTests.Items
         public void Gem_Does_Not_Activate__Fail()
         {
             #region Setup
-            PBEUtils.GlobalRandom.Seed = 0;
+            PBEDataProvider.GlobalRandom.Seed = 0;
             PBESettings settings = PBESettings.DefaultSettings;
 
             var p0 = new TestPokemonCollection(1);
@@ -204,17 +206,18 @@ namespace Kermalis.PokemonBattleEngineTests.Items
 
             var battle = new PBEBattle(PBEBattleFormat.Single, settings, new PBETrainerInfo(p0, "Trainer 0"), new PBETrainerInfo(p1, "Trainer 1"));
             battle.OnNewEvent += PBEBattle.ConsoleBattleEventHandler;
-            battle.Begin();
 
             PBETrainer t0 = battle.Trainers[0];
             PBETrainer t1 = battle.Trainers[1];
             PBEBattlePokemon spiritomb = t0.Party[0];
             PBEBattlePokemon magikarp = t1.Party[0];
+
+            battle.Begin();
             #endregion
 
             #region Use and check
-            Assert.True(PBEBattle.SelectActionsIfValid(t0, new PBETurnAction(spiritomb, PBEMove.SuckerPunch, PBETurnTarget.FoeCenter)));
-            Assert.True(PBEBattle.SelectActionsIfValid(t1, new PBETurnAction(magikarp, PBEMove.Splash, PBETurnTarget.AllyCenter)));
+            Assert.Null(t0.SelectActionsIfValid(new PBETurnAction(spiritomb, PBEMove.SuckerPunch, PBETurnTarget.FoeCenter)));
+            Assert.Null(t1.SelectActionsIfValid(new PBETurnAction(magikarp, PBEMove.Splash, PBETurnTarget.AllyCenter)));
 
             battle.RunTurn();
 
@@ -231,7 +234,7 @@ namespace Kermalis.PokemonBattleEngineTests.Items
         public void Gem_Does_Not_Activate__Miss()
         {
             #region Setup
-            PBEUtils.GlobalRandom.Seed = 1; // Seed ensures all miss
+            PBEDataProvider.GlobalRandom.Seed = 1; // Seed ensures all miss
             PBESettings settings = PBESettings.DefaultSettings;
 
             var p0 = new TestPokemonCollection(2);
@@ -248,7 +251,6 @@ namespace Kermalis.PokemonBattleEngineTests.Items
 
             var battle = new PBEBattle(PBEBattleFormat.Double, settings, new PBETrainerInfo(p0, "Trainer 0"), new PBETrainerInfo(p1, "Trainer 1"));
             battle.OnNewEvent += PBEBattle.ConsoleBattleEventHandler;
-            battle.Begin();
 
             PBETrainer t0 = battle.Trainers[0];
             PBETrainer t1 = battle.Trainers[1];
@@ -260,13 +262,15 @@ namespace Kermalis.PokemonBattleEngineTests.Items
             magikarp.EvasionChange = settings.MaxStatChange;
             happiny.EvasionChange = settings.MaxStatChange;
             qwilfish.EvasionChange = settings.MaxStatChange;
+
+            battle.Begin();
             #endregion
 
             #region Use and check
-            Assert.True(PBEBattle.SelectActionsIfValid(t0,
+            Assert.Null(t0.SelectActionsIfValid(
                 new PBETurnAction(corsola, PBEMove.Earthquake, PBETurnTarget.AllyRight | PBETurnTarget.FoeLeft | PBETurnTarget.FoeRight),
                 new PBETurnAction(magikarp, PBEMove.Splash, PBETurnTarget.AllyRight)));
-            Assert.True(PBEBattle.SelectActionsIfValid(t1,
+            Assert.Null(t1.SelectActionsIfValid(
                 new PBETurnAction(happiny, PBEMove.Splash, PBETurnTarget.AllyLeft),
                 new PBETurnAction(qwilfish, PBEMove.Splash, PBETurnTarget.AllyRight)));
 
@@ -288,7 +292,7 @@ namespace Kermalis.PokemonBattleEngineTests.Items
         public void Gem_Does_Not_Activate__Protection()
         {
             #region Setup
-            PBEUtils.GlobalRandom.Seed = 0;
+            PBEDataProvider.GlobalRandom.Seed = 0;
             PBESettings settings = PBESettings.DefaultSettings;
 
             var p0 = new TestPokemonCollection(1);
@@ -303,19 +307,20 @@ namespace Kermalis.PokemonBattleEngineTests.Items
 
             var battle = new PBEBattle(PBEBattleFormat.Double, settings, new PBETrainerInfo(p0, "Trainer 0"), new PBETrainerInfo(p1, "Trainer 1"));
             battle.OnNewEvent += PBEBattle.ConsoleBattleEventHandler;
-            battle.Begin();
 
             PBETrainer t0 = battle.Trainers[0];
             PBETrainer t1 = battle.Trainers[1];
             PBEBattlePokemon excadrill = t0.Party[0];
             PBEBattlePokemon happiny = t1.Party[0];
             PBEBattlePokemon qwilfish = t1.Party[1];
+
+            battle.Begin();
             #endregion
 
             #region Use and check
-            Assert.True(PBEBattle.SelectActionsIfValid(t0,
+            Assert.Null(t0.SelectActionsIfValid(
                 new PBETurnAction(excadrill, PBEMove.Earthquake, PBETurnTarget.AllyRight | PBETurnTarget.FoeLeft | PBETurnTarget.FoeRight)));
-            Assert.True(PBEBattle.SelectActionsIfValid(t1,
+            Assert.Null(t1.SelectActionsIfValid(
                 new PBETurnAction(happiny, PBEMove.WideGuard, PBETurnTarget.AllyLeft | PBETurnTarget.AllyRight),
                 new PBETurnAction(qwilfish, PBEMove.Splash, PBETurnTarget.AllyRight)));
 

@@ -1,6 +1,5 @@
 ﻿using Kermalis.PokemonBattleEngine.Battle;
 using Kermalis.PokemonBattleEngine.Data;
-using Kermalis.PokemonBattleEngine.Utils;
 using Xunit;
 using Xunit.Abstractions;
 
@@ -20,7 +19,7 @@ namespace Kermalis.PokemonBattleEngineTests.Moves
         public void SecretPower_SereneGrace__Bug(bool bugFix)
         {
             #region Setup
-            PBEUtils.GlobalRandom.Seed = 473; // Seed ensures SecretPower does not freeze without the bugfix
+            PBEDataProvider.GlobalRandom.Seed = 473; // Seed ensures SecretPower does not freeze without the bugfix
             var settings = new PBESettings { BugFix = bugFix };
             settings.MakeReadOnly();
 
@@ -36,17 +35,18 @@ namespace Kermalis.PokemonBattleEngineTests.Moves
             var battle = new PBEBattle(PBEBattleFormat.Single, settings, new PBETrainerInfo(p0, "Trainer 0"), new PBETrainerInfo(p1, "Trainer 1"),
                 battleTerrain: PBEBattleTerrain.Snow);
             battle.OnNewEvent += PBEBattle.ConsoleBattleEventHandler;
-            battle.Begin();
 
             PBETrainer t0 = battle.Trainers[0];
             PBETrainer t1 = battle.Trainers[1];
             PBEBattlePokemon makuhita = t0.Party[0];
             PBEBattlePokemon magikarp = t1.Party[0];
+
+            battle.Begin();
             #endregion
 
             #region Use and check
-            Assert.True(PBEBattle.SelectActionsIfValid(t0, new PBETurnAction(makuhita, PBEMove.SecretPower, PBETurnTarget.FoeCenter)));
-            Assert.True(PBEBattle.SelectActionsIfValid(t1, new PBETurnAction(magikarp, PBEMove.Splash, PBETurnTarget.AllyCenter)));
+            Assert.Null(t0.SelectActionsIfValid(new PBETurnAction(makuhita, PBEMove.SecretPower, PBETurnTarget.FoeCenter)));
+            Assert.Null(t1.SelectActionsIfValid(new PBETurnAction(magikarp, PBEMove.Splash, PBETurnTarget.AllyCenter)));
 
             battle.RunTurn();
 

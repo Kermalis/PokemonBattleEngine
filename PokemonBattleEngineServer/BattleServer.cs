@@ -2,7 +2,6 @@
 using Kermalis.PokemonBattleEngine.Data;
 using Kermalis.PokemonBattleEngine.Network;
 using Kermalis.PokemonBattleEngine.Packets;
-using Kermalis.PokemonBattleEngine.Utils;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -14,6 +13,7 @@ namespace Kermalis.PokemonBattleEngineServer
     internal sealed class BattleServer
     {
         // TODO: Events still sent after someone disconnects during a turn, need to return out of event subscription
+        // Server does not support wild battles yet
         private enum ServerState
         {
             Resetting,           // Server is currently resetting the game
@@ -52,7 +52,7 @@ namespace Kermalis.PokemonBattleEngineServer
             }
             else
             {
-                PBEUtils.InitEngine(string.Empty);
+                PBEDataProvider.InitEngine(string.Empty);
                 new BattleServer(args);
             }
         }
@@ -90,7 +90,7 @@ namespace Kermalis.PokemonBattleEngineServer
                     // Wait for the server to be in a state where no events will be sent
                     _resetEvent.WaitOne();
 
-                    string name = PBEUtils.GlobalRandom.RandomElement(new string[] { "Sasha", "Nikki", "Lara", "Violet", "Naomi", "Rose", "Sabrina", "Nicole" });
+                    string name = PBEDataProvider.GlobalRandom.RandomElement(new string[] { "Sasha", "Nikki", "Lara", "Violet", "Naomi", "Rose", "Sabrina", "Nicole" });
                     if (_battlerCounter < NumBattlers)
                     {
                         byte i = _battlerCounter;
@@ -249,9 +249,31 @@ namespace Kermalis.PokemonBattleEngineServer
                     return;
                 }
                 Console.WriteLine($"Received actions ({player.BattleId} {player.TrainerName})");
-                if (!PBEBattle.SelectActionsIfValid(_battle.Trainers[player.BattleId], actions))
+                string valid = _battle.Trainers[player.BattleId].SelectActionsIfValid(actions);
+                if (valid != null)
                 {
-                    Console.WriteLine("Actions are invalid!");
+                    Console.WriteLine("Actions are invalid! - {0}", valid);
+                    CancelMatch();
+                }
+            }
+        }
+        public void FleeSubmitted(Player player)
+        {
+            if (_state != ServerState.WaitingForActions && _state != ServerState.WaitingForSwitchIns)
+            {
+                return;
+            }
+            lock (this)
+            {
+                if (_state != ServerState.WaitingForActions && _state != ServerState.WaitingForSwitchIns)
+                {
+                    return;
+                }
+                Console.WriteLine($"Received flee request ({player.BattleId} {player.TrainerName})");
+                string valid = _battle.Trainers[player.BattleId].SelectFleeIfValid();
+                if (valid != null)
+                {
+                    Console.WriteLine("Flee is invalid! - {0}", valid);
                     CancelMatch();
                 }
             }
@@ -269,9 +291,10 @@ namespace Kermalis.PokemonBattleEngineServer
                     return;
                 }
                 Console.WriteLine($"Received switches ({player.BattleId} {player.TrainerName})");
-                if (!PBEBattle.SelectSwitchesIfValid(_battle.Trainers[player.BattleId], switches))
+                string valid = _battle.Trainers[player.BattleId].SelectSwitchesIfValid(switches);
+                if (valid != null)
                 {
-                    Console.WriteLine("Switches are invalid!");
+                    Console.WriteLine("Switches are invalid! - {0}", valid);
                     CancelMatch();
                 }
             }
@@ -372,6 +395,11 @@ namespace Kermalis.PokemonBattleEngineServer
                     SendOriginalPacketToTeamOwnerAndEveryoneElseGetsAPacketWithHiddenInfo(psop, new PBEPkmnSwitchOutPacket_Hidden(psop), psop.PokemonTrainer.Id);
                     break;
                 }
+                /*case PBEWildPkmnAppearedPacket wpap:
+                {
+                    SendOriginalPacketToTeamOwnerAndEveryoneElseGetsAPacketWithHiddenInfo(wpap, new PBEWildPkmnAppearedPacket_Hidden(wpap), wpap.Trainer.Id);
+                    break;
+                }*/
                 case PBEReflectTypePacket rtp:
                 {
                     var hidden = new PBEReflectTypePacket_Hidden(rtp);

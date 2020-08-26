@@ -1,6 +1,5 @@
 ﻿using Kermalis.PokemonBattleEngine.Battle;
 using Kermalis.PokemonBattleEngine.Data;
-using Kermalis.PokemonBattleEngine.Utils;
 using Xunit;
 using Xunit.Abstractions;
 
@@ -20,7 +19,7 @@ namespace Kermalis.PokemonBattleEngineTests.Moves
         public void BellyDrum_Contrary__Bug(bool bugFix)
         {
             #region Setup
-            PBEUtils.GlobalRandom.Seed = 0;
+            PBEDataProvider.GlobalRandom.Seed = 0;
             var settings = new PBESettings { BugFix = bugFix };
             settings.MakeReadOnly();
 
@@ -35,18 +34,19 @@ namespace Kermalis.PokemonBattleEngineTests.Moves
 
             var battle = new PBEBattle(PBEBattleFormat.Single, settings, new PBETrainerInfo(p0, "Trainer 0"), new PBETrainerInfo(p1, "Trainer 1"));
             battle.OnNewEvent += PBEBattle.ConsoleBattleEventHandler;
-            battle.Begin();
 
             PBETrainer t0 = battle.Trainers[0];
             PBETrainer t1 = battle.Trainers[1];
             PBEBattlePokemon hariyama = t0.Party[0];
             PBEBattlePokemon magikarp = t1.Party[0];
             hariyama.AttackChange = settings.MaxStatChange;
+
+            battle.Begin();
             #endregion
 
             #region Use and check
-            Assert.True(PBEBattle.SelectActionsIfValid(t0, new PBETurnAction(hariyama, PBEMove.BellyDrum, PBETurnTarget.AllyCenter)));
-            Assert.True(PBEBattle.SelectActionsIfValid(t1, new PBETurnAction(magikarp, PBEMove.Splash, PBETurnTarget.AllyCenter)));
+            Assert.Null(t0.SelectActionsIfValid(new PBETurnAction(hariyama, PBEMove.BellyDrum, PBETurnTarget.AllyCenter)));
+            Assert.Null(t1.SelectActionsIfValid(new PBETurnAction(magikarp, PBEMove.Splash, PBETurnTarget.AllyCenter)));
 
             battle.RunTurn();
 

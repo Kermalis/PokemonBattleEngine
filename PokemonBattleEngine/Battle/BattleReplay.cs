@@ -21,7 +21,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
 
         public void SaveReplay()
         {
-            if (BattleState != PBEBattleState.Ended)
+            if (_battleState != PBEBattleState.Ended)
             {
                 throw new InvalidOperationException($"{nameof(BattleState)} must be {PBEBattleState.Ended} to save a replay.");
             }
@@ -29,11 +29,11 @@ namespace Kermalis.PokemonBattleEngine.Battle
         }
         public void SaveReplayToFolder(string path)
         {
-            if (path == null)
+            if (path is null)
             {
                 throw new ArgumentNullException(nameof(path));
             }
-            if (BattleState != PBEBattleState.Ended)
+            if (_battleState != PBEBattleState.Ended)
             {
                 throw new InvalidOperationException($"{nameof(BattleState)} must be {PBEBattleState.Ended} to save a replay.");
             }
@@ -41,11 +41,11 @@ namespace Kermalis.PokemonBattleEngine.Battle
         }
         public void SaveReplay(string path)
         {
-            if (path == null)
+            if (path is null)
             {
                 throw new ArgumentNullException(nameof(path));
             }
-            if (BattleState != PBEBattleState.Ended)
+            if (_battleState != PBEBattleState.Ended)
             {
                 throw new InvalidOperationException($"{nameof(BattleState)} must be {PBEBattleState.Ended} to save a replay.");
             }
@@ -105,10 +105,33 @@ namespace Kermalis.PokemonBattleEngine.Battle
                     {
                         b = new PBEBattle(bp);
                     }
+                    else if (packet is PBEWildPkmnAppearedPacket wpap)
+                    {
+                        PBETrainer wildTrainer = b.Teams[1].Trainers[0];
+                        foreach (PBEPkmnAppearedInfo info in wpap.Pokemon)
+                        {
+                            PBEBattlePokemon pkmn = wildTrainer.TryGetPokemon(info.Pokemon);
+                            // Process disguise and position now
+                            pkmn.FieldPosition = info.FieldPosition;
+                            if (info.IsDisguised)
+                            {
+                                pkmn.Status2 |= PBEStatus2.Disguised;
+                                pkmn.KnownCaughtBall = info.CaughtBall;
+                                pkmn.KnownGender = info.Gender;
+                                pkmn.KnownNickname = info.Nickname;
+                                pkmn.KnownShiny = info.Shiny;
+                                pkmn.KnownSpecies = info.Species;
+                                pkmn.KnownForm = info.Form;
+                                IPBEPokemonData pData = PBEDataProvider.Instance.GetPokemonData(info);
+                                pkmn.KnownType1 = pData.Type1;
+                                pkmn.KnownType2 = pData.Type2;
+                            }
+                            b.ActiveBattlers.Add(pkmn);
+                        }
+                    }
                     b.Events.Add(packet);
                 }
                 b.BattleState = PBEBattleState.Ended;
-                b.OnStateChanged?.Invoke(b);
                 return b;
             }
         }

@@ -5,7 +5,6 @@ using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
-using System.Diagnostics;
 using System.Linq;
 
 namespace Kermalis.PokemonBattleEngine.Battle
@@ -14,7 +13,6 @@ namespace Kermalis.PokemonBattleEngine.Battle
     /// <summary>Represents a specific Pokémon battle.</summary>
     public sealed partial class PBEBattle : INotifyPropertyChanged
     {
-        // Currently unused
         private void OnPropertyChanged(string property)
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(property));
@@ -23,12 +21,25 @@ namespace Kermalis.PokemonBattleEngine.Battle
 
         public delegate void BattleStateChangedEvent(PBEBattle battle);
         public event BattleStateChangedEvent OnStateChanged;
-        public PBEBattleState BattleState { get; private set; }
+        private PBEBattleState _battleState;
+        public PBEBattleState BattleState
+        {
+            get => _battleState;
+            private set
+            {
+                if (value != _battleState)
+                {
+                    _battleState = value;
+                    OnStateChanged?.Invoke(this);
+                    OnPropertyChanged(nameof(BattleState));
+                }
+            }
+        }
         public ushort TurnNumber { get; set; }
-        /// <summary>The winner of the battle. null if <see cref="BattleState"/> is not <see cref="PBEBattleState.Ended"/>.</summary>
-        public PBETeam Winner { get; set; }
+        public PBEBattleResult? BattleResult { get; set; }
 
         private readonly PBERandom _rand;
+        public PBEBattleType BattleType { get; }
         public PBEBattleTerrain BattleTerrain { get; }
         public PBEBattleFormat BattleFormat { get; }
         public PBESettings Settings { get; }
@@ -44,6 +55,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
 
         public List<IPBEPacket> Events { get; } = new List<IPBEPacket>();
 
+        // Trainer battle
         public PBEBattle(PBEBattleFormat battleFormat, PBESettings settings, PBETrainerInfo ti0, PBETrainerInfo ti1,
             PBEBattleTerrain battleTerrain = PBEBattleTerrain.Plain, PBEWeather weather = PBEWeather.None, int? randomSeed = null)
             : this(battleFormat, settings, new[] { ti0 }, new[] { ti1 }, battleTerrain: battleTerrain, weather: weather, randomSeed: randomSeed) { }
@@ -78,14 +90,74 @@ namespace Kermalis.PokemonBattleEngine.Battle
             {
                 throw new ArgumentNullException(nameof(ti1));
             }
-            _rand = new PBERandom(randomSeed ?? PBEUtils.GlobalRandom.RandomInt());
+            _rand = new PBERandom(randomSeed ?? PBEDataProvider.GlobalRandom.RandomInt());
+            BattleType = PBEBattleType.Trainer;
             BattleTerrain = battleTerrain;
             BattleFormat = battleFormat;
             Settings = settings;
             Weather = weather;
             Teams = new PBETeams(this, ti0, ti1, out ReadOnlyCollection<PBETrainer> trainers);
             Trainers = trainers;
-
+            QueueUpPokemon();
+        }
+        // Wild battle
+        public PBEBattle(PBEBattleFormat battleFormat, PBESettings settings, PBETrainerInfo ti, PBEWildInfo wi,
+            PBEBattleTerrain battleTerrain = PBEBattleTerrain.Plain, PBEWeather weather = PBEWeather.None, int? randomSeed = null)
+            : this(battleFormat, settings, new[] { ti }, wi, battleTerrain: battleTerrain, weather: weather, randomSeed: randomSeed) { }
+        public PBEBattle(PBEBattleFormat battleFormat, PBESettings settings, IReadOnlyList<PBETrainerInfo> ti, PBEWildInfo wi,
+            PBEBattleTerrain battleTerrain = PBEBattleTerrain.Plain, PBEWeather weather = PBEWeather.None, int? randomSeed = null)
+        {
+            if (battleFormat >= PBEBattleFormat.MAX)
+            {
+                throw new ArgumentOutOfRangeException(nameof(battleFormat));
+            }
+            if (battleTerrain >= PBEBattleTerrain.MAX)
+            {
+                throw new ArgumentOutOfRangeException(nameof(battleTerrain));
+            }
+            if (weather >= PBEWeather.MAX)
+            {
+                throw new ArgumentOutOfRangeException(nameof(weather));
+            }
+            if (settings == null)
+            {
+                throw new ArgumentNullException(nameof(settings));
+            }
+            if (!settings.IsReadOnly)
+            {
+                throw new ArgumentException("Settings must be read-only.", nameof(settings));
+            }
+            if (ti is null || ti.Any(t => t == null))
+            {
+                throw new ArgumentNullException(nameof(ti));
+            }
+            if (wi is null)
+            {
+                throw new ArgumentNullException(nameof(wi));
+            }
+            _rand = new PBERandom(randomSeed ?? PBEDataProvider.GlobalRandom.RandomInt());
+            BattleType = PBEBattleType.Wild;
+            BattleTerrain = battleTerrain;
+            BattleFormat = battleFormat;
+            Settings = settings;
+            Weather = weather;
+            Teams = new PBETeams(this, ti, wi, out ReadOnlyCollection<PBETrainer> trainers);
+            Trainers = trainers;
+            QueueUpPokemon();
+        }
+        // Remote battle
+        public PBEBattle(PBEBattlePacket packet)
+        {
+            BattleType = packet.BattleType;
+            BattleFormat = packet.BattleFormat;
+            BattleTerrain = packet.BattleTerrain;
+            Weather = packet.Weather;
+            Settings = packet.Settings;
+            Teams = new PBETeams(this, packet, out ReadOnlyCollection<PBETrainer> trainers);
+            Trainers = trainers;
+        }
+        private void QueueUpPokemon()
+        {
             void QueueUp(PBETeam team, int i, PBEFieldPosition pos)
             {
                 PBETrainer t;
@@ -103,6 +175,11 @@ namespace Kermalis.PokemonBattleEngine.Battle
                 {
                     PBEBattlePokemon p = party[i];
                     p.Trainer.SwitchInQueue.Add((p, pos));
+                    if (team.IsWild)
+                    {
+                        p.FieldPosition = pos;
+                        ActiveBattlers.Add(p);
+                    }
                 }
             }
             switch (BattleFormat)
@@ -148,69 +225,81 @@ namespace Kermalis.PokemonBattleEngine.Battle
             }
 
             BattleState = PBEBattleState.ReadyToBegin;
-            OnStateChanged?.Invoke(this);
-        }
-        public PBEBattle(PBEBattlePacket packet)
-        {
-            BattleFormat = packet.BattleFormat;
-            BattleTerrain = packet.BattleTerrain;
-            Weather = packet.Weather;
-            Settings = packet.Settings;
-            Teams = new PBETeams(this, packet, out ReadOnlyCollection<PBETrainer> trainers);
-            Trainers = trainers;
         }
         /// <summary>Begins the battle.</summary>
         /// <exception cref="InvalidOperationException">Thrown when <see cref="BattleState"/> is not <see cref="PBEBattleState.ReadyToBegin"/>.</exception>
         public void Begin()
         {
-            if (BattleState != PBEBattleState.ReadyToBegin)
+            if (_battleState != PBEBattleState.ReadyToBegin)
             {
                 throw new InvalidOperationException($"{nameof(BattleState)} must be {PBEBattleState.ReadyToBegin} to begin the battle.");
             }
+            BattleState = PBEBattleState.Processing;
             BroadcastBattle(); // The first packet sent is PBEBattlePacket which replays rely on
+            // Wild Pokémon appearing
+            if (BattleType == PBEBattleType.Wild)
+            {
+                PBETeam team = Teams[1];
+                PBETrainer trainer = team.Trainers[0];
+                int count = trainer.SwitchInQueue.Count;
+                var appearances = new PBEPkmnAppearedInfo[count];
+                for (int i = 0; i < count; i++)
+                {
+                    appearances[i] = new PBEPkmnAppearedInfo(trainer.SwitchInQueue[i].Pkmn);
+                }
+                trainer.SwitchInQueue.Clear();
+                BroadcastWildPkmnAppeared(appearances);
+            }
             SwitchesOrActions();
         }
         /// <summary>Runs a turn.</summary>
         /// <exception cref="InvalidOperationException">Thrown when <see cref="BattleState"/> is not <see cref="PBEBattleState.ReadyToRunTurn"/>.</exception>
         public void RunTurn()
         {
-            if (BattleState != PBEBattleState.ReadyToRunTurn)
+            if (_battleState != PBEBattleState.ReadyToRunTurn)
             {
                 throw new InvalidOperationException($"{nameof(BattleState)} must be {PBEBattleState.ReadyToRunTurn} to run a turn.");
             }
             BattleState = PBEBattleState.Processing;
-            OnStateChanged?.Invoke(this);
+            FleeCheck();
+            if (EndCheck())
+            {
+                return;
+            }
             DetermineTurnOrder();
             RunActionsInOrder();
             TurnEnded();
         }
         public void RunSwitches()
         {
-            if (BattleState != PBEBattleState.ReadyToRunSwitches)
+            if (_battleState != PBEBattleState.ReadyToRunSwitches)
             {
                 throw new InvalidOperationException($"{nameof(BattleState)} must be {PBEBattleState.ReadyToRunSwitches} to run switches.");
             }
             BattleState = PBEBattleState.Processing;
-            OnStateChanged?.Invoke(this);
+            FleeCheck();
+            if (EndCheck())
+            {
+                return;
+            }
             SwitchesOrActions();
         }
 
-        /// <summary>Sets <see cref="BattleState"/> to <see cref="PBEBattleState.Ended"/> and clears <see cref="OnNewEvent"/> and <see cref="OnStateChanged"/>. Does not touch <see cref="Winner"/>.</summary>
+        /// <summary>Sets <see cref="BattleState"/> to <see cref="PBEBattleState.Ended"/> and clears <see cref="OnNewEvent"/> and <see cref="OnStateChanged"/>. Does not touch <see cref="BattleResult"/>.</summary>
         public void SetEnded()
         {
-            if (BattleState != PBEBattleState.Ended)
+            if (_battleState != PBEBattleState.Ended)
             {
                 BattleState = PBEBattleState.Ended;
-                OnStateChanged?.Invoke(this);
                 OnNewEvent = null;
                 OnStateChanged = null;
             }
         }
-        private bool WinCheck()
+        private bool EndCheck()
         {
-            if (Winner != null)
+            if (BattleResult.HasValue)
             {
-                BroadcastWinner(Winner);
+                BroadcastBattleResult();
                 SetEnded();
                 return true;
             }
@@ -218,9 +307,6 @@ namespace Kermalis.PokemonBattleEngine.Battle
         }
         private void SwitchesOrActions()
         {
-            BattleState = PBEBattleState.Processing;
-            OnStateChanged?.Invoke(this);
-
             // Checking SwitchInQueue count since SwitchInsRequired is set to 0 after submitting switches
             PBETrainer[] trainersWithSwitchIns = Trainers.Where(t => t.SwitchInQueue.Count > 0).ToArray();
             if (trainersWithSwitchIns.Length > 0)
@@ -229,7 +315,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                 foreach (PBETrainer trainer in trainersWithSwitchIns)
                 {
                     int count = trainer.SwitchInQueue.Count;
-                    var switches = new PBEPkmnSwitchInPacket.PBESwitchInInfo[count];
+                    var switches = new PBEPkmnAppearedInfo[count];
                     for (int i = 0; i < count; i++)
                     {
                         (PBEBattlePokemon pkmn, PBEFieldPosition pos) = trainer.SwitchInQueue[i];
@@ -301,7 +387,6 @@ namespace Kermalis.PokemonBattleEngine.Battle
             if (trainersWithSwitchIns.Length > 0)
             {
                 BattleState = PBEBattleState.WaitingForSwitchIns;
-                OnStateChanged?.Invoke(this);
                 foreach (PBETrainer trainer in trainersWithSwitchIns)
                 {
                     BroadcastSwitchInRequest(trainer);
@@ -309,7 +394,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
             }
             else
             {
-                if (WinCheck())
+                if (EndCheck())
                 {
                     return;
                 }
@@ -369,7 +454,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                 foreach (PBETrainer trainer in Trainers)
                 {
                     trainer.ActionsRequired.Clear();
-                    trainer.ActionsRequired.AddRange(trainer.ActiveBattlers);
+                    trainer.ActionsRequired.AddRange(trainer.ActiveBattlersOrdered);
                 }
 
                 // #318 - We check pkmn on the field instead of conscious pkmn because of multi-battles
@@ -397,7 +482,6 @@ namespace Kermalis.PokemonBattleEngine.Battle
                     team.MonFaintedLastTurn = old;
                 }
                 BattleState = PBEBattleState.WaitingForActions;
-                OnStateChanged?.Invoke(this);
                 foreach (PBETrainer trainer in Trainers.Where(t => t.NumConsciousPkmn > 0))
                 {
                     BroadcastActionsRequest(trainer);
@@ -481,7 +565,6 @@ namespace Kermalis.PokemonBattleEngine.Battle
                     speed *= 2.0;
                 }
 
-                Debug.WriteLine("Team {0}'s {1}'s evaluated speed: {2}", pkmn.Team.Id, pkmn.Nickname, speed);
                 (PBEBattlePokemon Pokemon, double Speed) tup = (pkmn, speed);
                 if (evaluated.Count == 0)
                 {
@@ -521,38 +604,50 @@ namespace Kermalis.PokemonBattleEngine.Battle
                         }
                     }
                 }
-                Debug.WriteLine(evaluated.Select(t => $"{t.Pokemon.Team.Id} {t.Pokemon.Nickname} {t.Speed}").Print());
             }
             return evaluated.Select(t => t.Pokemon);
         }
         private void DetermineTurnOrder()
         {
-            _turnOrder.Clear();
-            IEnumerable<PBEBattlePokemon> pkmnSwitchingOut = ActiveBattlers.Where(p => p.TurnAction.Decision == PBETurnDecision.SwitchOut);
-            IEnumerable<PBEBattlePokemon> pkmnFighting = ActiveBattlers.Where(p => p.TurnAction.Decision == PBETurnDecision.Fight);
-            // Switching happens first:
-            _turnOrder.AddRange(GetActingOrder(pkmnSwitchingOut, true));
-            // Moves:
-            sbyte GetPrio(PBEBattlePokemon p)
+            int GetMovePrio(PBEBattlePokemon p)
             {
-                PBEMoveData mData = PBEMoveData.Data[p.TurnAction.FightMove];
-                return (sbyte)PBEUtils.Clamp(mData.Priority + (p.Ability == PBEAbility.Prankster && mData.Category == PBEMoveCategory.Status ? 1 : 0), sbyte.MinValue, sbyte.MaxValue);
-            }
-            foreach (sbyte priority in pkmnFighting.Select(p => GetPrio(p)).Distinct().OrderByDescending(p => p))
-            {
-                PBEBattlePokemon[] pkmnWithThisPriority = pkmnFighting.Where(p => GetPrio(p) == priority).ToArray();
-                if (pkmnWithThisPriority.Length > 0)
+                IPBEMoveData mData = PBEDataProvider.Instance.GetMoveData(p.TurnAction.FightMove);
+                int priority = mData.Priority;
+                if (p.Ability == PBEAbility.Prankster && mData.Category == PBEMoveCategory.Status)
                 {
-                    Debug.WriteLine("Priority {0} bracket...", priority);
-                    _turnOrder.AddRange(GetActingOrder(pkmnWithThisPriority, false));
+                    priority++;
                 }
+                return priority;
+            }
+
+            _turnOrder.Clear();
+            //const int PursuitPriority = +7;
+            const int SwitchRotatePriority = +6;
+            const int WildFleePriority = -7;
+            IEnumerable<PBEBattlePokemon> pkmnUsingItem = ActiveBattlers.Where(p => p.TurnAction?.Decision == PBETurnDecision.Item);
+            IEnumerable<PBEBattlePokemon> pkmnSwitchingOut = ActiveBattlers.Where(p => p.TurnAction?.Decision == PBETurnDecision.SwitchOut);
+            IEnumerable<PBEBattlePokemon> pkmnFighting = ActiveBattlers.Where(p => p.TurnAction?.Decision == PBETurnDecision.Fight);
+            IEnumerable<PBEBattlePokemon> wildFleeing = ActiveBattlers.Where(p => p.TurnAction?.Decision == PBETurnDecision.WildFlee);
+            // Item use happens first:
+            _turnOrder.AddRange(GetActingOrder(pkmnUsingItem, true));
+            // Get move/switch/rotate/wildflee priority sorted
+            IOrderedEnumerable<IGrouping<int, PBEBattlePokemon>> prios =
+                pkmnSwitchingOut.Select(p => (p, SwitchRotatePriority))
+                .Concat(pkmnFighting.Select(p => (p, GetMovePrio(p)))) // Get move priority
+                .Concat(wildFleeing.Select(p => (p, WildFleePriority)))
+                .GroupBy(t => t.Item2, t => t.p)
+                .OrderByDescending(t => t.Key);
+            foreach (IGrouping<int, PBEBattlePokemon> bracket in prios)
+            {
+                bool ignoreItemsThatActivate = bracket.Key == SwitchRotatePriority || bracket.Key == WildFleePriority;
+                _turnOrder.AddRange(GetActingOrder(bracket, ignoreItemsThatActivate));
             }
         }
         private void RunActionsInOrder()
         {
             foreach (PBEBattlePokemon pkmn in _turnOrder.ToArray()) // Copy the list so a faint or ejection does not cause a collection modified exception
             {
-                if (Winner != null) // Do not broadcast winner by calling WinCheck() in here; do it in TurnEnded()
+                if (BattleResult.HasValue) // Do not broadcast battle result by calling EndCheck() in here; do it in TurnEnded()
                 {
                     return;
                 }
@@ -565,9 +660,19 @@ namespace Kermalis.PokemonBattleEngine.Battle
                             UseMove(pkmn, pkmn.TurnAction.FightMove, pkmn.TurnAction.FightTargets);
                             break;
                         }
+                        case PBETurnDecision.Item:
+                        {
+                            UseItem(pkmn, pkmn.TurnAction.UseItem);
+                            break;
+                        }
                         case PBETurnDecision.SwitchOut:
                         {
                             SwitchTwoPokemon(pkmn, pkmn.Trainer.TryGetPokemon(pkmn.TurnAction.SwitchPokemonId));
+                            break;
+                        }
+                        case PBETurnDecision.WildFlee:
+                        {
+                            WildFleeCheck(pkmn);
                             break;
                         }
                         default: throw new ArgumentOutOfRangeException(nameof(pkmn.TurnAction.Decision));
@@ -577,7 +682,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
         }
         private void TurnEnded()
         {
-            if (WinCheck())
+            if (EndCheck())
             {
                 return;
             }
@@ -585,7 +690,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
             // Verified: Effects before LightScreen/LuckyChant/Reflect/Safeguard/TrickRoom
             DoTurnEndedEffects();
 
-            if (WinCheck())
+            if (EndCheck())
             {
                 return;
             }

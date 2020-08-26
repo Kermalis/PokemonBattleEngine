@@ -1,6 +1,5 @@
 ﻿using Kermalis.PokemonBattleEngine.Battle;
 using Kermalis.PokemonBattleEngine.Data;
-using Kermalis.PokemonBattleEngine.Utils;
 using Xunit;
 using Xunit.Abstractions;
 
@@ -23,7 +22,7 @@ namespace Kermalis.PokemonBattleEngineTests.Moves
         public void Roost_Works(PBESpecies species, bool swapTypes) // Swap types around since there's no primary flying-type
         {
             #region Setup
-            PBEUtils.GlobalRandom.Seed = 0;
+            PBEDataProvider.GlobalRandom.Seed = 0;
             PBESettings settings = PBESettings.DefaultSettings;
 
             var p0 = new TestPokemonCollection(1);
@@ -34,7 +33,6 @@ namespace Kermalis.PokemonBattleEngineTests.Moves
 
             var battle = new PBEBattle(PBEBattleFormat.Single, settings, new PBETrainerInfo(p0, "Trainer 0"), new PBETrainerInfo(p1, "Trainer 1"));
             battle.OnNewEvent += PBEBattle.ConsoleBattleEventHandler;
-            battle.Begin();
 
             PBETrainer t0 = battle.Trainers[0];
             PBETrainer t1 = battle.Trainers[1];
@@ -49,18 +47,20 @@ namespace Kermalis.PokemonBattleEngineTests.Moves
                 rooster.KnownType1 = type2;
                 rooster.KnownType2 = type1;
             }
+
+            battle.Begin();
             #endregion
 
             #region Use VacuumWave to lower HP
-            Assert.True(PBEBattle.SelectActionsIfValid(t0, new PBETurnAction(lucario, PBEMove.VacuumWave, PBETurnTarget.FoeCenter)));
-            Assert.True(PBEBattle.SelectActionsIfValid(t1, new PBETurnAction(rooster, PBEMove.Splash, PBETurnTarget.AllyCenter)));
+            Assert.Null(t0.SelectActionsIfValid(new PBETurnAction(lucario, PBEMove.VacuumWave, PBETurnTarget.FoeCenter)));
+            Assert.Null(t1.SelectActionsIfValid(new PBETurnAction(rooster, PBEMove.Splash, PBETurnTarget.AllyCenter)));
 
             battle.RunTurn();
             #endregion
 
             #region Use Roost and check
-            Assert.True(PBEBattle.SelectActionsIfValid(t0, new PBETurnAction(lucario, PBEMove.Earthquake, PBETurnTarget.FoeCenter)));
-            Assert.True(PBEBattle.SelectActionsIfValid(t1, new PBETurnAction(rooster, PBEMove.Roost, PBETurnTarget.AllyCenter)));
+            Assert.Null(t0.SelectActionsIfValid(new PBETurnAction(lucario, PBEMove.Earthquake, PBETurnTarget.FoeCenter)));
+            Assert.Null(t1.SelectActionsIfValid(new PBETurnAction(rooster, PBEMove.Roost, PBETurnTarget.AllyCenter)));
 
             battle.RunTurn();
 

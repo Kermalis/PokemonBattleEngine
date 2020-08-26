@@ -25,7 +25,7 @@ namespace Kermalis.PokemonBattleEngine.Packets
             {
                 w.Write(Code);
                 (Party = party).ToBytes(w);
-                Data = new ReadOnlyCollection<byte>(ms.ToArray());
+                Data = new ReadOnlyCollection<byte>(ms.GetBuffer());
             }
         }
         internal PBEPartyResponsePacket(byte[] data, EndianBinaryReader r)
@@ -53,7 +53,7 @@ namespace Kermalis.PokemonBattleEngine.Packets
                 w.Write(Code);
                 w.Write(party.Settings.ToBytes());
                 (Party = party).ToBytes(w);
-                Data = new ReadOnlyCollection<byte>(ms.ToArray());
+                Data = new ReadOnlyCollection<byte>(ms.GetBuffer());
             }
         }
         internal PBELegalPartyResponsePacket(byte[] data, EndianBinaryReader r)

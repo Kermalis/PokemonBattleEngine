@@ -9,7 +9,7 @@ using System.Linq;
 namespace Kermalis.PokemonBattleEngine.AI
 {
     /// <summary>Creates valid decisions for a team in a battle. Decisions may not be valid for custom settings and/or move changes.</summary>
-    public static class PBEAI
+    public static partial class PBEAI
     {
         // TODO: Control multiple trainers of a multi battle team
 
@@ -17,15 +17,20 @@ namespace Kermalis.PokemonBattleEngine.AI
         /// <param name="trainer">The trainer to create actions for.</param>
         /// <exception cref="InvalidOperationException">Thrown when <paramref name="trainer"/> has no active battlers or <paramref name="trainer"/>'s <see cref="PBETrainer.Battle"/>'s <see cref="PBEBattle.BattleState"/> is not <see cref="PBEBattleState.WaitingForActions"/>.</exception>
         /// <exception cref="ArgumentOutOfRangeException">Thrown when a Pokémon has no moves, the AI tries to use a move with invalid targets, or <paramref name="trainer"/>'s <see cref="PBETrainer.Battle"/>'s <see cref="PBEBattle.BattleFormat"/> is invalid.</exception>
-        public static PBETurnAction[] CreateActions(PBETrainer trainer)
+        public static void CreateAIActions(this PBETrainer trainer)
         {
-            if (trainer == null)
+            if (trainer is null)
             {
                 throw new ArgumentNullException(nameof(trainer));
             }
             if (trainer.Battle.BattleState != PBEBattleState.WaitingForActions)
             {
                 throw new InvalidOperationException($"{nameof(trainer.Battle.BattleState)} must be {PBEBattleState.WaitingForActions} to create actions.");
+            }
+            if (trainer.IsWild)
+            {
+                trainer.CreateWildAIActions();
+                return;
             }
             var actions = new PBETurnAction[trainer.ActionsRequired.Count];
             var standBy = new List<PBEBattlePokemon>();
@@ -37,7 +42,7 @@ namespace Kermalis.PokemonBattleEngine.AI
                 {
                     actions[i] = new PBETurnAction(user, PBEMove.Struggle, PBEBattleUtils.GetPossibleTargets(user, user.GetMoveTargets(PBEMove.Struggle))[0]);
                 }
-                // If a Pokémon has a temp locked move (Dig, Dive, Shadow Force) it must be used
+                // If a Pokémon has a temp locked move (Dig, Dive, ShadowForce) it must be used
                 else if (user.TempLockedMove != PBEMove.None)
                 {
                     actions[i] = new PBETurnAction(user, user.TempLockedMove, user.TempLockedTargets);
@@ -53,7 +58,7 @@ namespace Kermalis.PokemonBattleEngine.AI
                         PBEMove move = usableMoves[m];
                         PBEType moveType = user.GetMoveType(move);
                         PBEMoveTarget moveTargets = user.GetMoveTargets(move);
-                        PBETurnTarget[] possibleTargets = PBEMoveData.IsSpreadMove(moveTargets)
+                        PBETurnTarget[] possibleTargets = PBEDataUtils.IsSpreadMove(moveTargets)
                             ? new PBETurnTarget[] { PBEBattleUtils.GetSpreadMoveTargets(user, moveTargets) }
                             : PBEBattleUtils.GetPossibleTargets(user, moveTargets);
                         foreach (PBETurnTarget possibleTarget in possibleTargets)
@@ -94,7 +99,7 @@ namespace Kermalis.PokemonBattleEngine.AI
                             {
                                 score = 0;
                                 targets.RemoveAll(p => p == null);
-                                PBEMoveData mData = PBEMoveData.Data[move];
+                                IPBEMoveData mData = PBEDataProvider.Instance.GetMoveData(move);
                                 if (!mData.IsMoveUsable())
                                 {
                                     throw new ArgumentOutOfRangeException(nameof(trainer), $"{move} is not yet implemented in Pokémon Battle Engine.");
@@ -269,6 +274,7 @@ namespace Kermalis.PokemonBattleEngine.AI
                                         break;
                                     }
                                     case PBEMoveEffect.ChangeTarget_EVA:
+                                    case PBEMoveEffect.Minimize:
                                     {
                                         foreach (PBEBattlePokemon target in targets)
                                         {
@@ -592,6 +598,7 @@ namespace Kermalis.PokemonBattleEngine.AI
                                     case PBEMoveEffect.Selfdestruct:
                                     case PBEMoveEffect.SetDamage:
                                     case PBEMoveEffect.SimpleBeam:
+                                    case PBEMoveEffect.Sketch:
                                     case PBEMoveEffect.Snore:
                                     case PBEMoveEffect.Soak:
                                     case PBEMoveEffect.Spikes:
@@ -610,7 +617,7 @@ namespace Kermalis.PokemonBattleEngine.AI
                                         // TODO
                                         break;
                                     }
-                                    default: throw new ArgumentOutOfRangeException(nameof(PBEMoveData.Effect));
+                                    default: throw new ArgumentOutOfRangeException(nameof(IPBEMoveData.Effect));
                                 }
                             }
                             possibleActions.Add((new PBETurnAction(user, move, possibleTarget), score));
@@ -647,7 +654,7 @@ namespace Kermalis.PokemonBattleEngine.AI
                     IOrderedEnumerable<(PBETurnAction Action, double Score)> byScore = possibleActions.OrderByDescending(t => t.Score);
                     Debug.WriteLine("{0}'s possible actions: {1}", user.Nickname, byScore.Select(t => ToDebugString(t)).Print());
                     double bestScore = byScore.First().Score;
-                    actions[i] = PBEUtils.GlobalRandom.RandomElement(byScore.Where(t => t.Score == bestScore).ToArray()).Action; // Pick random action of the ones that tied for best score
+                    actions[i] = PBEDataProvider.GlobalRandom.RandomElement(byScore.Where(t => t.Score == bestScore).ToArray()).Action; // Pick random action of the ones that tied for best score
                 }
                 // Action was chosen, finish up for this Pokémon
                 if (actions[i].Decision == PBETurnDecision.SwitchOut)
@@ -655,7 +662,11 @@ namespace Kermalis.PokemonBattleEngine.AI
                     standBy.Add(trainer.TryGetPokemon(actions[i].SwitchPokemonId));
                 }
             }
-            return actions;
+            string valid = trainer.SelectActionsIfValid(actions);
+            if (valid != null)
+            {
+                throw new Exception("AI created bad actions. - " + valid);
+            }
         }
 
         private static void ScoreStatChange(PBEBattlePokemon user, PBEBattlePokemon target, PBEStat stat, int change, ref double score)
@@ -672,7 +683,7 @@ namespace Kermalis.PokemonBattleEngine.AI
         }
         private static bool IsTeammateUsingEffect(IEnumerable<PBETurnAction> actions, PBEMoveEffect effect)
         {
-            return actions.Any(a => a != null && a.Decision == PBETurnDecision.Fight && PBEMoveData.Data[a.FightMove].Effect == effect);
+            return actions.Any(a => a != null && a.Decision == PBETurnDecision.Fight && PBEDataProvider.Instance.GetMoveData(a.FightMove).Effect == effect);
         }
         private static double HPAware(double hpPercentage, double zeroPercentScore, double hundredPercentScore)
         {
@@ -683,7 +694,7 @@ namespace Kermalis.PokemonBattleEngine.AI
         /// <param name="trainer">The trainer to create switches for.</param>
         /// <exception cref="InvalidOperationException">Thrown when <paramref name="trainer"/> does not require switch-ins or <paramref name="trainer"/>'s <see cref="PBETrainer.Battle"/>'s <see cref="PBEBattle.BattleState"/> is not <see cref="PBEBattleState.WaitingForActions"/>.</exception>
         /// <exception cref="ArgumentOutOfRangeException">Thrown when <paramref name="trainer"/>'s <see cref="PBETrainer.Battle"/>'s <see cref="PBEBattle.BattleFormat"/> is invalid.</exception>
-        public static PBESwitchIn[] CreateSwitches(PBETrainer trainer)
+        public static void CreateAISwitches(this PBETrainer trainer)
         {
             if (trainer == null)
             {
@@ -698,7 +709,7 @@ namespace Kermalis.PokemonBattleEngine.AI
                 throw new InvalidOperationException($"{nameof(trainer)} must require switch-ins.");
             }
             PBEBattlePokemon[] available = trainer.Party.Where(p => p.FieldPosition == PBEFieldPosition.None && p.HP > 0).ToArray();
-            PBEUtils.GlobalRandom.Shuffle(available);
+            PBEDataProvider.GlobalRandom.Shuffle(available);
             var availablePositions = new List<PBEFieldPosition>();
             switch (trainer.Battle.BattleFormat)
             {
@@ -743,7 +754,11 @@ namespace Kermalis.PokemonBattleEngine.AI
             {
                 switches[i] = new PBESwitchIn(available[i], availablePositions[i]);
             }
-            return switches;
+            string valid = trainer.SelectSwitchesIfValid(switches);
+            if (valid != null)
+            {
+                throw new Exception("AI created bad switches. - " + valid);
+            }
         }
     }
 }

@@ -1,7 +1,6 @@
 ﻿using Kermalis.PokemonBattleEngine.Battle;
 using Kermalis.PokemonBattleEngine.Data;
 using Kermalis.PokemonBattleEngine.Packets;
-using Kermalis.PokemonBattleEngine.Utils;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -22,7 +21,7 @@ namespace Kermalis.PokemonBattleEngineTests
     {
         public TestUtils()
         {
-            PBEUtils.InitEngine(string.Empty);
+            PBEDataProvider.InitEngine(string.Empty);
         }
 
         #region Output
@@ -121,6 +120,7 @@ namespace Kermalis.PokemonBattleEngineTests
         public byte Friendship { get; set; }
         public PBEAbility Ability { get; set; }
         public PBENature Nature { get; set; }
+        public PBEItem CaughtBall { get; set; }
         public IPBEStatCollection EffortValues { get; set; }
         public IPBEReadOnlyStatCollection IndividualValues { get; set; }
         public TestMoveset Moveset { get; set; }
@@ -132,7 +132,8 @@ namespace Kermalis.PokemonBattleEngineTests
             Form = form;
             Level = level;
             Nickname = species.ToString();
-            Gender = PBEUtils.GlobalRandom.RandomGender(PBEPokemonData.GetData(species, form).GenderRatio);
+            Gender = PBEDataProvider.GlobalRandom.RandomGender(PBEDataProvider.Instance.GetPokemonData(species, form).GenderRatio);
+            CaughtBall = PBEItem.PokeBall;
             EffortValues = new PBEStatCollection(0, 0, 0, 0, 0, 0);
             IndividualValues = new PBEStatCollection(0, 0, 0, 0, 0, 0);
             Moveset = new TestMoveset(settings, moves);

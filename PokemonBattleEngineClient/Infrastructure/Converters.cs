@@ -19,8 +19,8 @@ namespace Kermalis.PokemonBattleEngineClient.Infrastructure
                 return AvaloniaProperty.UnsetValue;
             }
             PBEForm form = true ? 0 : (PBEForm)values[1]; // TODO
-            var localized = PBELocalizedString.GetFormName(species, form);
-            return StringRenderer.Render(localized.ToString(), parameter?.ToString());
+            var localized = PBEDataProvider.Instance.GetFormName(species, form);
+            return StringRenderer.Render(localized.FromPBECultureInfo(), parameter?.ToString());
         }
     }
     public sealed class ObjectToTextBitmapConverter : IValueConverter
@@ -32,20 +32,20 @@ namespace Kermalis.PokemonBattleEngineClient.Infrastructure
             {
                 return AvaloniaProperty.UnsetValue;
             }
-            PBELocalizedString localized = null;
+            IPBELocalizedString localized = null;
             switch (value)
             {
-                case PBEAbility ability: localized = PBELocalizedString.GetAbilityName(ability); break;
-                case PBEGender gender: localized = PBELocalizedString.GetGenderName(gender); break;
-                case PBEItem item: localized = PBELocalizedString.GetItemName(item); break;
-                case PBELocalizedString l: localized = l; break;
-                case PBEMove move: localized = PBELocalizedString.GetMoveName(move); break;
-                case PBENature nature: localized = PBELocalizedString.GetNatureName(nature); break;
-                case PBESpecies species: localized = PBELocalizedString.GetSpeciesName(species); break;
-                case PBEStat stat: localized = PBELocalizedString.GetStatName(stat); break;
-                case PBEType type: localized = PBELocalizedString.GetTypeName(type); break;
+                case PBEAbility ability: localized = PBEDataProvider.Instance.GetAbilityName(ability); break;
+                case PBEGender gender: localized = PBEDataProvider.Instance.GetGenderName(gender); break;
+                case PBEItem item: localized = PBEDataProvider.Instance.GetItemName(item); break;
+                case IPBELocalizedString l: localized = l; break;
+                case PBEMove move: localized = PBEDataProvider.Instance.GetMoveName(move); break;
+                case PBENature nature: localized = PBEDataProvider.Instance.GetNatureName(nature); break;
+                case PBESpecies species: localized = PBEDataProvider.Instance.GetSpeciesName(species); break;
+                case PBEStat stat: localized = PBEDataProvider.Instance.GetStatName(stat); break;
+                case PBEType type: localized = PBEDataProvider.Instance.GetTypeName(type); break;
             }
-            return StringRenderer.Render(localized == null ? value.ToString() : localized.ToString(), parameter?.ToString()) ?? AvaloniaProperty.UnsetValue;
+            return StringRenderer.Render(localized is null ? value.ToString() : localized.FromPBECultureInfo(), parameter?.ToString()) ?? AvaloniaProperty.UnsetValue;
         }
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
         {

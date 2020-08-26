@@ -1,6 +1,5 @@
 ﻿using Kermalis.PokemonBattleEngine.Battle;
 using Kermalis.PokemonBattleEngine.Data;
-using Kermalis.PokemonBattleEngine.Utils;
 using Xunit;
 using Xunit.Abstractions;
 
@@ -23,7 +22,7 @@ namespace Kermalis.PokemonBattleEngineTests.Moves
         public void Protection_Counter_Resets(PBEMove move)
         {
             #region Setup
-            PBEUtils.GlobalRandom.Seed = 0;
+            PBEDataProvider.GlobalRandom.Seed = 0;
             PBESettings settings = PBESettings.DefaultSettings;
 
             var p0 = new TestPokemonCollection(1);
@@ -34,17 +33,18 @@ namespace Kermalis.PokemonBattleEngineTests.Moves
 
             var battle = new PBEBattle(PBEBattleFormat.Single, settings, new PBETrainerInfo(p0, "Trainer 0"), new PBETrainerInfo(p1, "Trainer 1"));
             battle.OnNewEvent += PBEBattle.ConsoleBattleEventHandler;
-            battle.Begin();
 
             PBETrainer t0 = battle.Trainers[0];
             PBETrainer t1 = battle.Trainers[1];
             PBEBattlePokemon mienshao = t0.Party[0];
             PBEBattlePokemon magikarp = t1.Party[0];
+
+            battle.Begin();
             #endregion
 
             #region Use move
-            Assert.True(PBEBattle.SelectActionsIfValid(t0, new PBETurnAction(mienshao, move, PBETurnTarget.AllyCenter)));
-            Assert.True(PBEBattle.SelectActionsIfValid(t1, new PBETurnAction(magikarp, PBEMove.Splash, PBETurnTarget.AllyCenter)));
+            Assert.Null(t0.SelectActionsIfValid(new PBETurnAction(mienshao, move, PBETurnTarget.AllyCenter)));
+            Assert.Null(t1.SelectActionsIfValid(new PBETurnAction(magikarp, PBEMove.Splash, PBETurnTarget.AllyCenter)));
 
             battle.RunTurn();
 
@@ -52,8 +52,8 @@ namespace Kermalis.PokemonBattleEngineTests.Moves
             #endregion
 
             #region Use Calm Mind and check
-            Assert.True(PBEBattle.SelectActionsIfValid(t0, new PBETurnAction(mienshao, PBEMove.CalmMind, PBETurnTarget.AllyCenter)));
-            Assert.True(PBEBattle.SelectActionsIfValid(t1, new PBETurnAction(magikarp, PBEMove.Splash, PBETurnTarget.AllyCenter)));
+            Assert.Null(t0.SelectActionsIfValid(new PBETurnAction(mienshao, PBEMove.CalmMind, PBETurnTarget.AllyCenter)));
+            Assert.Null(t1.SelectActionsIfValid(new PBETurnAction(magikarp, PBEMove.Splash, PBETurnTarget.AllyCenter)));
 
             battle.RunTurn();
 
@@ -71,7 +71,7 @@ namespace Kermalis.PokemonBattleEngineTests.Moves
         public void Feint_And_QuickGuard(bool ally)
         {
             #region Setup
-            PBEUtils.GlobalRandom.Seed = 0;
+            PBEDataProvider.GlobalRandom.Seed = 0;
             PBESettings settings = PBESettings.DefaultSettings;
 
             var p0 = new TestPokemonCollection(2);
@@ -83,20 +83,21 @@ namespace Kermalis.PokemonBattleEngineTests.Moves
 
             var battle = new PBEBattle(PBEBattleFormat.Double, settings, new PBETrainerInfo(p0, "Trainer 0"), new PBETrainerInfo(p1, "Trainer 1"));
             battle.OnNewEvent += PBEBattle.ConsoleBattleEventHandler;
-            battle.Begin();
 
             PBETrainer t0 = battle.Trainers[0];
             PBETrainer t1 = battle.Trainers[1];
             PBEBattlePokemon lucario = t0.Party[0];
             PBEBattlePokemon mienshao = t0.Party[1];
             PBEBattlePokemon mrmime = t1.Party[0];
+
+            battle.Begin();
             #endregion
 
             #region Use move and check
-            Assert.True(PBEBattle.SelectActionsIfValid(t0,
+            Assert.Null(t0.SelectActionsIfValid(
                 new PBETurnAction(lucario, PBEMove.Feint, ally ? PBETurnTarget.AllyRight : PBETurnTarget.FoeLeft),
                 new PBETurnAction(mienshao, PBEMove.QuickGuard, PBETurnTarget.AllyLeft | PBETurnTarget.AllyRight)));
-            Assert.True(PBEBattle.SelectActionsIfValid(t1,
+            Assert.Null(t1.SelectActionsIfValid(
                 new PBETurnAction(mrmime, PBEMove.QuickGuard, PBETurnTarget.AllyLeft | PBETurnTarget.AllyRight)));
 
             battle.RunTurn();
@@ -113,7 +114,7 @@ namespace Kermalis.PokemonBattleEngineTests.Moves
         public void UserProtection_Works()
         {
             #region Setup
-            PBEUtils.GlobalRandom.Seed = 0;
+            PBEDataProvider.GlobalRandom.Seed = 0;
             PBESettings settings = PBESettings.DefaultSettings;
 
             var p0 = new TestPokemonCollection(1);
@@ -124,17 +125,18 @@ namespace Kermalis.PokemonBattleEngineTests.Moves
 
             var battle = new PBEBattle(PBEBattleFormat.Single, settings, new PBETrainerInfo(p0, "Trainer 0"), new PBETrainerInfo(p1, "Trainer 1"));
             battle.OnNewEvent += PBEBattle.ConsoleBattleEventHandler;
-            battle.Begin();
 
             PBETrainer t0 = battle.Trainers[0];
             PBETrainer t1 = battle.Trainers[1];
             PBEBattlePokemon lucario = t0.Party[0];
             PBEBattlePokemon mienshao = t1.Party[0];
+
+            battle.Begin();
             #endregion
 
             #region Use move and check
-            Assert.True(PBEBattle.SelectActionsIfValid(t0, new PBETurnAction(lucario, PBEMove.Tackle, PBETurnTarget.FoeCenter)));
-            Assert.True(PBEBattle.SelectActionsIfValid(t1, new PBETurnAction(mienshao, PBEMove.Protect, PBETurnTarget.AllyCenter)));
+            Assert.Null(t0.SelectActionsIfValid(new PBETurnAction(lucario, PBEMove.Tackle, PBETurnTarget.FoeCenter)));
+            Assert.Null(t1.SelectActionsIfValid(new PBETurnAction(mienshao, PBEMove.Protect, PBETurnTarget.AllyCenter)));
 
             battle.RunTurn();
 
@@ -152,7 +154,7 @@ namespace Kermalis.PokemonBattleEngineTests.Moves
         public void TeamProtection_Works(PBEMove move, PBEMove move2, PBETeamStatus teamStatus)
         {
             #region Setup
-            PBEUtils.GlobalRandom.Seed = 0;
+            PBEDataProvider.GlobalRandom.Seed = 0;
             PBESettings settings = PBESettings.DefaultSettings;
 
             var p0 = new TestPokemonCollection(1);
@@ -163,17 +165,18 @@ namespace Kermalis.PokemonBattleEngineTests.Moves
 
             var battle = new PBEBattle(PBEBattleFormat.Single, settings, new PBETrainerInfo(p0, "Trainer 0"), new PBETrainerInfo(p1, "Trainer 1"));
             battle.OnNewEvent += PBEBattle.ConsoleBattleEventHandler;
-            battle.Begin();
 
             PBETrainer t0 = battle.Trainers[0];
             PBETrainer t1 = battle.Trainers[1];
             PBEBattlePokemon mienshao = t0.Party[0];
             PBEBattlePokemon lucario = t1.Party[0];
+
+            battle.Begin();
             #endregion
 
             #region Use move and check
-            Assert.True(PBEBattle.SelectActionsIfValid(t0, new PBETurnAction(mienshao, move, PBETurnTarget.AllyCenter)));
-            Assert.True(PBEBattle.SelectActionsIfValid(t1, new PBETurnAction(lucario, move2, PBETurnTarget.FoeCenter)));
+            Assert.Null(t0.SelectActionsIfValid(new PBETurnAction(mienshao, move, PBETurnTarget.AllyCenter)));
+            Assert.Null(t1.SelectActionsIfValid(new PBETurnAction(lucario, move2, PBETurnTarget.FoeCenter)));
 
             battle.RunTurn();
 

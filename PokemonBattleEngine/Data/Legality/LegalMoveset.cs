@@ -1,5 +1,4 @@
-﻿using Kermalis.PokemonBattleEngine.Utils;
-using System;
+﻿using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -30,7 +29,7 @@ namespace Kermalis.PokemonBattleEngine.Data.Legality
                     PBEMove old = _move;
                     if (old != value)
                     {
-                        if (value >= PBEMove.MAX || (value != PBEMove.None && !PBEMoveData.IsMoveUsable(value)))
+                        if (value >= PBEMove.MAX || (value != PBEMove.None && !PBEDataUtils.IsMoveUsable(value)))
                         {
                             throw new ArgumentOutOfRangeException(nameof(value));
                         }
@@ -426,13 +425,13 @@ namespace Kermalis.PokemonBattleEngine.Data.Legality
                 }
                 else
                 {
-                    PBEMove move = PBEUtils.GlobalRandom.RandomElement(allowed);
+                    PBEMove move = PBEDataProvider.GlobalRandom.RandomElement(allowed);
                     if (i < Settings.NumMoves - 1)
                     {
                         blacklist.Add(move);
                     }
                     slot.Move = move;
-                    slot.PPUps = (byte)PBEUtils.GlobalRandom.RandomInt(0, Settings.MaxPPUps);
+                    slot.PPUps = (byte)PBEDataProvider.GlobalRandom.RandomInt(0, Settings.MaxPPUps);
                 }
             }
             SetEditables();

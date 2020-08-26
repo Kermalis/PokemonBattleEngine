@@ -1,4 +1,4 @@
-﻿using Kermalis.PokemonBattleEngine.Utils;
+﻿using Kermalis.PokemonBattleEngine.Data;
 using Microsoft.Data.Sqlite;
 using System;
 
@@ -30,7 +30,7 @@ namespace Kermalis.PokemonBattleEngineExtras
             {
                 case Extra.AIBattle:
                 {
-                    PBEUtils.InitEngine(string.Empty);
+                    PBEDataProvider.InitEngine(string.Empty);
                     AIBattleDemo.Run();
                     break;
                 }

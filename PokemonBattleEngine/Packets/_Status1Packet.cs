@@ -1,6 +1,5 @@
 ﻿using Kermalis.EndianBinaryIO;
 using Kermalis.PokemonBattleEngine.Battle;
-using Kermalis.PokemonBattleEngine.Data;
 using System.Collections.ObjectModel;
 using System.IO;
 
@@ -30,7 +29,7 @@ namespace Kermalis.PokemonBattleEngine.Packets
                 w.Write(Pokemon2 = pokemon2.FieldPosition);
                 w.Write(Status1 = status1);
                 w.Write(StatusAction = statusAction);
-                Data = new ReadOnlyCollection<byte>(ms.ToArray());
+                Data = new ReadOnlyCollection<byte>(ms.GetBuffer());
             }
         }
         internal PBEStatus1Packet(byte[] data, EndianBinaryReader r, PBEBattle battle)

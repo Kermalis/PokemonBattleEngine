@@ -1,6 +1,5 @@
 ﻿using Kermalis.PokemonBattleEngine.Battle;
 using Kermalis.PokemonBattleEngine.Data;
-using Kermalis.PokemonBattleEngine.Utils;
 using Xunit;
 using Xunit.Abstractions;
 
@@ -25,7 +24,7 @@ namespace Kermalis.PokemonBattleEngineTests.Moves
         public void HelpingHand_HitsSemiInvulnerable(PBEMove move, PBEStatus2 status2)
         {
             #region Setup
-            PBEUtils.GlobalRandom.Seed = 0;
+            PBEDataProvider.GlobalRandom.Seed = 0;
             PBESettings settings = PBESettings.DefaultSettings;
 
             var p0 = new TestPokemonCollection(2);
@@ -37,20 +36,21 @@ namespace Kermalis.PokemonBattleEngineTests.Moves
 
             var battle = new PBEBattle(PBEBattleFormat.Double, settings, new PBETrainerInfo(p0, "Trainer 0"), new PBETrainerInfo(p1, "Trainer 1"));
             battle.OnNewEvent += PBEBattle.ConsoleBattleEventHandler;
-            battle.Begin();
 
             PBETrainer t0 = battle.Trainers[0];
             PBETrainer t1 = battle.Trainers[1];
             PBEBattlePokemon minun = t0.Party[0];
             PBEBattlePokemon giratina = t0.Party[1];
             PBEBattlePokemon magikarp = t1.Party[0];
+
+            battle.Begin();
             #endregion
 
             #region Use Shadow Force
-            Assert.True(PBEBattle.SelectActionsIfValid(t0,
+            Assert.Null(t0.SelectActionsIfValid(
                 new PBETurnAction(minun, PBEMove.Splash, PBETurnTarget.AllyLeft),
                 new PBETurnAction(giratina, move, PBETurnTarget.FoeLeft)));
-            Assert.True(PBEBattle.SelectActionsIfValid(t1,
+            Assert.Null(t1.SelectActionsIfValid(
                 new PBETurnAction(magikarp, PBEMove.Splash, PBETurnTarget.AllyLeft)));
 
             battle.RunTurn();
@@ -59,10 +59,10 @@ namespace Kermalis.PokemonBattleEngineTests.Moves
             #endregion
 
             #region Use Helping Hand and check
-            Assert.True(PBEBattle.SelectActionsIfValid(t0,
+            Assert.Null(t0.SelectActionsIfValid(
                 new PBETurnAction(minun, PBEMove.HelpingHand, PBETurnTarget.AllyRight),
                 new PBETurnAction(giratina, move, PBETurnTarget.FoeLeft)));
-            Assert.True(PBEBattle.SelectActionsIfValid(t1,
+            Assert.Null(t1.SelectActionsIfValid(
                 new PBETurnAction(magikarp, PBEMove.Splash, PBETurnTarget.AllyLeft)));
 
             battle.RunTurn();
@@ -79,7 +79,7 @@ namespace Kermalis.PokemonBattleEngineTests.Moves
         public void HelpingHand_Fails_If_Self()
         {
             #region Setup
-            PBEUtils.GlobalRandom.Seed = 0;
+            PBEDataProvider.GlobalRandom.Seed = 0;
             PBESettings settings = PBESettings.DefaultSettings;
 
             var p0 = new TestPokemonCollection(1);
@@ -90,17 +90,18 @@ namespace Kermalis.PokemonBattleEngineTests.Moves
 
             var battle = new PBEBattle(PBEBattleFormat.Single, settings, new PBETrainerInfo(p0, "Trainer 0"), new PBETrainerInfo(p1, "Trainer 1"));
             battle.OnNewEvent += PBEBattle.ConsoleBattleEventHandler;
-            battle.Begin();
 
             PBETrainer t0 = battle.Trainers[0];
             PBETrainer t1 = battle.Trainers[1];
             PBEBattlePokemon minun = t0.Party[0];
             PBEBattlePokemon magikarp = t1.Party[0];
+
+            battle.Begin();
             #endregion
 
             #region Use Helping Hand and check
-            Assert.True(PBEBattle.SelectActionsIfValid(t0, new PBETurnAction(minun, PBEMove.HelpingHand, PBETurnTarget.AllyCenter)));
-            Assert.True(PBEBattle.SelectActionsIfValid(t1, new PBETurnAction(magikarp, PBEMove.Splash, PBETurnTarget.AllyCenter)));
+            Assert.Null(t0.SelectActionsIfValid(new PBETurnAction(minun, PBEMove.HelpingHand, PBETurnTarget.AllyCenter)));
+            Assert.Null(t1.SelectActionsIfValid(new PBETurnAction(magikarp, PBEMove.Splash, PBETurnTarget.AllyCenter)));
 
             battle.RunTurn();
 

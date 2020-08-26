@@ -35,7 +35,7 @@ namespace Kermalis.PokemonBattleEngine.Packets
                     case PBEPkmnHPChangedPacket.Code: return new PBEPkmnHPChangedPacket(data, r, battle);
                     case PBEHazePacket.Code: return new PBEHazePacket(data);
                     case PBEPkmnSwitchOutPacket.Code: return new PBEPkmnSwitchOutPacket(data, r, battle);
-                    //case PBEMoveMissedPacket.Code: return new PBEMoveMissedPacket(data, r, battle);
+                    case PBEWildPkmnAppearedPacket.Code: return new PBEWildPkmnAppearedPacket(data, r);
                     case PBEPkmnFaintedPacket.Code: return new PBEPkmnFaintedPacket(data, r, battle);
                     case PBEMoveCritPacket.Code: return new PBEMoveCritPacket(data, r, battle);
                     case PBEPkmnStatChangedPacket.Code: return new PBEPkmnStatChangedPacket(data, r, battle);
@@ -54,7 +54,7 @@ namespace Kermalis.PokemonBattleEngine.Packets
                     case PBESwitchInRequestPacket.Code: return new PBESwitchInRequestPacket(data, r, battle);
                     case PBESwitchInResponsePacket.Code: return new PBESwitchInResponsePacket(data, r);
                     case PBEIllusionPacket.Code: return new PBEIllusionPacket(data, r, battle);
-                    case PBEWinnerPacket.Code: return new PBEWinnerPacket(data, r, battle);
+                    case PBEBattleResultPacket.Code: return new PBEBattleResultPacket(data, r);
                     case PBETurnBeganPacket.Code: return new PBETurnBeganPacket(data, r);
                     case PBEMoveLockPacket.Code: return new PBEMoveLockPacket(data, r, battle);
                     case PBEPkmnFormChangedPacket.Code: return new PBEPkmnFormChangedPacket(data, r, battle);
@@ -72,6 +72,11 @@ namespace Kermalis.PokemonBattleEngine.Packets
                     case PBEPkmnHPChangedPacket_Hidden.Code: return new PBEPkmnHPChangedPacket_Hidden(data, r, battle);
                     case PBEPkmnSwitchInPacket_Hidden.Code: return new PBEPkmnSwitchInPacket_Hidden(data, r, battle);
                     case PBEPkmnSwitchOutPacket_Hidden.Code: return new PBEPkmnSwitchOutPacket_Hidden(data, r, battle);
+                    case PBEFleeResponsePacket.Code: return new PBEFleeResponsePacket(data);
+                    case PBEFleeFailedPacket.Code: return new PBEFleeFailedPacket(data, r, battle);
+                    case PBEItemTurnPacket.Code: return new PBEItemTurnPacket(data, r, battle);
+                    case PBECapturePacket.Code: return new PBECapturePacket(data, r, battle);
+                    case PBEWildPkmnAppearedPacket_Hidden.Code: return new PBEWildPkmnAppearedPacket_Hidden(data, r);
                     default: throw new InvalidDataException();
                 }
             }

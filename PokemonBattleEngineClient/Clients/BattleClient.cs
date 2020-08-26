@@ -1,5 +1,4 @@
 ﻿using Kermalis.PokemonBattleEngine.Battle;
-using Kermalis.PokemonBattleEngine.Data;
 using Kermalis.PokemonBattleEngine.Packets;
 using Kermalis.PokemonBattleEngineClient.Views;
 using System;
@@ -30,6 +29,14 @@ namespace Kermalis.PokemonBattleEngineClient.Clients
 
         public abstract void Dispose();
 
+        protected void ShowAllPokemon()
+        {
+            foreach (PBEBattlePokemon pkmn in Battle.ActiveBattlers)
+            {
+                BattleView.Field.ShowPokemon(pkmn);
+            }
+        }
+
         #region Actions
         private readonly List<PBEBattlePokemon> _actions = new List<PBEBattlePokemon>(3);
         public List<PBEBattlePokemon> StandBy { get; } = new List<PBEBattlePokemon>(3);
@@ -42,7 +49,7 @@ namespace Kermalis.PokemonBattleEngineClient.Clients
                     pkmn.TurnAction = null;
                 }
                 _actions.Clear();
-                _actions.AddRange(Trainer.ActiveBattlers.OrderBy(p => p.FieldPosition));
+                _actions.AddRange(Trainer.ActiveBattlersOrdered);
                 StandBy.Clear();
             }
             int i = _actions.FindIndex(p => p.TurnAction == null);
@@ -127,7 +134,7 @@ namespace Kermalis.PokemonBattleEngineClient.Clients
                 {
                     if (!psip.Forced)
                     {
-                        foreach (IPBEPkmnSwitchInInfo info in psip.SwitchIns)
+                        foreach (IPBEPkmnSwitchInInfo_Hidden info in psip.SwitchIns)
                         {
                             BattleView.Field.ShowPokemon(psip.Trainer.TryGetPokemon(info.FieldPosition));
                         }
@@ -196,6 +203,14 @@ namespace Kermalis.PokemonBattleEngineClient.Clients
                         case PBEWeatherAction.Added:
                         case PBEWeatherAction.Ended: BattleView.Field.UpdateWeather(); break;
                         case PBEWeatherAction.CausedDamage: break;
+                    }
+                    break;
+                }
+                case IPBEWildPkmnAppearedPacket wpap:
+                {
+                    foreach (IPBEPkmnAppearedInfo_Hidden info in wpap.Pokemon)
+                    {
+                        BattleView.Field.ShowPokemon(Battle.Teams[1].Trainers[0].TryGetPokemon(info.FieldPosition));
                     }
                     break;
                 }

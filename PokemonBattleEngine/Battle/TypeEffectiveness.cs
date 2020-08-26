@@ -1,8 +1,8 @@
-﻿using Kermalis.PokemonBattleEngine.Battle;
+﻿using Kermalis.PokemonBattleEngine.Data;
 using System;
 using System.Collections.Generic;
 
-namespace Kermalis.PokemonBattleEngine.Data
+namespace Kermalis.PokemonBattleEngine.Battle
 {
     public static class PBETypeEffectiveness
     {

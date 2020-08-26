@@ -1,7 +1,7 @@
 ﻿using Discord;
 using Discord.Commands;
 using Discord.WebSocket;
-using Kermalis.PokemonBattleEngine.Utils;
+using Kermalis.PokemonBattleEngine.Data;
 using System;
 using System.Reflection;
 using System.Threading.Tasks;
@@ -22,7 +22,7 @@ namespace Kermalis.PokemonBattleEngineDiscord
         {
             Utils.InitFemaleSpriteLookup();
             ReplaySaver.RemoveOldReplays();
-            PBEUtils.InitEngine(string.Empty);
+            PBEDataProvider.InitEngine(string.Empty);
 
             _client = new DiscordSocketClient();
 

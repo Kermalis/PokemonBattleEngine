@@ -1,6 +1,7 @@
 ﻿using Kermalis.PokemonBattleEngine.Data;
 using Kermalis.PokemonBattleEngine.Data.Legality;
 using Kermalis.PokemonBattleEngine.Packets;
+using Kermalis.PokemonBattleEngine.Utils;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -8,13 +9,12 @@ using System.Linq;
 
 namespace Kermalis.PokemonBattleEngine.Battle
 {
-    public sealed class PBETrainerInfo
+    public abstract class PBETrainerInfoBase
     {
-        public string Name { get; }
         public ReadOnlyCollection<IPBEPokemon> Party { get; }
         private readonly PBESettings _requiredSettings;
 
-        public PBETrainerInfo(IPBEPokemonCollection party, string name)
+        protected PBETrainerInfoBase(IPBEPokemonCollection party)
         {
             if (party == null)
             {
@@ -24,16 +24,11 @@ namespace Kermalis.PokemonBattleEngine.Battle
             {
                 throw new ArgumentException("Party count must be at least 1", nameof(party));
             }
-            if (string.IsNullOrWhiteSpace(name))
-            {
-                throw new ArgumentOutOfRangeException(nameof(name));
-            }
             if (party is PBELegalPokemonCollection lp)
             {
                 _requiredSettings = lp.Settings;
             }
             Party = new ReadOnlyCollection<IPBEPokemon>(party.ToArray());
-            Name = name;
         }
 
         public bool IsOkayForSettings(PBESettings settings)
@@ -53,28 +48,69 @@ namespace Kermalis.PokemonBattleEngine.Battle
             return true;
         }
     }
-    public sealed class PBETrainer
+    public sealed class PBETrainerInfo : PBETrainerInfoBase
+    {
+        public string Name { get; }
+        public ReadOnlyCollection<(PBEItem Item, uint Quantity)> Inventory { get; }
+
+        public PBETrainerInfo(IPBEPokemonCollection party, string name, IList<(PBEItem Item, uint Quantity)> inventory = null)
+            : base(party)
+        {
+            if (string.IsNullOrWhiteSpace(name))
+            {
+                throw new ArgumentOutOfRangeException(nameof(name));
+            }
+            Name = name;
+            if (inventory is null || inventory.Count == 0)
+            {
+                Inventory = PBEEmptyReadOnlyCollection<(PBEItem, uint)>.Value;
+            }
+            else
+            {
+                Inventory = new ReadOnlyCollection<(PBEItem, uint)>(inventory);
+            }
+        }
+    }
+    public sealed class PBEWildInfo : PBETrainerInfoBase
+    {
+        public PBEWildInfo(IPBEPokemonCollection party)
+            : base(party) { }
+    }
+    public sealed partial class PBETrainer
     {
         public PBEBattle Battle { get; }
         public PBETeam Team { get; }
         public PBEList<PBEBattlePokemon> Party { get; }
         public string Name { get; }
+        public PBEBattleInventory Inventory { get; }
         public byte Id { get; }
+        public bool IsWild => Team.IsWild;
 
         public IEnumerable<PBEBattlePokemon> ActiveBattlers => Battle.ActiveBattlers.Where(p => p.Trainer == this);
+        public IEnumerable<PBEBattlePokemon> ActiveBattlersOrdered => ActiveBattlers.OrderBy(p => p.FieldPosition);
         public int NumConsciousPkmn => Party.Count(p => p.HP > 0);
         public int NumPkmnOnField => Party.Count(p => p.FieldPosition != PBEFieldPosition.None);
 
+        public bool RequestedFlee { get; set; }
         public List<PBEBattlePokemon> ActionsRequired { get; } = new List<PBEBattlePokemon>(3); // PBEBattleState.WaitingForActions
         public byte SwitchInsRequired { get; set; } // PBEBattleState.WaitingForSwitchIns
-        public List<(PBEBattlePokemon, PBEFieldPosition)> SwitchInQueue { get; } = new List<(PBEBattlePokemon, PBEFieldPosition)>(3); // PBEBattleState.WaitingForSwitchIns
+        public List<(PBEBattlePokemon Pkmn, PBEFieldPosition Pos)> SwitchInQueue { get; } = new List<(PBEBattlePokemon, PBEFieldPosition)>(3); // PBEBattleState.WaitingForSwitchIns
 
-        internal PBETrainer(PBETeam team, PBETrainerInfo ti, List<PBETrainer> trainers)
+        // Trainer battle / wild battle
+        private PBETrainer(PBETeam team, PBETrainerInfoBase ti, string name, ReadOnlyCollection<(PBEItem Item, uint Quantity)> inventory, List<PBETrainer> trainers)
         {
             Battle = team.Battle;
             Team = team;
             Id = (byte)trainers.Count;
-            Name = ti.Name;
+            Name = name;
+            if (inventory is null || inventory.Count == 0) // Wild trainer
+            {
+                Inventory = PBEBattleInventory.Empty();
+            }
+            else
+            {
+                Inventory = new PBEBattleInventory(inventory);
+            }
             ReadOnlyCollection<IPBEPokemon> tiParty = ti.Party;
             Party = new PBEList<PBEBattlePokemon>(tiParty.Count);
             for (byte i = 0; i < tiParty.Count; i++)
@@ -91,12 +127,20 @@ namespace Kermalis.PokemonBattleEngine.Battle
             }
             trainers.Add(this);
         }
+        // Trainer battle
+        internal PBETrainer(PBETeam team, PBETrainerInfo ti, List<PBETrainer> trainers)
+            : this(team, ti, ti.Name, ti.Inventory, trainers) { }
+        // Wild battle
+        internal PBETrainer(PBETeam team, PBEWildInfo wi, List<PBETrainer> trainers)
+            : this(team, wi, "The wild Pokémon", null, trainers) { }
+        // Remote battle
         internal PBETrainer(PBETeam team, PBEBattlePacket.PBETeamInfo.PBETrainerInfo info, List<PBETrainer> trainers)
         {
             Battle = team.Battle;
             Team = team;
             Id = info.Id;
-            Name = info.Name;
+            Name = team.IsWild ? "The wild Pokémon" : info.Name;
+            Inventory = info.Inventory.Count == 0 ? PBEBattleInventory.Empty() : new PBEBattleInventory(info.Inventory);
             Party = new PBEList<PBEBattlePokemon>(info.Party.Select(p => new PBEBattlePokemon(this, p)));
             trainers.Add(this);
         }

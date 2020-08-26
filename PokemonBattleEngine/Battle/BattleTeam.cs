@@ -1,5 +1,4 @@
-﻿using Kermalis.PokemonBattleEngine.Data;
-using Kermalis.PokemonBattleEngine.Packets;
+﻿using Kermalis.PokemonBattleEngine.Packets;
 using Kermalis.PokemonBattleEngine.Utils;
 using System;
 using System.Collections;
@@ -30,6 +29,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
             }
         }
 
+        // Trainer battle
         internal PBETeams(PBEBattle battle, IReadOnlyList<PBETrainerInfo> ti0, IReadOnlyList<PBETrainerInfo> ti1, out ReadOnlyCollection<PBETrainer> trainers)
         {
             var allTrainers = new List<PBETrainer>();
@@ -39,6 +39,17 @@ namespace Kermalis.PokemonBattleEngine.Battle
             _team1.OpposingTeam = _team0;
             trainers = new ReadOnlyCollection<PBETrainer>(allTrainers);
         }
+        // Wild battle
+        internal PBETeams(PBEBattle battle, IReadOnlyList<PBETrainerInfo> ti, PBEWildInfo wi, out ReadOnlyCollection<PBETrainer> trainers)
+        {
+            var allTrainers = new List<PBETrainer>();
+            _team0 = new PBETeam(battle, 0, ti, allTrainers);
+            _team1 = new PBETeam(battle, 1, wi, allTrainers);
+            _team0.OpposingTeam = _team1;
+            _team1.OpposingTeam = _team0;
+            trainers = new ReadOnlyCollection<PBETrainer>(allTrainers);
+        }
+        // Remote trainer battle
         internal PBETeams(PBEBattle battle, PBEBattlePacket packet, out ReadOnlyCollection<PBETrainer> trainers)
         {
             var allTrainers = new List<PBETrainer>();
@@ -68,6 +79,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
         public PBETeam OpposingTeam { get; internal set; }
         public ReadOnlyCollection<PBETrainer> Trainers { get; }
         public byte Id { get; }
+        public bool IsWild => Battle.BattleType == PBEBattleType.Wild && Id == 1;
 
         public string CombinedName => Trainers.Select(t => t.Name).ToArray().Andify();
         public IEnumerable<PBEBattlePokemon> CombinedParty => Trainers.SelectMany(t => t.Party);
@@ -75,6 +87,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
         public int NumConsciousPkmn => Trainers.Sum(t => t.NumConsciousPkmn);
         public int NumPkmnOnField => Trainers.Sum(t => t.NumPkmnOnField);
 
+        public int NumTimesTriedToFlee { get; set; }
         public PBETeamStatus TeamStatus { get; set; }
         public byte LightScreenCount { get; set; }
         public byte LuckyChantCount { get; set; }
@@ -86,12 +99,13 @@ namespace Kermalis.PokemonBattleEngine.Battle
         public bool MonFaintedLastTurn { get; set; }
         public bool MonFaintedThisTurn { get; set; }
 
+        // Trainer battle
         internal PBETeam(PBEBattle battle, byte id, IReadOnlyList<PBETrainerInfo> ti, List<PBETrainer> allTrainers)
         {
             int count = ti.Count;
             if (!VerifyTrainerCount(battle.BattleFormat, count))
             {
-                throw new ArgumentException($"Too many trainers (Format: {battle.BattleFormat}, Team: {id}, Trainers: {count}");
+                throw new ArgumentException($"Illegal trainer count (Format: {battle.BattleFormat}, Team: {id}, Count: {count}");
             }
             foreach (PBETrainerInfo t in ti)
             {
@@ -109,6 +123,23 @@ namespace Kermalis.PokemonBattleEngine.Battle
             }
             Trainers = new ReadOnlyCollection<PBETrainer>(trainers);
         }
+        // Wild battle
+        internal PBETeam(PBEBattle battle, byte id, PBEWildInfo wi, List<PBETrainer> allTrainers)
+        {
+            int count = wi.Party.Count;
+            if (!VerifyTrainerCount(battle.BattleFormat, count))
+            {
+                throw new ArgumentException($"Illegal wild Pokémon count (Format: {battle.BattleFormat}, Count: {count}");
+            }
+            if (!wi.IsOkayForSettings(battle.Settings))
+            {
+                throw new ArgumentOutOfRangeException(nameof(wi), "Team settings do not comply with battle settings.");
+            }
+            Battle = battle;
+            Id = id;
+            Trainers = new ReadOnlyCollection<PBETrainer>(new[] { new PBETrainer(this, wi, allTrainers) });
+        }
+        // Remote trainer battle
         internal PBETeam(PBEBattle battle, PBEBattlePacket.PBETeamInfo info, List<PBETrainer> allTrainers)
         {
             ReadOnlyCollection<PBEBattlePacket.PBETeamInfo.PBETrainerInfo> ti = info.Trainers;

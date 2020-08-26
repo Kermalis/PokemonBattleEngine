@@ -1,6 +1,5 @@
 ﻿using Kermalis.EndianBinaryIO;
 using Kermalis.PokemonBattleEngine.Battle;
-using Kermalis.PokemonBattleEngine.Data;
 using System.Collections.ObjectModel;
 using System.IO;
 
@@ -40,7 +39,7 @@ namespace Kermalis.PokemonBattleEngine.Packets
                 w.Write(SpeedChange = target.SpeedChange);
                 w.Write(AccuracyChange = target.AccuracyChange);
                 w.Write(EvasionChange = target.EvasionChange);
-                Data = new ReadOnlyCollection<byte>(ms.ToArray());
+                Data = new ReadOnlyCollection<byte>(ms.GetBuffer());
             }
         }
         internal PBEPsychUpPacket(byte[] data, EndianBinaryReader r, PBEBattle battle)

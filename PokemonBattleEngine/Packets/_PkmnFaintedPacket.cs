@@ -1,6 +1,5 @@
 ﻿using Kermalis.EndianBinaryIO;
 using Kermalis.PokemonBattleEngine.Battle;
-using Kermalis.PokemonBattleEngine.Data;
 using System;
 using System.Collections.ObjectModel;
 using System.IO;
@@ -19,10 +18,9 @@ namespace Kermalis.PokemonBattleEngine.Packets
 
         public PBETrainer PokemonTrainer { get; }
         public byte Pokemon { get; }
-        public byte DisguisedAsPokemon { get; }
         public PBEFieldPosition OldPosition { get; }
 
-        internal PBEPkmnFaintedPacket(PBEBattlePokemon pokemon, PBEBattlePokemon disguisedAsPokemon, PBEFieldPosition oldPosition)
+        internal PBEPkmnFaintedPacket(PBEBattlePokemon pokemon, PBEFieldPosition oldPosition)
         {
             using (var ms = new MemoryStream())
             using (var w = new EndianBinaryWriter(ms, encoding: EncodingType.UTF16))
@@ -30,9 +28,8 @@ namespace Kermalis.PokemonBattleEngine.Packets
                 w.Write(Code);
                 w.Write((PokemonTrainer = pokemon.Trainer).Id);
                 w.Write(Pokemon = pokemon.Id);
-                w.Write(DisguisedAsPokemon = disguisedAsPokemon.Id);
                 w.Write(OldPosition = oldPosition);
-                Data = new ReadOnlyCollection<byte>(ms.ToArray());
+                Data = new ReadOnlyCollection<byte>(ms.GetBuffer());
             }
         }
         internal PBEPkmnFaintedPacket(byte[] data, EndianBinaryReader r, PBEBattle battle)
@@ -40,7 +37,6 @@ namespace Kermalis.PokemonBattleEngine.Packets
             Data = new ReadOnlyCollection<byte>(data);
             PokemonTrainer = battle.Trainers[r.ReadByte()];
             Pokemon = r.ReadByte();
-            DisguisedAsPokemon = r.ReadByte();
             OldPosition = r.ReadEnum<PBEFieldPosition>();
         }
     }
@@ -64,7 +60,7 @@ namespace Kermalis.PokemonBattleEngine.Packets
                 w.Write(Code);
                 w.Write((PokemonTrainer = other.PokemonTrainer).Id);
                 w.Write(OldPosition = other.OldPosition);
-                Data = new ReadOnlyCollection<byte>(ms.ToArray());
+                Data = new ReadOnlyCollection<byte>(ms.GetBuffer());
             }
         }
         internal PBEPkmnFaintedPacket_Hidden(byte[] data, EndianBinaryReader r, PBEBattle battle)

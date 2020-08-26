@@ -6,7 +6,6 @@ using Kermalis.PokemonBattleEngine.Packets;
 using Kermalis.PokemonBattleEngine.Utils;
 using System;
 using System.IO;
-using System.Linq;
 using System.Threading;
 
 namespace Kermalis.PokemonBattleEngineExtras
@@ -43,7 +42,7 @@ namespace Kermalis.PokemonBattleEngineExtras
             p1 = PBERandomTeamGenerator.CreateRandomTeam(settings.MaxPartySize);
 
             _battle = new PBEBattle(PBEBattleFormat.Double, settings, new PBETrainerInfo(p0, "Trainer 0"), new PBETrainerInfo(p1, "Trainer 1"),
-                battleTerrain: PBEUtils.GlobalRandom.RandomBattleTerrain());
+                battleTerrain: PBEDataProvider.GlobalRandom.RandomBattleTerrain());
             _battle.OnNewEvent += PBEBattle.ConsoleBattleEventHandler;
             _battle.OnNewEvent += Battle_OnNewEvent;
             _battle.OnStateChanged += Battle_OnStateChanged;
@@ -84,22 +83,12 @@ namespace Kermalis.PokemonBattleEngineExtras
                 {
                     case PBEActionsRequestPacket arp:
                     {
-                        PBETrainer t = arp.Trainer;
-                        PBETurnAction[] actions = PBEAI.CreateActions(t);
-                        if (!PBEBattle.SelectActionsIfValid(t, actions))
-                        {
-                            throw new Exception($"{t.Name}'s AI created invalid actions!");
-                        }
+                        arp.Trainer.CreateAIActions();
                         break;
                     }
                     case PBESwitchInRequestPacket sirp:
                     {
-                        PBETrainer t = sirp.Trainer;
-                        PBESwitchIn[] switches = PBEAI.CreateSwitches(t);
-                        if (!PBEBattle.SelectSwitchesIfValid(t, switches))
-                        {
-                            throw new Exception($"{t.Name}'s AI created invalid switches!");
-                        }
+                        sirp.Trainer.CreateAISwitches();
                         break;
                     }
                     case PBETurnBeganPacket tbp:
@@ -163,7 +152,7 @@ namespace Kermalis.PokemonBattleEngineExtras
                         {
                             Console.WriteLine();
                             Console.WriteLine("{0}'s team:", t.Name);
-                            foreach (PBEBattlePokemon p in t.ActiveBattlers.OrderBy(p => p.FieldPosition))
+                            foreach (PBEBattlePokemon p in t.ActiveBattlersOrdered)
                             {
                                 Console.WriteLine(p);
                                 Console.WriteLine();

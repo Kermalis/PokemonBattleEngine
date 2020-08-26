@@ -1,6 +1,5 @@
 ﻿using Kermalis.EndianBinaryIO;
 using Kermalis.PokemonBattleEngine.Battle;
-using Kermalis.PokemonBattleEngine.Data;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -63,7 +62,7 @@ namespace Kermalis.PokemonBattleEngine.Packets
                     }
                 }
                 Params = new ReadOnlyCollection<object>(par);
-                Data = new ReadOnlyCollection<byte>(ms.ToArray());
+                Data = new ReadOnlyCollection<byte>(ms.GetBuffer());
             }
         }
         internal PBESpecialMessagePacket(byte[] data, EndianBinaryReader r, PBEBattle battle)

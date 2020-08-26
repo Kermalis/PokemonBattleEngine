@@ -1,6 +1,5 @@
 ﻿using Kermalis.EndianBinaryIO;
 using Kermalis.PokemonBattleEngine.Battle;
-using Kermalis.PokemonBattleEngine.Data;
 using System.Collections.ObjectModel;
 using System.IO;
 
@@ -22,7 +21,7 @@ namespace Kermalis.PokemonBattleEngine.Packets
                 w.Write(Code);
                 w.Write((VictimTrainer = victim.Trainer).Id);
                 w.Write(Victim = victim.FieldPosition);
-                Data = new ReadOnlyCollection<byte>(ms.ToArray());
+                Data = new ReadOnlyCollection<byte>(ms.GetBuffer());
             }
         }
         internal PBEMoveCritPacket(byte[] data, EndianBinaryReader r, PBEBattle battle)

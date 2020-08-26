@@ -1,6 +1,5 @@
 ﻿using Kermalis.PokemonBattleEngine.Battle;
 using Kermalis.PokemonBattleEngine.Data;
-using Kermalis.PokemonBattleEngine.Utils;
 using Xunit;
 using Xunit.Abstractions;
 
@@ -20,7 +19,7 @@ namespace Kermalis.PokemonBattleEngineTests.Statuses
         public void Confusion_Heal__Bug(bool bugFix)
         {
             #region Setup
-            PBEUtils.GlobalRandom.Seed = 40703; // Seed ensures Swagger does not miss and Deoxys hurts itself
+            PBEDataProvider.GlobalRandom.Seed = 40703; // Seed ensures Swagger does not miss and Deoxys hurts itself
             var settings = new PBESettings { BugFix = bugFix };
             settings.MakeReadOnly();
 
@@ -35,17 +34,18 @@ namespace Kermalis.PokemonBattleEngineTests.Statuses
 
             var battle = new PBEBattle(PBEBattleFormat.Single, settings, new PBETrainerInfo(p0, "Trainer 0"), new PBETrainerInfo(p1, "Trainer 1"));
             battle.OnNewEvent += PBEBattle.ConsoleBattleEventHandler;
-            battle.Begin();
 
             PBETrainer t0 = battle.Trainers[0];
             PBETrainer t1 = battle.Trainers[1];
             PBEBattlePokemon deoxys = t0.Party[0];
             PBEBattlePokemon accelgor = t1.Party[0];
+
+            battle.Begin();
             #endregion
 
             #region Use and check
-            Assert.True(PBEBattle.SelectActionsIfValid(t0, new PBETurnAction(deoxys, PBEMove.Splash, PBETurnTarget.AllyCenter)));
-            Assert.True(PBEBattle.SelectActionsIfValid(t1, new PBETurnAction(accelgor, PBEMove.Swagger, PBETurnTarget.FoeCenter)));
+            Assert.Null(t0.SelectActionsIfValid(new PBETurnAction(deoxys, PBEMove.Splash, PBETurnTarget.AllyCenter)));
+            Assert.Null(t1.SelectActionsIfValid(new PBETurnAction(accelgor, PBEMove.Swagger, PBETurnTarget.FoeCenter)));
 
             battle.RunTurn();
 
@@ -72,7 +72,7 @@ namespace Kermalis.PokemonBattleEngineTests.Statuses
         public void Confusion_Does_Not_Ignore_Sturdy()
         {
             #region Setup
-            PBEUtils.GlobalRandom.Seed = 40703; // Seed ensures Swagger does not miss and Deoxys hurts itself
+            PBEDataProvider.GlobalRandom.Seed = 40703; // Seed ensures Swagger does not miss and Deoxys hurts itself
             PBESettings settings = PBESettings.DefaultSettings;
 
             var p0 = new TestPokemonCollection(1);
@@ -86,17 +86,18 @@ namespace Kermalis.PokemonBattleEngineTests.Statuses
 
             var battle = new PBEBattle(PBEBattleFormat.Single, settings, new PBETrainerInfo(p0, "Trainer 0"), new PBETrainerInfo(p1, "Trainer 1"));
             battle.OnNewEvent += PBEBattle.ConsoleBattleEventHandler;
-            battle.Begin();
 
             PBETrainer t0 = battle.Trainers[0];
             PBETrainer t1 = battle.Trainers[1];
             PBEBattlePokemon deoxys = t0.Party[0];
             PBEBattlePokemon accelgor = t1.Party[0];
+
+            battle.Begin();
             #endregion
 
             #region Use and check
-            Assert.True(PBEBattle.SelectActionsIfValid(t0, new PBETurnAction(deoxys, PBEMove.Splash, PBETurnTarget.AllyCenter)));
-            Assert.True(PBEBattle.SelectActionsIfValid(t1, new PBETurnAction(accelgor, PBEMove.Swagger, PBETurnTarget.FoeCenter)));
+            Assert.Null(t0.SelectActionsIfValid(new PBETurnAction(deoxys, PBEMove.Splash, PBETurnTarget.AllyCenter)));
+            Assert.Null(t1.SelectActionsIfValid(new PBETurnAction(accelgor, PBEMove.Swagger, PBETurnTarget.FoeCenter)));
 
             battle.RunTurn();
 

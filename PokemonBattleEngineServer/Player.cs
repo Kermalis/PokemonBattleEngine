@@ -65,7 +65,7 @@ namespace Kermalis.PokemonBattleEngineServer
             // TODO: Kick players who are sending broken packets or sending too many
             Type type = packet.GetType();
             Debug.WriteLine($"Packet received ({BattleId} {TrainerName} \"{type.Name}\")");
-            if (type.Equals(_packetType))
+            if (_packetType != null && type.Equals(_packetType))
             {
                 _packetType = null;
                 switch (packet)
@@ -96,12 +96,13 @@ namespace Kermalis.PokemonBattleEngineServer
                     default: resetEvent.Set(); break;
                 }
             }
-            else if (type.Equals(_actionType))
+            else if (_actionType != null && (type.Equals(_actionType) || type.Equals(typeof(PBEFleeResponsePacket))))
             {
                 _actionType = null;
                 switch (packet)
                 {
                     case PBEActionsResponsePacket arp: Server.ActionsSubmitted(this, arp.Actions); break;
+                    case PBEFleeResponsePacket _: Server.FleeSubmitted(this); break;
                     case PBESwitchInResponsePacket sirp: Server.SwitchesSubmitted(this, sirp.Switches); break;
                     default: throw new ArgumentOutOfRangeException(nameof(packet));
                 }

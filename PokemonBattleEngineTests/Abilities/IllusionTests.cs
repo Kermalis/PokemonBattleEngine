@@ -1,6 +1,7 @@
 ﻿using Kermalis.PokemonBattleEngine.Battle;
 using Kermalis.PokemonBattleEngine.Data;
-using Kermalis.PokemonBattleEngine.Utils;
+using Kermalis.PokemonBattleEngine.Packets;
+using System.Linq;
 using Xunit;
 using Xunit.Abstractions;
 
@@ -18,7 +19,7 @@ namespace Kermalis.PokemonBattleEngineTests.Abilities
         public void Illusion_Does_Not_Copy_Same_Species()
         {
             #region Setup
-            PBEUtils.GlobalRandom.Seed = 0;
+            PBEDataProvider.GlobalRandom.Seed = 0;
             PBESettings settings = PBESettings.DefaultSettings;
 
             var p0 = new TestPokemonCollection(1);
@@ -32,14 +33,86 @@ namespace Kermalis.PokemonBattleEngineTests.Abilities
 
             var battle = new PBEBattle(PBEBattleFormat.Single, settings, new PBETrainerInfo(p0, "Trainer 0"), new PBETrainerInfo(p1, "Trainer 1"));
             battle.OnNewEvent += PBEBattle.ConsoleBattleEventHandler;
-            battle.Begin();
 
             PBETrainer t1 = battle.Trainers[1];
             PBEBattlePokemon zoroark1 = t1.Party[0];
+
+            battle.Begin();
             #endregion
 
             #region Check
-            Assert.True(zoroark1.DisguisedAsPokemon == null);
+            Assert.False(zoroark1.Status2.HasFlag(PBEStatus2.Disguised));
+            #endregion
+
+            #region Cleanup
+            battle.OnNewEvent -= PBEBattle.ConsoleBattleEventHandler;
+            #endregion
+        }
+
+        [Fact]
+        public void Illusion_Does_Not_Copy_Active_Wild_Teammate()
+        {
+            #region Setup
+            PBEDataProvider.GlobalRandom.Seed = 0;
+            PBESettings settings = PBESettings.DefaultSettings;
+
+            var p0 = new TestPokemonCollection(1);
+            p0[0] = new TestPokemon(settings, PBESpecies.Magikarp, 0, 100, PBEMove.Splash);
+
+            var p1 = new TestPokemonCollection(2);
+            p1[0] = new TestPokemon(settings, PBESpecies.Zoroark, 0, 100, PBEMove.Splash)
+            {
+                Ability = PBEAbility.Illusion,
+                CaughtBall = PBEItem.None
+            };
+            p1[1] = p0[0];
+
+            var battle = new PBEBattle(PBEBattleFormat.Double, settings, new PBETrainerInfo(p0, "Trainer 0"), new PBEWildInfo(p1));
+            battle.OnNewEvent += PBEBattle.ConsoleBattleEventHandler;
+
+            PBETrainer t1 = battle.Trainers[1];
+            PBEBattlePokemon zoroark = t1.Party[0];
+
+            battle.Begin();
+            #endregion
+
+            #region Check
+            Assert.False(zoroark.Status2.HasFlag(PBEStatus2.Disguised));
+            #endregion
+
+            #region Cleanup
+            battle.OnNewEvent -= PBEBattle.ConsoleBattleEventHandler;
+            #endregion
+        }
+
+        [Fact]
+        public void Illusion_Does_Copy_Active_Trainer_Teammate()
+        {
+            #region Setup
+            PBEDataProvider.GlobalRandom.Seed = 0;
+            PBESettings settings = PBESettings.DefaultSettings;
+
+            var p0 = new TestPokemonCollection(1);
+            p0[0] = new TestPokemon(settings, PBESpecies.Magikarp, 0, 100, PBEMove.Splash);
+
+            var p1 = new TestPokemonCollection(2);
+            p1[0] = new TestPokemon(settings, PBESpecies.Zoroark, 0, 100, PBEMove.Splash)
+            {
+                Ability = PBEAbility.Illusion
+            };
+            p1[1] = p0[0];
+
+            var battle = new PBEBattle(PBEBattleFormat.Double, settings, new PBETrainerInfo(p0, "Trainer 0"), new PBETrainerInfo(p1, "Trainer 1"));
+            battle.OnNewEvent += PBEBattle.ConsoleBattleEventHandler;
+
+            PBETrainer t1 = battle.Trainers[1];
+            PBEBattlePokemon zoroark = t1.Party[0];
+
+            battle.Begin();
+            #endregion
+
+            #region Check
+            Assert.True(zoroark.Status2.HasFlag(PBEStatus2.Disguised));
             #endregion
 
             #region Cleanup
@@ -51,7 +124,7 @@ namespace Kermalis.PokemonBattleEngineTests.Abilities
         public void Illusion_Copies_Shaymin_Reversion()
         {
             #region Setup
-            PBEUtils.GlobalRandom.Seed = 0; // Seed ensures SecretPower freezes
+            PBEDataProvider.GlobalRandom.Seed = 0; // Seed ensures SecretPower freezes
             PBESettings settings = PBESettings.DefaultSettings;
 
             var p0 = new TestPokemonCollection(1);
@@ -71,7 +144,6 @@ namespace Kermalis.PokemonBattleEngineTests.Abilities
             var battle = new PBEBattle(PBEBattleFormat.Single, settings, new PBETrainerInfo(p0, "Trainer 0"), new PBETrainerInfo(p1, "Trainer 1"),
                 battleTerrain: PBEBattleTerrain.Snow);
             battle.OnNewEvent += PBEBattle.ConsoleBattleEventHandler;
-            battle.Begin();
 
             PBETrainer t0 = battle.Trainers[0];
             PBETrainer t1 = battle.Trainers[1];
@@ -79,11 +151,13 @@ namespace Kermalis.PokemonBattleEngineTests.Abilities
             PBEBattlePokemon shaymin = t1.Party[0];
             PBEBattlePokemon zoroark = t1.Party[1];
             PBEBattlePokemon magikarp = t1.Party[2];
+
+            battle.Begin();
             #endregion
 
             #region Freeze Shaymin
-            Assert.True(PBEBattle.SelectActionsIfValid(t0, new PBETurnAction(happiny, PBEMove.SecretPower, PBETurnTarget.FoeCenter)));
-            Assert.True(PBEBattle.SelectActionsIfValid(t1, new PBETurnAction(shaymin, PBEMove.Splash, PBETurnTarget.AllyCenter)));
+            Assert.Null(t0.SelectActionsIfValid(new PBETurnAction(happiny, PBEMove.SecretPower, PBETurnTarget.FoeCenter)));
+            Assert.Null(t1.SelectActionsIfValid(new PBETurnAction(shaymin, PBEMove.Splash, PBETurnTarget.AllyCenter)));
 
             battle.RunTurn();
 
@@ -91,8 +165,8 @@ namespace Kermalis.PokemonBattleEngineTests.Abilities
             #endregion
 
             #region Swap Shaymin for Magikarp
-            Assert.True(PBEBattle.SelectActionsIfValid(t0, new PBETurnAction(happiny, PBEMove.Splash, PBETurnTarget.AllyCenter)));
-            Assert.True(PBEBattle.SelectActionsIfValid(t1, new PBETurnAction(shaymin, magikarp)));
+            Assert.Null(t0.SelectActionsIfValid(new PBETurnAction(happiny, PBEMove.Splash, PBETurnTarget.AllyCenter)));
+            Assert.Null(t1.SelectActionsIfValid(new PBETurnAction(shaymin, magikarp)));
 
             battle.RunTurn();
 
@@ -100,12 +174,71 @@ namespace Kermalis.PokemonBattleEngineTests.Abilities
             #endregion
 
             #region Swap Magikarp for Zoroark and check
-            Assert.True(PBEBattle.SelectActionsIfValid(t0, new PBETurnAction(happiny, PBEMove.Splash, PBETurnTarget.AllyCenter)));
-            Assert.True(PBEBattle.SelectActionsIfValid(t1, new PBETurnAction(magikarp, zoroark)));
+            Assert.Null(t0.SelectActionsIfValid(new PBETurnAction(happiny, PBEMove.Splash, PBETurnTarget.AllyCenter)));
+            Assert.Null(t1.SelectActionsIfValid(new PBETurnAction(magikarp, zoroark)));
 
             battle.RunTurn();
 
-            Assert.True(zoroark.DisguisedAsPokemon == shaymin && zoroark.KnownForm == PBEForm.Shaymin);
+            Assert.True(zoroark.KnownSpecies == PBESpecies.Shaymin && zoroark.KnownForm == PBEForm.Shaymin);
+            #endregion
+
+            #region Cleanup
+            battle.OnNewEvent -= PBEBattle.ConsoleBattleEventHandler;
+            #endregion
+        }
+
+        [Fact]
+        public void Illusion_Works_Wild()
+        {
+            #region Setup
+            PBEDataProvider.GlobalRandom.Seed = 0;
+            PBESettings settings = PBESettings.DefaultSettings;
+
+            var p0 = new TestPokemonCollection(1);
+            p0[0] = new TestPokemon(settings, PBESpecies.Magikarp, 0, 1, PBEMove.Tackle);
+
+            var p1 = new TestPokemonCollection(1);
+            p1[0] = new TestPokemon(settings, PBESpecies.Zoroark, 0, 100, PBEMove.Splash)
+            {
+                Ability = PBEAbility.Illusion,
+                CaughtBall = PBEItem.None
+            };
+
+            var battle = new PBEBattle(PBEBattleFormat.Single, settings, new PBETrainerInfo(p0, "Trainer 0"), new PBEWildInfo(p1));
+            battle.OnNewEvent += PBEBattle.ConsoleBattleEventHandler;
+
+            PBETrainer t0 = battle.Trainers[0];
+            PBETrainer t1 = battle.Trainers[1];
+            PBEBattlePokemon magikarp = t0.Party[0];
+            PBEBattlePokemon zoroark = t1.Party[0];
+
+            zoroark.Status2 |= PBEStatus2.Disguised;
+            zoroark.KnownGender = PBEGender.Genderless;
+            zoroark.KnownCaughtBall = PBEItem.None;
+            zoroark.KnownShiny = false;
+            zoroark.KnownSpecies = PBESpecies.Entei;
+            zoroark.KnownForm = 0;
+            zoroark.KnownNickname = zoroark.KnownSpecies.ToString();
+            IPBEPokemonData pData = PBEDataProvider.Instance.GetPokemonData(zoroark.KnownSpecies, zoroark.KnownForm);
+            zoroark.KnownType1 = pData.Type1;
+            zoroark.KnownType2 = pData.Type2;
+
+            battle.Begin();
+            #endregion
+
+            #region Check that the disguise works
+            Assert.True(zoroark.Status2.HasFlag(PBEStatus2.Disguised)
+                && ((PBEWildPkmnAppearedPacket)battle.Events.Single(p => p is PBEWildPkmnAppearedPacket)).Pokemon[0].IsDisguised);
+            #endregion
+
+            #region Break the disguise and check
+            Assert.Null(t0.SelectActionsIfValid(new PBETurnAction(magikarp, PBEMove.Tackle, PBETurnTarget.FoeCenter)));
+            Assert.Null(t1.SelectActionsIfValid(new PBETurnAction(zoroark, PBEMove.Splash, PBETurnTarget.AllyCenter)));
+
+            battle.RunTurn();
+
+            Assert.True(!zoroark.Status2.HasFlag(PBEStatus2.Disguised)
+                && zoroark.KnownSpecies == PBESpecies.Zoroark);
             #endregion
 
             #region Cleanup

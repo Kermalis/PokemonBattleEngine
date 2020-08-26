@@ -1,6 +1,5 @@
 using Kermalis.PokemonBattleEngine.Battle;
 using Kermalis.PokemonBattleEngine.Data;
-using Kermalis.PokemonBattleEngine.Utils;
 using System;
 using System.Collections.Generic;
 using Xunit;
@@ -16,11 +15,15 @@ namespace Kermalis.PokemonBattleEngineTests
             utils.SetOutputHelper(output);
         }
 
+        // TODO: bad field position to switch into, bad move, bad targets, bad targets with templockedmove, battle status, bad pkmn id,
+        // TODO: wrong team pkmn id, duplicate pkmn id, can't switch out but tried, invalid switch mon (null hp pos), duplicate switch mon
+        // TODO: Too many items, items we do not have, items when in templockedmove
+        // TODO: Flee
         [Fact]
         public void Basic_Actions()
         {
             #region Setup
-            PBEUtils.GlobalRandom.Seed = 0;
+            PBEDataProvider.GlobalRandom.Seed = 0;
             PBESettings settings = PBESettings.DefaultSettings;
 
             var p0 = new TestPokemonCollection(2);
@@ -32,42 +35,40 @@ namespace Kermalis.PokemonBattleEngineTests
 
             var battle = new PBEBattle(PBEBattleFormat.Single, settings, new PBETrainerInfo(p0, "Trainer 0"), new PBETrainerInfo(p1, "Trainer 1"));
             battle.OnNewEvent += PBEBattle.ConsoleBattleEventHandler;
-            battle.Begin();
 
             PBETrainer t0 = battle.Trainers[0];
             PBETrainer t1 = battle.Trainers[1];
             PBEBattlePokemon koffing = t0.Party[0];
             PBEBattlePokemon magikarp = t0.Party[1];
             PBEBattlePokemon darkrai = t1.Party[0];
+
+            battle.Begin();
             #endregion
 
             #region Darkrai uses Protect, Koffing uses Selfdestruct and faints
             var a = new PBETurnAction(koffing, PBEMove.Selfdestruct, PBETurnTarget.FoeCenter);
-            Assert.Throws<ArgumentNullException>(() => PBEBattle.SelectActionsIfValid(null, a)); // Throw for null team
-            Assert.Throws<ArgumentNullException>(() => PBEBattle.SelectActionsIfValid(t0, (IReadOnlyList<PBETurnAction>)null)); // Throw for null collection
-            Assert.Throws<ArgumentNullException>(() => PBEBattle.SelectActionsIfValid(t0, new PBETurnAction[] { null })); // Throw for null elements
-            Assert.False(PBEBattle.SelectActionsIfValid(t0, a, a)); // False for too many actions
-            Assert.True(PBEBattle.SelectActionsIfValid(t0, a)); // True for good actions
-                                                                // TODO: bad field position to switch into, bad move, bad targets, bad targets with templockedmove, battle status, bad pkmn id, wrong team pkmn id, duplicate pkmn id, can't switch out but tried, invalid switch mon (null hp pos), duplicate switch mon
-            Assert.False(PBEBattle.SelectActionsIfValid(t0, a)); // False because actions were already submitted
-            Assert.False(PBEBattle.SelectActionsIfValid(t0, Array.Empty<PBETurnAction>())); // False for 0 despite us now needing 0 additional actions
+            Assert.Throws<ArgumentNullException>(() => t0.SelectActionsIfValid((IReadOnlyList<PBETurnAction>)null)); // Throw for null collection
+            Assert.Throws<ArgumentNullException>(() => t0.SelectActionsIfValid(new PBETurnAction[] { null })); // Throw for null elements
+            Assert.NotNull(t0.SelectActionsIfValid(a, a)); // Too many actions
+            Assert.Null(t0.SelectActionsIfValid(a)); // Good actions
+            Assert.NotNull(t0.SelectActionsIfValid(a)); // Actions were already submitted
+            Assert.NotNull(t0.SelectActionsIfValid(Array.Empty<PBETurnAction>())); // 0 despite us now needing 0 additional actions
 
-            Assert.True(PBEBattle.SelectActionsIfValid(t1, new PBETurnAction(darkrai, PBEMove.Protect, PBETurnTarget.AllyCenter))); // True for good actions
+            Assert.Null(t1.SelectActionsIfValid(new PBETurnAction(darkrai, PBEMove.Protect, PBETurnTarget.AllyCenter))); // True for good actions
 
             battle.RunTurn();
             #endregion
 
             #region More checks
             var s = new PBESwitchIn(magikarp, PBEFieldPosition.Center);
-            Assert.Throws<ArgumentNullException>(() => PBEBattle.SelectSwitchesIfValid(null, s)); // Throw for null team
-            Assert.Throws<ArgumentNullException>(() => PBEBattle.SelectSwitchesIfValid(t0, (IReadOnlyList<PBESwitchIn>)null)); // Throw for null collection
-            Assert.Throws<ArgumentNullException>(() => PBEBattle.SelectSwitchesIfValid(t0, new PBESwitchIn[] { null })); // Throw for null elements
-            Assert.False(PBEBattle.SelectSwitchesIfValid(t0, s, s)); // False for too many
-            Assert.True(PBEBattle.SelectSwitchesIfValid(t0, s)); // True for good switches
+            Assert.Throws<ArgumentNullException>(() => t0.SelectSwitchesIfValid((IReadOnlyList<PBESwitchIn>)null)); // Throw for null collection
+            Assert.Throws<ArgumentNullException>(() => t0.SelectSwitchesIfValid(new PBESwitchIn[] { null })); // Throw for null elements
+            Assert.NotNull(t0.SelectSwitchesIfValid(s, s)); // Too many
+            Assert.Null(t0.SelectSwitchesIfValid(s)); // Good switches
 
             // Below two wouldn't work because of battle status lol
-            //Assert.False(PBEBattle.SelectSwitchesIfValid(t0, s)); // False because switches were already submitted
-            //Assert.False(PBEBattle.SelectSwitchesIfValid(t0, Array.Empty<PBESwitchIn>())); // False for 0 despite us now needing 0 additional actions
+            //Assert.NotNull(t0.SelectSwitchesIfValid(s)); // Switches were already submitted
+            //Assert.NotNull(t0.SelectSwitchesIfValid(Array.Empty<PBESwitchIn>())); // 0 despite us now needing 0 additional switches
 
             //battle.RunSwitches();
             #endregion

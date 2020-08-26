@@ -1,6 +1,5 @@
 ﻿using Kermalis.PokemonBattleEngine.Battle;
 using Kermalis.PokemonBattleEngine.Data;
-using Kermalis.PokemonBattleEngine.Utils;
 using Xunit;
 using Xunit.Abstractions;
 
@@ -18,7 +17,7 @@ namespace Kermalis.PokemonBattleEngineTests.Abilities
         public void PoisonHeal_BadlyPoisoned_Counter_Works()
         {
             #region Setup
-            PBEUtils.GlobalRandom.Seed = 0; // Seed prevents Toxic from missing
+            PBEDataProvider.GlobalRandom.Seed = 0; // Seed prevents Toxic from missing
             PBESettings settings = PBESettings.DefaultSettings;
 
             var p0 = new TestPokemonCollection(1);
@@ -32,17 +31,18 @@ namespace Kermalis.PokemonBattleEngineTests.Abilities
 
             var battle = new PBEBattle(PBEBattleFormat.Single, settings, new PBETrainerInfo(p0, "Trainer 0"), new PBETrainerInfo(p1, "Trainer 1"));
             battle.OnNewEvent += PBEBattle.ConsoleBattleEventHandler;
-            battle.Begin();
 
             PBETrainer t0 = battle.Trainers[0];
             PBETrainer t1 = battle.Trainers[1];
             PBEBattlePokemon seviper = t0.Party[0];
             PBEBattlePokemon gliscor = t1.Party[0];
+
+            battle.Begin();
             #endregion
 
             #region Badly Poison Gliscor and check
-            Assert.True(PBEBattle.SelectActionsIfValid(t0, new PBETurnAction(seviper, PBEMove.Toxic, PBETurnTarget.FoeCenter)));
-            Assert.True(PBEBattle.SelectActionsIfValid(t1, new PBETurnAction(gliscor, PBEMove.Splash, PBETurnTarget.AllyCenter)));
+            Assert.Null(t0.SelectActionsIfValid(new PBETurnAction(seviper, PBEMove.Toxic, PBETurnTarget.FoeCenter)));
+            Assert.Null(t1.SelectActionsIfValid(new PBETurnAction(gliscor, PBEMove.Splash, PBETurnTarget.AllyCenter)));
 
             battle.RunTurn();
 

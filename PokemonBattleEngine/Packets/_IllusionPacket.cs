@@ -14,6 +14,7 @@ namespace Kermalis.PokemonBattleEngine.Packets
         public PBETrainer PokemonTrainer { get; }
         public PBEFieldPosition Pokemon { get; }
         public PBEGender ActualGender { get; }
+        public PBEItem ActualCaughtBall { get; }
         public bool ActualShiny { get; }
         public string ActualNickname { get; }
         public PBESpecies ActualSpecies { get; }
@@ -31,6 +32,7 @@ namespace Kermalis.PokemonBattleEngine.Packets
                 w.Write((PokemonTrainer = pokemon.Trainer).Id);
                 w.Write(Pokemon = pokemon.FieldPosition);
                 w.Write(ActualGender = pokemon.Gender);
+                w.Write(ActualCaughtBall = pokemon.CaughtBall);
                 w.Write(ActualNickname = pokemon.Nickname, true);
                 w.Write(ActualShiny = pokemon.Shiny);
                 w.Write(ActualSpecies = pokemon.Species);
@@ -38,7 +40,7 @@ namespace Kermalis.PokemonBattleEngine.Packets
                 w.Write(ActualType1 = pokemon.Type1);
                 w.Write(ActualType2 = pokemon.Type2);
                 w.Write(ActualWeight = pokemon.Weight);
-                Data = new ReadOnlyCollection<byte>(ms.ToArray());
+                Data = new ReadOnlyCollection<byte>(ms.GetBuffer());
             }
         }
         internal PBEIllusionPacket(byte[] data, EndianBinaryReader r, PBEBattle battle)
@@ -47,6 +49,7 @@ namespace Kermalis.PokemonBattleEngine.Packets
             PokemonTrainer = battle.Trainers[r.ReadByte()];
             Pokemon = r.ReadEnum<PBEFieldPosition>();
             ActualGender = r.ReadEnum<PBEGender>();
+            ActualCaughtBall = r.ReadEnum<PBEItem>();
             ActualNickname = r.ReadStringNullTerminated();
             ActualShiny = r.ReadBoolean();
             ActualSpecies = r.ReadEnum<PBESpecies>();

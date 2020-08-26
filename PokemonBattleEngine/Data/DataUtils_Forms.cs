@@ -10,8 +10,12 @@ namespace Kermalis.PokemonBattleEngine.Data
     {
         #region Static Collections
         public static PBEAlphabeticalList<PBEItem> AllItems { get; } = new PBEAlphabeticalList<PBEItem>(Enum.GetValues(typeof(PBEItem)).Cast<PBEItem>());
+        public static PBEAlphabeticalList<PBEItem> AllBalls { get; } = new PBEAlphabeticalList<PBEItem>(new[] { PBEItem.MasterBall, PBEItem.UltraBall, PBEItem.GreatBall, PBEItem.PokeBall,
+            PBEItem.SafariBall, PBEItem.NetBall, PBEItem.DiveBall, PBEItem.NestBall, PBEItem.RepeatBall, PBEItem.TimerBall, PBEItem.LuxuryBall, PBEItem.PremierBall, PBEItem.DuskBall, PBEItem.HealBall,
+            PBEItem.QuickBall, PBEItem.CherishBall, PBEItem.FastBall, PBEItem.LevelBall, PBEItem.LureBall, PBEItem.HeavyBall, PBEItem.LoveBall, PBEItem.FriendBall, PBEItem.MoonBall, PBEItem.SportBall,
+            PBEItem.ParkBall, PBEItem.DreamBall });
         public static PBEAlphabeticalList<PBESpecies> AllSpecies { get; } = new PBEAlphabeticalList<PBESpecies>(Enum.GetValues(typeof(PBESpecies)).Cast<PBESpecies>().Except(new[] { PBESpecies.MAX }));
-        public static PBEAlphabeticalList<PBESpecies> FullyEvolvedSpecies { get; } = new PBEAlphabeticalList<PBESpecies>(AllSpecies.Where(s => PBEPokemonData.GetData(s, 0).Evolutions.Count == 0));
+        public static PBEAlphabeticalList<PBESpecies> FullyEvolvedSpecies { get; } = new PBEAlphabeticalList<PBESpecies>(AllSpecies.Where(s => PBEDataProvider.Instance.GetPokemonData(s, 0).Evolutions.Count == 0));
         public static ReadOnlyDictionary<PBEType, PBEItem> TypeToGem { get; } = new ReadOnlyDictionary<PBEType, PBEItem>(new Dictionary<PBEType, PBEItem>()
         {
             { PBEType.Bug, PBEItem.BugGem },

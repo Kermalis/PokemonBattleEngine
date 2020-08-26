@@ -1,7 +1,7 @@
 ﻿using Kermalis.EndianBinaryIO;
 using Kermalis.PokemonBattleEngine.Battle;
 using Kermalis.PokemonBattleEngine.Data;
-using System;
+using Kermalis.PokemonBattleEngine.Utils;
 using System.Collections.ObjectModel;
 using System.IO;
 using System.Linq;
@@ -17,7 +17,7 @@ namespace Kermalis.PokemonBattleEngine.Packets
         {
             public sealed class PBETrainerInfo
             {
-                public sealed class PBEBattlePokemonInfo
+                public sealed class PBEBattlePokemonInfo // SleepTurns would be too much info for a client to have
                 {
                     public byte Id { get; }
                     public PBESpecies Species { get; }
@@ -30,6 +30,8 @@ namespace Kermalis.PokemonBattleEngine.Packets
                     public PBENature Nature { get; }
                     public PBEGender Gender { get; }
                     public PBEItem Item { get; }
+                    public PBEItem CaughtBall { get; }
+                    public PBEStatus1 Status1 { get; }
                     public PBEReadOnlyStatCollection EffortValues { get; }
                     public PBEReadOnlyStatCollection IndividualValues { get; }
                     public PBEReadOnlyPartyMoveset Moveset { get; }
@@ -47,6 +49,8 @@ namespace Kermalis.PokemonBattleEngine.Packets
                         Nature = pkmn.Nature;
                         Gender = pkmn.Gender;
                         Item = pkmn.OriginalItem;
+                        CaughtBall = pkmn.OriginalCaughtBall;
+                        Status1 = pkmn.OriginalStatus1;
                         EffortValues = pkmn.OriginalEffortValues;
                         IndividualValues = pkmn.IndividualValues;
                         Moveset = pkmn.OriginalMoveset;
@@ -64,6 +68,8 @@ namespace Kermalis.PokemonBattleEngine.Packets
                         Nature = r.ReadEnum<PBENature>();
                         Gender = r.ReadEnum<PBEGender>();
                         Item = r.ReadEnum<PBEItem>();
+                        CaughtBall = r.ReadEnum<PBEItem>();
+                        Status1 = r.ReadEnum<PBEStatus1>();
                         EffortValues = new PBEReadOnlyStatCollection(r);
                         IndividualValues = new PBEReadOnlyStatCollection(r);
                         Moveset = new PBEReadOnlyPartyMoveset(r);
@@ -82,48 +88,120 @@ namespace Kermalis.PokemonBattleEngine.Packets
                         w.Write(Nature);
                         w.Write(Gender);
                         w.Write(Item);
+                        w.Write(CaughtBall);
+                        w.Write(Status1);
                         EffortValues.ToBytes(w);
                         IndividualValues.ToBytes(w);
                         Moveset.ToBytes(w);
                     }
                 }
+                public sealed class PBEInventorySlotInfo
+                {
+                    public PBEItem Item { get; }
+                    public uint Quantity { get; }
+
+                    internal PBEInventorySlotInfo(PBEBattleInventory.PBEBattleInventorySlot slot)
+                    {
+                        Item = slot.Item;
+                        Quantity = slot.Quantity;
+                    }
+                    internal PBEInventorySlotInfo(EndianBinaryReader r)
+                    {
+                        Item = r.ReadEnum<PBEItem>();
+                        Quantity = r.ReadUInt32();
+                    }
+
+                    internal void ToBytes(EndianBinaryWriter w)
+                    {
+                        w.Write(Item);
+                        w.Write(Quantity);
+                    }
+                }
 
                 public byte Id { get; }
                 public string Name { get; }
-                private static readonly ReadOnlyCollection<PBEBattlePokemonInfo> _emptyParty = new ReadOnlyCollection<PBEBattlePokemonInfo>(Array.Empty<PBEBattlePokemonInfo>());
+                public ReadOnlyCollection<PBEInventorySlotInfo> Inventory { get; }
                 public ReadOnlyCollection<PBEBattlePokemonInfo> Party { get; }
 
                 internal PBETrainerInfo(PBETrainer trainer)
                 {
                     Id = trainer.Id;
-                    Name = trainer.Name;
+                    if (trainer.IsWild)
+                    {
+                        Name = string.Empty;
+                        Inventory = PBEEmptyReadOnlyCollection<PBEInventorySlotInfo>.Value;
+                    }
+                    else
+                    {
+                        Name = trainer.Name;
+                        Inventory = trainer.Inventory.Count == 0
+                            ? PBEEmptyReadOnlyCollection<PBEInventorySlotInfo>.Value
+                            : new ReadOnlyCollection<PBEInventorySlotInfo>(trainer.Inventory.Values.Select(s => new PBEInventorySlotInfo(s)).ToArray());
+                    }
                     Party = new ReadOnlyCollection<PBEBattlePokemonInfo>(trainer.Party.Select(p => new PBEBattlePokemonInfo(p)).ToArray());
                 }
                 internal PBETrainerInfo(EndianBinaryReader r)
                 {
                     Id = r.ReadByte();
                     Name = r.ReadStringNullTerminated();
-                    var party = new PBEBattlePokemonInfo[r.ReadByte()];
-                    for (int i = 0; i < party.Length; i++)
+                    int count = r.ReadUInt16();
+                    if (count == 0)
                     {
-                        party[i] = new PBEBattlePokemonInfo(r);
+                        Inventory = PBEEmptyReadOnlyCollection<PBEInventorySlotInfo>.Value;
                     }
-                    Party = new ReadOnlyCollection<PBEBattlePokemonInfo>(party);
+                    else
+                    {
+                        var inv = new PBEInventorySlotInfo[count];
+                        for (int i = 0; i < count; i++)
+                        {
+                            inv[i] = new PBEInventorySlotInfo(r);
+                        }
+                        Inventory = new ReadOnlyCollection<PBEInventorySlotInfo>(inv);
+                    }
+                    count = r.ReadByte();
+                    if (count == 0)
+                    {
+                        Party = PBEEmptyReadOnlyCollection<PBEBattlePokemonInfo>.Value;
+                    }
+                    else
+                    {
+                        var party = new PBEBattlePokemonInfo[count];
+                        for (int i = 0; i < count; i++)
+                        {
+                            party[i] = new PBEBattlePokemonInfo(r);
+                        }
+                        Party = new ReadOnlyCollection<PBEBattlePokemonInfo>(party);
+                    }
                 }
                 internal PBETrainerInfo(PBETrainerInfo other, byte? onlyForTrainer)
                 {
                     Id = other.Id;
                     Name = other.Name;
-                    Party = onlyForTrainer.HasValue && onlyForTrainer.Value == Id ? other.Party : _emptyParty;
+                    if (onlyForTrainer.HasValue && onlyForTrainer.Value == Id)
+                    {
+                        Inventory = other.Inventory;
+                        Party = other.Party;
+                    }
+                    else
+                    {
+                        Inventory = PBEEmptyReadOnlyCollection<PBEInventorySlotInfo>.Value;
+                        Party = PBEEmptyReadOnlyCollection<PBEBattlePokemonInfo>.Value;
+                    }
                 }
 
                 internal void ToBytes(EndianBinaryWriter w)
                 {
                     w.Write(Id);
                     w.Write(Name, true);
-                    byte count = (byte)Party.Count;
-                    w.Write(count);
-                    for (int i = 0; i < count; i++)
+                    ushort icount = (ushort)Inventory.Count;
+                    w.Write(icount);
+                    for (int i = 0; i < icount; i++)
+                    {
+                        Inventory[i].ToBytes(w);
+                    }
+                    byte pcount = (byte)Party.Count;
+                    w.Write(pcount);
+                    for (int i = 0; i < pcount; i++)
                     {
                         Party[i].ToBytes(w);
                     }
@@ -166,6 +244,7 @@ namespace Kermalis.PokemonBattleEngine.Packets
             }
         }
 
+        public PBEBattleType BattleType { get; }
         public PBEBattleFormat BattleFormat { get; }
         public PBEBattleTerrain BattleTerrain { get; }
         public PBEWeather Weather { get; }
@@ -178,29 +257,30 @@ namespace Kermalis.PokemonBattleEngine.Packets
             using (var w = new EndianBinaryWriter(ms, encoding: EncodingType.UTF16))
             {
                 w.Write(Code);
+                w.Write(BattleType = battle.BattleType);
                 w.Write(BattleFormat = battle.BattleFormat);
                 w.Write(BattleTerrain = battle.BattleTerrain);
                 w.Write(Weather = battle.Weather);
                 w.Write((Settings = battle.Settings).ToBytes());
-                byte count = (byte)(Teams = new ReadOnlyCollection<PBETeamInfo>(battle.Teams.Select(t => new PBETeamInfo(t)).ToArray())).Count;
-                w.Write(count);
-                for (int i = 0; i < count; i++)
+                Teams = new ReadOnlyCollection<PBETeamInfo>(battle.Teams.Select(t => new PBETeamInfo(t)).ToArray());
+                for (int i = 0; i < 2; i++)
                 {
                     Teams[i].ToBytes(w);
                 }
-                Data = new ReadOnlyCollection<byte>(ms.ToArray());
+                Data = new ReadOnlyCollection<byte>(ms.GetBuffer());
             }
         }
         internal PBEBattlePacket(byte[] data, EndianBinaryReader r)
         {
             Data = new ReadOnlyCollection<byte>(data);
+            BattleType = r.ReadEnum<PBEBattleType>();
             BattleFormat = r.ReadEnum<PBEBattleFormat>();
             BattleTerrain = r.ReadEnum<PBEBattleTerrain>();
             Weather = r.ReadEnum<PBEWeather>();
             Settings = new PBESettings(r);
             Settings.MakeReadOnly();
-            var teams = new PBETeamInfo[r.ReadByte()];
-            for (int i = 0; i < teams.Length; i++)
+            var teams = new PBETeamInfo[2];
+            for (int i = 0; i < 2; i++)
             {
                 teams[i] = new PBETeamInfo(r);
             }
@@ -212,17 +292,17 @@ namespace Kermalis.PokemonBattleEngine.Packets
             using (var w = new EndianBinaryWriter(ms, encoding: EncodingType.UTF16))
             {
                 w.Write(Code);
+                w.Write(BattleType = other.BattleType);
                 w.Write(BattleFormat = other.BattleFormat);
                 w.Write(BattleTerrain = other.BattleTerrain);
                 w.Write(Weather = other.Weather);
                 w.Write((Settings = other.Settings).ToBytes());
-                byte count = (byte)(Teams = new ReadOnlyCollection<PBETeamInfo>(other.Teams.Select(t => new PBETeamInfo(t, onlyForTrainer)).ToArray())).Count;
-                w.Write(count);
-                for (int i = 0; i < count; i++)
+                Teams = new ReadOnlyCollection<PBETeamInfo>(other.Teams.Select(t => new PBETeamInfo(t, onlyForTrainer)).ToArray());
+                for (int i = 0; i < 2; i++)
                 {
                     Teams[i].ToBytes(w);
                 }
-                Data = new ReadOnlyCollection<byte>(ms.ToArray());
+                Data = new ReadOnlyCollection<byte>(ms.GetBuffer());
             }
         }
     }

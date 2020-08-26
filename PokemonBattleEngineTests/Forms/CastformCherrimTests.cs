@@ -1,6 +1,5 @@
 ﻿using Kermalis.PokemonBattleEngine.Battle;
 using Kermalis.PokemonBattleEngine.Data;
-using Kermalis.PokemonBattleEngine.Utils;
 using Xunit;
 using Xunit.Abstractions;
 
@@ -20,7 +19,7 @@ namespace Kermalis.PokemonBattleEngineTests.Forms
         public void CastformCherrim_Interacts_With_AirLock(PBESpecies species, PBEAbility ability, PBEForm form)
         {
             #region Setup
-            PBEUtils.GlobalRandom.Seed = 0;
+            PBEDataProvider.GlobalRandom.Seed = 0;
             PBESettings settings = PBESettings.DefaultSettings;
 
             var p0 = new TestPokemonCollection(2);
@@ -39,13 +38,14 @@ namespace Kermalis.PokemonBattleEngineTests.Forms
             var battle = new PBEBattle(PBEBattleFormat.Single, settings, new PBETrainerInfo(p0, "Trainer 0"), new PBETrainerInfo(p1, "Trainer 1"),
                 weather: PBEWeather.HarshSunlight);
             battle.OnNewEvent += PBEBattle.ConsoleBattleEventHandler;
-            battle.Begin();
 
             PBETrainer t0 = battle.Trainers[0];
             PBETrainer t1 = battle.Trainers[1];
             PBEBattlePokemon magikarp = t0.Party[0];
             PBEBattlePokemon rayquaza = t0.Party[1];
             PBEBattlePokemon castformCherrim = t1.Party[0];
+
+            battle.Begin();
             #endregion
 
             #region Check Castform/Cherrim for correct form
@@ -53,8 +53,8 @@ namespace Kermalis.PokemonBattleEngineTests.Forms
             #endregion
 
             #region Swap Magikarp for Rayquaza and check for no form
-            Assert.True(PBEBattle.SelectActionsIfValid(t0, new PBETurnAction(magikarp, rayquaza)));
-            Assert.True(PBEBattle.SelectActionsIfValid(t1, new PBETurnAction(castformCherrim, PBEMove.Splash, PBETurnTarget.AllyCenter)));
+            Assert.Null(t0.SelectActionsIfValid(new PBETurnAction(magikarp, rayquaza)));
+            Assert.Null(t1.SelectActionsIfValid(new PBETurnAction(castformCherrim, PBEMove.Splash, PBETurnTarget.AllyCenter)));
 
             battle.RunTurn();
 
@@ -62,8 +62,8 @@ namespace Kermalis.PokemonBattleEngineTests.Forms
             #endregion
 
             #region Swap Rayquaza for Magikarp and check for correct form
-            Assert.True(PBEBattle.SelectActionsIfValid(t0, new PBETurnAction(rayquaza, magikarp)));
-            Assert.True(PBEBattle.SelectActionsIfValid(t1, new PBETurnAction(castformCherrim, PBEMove.Splash, PBETurnTarget.AllyCenter)));
+            Assert.Null(t0.SelectActionsIfValid(new PBETurnAction(rayquaza, magikarp)));
+            Assert.Null(t1.SelectActionsIfValid(new PBETurnAction(castformCherrim, PBEMove.Splash, PBETurnTarget.AllyCenter)));
 
             battle.RunTurn();
 
@@ -81,7 +81,7 @@ namespace Kermalis.PokemonBattleEngineTests.Forms
         public void CastformCherrim_Loses_Form(PBESpecies species, PBEAbility ability, PBEForm form)
         {
             #region Setup
-            PBEUtils.GlobalRandom.Seed = 0;
+            PBEDataProvider.GlobalRandom.Seed = 0;
             PBESettings settings = PBESettings.DefaultSettings;
 
             var p0 = new TestPokemonCollection(1);
@@ -95,17 +95,18 @@ namespace Kermalis.PokemonBattleEngineTests.Forms
 
             var battle = new PBEBattle(PBEBattleFormat.Single, settings, new PBETrainerInfo(p0, "Trainer 0"), new PBETrainerInfo(p1, "Trainer 1"));
             battle.OnNewEvent += PBEBattle.ConsoleBattleEventHandler;
-            battle.Begin();
 
             PBETrainer t0 = battle.Trainers[0];
             PBETrainer t1 = battle.Trainers[1];
             PBEBattlePokemon shuckle = t0.Party[0];
             PBEBattlePokemon castformCherrim = t1.Party[0];
+
+            battle.Begin();
             #endregion
 
             #region Use Sunny Day and check for correct form
-            Assert.True(PBEBattle.SelectActionsIfValid(t0, new[] { new PBETurnAction(shuckle, PBEMove.Splash, PBETurnTarget.AllyCenter) }));
-            Assert.True(PBEBattle.SelectActionsIfValid(t1, new[] { new PBETurnAction(castformCherrim, PBEMove.SunnyDay, PBETurnTarget.AllyCenter | PBETurnTarget.FoeCenter) }));
+            Assert.Null(t0.SelectActionsIfValid(new[] { new PBETurnAction(shuckle, PBEMove.Splash, PBETurnTarget.AllyCenter) }));
+            Assert.Null(t1.SelectActionsIfValid(new[] { new PBETurnAction(castformCherrim, PBEMove.SunnyDay, PBETurnTarget.AllyCenter | PBETurnTarget.FoeCenter) }));
 
             battle.RunTurn();
 
@@ -113,8 +114,8 @@ namespace Kermalis.PokemonBattleEngineTests.Forms
             #endregion
 
             #region Use Gastro Acid and check for no form
-            Assert.True(PBEBattle.SelectActionsIfValid(t0, new[] { new PBETurnAction(shuckle, PBEMove.GastroAcid, PBETurnTarget.FoeCenter) }));
-            Assert.True(PBEBattle.SelectActionsIfValid(t1, new[] { new PBETurnAction(castformCherrim, PBEMove.Splash, PBETurnTarget.AllyCenter) }));
+            Assert.Null(t0.SelectActionsIfValid(new[] { new PBETurnAction(shuckle, PBEMove.GastroAcid, PBETurnTarget.FoeCenter) }));
+            Assert.Null(t1.SelectActionsIfValid(new[] { new PBETurnAction(castformCherrim, PBEMove.Splash, PBETurnTarget.AllyCenter) }));
 
             battle.RunTurn();
 

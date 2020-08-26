@@ -1,6 +1,5 @@
 ﻿using Kermalis.PokemonBattleEngine.Battle;
 using Kermalis.PokemonBattleEngine.Data;
-using Kermalis.PokemonBattleEngine.Utils;
 using Xunit;
 using Xunit.Abstractions;
 
@@ -20,7 +19,7 @@ namespace Kermalis.PokemonBattleEngineTests
         public void AutoCenter_Works(bool faintLeft)
         {
             #region Setup
-            PBEUtils.GlobalRandom.Seed = 0;
+            PBEDataProvider.GlobalRandom.Seed = 0;
             PBESettings settings = PBESettings.DefaultSettings;
 
             var p = new TestPokemonCollection(3);
@@ -30,7 +29,6 @@ namespace Kermalis.PokemonBattleEngineTests
 
             var battle = new PBEBattle(PBEBattleFormat.Triple, settings, new PBETrainerInfo(p, "Trainer 0"), new PBETrainerInfo(p, "Trainer 1"));
             battle.OnNewEvent += PBEBattle.ConsoleBattleEventHandler;
-            battle.Begin();
 
             PBETrainer t0 = battle.Trainers[0];
             PBETrainer t1 = battle.Trainers[1];
@@ -40,14 +38,16 @@ namespace Kermalis.PokemonBattleEngineTests
             PBEBattlePokemon magikarp1 = t1.Party[0];
             PBEBattlePokemon golem1 = t1.Party[1];
             PBEBattlePokemon happiny1 = t1.Party[2];
+
+            battle.Begin();
             #endregion
 
             #region Force auto-center and check
-            Assert.True(PBEBattle.SelectActionsIfValid(t0,
+            Assert.Null(t0.SelectActionsIfValid(
                 new PBETurnAction(magikarp0, faintLeft ? PBEMove.Splash : PBEMove.Protect, PBETurnTarget.AllyLeft),
                 new PBETurnAction(golem0, PBEMove.Explosion, PBETurnTarget.AllyLeft | PBETurnTarget.AllyRight | PBETurnTarget.FoeLeft | PBETurnTarget.FoeCenter | PBETurnTarget.FoeRight),
                 new PBETurnAction(happiny0, faintLeft ? PBEMove.Protect : PBEMove.Splash, PBETurnTarget.AllyRight)));
-            Assert.True(PBEBattle.SelectActionsIfValid(t1,
+            Assert.Null(t1.SelectActionsIfValid(
                 new PBETurnAction(magikarp1, faintLeft ? PBEMove.Splash : PBEMove.Protect, PBETurnTarget.AllyLeft),
                 new PBETurnAction(golem1, PBEMove.Explosion, PBETurnTarget.AllyLeft | PBETurnTarget.AllyRight | PBETurnTarget.FoeLeft | PBETurnTarget.FoeCenter | PBETurnTarget.FoeRight),
                 new PBETurnAction(happiny1, faintLeft ? PBEMove.Protect : PBEMove.Splash, PBETurnTarget.AllyRight)));
@@ -69,7 +69,7 @@ namespace Kermalis.PokemonBattleEngineTests
         public void AutoCenter_Works_Despite_Available(bool faintLeft)
         {
             #region Setup
-            PBEUtils.GlobalRandom.Seed = 2; // Seed ensures protect doesn't fail
+            PBEDataProvider.GlobalRandom.Seed = 2; // Seed ensures protect doesn't fail
             PBESettings settings = PBESettings.DefaultSettings;
 
             var p0L = new TestPokemonCollection(faintLeft ? 1 : 2);
@@ -85,7 +85,6 @@ namespace Kermalis.PokemonBattleEngineTests
                 new[] { new PBETrainerInfo(p0L, "Trainer 0"), new PBETrainerInfo(p0C, "Trainer 1"), new PBETrainerInfo(p0R, "Trainer 2") },
                 new[] { new PBETrainerInfo(p1, "Trainer 3") });
             battle.OnNewEvent += PBEBattle.ConsoleBattleEventHandler;
-            battle.Begin();
 
             PBETrainer t0L = battle.Trainers[0];
             PBETrainer t0C = battle.Trainers[1];
@@ -99,16 +98,18 @@ namespace Kermalis.PokemonBattleEngineTests
             PBEBattlePokemon golem1 = t1.Party[1];
             PBEBattlePokemon happiny1 = t1.Party[2];
             PBEBattlePokemon weezing1 = t1.Party[3];
+
+            battle.Begin();
             #endregion
 
             #region Force switch-in from trainer 3
-            Assert.True(PBEBattle.SelectActionsIfValid(t0L,
+            Assert.Null(t0L.SelectActionsIfValid(
                 new PBETurnAction(magikarp0, faintLeft ? PBEMove.Splash : PBEMove.Protect, PBETurnTarget.AllyLeft)));
-            Assert.True(PBEBattle.SelectActionsIfValid(t0C,
+            Assert.Null(t0C.SelectActionsIfValid(
                 new PBETurnAction(golem0, PBEMove.Explosion, PBETurnTarget.AllyLeft | PBETurnTarget.AllyRight | PBETurnTarget.FoeLeft | PBETurnTarget.FoeCenter | PBETurnTarget.FoeRight)));
-            Assert.True(PBEBattle.SelectActionsIfValid(t0R,
+            Assert.Null(t0R.SelectActionsIfValid(
                 new PBETurnAction(happiny0, faintLeft ? PBEMove.Protect : PBEMove.Splash, PBETurnTarget.AllyRight)));
-            Assert.True(PBEBattle.SelectActionsIfValid(t1,
+            Assert.Null(t1.SelectActionsIfValid(
                 new PBETurnAction(magikarp1, faintLeft ? PBEMove.Splash : PBEMove.Protect, PBETurnTarget.AllyLeft),
                 new PBETurnAction(golem1, PBEMove.Explosion, PBETurnTarget.AllyLeft | PBETurnTarget.AllyRight | PBETurnTarget.FoeLeft | PBETurnTarget.FoeCenter | PBETurnTarget.FoeRight),
                 new PBETurnAction(happiny1, faintLeft ? PBEMove.Protect : PBEMove.Splash, PBETurnTarget.AllyRight)));
@@ -120,16 +121,16 @@ namespace Kermalis.PokemonBattleEngineTests
             #endregion
 
             #region Switch-in
-            Assert.True(PBEBattle.SelectSwitchesIfValid(t1,
+            Assert.Null(t1.SelectSwitchesIfValid(
                 new PBESwitchIn(weezing1, PBEFieldPosition.Center)));
 
             battle.RunSwitches();
             #endregion
 
             #region Force auto-center and check
-            Assert.True(PBEBattle.SelectActionsIfValid(faintLeft ? t0R : t0L,
+            Assert.Null((faintLeft ? t0R : t0L).SelectActionsIfValid(
                 new PBETurnAction(faintLeft ? happiny0 : magikarp0, PBEMove.Protect, faintLeft ? PBETurnTarget.AllyRight : PBETurnTarget.AllyLeft)));
-            Assert.True(PBEBattle.SelectActionsIfValid(t1,
+            Assert.Null(t1.SelectActionsIfValid(
                 new PBETurnAction(weezing1, PBEMove.Explosion, PBETurnTarget.AllyLeft | PBETurnTarget.AllyRight | PBETurnTarget.FoeLeft | PBETurnTarget.FoeCenter | PBETurnTarget.FoeRight),
                 new PBETurnAction(faintLeft ? happiny1 : magikarp1, PBEMove.Protect, faintLeft ? PBETurnTarget.AllyRight : PBETurnTarget.AllyLeft)));
 
@@ -147,7 +148,7 @@ namespace Kermalis.PokemonBattleEngineTests
         public void AutoCenter_ActivatesFromHazard()
         {
             #region Setup
-            PBEUtils.GlobalRandom.Seed = 2; // Seed ensures Regigigas doesn't flinch and Rock Slide hits
+            PBEDataProvider.GlobalRandom.Seed = 2; // Seed ensures Regigigas doesn't flinch and Rock Slide hits
             PBESettings settings = PBESettings.DefaultSettings;
 
             var p0 = new TestPokemonCollection(5);
@@ -176,7 +177,6 @@ namespace Kermalis.PokemonBattleEngineTests
 
             var battle = new PBEBattle(PBEBattleFormat.Triple, settings, new PBETrainerInfo(p0, "Trainer 0"), new PBETrainerInfo(p1, "Trainer 1"));
             battle.OnNewEvent += PBEBattle.ConsoleBattleEventHandler;
-            battle.Begin();
 
             PBETrainer t0 = battle.Trainers[0];
             PBETrainer t1 = battle.Trainers[1];
@@ -190,14 +190,16 @@ namespace Kermalis.PokemonBattleEngineTests
             PBEBattlePokemon sunkern = t1.Party[2];
             happiny.HP = 1; // Set Happiny HP to 1 so it faints on switch
             happiny.UpdateHPPercentage();
+
+            battle.Begin();
             #endregion
 
             #region Set up Stealth Rock while lowering HP, swap Happiny for Regigigas
-            Assert.True(PBEBattle.SelectActionsIfValid(t0,
+            Assert.Null(t0.SelectActionsIfValid(
                 new PBETurnAction(magikarp, PBEMove.Splash, PBETurnTarget.AllyLeft),
                 new PBETurnAction(munchlax, PBEMove.Splash, PBETurnTarget.AllyCenter),
                 new PBETurnAction(happiny, regigigas)));
-            Assert.True(PBEBattle.SelectActionsIfValid(t1,
+            Assert.Null(t1.SelectActionsIfValid(
                 new PBETurnAction(budew, PBEMove.Splash, PBETurnTarget.AllyLeft),
                 new PBETurnAction(butterfree, PBEMove.RockSlide, PBETurnTarget.FoeLeft | PBETurnTarget.FoeCenter | PBETurnTarget.FoeRight),
                 new PBETurnAction(sunkern, PBEMove.StealthRock, PBETurnTarget.FoeLeft | PBETurnTarget.FoeCenter | PBETurnTarget.FoeRight)));
@@ -208,11 +210,11 @@ namespace Kermalis.PokemonBattleEngineTests
             #endregion
 
             #region Yeet everyone
-            Assert.True(PBEBattle.SelectActionsIfValid(t0,
+            Assert.Null(t0.SelectActionsIfValid(
                 new PBETurnAction(magikarp, PBEMove.Splash, PBETurnTarget.AllyLeft),
                 new PBETurnAction(munchlax, PBEMove.Splash, PBETurnTarget.AllyCenter),
                 new PBETurnAction(regigigas, PBEMove.Explosion, PBETurnTarget.AllyCenter | PBETurnTarget.FoeLeft | PBETurnTarget.FoeCenter)));
-            Assert.True(PBEBattle.SelectActionsIfValid(t1,
+            Assert.Null(t1.SelectActionsIfValid(
                 new PBETurnAction(budew, PBEMove.Splash, PBETurnTarget.AllyLeft),
                 new PBETurnAction(butterfree, PBEMove.RockSlide, PBETurnTarget.FoeLeft | PBETurnTarget.FoeCenter | PBETurnTarget.FoeRight),
                 new PBETurnAction(sunkern, PBEMove.Splash, PBETurnTarget.AllyRight)));
@@ -224,7 +226,7 @@ namespace Kermalis.PokemonBattleEngineTests
             #endregion
 
             #region Switch in and check
-            Assert.True(PBEBattle.SelectSwitchesIfValid(t0,
+            Assert.Null(t0.SelectSwitchesIfValid(
                 new PBESwitchIn(happiny, PBEFieldPosition.Center),
                 new PBESwitchIn(mudkip, PBEFieldPosition.Right)));
 
@@ -244,7 +246,7 @@ namespace Kermalis.PokemonBattleEngineTests
         public void AutoCenter_Works_MultiBattle(bool faintLeft)
         {
             #region Setup
-            PBEUtils.GlobalRandom.Seed = 0;
+            PBEDataProvider.GlobalRandom.Seed = 0;
             PBESettings settings = PBESettings.DefaultSettings;
 
             var pL = new TestPokemonCollection(1);
@@ -258,7 +260,6 @@ namespace Kermalis.PokemonBattleEngineTests
                 new[] { new PBETrainerInfo(pL, "Trainer 0"), new PBETrainerInfo(pC, "Trainer 1"), new PBETrainerInfo(pR, "Trainer 2") },
                 new[] { new PBETrainerInfo(pL, "Trainer 3"), new PBETrainerInfo(pC, "Trainer 4"), new PBETrainerInfo(pR, "Trainer 5") });
             battle.OnNewEvent += PBEBattle.ConsoleBattleEventHandler;
-            battle.Begin();
 
             PBETrainer t0L = battle.Trainers[0];
             PBETrainer t0C = battle.Trainers[1];
@@ -272,15 +273,17 @@ namespace Kermalis.PokemonBattleEngineTests
             PBEBattlePokemon magikarp1 = t1L.Party[0];
             PBEBattlePokemon golem1 = t1C.Party[0];
             PBEBattlePokemon happiny1 = t1R.Party[0];
+
+            battle.Begin();
             #endregion
 
             #region Force auto-center and check
-            Assert.True(PBEBattle.SelectActionsIfValid(t0L, new PBETurnAction(magikarp0, faintLeft ? PBEMove.Splash : PBEMove.Protect, PBETurnTarget.AllyLeft)));
-            Assert.True(PBEBattle.SelectActionsIfValid(t0C, new PBETurnAction(golem0, PBEMove.Explosion, PBETurnTarget.AllyLeft | PBETurnTarget.AllyRight | PBETurnTarget.FoeLeft | PBETurnTarget.FoeCenter | PBETurnTarget.FoeRight)));
-            Assert.True(PBEBattle.SelectActionsIfValid(t0R, new PBETurnAction(happiny0, faintLeft ? PBEMove.Protect : PBEMove.Splash, PBETurnTarget.AllyRight)));
-            Assert.True(PBEBattle.SelectActionsIfValid(t1L, new PBETurnAction(magikarp1, faintLeft ? PBEMove.Splash : PBEMove.Protect, PBETurnTarget.AllyLeft)));
-            Assert.True(PBEBattle.SelectActionsIfValid(t1C, new PBETurnAction(golem1, PBEMove.Explosion, PBETurnTarget.AllyLeft | PBETurnTarget.AllyRight | PBETurnTarget.FoeLeft | PBETurnTarget.FoeCenter | PBETurnTarget.FoeRight)));
-            Assert.True(PBEBattle.SelectActionsIfValid(t1R, new PBETurnAction(happiny1, faintLeft ? PBEMove.Protect : PBEMove.Splash, PBETurnTarget.AllyRight)));
+            Assert.Null(t0L.SelectActionsIfValid(new PBETurnAction(magikarp0, faintLeft ? PBEMove.Splash : PBEMove.Protect, PBETurnTarget.AllyLeft)));
+            Assert.Null(t0C.SelectActionsIfValid(new PBETurnAction(golem0, PBEMove.Explosion, PBETurnTarget.AllyLeft | PBETurnTarget.AllyRight | PBETurnTarget.FoeLeft | PBETurnTarget.FoeCenter | PBETurnTarget.FoeRight)));
+            Assert.Null(t0R.SelectActionsIfValid(new PBETurnAction(happiny0, faintLeft ? PBEMove.Protect : PBEMove.Splash, PBETurnTarget.AllyRight)));
+            Assert.Null(t1L.SelectActionsIfValid(new PBETurnAction(magikarp1, faintLeft ? PBEMove.Splash : PBEMove.Protect, PBETurnTarget.AllyLeft)));
+            Assert.Null(t1C.SelectActionsIfValid(new PBETurnAction(golem1, PBEMove.Explosion, PBETurnTarget.AllyLeft | PBETurnTarget.AllyRight | PBETurnTarget.FoeLeft | PBETurnTarget.FoeCenter | PBETurnTarget.FoeRight)));
+            Assert.Null(t1R.SelectActionsIfValid(new PBETurnAction(happiny1, faintLeft ? PBEMove.Protect : PBEMove.Splash, PBETurnTarget.AllyRight)));
 
             battle.RunTurn();
 

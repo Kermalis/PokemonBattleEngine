@@ -1,6 +1,5 @@
 ﻿using Kermalis.PokemonBattleEngine.Battle;
 using Kermalis.PokemonBattleEngine.Data;
-using Kermalis.PokemonBattleEngine.Utils;
 using Xunit;
 using Xunit.Abstractions;
 
@@ -32,7 +31,7 @@ namespace Kermalis.PokemonBattleEngineTests.Moves
         public void Camouflage_Works(PBEBattleTerrain battleTerrain, PBEType expectedType, PBESpecies species)
         {
             #region Setup
-            PBEUtils.GlobalRandom.Seed = 0;
+            PBEDataProvider.GlobalRandom.Seed = 0;
             PBESettings settings = PBESettings.DefaultSettings;
 
             var p0 = new TestPokemonCollection(1);
@@ -44,17 +43,18 @@ namespace Kermalis.PokemonBattleEngineTests.Moves
             var battle = new PBEBattle(PBEBattleFormat.Single, settings, new PBETrainerInfo(p0, "Trainer 0"), new PBETrainerInfo(p1, "Trainer 1"),
                 battleTerrain: battleTerrain);
             battle.OnNewEvent += PBEBattle.ConsoleBattleEventHandler;
-            battle.Begin();
 
             PBETrainer t0 = battle.Trainers[0];
             PBETrainer t1 = battle.Trainers[1];
             PBEBattlePokemon camouflager = t0.Party[0];
             PBEBattlePokemon magikarp = t1.Party[0];
+
+            battle.Begin();
             #endregion
 
             #region Use Camouflage and check
-            Assert.True(PBEBattle.SelectActionsIfValid(t0, new PBETurnAction(camouflager, PBEMove.Camouflage, PBETurnTarget.AllyCenter)));
-            Assert.True(PBEBattle.SelectActionsIfValid(t1, new PBETurnAction(magikarp, PBEMove.Splash, PBETurnTarget.AllyCenter)));
+            Assert.Null(t0.SelectActionsIfValid(new PBETurnAction(camouflager, PBEMove.Camouflage, PBETurnTarget.AllyCenter)));
+            Assert.Null(t1.SelectActionsIfValid(new PBETurnAction(magikarp, PBEMove.Splash, PBETurnTarget.AllyCenter)));
 
             battle.RunTurn();
 
@@ -70,7 +70,7 @@ namespace Kermalis.PokemonBattleEngineTests.Moves
         public void Camouflage_Fails()
         {
             #region Setup
-            PBEUtils.GlobalRandom.Seed = 0;
+            PBEDataProvider.GlobalRandom.Seed = 0;
             PBESettings settings = PBESettings.DefaultSettings;
 
             var p0 = new TestPokemonCollection(1);
@@ -82,17 +82,18 @@ namespace Kermalis.PokemonBattleEngineTests.Moves
             var battle = new PBEBattle(PBEBattleFormat.Single, settings, new PBETrainerInfo(p0, "Trainer 0"), new PBETrainerInfo(p1, "Trainer 1"),
                 battleTerrain: PBEBattleTerrain.Water);
             battle.OnNewEvent += PBEBattle.ConsoleBattleEventHandler;
-            battle.Begin();
 
             PBETrainer t0 = battle.Trainers[0];
             PBETrainer t1 = battle.Trainers[1];
             PBEBattlePokemon staryu = t0.Party[0];
             PBEBattlePokemon magikarp = t1.Party[0];
+
+            battle.Begin();
             #endregion
 
             #region Use Camouflage and check
-            Assert.True(PBEBattle.SelectActionsIfValid(t0, new PBETurnAction(staryu, PBEMove.Camouflage, PBETurnTarget.AllyCenter)));
-            Assert.True(PBEBattle.SelectActionsIfValid(t1, new PBETurnAction(magikarp, PBEMove.Splash, PBETurnTarget.AllyCenter)));
+            Assert.Null(t0.SelectActionsIfValid(new PBETurnAction(staryu, PBEMove.Camouflage, PBETurnTarget.AllyCenter)));
+            Assert.Null(t1.SelectActionsIfValid(new PBETurnAction(magikarp, PBEMove.Splash, PBETurnTarget.AllyCenter)));
 
             battle.RunTurn();
 

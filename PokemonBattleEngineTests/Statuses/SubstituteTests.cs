@@ -1,6 +1,5 @@
 ﻿using Kermalis.PokemonBattleEngine.Battle;
 using Kermalis.PokemonBattleEngine.Data;
-using Kermalis.PokemonBattleEngine.Utils;
 using Xunit;
 using Xunit.Abstractions;
 
@@ -18,7 +17,7 @@ namespace Kermalis.PokemonBattleEngineTests.Statuses
         public void ColorChange_Does_Not_Activate()
         {
             #region Setup
-            PBEUtils.GlobalRandom.Seed = 0;
+            PBEDataProvider.GlobalRandom.Seed = 0;
             PBESettings settings = PBESettings.DefaultSettings;
 
             var p0 = new TestPokemonCollection(1);
@@ -32,17 +31,18 @@ namespace Kermalis.PokemonBattleEngineTests.Statuses
 
             var battle = new PBEBattle(PBEBattleFormat.Single, settings, new PBETrainerInfo(p0, "Trainer 0"), new PBETrainerInfo(p1, "Trainer 1"));
             battle.OnNewEvent += PBEBattle.ConsoleBattleEventHandler;
-            battle.Begin();
 
             PBETrainer t0 = battle.Trainers[0];
             PBETrainer t1 = battle.Trainers[1];
             PBEBattlePokemon conkeldurr = t0.Party[0];
             PBEBattlePokemon kecleon = t1.Party[0];
+
+            battle.Begin();
             #endregion
 
             #region Use and check
-            Assert.True(PBEBattle.SelectActionsIfValid(t0, new PBETurnAction(conkeldurr, PBEMove.CloseCombat, PBETurnTarget.FoeCenter)));
-            Assert.True(PBEBattle.SelectActionsIfValid(t1, new PBETurnAction(kecleon, PBEMove.Substitute, PBETurnTarget.AllyCenter)));
+            Assert.Null(t0.SelectActionsIfValid(new PBETurnAction(conkeldurr, PBEMove.CloseCombat, PBETurnTarget.FoeCenter)));
+            Assert.Null(t1.SelectActionsIfValid(new PBETurnAction(kecleon, PBEMove.Substitute, PBETurnTarget.AllyCenter)));
 
             battle.RunTurn();
 

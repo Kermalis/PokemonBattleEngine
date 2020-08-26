@@ -16,6 +16,7 @@ namespace Kermalis.PokemonBattleEngineClient.Clients
         {
             Battle = PBEBattle.LoadReplay(path);
             BattleView = new BattleView(this);
+            ShowAllPokemon();
             StartPacketThread();
         }
 

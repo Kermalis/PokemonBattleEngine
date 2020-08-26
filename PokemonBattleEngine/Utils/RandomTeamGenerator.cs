@@ -1,5 +1,6 @@
 ﻿// This file is adapted from Pokémon Showdown (MIT License): https://github.com/smogon/pokemon-showdown/blob/master/data/mods/gen5/random-teams.ts
 // Those guys know what they're doing!
+using Kermalis.PokemonBattleEngine.Battle;
 using Kermalis.PokemonBattleEngine.Data;
 using Kermalis.PokemonBattleEngine.Data.Legality;
 using System;
@@ -90,14 +91,14 @@ namespace Kermalis.PokemonBattleEngine.Utils
         private static readonly PBEMove[] _noSTABMoves = new[] { PBEMove.AquaJet, PBEMove.Bounce, PBEMove.Explosion, PBEMove.FakeOut, PBEMove.FlameCharge, PBEMove.IceShard, PBEMove.MachPunch, PBEMove.Pluck,
         PBEMove.Pursuit, PBEMove.QuickAttack, PBEMove.Selfdestruct, PBEMove.SuckerPunch, PBEMove.ClearSmog, PBEMove.Eruption, PBEMove.IcyWind, PBEMove.Incinerate, PBEMove.Snarl, PBEMove.VacuumWave, PBEMove.WaterSpout };
 
-        private static PBEAbility GetAbility(PBESpecies species, List<PBEMove> moves, PBEPokemonData pData, PBECounter counter, PBETeamDetails teamDs)
+        private static PBEAbility GetAbility(PBESpecies species, List<PBEMove> moves, IPBEPokemonData pData, PBECounter counter, PBETeamDetails teamDs)
         {
             var abilityPool = new List<PBEAbility>(pData.Abilities);
             PBEAbility ability;
             do
             {
                 bool reject = false;
-                ability = PBEUtils.GlobalRandom.RandomElement(abilityPool);
+                ability = PBEDataProvider.GlobalRandom.RandomElement(abilityPool);
                 // Reasons to reject
                 switch (ability)
                 {
@@ -181,7 +182,7 @@ namespace Kermalis.PokemonBattleEngine.Utils
             } while (ability == PBEAbility.None && abilityPool.Count > 0);
             return ability;
         }
-        private static PBEItem GetItem(PBESpecies species, PBEForm form, PBEAbility ability, List<PBEMove> moves, PBEPokemonData pData, PBECounter counter, bool isLead)
+        private static PBEItem GetItem(PBESpecies species, PBEForm form, PBEAbility ability, List<PBEMove> moves, IPBEPokemonData pData, PBECounter counter, bool isLead)
         {
             PBEItem item;
             void GetRandomGem()
@@ -189,7 +190,7 @@ namespace Kermalis.PokemonBattleEngine.Utils
                 var list = new List<PBEType>();
                 foreach (PBEMove move in moves)
                 {
-                    PBEMoveData mData = PBEMoveData.Data[move];
+                    IPBEMoveData mData = PBEDataProvider.Instance.GetMoveData(move);
                     //if (!move.basePower && !move.basePowerCallback) continue;
                     // KERMALIS: Instead gonna check status for now
                     if (mData.Category != PBEMoveCategory.Status)
@@ -197,7 +198,7 @@ namespace Kermalis.PokemonBattleEngine.Utils
                         list.Add(mData.Type);
                     }
                 }
-                item = PBEDataUtils.TypeToGem[PBEUtils.GlobalRandom.RandomElement(list)];
+                item = PBEDataUtils.TypeToGem[PBEDataProvider.GlobalRandom.RandomElement(list)];
             }
             // First, the extra high-priority items
             if (species == PBESpecies.Marowak)
@@ -224,7 +225,7 @@ namespace Kermalis.PokemonBattleEngine.Utils
             {
                 item = PBEItem.ChoiceSpecs;
             }
-            else if (species == PBESpecies.Wobbuffet && moves.Contains(PBEMove.DestinyBond) && PBEUtils.GlobalRandom.RandomBool())
+            else if (species == PBESpecies.Wobbuffet && moves.Contains(PBEMove.DestinyBond) && PBEDataProvider.GlobalRandom.RandomBool())
             {
                 item = PBEItem.CustapBerry;
             }
@@ -308,11 +309,11 @@ namespace Kermalis.PokemonBattleEngine.Utils
             else if (counter[PBEMoveCategory.Physical] >= PBESettings.DefaultNumMoves && !moves.Contains(PBEMove.DragonTail) && !moves.Contains(PBEMove.FakeOut) && !moves.Contains(PBEMove.FlameCharge)
                 && !moves.Contains(PBEMove.SuckerPunch) && (!moves.Contains(PBEMove.RapidSpin) || PBETypeEffectiveness.GetEffectiveness(PBEType.Rock, pData) < 1))
             {
-                item = (pData.BaseStats.Attack >= 100 || pData.Abilities.Contains(PBEAbility.HugePower)) && pData.BaseStats.Speed >= 60 && pData.BaseStats.Speed <= 108 && counter.Priority == 0 && PBEUtils.GlobalRandom.RandomBool(2, 3) ? PBEItem.ChoiceScarf : PBEItem.ChoiceBand;
+                item = (pData.BaseStats.Attack >= 100 || pData.Abilities.Contains(PBEAbility.HugePower)) && pData.BaseStats.Speed >= 60 && pData.BaseStats.Speed <= 108 && counter.Priority == 0 && PBEDataProvider.GlobalRandom.RandomBool(2, 3) ? PBEItem.ChoiceScarf : PBEItem.ChoiceBand;
             }
             else if (counter[PBEMoveCategory.Special] >= PBESettings.DefaultNumMoves && !moves.Contains(PBEMove.ClearSmog) && !moves.Contains(PBEMove.FieryDance))
             {
-                item = pData.BaseStats.SpAttack >= 100 && pData.BaseStats.Speed >= 60 && pData.BaseStats.Speed <= 108 && counter.Priority == 0 && PBEUtils.GlobalRandom.RandomBool(2, 3) ? PBEItem.ChoiceScarf : PBEItem.ChoiceSpecs;
+                item = pData.BaseStats.SpAttack >= 100 && pData.BaseStats.Speed >= 60 && pData.BaseStats.Speed <= 108 && counter.Priority == 0 && PBEDataProvider.GlobalRandom.RandomBool(2, 3) ? PBEItem.ChoiceScarf : PBEItem.ChoiceSpecs;
             }
             else if (counter[PBEMoveCategory.Special] >= 3 && moves.Contains(PBEMove.Uturn))
             {
@@ -379,7 +380,7 @@ namespace Kermalis.PokemonBattleEngine.Utils
             }
             return item;
         }
-        private static List<PBEMove> GetMoves(PBESpecies species, PBEForm form, PBEPokemonData pData, bool isLead, PBETeamDetails teamDs, out PBECounter counter)
+        private static List<PBEMove> GetMoves(PBESpecies species, PBEForm form, IPBEPokemonData pData, bool isLead, PBETeamDetails teamDs, out PBECounter counter)
         {
             var movePool = new List<PBEMove>(PBELegalityChecker.GetLegalMoves(species, form, PBESettings.DefaultMaxLevel, PBESettings.DefaultSettings));
             var moves = new List<PBEMove>(PBESettings.DefaultNumMoves);
@@ -401,13 +402,13 @@ namespace Kermalis.PokemonBattleEngine.Utils
                 // Choose next moves from learnset/viable moves and add them to moves list:
                 while (moves.Count < PBESettings.DefaultNumMoves && movePool.Count > 0)
                 {
-                    PBEMove move = PBEUtils.GlobalRandom.RandomElement(movePool);
+                    PBEMove move = PBEDataProvider.GlobalRandom.RandomElement(movePool);
                     movePool.Remove(move);
                     moves.Add(move);
                 }
                 while (moves.Count < PBESettings.DefaultNumMoves && rejectedPool.Count > 0)
                 {
-                    PBEMove move = PBEUtils.GlobalRandom.RandomElement(rejectedPool);
+                    PBEMove move = PBEDataProvider.GlobalRandom.RandomElement(rejectedPool);
                     rejectedPool.Remove(move);
                     moves.Add(move);
                 }
@@ -424,7 +425,7 @@ namespace Kermalis.PokemonBattleEngine.Utils
                 for (int i = startI; i < moves.Count; i++)
                 {
                     PBEMove move = moves[i];
-                    PBEMoveData mData = PBEMoveData.Data[move];
+                    IPBEMoveData mData = PBEDataProvider.Instance.GetMoveData(move);
 
                     bool reject = false;
                     bool isSetup = false;
@@ -1081,7 +1082,7 @@ namespace Kermalis.PokemonBattleEngine.Utils
             return moves;
         }
 
-        private static PBECounter QueryMoves(PBEPokemonData pData, List<PBEMove> moves, List<PBEMove> movePool)
+        private static PBECounter QueryMoves(IPBEPokemonData pData, List<PBEMove> moves, List<PBEMove> movePool)
         {
             var counter = new PBECounter();
 
@@ -1093,7 +1094,7 @@ namespace Kermalis.PokemonBattleEngine.Utils
             // Iterate through all moves we've chosen so far and keep track of what they do:
             foreach (PBEMove move in moves)
             {
-                PBEMoveData mData = PBEMoveData.Data[move];
+                IPBEMoveData mData = PBEDataProvider.Instance.GetMoveData(move);
                 PBEType moveType = move == PBEMove.Judgment ? pData.Type1 : mData.Type;
 
                 // Moves that do a set amount of damage:
@@ -1206,7 +1207,7 @@ namespace Kermalis.PokemonBattleEngine.Utils
             // Keep track of available moves
             foreach (PBEMove move in movePool)
             {
-                PBEMoveData mData = PBEMoveData.Data[move];
+                IPBEMoveData mData = PBEDataProvider.Instance.GetMoveData(move);
                 if (!mData.IsSetDamageMove())
                 {
                     if (mData.Category == PBEMoveCategory.Physical)
@@ -1267,7 +1268,7 @@ namespace Kermalis.PokemonBattleEngine.Utils
         }
 
         // TODO: Hidden power types
-        private static void GetRandomSet(PBESpecies species, PBEForm form, PBEPokemonData pData, bool isLead, PBETeamDetails teamDs, PBELegalPokemon pkmn)
+        private static void GetRandomSet(PBESpecies species, PBEForm form, IPBEPokemonData pData, bool isLead, PBETeamDetails teamDs, PBELegalPokemon pkmn)
         {
             pkmn.EffortValues.Equalize();
             List<PBEMove> moves = GetMoves(species, form, pData, isLead, teamDs, out PBECounter counter);
@@ -1349,10 +1350,10 @@ namespace Kermalis.PokemonBattleEngine.Utils
             int currentIndex = 0;
             while (speciesPool.Count > 0)
             {
-                (PBESpecies species, PBEForm form) = PBEUtils.GlobalRandom.RandomSpecies(speciesPool, true);
+                (PBESpecies species, PBEForm form) = PBEDataProvider.GlobalRandom.RandomSpecies(speciesPool, true);
                 speciesPool.Remove(species);
                 // KERMALIS: Showdown limits {maxShared} per tier
-                var pData = PBEPokemonData.GetData(species, form);
+                IPBEPokemonData pData = PBEDataProvider.Instance.GetPokemonData(species, form);
                 if (ShouldDenyType(usedTypes, pData.Type1, maxShared) || ShouldDenyType(usedTypes, pData.Type2, maxShared))
                 {
                     continue;

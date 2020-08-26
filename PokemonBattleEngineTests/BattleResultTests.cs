@@ -1,15 +1,14 @@
 ﻿using Kermalis.PokemonBattleEngine.Battle;
 using Kermalis.PokemonBattleEngine.Data;
-using Kermalis.PokemonBattleEngine.Utils;
 using Xunit;
 using Xunit.Abstractions;
 
 namespace Kermalis.PokemonBattleEngineTests
 {
     [Collection("Utils")]
-    public class WinnerTests
+    public class BattleResultTests
     {
-        public WinnerTests(TestUtils utils, ITestOutputHelper output)
+        public BattleResultTests(TestUtils utils, ITestOutputHelper output)
         {
             utils.SetOutputHelper(output);
         }
@@ -20,7 +19,7 @@ namespace Kermalis.PokemonBattleEngineTests
         public void Explosion_User_Loses_Single()
         {
             #region Setup
-            PBEUtils.GlobalRandom.Seed = 0;
+            PBEDataProvider.GlobalRandom.Seed = 0;
             PBESettings settings = PBESettings.DefaultSettings;
 
             var p0 = new TestPokemonCollection(1);
@@ -31,22 +30,23 @@ namespace Kermalis.PokemonBattleEngineTests
 
             var battle = new PBEBattle(PBEBattleFormat.Single, settings, new PBETrainerInfo(p0, "Trainer 0"), new PBETrainerInfo(p1, "Trainer 1"));
             battle.OnNewEvent += PBEBattle.ConsoleBattleEventHandler;
-            battle.Begin();
 
             PBETrainer t0 = battle.Trainers[0];
             PBETrainer t1 = battle.Trainers[1];
             PBEBattlePokemon golem = t0.Party[0];
             PBEBattlePokemon magikarp = t1.Party[0];
+
+            battle.Begin();
             #endregion
 
             #region Use move and check
-            Assert.True(PBEBattle.SelectActionsIfValid(t0, new PBETurnAction(golem, PBEMove.Explosion, PBETurnTarget.FoeCenter)));
-            Assert.True(PBEBattle.SelectActionsIfValid(t1, new PBETurnAction(magikarp, PBEMove.Splash, PBETurnTarget.AllyCenter)));
+            Assert.Null(t0.SelectActionsIfValid(new PBETurnAction(golem, PBEMove.Explosion, PBETurnTarget.FoeCenter)));
+            Assert.Null(t1.SelectActionsIfValid(new PBETurnAction(magikarp, PBEMove.Splash, PBETurnTarget.AllyCenter)));
 
             battle.RunTurn();
 
             Assert.True(golem.HP == 0 && magikarp.HP == 0 // All faint
-                && battle.Winner == battle.Teams[1]); // Golem's team loses
+                && battle.BattleResult == PBEBattleResult.Team1Win); // Golem's team loses
             #endregion
 
             #region Cleanup
@@ -58,7 +58,7 @@ namespace Kermalis.PokemonBattleEngineTests
         public void Explosion_User_Loses_Multiple()
         {
             #region Setup
-            PBEUtils.GlobalRandom.Seed = 0;
+            PBEDataProvider.GlobalRandom.Seed = 0;
             PBESettings settings = PBESettings.DefaultSettings;
 
             var p0 = new TestPokemonCollection(3);
@@ -73,7 +73,6 @@ namespace Kermalis.PokemonBattleEngineTests
 
             var battle = new PBEBattle(PBEBattleFormat.Triple, settings, new PBETrainerInfo(p0, "Trainer 0"), new PBETrainerInfo(p1, "Trainer 1"));
             battle.OnNewEvent += PBEBattle.ConsoleBattleEventHandler;
-            battle.Begin();
 
             PBETrainer t0 = battle.Trainers[0];
             PBETrainer t1 = battle.Trainers[1];
@@ -83,14 +82,16 @@ namespace Kermalis.PokemonBattleEngineTests
             PBEBattlePokemon patrat = t1.Party[0];
             PBEBattlePokemon lickilicky = t1.Party[1];
             PBEBattlePokemon happiny = t1.Party[2];
+
+            battle.Begin();
             #endregion
 
             #region Use move and check
-            Assert.True(PBEBattle.SelectActionsIfValid(t0,
+            Assert.Null(t0.SelectActionsIfValid(
                 new PBETurnAction(qwilfish, PBEMove.Splash, PBETurnTarget.AllyLeft),
                 new PBETurnAction(golem, PBEMove.Explosion, PBETurnTarget.AllyLeft | PBETurnTarget.AllyRight | PBETurnTarget.FoeLeft | PBETurnTarget.FoeCenter | PBETurnTarget.FoeRight),
                 new PBETurnAction(magikarp, PBEMove.Splash, PBETurnTarget.AllyRight)));
-            Assert.True(PBEBattle.SelectActionsIfValid(t1,
+            Assert.Null(t1.SelectActionsIfValid(
                 new PBETurnAction(patrat, PBEMove.Splash, PBETurnTarget.AllyLeft),
                 new PBETurnAction(lickilicky, PBEMove.Splash, PBETurnTarget.AllyCenter),
                 new PBETurnAction(happiny, PBEMove.Splash, PBETurnTarget.AllyRight)));
@@ -98,7 +99,7 @@ namespace Kermalis.PokemonBattleEngineTests
             battle.RunTurn();
 
             Assert.True(qwilfish.HP == 0 && golem.HP == 0 && magikarp.HP == 0 && patrat.HP == 0 && lickilicky.HP == 0 && happiny.HP == 0 // All faint
-                && battle.Winner == battle.Teams[1]); // Golem's team loses
+                && battle.BattleResult == PBEBattleResult.Team1Win); // Golem's team loses
             #endregion
 
             #region Cleanup
@@ -110,7 +111,7 @@ namespace Kermalis.PokemonBattleEngineTests
         public void FinalGambit_User_Loses()
         {
             #region Setup
-            PBEUtils.GlobalRandom.Seed = 0;
+            PBEDataProvider.GlobalRandom.Seed = 0;
             PBESettings settings = PBESettings.DefaultSettings;
 
             var p0 = new TestPokemonCollection(1);
@@ -121,22 +122,23 @@ namespace Kermalis.PokemonBattleEngineTests
 
             var battle = new PBEBattle(PBEBattleFormat.Single, settings, new PBETrainerInfo(p0, "Trainer 0"), new PBETrainerInfo(p1, "Trainer 1"));
             battle.OnNewEvent += PBEBattle.ConsoleBattleEventHandler;
-            battle.Begin();
 
             PBETrainer t0 = battle.Trainers[0];
             PBETrainer t1 = battle.Trainers[1];
             PBEBattlePokemon staraptor = t0.Party[0];
             PBEBattlePokemon magikarp = t1.Party[0];
+
+            battle.Begin();
             #endregion
 
             #region Use FinalGambit and check
-            Assert.True(PBEBattle.SelectActionsIfValid(t0, new PBETurnAction(staraptor, PBEMove.FinalGambit, PBETurnTarget.FoeCenter)));
-            Assert.True(PBEBattle.SelectActionsIfValid(t1, new PBETurnAction(magikarp, PBEMove.Splash, PBETurnTarget.AllyCenter)));
+            Assert.Null(t0.SelectActionsIfValid(new PBETurnAction(staraptor, PBEMove.FinalGambit, PBETurnTarget.FoeCenter)));
+            Assert.Null(t1.SelectActionsIfValid(new PBETurnAction(magikarp, PBEMove.Splash, PBETurnTarget.AllyCenter)));
 
             battle.RunTurn();
 
             Assert.True(staraptor.HP == 0 && magikarp.HP == 0 // Both fainted
-                && battle.Winner == battle.Teams[1]); // Magikarp's team wins
+                && battle.BattleResult == PBEBattleResult.Team1Win); // Magikarp's team wins
             #endregion
 
             #region Cleanup
@@ -148,7 +150,7 @@ namespace Kermalis.PokemonBattleEngineTests
         public void HPDrain_And_LiquidOoze()
         {
             #region Setup
-            PBEUtils.GlobalRandom.Seed = 0;
+            PBEDataProvider.GlobalRandom.Seed = 0;
             PBESettings settings = PBESettings.DefaultSettings;
 
             var p0 = new TestPokemonCollection(1);
@@ -162,22 +164,23 @@ namespace Kermalis.PokemonBattleEngineTests
 
             var battle = new PBEBattle(PBEBattleFormat.Single, settings, new PBETrainerInfo(p0, "Trainer 0"), new PBETrainerInfo(p1, "Trainer 1"));
             battle.OnNewEvent += PBEBattle.ConsoleBattleEventHandler;
-            battle.Begin();
 
             PBETrainer t0 = battle.Trainers[0];
             PBETrainer t1 = battle.Trainers[1];
             PBEBattlePokemon deoxys = t0.Party[0];
             PBEBattlePokemon blissey = t1.Party[0];
+
+            battle.Begin();
             #endregion
 
             #region Use DrainPunch and check
-            Assert.True(PBEBattle.SelectActionsIfValid(t0, new PBETurnAction(deoxys, PBEMove.DrainPunch, PBETurnTarget.FoeCenter)));
-            Assert.True(PBEBattle.SelectActionsIfValid(t1, new PBETurnAction(blissey, PBEMove.Splash, PBETurnTarget.AllyCenter)));
+            Assert.Null(t0.SelectActionsIfValid(new PBETurnAction(deoxys, PBEMove.DrainPunch, PBETurnTarget.FoeCenter)));
+            Assert.Null(t1.SelectActionsIfValid(new PBETurnAction(blissey, PBEMove.Splash, PBETurnTarget.AllyCenter)));
 
             battle.RunTurn();
 
             Assert.True(deoxys.HP == 0 && blissey.HP == 0 // Both fainted
-                && battle.Winner == battle.Teams[1]); // Blissey's team wins
+                && battle.BattleResult == PBEBattleResult.Team1Win); // Blissey's team wins
             #endregion
 
             #region Cleanup
@@ -190,7 +193,7 @@ namespace Kermalis.PokemonBattleEngineTests
         public void IronBarbs_User_Loses()
         {
             #region Setup
-            PBEUtils.GlobalRandom.Seed = 0;
+            PBEDataProvider.GlobalRandom.Seed = 0;
             PBESettings settings = PBESettings.DefaultSettings;
 
             var p0 = new TestPokemonCollection(1);
@@ -204,7 +207,6 @@ namespace Kermalis.PokemonBattleEngineTests
 
             var battle = new PBEBattle(PBEBattleFormat.Single, settings, new PBETrainerInfo(p0, "Trainer 0"), new PBETrainerInfo(p1, "Trainer 1"));
             battle.OnNewEvent += PBEBattle.ConsoleBattleEventHandler;
-            battle.Begin();
 
             PBETrainer t0 = battle.Trainers[0];
             PBETrainer t1 = battle.Trainers[1];
@@ -212,16 +214,18 @@ namespace Kermalis.PokemonBattleEngineTests
             PBEBattlePokemon ferroseed = t1.Party[0];
             lucario.HP = 1;
             lucario.UpdateHPPercentage();
+
+            battle.Begin();
             #endregion
 
             #region Use Pound and check
-            Assert.True(PBEBattle.SelectActionsIfValid(t0, new PBETurnAction(lucario, PBEMove.Pound, PBETurnTarget.FoeCenter)));
-            Assert.True(PBEBattle.SelectActionsIfValid(t1, new PBETurnAction(ferroseed, PBEMove.Splash, PBETurnTarget.AllyCenter)));
+            Assert.Null(t0.SelectActionsIfValid(new PBETurnAction(lucario, PBEMove.Pound, PBETurnTarget.FoeCenter)));
+            Assert.Null(t1.SelectActionsIfValid(new PBETurnAction(ferroseed, PBEMove.Splash, PBETurnTarget.AllyCenter)));
 
             battle.RunTurn();
 
             Assert.True(lucario.HP == 0 && ferroseed.HP == 0 // Both fainted
-                && battle.Winner == battle.Teams[1]); // Ferroseed's team wins
+                && battle.BattleResult == PBEBattleResult.Team1Win); // Ferroseed's team wins
             #endregion
 
             #region Cleanup
@@ -233,7 +237,7 @@ namespace Kermalis.PokemonBattleEngineTests
         public void LeechSeed_And_LiquidOoze()
         {
             #region Setup
-            PBEUtils.GlobalRandom.Seed = 0; // Seed ensures LeechSeed doesn't miss
+            PBEDataProvider.GlobalRandom.Seed = 0; // Seed ensures LeechSeed doesn't miss
             var settings = new PBESettings { LeechSeedDenominator = 1 };
             settings.MakeReadOnly();
 
@@ -248,22 +252,23 @@ namespace Kermalis.PokemonBattleEngineTests
 
             var battle = new PBEBattle(PBEBattleFormat.Single, settings, new PBETrainerInfo(p0, "Trainer 0"), new PBETrainerInfo(p1, "Trainer 1"));
             battle.OnNewEvent += PBEBattle.ConsoleBattleEventHandler;
-            battle.Begin();
 
             PBETrainer t0 = battle.Trainers[0];
             PBETrainer t1 = battle.Trainers[1];
             PBEBattlePokemon shroomish = t0.Party[0];
             PBEBattlePokemon tentacruel = t1.Party[0];
+
+            battle.Begin();
             #endregion
 
             #region Use LeechSeed and check
-            Assert.True(PBEBattle.SelectActionsIfValid(t0, new PBETurnAction(shroomish, PBEMove.LeechSeed, PBETurnTarget.FoeCenter)));
-            Assert.True(PBEBattle.SelectActionsIfValid(t1, new PBETurnAction(tentacruel, PBEMove.Splash, PBETurnTarget.AllyCenter)));
+            Assert.Null(t0.SelectActionsIfValid(new PBETurnAction(shroomish, PBEMove.LeechSeed, PBETurnTarget.FoeCenter)));
+            Assert.Null(t1.SelectActionsIfValid(new PBETurnAction(tentacruel, PBEMove.Splash, PBETurnTarget.AllyCenter)));
 
             battle.RunTurn();
 
             Assert.True(shroomish.HP == 0 && tentacruel.HP == 0 // Both fainted
-                && battle.Winner == battle.Teams[0]); // Shroomish's team wins
+                && battle.BattleResult == PBEBattleResult.Team0Win); // Shroomish's team wins
             #endregion
 
             #region Cleanup
@@ -275,7 +280,7 @@ namespace Kermalis.PokemonBattleEngineTests
         public void LifeOrb_User_Wins()
         {
             #region Setup
-            PBEUtils.GlobalRandom.Seed = 0;
+            PBEDataProvider.GlobalRandom.Seed = 0;
             PBESettings settings = PBESettings.DefaultSettings;
 
             var p0 = new TestPokemonCollection(1);
@@ -289,7 +294,6 @@ namespace Kermalis.PokemonBattleEngineTests
 
             var battle = new PBEBattle(PBEBattleFormat.Single, settings, new PBETrainerInfo(p0, "Trainer 0"), new PBETrainerInfo(p1, "Trainer 1"));
             battle.OnNewEvent += PBEBattle.ConsoleBattleEventHandler;
-            battle.Begin();
 
             PBETrainer t0 = battle.Trainers[0];
             PBETrainer t1 = battle.Trainers[1];
@@ -297,16 +301,18 @@ namespace Kermalis.PokemonBattleEngineTests
             PBEBattlePokemon magikarp = t1.Party[0];
             riolu.HP = 1;
             riolu.UpdateHPPercentage();
+
+            battle.Begin();
             #endregion
 
             #region Use HeadCharge and check
-            Assert.True(PBEBattle.SelectActionsIfValid(t0, new PBETurnAction(riolu, PBEMove.VacuumWave, PBETurnTarget.FoeCenter)));
-            Assert.True(PBEBattle.SelectActionsIfValid(t1, new PBETurnAction(magikarp, PBEMove.Splash, PBETurnTarget.AllyCenter)));
+            Assert.Null(t0.SelectActionsIfValid(new PBETurnAction(riolu, PBEMove.VacuumWave, PBETurnTarget.FoeCenter)));
+            Assert.Null(t1.SelectActionsIfValid(new PBETurnAction(magikarp, PBEMove.Splash, PBETurnTarget.AllyCenter)));
 
             battle.RunTurn();
 
             Assert.True(riolu.HP == 0 && magikarp.HP == 0 // Both fainted
-                && battle.Winner == battle.Teams[0]); // Bouffalant's team wins
+                && battle.BattleResult == PBEBattleResult.Team0Win); // Bouffalant's team wins
             #endregion
 
             #region Cleanup
@@ -318,7 +324,7 @@ namespace Kermalis.PokemonBattleEngineTests
         public void Recoil_User_Wins()
         {
             #region Setup
-            PBEUtils.GlobalRandom.Seed = 0;
+            PBEDataProvider.GlobalRandom.Seed = 0;
             PBESettings settings = PBESettings.DefaultSettings;
 
             var p0 = new TestPokemonCollection(1);
@@ -329,7 +335,6 @@ namespace Kermalis.PokemonBattleEngineTests
 
             var battle = new PBEBattle(PBEBattleFormat.Single, settings, new PBETrainerInfo(p0, "Trainer 0"), new PBETrainerInfo(p1, "Trainer 1"));
             battle.OnNewEvent += PBEBattle.ConsoleBattleEventHandler;
-            battle.Begin();
 
             PBETrainer t0 = battle.Trainers[0];
             PBETrainer t1 = battle.Trainers[1];
@@ -337,16 +342,18 @@ namespace Kermalis.PokemonBattleEngineTests
             PBEBattlePokemon magikarp = t1.Party[0];
             bouffalant.HP = 1;
             bouffalant.UpdateHPPercentage();
+
+            battle.Begin();
             #endregion
 
             #region Use HeadCharge and check
-            Assert.True(PBEBattle.SelectActionsIfValid(t0, new PBETurnAction(bouffalant, PBEMove.HeadCharge, PBETurnTarget.FoeCenter)));
-            Assert.True(PBEBattle.SelectActionsIfValid(t1, new PBETurnAction(magikarp, PBEMove.Splash, PBETurnTarget.AllyCenter)));
+            Assert.Null(t0.SelectActionsIfValid(new PBETurnAction(bouffalant, PBEMove.HeadCharge, PBETurnTarget.FoeCenter)));
+            Assert.Null(t1.SelectActionsIfValid(new PBETurnAction(magikarp, PBEMove.Splash, PBETurnTarget.AllyCenter)));
 
             battle.RunTurn();
 
             Assert.True(bouffalant.HP == 0 && magikarp.HP == 0 // Both fainted
-                && battle.Winner == battle.Teams[0]); // Bouffalant's team wins
+                && battle.BattleResult == PBEBattleResult.Team0Win); // Bouffalant's team wins
             #endregion
 
             #region Cleanup

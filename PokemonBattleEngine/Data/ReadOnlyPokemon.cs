@@ -14,6 +14,7 @@ namespace Kermalis.PokemonBattleEngine.Data
         public byte Friendship { get; }
         public PBEAbility Ability { get; }
         public PBENature Nature { get; }
+        public PBEItem CaughtBall { get; }
         public IPBEStatCollection EffortValues { get; }
         public IPBEReadOnlyStatCollection IndividualValues { get; }
         public IPBEMoveset Moveset { get; }
@@ -28,6 +29,7 @@ namespace Kermalis.PokemonBattleEngine.Data
             Shiny = r.ReadBoolean();
             Ability = r.ReadEnum<PBEAbility>();
             Nature = r.ReadEnum<PBENature>();
+            CaughtBall = r.ReadEnum<PBEItem>();
             Gender = r.ReadEnum<PBEGender>();
             Item = r.ReadEnum<PBEItem>();
             EffortValues = new PBEStatCollection(r);

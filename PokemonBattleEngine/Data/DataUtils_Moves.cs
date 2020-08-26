@@ -1,31 +1,35 @@
-using System;
-using System.Text;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace Kermalis.PokemonBattleEngine.Data
 {
-    public sealed partial class PBEMoveData
+    public static partial class PBEDataUtils
     {
-        public PBEType Type { get; }
-        public PBEMoveCategory Category { get; }
-        public sbyte Priority { get; }
-        public byte PPTier { get; } // 0 PPTier will become 1 PP (unaffected by pp ups)
-        public byte Power { get; } // 0 power or accuracy will show up as --
-        public byte Accuracy { get; }
-        public PBEMoveEffect Effect { get; }
-        public int EffectParam { get; }
-        public PBEMoveTarget Targets { get; }
-        public PBEMoveFlag Flags { get; }
+        #region Static Collections
+        public static PBEAlphabeticalList<PBEMove> AllMoves { get; } = new PBEAlphabeticalList<PBEMove>(Enum.GetValues(typeof(PBEMove)).Cast<PBEMove>().Except(new[] { PBEMove.None, PBEMove.MAX }));
+        public static PBEAlphabeticalList<PBEMove> MetronomeMoves { get; } = new PBEAlphabeticalList<PBEMove>(GetMovesWithoutFlag(PBEMoveFlag.BlockedFromMetronome));
+        public static PBEAlphabeticalList<PBEMove> SketchLegalMoves { get; } = new PBEAlphabeticalList<PBEMove>(GetMovesWithoutFlag(PBEMoveFlag.BlockedFromSketch, exception: PBEMoveEffect.Sketch));
+        #endregion
 
-        private PBEMoveData(PBEType type, PBEMoveCategory category, sbyte priority, byte ppTier, byte power, byte accuracy,
-            PBEMoveEffect effect, int effectParam, PBEMoveTarget targets,
-            PBEMoveFlag flags)
+        private static IEnumerable<PBEMove> GetMovesWithoutFlag(PBEMoveFlag flag, PBEMoveEffect? exception = null)
         {
-            Type = type; Category = category; Priority = priority; PPTier = ppTier; Power = power; Accuracy = accuracy;
-            Effect = effect; EffectParam = effectParam; Targets = targets;
-            Flags = flags;
+            return AllMoves.Where(m =>
+            {
+                IPBEMoveData mData = PBEDataProvider.Instance.GetMoveData(m, cache: false);
+                if (!mData.IsMoveUsable())
+                {
+                    return false;
+                }
+                if (exception.HasValue && mData.Effect == exception.Value)
+                {
+                    return true;
+                }
+                return !mData.Flags.HasFlag(flag);
+            });
         }
 
-        public bool HasSecondaryEffects(PBESettings settings)
+        public static bool HasSecondaryEffects(PBEMoveEffect effect, PBESettings settings)
         {
             if (settings == null)
             {
@@ -35,7 +39,7 @@ namespace Kermalis.PokemonBattleEngine.Data
             {
                 throw new ArgumentException("Settings must be read-only.", nameof(settings));
             }
-            switch (Effect)
+            switch (effect)
             {
                 case PBEMoveEffect.Hit__MaybeBurn:
                 case PBEMoveEffect.Hit__MaybeBurn__10PercentFlinch:
@@ -70,27 +74,27 @@ namespace Kermalis.PokemonBattleEngine.Data
                 default: return false;
             }
         }
-        public bool IsHPDrainMove()
+        public static bool IsHPDrainMove(PBEMoveEffect effect)
         {
-            switch (Effect)
+            switch (effect)
             {
                 case PBEMoveEffect.HPDrain:
                 case PBEMoveEffect.HPDrain__RequireSleep: return true;
                 default: return false;
             }
         }
-        public bool IsHPRestoreMove()
+        public static bool IsHPRestoreMove(PBEMoveEffect effect)
         {
-            switch (Effect)
+            switch (effect)
             {
                 case PBEMoveEffect.Rest:
                 case PBEMoveEffect.RestoreTargetHP: return true;
                 default: return false;
             }
         }
-        public bool IsMultiHitMove() // TODO: TripleKick
+        public static bool IsMultiHitMove(PBEMoveEffect effect) // TODO: TripleKick
         {
-            switch (Effect)
+            switch (effect)
             {
                 case PBEMoveEffect.Hit__2Times:
                 case PBEMoveEffect.Hit__2Times__MaybePoison:
@@ -98,9 +102,9 @@ namespace Kermalis.PokemonBattleEngine.Data
                 default: return false;
             }
         }
-        public bool IsRecoilMove() // TODO: JumpKick/HiJumpKick
+        public static bool IsRecoilMove(PBEMoveEffect effect) // TODO: JumpKick/HiJumpKick
         {
-            switch (Effect)
+            switch (effect)
             {
                 case PBEMoveEffect.Recoil:
                 case PBEMoveEffect.Recoil__10PercentBurn:
@@ -108,9 +112,9 @@ namespace Kermalis.PokemonBattleEngine.Data
                 default: return false;
             }
         }
-        public bool IsSetDamageMove()
+        public static bool IsSetDamageMove(PBEMoveEffect effect)
         {
-            switch (Effect)
+            switch (effect)
             {
                 case PBEMoveEffect.Endeavor:
                 case PBEMoveEffect.FinalGambit:
@@ -134,13 +138,9 @@ namespace Kermalis.PokemonBattleEngine.Data
                 default: return false;
             }
         }
-        public bool IsSpreadMove()
+        public static bool IsWeatherMove(PBEMoveEffect effect)
         {
-            return IsSpreadMove(Targets);
-        }
-        public bool IsWeatherMove()
-        {
-            switch (Effect)
+            switch (effect)
             {
                 case PBEMoveEffect.Hail:
                 case PBEMoveEffect.RainDance:
@@ -150,32 +150,15 @@ namespace Kermalis.PokemonBattleEngine.Data
             }
         }
 
-        // Temporary check to see if a move is usable, can be removed once all moves are added
-        public bool IsMoveUsable()
-        {
-            return Effect != PBEMoveEffect.TODOMOVE && Effect != PBEMoveEffect.Sketch;
-        }
+        /// <summary>Temporary check to see if a move is usable, can be removed once all moves are added</summary>
         public static bool IsMoveUsable(PBEMove move)
         {
-            return Data[move].IsMoveUsable();
+            return PBEDataProvider.Instance.GetMoveData(move, cache: false).IsMoveUsable();
         }
-
-        public override string ToString()
+        /// <summary>Temporary check to see if a move is usable, can be removed once all moves are added</summary>
+        public static bool IsMoveUsable(PBEMoveEffect effect)
         {
-            var sb = new StringBuilder();
-
-            sb.AppendLine($"Type: {Type}");
-            sb.AppendLine($"Category: {Category}");
-            sb.AppendLine($"Priority: {Priority}");
-            sb.AppendLine($"PP: {Math.Max(1, PPTier * PBESettings.DefaultPPMultiplier)}");
-            sb.AppendLine($"Power: {(Power == 0 ? "--" : Power.ToString())}");
-            sb.AppendLine($"Accuracy: {(Accuracy == 0 ? "--" : Accuracy.ToString())}");
-            sb.AppendLine($"Effect: {Effect}");
-            sb.AppendLine($"Effect Parameter: {EffectParam}");
-            sb.AppendLine($"Targets: {Targets}");
-            sb.Append($"Flags: {Flags}");
-
-            return sb.ToString();
+            return effect != PBEMoveEffect.TODOMOVE && effect != PBEMoveEffect.Sketch;
         }
     }
 }

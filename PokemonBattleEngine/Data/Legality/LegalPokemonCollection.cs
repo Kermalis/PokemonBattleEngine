@@ -1,5 +1,4 @@
 ﻿using Kermalis.EndianBinaryIO;
-using Kermalis.PokemonBattleEngine.Utils;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using System;
@@ -113,8 +112,8 @@ namespace Kermalis.PokemonBattleEngine.Data.Legality
 
         private void InsertRandom(bool setToMaxLevel, bool fireEvent, int index)
         {
-            (PBESpecies species, PBEForm form) = PBEUtils.GlobalRandom.RandomSpecies(true);
-            Insert(species, form, setToMaxLevel ? Settings.MaxLevel : PBEUtils.GlobalRandom.RandomLevel(Settings), fireEvent, index);
+            (PBESpecies species, PBEForm form) = PBEDataProvider.GlobalRandom.RandomSpecies(true);
+            Insert(species, form, setToMaxLevel ? Settings.MaxLevel : PBEDataProvider.GlobalRandom.RandomLevel(Settings), fireEvent, index);
         }
         private void Insert(PBESpecies species, PBEForm form, byte level, bool fireEvent, int index)
         {
