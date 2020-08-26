@@ -19,7 +19,7 @@ namespace Kermalis.PokemonBattleEngineClient.Infrastructure
                 return AvaloniaProperty.UnsetValue;
             }
             PBEForm form = true ? 0 : (PBEForm)values[1]; // TODO
-            var localized = PBEDataProvider.Instance.GetFormName(species, form);
+            IPBELocalizedString localized = PBEDataProvider.Instance.GetFormName(species, form);
             return StringRenderer.Render(localized.FromPBECultureInfo(), parameter?.ToString());
         }
     }

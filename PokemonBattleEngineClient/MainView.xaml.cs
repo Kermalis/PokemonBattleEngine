@@ -116,8 +116,7 @@ namespace Kermalis.PokemonBattleEngineClient
             //const string path = @"C:\Users\Kermalis\Documents\Development\GitHub\PokeI\bin\Release\netcoreapp3.1\AI Final Replay.pbereplay";
             Add(new ReplayClient(path, $"Replay {_battles.Count + 1}"));
         }
-        // Trainer battle
-        /*public void SinglePlayer()
+        public void SinglePlayer()
         {
             // Competitively Randomized Pokémon
             PBESettings settings = PBESettings.DefaultSettings;
@@ -165,56 +164,6 @@ namespace Kermalis.PokemonBattleEngineClient
                 battleFormat = triple ? PBEBattleFormat.Triple : PBEBattleFormat.Double;
             }
             var b = new PBEBattle(battleFormat, settings, t0, t1,
-                battleTerrain: PBEDataProvider.GlobalRandom.RandomBattleTerrain());
-            Add(new SinglePlayerClient(b, $"SP {_battles.Count + 1}"));
-        }*/
-        // Wild battle
-        public void SinglePlayer()
-        {
-            // Competitively Randomized Pokémon
-            PBESettings settings = PBESettings.DefaultSettings;
-            PBEBattleFormat battleFormat;
-            IReadOnlyList<PBETrainerInfo> t0;
-            PBEWildInfo wi;
-            bool multiBattle = false;
-            bool triple = false;
-            if (multiBattle)
-            {
-                if (triple)
-                {
-                    PBELegalPokemonCollection p0, p1, p2, w;
-                    int numPerTrainer = settings.MaxPartySize / 3;
-                    p0 = PBERandomTeamGenerator.CreateRandomTeam(numPerTrainer);
-                    p1 = PBERandomTeamGenerator.CreateRandomTeam(numPerTrainer);
-                    p2 = PBERandomTeamGenerator.CreateRandomTeam(numPerTrainer);
-                    w = PBERandomTeamGenerator.CreateRandomTeam(3);
-                    t0 = new[] { new PBETrainerInfo(p0, "Dawn"), new PBETrainerInfo(p1, "Barry"), new PBETrainerInfo(p2, "Lucas") };
-                    wi = new PBEWildInfo(w);
-                    battleFormat = PBEBattleFormat.Triple;
-                }
-                else
-                {
-                    PBELegalPokemonCollection p0, p1, w;
-                    int numPerTrainer = settings.MaxPartySize / 2;
-                    p0 = PBERandomTeamGenerator.CreateRandomTeam(numPerTrainer);
-                    p1 = PBERandomTeamGenerator.CreateRandomTeam(numPerTrainer);
-                    w = PBERandomTeamGenerator.CreateRandomTeam(2);
-                    t0 = new[] { new PBETrainerInfo(p0, "Dawn"), new PBETrainerInfo(p1, "Barry") };
-                    wi = new PBEWildInfo(w);
-                    battleFormat = PBEBattleFormat.Double;
-                }
-            }
-            else
-            {
-                PBELegalPokemonCollection p0, w;
-                int numPerTrainer = settings.MaxPartySize;
-                p0 = PBERandomTeamGenerator.CreateRandomTeam(numPerTrainer);
-                w = PBERandomTeamGenerator.CreateRandomTeam(2);
-                t0 = new[] { new PBETrainerInfo(p0, "Dawn") };
-                wi = new PBEWildInfo(w);
-                battleFormat = triple ? PBEBattleFormat.Triple : PBEBattleFormat.Double;
-            }
-            var b = new PBEBattle(battleFormat, settings, t0, wi,
                 battleTerrain: PBEDataProvider.GlobalRandom.RandomBattleTerrain());
             Add(new SinglePlayerClient(b, $"SP {_battles.Count + 1}"));
         }
