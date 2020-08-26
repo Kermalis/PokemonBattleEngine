@@ -121,6 +121,7 @@ namespace Kermalis.PokemonBattleEngineClient.Clients
             client.Disconnected += OnDisconnected;
             client.Error += OnError;
             client.PacketReceived += OnPacketReceived;
+            ShowAllPokemon();
             Send(new PBEResponsePacket());
         }
 
@@ -232,6 +233,74 @@ namespace Kermalis.PokemonBattleEngineClient.Clients
                         BattleView.AddMessage("Waiting for players...", messageLog: false);
                     }
                     return true;
+                }
+                case PBEPkmnFaintedPacket_Hidden pfph:
+                {
+                    bool ret = base.ProcessPacket(packet); // Process before removal
+                    PBEBattlePokemon pokemon = pfph.PokemonTrainer.TryGetPokemon(pfph.OldPosition);
+                    Battle.ActiveBattlers.Remove(pokemon);
+                    pokemon.FieldPosition = PBEFieldPosition.None;
+                    PBETrainer.Remove(pokemon);
+                    return ret;
+                }
+                case PBEPkmnFormChangedPacket_Hidden pfcph:
+                {
+                    PBEBattlePokemon pokemon = pfcph.PokemonTrainer.TryGetPokemon(pfcph.Pokemon);
+                    pokemon.KnownAbility = pfcph.NewKnownAbility;
+                    pokemon.KnownForm = pfcph.NewForm;
+                    pokemon.KnownType1 = pfcph.NewType1;
+                    pokemon.KnownType2 = pfcph.NewType2;
+                    pokemon.KnownWeight = pfcph.NewWeight;
+                    break;
+                }
+                case PBEPkmnHPChangedPacket_Hidden phcph:
+                {
+                    PBEBattlePokemon pokemon = phcph.PokemonTrainer.TryGetPokemon(phcph.Pokemon);
+                    pokemon.HPPercentage = phcph.NewHPPercentage;
+                    break;
+                }
+                case PBEPkmnSwitchInPacket_Hidden psiph:
+                {
+                    foreach (PBEPkmnSwitchInPacket_Hidden.PBEPkmnSwitchInInfo info in psiph.SwitchIns)
+                    {
+                        new PBEBattlePokemon(psiph.Trainer, info);
+                    }
+                    break;
+                }
+                case PBEPkmnSwitchOutPacket_Hidden psoph:
+                {
+                    bool ret = base.ProcessPacket(packet); // Process before removal
+                    PBEBattlePokemon pokemon = psoph.PokemonTrainer.TryGetPokemon(psoph.OldPosition);
+                    Battle.ActiveBattlers.Remove(pokemon);
+                    PBETrainer.Remove(pokemon);
+                    return ret;
+                }
+                case PBEReflectTypePacket_Hidden rtph:
+                {
+                    PBEBattlePokemon user = rtph.UserTrainer.TryGetPokemon(rtph.User);
+                    PBEBattlePokemon target = rtph.TargetTrainer.TryGetPokemon(rtph.Target);
+                    user.Type1 = user.KnownType1 = target.KnownType1; // Set Type1 and Type2 so Transform works
+                    user.Type2 = user.KnownType2 = target.KnownType2;
+                    break;
+                }
+                case PBEWildPkmnAppearedPacket wpap:
+                {
+                    PBETrainer wildTrainer = Battle.Teams[1].Trainers[0];
+                    foreach (PBEPkmnAppearedInfo info in wpap.Pokemon)
+                    {
+                        PBEBattlePokemon pokemon = wildTrainer.TryGetPokemon(info.Pokemon);
+                        pokemon.FieldPosition = info.FieldPosition;
+                        Battle.ActiveBattlers.Add(pokemon);
+                    }
+                    break;
+                }
+                case PBEWildPkmnAppearedPacket_Hidden wpaph:
+                {
+                    foreach (PBEWildPkmnAppearedPacket_Hidden.PBEWildPkmnInfo info in wpaph.Pokemon)
+                    {
+                        new PBEBattlePokemon(Battle, info);
+                    }
+                    break;
                 }
             }
             return base.ProcessPacket(packet);

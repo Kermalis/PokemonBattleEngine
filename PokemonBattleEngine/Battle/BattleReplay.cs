@@ -1,4 +1,5 @@
 ﻿using Kermalis.EndianBinaryIO;
+using Kermalis.PokemonBattleEngine.Data;
 using Kermalis.PokemonBattleEngine.Packets;
 using Kermalis.PokemonBattleEngine.Utils;
 using System;
@@ -103,6 +104,30 @@ namespace Kermalis.PokemonBattleEngine.Battle
                     if (packet is PBEBattlePacket bp)
                     {
                         b = new PBEBattle(bp);
+                    }
+                    else if (packet is PBEWildPkmnAppearedPacket wpap)
+                    {
+                        PBETrainer wildTrainer = b.Teams[1].Trainers[0];
+                        foreach (PBEPkmnAppearedInfo info in wpap.Pokemon)
+                        {
+                            PBEBattlePokemon pkmn = wildTrainer.TryGetPokemon(info.Pokemon);
+                            // Process disguise and position now
+                            pkmn.FieldPosition = info.FieldPosition;
+                            if (info.IsDisguised)
+                            {
+                                pkmn.Status2 |= PBEStatus2.Disguised;
+                                pkmn.KnownCaughtBall = info.CaughtBall;
+                                pkmn.KnownGender = info.Gender;
+                                pkmn.KnownNickname = info.Nickname;
+                                pkmn.KnownShiny = info.Shiny;
+                                pkmn.KnownSpecies = info.Species;
+                                pkmn.KnownForm = info.Form;
+                                IPBEPokemonData pData = PBEDataProvider.Instance.GetPokemonData(info);
+                                pkmn.KnownType1 = pData.Type1;
+                                pkmn.KnownType2 = pData.Type2;
+                            }
+                            b.ActiveBattlers.Add(pkmn);
+                        }
                     }
                     b.Events.Add(packet);
                 }

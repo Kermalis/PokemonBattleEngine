@@ -29,6 +29,14 @@ namespace Kermalis.PokemonBattleEngineClient.Clients
 
         public abstract void Dispose();
 
+        protected void ShowAllPokemon()
+        {
+            foreach (PBEBattlePokemon pkmn in Battle.ActiveBattlers)
+            {
+                BattleView.Field.ShowPokemon(pkmn);
+            }
+        }
+
         #region Actions
         private readonly List<PBEBattlePokemon> _actions = new List<PBEBattlePokemon>(3);
         public List<PBEBattlePokemon> StandBy { get; } = new List<PBEBattlePokemon>(3);

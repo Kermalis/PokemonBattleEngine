@@ -21,6 +21,7 @@ namespace Kermalis.PokemonBattleEngineClient.Clients
             BattleView = new BattleView(this);
             b.OnNewEvent += SinglePlayerBattle_OnNewEvent;
             b.OnStateChanged += SinglePlayerBattle_OnStateChanged;
+            ShowAllPokemon();
             new Thread(b.Begin) { Name = ThreadName }.Start();
         }
 
