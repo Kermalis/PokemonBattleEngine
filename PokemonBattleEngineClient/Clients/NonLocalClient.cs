@@ -149,7 +149,7 @@ namespace Kermalis.PokemonBattleEngineClient.Clients
                     PBEBattlePokemon itemHolder = ip.ItemHolderTrainer.TryGetPokemon(ip.ItemHolder);
                     switch (ip.ItemAction)
                     {
-                        case PBEItemAction.ChangedStatus:
+                        case PBEItemAction.Announced:
                         case PBEItemAction.Damage:
                         case PBEItemAction.RestoredHP: itemHolder.Item = itemHolder.KnownItem = ip.Item; break;
                         case PBEItemAction.Consumed: itemHolder.Item = itemHolder.KnownItem = PBEItem.None; break;

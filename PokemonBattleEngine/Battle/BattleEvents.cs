@@ -599,6 +599,15 @@ namespace Kermalis.PokemonBattleEngine.Battle
                             }
                             break;
                         }
+                        case PBEAbility.RunAway:
+                        {
+                            switch (ap.AbilityAction)
+                            {
+                                case PBEAbilityAction.Announced: message = "{0}'s {2} activated!"; break;
+                                default: throw new ArgumentOutOfRangeException(nameof(ap.AbilityAction));
+                            }
+                            break;
+                        }
                         case PBEAbility.SlowStart:
                         {
                             switch (ap.AbilityAction)
@@ -775,7 +784,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                         {
                             switch (ip.ItemAction)
                             {
-                                case PBEItemAction.ChangedStatus: message = "{0}'s {2} activated!"; break;
+                                case PBEItemAction.Announced: message = "{0}'s {2} activated!"; break;
                                 default: throw new ArgumentOutOfRangeException(nameof(ip.ItemAction));
                             }
                             break;
@@ -784,7 +793,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                         {
                             switch (ip.ItemAction)
                             {
-                                case PBEItemAction.ChangedStatus: message = "{0} was burned by its {2}!"; break;
+                                case PBEItemAction.Announced: message = "{0} was burned by its {2}!"; break;
                                 default: throw new ArgumentOutOfRangeException(nameof(ip.ItemAction));
                             }
                             break;
@@ -843,11 +852,20 @@ namespace Kermalis.PokemonBattleEngine.Battle
                             }
                             break;
                         }
+                        case PBEItem.SmokeBall:
+                        {
+                            switch (ip.ItemAction)
+                            {
+                                case PBEItemAction.Announced: message = "{0} used its {2}!"; break;
+                                default: throw new ArgumentOutOfRangeException(nameof(ip.ItemAction));
+                            }
+                            break;
+                        }
                         case PBEItem.ToxicOrb:
                         {
                             switch (ip.ItemAction)
                             {
-                                case PBEItemAction.ChangedStatus: message = "{0} was badly poisoned by its {2}!"; break;
+                                case PBEItemAction.Announced: message = "{0} was badly poisoned by its {2}!"; break;
                                 default: throw new ArgumentOutOfRangeException(nameof(ip.ItemAction));
                             }
                             break;

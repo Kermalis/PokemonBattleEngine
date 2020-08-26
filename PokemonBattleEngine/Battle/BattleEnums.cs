@@ -267,8 +267,8 @@ namespace Kermalis.PokemonBattleEngine.Battle
     /// <summary>Represents an action regarding a <see cref="PBEItem"/>.</summary>
     public enum PBEItemAction : byte
     {
-        /// <summary>The item caused a Pokémon's <see cref="PBEStatus1"/> or <see cref="PBEStatus2"/> to change.</summary>
-        ChangedStatus = 0,
+        /// <summary>The item initiated its main effect.</summary>
+        Announced = 0,
         /// <summary>The item was consumed by a Pokémon.</summary>
         Consumed = 1,
         /// <summary>The item was involved with damage.</summary>

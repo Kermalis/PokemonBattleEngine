@@ -636,7 +636,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                         if (pkmn.IsBurnPossible(null, ignoreSubstitute: true, ignoreSafeguard: true) == PBEResult.Success)
                         {
                             pkmn.Status1 = PBEStatus1.Burned;
-                            BroadcastItem(pkmn, pkmn, pkmn.Item, PBEItemAction.ChangedStatus);
+                            BroadcastItem(pkmn, pkmn, pkmn.Item, PBEItemAction.Announced);
                             BroadcastStatus1(pkmn, pkmn, PBEStatus1.Burned, PBEStatusAction.Added);
                         }
                         break;
@@ -647,7 +647,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                         {
                             pkmn.Status1 = PBEStatus1.BadlyPoisoned;
                             pkmn.Status1Counter = 1;
-                            BroadcastItem(pkmn, pkmn, pkmn.Item, PBEItemAction.ChangedStatus);
+                            BroadcastItem(pkmn, pkmn, pkmn.Item, PBEItemAction.Announced);
                             BroadcastStatus1(pkmn, pkmn, PBEStatus1.BadlyPoisoned, PBEStatusAction.Added);
                         }
                         break;
@@ -684,9 +684,16 @@ namespace Kermalis.PokemonBattleEngine.Battle
                 PBEBattlePokemon pkmn = trainer.ActiveBattlersOrdered.FirstOrDefault();
                 if (pkmn != null)
                 {
-                    // TODO: Announce ability or item
-                    if (pkmn.Ability == PBEAbility.RunAway || pkmn.Item == PBEItem.SmokeBall)
+                    // Verified: RunAway before SmokeBall
+                    if (pkmn.Ability == PBEAbility.RunAway)
                     {
+                        BroadcastAbility(pkmn, pkmn, PBEAbility.RunAway, PBEAbilityAction.Announced);
+                        SetEscaped(pkmn);
+                        return;
+                    }
+                    if (pkmn.Item == PBEItem.SmokeBall)
+                    {
+                        BroadcastItem(pkmn, pkmn, PBEItem.SmokeBall, PBEItemAction.Announced);
                         SetEscaped(pkmn);
                         return;
                     }
@@ -1829,7 +1836,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
             BroadcastStatus2(target, other, PBEStatus2.Infatuated, PBEStatusAction.Added);
             if (target.Item == PBEItem.DestinyKnot && other.IsAttractionPossible(target) == PBEResult.Success)
             {
-                BroadcastItem(target, other, PBEItem.DestinyKnot, PBEItemAction.ChangedStatus);
+                BroadcastItem(target, other, PBEItem.DestinyKnot, PBEItemAction.Announced);
                 other.InfatuatedWithPokemon = target;
                 BroadcastStatus2(other, target, PBEStatus2.Infatuated, PBEStatusAction.Added);
             }
