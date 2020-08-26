@@ -1612,19 +1612,21 @@ namespace Kermalis.PokemonBattleEngine.Battle
                 }
                 case PBEBattleResultPacket brp:
                 {
+                    bool team0Caps = true;
+                    bool team1Caps = false;
                     string message;
                     switch (brp.BattleResult)
                     {
                         case PBEBattleResult.Team0Forfeit: message = "{0} forfeited."; break;
                         case PBEBattleResult.Team0Win: message = "{0} defeated {1}!"; break;
-                        case PBEBattleResult.Team1Forfeit: message = "{1} forfeited."; break;
-                        case PBEBattleResult.Team1Win: message = "{1} defeated {0}!"; break;
+                        case PBEBattleResult.Team1Forfeit: message = "{1} forfeited."; team1Caps = true; break;
+                        case PBEBattleResult.Team1Win: message = "{1} defeated {0}!"; team0Caps = false; team1Caps = true; break;
                         case PBEBattleResult.WildCapture: goto bottom;
                         case PBEBattleResult.WildEscape: message = "{0} got away!"; break;
-                        case PBEBattleResult.WildFlee: message = "{1} got away!"; break;
+                        case PBEBattleResult.WildFlee: message = "{1} got away!"; team1Caps = true; break;
                         default: throw new ArgumentOutOfRangeException(nameof(brp.BattleResult));
                     }
-                    return string.Format(message, GetRawCombinedName(battle.Teams[0], true), GetRawCombinedName(battle.Teams[1], false));
+                    return string.Format(message, GetRawCombinedName(battle.Teams[0], team0Caps), GetRawCombinedName(battle.Teams[1], team1Caps));
                 }
                 case PBESwitchInRequestPacket sirp:
                 {
