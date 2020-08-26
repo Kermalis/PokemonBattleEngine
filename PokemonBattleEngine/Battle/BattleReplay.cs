@@ -20,7 +20,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
 
         public void SaveReplay()
         {
-            if (BattleState != PBEBattleState.Ended)
+            if (_battleState != PBEBattleState.Ended)
             {
                 throw new InvalidOperationException($"{nameof(BattleState)} must be {PBEBattleState.Ended} to save a replay.");
             }
@@ -28,11 +28,11 @@ namespace Kermalis.PokemonBattleEngine.Battle
         }
         public void SaveReplayToFolder(string path)
         {
-            if (path == null)
+            if (path is null)
             {
                 throw new ArgumentNullException(nameof(path));
             }
-            if (BattleState != PBEBattleState.Ended)
+            if (_battleState != PBEBattleState.Ended)
             {
                 throw new InvalidOperationException($"{nameof(BattleState)} must be {PBEBattleState.Ended} to save a replay.");
             }
@@ -40,11 +40,11 @@ namespace Kermalis.PokemonBattleEngine.Battle
         }
         public void SaveReplay(string path)
         {
-            if (path == null)
+            if (path is null)
             {
                 throw new ArgumentNullException(nameof(path));
             }
-            if (BattleState != PBEBattleState.Ended)
+            if (_battleState != PBEBattleState.Ended)
             {
                 throw new InvalidOperationException($"{nameof(BattleState)} must be {PBEBattleState.Ended} to save a replay.");
             }
@@ -107,7 +107,6 @@ namespace Kermalis.PokemonBattleEngine.Battle
                     b.Events.Add(packet);
                 }
                 b.BattleState = PBEBattleState.Ended;
-                b.OnStateChanged?.Invoke(b);
                 return b;
             }
         }

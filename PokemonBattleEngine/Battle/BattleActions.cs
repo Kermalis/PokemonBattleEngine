@@ -137,7 +137,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
             {
                 throw new ArgumentNullException(nameof(actions));
             }
-            if (trainer.Battle.BattleState != PBEBattleState.WaitingForActions)
+            if (trainer.Battle._battleState != PBEBattleState.WaitingForActions)
             {
                 throw new InvalidOperationException($"{nameof(BattleState)} must be {PBEBattleState.WaitingForActions} to validate actions.");
             }
@@ -337,7 +337,6 @@ namespace Kermalis.PokemonBattleEngine.Battle
                 if (trainer.Battle.Trainers.All(t => t.ActionsRequired.Count == 0))
                 {
                     trainer.Battle.BattleState = PBEBattleState.ReadyToRunTurn;
-                    trainer.Battle.OnStateChanged?.Invoke(trainer.Battle);
                 }
             }
             return valid;
@@ -349,7 +348,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
             {
                 throw new ArgumentNullException(nameof(switches));
             }
-            if (trainer.Battle.BattleState != PBEBattleState.WaitingForSwitchIns)
+            if (trainer.Battle._battleState != PBEBattleState.WaitingForSwitchIns)
             {
                 throw new InvalidOperationException($"{nameof(BattleState)} must be {PBEBattleState.WaitingForSwitchIns} to validate switches.");
             }
@@ -403,7 +402,6 @@ namespace Kermalis.PokemonBattleEngine.Battle
                 if (trainer.Battle.Trainers.All(t => t.SwitchInsRequired == 0))
                 {
                     trainer.Battle.BattleState = PBEBattleState.ReadyToRunSwitches;
-                    trainer.Battle.OnStateChanged?.Invoke(trainer.Battle);
                 }
             }
             return valid;
@@ -415,7 +413,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
             {
                 throw new InvalidOperationException($"{nameof(BattleType)} must be {PBEBattleType.Wild} to flee.");
             }
-            if (trainer.Battle.BattleState == PBEBattleState.WaitingForActions)
+            if (trainer.Battle._battleState == PBEBattleState.WaitingForActions)
             {
                 if (trainer.ActionsRequired.Count == 0)
                 {
@@ -427,7 +425,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                     return $"Pokémon {pkmn.Id} must use {pkmn.TempLockedMove}";
                 }
             }
-            else if (trainer.Battle.BattleState != PBEBattleState.WaitingForSwitchIns)
+            else if (trainer.Battle._battleState == PBEBattleState.WaitingForSwitchIns)
             {
                 if (trainer.SwitchInsRequired == 0)
                 {
@@ -446,13 +444,12 @@ namespace Kermalis.PokemonBattleEngine.Battle
             if (valid is null)
             {
                 trainer.RequestedFlee = true;
-                if (trainer.Battle.BattleState == PBEBattleState.WaitingForActions)
+                if (trainer.Battle._battleState == PBEBattleState.WaitingForActions)
                 {
                     trainer.ActionsRequired.Clear();
                     if (trainer.Battle.Trainers.All(t => t.ActionsRequired.Count == 0))
                     {
                         trainer.Battle.BattleState = PBEBattleState.ReadyToRunTurn;
-                        trainer.Battle.OnStateChanged?.Invoke(trainer.Battle);
                     }
                 }
                 else
@@ -461,7 +458,6 @@ namespace Kermalis.PokemonBattleEngine.Battle
                     if (trainer.Battle.Trainers.All(t => t.SwitchInsRequired == 0))
                     {
                         trainer.Battle.BattleState = PBEBattleState.ReadyToRunSwitches;
-                        trainer.Battle.OnStateChanged?.Invoke(trainer.Battle);
                     }
                 }
             }

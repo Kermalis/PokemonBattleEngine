@@ -13,7 +13,6 @@ namespace Kermalis.PokemonBattleEngine.Battle
     /// <summary>Represents a specific Pokémon battle.</summary>
     public sealed partial class PBEBattle : INotifyPropertyChanged
     {
-        // Currently unused
         private void OnPropertyChanged(string property)
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(property));
@@ -22,7 +21,20 @@ namespace Kermalis.PokemonBattleEngine.Battle
 
         public delegate void BattleStateChangedEvent(PBEBattle battle);
         public event BattleStateChangedEvent OnStateChanged;
-        public PBEBattleState BattleState { get; private set; }
+        private PBEBattleState _battleState;
+        public PBEBattleState BattleState
+        {
+            get => _battleState;
+            private set
+            {
+                if (value != _battleState)
+                {
+                    _battleState = value;
+                    OnStateChanged?.Invoke(this);
+                    OnPropertyChanged(nameof(BattleState));
+                }
+            }
+        }
         public ushort TurnNumber { get; set; }
         public PBEBattleResult? BattleResult { get; set; }
 
@@ -213,16 +225,16 @@ namespace Kermalis.PokemonBattleEngine.Battle
             }
 
             BattleState = PBEBattleState.ReadyToBegin;
-            OnStateChanged?.Invoke(this);
         }
         /// <summary>Begins the battle.</summary>
         /// <exception cref="InvalidOperationException">Thrown when <see cref="BattleState"/> is not <see cref="PBEBattleState.ReadyToBegin"/>.</exception>
         public void Begin()
         {
-            if (BattleState != PBEBattleState.ReadyToBegin)
+            if (_battleState != PBEBattleState.ReadyToBegin)
             {
                 throw new InvalidOperationException($"{nameof(BattleState)} must be {PBEBattleState.ReadyToBegin} to begin the battle.");
             }
+            BattleState = PBEBattleState.Processing;
             BroadcastBattle(); // The first packet sent is PBEBattlePacket which replays rely on
             // Wild Pokémon appearing
             if (BattleType == PBEBattleType.Wild)
@@ -244,12 +256,11 @@ namespace Kermalis.PokemonBattleEngine.Battle
         /// <exception cref="InvalidOperationException">Thrown when <see cref="BattleState"/> is not <see cref="PBEBattleState.ReadyToRunTurn"/>.</exception>
         public void RunTurn()
         {
-            if (BattleState != PBEBattleState.ReadyToRunTurn)
+            if (_battleState != PBEBattleState.ReadyToRunTurn)
             {
                 throw new InvalidOperationException($"{nameof(BattleState)} must be {PBEBattleState.ReadyToRunTurn} to run a turn.");
             }
             BattleState = PBEBattleState.Processing;
-            OnStateChanged?.Invoke(this);
             FleeCheck();
             if (EndCheck())
             {
@@ -261,12 +272,11 @@ namespace Kermalis.PokemonBattleEngine.Battle
         }
         public void RunSwitches()
         {
-            if (BattleState != PBEBattleState.ReadyToRunSwitches)
+            if (_battleState != PBEBattleState.ReadyToRunSwitches)
             {
                 throw new InvalidOperationException($"{nameof(BattleState)} must be {PBEBattleState.ReadyToRunSwitches} to run switches.");
             }
             BattleState = PBEBattleState.Processing;
-            OnStateChanged?.Invoke(this);
             FleeCheck();
             if (EndCheck())
             {
@@ -278,10 +288,9 @@ namespace Kermalis.PokemonBattleEngine.Battle
         /// <summary>Sets <see cref="BattleState"/> to <see cref="PBEBattleState.Ended"/> and clears <see cref="OnNewEvent"/> and <see cref="OnStateChanged"/>. Does not touch <see cref="BattleResult"/>.</summary>
         public void SetEnded()
         {
-            if (BattleState != PBEBattleState.Ended)
+            if (_battleState != PBEBattleState.Ended)
             {
                 BattleState = PBEBattleState.Ended;
-                OnStateChanged?.Invoke(this);
                 OnNewEvent = null;
                 OnStateChanged = null;
             }
@@ -298,9 +307,6 @@ namespace Kermalis.PokemonBattleEngine.Battle
         }
         private void SwitchesOrActions()
         {
-            BattleState = PBEBattleState.Processing;
-            OnStateChanged?.Invoke(this);
-
             // Checking SwitchInQueue count since SwitchInsRequired is set to 0 after submitting switches
             PBETrainer[] trainersWithSwitchIns = Trainers.Where(t => t.SwitchInQueue.Count > 0).ToArray();
             if (trainersWithSwitchIns.Length > 0)
@@ -381,7 +387,6 @@ namespace Kermalis.PokemonBattleEngine.Battle
             if (trainersWithSwitchIns.Length > 0)
             {
                 BattleState = PBEBattleState.WaitingForSwitchIns;
-                OnStateChanged?.Invoke(this);
                 foreach (PBETrainer trainer in trainersWithSwitchIns)
                 {
                     BroadcastSwitchInRequest(trainer);
@@ -477,7 +482,6 @@ namespace Kermalis.PokemonBattleEngine.Battle
                     team.MonFaintedLastTurn = old;
                 }
                 BattleState = PBEBattleState.WaitingForActions;
-                OnStateChanged?.Invoke(this);
                 foreach (PBETrainer trainer in Trainers.Where(t => t.NumConsciousPkmn > 0))
                 {
                     BroadcastActionsRequest(trainer);
