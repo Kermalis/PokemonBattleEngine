@@ -38,13 +38,14 @@ namespace Kermalis.PokemonBattleEngineTests.Forms
             var battle = new PBEBattle(PBEBattleFormat.Single, settings, new PBETrainerInfo(p0, "Trainer 0"), new PBETrainerInfo(p1, "Trainer 1"),
                 weather: PBEWeather.HarshSunlight);
             battle.OnNewEvent += PBEBattle.ConsoleBattleEventHandler;
-            battle.Begin();
 
             PBETrainer t0 = battle.Trainers[0];
             PBETrainer t1 = battle.Trainers[1];
             PBEBattlePokemon magikarp = t0.Party[0];
             PBEBattlePokemon rayquaza = t0.Party[1];
             PBEBattlePokemon castformCherrim = t1.Party[0];
+
+            battle.Begin();
             #endregion
 
             #region Check Castform/Cherrim for correct form
@@ -94,12 +95,13 @@ namespace Kermalis.PokemonBattleEngineTests.Forms
 
             var battle = new PBEBattle(PBEBattleFormat.Single, settings, new PBETrainerInfo(p0, "Trainer 0"), new PBETrainerInfo(p1, "Trainer 1"));
             battle.OnNewEvent += PBEBattle.ConsoleBattleEventHandler;
-            battle.Begin();
 
             PBETrainer t0 = battle.Trainers[0];
             PBETrainer t1 = battle.Trainers[1];
             PBEBattlePokemon shuckle = t0.Party[0];
             PBEBattlePokemon castformCherrim = t1.Party[0];
+
+            battle.Begin();
             #endregion
 
             #region Use Sunny Day and check for correct form

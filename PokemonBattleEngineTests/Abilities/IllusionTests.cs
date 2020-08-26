@@ -33,10 +33,11 @@ namespace Kermalis.PokemonBattleEngineTests.Abilities
 
             var battle = new PBEBattle(PBEBattleFormat.Single, settings, new PBETrainerInfo(p0, "Trainer 0"), new PBETrainerInfo(p1, "Trainer 1"));
             battle.OnNewEvent += PBEBattle.ConsoleBattleEventHandler;
-            battle.Begin();
 
             PBETrainer t1 = battle.Trainers[1];
             PBEBattlePokemon zoroark1 = t1.Party[0];
+
+            battle.Begin();
             #endregion
 
             #region Check
@@ -68,10 +69,11 @@ namespace Kermalis.PokemonBattleEngineTests.Abilities
 
             var battle = new PBEBattle(PBEBattleFormat.Double, settings, new PBETrainerInfo(p0, "Trainer 0"), new PBEWildInfo(p1));
             battle.OnNewEvent += PBEBattle.ConsoleBattleEventHandler;
-            battle.Begin();
 
             PBETrainer t1 = battle.Trainers[1];
             PBEBattlePokemon zoroark = t1.Party[0];
+
+            battle.Begin();
             #endregion
 
             #region Check
@@ -102,10 +104,11 @@ namespace Kermalis.PokemonBattleEngineTests.Abilities
 
             var battle = new PBEBattle(PBEBattleFormat.Double, settings, new PBETrainerInfo(p0, "Trainer 0"), new PBETrainerInfo(p1, "Trainer 1"));
             battle.OnNewEvent += PBEBattle.ConsoleBattleEventHandler;
-            battle.Begin();
 
             PBETrainer t1 = battle.Trainers[1];
             PBEBattlePokemon zoroark = t1.Party[0];
+
+            battle.Begin();
             #endregion
 
             #region Check
@@ -141,7 +144,6 @@ namespace Kermalis.PokemonBattleEngineTests.Abilities
             var battle = new PBEBattle(PBEBattleFormat.Single, settings, new PBETrainerInfo(p0, "Trainer 0"), new PBETrainerInfo(p1, "Trainer 1"),
                 battleTerrain: PBEBattleTerrain.Snow);
             battle.OnNewEvent += PBEBattle.ConsoleBattleEventHandler;
-            battle.Begin();
 
             PBETrainer t0 = battle.Trainers[0];
             PBETrainer t1 = battle.Trainers[1];
@@ -149,6 +151,8 @@ namespace Kermalis.PokemonBattleEngineTests.Abilities
             PBEBattlePokemon shaymin = t1.Party[0];
             PBEBattlePokemon zoroark = t1.Party[1];
             PBEBattlePokemon magikarp = t1.Party[2];
+
+            battle.Begin();
             #endregion
 
             #region Freeze Shaymin

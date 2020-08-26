@@ -34,12 +34,13 @@ namespace Kermalis.PokemonBattleEngineTests.Statuses
 
             var battle = new PBEBattle(PBEBattleFormat.Single, settings, new PBETrainerInfo(p0, "Trainer 0"), new PBETrainerInfo(p1, "Trainer 1"));
             battle.OnNewEvent += PBEBattle.ConsoleBattleEventHandler;
-            battle.Begin();
 
             PBETrainer t0 = battle.Trainers[0];
             PBETrainer t1 = battle.Trainers[1];
             PBEBattlePokemon deoxys = t0.Party[0];
             PBEBattlePokemon accelgor = t1.Party[0];
+
+            battle.Begin();
             #endregion
 
             #region Use and check
@@ -85,12 +86,13 @@ namespace Kermalis.PokemonBattleEngineTests.Statuses
 
             var battle = new PBEBattle(PBEBattleFormat.Single, settings, new PBETrainerInfo(p0, "Trainer 0"), new PBETrainerInfo(p1, "Trainer 1"));
             battle.OnNewEvent += PBEBattle.ConsoleBattleEventHandler;
-            battle.Begin();
 
             PBETrainer t0 = battle.Trainers[0];
             PBETrainer t1 = battle.Trainers[1];
             PBEBattlePokemon deoxys = t0.Party[0];
             PBEBattlePokemon accelgor = t1.Party[0];
+
+            battle.Begin();
             #endregion
 
             #region Use and check

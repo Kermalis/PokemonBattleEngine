@@ -29,7 +29,6 @@ namespace Kermalis.PokemonBattleEngineTests
 
             var battle = new PBEBattle(PBEBattleFormat.Triple, settings, new PBETrainerInfo(p, "Trainer 0"), new PBETrainerInfo(p, "Trainer 1"));
             battle.OnNewEvent += PBEBattle.ConsoleBattleEventHandler;
-            battle.Begin();
 
             PBETrainer t0 = battle.Trainers[0];
             PBETrainer t1 = battle.Trainers[1];
@@ -39,6 +38,8 @@ namespace Kermalis.PokemonBattleEngineTests
             PBEBattlePokemon magikarp1 = t1.Party[0];
             PBEBattlePokemon golem1 = t1.Party[1];
             PBEBattlePokemon happiny1 = t1.Party[2];
+
+            battle.Begin();
             #endregion
 
             #region Force auto-center and check
@@ -84,7 +85,6 @@ namespace Kermalis.PokemonBattleEngineTests
                 new[] { new PBETrainerInfo(p0L, "Trainer 0"), new PBETrainerInfo(p0C, "Trainer 1"), new PBETrainerInfo(p0R, "Trainer 2") },
                 new[] { new PBETrainerInfo(p1, "Trainer 3") });
             battle.OnNewEvent += PBEBattle.ConsoleBattleEventHandler;
-            battle.Begin();
 
             PBETrainer t0L = battle.Trainers[0];
             PBETrainer t0C = battle.Trainers[1];
@@ -98,6 +98,8 @@ namespace Kermalis.PokemonBattleEngineTests
             PBEBattlePokemon golem1 = t1.Party[1];
             PBEBattlePokemon happiny1 = t1.Party[2];
             PBEBattlePokemon weezing1 = t1.Party[3];
+
+            battle.Begin();
             #endregion
 
             #region Force switch-in from trainer 3
@@ -175,7 +177,6 @@ namespace Kermalis.PokemonBattleEngineTests
 
             var battle = new PBEBattle(PBEBattleFormat.Triple, settings, new PBETrainerInfo(p0, "Trainer 0"), new PBETrainerInfo(p1, "Trainer 1"));
             battle.OnNewEvent += PBEBattle.ConsoleBattleEventHandler;
-            battle.Begin();
 
             PBETrainer t0 = battle.Trainers[0];
             PBETrainer t1 = battle.Trainers[1];
@@ -189,6 +190,8 @@ namespace Kermalis.PokemonBattleEngineTests
             PBEBattlePokemon sunkern = t1.Party[2];
             happiny.HP = 1; // Set Happiny HP to 1 so it faints on switch
             happiny.UpdateHPPercentage();
+
+            battle.Begin();
             #endregion
 
             #region Set up Stealth Rock while lowering HP, swap Happiny for Regigigas
@@ -257,7 +260,6 @@ namespace Kermalis.PokemonBattleEngineTests
                 new[] { new PBETrainerInfo(pL, "Trainer 0"), new PBETrainerInfo(pC, "Trainer 1"), new PBETrainerInfo(pR, "Trainer 2") },
                 new[] { new PBETrainerInfo(pL, "Trainer 3"), new PBETrainerInfo(pC, "Trainer 4"), new PBETrainerInfo(pR, "Trainer 5") });
             battle.OnNewEvent += PBEBattle.ConsoleBattleEventHandler;
-            battle.Begin();
 
             PBETrainer t0L = battle.Trainers[0];
             PBETrainer t0C = battle.Trainers[1];
@@ -271,6 +273,8 @@ namespace Kermalis.PokemonBattleEngineTests
             PBEBattlePokemon magikarp1 = t1L.Party[0];
             PBEBattlePokemon golem1 = t1C.Party[0];
             PBEBattlePokemon happiny1 = t1R.Party[0];
+
+            battle.Begin();
             #endregion
 
             #region Force auto-center and check

@@ -30,12 +30,13 @@ namespace Kermalis.PokemonBattleEngineTests
 
             var battle = new PBEBattle(PBEBattleFormat.Single, settings, new PBETrainerInfo(p0, "Trainer 0"), new PBETrainerInfo(p1, "Trainer 1"));
             battle.OnNewEvent += PBEBattle.ConsoleBattleEventHandler;
-            battle.Begin();
 
             PBETrainer t0 = battle.Trainers[0];
             PBETrainer t1 = battle.Trainers[1];
             PBEBattlePokemon golem = t0.Party[0];
             PBEBattlePokemon magikarp = t1.Party[0];
+
+            battle.Begin();
             #endregion
 
             #region Use move and check
@@ -72,7 +73,6 @@ namespace Kermalis.PokemonBattleEngineTests
 
             var battle = new PBEBattle(PBEBattleFormat.Triple, settings, new PBETrainerInfo(p0, "Trainer 0"), new PBETrainerInfo(p1, "Trainer 1"));
             battle.OnNewEvent += PBEBattle.ConsoleBattleEventHandler;
-            battle.Begin();
 
             PBETrainer t0 = battle.Trainers[0];
             PBETrainer t1 = battle.Trainers[1];
@@ -82,6 +82,8 @@ namespace Kermalis.PokemonBattleEngineTests
             PBEBattlePokemon patrat = t1.Party[0];
             PBEBattlePokemon lickilicky = t1.Party[1];
             PBEBattlePokemon happiny = t1.Party[2];
+
+            battle.Begin();
             #endregion
 
             #region Use move and check
@@ -120,12 +122,13 @@ namespace Kermalis.PokemonBattleEngineTests
 
             var battle = new PBEBattle(PBEBattleFormat.Single, settings, new PBETrainerInfo(p0, "Trainer 0"), new PBETrainerInfo(p1, "Trainer 1"));
             battle.OnNewEvent += PBEBattle.ConsoleBattleEventHandler;
-            battle.Begin();
 
             PBETrainer t0 = battle.Trainers[0];
             PBETrainer t1 = battle.Trainers[1];
             PBEBattlePokemon staraptor = t0.Party[0];
             PBEBattlePokemon magikarp = t1.Party[0];
+
+            battle.Begin();
             #endregion
 
             #region Use FinalGambit and check
@@ -161,12 +164,13 @@ namespace Kermalis.PokemonBattleEngineTests
 
             var battle = new PBEBattle(PBEBattleFormat.Single, settings, new PBETrainerInfo(p0, "Trainer 0"), new PBETrainerInfo(p1, "Trainer 1"));
             battle.OnNewEvent += PBEBattle.ConsoleBattleEventHandler;
-            battle.Begin();
 
             PBETrainer t0 = battle.Trainers[0];
             PBETrainer t1 = battle.Trainers[1];
             PBEBattlePokemon deoxys = t0.Party[0];
             PBEBattlePokemon blissey = t1.Party[0];
+
+            battle.Begin();
             #endregion
 
             #region Use DrainPunch and check
@@ -203,7 +207,6 @@ namespace Kermalis.PokemonBattleEngineTests
 
             var battle = new PBEBattle(PBEBattleFormat.Single, settings, new PBETrainerInfo(p0, "Trainer 0"), new PBETrainerInfo(p1, "Trainer 1"));
             battle.OnNewEvent += PBEBattle.ConsoleBattleEventHandler;
-            battle.Begin();
 
             PBETrainer t0 = battle.Trainers[0];
             PBETrainer t1 = battle.Trainers[1];
@@ -211,6 +214,8 @@ namespace Kermalis.PokemonBattleEngineTests
             PBEBattlePokemon ferroseed = t1.Party[0];
             lucario.HP = 1;
             lucario.UpdateHPPercentage();
+
+            battle.Begin();
             #endregion
 
             #region Use Pound and check
@@ -247,12 +252,13 @@ namespace Kermalis.PokemonBattleEngineTests
 
             var battle = new PBEBattle(PBEBattleFormat.Single, settings, new PBETrainerInfo(p0, "Trainer 0"), new PBETrainerInfo(p1, "Trainer 1"));
             battle.OnNewEvent += PBEBattle.ConsoleBattleEventHandler;
-            battle.Begin();
 
             PBETrainer t0 = battle.Trainers[0];
             PBETrainer t1 = battle.Trainers[1];
             PBEBattlePokemon shroomish = t0.Party[0];
             PBEBattlePokemon tentacruel = t1.Party[0];
+
+            battle.Begin();
             #endregion
 
             #region Use LeechSeed and check
@@ -288,7 +294,6 @@ namespace Kermalis.PokemonBattleEngineTests
 
             var battle = new PBEBattle(PBEBattleFormat.Single, settings, new PBETrainerInfo(p0, "Trainer 0"), new PBETrainerInfo(p1, "Trainer 1"));
             battle.OnNewEvent += PBEBattle.ConsoleBattleEventHandler;
-            battle.Begin();
 
             PBETrainer t0 = battle.Trainers[0];
             PBETrainer t1 = battle.Trainers[1];
@@ -296,6 +301,8 @@ namespace Kermalis.PokemonBattleEngineTests
             PBEBattlePokemon magikarp = t1.Party[0];
             riolu.HP = 1;
             riolu.UpdateHPPercentage();
+
+            battle.Begin();
             #endregion
 
             #region Use HeadCharge and check
@@ -328,7 +335,6 @@ namespace Kermalis.PokemonBattleEngineTests
 
             var battle = new PBEBattle(PBEBattleFormat.Single, settings, new PBETrainerInfo(p0, "Trainer 0"), new PBETrainerInfo(p1, "Trainer 1"));
             battle.OnNewEvent += PBEBattle.ConsoleBattleEventHandler;
-            battle.Begin();
 
             PBETrainer t0 = battle.Trainers[0];
             PBETrainer t1 = battle.Trainers[1];
@@ -336,6 +342,8 @@ namespace Kermalis.PokemonBattleEngineTests
             PBEBattlePokemon magikarp = t1.Party[0];
             bouffalant.HP = 1;
             bouffalant.UpdateHPPercentage();
+
+            battle.Begin();
             #endregion
 
             #region Use HeadCharge and check

@@ -34,7 +34,6 @@ namespace Kermalis.PokemonBattleEngineTests.Abilities
 
             var battle = new PBEBattle(PBEBattleFormat.Triple, settings, new PBETrainerInfo(p0, "Trainer 0"), new PBETrainerInfo(p1, "Trainer 1"));
             battle.OnNewEvent += PBEBattle.ConsoleBattleEventHandler;
-            battle.Begin();
 
             PBETrainer t0 = battle.Trainers[0];
             PBETrainer t1 = battle.Trainers[1];
@@ -43,6 +42,8 @@ namespace Kermalis.PokemonBattleEngineTests.Abilities
             PBEBattlePokemon happiny = t0.Party[2];
             PBEBattlePokemon luxray = t1.Party[0];
             PBEBattlePokemon skitty = t1.Party[1];
+
+            battle.Begin();
             #endregion
 
             #region Check
@@ -74,13 +75,14 @@ namespace Kermalis.PokemonBattleEngineTests.Abilities
 
             var battle = new PBEBattle(PBEBattleFormat.Triple, settings, new PBETrainerInfo(p0, "Trainer 0"), new PBETrainerInfo(p1, "Trainer 1"));
             battle.OnNewEvent += PBEBattle.ConsoleBattleEventHandler;
-            battle.Begin();
 
             PBETrainer t0 = battle.Trainers[0];
             PBETrainer t1 = battle.Trainers[1];
             PBEBattlePokemon shuckle = t0.Party[0];
             PBEBattlePokemon luxray = t1.Party[0];
             PBEBattlePokemon skitty = t1.Party[1];
+
+            battle.Begin();
             #endregion
 
             #region Check
@@ -111,13 +113,14 @@ namespace Kermalis.PokemonBattleEngineTests.Abilities
 
             var battle = new PBEBattle(PBEBattleFormat.Single, settings, new PBETrainerInfo(p0, "Trainer 0"), new PBETrainerInfo(p1, "Trainer 1"));
             battle.OnNewEvent += PBEBattle.ConsoleBattleEventHandler;
-            battle.Begin();
 
             PBETrainer t0 = battle.Trainers[0];
             PBETrainer t1 = battle.Trainers[1];
             PBEBattlePokemon shuckle = t0.Party[0];
             PBEBattlePokemon skitty = t1.Party[0];
             PBEBattlePokemon luxray = t1.Party[1];
+
+            battle.Begin();
             #endregion
 
             #region Use Substitute

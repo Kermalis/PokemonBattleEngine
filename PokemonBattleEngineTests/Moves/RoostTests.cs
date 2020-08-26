@@ -33,7 +33,6 @@ namespace Kermalis.PokemonBattleEngineTests.Moves
 
             var battle = new PBEBattle(PBEBattleFormat.Single, settings, new PBETrainerInfo(p0, "Trainer 0"), new PBETrainerInfo(p1, "Trainer 1"));
             battle.OnNewEvent += PBEBattle.ConsoleBattleEventHandler;
-            battle.Begin();
 
             PBETrainer t0 = battle.Trainers[0];
             PBETrainer t1 = battle.Trainers[1];
@@ -48,6 +47,8 @@ namespace Kermalis.PokemonBattleEngineTests.Moves
                 rooster.KnownType1 = type2;
                 rooster.KnownType2 = type1;
             }
+
+            battle.Begin();
             #endregion
 
             #region Use VacuumWave to lower HP
