@@ -14,7 +14,6 @@ namespace Kermalis.PokemonBattleEngineTests.Abilities
         }
 
         // TODO: Wild Pkmn can be disguised (and shows in wild packet)
-        // TODO: Wild Pkmn does not disguise as teammate
 
         [Fact]
         public void Illusion_Does_Not_Copy_Same_Species()
@@ -42,6 +41,75 @@ namespace Kermalis.PokemonBattleEngineTests.Abilities
 
             #region Check
             Assert.False(zoroark1.Status2.HasFlag(PBEStatus2.Disguised));
+            #endregion
+
+            #region Cleanup
+            battle.OnNewEvent -= PBEBattle.ConsoleBattleEventHandler;
+            #endregion
+        }
+
+        [Fact]
+        public void Illusion_Does_Not_Copy_Active_Wild_Teammate()
+        {
+            #region Setup
+            PBEDataProvider.GlobalRandom.Seed = 0;
+            PBESettings settings = PBESettings.DefaultSettings;
+
+            var p0 = new TestPokemonCollection(1);
+            p0[0] = new TestPokemon(settings, PBESpecies.Magikarp, 0, 100, PBEMove.Splash);
+
+            var p1 = new TestPokemonCollection(2);
+            p1[0] = new TestPokemon(settings, PBESpecies.Zoroark, 0, 100, PBEMove.Splash)
+            {
+                Ability = PBEAbility.Illusion,
+                CaughtBall = PBEItem.None
+            };
+            p1[1] = p0[0];
+
+            var battle = new PBEBattle(PBEBattleFormat.Double, settings, new PBETrainerInfo(p0, "Trainer 0"), new PBEWildInfo(p1));
+            battle.OnNewEvent += PBEBattle.ConsoleBattleEventHandler;
+            battle.Begin();
+
+            PBETrainer t1 = battle.Trainers[1];
+            PBEBattlePokemon zoroark = t1.Party[0];
+            #endregion
+
+            #region Check
+            Assert.False(zoroark.Status2.HasFlag(PBEStatus2.Disguised));
+            #endregion
+
+            #region Cleanup
+            battle.OnNewEvent -= PBEBattle.ConsoleBattleEventHandler;
+            #endregion
+        }
+
+        [Fact]
+        public void Illusion_Does_Copy_Active_Trainer_Teammate()
+        {
+            #region Setup
+            PBEDataProvider.GlobalRandom.Seed = 0;
+            PBESettings settings = PBESettings.DefaultSettings;
+
+            var p0 = new TestPokemonCollection(1);
+            p0[0] = new TestPokemon(settings, PBESpecies.Magikarp, 0, 100, PBEMove.Splash);
+
+            var p1 = new TestPokemonCollection(2);
+            p1[0] = new TestPokemon(settings, PBESpecies.Zoroark, 0, 100, PBEMove.Splash)
+            {
+                Ability = PBEAbility.Illusion
+            };
+            p1[1] = p0[0];
+
+            var battle = new PBEBattle(PBEBattleFormat.Double, settings, new PBETrainerInfo(p0, "Trainer 0"), new PBETrainerInfo(p1, "Trainer 1"));
+            battle.OnNewEvent += PBEBattle.ConsoleBattleEventHandler;
+            battle.Begin();
+
+            PBETrainer t1 = battle.Trainers[1];
+            PBEBattlePokemon zoroark = t1.Party[0];
+            #endregion
+
+            #region Check
+            Assert.True(zoroark.Status2.HasFlag(PBEStatus2.Disguised));
             #endregion
 
             #region Cleanup
