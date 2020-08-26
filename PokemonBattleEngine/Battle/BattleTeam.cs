@@ -49,7 +49,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
             _team1.OpposingTeam = _team0;
             trainers = new ReadOnlyCollection<PBETrainer>(allTrainers);
         }
-        // Remote trainer battle
+        // Remote battle
         internal PBETeams(PBEBattle battle, PBEBattlePacket packet, out ReadOnlyCollection<PBETrainer> trainers)
         {
             var allTrainers = new List<PBETrainer>();
@@ -139,7 +139,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
             Id = id;
             Trainers = new ReadOnlyCollection<PBETrainer>(new[] { new PBETrainer(this, wi, allTrainers) });
         }
-        // Remote trainer battle
+        // Remote battle
         internal PBETeam(PBEBattle battle, PBEBattlePacket.PBETeamInfo info, List<PBETrainer> allTrainers)
         {
             ReadOnlyCollection<PBEBattlePacket.PBETeamInfo.PBETrainerInfo> ti = info.Trainers;

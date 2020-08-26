@@ -333,7 +333,7 @@ namespace Kermalis.PokemonBattleEngine.Data
         DestinyKnot = 280,
         /// <summary>No effect.</summary>
         DireHit = 56,
-        DiveBall = 7, // TODO
+        DiveBall = 7,
         /// <summary>No effect.</summary>
         DomeFossil = 102,
         DouseDrive = 116,
@@ -347,7 +347,7 @@ namespace Kermalis.PokemonBattleEngine.Data
         /// <summary>No effect.</summary>
         DubiousDisc = 324,
         DurinBerry = 182, // TODO
-        DuskBall = 13, // TODO
+        DuskBall = 13,
         /// <summary>No effect.</summary>
         DuskStone = 108,
         EarthPlate = 305,
@@ -484,7 +484,7 @@ namespace Kermalis.PokemonBattleEngine.Data
         LuckyEgg = 231,
         LuckyPunch = 256,
         LumBerry = 157, // TODO
-        LureBall = 494, // TODO
+        LureBall = 494,
         LustrousOrb = 136,
         LuxuryBall = 11,
         MachoBrace = 215,
@@ -514,7 +514,7 @@ namespace Kermalis.PokemonBattleEngine.Data
         MiracleSeed = 239,
         /// <summary>No effect.</summary>
         MoomooMilk = 33,
-        MoonBall = 498, // TODO
+        MoonBall = 498,
         /// <summary>No effect.</summary>
         MoonStone = 81,
         MuscleBand = 266,
@@ -633,7 +633,7 @@ namespace Kermalis.PokemonBattleEngine.Data
         RelicStatue = 589,
         /// <summary>No effect.</summary>
         RelicVase = 587,
-        RepeatBall = 9, // TODO
+        RepeatBall = 9,
         /// <summary>No effect.</summary>
         Repel = 79,
         /// <summary>No effect.</summary>

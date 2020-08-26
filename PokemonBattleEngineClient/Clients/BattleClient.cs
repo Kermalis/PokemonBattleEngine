@@ -208,9 +208,10 @@ namespace Kermalis.PokemonBattleEngineClient.Clients
                 }
                 case IPBEWildPkmnAppearedPacket wpap:
                 {
+                    PBETrainer wildTrainer = Battle.Teams[1].Trainers[0];
                     foreach (IPBEPkmnAppearedInfo_Hidden info in wpap.Pokemon)
                     {
-                        BattleView.Field.ShowPokemon(Battle.Teams[1].Trainers[0].TryGetPokemon(info.FieldPosition));
+                        BattleView.Field.ShowPokemon(wildTrainer.TryGetPokemon(info.FieldPosition));
                     }
                     break;
                 }
