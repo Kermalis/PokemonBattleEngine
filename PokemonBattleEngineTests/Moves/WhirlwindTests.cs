@@ -24,7 +24,10 @@ namespace Kermalis.PokemonBattleEngineTests.Moves
             p0[0] = new TestPokemon(settings, PBESpecies.Tropius, 0, 1, PBEMove.Whirlwind);
 
             var p1 = new TestPokemonCollection(1);
-            p1[0] = new TestPokemon(settings, PBESpecies.Magikarp, 0, 100, PBEMove.Splash);
+            p1[0] = new TestPokemon(settings, PBESpecies.Magikarp, 0, 100, PBEMove.Splash)
+            {
+                CaughtBall = PBEItem.None
+            };
 
             var battle = new PBEBattle(PBEBattleFormat.Single, settings, new PBETrainerInfo(p0, "Trainer 0"), new PBEWildInfo(p1));
             battle.OnNewEvent += PBEBattle.ConsoleBattleEventHandler;
@@ -62,8 +65,14 @@ namespace Kermalis.PokemonBattleEngineTests.Moves
             p0[0] = new TestPokemon(settings, PBESpecies.Tropius, 0, 100, PBEMove.Whirlwind);
 
             var p1 = new TestPokemonCollection(2);
-            p1[0] = new TestPokemon(settings, PBESpecies.Magikarp, 0, 1, PBEMove.Splash);
-            p1[1] = new TestPokemon(settings, PBESpecies.Happiny, 0, 1, PBEMove.Splash);
+            p1[0] = new TestPokemon(settings, PBESpecies.Magikarp, 0, 1, PBEMove.Splash)
+            {
+                CaughtBall = PBEItem.None
+            };
+            p1[1] = new TestPokemon(settings, PBESpecies.Happiny, 0, 1, PBEMove.Splash)
+            {
+                CaughtBall = PBEItem.None
+            };
 
             var battle = new PBEBattle(PBEBattleFormat.Double, settings, new PBETrainerInfo(p0, "Trainer 0"), new PBEWildInfo(p1));
             battle.OnNewEvent += PBEBattle.ConsoleBattleEventHandler;
@@ -105,7 +114,10 @@ namespace Kermalis.PokemonBattleEngineTests.Moves
             p0[0] = new TestPokemon(settings, PBESpecies.Tropius, 0, 100, PBEMove.Whirlwind);
 
             var p1 = new TestPokemonCollection(1);
-            p1[0] = new TestPokemon(settings, PBESpecies.Magikarp, 0, 1, PBEMove.Splash);
+            p1[0] = new TestPokemon(settings, PBESpecies.Magikarp, 0, 1, PBEMove.Splash)
+            {
+                CaughtBall = PBEItem.None
+            };
 
             var battle = new PBEBattle(PBEBattleFormat.Single, settings, new PBETrainerInfo(p0, "Trainer 0"), new PBEWildInfo(p1));
             battle.OnNewEvent += PBEBattle.ConsoleBattleEventHandler;
@@ -145,8 +157,14 @@ namespace Kermalis.PokemonBattleEngineTests.Moves
             p0[2] = new TestPokemon(settings, PBESpecies.Trubbish, 0, 1, PBEMove.Splash);
 
             var p1 = new TestPokemonCollection(2);
-            p1[0] = new TestPokemon(settings, PBESpecies.Starly, 0, 100, PBEMove.Whirlwind);
-            p1[1] = new TestPokemon(settings, PBESpecies.Magikarp, 0, 100, PBEMove.Splash);
+            p1[0] = new TestPokemon(settings, PBESpecies.Starly, 0, 100, PBEMove.Whirlwind)
+            {
+                CaughtBall = PBEItem.None
+            };
+            p1[1] = new TestPokemon(settings, PBESpecies.Magikarp, 0, 100, PBEMove.Splash)
+            {
+                CaughtBall = PBEItem.None
+            };
 
             var battle = new PBEBattle(PBEBattleFormat.Double, settings, new PBETrainerInfo(p0, "Trainer 0"), new PBEWildInfo(p1));
             battle.OnNewEvent += PBEBattle.ConsoleBattleEventHandler;

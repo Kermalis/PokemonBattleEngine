@@ -35,9 +35,13 @@ namespace Kermalis.PokemonBattleEngineTests
             p0[0] = new TestPokemon(settings, PBESpecies.Magikarp, 0, 100, PBEMove.Splash);
 
             var p1 = new TestPokemonCollection(count);
-            for (int i = 0; i < count; i++)
+            p1[0] = new TestPokemon(settings, PBESpecies.Magikarp, 0, 100, PBEMove.Splash)
             {
-                p1[i] = p0[0];
+                CaughtBall = PBEItem.None
+            };
+            for (int i = 1; i < count; i++)
+            {
+                p1[i] = p1[0];
             }
 
             if (expectException)

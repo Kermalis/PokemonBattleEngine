@@ -24,7 +24,10 @@ namespace Kermalis.PokemonBattleEngineTests.Moves
             p0[0] = new TestPokemon(settings, PBESpecies.Abra, 0, 100, PBEMove.Teleport);
 
             var p1 = new TestPokemonCollection(1);
-            p1[0] = new TestPokemon(settings, PBESpecies.Magikarp, 0, 1, PBEMove.Splash);
+            p1[0] = new TestPokemon(settings, PBESpecies.Magikarp, 0, 1, PBEMove.Splash)
+            {
+                CaughtBall = PBEItem.None
+            };
 
             var battle = new PBEBattle(PBEBattleFormat.Single, settings, new PBETrainerInfo(p0, "Trainer 0"), new PBEWildInfo(p1));
             battle.OnNewEvent += PBEBattle.ConsoleBattleEventHandler;
