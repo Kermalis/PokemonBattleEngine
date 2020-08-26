@@ -166,7 +166,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
         Confused = 1 << 1,
         /// <summary>The Pokémon is cursed and will take damage at the end of each turn.</summary>
         Cursed = 1 << 2,
-        /// <summary>The Pokémon is disguised as <see cref="PBEBattlePokemon.DisguisedAsPokemon"/> with <see cref="PBEAbility.Illusion"/>.</summary>
+        /// <summary>The Pokémon is disguised with <see cref="PBEAbility.Illusion"/>.</summary>
         Disguised = 1 << 3,
         /// <summary>The Pokémon is flinching and will be unable to move this turn.</summary>
         Flinching = 1 << 4,
