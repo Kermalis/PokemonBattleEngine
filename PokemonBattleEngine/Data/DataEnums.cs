@@ -238,14 +238,12 @@ namespace Kermalis.PokemonBattleEngine.Data
         AirBalloon = 541, // TODO
         /// <summary>No effect.</summary>
         AmuletCoin = 223,
-        /// <summary>No effect.</summary>
-        Antidote = 18,
+        Antidote = 18, // TODO
         ApicotBerry = 205,
         /// <summary>No effect.</summary>
         ArmorFossil = 104,
         AspearBerry = 153, // TODO
-        /// <summary>No effect.</summary>
-        Awakening = 21,
+        Awakening = 21, // TODO
         BabiriBerry = 199, // TODO
         /// <summary>No effect.</summary>
         BalmMushroom = 580,
@@ -288,14 +286,12 @@ namespace Kermalis.PokemonBattleEngine.Data
         BrightPowder = 213,
         BugGem = 558,
         BurnDrive = 118,
-        /// <summary>No effect.</summary>
-        BurnHeal = 19,
+        BurnHeal = 19, // TODO
         /// <summary>No effect.</summary>
         Calcium = 49,
         /// <summary>No effect.</summary>
         Carbos = 48,
-        /// <summary>No effect.</summary>
-        Casteliacone = 591,
+        Casteliacone = 591, // TODO
         CellBattery = 546, // TODO
         Charcoal = 249,
         ChartiBerry = 195, // TODO
@@ -331,8 +327,7 @@ namespace Kermalis.PokemonBattleEngine.Data
         DeepSeaScale = 227,
         DeepSeaTooth = 226,
         DestinyKnot = 280,
-        /// <summary>No effect.</summary>
-        DireHit = 56,
+        DireHit = 56, // TODO
         DiveBall = 7,
         /// <summary>No effect.</summary>
         DomeFossil = 102,
@@ -355,17 +350,13 @@ namespace Kermalis.PokemonBattleEngine.Data
         /// <summary>No effect.</summary>
         Electirizer = 322,
         ElectricGem = 550,
-        /// <summary>No effect.</summary>
-        Elixir = 40,
-        /// <summary>No effect.</summary>
-        EnergyPowder = 34,
-        /// <summary>No effect.</summary>
-        EnergyRoot = 35,
+        Elixir = 40, // TODO
+        EnergyPowder = 34, // TODO
+        EnergyRoot = 35, // TODO
         EnigmaBerry = 208, // TODO
         /// <summary>No effect.</summary>
         EscapeRope = 78,
-        /// <summary>No effect.</summary>
-        Ether = 38,
+        Ether = 38, // TODO
         /// <summary>No effect.</summary>
         Everstone = 229,
         Eviolite = 538,
@@ -389,14 +380,11 @@ namespace Kermalis.PokemonBattleEngine.Data
         FlyingGem = 556,
         FocusBand = 230,
         FocusSash = 275,
-        /// <summary>No effect.</summary>
-        FreshWater = 30,
+        FreshWater = 30, // TODO
         FriendBall = 497,
-        /// <summary>No effect.</summary>
-        FullHeal = 27,
+        FullHeal = 27, // TODO
         FullIncense = 316, // TODO
-        /// <summary>No effect.</summary>
-        FullRestore = 23,
+        FullRestore = 23, // TODO
         GanlonBerry = 202,
         /// <summary>No effect.</summary>
         GeniusWing = 568,
@@ -419,13 +407,11 @@ namespace Kermalis.PokemonBattleEngine.Data
         GroundGem = 555,
         /// <summary>No effect.</summary>
         GrowthMulch = 95,
-        /// <summary>No effect.</summary>
-        GuardSpec = 55,
+        GuardSpec = 55, // TODO
         HabanBerry = 197, // TODO
         HardStone = 238,
         HealBall = 14,
-        /// <summary>No effect.</summary>
-        HealPowder = 36,
+        HealPowder = 36, // TODO
         /// <summary>No effect.</summary>
         HealthWing = 565,
         /// <summary>No effect.</summary>
@@ -439,12 +425,10 @@ namespace Kermalis.PokemonBattleEngine.Data
         Honey = 94,
         /// <summary>No effect.</summary>
         HPUp = 45,
-        /// <summary>No effect.</summary>
-        HyperPotion = 25,
+        HyperPotion = 25, // TODO
         IapapaBerry = 163,
         IceGem = 552,
-        /// <summary>No effect.</summary>
-        IceHeal = 20,
+        IceHeal = 20, // TODO
         IciclePlate = 302,
         IcyRock = 282,
         /// <summary>No effect.</summary>
@@ -461,14 +445,12 @@ namespace Kermalis.PokemonBattleEngine.Data
         KingsRock = 221, // TODO
         LaggingTail = 279, // TODO
         LansatBerry = 206, // TODO
-        /// <summary>No effect.</summary>
-        LavaCookie = 42,
+        LavaCookie = 42, // TODO
         LaxIncense = 255,
         /// <summary>No effect.</summary>
         LeafStone = 85,
         Leftovers = 234,
-        /// <summary>No effect.</summary>
-        Lemonade = 32,
+        Lemonade = 32, // TODO
         LeppaBerry = 154, // TODO
         LevelBall = 493,
         LiechiBerry = 201,
@@ -494,16 +476,12 @@ namespace Kermalis.PokemonBattleEngine.Data
         MagoBerry = 161,
         MagostBerry = 176, // TODO
         MasterBall = 1,
-        /// <summary>No effect.</summary>
-        MaxElixir = 41,
-        /// <summary>No effect.</summary>
-        MaxEther = 39,
-        /// <summary>No effect.</summary>
-        MaxPotion = 24,
+        MaxElixir = 41, // TODO
+        MaxEther = 39, // TODO
+        MaxPotion = 24, // TODO
         /// <summary>No effect.</summary>
         MaxRepel = 77,
-        /// <summary>No effect.</summary>
-        MaxRevive = 29,
+        MaxRevive = 29, // TODO
         MeadowPlate = 301,
         MentalHerb = 219, // TODO
         MetalCoat = 233,
@@ -512,8 +490,7 @@ namespace Kermalis.PokemonBattleEngine.Data
         MicleBerry = 209, // TODO
         MindPlate = 307,
         MiracleSeed = 239,
-        /// <summary>No effect.</summary>
-        MoomooMilk = 33,
+        MoomooMilk = 33, // TODO
         MoonBall = 498,
         /// <summary>No effect.</summary>
         MoonStone = 81,
@@ -535,14 +512,12 @@ namespace Kermalis.PokemonBattleEngine.Data
         OddKeystone = 111,
         /// <summary>No effect.</summary>
         OldAmber = 103,
-        /// <summary>No effect.</summary>
-        OldGateau = 54,
+        OldGateau = 54, // TODO
         OranBerry = 155,
         /// <summary>No effect.</summary>
         OvalStone = 110,
         PamtreBerry = 180, // TODO
-        /// <summary>No effect.</summary>
-        ParalyzHeal = 22,
+        ParalyzHeal = 22, // TODO
         ParkBall = 500,
         PasshoBerry = 185, // TODO
         /// <summary>No effect.</summary>
@@ -568,8 +543,7 @@ namespace Kermalis.PokemonBattleEngine.Data
         PokeDoll = 63,
         PokeToy = 577,
         PomegBerry = 169, // TODO
-        /// <summary>No effect.</summary>
-        Potion = 17,
+        Potion = 17, // TODO
         PowerAnklet = 293,
         PowerBand = 292,
         PowerBelt = 290,
@@ -598,8 +572,7 @@ namespace Kermalis.PokemonBattleEngine.Data
         QuickClaw = 217, // TODO
         QuickPowder = 274,
         RabutaBerry = 177, // TODO
-        /// <summary>No effect.</summary>
-        RageCandyBar = 504,
+        RageCandyBar = 504, // TODO
         /// <summary>No effect.</summary>
         RareBone = 106,
         /// <summary>No effect.</summary>
@@ -640,10 +613,8 @@ namespace Kermalis.PokemonBattleEngine.Data
         ReplyMail = 143,
         /// <summary>No effect.</summary>
         ResistWing = 567,
-        /// <summary>No effect.</summary>
-        RevivalHerb = 37,
-        /// <summary>No effect.</summary>
-        Revive = 28,
+        RevivalHerb = 37, // TODO
+        Revive = 28, // TODO
         RindoBerry = 187, // TODO
         RingTarget = 543, // TODO
         RockGem = 559,
@@ -655,8 +626,7 @@ namespace Kermalis.PokemonBattleEngine.Data
         RowapBerry = 212, // TODO
         /// <summary>No effect.</summary>
         RSVPMail = 139,
-        /// <summary>No effect.</summary>
-        SacredAsh = 44,
+        SacredAsh = 44, // TODO
         SafariBall = 5,
         SalacBerry = 203,
         ScopeLens = 232,
@@ -680,8 +650,7 @@ namespace Kermalis.PokemonBattleEngine.Data
         SkyPlate = 306,
         SmokeBall = 228,
         SmoothRock = 283,
-        /// <summary>No effect.</summary>
-        SodaPop = 31,
+        SodaPop = 31, // TODO
         SoftSand = 237,
         /// <summary>No effect.</summary>
         SootheBell = 218,
@@ -704,12 +673,10 @@ namespace Kermalis.PokemonBattleEngine.Data
         StonePlate = 309,
         /// <summary>No effect.</summary>
         SunStone = 80,
-        /// <summary>No effect.</summary>
-        SuperPotion = 26,
+        SuperPotion = 26, // TODO
         /// <summary>No effect.</summary>
         SuperRepel = 76,
-        /// <summary>No effect.</summary>
-        SweetHeart = 134,
+        SweetHeart = 134, // TODO
         /// <summary>No effect.</summary>
         SwiftWing = 570,
         TamatoBerry = 174, // TODO
@@ -743,18 +710,12 @@ namespace Kermalis.PokemonBattleEngine.Data
         WiseGlasses = 267,
         /// <summary>No effect.</summary>
         WhtApricorn = 490,
-        /// <summary>No effect.</summary>
-        XAccuracy = 60,
-        /// <summary>No effect.</summary>
-        XAttack = 57,
-        /// <summary>No effect.</summary>
-        XDefend = 58,
-        /// <summary>No effect.</summary>
-        XSpecial = 61,
-        /// <summary>No effect.</summary>
-        XSpDef = 62,
-        /// <summary>No effect.</summary>
-        XSpeed = 59,
+        XAccuracy = 60, // TODO
+        XAttack = 57, // TODO
+        XDefend = 58, // TODO
+        XSpecial = 61, // TODO
+        XSpDef = 62, // TODO
+        XSpeed = 59, // TODO
         YacheBerry = 188, // TODO
         /// <summary>No effect.</summary>
         YellowFlute = 66,
