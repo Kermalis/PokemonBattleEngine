@@ -126,7 +126,7 @@ namespace Kermalis.PokemonBattleEngineClient.Clients
                 {
                     if (!psip.Forced)
                     {
-                        foreach (IPBEPkmnSwitchInInfo info in psip.SwitchIns)
+                        foreach (IPBEPkmnSwitchInInfo_Hidden info in psip.SwitchIns)
                         {
                             BattleView.Field.ShowPokemon(psip.Trainer.TryGetPokemon(info.FieldPosition));
                         }
@@ -198,9 +198,9 @@ namespace Kermalis.PokemonBattleEngineClient.Clients
                     }
                     break;
                 }
-                case PBEWildPkmnAppearedPacket wpap:
+                case IPBEWildPkmnAppearedPacket wpap:
                 {
-                    foreach (PBEWildPkmnAppearedPacket.PBEWildPkmnInfo info in wpap.Pokemon)
+                    foreach (IPBEPkmnAppearedInfo_Hidden info in wpap.Pokemon)
                     {
                         BattleView.Field.ShowPokemon(Battle.Teams[1].Trainers[0].TryGetPokemon(info.FieldPosition));
                     }

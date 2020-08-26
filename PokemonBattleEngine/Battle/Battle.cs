@@ -292,12 +292,12 @@ namespace Kermalis.PokemonBattleEngine.Battle
                 // this func will be called again, so we need to make sure it doesn't bug out
                 if (count > 0)
                 {
-                    var appearances = new PBEWildPkmnAppearedPacket.PBEWildPkmnInfo[count];
+                    var appearances = new PBEPkmnAppearedInfo[count];
                     for (int i = 0; i < count; i++)
                     {
                         (PBEBattlePokemon pkmn, PBEFieldPosition pos) = trainer.SwitchInQueue[i];
                         pkmn.FieldPosition = pos;
-                        appearances[i] = new PBEWildPkmnAppearedPacket.PBEWildPkmnInfo(pkmn);
+                        appearances[i] = new PBEPkmnAppearedInfo(pkmn);
                         ActiveBattlers.Add(pkmn); // Add before broadcast
                     }
                     trainer.SwitchInQueue.Clear();
@@ -313,7 +313,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                 foreach (PBETrainer trainer in trainersWithSwitchIns)
                 {
                     int count = trainer.SwitchInQueue.Count;
-                    var switches = new PBEPkmnSwitchInPacket.PBEPkmnSwitchInInfo[count];
+                    var switches = new PBEPkmnAppearedInfo[count];
                     for (int i = 0; i < count; i++)
                     {
                         (PBEBattlePokemon pkmn, PBEFieldPosition pos) = trainer.SwitchInQueue[i];

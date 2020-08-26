@@ -2318,7 +2318,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
             BroadcastPkmnStatChanged(pkmn, stat, oldValue, newValue);
         }
 
-        private PBEPkmnSwitchInPacket.PBEPkmnSwitchInInfo CreateSwitchInInfo(PBEBattlePokemon pkmn)
+        private PBEPkmnAppearedInfo CreateSwitchInInfo(PBEBattlePokemon pkmn)
         {
             if (pkmn.Ability == PBEAbility.Illusion)
             {
@@ -2347,7 +2347,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                     }
                 }
             }
-            return new PBEPkmnSwitchInPacket.PBEPkmnSwitchInInfo(pkmn);
+            return new PBEPkmnAppearedInfo(pkmn);
         }
         private void SwitchTwoPokemon(PBEBattlePokemon pkmnLeaving, PBEBattlePokemon pkmnComing, PBEBattlePokemon forcedByPkmn = null)
         {
@@ -2359,7 +2359,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
             BroadcastPkmnSwitchOut(pkmnLeaving, pos, forcedByPkmn);
             RemoveInfatuationsAndLockOns(pkmnLeaving);
             pkmnComing.FieldPosition = pos;
-            var switches = new PBEPkmnSwitchInPacket.PBEPkmnSwitchInInfo[] { CreateSwitchInInfo(pkmnComing) };
+            var switches = new PBEPkmnAppearedInfo[] { CreateSwitchInInfo(pkmnComing) };
             PBETrainer.SwitchTwoPokemon(pkmnLeaving, pkmnComing);
             ActiveBattlers.Add(pkmnComing); // Add to active before broadcast
             BroadcastPkmnSwitchIn(pkmnComing.Trainer, switches, forcedByPkmn);

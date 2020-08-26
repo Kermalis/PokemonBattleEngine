@@ -161,7 +161,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
         {
             Broadcast(new PBEPkmnStatChangedPacket(pokemon, stat, oldValue, newValue));
         }
-        private void BroadcastPkmnSwitchIn(PBETrainer trainer, PBEPkmnSwitchInPacket.PBEPkmnSwitchInInfo[] switchIns, PBEBattlePokemon forcedByPokemon = null)
+        private void BroadcastPkmnSwitchIn(PBETrainer trainer, PBEPkmnAppearedInfo[] switchIns, PBEBattlePokemon forcedByPokemon = null)
         {
             Broadcast(new PBEPkmnSwitchInPacket(trainer, switchIns, forcedByPokemon));
         }
@@ -278,7 +278,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
         {
             Broadcast(new PBEWeatherPacket(weather, weatherAction, damageVictim));
         }
-        private void BroadcastWildPkmnAppeared(PBEWildPkmnAppearedPacket.PBEWildPkmnInfo[] appearances)
+        private void BroadcastWildPkmnAppeared(PBEPkmnAppearedInfo[] appearances)
         {
             Broadcast(new PBEWildPkmnAppearedPacket(appearances));
         }
@@ -1571,7 +1571,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                     }
                     return string.Format(message, GetPkmnName(damageVictim, true));
                 }
-                case PBEWildPkmnAppearedPacket wpap:
+                case IPBEWildPkmnAppearedPacket wpap:
                 {
                     return string.Format("{0}{1} appeared!", wpap.Pokemon.Count == 1 ? "A wild " : "Oh! A wild ", wpap.Pokemon.Select(s => s.Nickname).ToArray().Andify());
                 }

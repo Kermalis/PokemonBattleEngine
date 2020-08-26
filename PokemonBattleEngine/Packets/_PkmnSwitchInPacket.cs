@@ -8,21 +8,14 @@ using System.IO;
 
 namespace Kermalis.PokemonBattleEngine.Packets
 {
-    public interface IPBEPkmnSwitchInInfo : IPBESpeciesForm
+    public interface IPBEPkmnSwitchInInfo_Hidden : IPBEPkmnAppearedInfo_Hidden
     {
-        string Nickname { get; }
-        byte Level { get; }
-        bool Shiny { get; }
-        PBEGender Gender { get; }
         PBEItem CaughtBall { get; }
-        double HPPercentage { get; }
-        PBEStatus1 Status1 { get; }
-        PBEFieldPosition FieldPosition { get; }
     }
     public interface IPBEPkmnSwitchInPacket : IPBEPacket
     {
         PBETrainer Trainer { get; }
-        IReadOnlyList<IPBEPkmnSwitchInInfo> SwitchIns { get; }
+        IReadOnlyList<IPBEPkmnSwitchInInfo_Hidden> SwitchIns { get; }
         bool Forced { get; }
         PBETrainer ForcedByPokemonTrainer { get; }
         PBEFieldPosition ForcedByPokemon { get; }
@@ -32,91 +25,21 @@ namespace Kermalis.PokemonBattleEngine.Packets
         public const ushort Code = 0x06;
         public ReadOnlyCollection<byte> Data { get; }
 
-        public sealed class PBEPkmnSwitchInInfo : IPBEPkmnSwitchInInfo
-        {
-            public byte Pokemon { get; }
-            public bool IsDisguised { get; }
-            public PBESpecies Species { get; }
-            public PBEForm Form { get; }
-            public string Nickname { get; }
-            public byte Level { get; }
-            public bool Shiny { get; }
-            public PBEGender Gender { get; }
-            public PBEItem CaughtBall { get; }
-            public ushort HP { get; }
-            public ushort MaxHP { get; }
-            public double HPPercentage { get; }
-            public PBEStatus1 Status1 { get; }
-            public PBEFieldPosition FieldPosition { get; }
-
-            internal PBEPkmnSwitchInInfo(PBEBattlePokemon pkmn)
-            {
-                Pokemon = pkmn.Id;
-                IsDisguised = pkmn.Status2.HasFlag(PBEStatus2.Disguised);
-                Species = pkmn.KnownSpecies;
-                Form = pkmn.KnownForm;
-                Nickname = pkmn.KnownNickname;
-                Level = pkmn.Level;
-                Shiny = pkmn.KnownShiny;
-                Gender = pkmn.KnownGender;
-                CaughtBall = pkmn.KnownCaughtBall;
-                HP = pkmn.HP;
-                MaxHP = pkmn.MaxHP;
-                HPPercentage = pkmn.HPPercentage;
-                Status1 = pkmn.Status1;
-                FieldPosition = pkmn.FieldPosition;
-            }
-            internal PBEPkmnSwitchInInfo(EndianBinaryReader r)
-            {
-                Pokemon = r.ReadByte();
-                IsDisguised = r.ReadBoolean();
-                Species = r.ReadEnum<PBESpecies>();
-                Form = r.ReadEnum<PBEForm>();
-                Nickname = r.ReadStringNullTerminated();
-                Level = r.ReadByte();
-                Shiny = r.ReadBoolean();
-                Gender = r.ReadEnum<PBEGender>();
-                CaughtBall = r.ReadEnum<PBEItem>();
-                HP = r.ReadUInt16();
-                MaxHP = r.ReadUInt16();
-                HPPercentage = r.ReadDouble();
-                Status1 = r.ReadEnum<PBEStatus1>();
-                FieldPosition = r.ReadEnum<PBEFieldPosition>();
-            }
-
-            internal void ToBytes(EndianBinaryWriter w)
-            {
-                w.Write(Pokemon);
-                w.Write(IsDisguised);
-                w.Write(Species);
-                w.Write(Form);
-                w.Write(Nickname, true);
-                w.Write(Level);
-                w.Write(Shiny);
-                w.Write(Gender);
-                w.Write(HP);
-                w.Write(MaxHP);
-                w.Write(HPPercentage);
-                w.Write(Status1);
-                w.Write(FieldPosition);
-            }
-        }
-
         public PBETrainer Trainer { get; }
-        public ReadOnlyCollection<PBEPkmnSwitchInInfo> SwitchIns { get; }
-        IReadOnlyList<IPBEPkmnSwitchInInfo> IPBEPkmnSwitchInPacket.SwitchIns => SwitchIns;
+        public ReadOnlyCollection<PBEPkmnAppearedInfo> SwitchIns { get; }
+        IReadOnlyList<IPBEPkmnSwitchInInfo_Hidden> IPBEPkmnSwitchInPacket.SwitchIns => SwitchIns;
         public bool Forced { get; }
         public PBETrainer ForcedByPokemonTrainer { get; }
         public PBEFieldPosition ForcedByPokemon { get; }
 
-        internal PBEPkmnSwitchInPacket(PBETrainer trainer, IList<PBEPkmnSwitchInInfo> switchIns, PBEBattlePokemon forcedByPokemon = null)
+        internal PBEPkmnSwitchInPacket(PBETrainer trainer, IList<PBEPkmnAppearedInfo> switchIns, PBEBattlePokemon forcedByPokemon = null)
         {
             using (var ms = new MemoryStream())
             using (var w = new EndianBinaryWriter(ms, encoding: EncodingType.UTF16))
             {
                 w.Write(Code);
                 w.Write((Trainer = trainer).Id);
-                byte count = (byte)(SwitchIns = new ReadOnlyCollection<PBEPkmnSwitchInInfo>(switchIns)).Count;
+                byte count = (byte)(SwitchIns = new ReadOnlyCollection<PBEPkmnAppearedInfo>(switchIns)).Count;
                 w.Write(count);
                 for (int i = 0; i < count; i++)
                 {
@@ -135,12 +58,12 @@ namespace Kermalis.PokemonBattleEngine.Packets
         {
             Data = new ReadOnlyCollection<byte>(data);
             Trainer = battle.Trainers[r.ReadByte()];
-            var switches = new PBEPkmnSwitchInInfo[r.ReadByte()];
+            var switches = new PBEPkmnAppearedInfo[r.ReadByte()];
             for (int i = 0; i < switches.Length; i++)
             {
-                switches[i] = new PBEPkmnSwitchInInfo(r);
+                switches[i] = new PBEPkmnAppearedInfo(r);
             }
-            SwitchIns = new ReadOnlyCollection<PBEPkmnSwitchInInfo>(switches);
+            SwitchIns = new ReadOnlyCollection<PBEPkmnAppearedInfo>(switches);
             Forced = r.ReadBoolean();
             if (Forced)
             {
@@ -154,7 +77,7 @@ namespace Kermalis.PokemonBattleEngine.Packets
         public const ushort Code = 0x36;
         public ReadOnlyCollection<byte> Data { get; }
 
-        public sealed class PBEPkmnSwitchInInfo : IPBEPkmnSwitchInInfo
+        public sealed class PBEPkmnSwitchInInfo : IPBEPkmnSwitchInInfo_Hidden
         {
             public PBESpecies Species { get; }
             public PBEForm Form { get; }
@@ -167,7 +90,7 @@ namespace Kermalis.PokemonBattleEngine.Packets
             public PBEStatus1 Status1 { get; }
             public PBEFieldPosition FieldPosition { get; }
 
-            internal PBEPkmnSwitchInInfo(PBEPkmnSwitchInPacket.PBEPkmnSwitchInInfo other)
+            internal PBEPkmnSwitchInInfo(PBEPkmnAppearedInfo other)
             {
                 Species = other.Species;
                 Form = other.Form;
@@ -211,7 +134,7 @@ namespace Kermalis.PokemonBattleEngine.Packets
 
         public PBETrainer Trainer { get; }
         public ReadOnlyCollection<PBEPkmnSwitchInInfo> SwitchIns { get; }
-        IReadOnlyList<IPBEPkmnSwitchInInfo> IPBEPkmnSwitchInPacket.SwitchIns => SwitchIns;
+        IReadOnlyList<IPBEPkmnSwitchInInfo_Hidden> IPBEPkmnSwitchInPacket.SwitchIns => SwitchIns;
         public bool Forced { get; }
         public PBETrainer ForcedByPokemonTrainer { get; }
         public PBEFieldPosition ForcedByPokemon { get; }

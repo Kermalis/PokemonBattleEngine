@@ -65,6 +65,23 @@ namespace Kermalis.PokemonBattleEngineClient.Clients
                 }
             }
         }
+
+        private void DoDisguisedAppearance(PBEBattlePokemon pkmn, PBEPkmnAppearedInfo info)
+        {
+            if (info.IsDisguised)
+            {
+                pkmn.Status2 |= PBEStatus2.Disguised;
+                pkmn.KnownCaughtBall = info.CaughtBall;
+                pkmn.KnownGender = info.Gender;
+                pkmn.KnownNickname = info.Nickname;
+                pkmn.KnownShiny = info.Shiny;
+                pkmn.KnownSpecies = info.Species;
+                pkmn.KnownForm = info.Form;
+                IPBEPokemonData pData = PBEDataProvider.Instance.GetPokemonData(info);
+                pkmn.KnownType1 = pData.Type1;
+                pkmn.KnownType2 = pData.Type2;
+            }
+        }
         protected override bool ProcessPacket(IPBEPacket packet)
         {
             switch (packet)
@@ -244,23 +261,12 @@ namespace Kermalis.PokemonBattleEngineClient.Clients
                 }
                 case PBEPkmnSwitchInPacket psip:
                 {
-                    foreach (PBEPkmnSwitchInPacket.PBEPkmnSwitchInInfo info in psip.SwitchIns)
+                    foreach (PBEPkmnAppearedInfo info in psip.SwitchIns)
                     {
                         PBEBattlePokemon pokemon = psip.Trainer.TryGetPokemon(info.Pokemon);
                         pokemon.FieldPosition = info.FieldPosition;
                         PBETrainer.SwitchTwoPokemon(pokemon, info.FieldPosition);
-                        if (info.IsDisguised)
-                        {
-                            pokemon.Status2 |= PBEStatus2.Disguised;
-                            pokemon.KnownGender = info.Gender;
-                            pokemon.KnownNickname = info.Nickname;
-                            pokemon.KnownShiny = info.Shiny;
-                            pokemon.KnownSpecies = info.Species;
-                            pokemon.KnownForm = info.Form;
-                            IPBEPokemonData pData = PBEDataProvider.Instance.GetPokemonData(info);
-                            pokemon.KnownType1 = pData.Type1;
-                            pokemon.KnownType2 = pData.Type2;
-                        }
+                        DoDisguisedAppearance(pokemon, info);
                         Battle.ActiveBattlers.Add(pokemon);
                     }
                     break;
@@ -483,7 +489,18 @@ namespace Kermalis.PokemonBattleEngineClient.Clients
                 }
                 case PBEWildPkmnAppearedPacket wpap:
                 {
-                    foreach (PBEWildPkmnAppearedPacket.PBEWildPkmnInfo info in wpap.Pokemon)
+                    foreach (PBEPkmnAppearedInfo info in wpap.Pokemon)
+                    {
+                        PBEBattlePokemon pokemon = Battle.Teams[1].Trainers[0].TryGetPokemon(info.Pokemon);
+                        pokemon.FieldPosition = info.FieldPosition;
+                        DoDisguisedAppearance(pokemon, info);
+                        Battle.ActiveBattlers.Add(pokemon);
+                    }
+                    break;
+                }
+                case PBEWildPkmnAppearedPacket_Hidden wpaph:
+                {
+                    foreach (PBEWildPkmnAppearedPacket_Hidden.PBEWildPkmnInfo info in wpaph.Pokemon)
                     {
                         new PBEBattlePokemon(Battle, info);
                     }

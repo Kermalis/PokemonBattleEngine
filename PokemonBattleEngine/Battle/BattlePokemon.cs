@@ -247,7 +247,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                   info.Ability, info.Nature, info.Gender, info.Item, info.CaughtBall,
                   info.EffortValues, info.IndividualValues, info.Moveset)
         { }
-        private PBEBattlePokemon(PBETrainer trainer, IPBEPkmnSwitchInInfo info)
+        private PBEBattlePokemon(PBETrainer trainer, IPBEPkmnAppearedInfo_Hidden info)
         {
             if (trainer is null)
             {
@@ -267,7 +267,6 @@ namespace Kermalis.PokemonBattleEngine.Battle
             KnownAbility = Ability = PBEAbility.MAX;
             KnownGender = Gender = info.Gender;
             KnownItem = Item = (PBEItem)ushort.MaxValue;
-            KnownCaughtBall = CaughtBall = info.CaughtBall;
             Moves = new PBEBattleMoveset(Battle.Settings); // For Transform
             KnownMoves = new PBEBattleMoveset(Battle.Settings);
             TransformBackupMoves = new PBEBattleMoveset(Battle.Settings); // For Transform
@@ -282,9 +281,14 @@ namespace Kermalis.PokemonBattleEngine.Battle
             trainer.Party.Add(this);
             Battle.ActiveBattlers.Add(this);
         }
+        private PBEBattlePokemon(PBETrainer trainer, IPBEPkmnSwitchInInfo_Hidden info)
+            : this(trainer, (IPBEPkmnAppearedInfo_Hidden)info)
+        {
+            KnownCaughtBall = CaughtBall = info.CaughtBall;
+        }
         public PBEBattlePokemon(PBETrainer trainer, PBEPkmnSwitchInPacket_Hidden.PBEPkmnSwitchInInfo info)
-            : this(trainer, (IPBEPkmnSwitchInInfo)info) { }
-        public PBEBattlePokemon(PBEBattle battle, PBEWildPkmnAppearedPacket.PBEWildPkmnInfo info)
+            : this(trainer, (IPBEPkmnSwitchInInfo_Hidden)info) { }
+        public PBEBattlePokemon(PBEBattle battle, PBEWildPkmnAppearedPacket_Hidden.PBEWildPkmnInfo info)
             : this(battle.Teams[1].Trainers[0], info) { }
         #endregion
 

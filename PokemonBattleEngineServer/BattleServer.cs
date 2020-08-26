@@ -13,6 +13,7 @@ namespace Kermalis.PokemonBattleEngineServer
     internal sealed class BattleServer
     {
         // TODO: Events still sent after someone disconnects during a turn, need to return out of event subscription
+        // Server does not support wild battles yet
         private enum ServerState
         {
             Resetting,           // Server is currently resetting the game
@@ -394,6 +395,11 @@ namespace Kermalis.PokemonBattleEngineServer
                     SendOriginalPacketToTeamOwnerAndEveryoneElseGetsAPacketWithHiddenInfo(psop, new PBEPkmnSwitchOutPacket_Hidden(psop), psop.PokemonTrainer.Id);
                     break;
                 }
+                /*case PBEWildPkmnAppearedPacket wpap:
+                {
+                    SendOriginalPacketToTeamOwnerAndEveryoneElseGetsAPacketWithHiddenInfo(wpap, new PBEWildPkmnAppearedPacket_Hidden(wpap), wpap.Trainer.Id);
+                    break;
+                }*/
                 case PBEReflectTypePacket rtp:
                 {
                     var hidden = new PBEReflectTypePacket_Hidden(rtp);
