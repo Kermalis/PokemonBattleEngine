@@ -706,9 +706,18 @@ namespace Kermalis.PokemonBattleEngine.Battle
                 // TODO: Figure out the gen 5 formula, as well as what to use in a double wild battle
                 int a = pkmn.Speed;
                 int b = (int)trainer.Team.OpposingTeam.ActiveBattlers.Average(p => p.Speed);
-                int c = ++trainer.Team.NumTimesTriedToFlee;
-                int f = ((a * 128 / b) + (30 * c)) % 256;
-                if (_rand.RandomInt(0, 255) < f)
+                int c = ++trainer.Team.NumTimesTriedToFlee; // Increment even if guaranteed
+                bool success;
+                if (a > b)
+                {
+                    success = true;
+                }
+                else
+                {
+                    int f = ((a * 128 / b) + (30 * c)) % 256;
+                    success = _rand.RandomInt(0, 255) < f;
+                }
+                if (success)
                 {
                     SetEscaped(pkmn);
                     return;
