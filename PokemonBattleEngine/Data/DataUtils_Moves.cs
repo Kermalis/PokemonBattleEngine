@@ -1,9 +1,34 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace Kermalis.PokemonBattleEngine.Data
 {
     public static partial class PBEDataUtils
     {
+        #region Static Collections
+        public static PBEAlphabeticalList<PBEMove> AllMoves { get; } = new PBEAlphabeticalList<PBEMove>(Enum.GetValues(typeof(PBEMove)).Cast<PBEMove>().Except(new[] { PBEMove.None, PBEMove.MAX }));
+        public static PBEAlphabeticalList<PBEMove> MetronomeMoves { get; } = new PBEAlphabeticalList<PBEMove>(GetMovesWithoutFlag(PBEMoveFlag.BlockedFromMetronome));
+        public static PBEAlphabeticalList<PBEMove> SketchLegalMoves { get; } = new PBEAlphabeticalList<PBEMove>(GetMovesWithoutFlag(PBEMoveFlag.BlockedFromSketch, exception: PBEMoveEffect.Sketch));
+        #endregion
+
+        private static IEnumerable<PBEMove> GetMovesWithoutFlag(PBEMoveFlag flag, PBEMoveEffect? exception = null)
+        {
+            return AllMoves.Where(m =>
+            {
+                IPBEMoveData mData = PBEDataProvider.Instance.GetMoveData(m, cache: false);
+                if (!mData.IsMoveUsable())
+                {
+                    return false;
+                }
+                if (exception.HasValue && mData.Effect == exception.Value)
+                {
+                    return true;
+                }
+                return !mData.Flags.HasFlag(flag);
+            });
+        }
+
         public static bool HasSecondaryEffects(PBEMoveEffect effect, PBESettings settings)
         {
             if (settings == null)
