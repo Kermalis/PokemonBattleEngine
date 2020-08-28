@@ -298,26 +298,18 @@ namespace Kermalis.PokemonBattleEngine.Battle
             Attack = Defense;
             Defense = a;
         }
-        /// <summary>Sets and clears all information required for switching out.</summary>
-        public void ClearForSwitch()
+        /// <summary>Applies effects that occur on switching out or escaping such as <see cref="PBEAbility.NaturalCure"/>.</summary>
+        public void ApplyNaturalCure()
         {
-            FieldPosition = PBEFieldPosition.None;
-            switch (Ability)
+            if (Ability == PBEAbility.NaturalCure)
             {
-                case PBEAbility.NaturalCure:
-                {
-                    Status1 = PBEStatus1.None;
-                    Status1Counter = 0;
-                    SleepTurns = 0;
-                    break;
-                }
-                case PBEAbility.Regenerator:
-                {
-                    HP = PBEUtils.Clamp((ushort)(HP + (MaxHP / 3)), ushort.MinValue, MaxHP);
-                    UpdateHPPercentage();
-                    break;
-                }
+                Status1 = PBEStatus1.None;
+                Status1Counter = 0;
+                SleepTurns = 0;
             }
+        }
+        private void ResetSpecies()
+        {
             Species = KnownSpecies = OriginalSpecies;
             Form = KnownForm = RevertForm;
             Ability = KnownAbility = RevertAbility;
@@ -330,18 +322,9 @@ namespace Kermalis.PokemonBattleEngine.Battle
             KnownShiny = Shiny;
             KnownType1 = Type1 = pData.Type1;
             KnownType2 = Type2 = pData.Type2;
-
-            ClearStatChanges();
-
-            if (Status1 == PBEStatus1.Asleep)
-            {
-                Status1Counter = 0;
-            }
-            else if (Status1 == PBEStatus1.BadlyPoisoned)
-            {
-                Status1Counter = 1;
-            }
-
+        }
+        private void ResetVolatileStuff()
+        {
             ConfusionCounter = 0;
             ConfusionTurns = 0;
             LockOnPokemon = null;
@@ -369,7 +352,38 @@ namespace Kermalis.PokemonBattleEngine.Battle
             Minimize_Used = false;
             SlowStart_HinderTurnsLeft = 0;
             SpeedBoost_AbleToSpeedBoostThisTurn = false;
-
+        }
+        /// <summary>Sets and clears all information required for switching out.</summary>
+        public void ClearForSwitch()
+        {
+            FieldPosition = PBEFieldPosition.None;
+            ApplyNaturalCure();
+            if (Ability == PBEAbility.Regenerator)
+            {
+                HP = PBEUtils.Clamp((ushort)(HP + (MaxHP / 3)), ushort.MinValue, MaxHP);
+                UpdateHPPercentage();
+            }
+            ResetSpecies();
+            ClearStatChanges();
+            if (Status1 == PBEStatus1.Asleep)
+            {
+                Status1Counter = 0;
+            }
+            else if (Status1 == PBEStatus1.BadlyPoisoned)
+            {
+                Status1Counter = 1;
+            }
+            ResetVolatileStuff();
+            SetStats(false);
+        }
+        /// <summary>Sets and clears all information required for fainting.</summary>
+        public void ClearForFaint()
+        {
+            FieldPosition = PBEFieldPosition.None;
+            ResetSpecies();
+            ClearStatChanges();
+            Status1 = PBEStatus1.None;
+            ResetVolatileStuff();
             SetStats(false);
         }
         public void SetStats(bool calculateHP)

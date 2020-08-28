@@ -1500,7 +1500,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                 _turnOrder.Remove(pkmn);
                 ActiveBattlers.Remove(pkmn);
                 PBEFieldPosition oldPos = pkmn.FieldPosition;
-                pkmn.FieldPosition = PBEFieldPosition.None;
+                pkmn.ClearForFaint();
                 BroadcastPkmnFainted(pkmn, oldPos);
                 RemoveInfatuationsAndLockOns(pkmn);
                 pkmn.Team.MonFaintedThisTurn = true;
@@ -2367,10 +2367,9 @@ namespace Kermalis.PokemonBattleEngine.Battle
         }
         private void SwitchTwoPokemon(PBEBattlePokemon pkmnLeaving, PBEBattlePokemon pkmnComing, PBEBattlePokemon forcedByPkmn = null)
         {
-            PBEFieldPosition pos = pkmnLeaving.FieldPosition;
-            pkmnLeaving.FieldPosition = PBEFieldPosition.None;
             _turnOrder.Remove(pkmnLeaving);
             ActiveBattlers.Remove(pkmnLeaving);
+            PBEFieldPosition pos = pkmnLeaving.FieldPosition;
             pkmnLeaving.ClearForSwitch();
             BroadcastPkmnSwitchOut(pkmnLeaving, pos, forcedByPkmn);
             RemoveInfatuationsAndLockOns(pkmnLeaving);

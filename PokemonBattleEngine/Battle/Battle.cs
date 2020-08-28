@@ -300,6 +300,10 @@ namespace Kermalis.PokemonBattleEngine.Battle
             if (BattleResult.HasValue)
             {
                 BroadcastBattleResult();
+                foreach (PBEBattlePokemon pkmn in ActiveBattlers)
+                {
+                    pkmn.ApplyNaturalCure(); // Natural Cure happens at the end of the battle. Pokémon should be copied when BattleState is set to "Ended", not upon battle result.
+                }
                 SetEnded();
                 return true;
             }

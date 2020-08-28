@@ -197,7 +197,7 @@ namespace Kermalis.PokemonBattleEngineClient.Clients
                     bool ret = base.ProcessPacket(packet); // Process before removal
                     PBEBattlePokemon pokemon = pfp.PokemonTrainer.TryGetPokemon(pfp.Pokemon);
                     Battle.ActiveBattlers.Remove(pokemon);
-                    pokemon.FieldPosition = PBEFieldPosition.None;
+                    pokemon.ClearForFaint();
                     return ret;
                 }
                 case PBEPkmnFormChangedPacket pfcp:
