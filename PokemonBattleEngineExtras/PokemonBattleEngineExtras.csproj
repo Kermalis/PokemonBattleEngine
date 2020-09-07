@@ -16,9 +16,6 @@
     <None Remove="DumpedData\**" />
     <PackageReference Include="System.Drawing.Common" Version="4.7.0" />
     <ProjectReference Include="..\PokemonBattleEngine\PokemonBattleEngine.csproj" />
-    <Reference Include="EndianBinaryIO">
-      <HintPath>..\Shared Dependencies\EndianBinaryIO.dll</HintPath>
-    </Reference>
     <Reference Include="SimpleNARC">
       <HintPath>Dependencies\SimpleNARC.dll</HintPath>
     </Reference>

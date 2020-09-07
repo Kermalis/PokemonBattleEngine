@@ -12,12 +12,10 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="EndianBinaryIO" Version="1.0.1" />
     <PackageReference Include="Microsoft.Data.Sqlite" Version="3.1.4" />
     <PackageReference Include="Newtonsoft.Json" Version="12.0.3" />
-    <PackageReference Include="SQLitePCLRaw.bundle_e_sqlite3" Version="2.0.3" />
-    <Reference Include="EndianBinaryIO">
-      <HintPath>..\Shared Dependencies\EndianBinaryIO.dll</HintPath>
-    </Reference>
+    <PackageReference Include="SQLitePCLRaw.bundle_e_sqlite3" Version="2.0.4" />
     <None Update="PokemonBattleEngine.db">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
