@@ -1,5 +1,7 @@
 # PokemonBattleEngine
 
+[![Join on Discord](https://discordapp.com/api/guilds/717575608393138187/widget.png?style=shield)][Discord]
+
 Pokémon Battle Engine is a C# library that can emulate Pokémon battles.
 This repository includes the engine library, a Windows/Linux/MacOS/Android/iOS client, a server, a Discord bot, and some extra code to rip data from the official games.
 The engine only emulates Pokémon B2W2 versions, so nothing introduced after generation 5 is included and neither are generation 1/2 exclusive items, event Pokémon, and move compatibility.
@@ -10,7 +12,7 @@ The engine does not send information a player should not know; information only 
 For example, a client has no way of knowing if the opponent has sent out a Pokémon with Illusion, the opponent's nature, stats, Hidden Power damage/type, unused item/moves, etc.
 Therefore, a custom/modified client cannot do anything more than an ordinary player unless it is hosting the battle. A lot of work has been done to prevent any cheating.
 
-Join our _(new-ish)_ [Discord server](https://discord.gg/Z4Mn9qX) to talk or try out the battle bot!
+Join our _(new-ish)_ [Discord server][Discord] to talk or try out the battle bot!
 
 ![DiscordPreview](Discord%20Preview.png)
 
@@ -55,3 +57,5 @@ Join our _(new-ish)_ [Discord server](https://discord.gg/Z4Mn9qX) to talk or try
 
 ## PokemonBattleEngineTests Uses:
 * [xUnit.net](https://github.com/xunit/xunit)
+
+[Discord]: https://discord.gg/Z4Mn9qX
