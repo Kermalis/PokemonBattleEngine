@@ -61,9 +61,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                 for (int i = 0; i < numEvents; i++)
                 {
                     byte[] data = Events[i].Data.ToArray();
-                    int len = data.Length;
-                    w.Write((byte)(len & 0xFF)); // Convert length to little endian each time regardless of system endianness
-                    w.Write((byte)(len >> 8));
+                    w.Write((ushort)data.Length);
                     w.Write(data);
                 }
 

@@ -1432,8 +1432,8 @@ namespace Kermalis.PokemonBattleEngine.Data
                 data = ms.ToArray();
             }
             byte[] ret = new byte[data.Length + 2];
-            ret[0] = (byte)(numChanged & 0xFF); // Convert numChanged to little endian each time regardless of system endianness
-            ret[1] = (byte)(numChanged >> 8);
+            byte[] changedBytes = EndianBitConverter.Int16ToBytes((short)numChanged, Endianness.LittleEndian);
+            Buffer.BlockCopy(changedBytes, 0, ret, 0, 2);
             Buffer.BlockCopy(data, 0, ret, 2, data.Length);
             return ret;
         }

@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Kermalis.EndianBinaryIO;
+using System;
 using System.Collections.Generic;
 using System.Net.Sockets;
 
@@ -32,8 +33,8 @@ namespace Kermalis.PokemonBattleEngine.Network
                 throw new ArgumentException($"Data length must be greater than 0 bytes and must not exceed {ushort.MaxValue} bytes.");
             }
             byte[] message = new byte[len + 2];
-            message[0] = (byte)(len & 0xFF); // Convert length to little endian each time regardless of system endianness
-            message[1] = (byte)(len >> 8);
+            byte[] lenBytes = EndianBitConverter.Int16ToBytes((short)len, Endianness.LittleEndian);
+            Buffer.BlockCopy(lenBytes, 0, message, 0, 2);
             Buffer.BlockCopy(data, 0, message, 2, len);
             var e = new SocketAsyncEventArgs();
             e.SetBuffer(message, 0, message.Length);

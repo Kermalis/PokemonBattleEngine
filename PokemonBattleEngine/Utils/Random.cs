@@ -1,4 +1,5 @@
-﻿using Kermalis.PokemonBattleEngine.Battle;
+﻿using Kermalis.EndianBinaryIO;
+using Kermalis.PokemonBattleEngine.Battle;
 using Kermalis.PokemonBattleEngine.Data;
 using System;
 using System.Collections.Generic;
@@ -112,7 +113,7 @@ namespace Kermalis.PokemonBattleEngine.Utils
                 {
                     _rand.NextBytes(bytes);
                 }
-                scale = (uint)((bytes[3] << 24) | (bytes[2] << 16) | (bytes[1] << 8) | bytes[0]); // Convert as little endian each time regardless of system endianness
+                scale = (uint)EndianBitConverter.BytesToInt32(bytes, 0, Endianness.LittleEndian);
             } while (scale == uint.MaxValue); // "d" should not be 1.0
             double d = scale / (double)uint.MaxValue;
             return (int)(minValue + (((long)maxValue + 1 - minValue) * d)); // Remove "+ 1" for exclusive maxValue
