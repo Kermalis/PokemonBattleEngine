@@ -3,7 +3,7 @@
              xmlns:infrastructure="clr-namespace:Kermalis.PokemonBattleEngineClient.Infrastructure;assembly=PokemonBattleEngineClient"
              xmlns:views="clr-namespace:Kermalis.PokemonBattleEngineClient.Views;assembly=PokemonBattleEngineClient"
              x:Class="Kermalis.PokemonBattleEngineClient.MainView"
-             Background="#313131">
+             Background="#616161">
   <Viewbox Stretch="Uniform" VerticalAlignment="Top">
     <TabControl Name="Tabs">
       <TabItem Header="Home">
@@ -20,9 +20,16 @@
             <Button Width="100" Height="30" Background="White" BorderBrush="#A2A2A2" BorderThickness="4" Command="{Binding WatchReplay}">
               <Image Stretch="None" Source="{Binding Source='Watch Replay', Converter={x:Static infrastructure:ObjectToTextBitmapConverter.Instance}, ConverterParameter=MenuBlack, Mode=OneWay}"/>
             </Button>
-            <Button Width="100" Height="30" Background="White" BorderBrush="#A2A2A2" BorderThickness="4" Command="{Binding SinglePlayer}">
-              <Image Stretch="None" Source="{Binding Source='Singleplayer', Converter={x:Static infrastructure:ObjectToTextBitmapConverter.Instance}, ConverterParameter=MenuBlack, Mode=OneWay}"/>
+			  <CheckBox Name="multi">Multibattle</CheckBox>
+            <Button Width="100" Height="30" Background="White" BorderBrush="#A2A2A2" BorderThickness="4" Command="{Binding SinglePlayer}" CommandParameter="single">Single
+              <!--<Image Stretch="None" Source="{Binding Source='Singleplayer', Converter={x:Static infrastructure:ObjectToTextBitmapConverter.Instance}, ConverterParameter=MenuBlack, Mode=OneWay}"/>-->
             </Button>
+			  <Button Width="100" Height="30" Background="White" BorderBrush="#A2A2A2" BorderThickness="4" Command="{Binding SinglePlayer}" CommandParameter="double">Double
+				  <!--<Image Stretch="None" Source="{Binding Source='Singleplayer', Converter={x:Static infrastructure:ObjectToTextBitmapConverter.Instance}, ConverterParameter=MenuBlack, Mode=OneWay}"/>-->
+			  </Button>
+			  <Button Width="100" Height="30" Background="White" BorderBrush="#A2A2A2" BorderThickness="4" Command="{Binding SinglePlayer}" CommandParameter="triple">Triple
+				  <!--<Image Stretch="None" Source="{Binding Source='Singleplayer', Converter={x:Static infrastructure:ObjectToTextBitmapConverter.Instance}, ConverterParameter=MenuBlack, Mode=OneWay}"/>-->
+			  </Button>
           </StackPanel>
         </StackPanel>
       </TabItem>

@@ -5,7 +5,7 @@
              xmlns:pbedata="clr-namespace:Kermalis.PokemonBattleEngine.Data;assembly=PokemonBattleEngine"
              xmlns:views="clr-namespace:Kermalis.PokemonBattleEngineClient.Views;assembly=PokemonBattleEngineClient"
              x:Class="Kermalis.PokemonBattleEngineClient.Views.TeamBuilderView"
-             Background="#313131">
+             Background="#616161">
   <UserControl.Styles>
     <Style Selector="Button">
       <Setter Property="Background" Value="White"/>
