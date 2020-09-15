@@ -3,7 +3,6 @@ using Avalonia.Controls;
 using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.Markup.Xaml;
 using Avalonia.Threading;
-using Avalonia.VisualTree;
 using Kermalis.PokemonBattleEngine.Battle;
 using Kermalis.PokemonBattleEngine.Data;
 using Kermalis.PokemonBattleEngine.Data.Legality;
@@ -11,7 +10,6 @@ using Kermalis.PokemonBattleEngine.Network;
 using Kermalis.PokemonBattleEngine.Packets;
 using Kermalis.PokemonBattleEngine.Utils;
 using Kermalis.PokemonBattleEngineClient.Clients;
-using Kermalis.PokemonBattleEngineClient.Views;
 using MsgBox;
 using System;
 using System.Collections.Generic;
@@ -19,7 +17,7 @@ using System.ComponentModel;
 using System.Linq;
 using System.Threading;
 
-namespace Kermalis.PokemonBattleEngineClient
+namespace Kermalis.PokemonBattleEngineClient.Views
 {
     public sealed class MainView : UserControl, INotifyPropertyChanged
     {
@@ -189,7 +187,8 @@ namespace Kermalis.PokemonBattleEngineClient
                     p3 = PBERandomTeamGenerator.CreateRandomTeam(numPerTrainer);
                     t0 = new[] { new PBETrainerInfo(p0, "Mixone"), new PBETrainerInfo(p1, "Barry") };
                     t1 = new[] { new PBETrainerInfo(p2, "Leader Volkner"), new PBETrainerInfo(p3, "Elite Four Flint") };
-                } else
+                }
+                else
                 {
                     MessageBox.Show(GetWindow(), "Single battles cannot be multibattles!", "Can't do that", MessageBox.MessageBoxButtons.Ok);
                 }
@@ -208,7 +207,7 @@ namespace Kermalis.PokemonBattleEngineClient
                 var b = new PBEBattle(battleFormat, settings, t0, t1,
                     battleTerrain: PBEDataProvider.GlobalRandom.RandomBattleTerrain());
                 Add(new SinglePlayerClient(b, $"SP {_battles.Count + 1}"));
-            } 
+            }
         }
 
         // TODO: Removing battles (with disposing)
