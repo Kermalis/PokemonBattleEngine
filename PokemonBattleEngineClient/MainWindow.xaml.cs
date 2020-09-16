@@ -1,5 +1,6 @@
 ﻿using Avalonia.Controls;
 using Avalonia.Markup.Xaml;
+using Kermalis.PokemonBattleEngineClient.Views;
 
 namespace Kermalis.PokemonBattleEngineClient
 {
