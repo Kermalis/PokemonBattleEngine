@@ -917,8 +917,8 @@ namespace Kermalis.PokemonBattleEngine.Battle
                 pkmnFactor *= PokedexCountTable(pkmnCaught, 1, 0.9, 0.8, 0.7, 0.5, 0.3);
             }
             double a = pkmnFactor * rate * bonusBall / (3 * wildPkmn.MaxHP) * bonusStatus;
-            a *= PokedexCountTable(pkmnCaught, 2.5, 2, 1.5, 1, 0.5, 0); // Critical capture modifier
-            isCriticalCapture = _rand.RandomInt(0, 0xFF) < a / 6;
+            double c = a * PokedexCountTable(pkmnCaught, 2.5, 2, 1.5, 1, 0.5, 0); // Critical capture modifier
+            isCriticalCapture = _rand.RandomInt(0, 0xFF) < c / 6;
             byte numShakes = isCriticalCapture ? (byte)1 : (byte)3;
             if (a >= 0xFF)
             {
