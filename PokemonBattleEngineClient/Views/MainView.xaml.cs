@@ -45,6 +45,7 @@ namespace Kermalis.PokemonBattleEngineClient.Views
         private readonly TextBox _ip;
         private readonly NumericUpDown _port;
         private readonly Button _connect;
+        private readonly TextBox _name;
         private readonly CheckBox _multi;
 
         public MainView()
@@ -57,6 +58,7 @@ namespace Kermalis.PokemonBattleEngineClient.Views
             _ip = this.FindControl<TextBox>("IP");
             _port = this.FindControl<NumericUpDown>("Port");
             _connect = this.FindControl<Button>("Connect");
+            _name = this.FindControl<TextBox>("Name");
             _multi = this.FindControl<CheckBox>("Multi");
             ResetConnectButton();
         }
@@ -128,8 +130,12 @@ namespace Kermalis.PokemonBattleEngineClient.Views
                 int numPerTrainer = settings.MaxPartySize;
                 p0 = PBERandomTeamGenerator.CreateRandomTeam(numPerTrainer);
                 p1 = PBERandomTeamGenerator.CreateRandomTeam(numPerTrainer);
-                t0 = new[] { new PBETrainerInfo(p0, "Dawn") };
+                t0 = new[] { new PBETrainerInfo(p0, GetName()) };
                 t1 = new[] { new PBETrainerInfo(p1, "Champion Cynthia") };
+            }
+            string GetName()
+            {
+                return _name.Text;
             }
             switch (battleType)
             {
@@ -150,7 +156,7 @@ namespace Kermalis.PokemonBattleEngineClient.Views
                         p1 = PBERandomTeamGenerator.CreateRandomTeam(numPerTrainer);
                         p2 = PBERandomTeamGenerator.CreateRandomTeam(numPerTrainer);
                         p3 = PBERandomTeamGenerator.CreateRandomTeam(numPerTrainer);
-                        t0 = new[] { new PBETrainerInfo(p0, "Dawn"), new PBETrainerInfo(p1, "Barry") };
+                        t0 = new[] { new PBETrainerInfo(p0, GetName()), new PBETrainerInfo(p1, "Barry") };
                         t1 = new[] { new PBETrainerInfo(p2, "Leader Volkner"), new PBETrainerInfo(p3, "Elite Four Flint") };
                     }
                     else
@@ -172,7 +178,7 @@ namespace Kermalis.PokemonBattleEngineClient.Views
                         p3 = PBERandomTeamGenerator.CreateRandomTeam(numPerTrainer);
                         p4 = PBERandomTeamGenerator.CreateRandomTeam(numPerTrainer);
                         p5 = PBERandomTeamGenerator.CreateRandomTeam(numPerTrainer);
-                        t0 = new[] { new PBETrainerInfo(p0, "Dawn"), new PBETrainerInfo(p1, "Barry"), new PBETrainerInfo(p2, "Lucas") };
+                        t0 = new[] { new PBETrainerInfo(p0, GetName()), new PBETrainerInfo(p1, "Barry"), new PBETrainerInfo(p2, "Lucas") };
                         t1 = new[] { new PBETrainerInfo(p3, "Champion Cynthia"), new PBETrainerInfo(p4, "Leader Volkner"), new PBETrainerInfo(p5, "Elite Four Flint") };
                     }
                     else

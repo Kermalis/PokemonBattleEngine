@@ -24,7 +24,7 @@
           <views:TeamBuilderView Name="TeamBuilder"/>
           <StackPanel>
             <Image Stretch="None" Source="{Binding Source='Online Multiplayer:', Converter={x:Static infrastructure:ObjectToTextBitmapConverter.Instance}, ConverterParameter=MenuWhite, Mode=OneWay}"/>
-            <TextBox Name="IP" Width="100" Text="127.0.0.1"/>
+            <TextBox Name="IP" Width="100" Text="127.0.0.1" Watermark="IP Address"/>
             <NumericUpDown Name="Port" Width="100" Value="8888" Minimum="0" Maximum="65535" ClipValueToMinMax="True"/>
             <Button Width="150" Height="30" Background="White" BorderBrush="#A2A2A2" BorderThickness="4" Name="Connect" Command="{Binding Connect}">
               <Image Stretch="None" Source="{Binding ConnectText, Converter={x:Static infrastructure:ObjectToTextBitmapConverter.Instance}, ConverterParameter=MenuBlack, Mode=OneWay}"/>
@@ -32,6 +32,7 @@
           </StackPanel>
           <StackPanel>
             <Image Stretch="None" Source="{Binding Source='Singleplayer:', Converter={x:Static infrastructure:ObjectToTextBitmapConverter.Instance}, ConverterParameter=MenuWhite, Mode=OneWay}"/>
+            <TextBox Name="Name" Width="100" Text="Dawn" Watermark="Player Name"/>
             <Button Width="100" Height="30" Background="White" BorderBrush="#A2A2A2" BorderThickness="4" Command="{Binding SinglePlayer}" CommandParameter="S"
                     IsEnabled="{Binding !#Multi.IsChecked}">
               <Image Stretch="None" Source="{Binding Source='Single Battle', Converter={x:Static infrastructure:ObjectToTextBitmapConverter.Instance}, ConverterParameter=MenuBlack, Mode=OneWay}"/>
