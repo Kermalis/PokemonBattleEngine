@@ -32,16 +32,17 @@
           </StackPanel>
           <StackPanel>
             <Image Stretch="None" Source="{Binding Source='Singleplayer:', Converter={x:Static infrastructure:ObjectToTextBitmapConverter.Instance}, ConverterParameter=MenuWhite, Mode=OneWay}"/>
-            <Button Width="100" Height="30" Background="White" BorderBrush="#A2A2A2" BorderThickness="4" Command="{Binding SinglePlayer}" CommandParameter="single">
+            <Button Width="100" Height="30" Background="White" BorderBrush="#A2A2A2" BorderThickness="4" Command="{Binding SinglePlayer}" CommandParameter="S"
+                    IsEnabled="{Binding !#Multi.IsChecked}">
               <Image Stretch="None" Source="{Binding Source='Single Battle', Converter={x:Static infrastructure:ObjectToTextBitmapConverter.Instance}, ConverterParameter=MenuBlack, Mode=OneWay}"/>
             </Button>
-            <Button Width="100" Height="30" Background="White" BorderBrush="#A2A2A2" BorderThickness="4" Command="{Binding SinglePlayer}" CommandParameter="double">
+            <Button Width="100" Height="30" Background="White" BorderBrush="#A2A2A2" BorderThickness="4" Command="{Binding SinglePlayer}" CommandParameter="D">
               <Image Stretch="None" Source="{Binding Source='Double Battle', Converter={x:Static infrastructure:ObjectToTextBitmapConverter.Instance}, ConverterParameter=MenuBlack, Mode=OneWay}"/>
             </Button>
-            <Button Width="100" Height="30" Background="White" BorderBrush="#A2A2A2" BorderThickness="4" Command="{Binding SinglePlayer}" CommandParameter="triple">
+            <Button Width="100" Height="30" Background="White" BorderBrush="#A2A2A2" BorderThickness="4" Command="{Binding SinglePlayer}" CommandParameter="T">
               <Image Stretch="None" Source="{Binding Source='Triple Battle', Converter={x:Static infrastructure:ObjectToTextBitmapConverter.Instance}, ConverterParameter=MenuBlack, Mode=OneWay}"/>
             </Button>
-            <CheckBox Name="multi">
+            <CheckBox Name="Multi">
               <Image Stretch="None" Source="{Binding Source='Multi-Battle', Converter={x:Static infrastructure:ObjectToTextBitmapConverter.Instance}, ConverterParameter=MenuWhite, Mode=OneWay}"/>
             </CheckBox>
           </StackPanel>
