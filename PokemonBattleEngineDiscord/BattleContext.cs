@@ -466,10 +466,6 @@ namespace Kermalis.PokemonBattleEngineDiscord
             {
                 sb.AppendLine($"**Friendship:** {pkmn.Friendship} ({pkmn.Friendship / (double)byte.MaxValue:P2})");
             }
-            if (pkmn.Moves.Contains(PBEMoveEffect.HiddenPower))
-            {
-                sb.AppendLine($"**{PBEDataProvider.Instance.GetMoveName(PBEMove.HiddenPower).English}:** {Utils.TypeEmotes[pkmn.IndividualValues.GetHiddenPowerType()]}|{pkmn.IndividualValues.GetHiddenPowerBasePower(PBESettings.DefaultSettings)}");
-            }
             outStr = sb.ToString();
             sb.Clear();
             outFields = new EmbedFieldBuilder[2];
@@ -484,7 +480,7 @@ namespace Kermalis.PokemonBattleEngineDiscord
                 if (move != PBEMove.None)
                 {
                     PBEType moveType = pkmn.GetMoveType(move);
-                    sb.Append($"{Utils.TypeEmotes[moveType]} {PBEDataProvider.Instance.GetMoveName(move).English} ({slot.PP}/{slot.MaxPP})");
+                    sb.Append($"{Utils.TypeEmotes[moveType]} {PBEDataProvider.Instance.GetMoveName(move).English} (**{slot.PP}**/**{slot.MaxPP}** **PP**)");
                     if (i < PBESettings.DefaultNumMoves - 1)
                     {
                         sb.AppendLine();
@@ -511,6 +507,17 @@ namespace Kermalis.PokemonBattleEngineDiscord
                     sb.Append($"{Utils.TypeEmotes[moveType]} ");
                 }
                 sb.Append(PBEDataProvider.Instance.GetMoveName(move).English);
+                IPBEMoveData mData = PBEDataProvider.Instance.GetMoveData(move);
+                string powerStr;
+                if (mData.Effect == PBEMoveEffect.HiddenPower)
+                {
+                    powerStr = pkmn.IndividualValues.GetHiddenPowerBasePower(PBESettings.DefaultSettings).ToString();
+                }
+                else
+                {
+                    powerStr = mData.Power == 0 ? "―" : mData.Power.ToString();
+                }
+                sb.Append($" (**{powerStr}** | **{(mData.Accuracy == 0 ? "―" : mData.Accuracy.ToString() + '%')}** | **{mData.Category}**)");
                 if (i < usableMoves.Length - 1)
                 {
                     sb.AppendLine();
