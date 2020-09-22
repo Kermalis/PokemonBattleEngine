@@ -72,6 +72,33 @@ namespace Kermalis.PokemonBattleEngineDiscord
             await Matchmaking.Forfeit(Context);
         }
 
+        [Command("help", true)]
+        [Alias("helpme", "pbehelp", "tf", "wtf")]
+        public async Task Help()
+        {
+            EmbedBuilder embed = new EmbedBuilder()
+                        .WithAuthor(Context.User)
+                        .WithColor(Utils.RandomColor())
+                        .WithTitle("PokémonBattleEngine ― List of Commands")
+                        .WithUrl(Utils.URL)
+
+            .AddField("***Battle Commands:***", "*These commands control battles in **PokémonBattleEngine**.*")
+            .AddField("`!accept`", "Accepts a pending challenge.")
+            .AddField("`!challengeAI`", "Challenges the default AI. It's pretty bad, but it can wreck you.")
+            .AddField("`!challenge [user]`", "Challenges a specific user. User must have DMs open. *Example:* `!challenge @Kermalis`")
+            .AddField("`!forfeit`", "Forfeits your current battle.")
+
+            .AddField("***Info Commands:***", "*These commands give information about specific attributes of Pokémon. Names must be in English, French, German, Italian, Japanese, Korean, or Spanish.*")
+            .AddField("`!ability info [ability]`", "Gives details about an ability. *Example:* `!ability info Mold Breaker`")
+            .AddField("`!item info [item]`", "Gives details about an item or berry. *Example:* `!item info Nanab Berry`")
+            .AddField("`!move info [move]`", "Gives details about a move. *Example:* `!move info Sing`")
+            .AddField("`!species info [species]`", "Gives details about a species (base form). *Example:* `!species info Piplup`")
+            .AddField("`!species info [species] [(form)]`", "Gives details about a species. *Example:* `!species info Shaymin (Sky Forme)`")
+            .AddField("`!type info [type]`", "Gives details about a type. *Example:* `!type info Dragon`");
+
+            await Context.Channel.SendMessageAsync(string.Empty, embed: embed.Build());
+        }
+
         [Group("item")]
         [Alias("helditem")]
         public sealed class ItemCommands : ModuleBase<SocketCommandContext>
