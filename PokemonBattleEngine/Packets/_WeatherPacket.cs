@@ -29,7 +29,7 @@ namespace Kermalis.PokemonBattleEngine.Packets
                     w.Write((DamageVictimTrainer = damageVictim.Trainer).Id);
                     w.Write(DamageVictim = damageVictim.FieldPosition);
                 }
-                Data = new ReadOnlyCollection<byte>(ms.GetBuffer());
+                Data = new ReadOnlyCollection<byte>(ms.ToArray());
             }
         }
         internal PBEWeatherPacket(byte[] data, EndianBinaryReader r, PBEBattle battle)

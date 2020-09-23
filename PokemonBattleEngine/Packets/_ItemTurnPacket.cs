@@ -26,7 +26,7 @@ namespace Kermalis.PokemonBattleEngine.Packets
                 w.Write(ItemUser = itemUserHolder.FieldPosition);
                 w.Write(Item = item);
                 w.Write(ItemAction = itemAction);
-                Data = new ReadOnlyCollection<byte>(ms.GetBuffer());
+                Data = new ReadOnlyCollection<byte>(ms.ToArray());
             }
         }
         internal PBEItemTurnPacket(byte[] data, EndianBinaryReader r, PBEBattle battle)

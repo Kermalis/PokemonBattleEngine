@@ -21,7 +21,7 @@ namespace Kermalis.PokemonBattleEngine.Packets
                 w.Write(Code);
                 w.Write(BattleStatus = battleStatus);
                 w.Write(BattleStatusAction = battleStatusAction);
-                Data = new ReadOnlyCollection<byte>(ms.GetBuffer());
+                Data = new ReadOnlyCollection<byte>(ms.ToArray());
             }
         }
         internal PBEBattleStatusPacket(byte[] data, EndianBinaryReader r)

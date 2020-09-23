@@ -29,7 +29,7 @@ namespace Kermalis.PokemonBattleEngine.Packets
                 w.Write((PokemonTrainer = pokemon.Trainer).Id);
                 w.Write(Pokemon = pokemon.Id);
                 w.Write(OldPosition = oldPosition);
-                Data = new ReadOnlyCollection<byte>(ms.GetBuffer());
+                Data = new ReadOnlyCollection<byte>(ms.ToArray());
             }
         }
         internal PBEPkmnFaintedPacket(byte[] data, EndianBinaryReader r, PBEBattle battle)
@@ -60,7 +60,7 @@ namespace Kermalis.PokemonBattleEngine.Packets
                 w.Write(Code);
                 w.Write((PokemonTrainer = other.PokemonTrainer).Id);
                 w.Write(OldPosition = other.OldPosition);
-                Data = new ReadOnlyCollection<byte>(ms.GetBuffer());
+                Data = new ReadOnlyCollection<byte>(ms.ToArray());
             }
         }
         internal PBEPkmnFaintedPacket_Hidden(byte[] data, EndianBinaryReader r, PBEBattle battle)

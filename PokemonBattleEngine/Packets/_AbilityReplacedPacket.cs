@@ -30,7 +30,7 @@ namespace Kermalis.PokemonBattleEngine.Packets
                     w.Write((OldAbility = oldAbility).Value);
                 }
                 w.Write(NewAbility = newAbility);
-                Data = new ReadOnlyCollection<byte>(ms.GetBuffer());
+                Data = new ReadOnlyCollection<byte>(ms.ToArray());
             }
         }
         internal PBEAbilityReplacedPacket(byte[] data, EndianBinaryReader r, PBEBattle battle)

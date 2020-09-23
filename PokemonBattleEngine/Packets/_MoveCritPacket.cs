@@ -21,7 +21,7 @@ namespace Kermalis.PokemonBattleEngine.Packets
                 w.Write(Code);
                 w.Write((VictimTrainer = victim.Trainer).Id);
                 w.Write(Victim = victim.FieldPosition);
-                Data = new ReadOnlyCollection<byte>(ms.GetBuffer());
+                Data = new ReadOnlyCollection<byte>(ms.ToArray());
             }
         }
         internal PBEMoveCritPacket(byte[] data, EndianBinaryReader r, PBEBattle battle)

@@ -267,7 +267,7 @@ namespace Kermalis.PokemonBattleEngine.Packets
                 {
                     Teams[i].ToBytes(w);
                 }
-                Data = new ReadOnlyCollection<byte>(ms.GetBuffer());
+                Data = new ReadOnlyCollection<byte>(ms.ToArray());
             }
         }
         internal PBEBattlePacket(byte[] data, EndianBinaryReader r)
@@ -302,7 +302,7 @@ namespace Kermalis.PokemonBattleEngine.Packets
                 {
                     Teams[i].ToBytes(w);
                 }
-                Data = new ReadOnlyCollection<byte>(ms.GetBuffer());
+                Data = new ReadOnlyCollection<byte>(ms.ToArray());
             }
         }
     }

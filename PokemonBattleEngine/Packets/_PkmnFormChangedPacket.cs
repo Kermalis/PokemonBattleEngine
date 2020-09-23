@@ -58,7 +58,7 @@ namespace Kermalis.PokemonBattleEngine.Packets
                 w.Write(NewType2 = pokemon.Type2);
                 w.Write(NewWeight = pokemon.Weight);
                 w.Write(IsRevertForm = isRevertForm);
-                Data = new ReadOnlyCollection<byte>(ms.GetBuffer());
+                Data = new ReadOnlyCollection<byte>(ms.ToArray());
             }
         }
         internal PBEPkmnFormChangedPacket(byte[] data, EndianBinaryReader r, PBEBattle battle)
@@ -111,7 +111,7 @@ namespace Kermalis.PokemonBattleEngine.Packets
                 w.Write(NewType2 = other.NewType2);
                 w.Write(NewWeight = other.NewWeight);
                 w.Write(IsRevertForm = other.IsRevertForm);
-                Data = new ReadOnlyCollection<byte>(ms.GetBuffer());
+                Data = new ReadOnlyCollection<byte>(ms.ToArray());
             }
         }
         internal PBEPkmnFormChangedPacket_Hidden(byte[] data, EndianBinaryReader r, PBEBattle battle)

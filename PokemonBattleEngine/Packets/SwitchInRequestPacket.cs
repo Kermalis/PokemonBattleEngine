@@ -21,7 +21,7 @@ namespace Kermalis.PokemonBattleEngine.Packets
                 w.Write(Code);
                 w.Write((Trainer = trainer).Id);
                 w.Write(Amount = trainer.SwitchInsRequired);
-                Data = new ReadOnlyCollection<byte>(ms.GetBuffer());
+                Data = new ReadOnlyCollection<byte>(ms.ToArray());
             }
         }
         internal PBESwitchInRequestPacket(byte[] data, EndianBinaryReader r, PBEBattle battle)

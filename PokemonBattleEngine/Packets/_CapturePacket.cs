@@ -30,7 +30,7 @@ namespace Kermalis.PokemonBattleEngine.Packets
                 w.Write(NumShakes = numShakes);
                 w.Write(Success = success);
                 w.Write(Critical = critical);
-                Data = new ReadOnlyCollection<byte>(ms.GetBuffer());
+                Data = new ReadOnlyCollection<byte>(ms.ToArray());
             }
         }
         internal PBECapturePacket(byte[] data, EndianBinaryReader r, PBEBattle battle)

@@ -15,7 +15,7 @@ namespace Kermalis.PokemonBattleEngine.Packets
             using (var w = new EndianBinaryWriter(ms, encoding: EncodingType.UTF16))
             {
                 w.Write(Code);
-                Data = new ReadOnlyCollection<byte>(ms.GetBuffer());
+                Data = new ReadOnlyCollection<byte>(ms.ToArray());
             }
         }
         internal PBEMatchCancelledPacket(byte[] data)

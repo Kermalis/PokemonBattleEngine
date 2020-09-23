@@ -18,7 +18,7 @@ namespace Kermalis.PokemonBattleEngine.Packets
             {
                 w.Write(Code);
                 w.Write(TurnNumber = turnNumber);
-                Data = new ReadOnlyCollection<byte>(ms.GetBuffer());
+                Data = new ReadOnlyCollection<byte>(ms.ToArray());
             }
         }
         internal PBETurnBeganPacket(byte[] data, EndianBinaryReader r)

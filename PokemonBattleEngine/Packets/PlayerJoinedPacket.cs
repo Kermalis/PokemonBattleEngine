@@ -23,7 +23,7 @@ namespace Kermalis.PokemonBattleEngine.Packets
             {
                 w.Write(Code);
                 w.Write(TrainerName = trainerName, true);
-                Data = new ReadOnlyCollection<byte>(ms.GetBuffer());
+                Data = new ReadOnlyCollection<byte>(ms.ToArray());
             }
         }
         internal PBEPlayerJoinedPacket(byte[] data, EndianBinaryReader r)

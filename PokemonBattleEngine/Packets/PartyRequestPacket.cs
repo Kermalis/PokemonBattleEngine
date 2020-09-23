@@ -20,7 +20,7 @@ namespace Kermalis.PokemonBattleEngine.Packets
                 w.Write(Code);
                 w.Write(BattleId = battleId);
                 w.Write(RequireLegal = requireLegal);
-                Data = new ReadOnlyCollection<byte>(ms.GetBuffer());
+                Data = new ReadOnlyCollection<byte>(ms.ToArray());
             }
         }
         internal PBEPartyRequestPacket(byte[] data, EndianBinaryReader r)
