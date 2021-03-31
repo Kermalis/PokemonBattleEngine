@@ -507,7 +507,6 @@ namespace Kermalis.PokemonBattleEngine.Battle
                 switch (format)
                 {
                     case PBEBattleFormat.Single:
-                    case PBEBattleFormat.Rotation:
                     {
                         switch (pos)
                         {
@@ -525,6 +524,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                         break;
                     }
                     case PBEBattleFormat.Triple:
+                    case PBEBattleFormat.Rotation:
                     {
                         return;
                     }
