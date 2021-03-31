@@ -127,7 +127,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
         internal PBETeam(PBEBattle battle, byte id, PBEWildInfo wi, List<PBETrainer> allTrainers)
         {
             int count = wi.Party.Count;
-            if (!VerifyTrainerCount(battle.BattleFormat, count))
+            if (!VerifyWildCount(battle.BattleFormat, count))
             {
                 throw new ArgumentException($"Illegal wild Pokémon count (Format: {battle.BattleFormat}, Count: {count}");
             }
@@ -156,6 +156,17 @@ namespace Kermalis.PokemonBattleEngine.Battle
                 trainers[i] = new PBETrainer(this, ti[i], allTrainers);
             }
             Trainers = new ReadOnlyCollection<PBETrainer>(trainers);
+        }
+        private bool VerifyWildCount(PBEBattleFormat format, int count)
+        {
+            switch (format)
+            {
+                case PBEBattleFormat.Single: return count == 1;
+                case PBEBattleFormat.Double: return count >= 1 && count <= 2;
+                case PBEBattleFormat.Rotation:
+                case PBEBattleFormat.Triple: return count >= 1 && count <= 3;
+                default: throw new ArgumentOutOfRangeException(nameof(format));
+            }
         }
         private bool VerifyTrainerCount(PBEBattleFormat format, int count)
         {
