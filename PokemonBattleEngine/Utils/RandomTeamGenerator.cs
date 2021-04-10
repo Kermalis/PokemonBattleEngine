@@ -91,7 +91,7 @@ namespace Kermalis.PokemonBattleEngine.Utils
         private static readonly PBEMove[] _noSTABMoves = new[] { PBEMove.AquaJet, PBEMove.Bounce, PBEMove.Explosion, PBEMove.FakeOut, PBEMove.FlameCharge, PBEMove.IceShard, PBEMove.MachPunch, PBEMove.Pluck,
         PBEMove.Pursuit, PBEMove.QuickAttack, PBEMove.Selfdestruct, PBEMove.SuckerPunch, PBEMove.ClearSmog, PBEMove.Eruption, PBEMove.IcyWind, PBEMove.Incinerate, PBEMove.Snarl, PBEMove.VacuumWave, PBEMove.WaterSpout };
 
-        private static PBEAbility GetAbility(PBESpecies species, List<PBEMove> moves, IPBEPokemonData pData, PBECounter counter, PBETeamDetails teamDs)
+        private static PBEAbility GetAbility(PBESpecies species, List<PBEMove> moves, IPBEPokemonDataExtended pData, PBECounter counter, PBETeamDetails teamDs)
         {
             var abilityPool = new List<PBEAbility>(pData.Abilities);
             PBEAbility ability;
@@ -182,7 +182,7 @@ namespace Kermalis.PokemonBattleEngine.Utils
             } while (ability == PBEAbility.None && abilityPool.Count > 0);
             return ability;
         }
-        private static PBEItem GetItem(PBESpecies species, PBEForm form, PBEAbility ability, List<PBEMove> moves, IPBEPokemonData pData, PBECounter counter, bool isLead)
+        private static PBEItem GetItem(PBESpecies species, PBEForm form, PBEAbility ability, List<PBEMove> moves, IPBEPokemonDataExtended pData, PBECounter counter, bool isLead)
         {
             PBEItem item;
             void GetRandomGem()
@@ -248,7 +248,7 @@ namespace Kermalis.PokemonBattleEngine.Utils
                     item = counter[PBEMoveCategory.Physical] > counter[PBEMoveCategory.Special] ? PBEItem.ChoiceBand : PBEItem.ChoiceSpecs;
                 }
             }
-            else if (pData.Evolutions.Count > 0)
+            else if (pData.HasEvolutions())
             {
                 item = PBEItem.Eviolite;
             }
@@ -380,7 +380,7 @@ namespace Kermalis.PokemonBattleEngine.Utils
             }
             return item;
         }
-        private static List<PBEMove> GetMoves(PBESpecies species, PBEForm form, IPBEPokemonData pData, bool isLead, PBETeamDetails teamDs, out PBECounter counter)
+        private static List<PBEMove> GetMoves(PBESpecies species, PBEForm form, IPBEPokemonDataExtended pData, bool isLead, PBETeamDetails teamDs, out PBECounter counter)
         {
             var movePool = new List<PBEMove>(PBELegalityChecker.GetLegalMoves(species, form, PBESettings.DefaultMaxLevel, PBESettings.DefaultSettings));
             var moves = new List<PBEMove>(PBESettings.DefaultNumMoves);
@@ -1082,7 +1082,7 @@ namespace Kermalis.PokemonBattleEngine.Utils
             return moves;
         }
 
-        private static PBECounter QueryMoves(IPBEPokemonData pData, List<PBEMove> moves, List<PBEMove> movePool)
+        private static PBECounter QueryMoves(IPBEPokemonDataExtended pData, List<PBEMove> moves, List<PBEMove> movePool)
         {
             var counter = new PBECounter();
 
@@ -1268,7 +1268,7 @@ namespace Kermalis.PokemonBattleEngine.Utils
         }
 
         // TODO: Hidden power types
-        private static void GetRandomSet(PBESpecies species, PBEForm form, IPBEPokemonData pData, bool isLead, PBETeamDetails teamDs, PBELegalPokemon pkmn)
+        private static void GetRandomSet(PBESpecies species, PBEForm form, IPBEPokemonDataExtended pData, bool isLead, PBETeamDetails teamDs, PBELegalPokemon pkmn)
         {
             pkmn.EffortValues.Equalize();
             List<PBEMove> moves = GetMoves(species, form, pData, isLead, teamDs, out PBECounter counter);
@@ -1353,7 +1353,7 @@ namespace Kermalis.PokemonBattleEngine.Utils
                 (PBESpecies species, PBEForm form) = PBEDataProvider.GlobalRandom.RandomSpecies(speciesPool, true);
                 speciesPool.Remove(species);
                 // KERMALIS: Showdown limits {maxShared} per tier
-                IPBEPokemonData pData = PBEDataProvider.Instance.GetPokemonData(species, form);
+                IPBEPokemonDataExtended pData = PBEDataProvider.Instance.GetPokemonDataExtended(species, form);
                 if (ShouldDenyType(usedTypes, pData.Type1, maxShared) || ShouldDenyType(usedTypes, pData.Type2, maxShared))
                 {
                     continue;

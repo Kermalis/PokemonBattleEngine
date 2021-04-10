@@ -131,11 +131,27 @@ namespace Kermalis.PokemonBattleEngine.Data
         {
             return PBEMoveData.Data[move];
         }
+        public virtual bool HasEvolutions(IPBESpeciesForm pkmn, bool cache = true)
+        {
+            return HasEvolutions(pkmn.Species, pkmn.Form, cache);
+        }
+        public virtual bool HasEvolutions(PBESpecies species, PBEForm form, bool cache = true)
+        {
+            return GetPokemonDataExtended(species, form, cache).HasEvolutions();
+        }
         public virtual IPBEPokemonData GetPokemonData(IPBESpeciesForm pkmn, bool cache = true)
         {
             return GetPokemonData(pkmn.Species, pkmn.Form, cache);
         }
         public virtual IPBEPokemonData GetPokemonData(PBESpecies species, PBEForm form, bool cache = true)
+        {
+            return GetPokemonDataExtended(species, form, cache);
+        }
+        public virtual IPBEPokemonDataExtended GetPokemonDataExtended(IPBESpeciesForm pkmn, bool cache = true)
+        {
+            return GetPokemonDataExtended(pkmn.Species, pkmn.Form, cache);
+        }
+        public virtual IPBEPokemonDataExtended GetPokemonDataExtended(PBESpecies species, PBEForm form, bool cache = true)
         {
             return PBEPokemonData.GetData(species, form, cache);
         }

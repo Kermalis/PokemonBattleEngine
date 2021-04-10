@@ -989,7 +989,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
             {
                 defense *= 1.5;
             }
-            if (target.Item == PBEItem.Eviolite && PBEDataProvider.Instance.GetPokemonData(target.OriginalSpecies, target.RevertForm).Evolutions.Count > 0)
+            if (target.Item == PBEItem.Eviolite && PBEDataProvider.Instance.HasEvolutions(target.OriginalSpecies, target.RevertForm))
             {
                 defense *= 1.5;
             }
@@ -1063,7 +1063,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
             {
                 spDefense *= 1.5;
             }
-            if (target.Item == PBEItem.Eviolite && PBEDataProvider.Instance.GetPokemonData(target.OriginalSpecies, target.RevertForm).Evolutions.Count > 0)
+            if (target.Item == PBEItem.Eviolite && PBEDataProvider.Instance.HasEvolutions(target.OriginalSpecies, target.RevertForm))
             {
                 spDefense *= 1.5;
             }

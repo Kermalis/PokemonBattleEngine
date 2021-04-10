@@ -29,7 +29,7 @@ namespace Kermalis.PokemonBattleEngine.Data.Legality
             }
             void Add2(PBESpecies s, PBEForm f)
             {
-                foreach ((PBESpecies cs, PBEForm cf) in PBEDataProvider.Instance.GetPokemonData(s, f).PreEvolutions)
+                foreach ((PBESpecies cs, PBEForm cf) in PBEDataProvider.Instance.GetPokemonDataExtended(s, f).PreEvolutions)
                 {
                     Add1(cs, cf);
                 }
@@ -56,7 +56,7 @@ namespace Kermalis.PokemonBattleEngine.Data.Legality
             var moves = new List<PBEMove>();
             foreach ((PBESpecies spe, PBEForm fo) in speciesToStealFrom)
             {
-                IPBEPokemonData pData = PBEDataProvider.Instance.GetPokemonData(spe, fo);
+                IPBEPokemonDataExtended pData = PBEDataProvider.Instance.GetPokemonDataExtended(spe, fo);
                 // Disallow moves learned after the current level
                 moves.AddRange(pData.LevelUpMoves.Where(t => t.Level <= level).Select(t => t.Move));
                 // Disallow form-specific moves from other forms (Rotom)

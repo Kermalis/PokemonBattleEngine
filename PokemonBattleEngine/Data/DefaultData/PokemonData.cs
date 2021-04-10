@@ -5,7 +5,7 @@ using System.Collections.ObjectModel;
 
 namespace Kermalis.PokemonBattleEngine.Data
 {
-    public sealed class PBEPokemonData : IPBEPokemonData
+    public sealed class PBEPokemonData : IPBEPokemonDataExtended
     {
         public PBESpecies Species { get; }
         public PBEForm Form { get; }
@@ -21,13 +21,13 @@ namespace Kermalis.PokemonBattleEngine.Data
         public ReadOnlyCollection<PBEAbility> Abilities { get; }
         IReadOnlyList<PBEAbility> IPBEPokemonData.Abilities => Abilities;
         public ReadOnlyCollection<(PBESpecies Species, PBEForm Form)> PreEvolutions { get; }
-        IReadOnlyList<(PBESpecies Species, PBEForm Form)> IPBEPokemonData.PreEvolutions => PreEvolutions;
+        IReadOnlyList<(PBESpecies Species, PBEForm Form)> IPBEPokemonDataExtended.PreEvolutions => PreEvolutions;
         public ReadOnlyCollection<(PBESpecies Species, PBEForm Form)> Evolutions { get; }
-        IReadOnlyList<(PBESpecies Species, PBEForm Form)> IPBEPokemonData.Evolutions => Evolutions;
+        IReadOnlyList<(PBESpecies Species, PBEForm Form)> IPBEPokemonDataExtended.Evolutions => Evolutions;
         public ReadOnlyCollection<(PBEMove Move, byte Level, PBEMoveObtainMethod ObtainMethod)> LevelUpMoves { get; }
-        IReadOnlyList<(PBEMove Move, byte Level, PBEMoveObtainMethod ObtainMethod)> IPBEPokemonData.LevelUpMoves => LevelUpMoves;
+        IReadOnlyList<(PBEMove Move, byte Level, PBEMoveObtainMethod ObtainMethod)> IPBEPokemonDataExtended.LevelUpMoves => LevelUpMoves;
         public ReadOnlyCollection<(PBEMove Move, PBEMoveObtainMethod ObtainMethod)> OtherMoves { get; }
-        IReadOnlyList<(PBEMove Move, PBEMoveObtainMethod ObtainMethod)> IPBEPokemonData.OtherMoves => OtherMoves;
+        IReadOnlyList<(PBEMove Move, PBEMoveObtainMethod ObtainMethod)> IPBEPokemonDataExtended.OtherMoves => OtherMoves;
 
         private PBEPokemonData(SearchResult result)
         {
