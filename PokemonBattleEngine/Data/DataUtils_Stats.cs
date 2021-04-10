@@ -136,20 +136,20 @@ namespace Kermalis.PokemonBattleEngine.Data
             }
         }
 
-        private static ushort CalcHP(IPBEPokemonData pData, byte evs, byte ivs, byte level)
+        private static ushort CalcHP(PBESpecies species, IPBEReadOnlyStatCollection baseStats, byte evs, byte ivs, byte level)
         {
-            return (ushort)(pData.Species == PBESpecies.Shedinja ? 1 : ((((2 * pData.BaseStats.HP) + ivs + (evs / 4)) * level / 100) + level + 10));
+            return (ushort)(species == PBESpecies.Shedinja ? 1 : ((((2 * baseStats.HP) + ivs + (evs / 4)) * level / 100) + level + 10));
         }
-        private static ushort CalcOtherStat(IPBEPokemonData pData, PBEStat stat, sbyte statRelationship, byte evs, byte ivs, byte level, PBESettings settings)
+        private static ushort CalcOtherStat(IPBEReadOnlyStatCollection baseStats, PBEStat stat, sbyte statRelationship, byte evs, byte ivs, byte level, PBESettings settings)
         {
             double natureMultiplier = 1 + (statRelationship * settings.NatureStatBoost);
-            return (ushort)(((((2 * pData.BaseStats.GetStat(stat)) + ivs + (evs / 4)) * level / 100) + 5) * natureMultiplier);
+            return (ushort)(((((2 * baseStats.GetStat(stat)) + ivs + (evs / 4)) * level / 100) + 5) * natureMultiplier);
         }
-        public static ushort CalculateStat(IPBEPokemonData pData, PBEStat stat, PBENature nature, byte evs, byte ivs, byte level, PBESettings settings)
+        public static ushort CalculateStat(PBESpecies species, IPBEReadOnlyStatCollection baseStats, PBEStat stat, PBENature nature, byte evs, byte ivs, byte level, PBESettings settings)
         {
-            if (pData == null)
+            if (baseStats == null)
             {
-                throw new ArgumentNullException(nameof(pData));
+                throw new ArgumentNullException(nameof(baseStats));
             }
             if (settings == null)
             {
@@ -169,7 +169,7 @@ namespace Kermalis.PokemonBattleEngine.Data
             {
                 case PBEStat.HP:
                 {
-                    return CalcHP(pData, evs, ivs, level);
+                    return CalcHP(species, baseStats, evs, ivs, level);
                 }
                 case PBEStat.Attack:
                 case PBEStat.Defense:
@@ -177,10 +177,18 @@ namespace Kermalis.PokemonBattleEngine.Data
                 case PBEStat.SpDefense:
                 case PBEStat.Speed:
                 {
-                    return CalcOtherStat(pData, stat, nature.GetRelationshipToStat(stat), evs, ivs, level, settings);
+                    return CalcOtherStat(baseStats, stat, nature.GetRelationshipToStat(stat), evs, ivs, level, settings);
                 }
                 default: throw new ArgumentOutOfRangeException(nameof(stat));
             }
+        }
+        public static ushort CalculateStat(IPBEPokemonData pData, PBEStat stat, PBENature nature, byte evs, byte ivs, byte level, PBESettings settings)
+        {
+            if (pData == null)
+            {
+                throw new ArgumentNullException(nameof(pData));
+            }
+            return CalculateStat(pData.Species, pData.BaseStats, stat, nature, evs, ivs, level, settings);
         }
         public static ushort CalculateStat(IPBESpeciesForm pkmn, PBEStat stat, PBENature nature, byte evs, byte ivs, byte level, PBESettings settings)
         {
@@ -191,11 +199,11 @@ namespace Kermalis.PokemonBattleEngine.Data
             PBELegalityChecker.ValidateSpecies(species, form, false);
             return CalculateStat(PBEDataProvider.Instance.GetPokemonData(species, form), stat, nature, evs, ivs, level, settings);
         }
-        public static void GetStatRange(IPBEPokemonData pData, PBEStat stat, byte level, PBESettings settings, out ushort low, out ushort high)
+        public static void GetStatRange(PBESpecies species, IPBEReadOnlyStatCollection baseStats, PBEStat stat, byte level, PBESettings settings, out ushort low, out ushort high)
         {
-            if (pData == null)
+            if (baseStats == null)
             {
-                throw new ArgumentNullException(nameof(pData));
+                throw new ArgumentNullException(nameof(baseStats));
             }
             if (settings == null)
             {
@@ -210,8 +218,8 @@ namespace Kermalis.PokemonBattleEngine.Data
             {
                 case PBEStat.HP:
                 {
-                    low = CalcHP(pData, 0, 0, level);
-                    high = CalcHP(pData, byte.MaxValue, settings.MaxIVs, level);
+                    low = CalcHP(species, baseStats, 0, 0, level);
+                    high = CalcHP(species, baseStats, byte.MaxValue, settings.MaxIVs, level);
                     break;
                 }
                 case PBEStat.Attack:
@@ -220,12 +228,20 @@ namespace Kermalis.PokemonBattleEngine.Data
                 case PBEStat.SpDefense:
                 case PBEStat.Speed:
                 {
-                    low = CalcOtherStat(pData, stat, -1, 0, 0, level, settings);
-                    high = CalcOtherStat(pData, stat, +1, byte.MaxValue, settings.MaxIVs, level, settings);
+                    low = CalcOtherStat(baseStats, stat, -1, 0, 0, level, settings);
+                    high = CalcOtherStat(baseStats, stat, +1, byte.MaxValue, settings.MaxIVs, level, settings);
                     break;
                 }
                 default: throw new ArgumentOutOfRangeException(nameof(stat));
             }
+        }
+        public static void GetStatRange(IPBEPokemonData pData, PBEStat stat, byte level, PBESettings settings, out ushort low, out ushort high)
+        {
+            if (pData == null)
+            {
+                throw new ArgumentNullException(nameof(pData));
+            }
+            GetStatRange(pData.Species, pData.BaseStats, stat, level, settings, out low, out high);
         }
         public static void GetStatRange(IPBESpeciesForm pkmn, PBEStat stat, byte level, PBESettings settings, out ushort low, out ushort high)
         {
