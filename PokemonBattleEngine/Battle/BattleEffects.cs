@@ -679,6 +679,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                 {
                     PBEBattlePokemon wildPkmn = trainer.ActiveBattlersOrdered.First();
                     wildPkmn.TurnAction = new PBETurnAction(wildPkmn); // Convert into a WildFlee turn action for the first Pokémon
+                    trainer.RequestedFlee = false;
                     continue;
                 }
                 PBEBattlePokemon pkmn = trainer.ActiveBattlersOrdered.FirstOrDefault();
