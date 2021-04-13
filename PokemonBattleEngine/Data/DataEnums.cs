@@ -371,7 +371,6 @@ namespace Kermalis.PokemonBattleEngine.Data
         Everstone = 229,
         Eviolite = 538,
         ExpertBelt = 268,
-        /// <summary>No effect.</summary>
         ExpShare = 216,
         FastBall = 492,
         /// <summary>No effect.</summary>
@@ -472,7 +471,6 @@ namespace Kermalis.PokemonBattleEngine.Data
         LoveBall = 496,
         /// <summary>No effect.</summary>
         LuckIncense = 319,
-        /// <summary>No effect.</summary>
         LuckyEgg = 231,
         LuckyPunch = 256,
         LumBerry = 157, // TODO

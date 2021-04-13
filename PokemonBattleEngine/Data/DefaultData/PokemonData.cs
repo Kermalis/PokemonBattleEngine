@@ -15,6 +15,7 @@ namespace Kermalis.PokemonBattleEngine.Data
         public PBEType Type2 { get; }
         public PBEGenderRatio GenderRatio { get; }
         public PBEGrowthRate GrowthRate { get; }
+        public ushort BaseEXPYield { get; }
         public byte CatchRate { get; }
         public byte FleeRate { get; }
         /// <summary>Weight in Kilograms</summary>
@@ -37,6 +38,7 @@ namespace Kermalis.PokemonBattleEngine.Data
             Type2 = (PBEType)result.Type2;
             GenderRatio = (PBEGenderRatio)result.GenderRatio;
             GrowthRate = (PBEGrowthRate)result.GrowthRate;
+            BaseEXPYield = result.BaseEXPYield;
             CatchRate = result.CatchRate;
             FleeRate = result.FleeRate;
             Weight = result.Weight;
@@ -102,6 +104,7 @@ namespace Kermalis.PokemonBattleEngine.Data
             public byte Type2 { get; set; }
             public byte GenderRatio { get; set; }
             public byte GrowthRate { get; set; }
+            public ushort BaseEXPYield { get; set; }
             public byte CatchRate { get; set; }
             public byte FleeRate { get; set; }
             public double Weight { get; set; }

@@ -13,6 +13,17 @@ namespace Kermalis.PokemonBattleEngine.Battle
 
         private void DoSwitchInEffects(IEnumerable<PBEBattlePokemon> battlers, PBEBattlePokemon forcedInBy = null)
         {
+            // Set EXP Seens first
+            foreach (PBEBattlePokemon pkmn in battlers)
+            {
+                PBETeam opTeam = pkmn.Team.OpposingTeam;
+                foreach (PBEBattlePokemon op in opTeam.ActiveBattlers)
+                {
+                    op.AddEXPPokemon(pkmn);
+                    pkmn.AddEXPPokemon(op);
+                }
+            }
+
             IEnumerable<PBEBattlePokemon> order = GetActingOrder(battlers, true);
 
             foreach (PBEBattlePokemon pkmn in order)
@@ -734,6 +745,81 @@ namespace Kermalis.PokemonBattleEngine.Battle
         {
             // TODO: Trapping effects
             SetEscaped(pkmn);
+        }
+
+        private void CalcEXP(PBEBattlePokemon loser)
+        {
+            IPBEPokemonData loserPData = PBEDataProvider.Instance.GetPokemonData(loser);
+            double modTrainer = loser.IsWild ? 1 : 1.5;
+            int expYield = loserPData.BaseEXPYield;
+            int levelLoser = loser.Level;
+            double modPassPower = PBEDataProvider.Instance.GetEXPModifier(this);
+            int amtParticipated = loser.EXPPokemon.Count(pk => pk.Trainer.GainsEXP && pk.HP > 0);
+            int amtEXPShare = loser.EXPPokemon.Count(pk => pk.Trainer.GainsEXP && pk.Item == PBEItem.ExpShare);
+            foreach (PBEBattlePokemon victor in loser.EXPPokemon)
+            {
+                if (!victor.Trainer.GainsEXP || victor.HP == 0 || victor.Level >= Settings.MaxLevel)
+                {
+                    continue;
+                }
+
+                int levelVictor = victor.Level;
+                double modParticipators;
+                if (amtEXPShare == 0)
+                {
+                    modParticipators = amtParticipated;
+                }
+                else if (victor.Item == PBEItem.ExpShare)
+                {
+                    modParticipators = 2 * amtEXPShare;
+                }
+                else
+                {
+                    modParticipators = 2 * amtParticipated;
+                }
+                double modTraded = PBEDataProvider.Instance.GetEXPTradeModifier(victor);
+                double modLuckyEgg = victor.Item == PBEItem.LuckyEgg ? 1.5 : 1;
+
+                double result1H = modTrainer * expYield * levelLoser;
+                double result1L = 5 * modParticipators;
+                double result1 = result1H / result1L;
+                double result2H = Math.Pow(2 * levelLoser + 10, 2.5);
+                double result2L = Math.Pow(levelLoser + levelVictor + 10, 2.5);
+                double result2 = result2H / result2L;
+                double combined = result1 * result2 + 1;
+                double final = combined * modTraded * modLuckyEgg * modPassPower;
+                GiveEXP(victor, (uint)final);
+            }
+        }
+        private void GiveEXP(PBEBattlePokemon victor, uint amount)
+        {
+            Console.WriteLine("{0} gained {1} exp ({2} to {3})", victor.Nickname, amount, victor.EXP, victor.EXP + amount);
+            PBEGrowthRate growthRate = PBEDataProvider.Instance.GetPokemonData(victor).GrowthRate;
+        top:
+            uint nextLevelAmt = PBEDataProvider.Instance.GetEXPRequired(growthRate, (byte)(victor.Level + 1));
+            if (victor.EXP + amount >= nextLevelAmt)
+            {
+                uint growBy = nextLevelAmt - victor.EXP;
+                victor.EXP += growBy;
+                victor.Level++;
+                victor.SetStats(true, true);
+                Console.WriteLine("{0} leveled up ({1} to {2})", victor.Nickname, victor.Level - 1, victor.Level);
+                // learn stuff, redraw the hp bars, etc. packets
+                if (victor.Level == Settings.MaxLevel)
+                {
+                    victor.EXP = nextLevelAmt; // Cap it
+                    return;
+                }
+                amount -= growBy;
+                if (amount > 0)
+                {
+                    goto top; // Keep gaining and leveling
+                }
+            }
+            else
+            {
+                victor.EXP += amount;
+            }
         }
 
         private double PokedexCountTable(int count, double g600, double g450, double g300, double g150, double g30, double ge0)
@@ -1504,6 +1590,8 @@ namespace Kermalis.PokemonBattleEngine.Battle
                 pkmn.ClearForFaint();
                 BroadcastPkmnFainted(pkmn, oldPos);
                 RemoveInfatuationsAndLockOns(pkmn);
+                CalcEXP(pkmn);
+                pkmn.EXPPokemon.Clear();
                 pkmn.Team.MonFaintedThisTurn = true;
                 TrySetLoser(pkmn);
                 CastformCherrimCheckAll();

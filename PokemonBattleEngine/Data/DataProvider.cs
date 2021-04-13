@@ -156,6 +156,13 @@ namespace Kermalis.PokemonBattleEngine.Data
             return PBEPokemonData.GetData(species, form, cache);
         }
 
+        public virtual int GetSpeciesCaught()
+        {
+            return 300;
+        }
+        #endregion
+
+        #region EXP
         public virtual uint GetEXPRequired(PBEGrowthRate type, byte level)
         {
             return EXPTables.GetEXPRequired(type, level);
@@ -164,10 +171,15 @@ namespace Kermalis.PokemonBattleEngine.Data
         {
             return EXPTables.GetEXPLevel(type, exp);
         }
-
-        public virtual int GetSpeciesCaught()
+        /// <summary>This is the boost to the EXP rate. In generation 5, Pass Powers boost the EXP rate.</summary>
+        public virtual double GetEXPModifier(PBEBattle battle)
         {
-            return 300;
+            return 1;
+        }
+        /// <summary>In generation 5, this is 1 for ot, 1.5 for domestic trade, and 1.7 for international trade.</summary>
+        public virtual double GetEXPTradeModifier(PBEBattlePokemon pkmn)
+        {
+            return 1;
         }
         #endregion
 

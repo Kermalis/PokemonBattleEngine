@@ -17,6 +17,7 @@ namespace Kermalis.PokemonBattleEngineExtras
             public PBEType Type2 { get; set; }
             public PBEGenderRatio GenderRatio;
             public PBEGrowthRate GrowthRate;
+            public ushort BaseEXPYield;
             public byte CatchRate;
             public byte FleeRate;
             public double Weight;

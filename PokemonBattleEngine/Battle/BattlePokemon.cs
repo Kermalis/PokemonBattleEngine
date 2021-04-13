@@ -171,6 +171,8 @@ namespace Kermalis.PokemonBattleEngine.Battle
         public bool SpeedBoost_AbleToSpeedBoostThisTurn { get; set; }
         #endregion
 
+        public List<PBEBattlePokemon> EXPPokemon { get; } = new List<PBEBattlePokemon>();
+
         #region Constructors
         private PBEBattlePokemon(PBETrainer trainer, byte id,
             PBESpecies species, PBEForm form, string nickname, byte level, uint exp, byte friendship, bool shiny,
@@ -202,7 +204,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
             OriginalEffortValues = evs;
             EffortValues = new PBEStatCollection(evs);
             IndividualValues = new PBEReadOnlyStatCollection(ivs);
-            SetStats(true);
+            SetStats(true, false);
             OriginalMoveset = moves;
             PBESettings settings = Battle.Settings;
             Moves = new PBEBattleMoveset(settings, moves);
@@ -295,6 +297,14 @@ namespace Kermalis.PokemonBattleEngine.Battle
             : this(battle.Teams[1].Trainers[0], info) { }
         #endregion
 
+        public void AddEXPPokemon(PBEBattlePokemon pkmn)
+        {
+            if (!EXPPokemon.Contains(pkmn))
+            {
+                EXPPokemon.Add(pkmn);
+            }
+        }
+
         public void ApplyPowerTrickChange()
         {
             ushort a = Attack;
@@ -359,6 +369,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
         /// <summary>Sets and clears all information required for switching out.</summary>
         public void ClearForSwitch()
         {
+            EXPPokemon.Clear();
             FieldPosition = PBEFieldPosition.None;
             ApplyNaturalCure();
             if (Ability == PBEAbility.Regenerator)
@@ -377,7 +388,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                 Status1Counter = 1;
             }
             ResetVolatileStuff();
-            SetStats(false);
+            SetStats(false, false);
         }
         /// <summary>Sets and clears all information required for fainting.</summary>
         public void ClearForFaint()
@@ -387,9 +398,9 @@ namespace Kermalis.PokemonBattleEngine.Battle
             ClearStatChanges();
             Status1 = PBEStatus1.None;
             ResetVolatileStuff();
-            SetStats(false);
+            SetStats(false, false);
         }
-        public void SetStats(bool calculateHP)
+        public void SetStats(bool calculateHP, bool hpLevelUp)
         {
             IPBEPokemonData pData = PBEDataProvider.Instance.GetPokemonData(this);
             PBENature nature = Nature;
@@ -399,9 +410,17 @@ namespace Kermalis.PokemonBattleEngine.Battle
             PBESettings settings = Battle.Settings;
             if (calculateHP)
             {
+                ushort oldHP = MaxHP;
                 ushort hp = PBEDataUtils.CalculateStat(pData, PBEStat.HP, nature, evs.HP, ivs.HP, level, settings);
                 MaxHP = hp;
-                HP = hp;
+                if (hpLevelUp)
+                {
+                    HP += (ushort)(hp - oldHP);
+                }
+                else
+                {
+                    HP = hp;
+                }
                 UpdateHPPercentage();
             }
             Attack = PBEDataUtils.CalculateStat(pData, PBEStat.Attack, nature, evs.Attack, ivs.Attack, level, settings);
