@@ -33,6 +33,16 @@ namespace Kermalis.PokemonBattleEngine.Data
         /// <summary>The species is 100% male, 0% female.</summary>
         M1_F0 = 0x00
     }
+    public enum PBEGrowthRate : byte
+    {
+        Erratic = 1,
+        Fast = 4,
+        Fluctuating = 2,
+        MediumFast = 0,
+        MediumSlow = 3,
+        Slow = 5,
+        MAX = 6 // 6 & 7 in-game are clones of MediumFast, but no Pokémon uses 6 or 7
+    }
     /// <summary>Represents a Pokémon stat.</summary>
     public enum PBEStat : byte
     {

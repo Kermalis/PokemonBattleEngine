@@ -32,7 +32,7 @@ namespace Kermalis.PokemonBattleEngineTests.Abilities
             };
             p1[1] = new TestPokemon(settings, PBESpecies.Skitty, 0, 100, PBEMove.Splash);
 
-            var battle = new PBEBattle(PBEBattleFormat.Triple, settings, new PBETrainerInfo(p0, "Trainer 0"), new PBETrainerInfo(p1, "Trainer 1"));
+            var battle = new PBEBattle(PBEBattleFormat.Triple, settings, new PBETrainerInfo(p0, "Trainer 0", false), new PBETrainerInfo(p1, "Trainer 1", false));
             battle.OnNewEvent += PBEBattle.ConsoleBattleEventHandler;
 
             PBETrainer t0 = battle.Trainers[0];
@@ -73,7 +73,7 @@ namespace Kermalis.PokemonBattleEngineTests.Abilities
             };
             p1[1] = new TestPokemon(settings, PBESpecies.Skitty, 0, 100, PBEMove.Splash);
 
-            var battle = new PBEBattle(PBEBattleFormat.Triple, settings, new PBETrainerInfo(p0, "Trainer 0"), new PBETrainerInfo(p1, "Trainer 1"));
+            var battle = new PBEBattle(PBEBattleFormat.Triple, settings, new PBETrainerInfo(p0, "Trainer 0", false), new PBETrainerInfo(p1, "Trainer 1", false));
             battle.OnNewEvent += PBEBattle.ConsoleBattleEventHandler;
 
             PBETrainer t0 = battle.Trainers[0];
@@ -111,7 +111,7 @@ namespace Kermalis.PokemonBattleEngineTests.Abilities
                 Ability = PBEAbility.Intimidate
             };
 
-            var battle = new PBEBattle(PBEBattleFormat.Single, settings, new PBETrainerInfo(p0, "Trainer 0"), new PBETrainerInfo(p1, "Trainer 1"));
+            var battle = new PBEBattle(PBEBattleFormat.Single, settings, new PBETrainerInfo(p0, "Trainer 0", false), new PBETrainerInfo(p1, "Trainer 1", false));
             battle.OnNewEvent += PBEBattle.ConsoleBattleEventHandler;
 
             PBETrainer t0 = battle.Trainers[0];

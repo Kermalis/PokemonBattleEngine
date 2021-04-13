@@ -45,15 +45,20 @@ namespace Kermalis.PokemonBattleEngine.Battle
             {
                 return settings.Equals(_requiredSettings);
             }
+            if (this is PBETrainerInfo ti && ti.GainsEXP && settings.MaxLevel > 100)
+            {
+                throw new ArgumentException("Cannot start a battle with EXP enabled and a higher MaxLevel than 100. Not supported.");
+            }
             return true;
         }
     }
     public sealed class PBETrainerInfo : PBETrainerInfoBase
     {
         public string Name { get; }
+        public bool GainsEXP { get; }
         public ReadOnlyCollection<(PBEItem Item, uint Quantity)> Inventory { get; }
 
-        public PBETrainerInfo(IPBEPokemonCollection party, string name, IList<(PBEItem Item, uint Quantity)> inventory = null)
+        public PBETrainerInfo(IPBEPokemonCollection party, string name, bool gainsEXP, IList<(PBEItem Item, uint Quantity)> inventory = null)
             : base(party)
         {
             if (string.IsNullOrWhiteSpace(name))
@@ -61,6 +66,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                 throw new ArgumentOutOfRangeException(nameof(name));
             }
             Name = name;
+            GainsEXP = gainsEXP;
             if (inventory is null || inventory.Count == 0)
             {
                 Inventory = PBEEmptyReadOnlyCollection<(PBEItem, uint)>.Value;
@@ -82,6 +88,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
         public PBETeam Team { get; }
         public PBEList<PBEBattlePokemon> Party { get; }
         public string Name { get; }
+        public bool GainsEXP { get; }
         public PBEBattleInventory Inventory { get; }
         public byte Id { get; }
         public bool IsWild => Team.IsWild;
@@ -129,7 +136,10 @@ namespace Kermalis.PokemonBattleEngine.Battle
         }
         // Trainer battle
         internal PBETrainer(PBETeam team, PBETrainerInfo ti, List<PBETrainer> trainers)
-            : this(team, ti, ti.Name, ti.Inventory, trainers) { }
+            : this(team, ti, ti.Name, ti.Inventory, trainers)
+        {
+            GainsEXP = ti.GainsEXP;
+        }
         // Wild battle
         internal PBETrainer(PBETeam team, PBEWildInfo wi, List<PBETrainer> trainers)
             : this(team, wi, "The wild Pokémon", null, trainers) { }

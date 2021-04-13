@@ -10,6 +10,7 @@ namespace Kermalis.PokemonBattleEngine.Data
         public string Nickname { get; }
         public bool Shiny { get; }
         public byte Level { get; }
+        public uint EXP { get; }
         public PBEItem Item { get; }
         public byte Friendship { get; }
         public PBEAbility Ability { get; }
@@ -25,6 +26,7 @@ namespace Kermalis.PokemonBattleEngine.Data
             Form = r.ReadEnum<PBEForm>();
             Nickname = r.ReadStringNullTerminated();
             Level = r.ReadByte();
+            EXP = r.ReadUInt32();
             Friendship = r.ReadByte();
             Shiny = r.ReadBoolean();
             Ability = r.ReadEnum<PBEAbility>();

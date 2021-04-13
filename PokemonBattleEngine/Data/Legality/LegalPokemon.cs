@@ -80,6 +80,23 @@ namespace Kermalis.PokemonBattleEngine.Data.Legality
                     _level = value;
                     OnPropertyChanged(nameof(Level));
                     Moveset.Level = value;
+                    EXP = PBEDataProvider.Instance.GetEXPRequired(_pData.GrowthRate, value);
+                }
+            }
+        }
+        private uint _exp;
+        public uint EXP
+        {
+            get => _exp;
+            set
+            {
+                if (_exp != value)
+                {
+                    _level = PBEDataProvider.Instance.GetEXPLevel(_pData.GrowthRate, value);
+                    _exp = value;
+                    OnPropertyChanged(nameof(EXP));
+                    OnPropertyChanged(nameof(Level));
+                    Moveset.Level = _level;
                 }
             }
         }
@@ -201,6 +218,9 @@ namespace Kermalis.PokemonBattleEngine.Data.Legality
             byte level = r.ReadByte();
             PBELegalityChecker.ValidateLevel(level, Settings);
             _level = level;
+            uint exp = r.ReadUInt32();
+            PBELegalityChecker.ValidateEXP(_pData.GrowthRate, exp, level);
+            _exp = exp;
             _friendship = r.ReadByte();
             _shiny = r.ReadBoolean();
             PBEAbility ability = r.ReadEnum<PBEAbility>();
@@ -253,6 +273,9 @@ namespace Kermalis.PokemonBattleEngine.Data.Legality
             _species = species;
             _form = form;
             SetSelectable();
+            uint exp = jToken[nameof(EXP)].Value<uint>();
+            PBELegalityChecker.ValidateEXP(_pData.GrowthRate, exp, level);
+            _exp = exp;
             PBEAbility ability = PBEDataProvider.Instance.GetAbilityByName(jToken[nameof(Ability)].Value<string>()).Value;
             PBELegalityChecker.ValidateAbility(SelectableAbilities, ability);
             _ability = ability;
@@ -266,7 +289,7 @@ namespace Kermalis.PokemonBattleEngine.Data.Legality
             IndividualValues = new PBELegalIndividualValues(Settings, jToken[nameof(IndividualValues)]);
             Moveset = new PBELegalMoveset(species, form, level, Settings, new PBEReadOnlyMoveset((JArray)jToken[nameof(Moveset)]));
         }
-        public PBELegalPokemon(PBESpecies species, PBEForm form, byte level, PBESettings settings)
+        public PBELegalPokemon(PBESpecies species, PBEForm form, byte level, uint exp, PBESettings settings)
         {
             if (settings == null)
             {
@@ -278,10 +301,12 @@ namespace Kermalis.PokemonBattleEngine.Data.Legality
             }
             PBELegalityChecker.ValidateSpecies(species, form, true);
             PBELegalityChecker.ValidateLevel(level, settings);
+            PBELegalityChecker.ValidateEXP(PBEDataProvider.Instance.GetPokemonData(species, form).GrowthRate, exp, level);
             Settings = settings;
             _species = species;
             _form = form;
             _level = level;
+            _exp = exp;
             _friendship = (byte)PBEDataProvider.GlobalRandom.RandomInt(0, byte.MaxValue);
             _shiny = PBEDataProvider.GlobalRandom.RandomShiny();
             _nature = PBEDataProvider.GlobalRandom.RandomElement(PBEDataUtils.AllNatures);

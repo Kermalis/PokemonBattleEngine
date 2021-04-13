@@ -100,6 +100,22 @@ namespace Kermalis.PokemonBattleEngine.Data.Legality
                 throw new ArgumentOutOfRangeException(nameof(value), $"{nameof(value)} must be at least {nameof(settings.MinLevel)} ({settings.MinLevel}) and cannot exceed {nameof(settings.MaxLevel)} ({settings.MaxLevel}).");
             }
         }
+        internal static void ValidateEXP(PBEGrowthRate type, uint value, byte level)
+        {
+            uint requiredForLevel = PBEDataProvider.Instance.GetEXPRequired(type, level);
+            if (value < requiredForLevel)
+            {
+                throw new ArgumentOutOfRangeException(nameof(value));
+            }
+            if (level < 100)
+            {
+                uint requiredForNextLevel = PBEDataProvider.Instance.GetEXPRequired(type, (byte)(level + 1));
+                if (value >= requiredForNextLevel)
+                {
+                    throw new ArgumentOutOfRangeException(nameof(value));
+                }
+            }
+        }
         internal static void ValidateAbility(PBEAlphabeticalList<PBEAbility> valid, PBEAbility value)
         {
             if (!valid.Contains(value))

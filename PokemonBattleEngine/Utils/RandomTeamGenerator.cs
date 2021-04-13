@@ -1359,7 +1359,7 @@ namespace Kermalis.PokemonBattleEngine.Utils
                     continue;
                 }
 
-                var pkmn = new PBELegalPokemon(species, form, PBESettings.DefaultMaxLevel, PBESettings.DefaultSettings);
+                var pkmn = new PBELegalPokemon(species, form, PBESettings.DefaultMaxLevel, PBEDataProvider.Instance.GetEXPRequired(pData.GrowthRate, PBESettings.DefaultMaxLevel), PBESettings.DefaultSettings);
                 GetRandomSet(species, form, pData, currentIndex == 0, teamDs, pkmn);
 
                 // Illusion shouldn't be the last Pokémon of the team

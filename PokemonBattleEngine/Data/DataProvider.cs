@@ -156,6 +156,15 @@ namespace Kermalis.PokemonBattleEngine.Data
             return PBEPokemonData.GetData(species, form, cache);
         }
 
+        public virtual uint GetEXPRequired(PBEGrowthRate type, byte level)
+        {
+            return EXPTables.GetEXPRequired(type, level);
+        }
+        public virtual byte GetEXPLevel(PBEGrowthRate type, uint exp)
+        {
+            return EXPTables.GetEXPLevel(type, exp);
+        }
+
         public virtual int GetSpeciesCaught()
         {
             return 300;

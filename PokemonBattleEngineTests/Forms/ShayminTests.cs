@@ -30,7 +30,7 @@ namespace Kermalis.PokemonBattleEngineTests.Forms
             p1[0] = new TestPokemon(settings, PBESpecies.Shaymin, PBEForm.Shaymin_Sky, 100, PBEMove.Splash);
             p1[1] = new TestPokemon(settings, PBESpecies.Magikarp, 0, 100, PBEMove.Splash);
 
-            var battle = new PBEBattle(PBEBattleFormat.Single, settings, new PBETrainerInfo(p0, "Trainer 0"), new PBETrainerInfo(p1, "Trainer 1"),
+            var battle = new PBEBattle(PBEBattleFormat.Single, settings, new PBETrainerInfo(p0, "Trainer 0", false), new PBETrainerInfo(p1, "Trainer 1", false),
                 battleTerrain: PBEBattleTerrain.Snow);
             battle.OnNewEvent += PBEBattle.ConsoleBattleEventHandler;
 

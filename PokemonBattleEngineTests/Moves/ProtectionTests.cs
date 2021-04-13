@@ -31,7 +31,7 @@ namespace Kermalis.PokemonBattleEngineTests.Moves
             var p1 = new TestPokemonCollection(1);
             p1[0] = new TestPokemon(settings, PBESpecies.Magikarp, 0, 100, PBEMove.Splash);
 
-            var battle = new PBEBattle(PBEBattleFormat.Single, settings, new PBETrainerInfo(p0, "Trainer 0"), new PBETrainerInfo(p1, "Trainer 1"));
+            var battle = new PBEBattle(PBEBattleFormat.Single, settings, new PBETrainerInfo(p0, "Trainer 0", false), new PBETrainerInfo(p1, "Trainer 1", false));
             battle.OnNewEvent += PBEBattle.ConsoleBattleEventHandler;
 
             PBETrainer t0 = battle.Trainers[0];
@@ -81,7 +81,7 @@ namespace Kermalis.PokemonBattleEngineTests.Moves
             var p1 = new TestPokemonCollection(1);
             p1[0] = new TestPokemon(settings, PBESpecies.MrMime, 0, 100, PBEMove.QuickGuard);
 
-            var battle = new PBEBattle(PBEBattleFormat.Double, settings, new PBETrainerInfo(p0, "Trainer 0"), new PBETrainerInfo(p1, "Trainer 1"));
+            var battle = new PBEBattle(PBEBattleFormat.Double, settings, new PBETrainerInfo(p0, "Trainer 0", false), new PBETrainerInfo(p1, "Trainer 1", false));
             battle.OnNewEvent += PBEBattle.ConsoleBattleEventHandler;
 
             PBETrainer t0 = battle.Trainers[0];
@@ -123,7 +123,7 @@ namespace Kermalis.PokemonBattleEngineTests.Moves
             var p1 = new TestPokemonCollection(1);
             p1[0] = new TestPokemon(settings, PBESpecies.Mienshao, 0, 100, PBEMove.Protect);
 
-            var battle = new PBEBattle(PBEBattleFormat.Single, settings, new PBETrainerInfo(p0, "Trainer 0"), new PBETrainerInfo(p1, "Trainer 1"));
+            var battle = new PBEBattle(PBEBattleFormat.Single, settings, new PBETrainerInfo(p0, "Trainer 0", false), new PBETrainerInfo(p1, "Trainer 1", false));
             battle.OnNewEvent += PBEBattle.ConsoleBattleEventHandler;
 
             PBETrainer t0 = battle.Trainers[0];
@@ -163,7 +163,7 @@ namespace Kermalis.PokemonBattleEngineTests.Moves
             var p1 = new TestPokemonCollection(1);
             p1[0] = new TestPokemon(settings, PBESpecies.Lucario, 0, 100, move2);
 
-            var battle = new PBEBattle(PBEBattleFormat.Single, settings, new PBETrainerInfo(p0, "Trainer 0"), new PBETrainerInfo(p1, "Trainer 1"));
+            var battle = new PBEBattle(PBEBattleFormat.Single, settings, new PBETrainerInfo(p0, "Trainer 0", false), new PBETrainerInfo(p1, "Trainer 1", false));
             battle.OnNewEvent += PBEBattle.ConsoleBattleEventHandler;
 
             PBETrainer t0 = battle.Trainers[0];

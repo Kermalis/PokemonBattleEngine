@@ -8,6 +8,7 @@ namespace Kermalis.PokemonBattleEngine.Data
     {
         IPBEReadOnlyStatCollection BaseStats { get; }
         PBEGenderRatio GenderRatio { get; }
+        PBEGrowthRate GrowthRate { get; }
         byte CatchRate { get; }
         byte FleeRate { get; }
         /// <summary>Weight in Kilograms</summary>

@@ -32,6 +32,7 @@ Join our _(new-ish)_ [Discord server][Discord] to talk or try out the battle bot
 * Add the remaining vanilla [abilities](To%20Do%20Abilities.txt), [items](To%20Do%20Items.txt), and [moves](To%20Do%20Moves.txt)
 * Finish adding all event Pokémon
 * Add previews of the Android/iOS apps
+* Leveling up logic
 
 ----
 ## PokemonBattleEngine Is Used By:

@@ -130,8 +130,8 @@ namespace Kermalis.PokemonBattleEngineClient.Views
                 int numPerTrainer = settings.MaxPartySize;
                 p0 = PBERandomTeamGenerator.CreateRandomTeam(numPerTrainer);
                 p1 = PBERandomTeamGenerator.CreateRandomTeam(numPerTrainer);
-                t0 = new[] { new PBETrainerInfo(p0, GetName()) };
-                t1 = new[] { new PBETrainerInfo(p1, "Champion Cynthia") };
+                t0 = new[] { new PBETrainerInfo(p0, GetName(), true) };
+                t1 = new[] { new PBETrainerInfo(p1, "Champion Cynthia", false) };
             }
             string GetName()
             {
@@ -156,8 +156,8 @@ namespace Kermalis.PokemonBattleEngineClient.Views
                         p1 = PBERandomTeamGenerator.CreateRandomTeam(numPerTrainer);
                         p2 = PBERandomTeamGenerator.CreateRandomTeam(numPerTrainer);
                         p3 = PBERandomTeamGenerator.CreateRandomTeam(numPerTrainer);
-                        t0 = new[] { new PBETrainerInfo(p0, GetName()), new PBETrainerInfo(p1, "Barry") };
-                        t1 = new[] { new PBETrainerInfo(p2, "Leader Volkner"), new PBETrainerInfo(p3, "Elite Four Flint") };
+                        t0 = new[] { new PBETrainerInfo(p0, GetName(), true), new PBETrainerInfo(p1, "Barry", false) };
+                        t1 = new[] { new PBETrainerInfo(p2, "Leader Volkner", false), new PBETrainerInfo(p3, "Elite Four Flint", false) };
                     }
                     else
                     {
@@ -178,8 +178,8 @@ namespace Kermalis.PokemonBattleEngineClient.Views
                         p3 = PBERandomTeamGenerator.CreateRandomTeam(numPerTrainer);
                         p4 = PBERandomTeamGenerator.CreateRandomTeam(numPerTrainer);
                         p5 = PBERandomTeamGenerator.CreateRandomTeam(numPerTrainer);
-                        t0 = new[] { new PBETrainerInfo(p0, GetName()), new PBETrainerInfo(p1, "Barry"), new PBETrainerInfo(p2, "Lucas") };
-                        t1 = new[] { new PBETrainerInfo(p3, "Champion Cynthia"), new PBETrainerInfo(p4, "Leader Volkner"), new PBETrainerInfo(p5, "Elite Four Flint") };
+                        t0 = new[] { new PBETrainerInfo(p0, GetName(), true), new PBETrainerInfo(p1, "Barry", false), new PBETrainerInfo(p2, "Lucas", false) };
+                        t1 = new[] { new PBETrainerInfo(p3, "Champion Cynthia", false), new PBETrainerInfo(p4, "Leader Volkner", false), new PBETrainerInfo(p5, "Elite Four Flint", false) };
                     }
                     else
                     {

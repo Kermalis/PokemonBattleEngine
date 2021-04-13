@@ -35,7 +35,7 @@ namespace Kermalis.PokemonBattleEngineTests.Forms
                 Ability = ability
             };
 
-            var battle = new PBEBattle(PBEBattleFormat.Single, settings, new PBETrainerInfo(p0, "Trainer 0"), new PBETrainerInfo(p1, "Trainer 1"),
+            var battle = new PBEBattle(PBEBattleFormat.Single, settings, new PBETrainerInfo(p0, "Trainer 0", false), new PBETrainerInfo(p1, "Trainer 1", false),
                 weather: PBEWeather.HarshSunlight);
             battle.OnNewEvent += PBEBattle.ConsoleBattleEventHandler;
 
@@ -93,7 +93,7 @@ namespace Kermalis.PokemonBattleEngineTests.Forms
                 Ability = ability
             };
 
-            var battle = new PBEBattle(PBEBattleFormat.Single, settings, new PBETrainerInfo(p0, "Trainer 0"), new PBETrainerInfo(p1, "Trainer 1"));
+            var battle = new PBEBattle(PBEBattleFormat.Single, settings, new PBETrainerInfo(p0, "Trainer 0", false), new PBETrainerInfo(p1, "Trainer 1", false));
             battle.OnNewEvent += PBEBattle.ConsoleBattleEventHandler;
 
             PBETrainer t0 = battle.Trainers[0];

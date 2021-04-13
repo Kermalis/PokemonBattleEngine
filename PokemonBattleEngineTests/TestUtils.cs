@@ -116,6 +116,7 @@ namespace Kermalis.PokemonBattleEngineTests
         public string Nickname { get; set; }
         public bool Shiny { get; set; }
         public byte Level { get; set; }
+        public uint EXP { get; set; }
         public PBEItem Item { get; set; }
         public byte Friendship { get; set; }
         public PBEAbility Ability { get; set; }
@@ -131,6 +132,7 @@ namespace Kermalis.PokemonBattleEngineTests
             Species = species;
             Form = form;
             Level = level;
+            EXP = PBEDataProvider.Instance.GetEXPRequired(PBEDataProvider.Instance.GetPokemonData(species, form).GrowthRate, level);
             Nickname = species.ToString();
             Gender = PBEDataProvider.GlobalRandom.RandomGender(PBEDataProvider.Instance.GetPokemonData(species, form).GenderRatio);
             CaughtBall = PBEItem.PokeBall;

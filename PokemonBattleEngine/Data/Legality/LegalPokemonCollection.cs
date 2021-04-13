@@ -113,11 +113,12 @@ namespace Kermalis.PokemonBattleEngine.Data.Legality
         private void InsertRandom(bool setToMaxLevel, bool fireEvent, int index)
         {
             (PBESpecies species, PBEForm form) = PBEDataProvider.GlobalRandom.RandomSpecies(true);
-            Insert(species, form, setToMaxLevel ? Settings.MaxLevel : PBEDataProvider.GlobalRandom.RandomLevel(Settings), fireEvent, index);
+            byte level = setToMaxLevel ? Settings.MaxLevel : PBEDataProvider.GlobalRandom.RandomLevel(Settings);
+            Insert(species, form, level, PBEDataProvider.Instance.GetEXPRequired(PBEDataProvider.Instance.GetPokemonData(species, form).GrowthRate, level), fireEvent, index);
         }
-        private void Insert(PBESpecies species, PBEForm form, byte level, bool fireEvent, int index)
+        private void Insert(PBESpecies species, PBEForm form, byte level, uint exp, bool fireEvent, int index)
         {
-            InsertWithEvents(fireEvent, new PBELegalPokemon(species, form, level, Settings), index);
+            InsertWithEvents(fireEvent, new PBELegalPokemon(species, form, level, exp, Settings), index);
         }
         private void InsertWithEvents(bool fireEvent, PBELegalPokemon item, int index)
         {
@@ -162,13 +163,14 @@ namespace Kermalis.PokemonBattleEngine.Data.Legality
                 ExceedException();
             }
         }
-        public void Add(PBESpecies species, PBEForm form, byte level)
+        public void Add(PBESpecies species, PBEForm form, byte level, uint exp)
         {
             PBELegalityChecker.ValidateSpecies(species, form, true);
             PBELegalityChecker.ValidateLevel(level, Settings);
+            PBELegalityChecker.ValidateEXP(PBEDataProvider.Instance.GetPokemonData(species, form).GrowthRate, exp, level);
             if (_list.Count < Settings.MaxPartySize)
             {
-                Insert(species, form, level, true, _list.Count);
+                Insert(species, form, level, exp, true, _list.Count);
             }
             else
             {
@@ -205,13 +207,13 @@ namespace Kermalis.PokemonBattleEngine.Data.Legality
                 ExceedException();
             }
         }
-        public void Insert(PBESpecies species, PBEForm form, byte level, int index)
+        public void Insert(PBESpecies species, PBEForm form, byte level, uint exp, int index)
         {
             PBELegalityChecker.ValidateSpecies(species, form, true);
             PBELegalityChecker.ValidateLevel(level, Settings);
             if (_list.Count < Settings.MaxPartySize)
             {
-                Insert(species, form, level, true, index);
+                Insert(species, form, level, exp, true, index);
             }
             else
             {

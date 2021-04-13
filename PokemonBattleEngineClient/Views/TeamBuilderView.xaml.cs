@@ -51,8 +51,35 @@ namespace Kermalis.PokemonBattleEngineClient.Views
                     value.PropertyChanged += OnPkmnPropertyChanged;
                     _ignoreComboBoxChanges = true;
                     OnPropertyChanged(nameof(Pkmn));
+                    UpdateEXPRequirements();
                     UpdateComboBoxes(null);
                     _ignoreComboBoxChanges = false;
+                }
+            }
+        }
+        private uint _minEXP;
+        public uint MinEXP
+        {
+            get => _minEXP;
+            set
+            {
+                if (_minEXP != value)
+                {
+                    _minEXP = value;
+                    OnPropertyChanged(nameof(MinEXP));
+                }
+            }
+        }
+        private uint _maxEXP;
+        public uint MaxEXP
+        {
+            get => _maxEXP;
+            set
+            {
+                if (_maxEXP != value)
+                {
+                    _maxEXP = value;
+                    OnPropertyChanged(nameof(MaxEXP));
                 }
             }
         }
@@ -82,6 +109,12 @@ namespace Kermalis.PokemonBattleEngineClient.Views
         private readonly ComboBox _itemComboBox;
         private readonly ComboBox _speciesComboBox;
 
+        private void UpdateEXPRequirements()
+        {
+            PBEGrowthRate type = PBEDataProvider.Instance.GetPokemonData(_pkmn).GrowthRate;
+            MinEXP = PBEDataProvider.Instance.GetEXPRequired(type, _pkmn.Settings.MinLevel);
+            MaxEXP = PBEDataProvider.Instance.GetEXPRequired(type, _pkmn.Settings.MaxLevel);
+        }
         private void UpdateComboBoxes(string property)
         {
             bool all = property == null;
@@ -125,35 +158,41 @@ namespace Kermalis.PokemonBattleEngineClient.Views
         private void OnPkmnPropertyChanged(object sender, PropertyChangedEventArgs e)
         {
             UpdateComboBoxes(e.PropertyName);
+            if (e.PropertyName == nameof(PBELegalPokemon.Species) || e.PropertyName == nameof(PBELegalPokemon.Form))
+            {
+                UpdateEXPRequirements();
+            }
         }
         private void OnComboBoxSelectionChanged(object sender, SelectionChangedEventArgs thing)
         {
-            if (!_ignoreComboBoxChanges)
+            if (_ignoreComboBoxChanges)
             {
-                _ignoreComboBoxChanges = true;
-                var c = (ComboBox)sender;
-                if (c == _abilityComboBox)
-                {
-                    _pkmn.Ability = (PBEAbility)c.SelectedItem;
-                }
-                else if (c == _formComboBox)
-                {
-                    _pkmn.Form = (PBEForm)c.SelectedItem;
-                }
-                else if (c == _genderComboBox)
-                {
-                    _pkmn.Gender = (PBEGender)c.SelectedItem;
-                }
-                else if (c == _itemComboBox)
-                {
-                    _pkmn.Item = (PBEItem)c.SelectedItem;
-                }
-                else if (c == _speciesComboBox)
-                {
-                    _pkmn.Species = (PBESpecies)c.SelectedItem;
-                }
-                _ignoreComboBoxChanges = false;
+                return;
             }
+
+            _ignoreComboBoxChanges = true;
+            var c = (ComboBox)sender;
+            if (c == _abilityComboBox)
+            {
+                _pkmn.Ability = (PBEAbility)c.SelectedItem;
+            }
+            else if (c == _formComboBox)
+            {
+                _pkmn.Form = (PBEForm)c.SelectedItem;
+            }
+            else if (c == _genderComboBox)
+            {
+                _pkmn.Gender = (PBEGender)c.SelectedItem;
+            }
+            else if (c == _itemComboBox)
+            {
+                _pkmn.Item = (PBEItem)c.SelectedItem;
+            }
+            else if (c == _speciesComboBox)
+            {
+                _pkmn.Species = (PBESpecies)c.SelectedItem;
+            }
+            _ignoreComboBoxChanges = false;
         }
 
         public TeamBuilderView()

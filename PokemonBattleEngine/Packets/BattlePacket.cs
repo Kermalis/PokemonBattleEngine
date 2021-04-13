@@ -24,6 +24,7 @@ namespace Kermalis.PokemonBattleEngine.Packets
                     public PBEForm Form { get; }
                     public string Nickname { get; }
                     public byte Level { get; }
+                    public uint EXP { get; }
                     public byte Friendship { get; }
                     public bool Shiny { get; }
                     public PBEAbility Ability { get; }
@@ -43,6 +44,7 @@ namespace Kermalis.PokemonBattleEngine.Packets
                         Form = pkmn.OriginalForm;
                         Nickname = pkmn.Nickname;
                         Level = pkmn.OriginalLevel;
+                        EXP = pkmn.OriginalEXP;
                         Friendship = pkmn.Friendship;
                         Shiny = pkmn.Shiny;
                         Ability = pkmn.OriginalAbility;
@@ -62,6 +64,7 @@ namespace Kermalis.PokemonBattleEngine.Packets
                         Form = r.ReadEnum<PBEForm>();
                         Nickname = r.ReadStringNullTerminated();
                         Level = r.ReadByte();
+                        EXP = r.ReadUInt32();
                         Friendship = r.ReadByte();
                         Shiny = r.ReadBoolean();
                         Ability = r.ReadEnum<PBEAbility>();
@@ -82,6 +85,7 @@ namespace Kermalis.PokemonBattleEngine.Packets
                         w.Write(Form);
                         w.Write(Nickname, true);
                         w.Write(Level);
+                        w.Write(EXP);
                         w.Write(Friendship);
                         w.Write(Shiny);
                         w.Write(Ability);

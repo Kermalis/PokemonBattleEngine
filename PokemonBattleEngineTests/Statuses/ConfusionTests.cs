@@ -32,7 +32,7 @@ namespace Kermalis.PokemonBattleEngineTests.Statuses
             var p1 = new TestPokemonCollection(1);
             p1[0] = new TestPokemon(settings, PBESpecies.Accelgor, 0, 100, PBEMove.Swagger);
 
-            var battle = new PBEBattle(PBEBattleFormat.Single, settings, new PBETrainerInfo(p0, "Trainer 0"), new PBETrainerInfo(p1, "Trainer 1"));
+            var battle = new PBEBattle(PBEBattleFormat.Single, settings, new PBETrainerInfo(p0, "Trainer 0", false), new PBETrainerInfo(p1, "Trainer 1", false));
             battle.OnNewEvent += PBEBattle.ConsoleBattleEventHandler;
 
             PBETrainer t0 = battle.Trainers[0];
@@ -84,7 +84,7 @@ namespace Kermalis.PokemonBattleEngineTests.Statuses
             var p1 = new TestPokemonCollection(1);
             p1[0] = new TestPokemon(settings, PBESpecies.Accelgor, 0, 100, PBEMove.Swagger);
 
-            var battle = new PBEBattle(PBEBattleFormat.Single, settings, new PBETrainerInfo(p0, "Trainer 0"), new PBETrainerInfo(p1, "Trainer 1"));
+            var battle = new PBEBattle(PBEBattleFormat.Single, settings, new PBETrainerInfo(p0, "Trainer 0", false), new PBETrainerInfo(p1, "Trainer 1", false));
             battle.OnNewEvent += PBEBattle.ConsoleBattleEventHandler;
 
             PBETrainer t0 = battle.Trainers[0];

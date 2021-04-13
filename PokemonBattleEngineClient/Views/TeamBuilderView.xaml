@@ -47,6 +47,7 @@
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
           </Grid.RowDefinitions>
           <Grid.ColumnDefinitions>
             <ColumnDefinition Width="Auto"/>
@@ -70,20 +71,22 @@
           <ComboBox Grid.Row="2" Grid.Column="1" Name="Form" Items="{Binding Pkmn.SelectableForms, Mode=OneWay}" ItemTemplate="{StaticResource FormMenuBlack}" IsVisible="{Binding !!Pkmn.SelectableForms.Count}"/>
           <Image Grid.Row="3" Grid.Column="0" Stretch="None" HorizontalAlignment="Left" Source="{Binding Source='Nickname:', Converter={x:Static infrastructure:ObjectToTextBitmapConverter.Instance}, ConverterParameter=MenuWhite, Mode=OneWay}"/>
           <TextBox Grid.Row="3" Grid.Column="1" Text="{Binding Pkmn.Nickname}"/>
-          <Image Grid.Row="4" Grid.Column="0" Stretch="None" HorizontalAlignment="Left" Source="{Binding Source='Level:', Converter={x:Static infrastructure:ObjectToTextBitmapConverter.Instance}, ConverterParameter=MenuWhite, Mode=OneWay}"/>
-          <NumericUpDown Grid.Row="4" Grid.Column="1" Minimum="{Binding Pkmn.Settings.MinLevel, Mode=OneWay}" Maximum="{Binding Pkmn.Settings.MaxLevel, Mode=OneWay}" ClipValueToMinMax="true" Value="{Binding Pkmn.Level}"/>
-          <Image Grid.Row="5" Grid.Column="0" Stretch="None" HorizontalAlignment="Left" Source="{Binding Source='Friendship:', Converter={x:Static infrastructure:ObjectToTextBitmapConverter.Instance}, ConverterParameter=MenuWhite, Mode=OneWay}"/>
-          <NumericUpDown Grid.Row="5" Grid.Column="1" Minimum="0" Maximum="255" ClipValueToMinMax="true" Value="{Binding Pkmn.Friendship}"/>
-          <Image Grid.Row="6" Grid.Column="0" Stretch="None" HorizontalAlignment="Left" Source="{Binding Source='Ability:', Converter={x:Static infrastructure:ObjectToTextBitmapConverter.Instance}, ConverterParameter=MenuWhite, Mode=OneWay}"/>
-          <ComboBox Grid.Row="6" Grid.Column="1" Name="Ability" Items="{Binding Pkmn.SelectableAbilities, Mode=OneWay}" ItemTemplate="{StaticResource MenuBlack}"/>
-          <Image Grid.Row="7" Grid.Column="0" Stretch="None" HorizontalAlignment="Left" Source="{Binding Source='Nature:', Converter={x:Static infrastructure:ObjectToTextBitmapConverter.Instance}, ConverterParameter=MenuWhite, Mode=OneWay}"/>
-          <ComboBox Grid.Row="7" Grid.Column="1" Items="{x:Static pbedata:PBEDataUtils.AllNatures}" ItemTemplate="{StaticResource MenuBlack}" SelectedItem="{Binding Pkmn.Nature}"/>
-          <Image Grid.Row="8" Grid.Column="0" Stretch="None" HorizontalAlignment="Left" Source="{Binding Source='Gender:', Converter={x:Static infrastructure:ObjectToTextBitmapConverter.Instance}, ConverterParameter=MenuWhite, Mode=OneWay}"/>
-          <ComboBox Grid.Row="8" Grid.Column="1" Name="Gender" Items="{Binding Pkmn.SelectableGenders, Mode=OneWay}" ItemTemplate="{StaticResource MenuBlack}"/>
-          <Image Grid.Row="9" Grid.Column="0" Stretch="None" HorizontalAlignment="Left" Source="{Binding Source='Item:', Converter={x:Static infrastructure:ObjectToTextBitmapConverter.Instance}, ConverterParameter=MenuWhite, Mode=OneWay}"/>
-          <ComboBox Grid.Row="9" Grid.Column="1" Name="Item" Items="{Binding Pkmn.SelectableItems, Mode=OneWay}" ItemTemplate="{StaticResource MenuBlack}"/>
-          <Image Grid.Row="10" Grid.Column="0" Stretch="None" HorizontalAlignment="Left" Source="{Binding Source='Ball:', Converter={x:Static infrastructure:ObjectToTextBitmapConverter.Instance}, ConverterParameter=MenuWhite, Mode=OneWay}"/>
-          <ComboBox Grid.Row="10" Grid.Column="1" Items="{x:Static pbedata:PBEDataUtils.AllBalls}" ItemTemplate="{StaticResource MenuBlack}" SelectedItem="{Binding Pkmn.CaughtBall}"/>
+			<Image Grid.Row="4" Grid.Column="0" Stretch="None" HorizontalAlignment="Left" Source="{Binding Source='Level:', Converter={x:Static infrastructure:ObjectToTextBitmapConverter.Instance}, ConverterParameter=MenuWhite, Mode=OneWay}"/>
+			<NumericUpDown Grid.Row="4" Grid.Column="1" Minimum="{Binding Pkmn.Settings.MinLevel, Mode=OneWay}" Maximum="{Binding Pkmn.Settings.MaxLevel, Mode=OneWay}" ClipValueToMinMax="true" Value="{Binding Pkmn.Level}"/>
+			<Image Grid.Row="5" Grid.Column="0" Stretch="None" HorizontalAlignment="Left" Source="{Binding Source='EXP:', Converter={x:Static infrastructure:ObjectToTextBitmapConverter.Instance}, ConverterParameter=MenuWhite, Mode=OneWay}"/>
+			<NumericUpDown Grid.Row="5" Grid.Column="1" Minimum="{Binding MinEXP, Mode=OneWay}" Maximum="{Binding MaxEXP, Mode=OneWay}" ClipValueToMinMax="true" Value="{Binding Pkmn.EXP}"/>
+			<Image Grid.Row="6" Grid.Column="0" Stretch="None" HorizontalAlignment="Left" Source="{Binding Source='Friendship:', Converter={x:Static infrastructure:ObjectToTextBitmapConverter.Instance}, ConverterParameter=MenuWhite, Mode=OneWay}"/>
+          <NumericUpDown Grid.Row="6" Grid.Column="1" Minimum="0" Maximum="255" ClipValueToMinMax="true" Value="{Binding Pkmn.Friendship}"/>
+          <Image Grid.Row="7" Grid.Column="0" Stretch="None" HorizontalAlignment="Left" Source="{Binding Source='Ability:', Converter={x:Static infrastructure:ObjectToTextBitmapConverter.Instance}, ConverterParameter=MenuWhite, Mode=OneWay}"/>
+          <ComboBox Grid.Row="7" Grid.Column="1" Name="Ability" Items="{Binding Pkmn.SelectableAbilities, Mode=OneWay}" ItemTemplate="{StaticResource MenuBlack}"/>
+          <Image Grid.Row="8" Grid.Column="0" Stretch="None" HorizontalAlignment="Left" Source="{Binding Source='Nature:', Converter={x:Static infrastructure:ObjectToTextBitmapConverter.Instance}, ConverterParameter=MenuWhite, Mode=OneWay}"/>
+          <ComboBox Grid.Row="8" Grid.Column="1" Items="{x:Static pbedata:PBEDataUtils.AllNatures}" ItemTemplate="{StaticResource MenuBlack}" SelectedItem="{Binding Pkmn.Nature}"/>
+          <Image Grid.Row="9" Grid.Column="0" Stretch="None" HorizontalAlignment="Left" Source="{Binding Source='Gender:', Converter={x:Static infrastructure:ObjectToTextBitmapConverter.Instance}, ConverterParameter=MenuWhite, Mode=OneWay}"/>
+          <ComboBox Grid.Row="9" Grid.Column="1" Name="Gender" Items="{Binding Pkmn.SelectableGenders, Mode=OneWay}" ItemTemplate="{StaticResource MenuBlack}"/>
+          <Image Grid.Row="10" Grid.Column="0" Stretch="None" HorizontalAlignment="Left" Source="{Binding Source='Item:', Converter={x:Static infrastructure:ObjectToTextBitmapConverter.Instance}, ConverterParameter=MenuWhite, Mode=OneWay}"/>
+          <ComboBox Grid.Row="10" Grid.Column="1" Name="Item" Items="{Binding Pkmn.SelectableItems, Mode=OneWay}" ItemTemplate="{StaticResource MenuBlack}"/>
+          <Image Grid.Row="11" Grid.Column="0" Stretch="None" HorizontalAlignment="Left" Source="{Binding Source='Ball:', Converter={x:Static infrastructure:ObjectToTextBitmapConverter.Instance}, ConverterParameter=MenuWhite, Mode=OneWay}"/>
+          <ComboBox Grid.Row="11" Grid.Column="1" Items="{x:Static pbedata:PBEDataUtils.AllBalls}" ItemTemplate="{StaticResource MenuBlack}" SelectedItem="{Binding Pkmn.CaughtBall}"/>
         </Grid>
         <Panel Width="192" Height="192">
           <Image Stretch="None" HorizontalAlignment="Center" VerticalAlignment="Center" RenderOptions.BitmapInterpolationMode="Default" gif:GifImage.SourceUri="{Binding SpriteUri}">

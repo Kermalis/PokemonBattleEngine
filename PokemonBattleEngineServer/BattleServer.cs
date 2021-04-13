@@ -102,7 +102,7 @@ namespace Kermalis.PokemonBattleEngineServer
                             newPlayer.Dispose();
                             return;
                         }
-                        _incomingTrainers[i / NumTrainersPerTeam][i % NumTrainersPerTeam] = new PBETrainerInfo(party, name);
+                        _incomingTrainers[i / NumTrainersPerTeam][i % NumTrainersPerTeam] = new PBETrainerInfo(party, name, false);
                         _battlers[i] = newPlayer;
                         _readyPlayers.Add(client, newPlayer);
 

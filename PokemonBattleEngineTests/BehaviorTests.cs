@@ -30,7 +30,7 @@ namespace Kermalis.PokemonBattleEngineTests
                 CaughtBall = PBEItem.None
             };
 
-            var battle = new PBEBattle(PBEBattleFormat.Single, settings, new PBETrainerInfo(p0, "Trainer 0"), new PBEWildInfo(p1));
+            var battle = new PBEBattle(PBEBattleFormat.Single, settings, new PBETrainerInfo(p0, "Trainer 0", false), new PBEWildInfo(p1));
 
             PBETrainer t1 = battle.Trainers[1];
             PBEBattlePokemon darkrai = t1.Party[0];
