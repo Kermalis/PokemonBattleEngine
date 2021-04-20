@@ -165,11 +165,11 @@ namespace Kermalis.PokemonBattleEngine.Data
         #region EXP
         public virtual uint GetEXPRequired(PBEGrowthRate type, byte level)
         {
-            return EXPTables.GetEXPRequired(type, level);
+            return PBEEXPTables.GetEXPRequired(type, level);
         }
         public virtual byte GetEXPLevel(PBEGrowthRate type, uint exp)
         {
-            return EXPTables.GetEXPLevel(type, exp);
+            return PBEEXPTables.GetEXPLevel(type, exp);
         }
         /// <summary>This is the boost to the EXP rate. In generation 5, Pass Powers boost the EXP rate.</summary>
         public virtual double GetEXPModifier(PBEBattle battle)

@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace Kermalis.PokemonBattleEngine.Data
 {
-    public static class EXPTables
+    public static class PBEEXPTables
     {
         #region Tables
 
