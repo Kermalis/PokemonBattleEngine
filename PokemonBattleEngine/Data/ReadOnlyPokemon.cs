@@ -4,6 +4,7 @@ namespace Kermalis.PokemonBattleEngine.Data
 {
     public sealed class PBEReadOnlyPokemon : IPBEPokemon
     {
+        public bool PBEIgnore => false;
         public PBESpecies Species { get; }
         public PBEForm Form { get; }
         public PBEGender Gender { get; }

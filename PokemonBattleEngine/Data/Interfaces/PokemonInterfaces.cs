@@ -12,6 +12,9 @@ namespace Kermalis.PokemonBattleEngine.Data
     // 3: If they want just some things (like effort values pre-seeded) they'd also need this
     public interface IPBEPokemon : IPBESpeciesForm
     {
+        /// <summary>This marks the Pokémon to be ignored by the battle engine. The Pokémon will be treated like an egg or fainted Pokémon.
+        /// Therefore, it won't be sent out, copied with Illusion, or count as a battler if the rest of the team faints.</summary>
+        bool PBEIgnore { get; }
         PBEGender Gender { get; }
         string Nickname { get; }
         bool Shiny { get; }

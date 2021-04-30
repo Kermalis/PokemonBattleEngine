@@ -17,6 +17,9 @@ namespace Kermalis.PokemonBattleEngine.Battle
         public PBETrainer Trainer { get; }
         public byte Id { get; }
         public bool IsWild => Team.IsWild;
+        public bool PBEIgnore { get; }
+
+        public bool CanBattle => HP > 0 && !PBEIgnore;
 
         #region Basic Properties
         /// <summary>The Pokémon's current HP.</summary>
@@ -216,7 +219,9 @@ namespace Kermalis.PokemonBattleEngine.Battle
                   pkmn.Species, pkmn.Form, pkmn.Nickname, pkmn.Level, pkmn.EXP, pkmn.Friendship, pkmn.Shiny,
                   pkmn.Ability, pkmn.Nature, pkmn.Gender, pkmn.Item, pkmn.CaughtBall,
                   new PBEReadOnlyStatCollection(pkmn.EffortValues), new PBEReadOnlyStatCollection(pkmn.IndividualValues), moves)
-        { }
+        {
+            PBEIgnore = pkmn.PBEIgnore;
+        }
         internal PBEBattlePokemon(PBETrainer trainer, byte id, IPBEPokemon pkmn)
             : this(trainer, id, pkmn, new PBEReadOnlyPartyMoveset(trainer.Battle.Settings, pkmn.Moveset))
         {
@@ -314,7 +319,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
         /// <summary>Applies effects that occur on switching out or escaping such as <see cref="PBEAbility.NaturalCure"/>.</summary>
         public void ApplyNaturalCure()
         {
-            if (Ability == PBEAbility.NaturalCure)
+            if (!PBEIgnore && Ability == PBEAbility.NaturalCure)
             {
                 Status1 = PBEStatus1.None;
                 Status1Counter = 0;

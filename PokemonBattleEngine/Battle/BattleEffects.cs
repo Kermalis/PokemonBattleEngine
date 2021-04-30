@@ -2431,7 +2431,8 @@ namespace Kermalis.PokemonBattleEngine.Battle
                 for (int i = party.Count - 1; i >= 0; i--)
                 {
                     PBEBattlePokemon p = party[i];
-                    if (p.HP > 0)
+                    // Does not copy eggs
+                    if (p.CanBattle)
                     {
                         // If this Pokémon is the "last" conscious one, it will go out as itself (loop breaks)
                         // The only way to disguise as a Pokémon that's on the battlefield is the first turn of a Double/Triple/Rotation battle
@@ -4265,7 +4266,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                             // A wild Pokémon using it will cause it to switch the target out (as normal below)
                         }
                     }
-                    PBEBattlePokemon[] possibleSwitcheroonies = target.Trainer.Party.Where(p => p.FieldPosition == PBEFieldPosition.None && p.HP > 0).ToArray();
+                    PBEBattlePokemon[] possibleSwitcheroonies = target.Trainer.Party.Where(p => p.FieldPosition == PBEFieldPosition.None && p.CanBattle).ToArray();
                     if (possibleSwitcheroonies.Length == 0)
                     {
                         BroadcastMoveResult(user, target, PBEResult.InvalidConditions);

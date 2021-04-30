@@ -587,7 +587,7 @@ namespace Kermalis.PokemonBattleEngine.AI
             }
             if (user.CanSwitchOut())
             {
-                PBEBattlePokemon[] availableForSwitch = trainer.Party.Except(standBy).Where(p => p.FieldPosition == PBEFieldPosition.None && p.HP > 0).ToArray();
+                PBEBattlePokemon[] availableForSwitch = trainer.Party.Except(standBy).Where(p => p.FieldPosition == PBEFieldPosition.None && p.CanBattle).ToArray();
                 for (int s = 0; s < availableForSwitch.Length; s++) // Score switches
                 {
                     PBEBattlePokemon switchPkmn = availableForSwitch[s];

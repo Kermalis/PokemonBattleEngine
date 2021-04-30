@@ -155,5 +155,51 @@ namespace Kermalis.PokemonBattleEngineTests
                 && gastly.FieldPosition == PBEFieldPosition.Center);
             #endregion
         }
+
+        [Fact]
+        public void Lose_If_Remaining_Ignored()
+        {
+            #region Setup
+            PBEDataProvider.GlobalRandom.Seed = 0;
+            PBESettings settings = PBESettings.DefaultSettings;
+
+            var p0 = new TestPokemonCollection(2);
+            p0[0] = new TestPokemon(settings, PBESpecies.Koffing, 0, 100, PBEMove.Selfdestruct);
+            p0[1] = new TestPokemon(settings, PBESpecies.Magikarp, 0, 1, PBEMove.Splash)
+            {
+                PBEIgnore = true
+            };
+
+            var p1 = new TestPokemonCollection(1);
+            p1[0] = new TestPokemon(settings, PBESpecies.Darkrai, 0, 100, PBEMove.Protect);
+
+            var battle = new PBEBattle(PBEBattleFormat.Single, settings, new PBETrainerInfo(p0, "Trainer 0", false), new PBETrainerInfo(p1, "Trainer 1", false));
+            battle.OnNewEvent += PBEBattle.ConsoleBattleEventHandler;
+
+            PBETrainer t0 = battle.Trainers[0];
+            PBETrainer t1 = battle.Trainers[1];
+            PBEBattlePokemon koffing = t0.Party[0];
+            PBEBattlePokemon magikarp = t0.Party[1];
+            PBEBattlePokemon darkrai = t1.Party[0];
+
+            battle.Begin();
+            #endregion
+
+            #region Darkrai uses Protect, Koffing uses Selfdestruct and faints
+            Assert.Null(t0.SelectActionsIfValid(new PBETurnAction(koffing, PBEMove.Selfdestruct, PBETurnTarget.FoeCenter)));
+            Assert.Null(t1.SelectActionsIfValid(new PBETurnAction(darkrai, PBEMove.Protect, PBETurnTarget.AllyCenter)));
+
+            battle.RunTurn();
+            #endregion
+
+            #region Check
+            Assert.True(koffing.HP == 0 && magikarp.HP > 0
+                && battle.BattleResult == PBEBattleResult.Team1Win); // Koffing's team loses
+            #endregion
+
+            #region Cleanup
+            battle.OnNewEvent -= PBEBattle.ConsoleBattleEventHandler;
+            #endregion
+        }
     }
 }

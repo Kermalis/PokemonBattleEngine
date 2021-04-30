@@ -18,7 +18,7 @@ namespace Kermalis.PokemonBattleEngineClient.Models
         {
             Pokemon = new PokemonInfo(pkmn, false);
             Description = Utils.CustomPokemonToString(pkmn, false);
-            Enabled = !locked && pkmn.FieldPosition == PBEFieldPosition.None && pkmn.HP > 0;
+            Enabled = !locked && pkmn.FieldPosition == PBEFieldPosition.None && pkmn.CanBattle;
             SelectPokemonCommand = ReactiveCommand.Create(() => clickAction(pkmn));
         }
     }

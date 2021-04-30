@@ -700,7 +700,7 @@ namespace Kermalis.PokemonBattleEngineDiscord
                                 trainer.SelectActionsIfValid(new PBETurnAction(mainPkmn, switchPkmn));
                             }
 
-                            PBEBattlePokemon[] switches = trainer.Party.Where(p => p != mainPkmn && p.HP > 0).ToArray();
+                            PBEBattlePokemon[] switches = trainer.Party.Where(p => p != mainPkmn && p.CanBattle).ToArray();
                             for (int i = 0; i < switches.Length; i++)
                             {
                                 PBEBattlePokemon switchPkmn = switches[i];
@@ -771,7 +771,7 @@ namespace Kermalis.PokemonBattleEngineDiscord
                 case PBESwitchInRequestPacket sirp:
                 {
                     PBETrainer trainer = sirp.Trainer;
-                    PBEBattlePokemon[] switches = trainer.Party.Where(p => p.HP > 0).ToArray();
+                    PBEBattlePokemon[] switches = trainer.Party.Where(p => p.CanBattle).ToArray();
                     if (switches.Length == 1)
                     {
                         trainer.SelectSwitchesIfValid(new PBESwitchIn(switches[0], PBEFieldPosition.Center));

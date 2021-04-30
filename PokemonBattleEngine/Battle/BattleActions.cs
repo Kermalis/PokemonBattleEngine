@@ -236,6 +236,10 @@ namespace Kermalis.PokemonBattleEngine.Battle
                         {
                             return $"Switch Pokémon {action.PokemonId} is fainted";
                         }
+                        if (switchPkmn.PBEIgnore)
+                        {
+                            return $"Switch Pokémon {action.PokemonId} cannot battle";
+                        }
                         if (switchPkmn.FieldPosition != PBEFieldPosition.None)
                         {
                             return $"Switch Pokémon {action.PokemonId} is already on the field";
@@ -375,6 +379,10 @@ namespace Kermalis.PokemonBattleEngine.Battle
                 if (pkmn.HP == 0)
                 {
                     return $"Pokémon {s.PokemonId} is fainted";
+                }
+                if (pkmn.PBEIgnore)
+                {
+                    return $"Pokémon {s.PokemonId} cannot battle";
                 }
                 if (pkmn.FieldPosition != PBEFieldPosition.None)
                 {

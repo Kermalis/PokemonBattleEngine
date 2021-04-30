@@ -175,7 +175,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                 {
                     PBEBattlePokemon p = party[i];
                     // If we should ignore this PKMN, try to get the one in the next index
-                    if (p.HP == 0)
+                    if (!p.CanBattle)
                     {
                         i++;
                         goto tryget;

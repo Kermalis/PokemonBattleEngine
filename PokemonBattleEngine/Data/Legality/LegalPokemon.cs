@@ -21,6 +21,8 @@ namespace Kermalis.PokemonBattleEngine.Data.Legality
         public PBEAlphabeticalList<PBEGender> SelectableGenders { get; } = new PBEAlphabeticalList<PBEGender>();
         public PBEAlphabeticalList<PBEItem> SelectableItems { get; } = new PBEAlphabeticalList<PBEItem>();
 
+        public bool PBEIgnore => false;
+
         private PBESpecies _species;
         public PBESpecies Species
         {

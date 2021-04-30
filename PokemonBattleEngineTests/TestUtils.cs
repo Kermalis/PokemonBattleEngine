@@ -176,6 +176,7 @@ namespace Kermalis.PokemonBattleEngineTests
     }
     internal sealed class TestPokemon : IPBEPokemon
     {
+        public bool PBEIgnore { get; set; }
         public PBESpecies Species { get; set; }
         public PBEForm Form { get; set; }
         public PBEGender Gender { get; set; }
@@ -209,6 +210,7 @@ namespace Kermalis.PokemonBattleEngineTests
     }
     internal sealed class TestPartyPokemon : IPBEPartyPokemon
     {
+        public bool PBEIgnore { get; set; }
         public ushort HP { get; set; }
         public PBEStatus1 Status1 { get; set; }
         public byte SleepTurns { get; set; }

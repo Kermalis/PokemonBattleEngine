@@ -135,7 +135,7 @@ namespace Kermalis.PokemonBattleEngine.AI
             {
                 throw new InvalidOperationException($"{nameof(trainer)} must require switch-ins.");
             }
-            PBEBattlePokemon[] available = trainer.Party.Where(p => p.FieldPosition == PBEFieldPosition.None && p.HP > 0).ToArray();
+            PBEBattlePokemon[] available = trainer.Party.Where(p => p.FieldPosition == PBEFieldPosition.None && p.CanBattle).ToArray();
             PBEDataProvider.GlobalRandom.Shuffle(available);
             var availablePositions = new List<PBEFieldPosition>();
             switch (trainer.Battle.BattleFormat)

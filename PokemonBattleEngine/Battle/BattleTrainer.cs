@@ -95,7 +95,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
 
         public IEnumerable<PBEBattlePokemon> ActiveBattlers => Battle.ActiveBattlers.Where(p => p.Trainer == this);
         public IEnumerable<PBEBattlePokemon> ActiveBattlersOrdered => ActiveBattlers.OrderBy(p => p.FieldPosition);
-        public int NumConsciousPkmn => Party.Count(p => p.HP > 0);
+        public int NumConsciousPkmn => Party.Count(p => p.CanBattle);
         public int NumPkmnOnField => Party.Count(p => p.FieldPosition != PBEFieldPosition.None);
 
         public bool RequestedFlee { get; set; }
