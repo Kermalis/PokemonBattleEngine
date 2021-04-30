@@ -20,9 +20,19 @@ namespace Kermalis.PokemonBattleEngine.Battle
             {
                 throw new ArgumentNullException(nameof(party));
             }
-            if (party.Count < 1)
+            if (party is IPBEPartyPokemonCollection ppc)
             {
-                throw new ArgumentException("Party count must be at least 1", nameof(party));
+                if (ppc.Count(p => p.HP > 0 && !p.PBEIgnore) < 1)
+                {
+                    throw new ArgumentException("Party must have at least 1 conscious battler", nameof(party));
+                }
+            }
+            else
+            {
+                if (party.Count(p => !p.PBEIgnore) < 1)
+                {
+                    throw new ArgumentException("Party must have at least 1 conscious battler", nameof(party));
+                }
             }
             if (party is PBELegalPokemonCollection lp)
             {
