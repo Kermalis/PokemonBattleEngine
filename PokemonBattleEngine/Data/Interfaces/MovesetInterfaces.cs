@@ -19,10 +19,10 @@ namespace Kermalis.PokemonBattleEngine.Data
     public interface IPBEMoveset : IPBEMoveset<IPBEMovesetSlot>
     {
     }
-    public interface IPBEPartyMoveset<T> : IPBEMoveset<T>, IReadOnlyList<T> where T : IPBEPartyMovesetSlot
+    public interface IPBEPartyMoveset<T> : IReadOnlyList<T> where T : IPBEPartyMovesetSlot
     {
     }
-    public interface IPBEPartyMoveset : IPBEMoveset, IPBEPartyMoveset<IPBEPartyMovesetSlot>
+    public interface IPBEPartyMoveset : IPBEPartyMoveset<IPBEPartyMovesetSlot>
     {
     }
 
