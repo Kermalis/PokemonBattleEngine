@@ -158,28 +158,38 @@ namespace Kermalis.PokemonBattleEngine.Battle
         }
         private void QueueUpPokemon()
         {
-            void QueueUp(PBETeam team, int i, PBEFieldPosition pos)
+            void QueueUp(PBETeam team, PBEFieldPosition pos, ref PBETrainer tr, ref int i)
             {
-                PBETrainer t;
-                if (team.Trainers.Count == 1)
+                // See which trainer owns this spot
+                PBETrainer t = team.GetTrainer(pos);
+                // If it's not the previous trainer, we start at their first PKMN
+                if (tr != t)
                 {
-                    t = team.Trainers[0];
-                }
-                else
-                {
-                    t = team.GetTrainer(pos);
                     i = 0;
+                    tr = t;
                 }
                 PBEList<PBEBattlePokemon> party = t.Party;
+            // If the check index is valid, try to send out a non-fainted non-ignore PKMN
+            tryget:
                 if (i < party.Count)
                 {
                     PBEBattlePokemon p = party[i];
+                    // If we should ignore this PKMN, try to get the one in the next index
+                    if (p.HP == 0)
+                    {
+                        i++;
+                        goto tryget;
+                    }
+                    // Valid PKMN, send it out
                     p.Trainer.SwitchInQueue.Add((p, pos));
+                    // Wild PKMN should be out already
                     if (team.IsWild)
                     {
                         p.FieldPosition = pos;
                         ActiveBattlers.Add(p);
                     }
+                    // Next slot to check
+                    i++;
                 }
             }
             switch (BattleFormat)
@@ -188,7 +198,9 @@ namespace Kermalis.PokemonBattleEngine.Battle
                 {
                     foreach (PBETeam team in Teams)
                     {
-                        QueueUp(team, 0, PBEFieldPosition.Center);
+                        PBETrainer t = null;
+                        int i = 0;
+                        QueueUp(team, PBEFieldPosition.Center, ref t, ref i);
                     }
                     break;
                 }
@@ -196,8 +208,10 @@ namespace Kermalis.PokemonBattleEngine.Battle
                 {
                     foreach (PBETeam team in Teams)
                     {
-                        QueueUp(team, 0, PBEFieldPosition.Left);
-                        QueueUp(team, 1, PBEFieldPosition.Right);
+                        PBETrainer t = null;
+                        int i = 0;
+                        QueueUp(team, PBEFieldPosition.Left, ref t, ref i);
+                        QueueUp(team, PBEFieldPosition.Right, ref t, ref i);
                     }
                     break;
                 }
@@ -205,9 +219,11 @@ namespace Kermalis.PokemonBattleEngine.Battle
                 {
                     foreach (PBETeam team in Teams)
                     {
-                        QueueUp(team, 0, PBEFieldPosition.Left);
-                        QueueUp(team, 1, PBEFieldPosition.Center);
-                        QueueUp(team, 2, PBEFieldPosition.Right);
+                        PBETrainer t = null;
+                        int i = 0;
+                        QueueUp(team, PBEFieldPosition.Left, ref t, ref i);
+                        QueueUp(team, PBEFieldPosition.Center, ref t, ref i);
+                        QueueUp(team, PBEFieldPosition.Right, ref t, ref i);
                     }
                     break;
                 }
@@ -215,9 +231,11 @@ namespace Kermalis.PokemonBattleEngine.Battle
                 {
                     foreach (PBETeam team in Teams)
                     {
-                        QueueUp(team, 0, PBEFieldPosition.Center);
-                        QueueUp(team, 1, PBEFieldPosition.Left);
-                        QueueUp(team, 2, PBEFieldPosition.Right);
+                        PBETrainer t = null;
+                        int i = 0;
+                        QueueUp(team, PBEFieldPosition.Center, ref t, ref i);
+                        QueueUp(team, PBEFieldPosition.Left, ref t, ref i);
+                        QueueUp(team, PBEFieldPosition.Right, ref t, ref i);
                     }
                     break;
                 }

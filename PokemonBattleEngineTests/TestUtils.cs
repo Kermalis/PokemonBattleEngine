@@ -108,6 +108,72 @@ namespace Kermalis.PokemonBattleEngineTests
             return _list.GetEnumerator();
         }
     }
+    internal sealed class TestPartyMoveset : IPBEMoveset, IPBEPartyMoveset, IPBEMoveset<TestPartyMoveset.TestPartyMovesetSlot>, IPBEPartyMoveset<TestPartyMoveset.TestPartyMovesetSlot>
+    {
+        public sealed class TestPartyMovesetSlot : IPBEPartyMovesetSlot
+        {
+            public PBEMove Move { get; }
+            public byte PPUps { get; }
+            public int PP { get; set; }
+
+            public TestPartyMovesetSlot(PBEMove move, byte ppUps, PBESettings settings)
+            {
+                Move = move;
+                PPUps = ppUps;
+                PP = PBEDataUtils.CalcMaxPP(move, ppUps, settings);
+            }
+        }
+
+        private readonly TestPartyMovesetSlot[] _list;
+        public int Count => _list.Length;
+
+        public TestPartyMovesetSlot this[int index]
+        {
+            get
+            {
+                if (index >= _list.Length)
+                {
+                    throw new ArgumentOutOfRangeException(nameof(index));
+                }
+                return _list[index];
+            }
+        }
+        IPBEPartyMovesetSlot IReadOnlyList<IPBEPartyMovesetSlot>.this[int index] => this[index];
+        IPBEMovesetSlot IReadOnlyList<IPBEMovesetSlot>.this[int index] => this[index];
+
+        public TestPartyMoveset(PBESettings settings, params PBEMove[] moves)
+        {
+            int numMoves = settings.NumMoves;
+            _list = new TestPartyMovesetSlot[numMoves];
+            int count = moves.Length;
+            int i = 0;
+            for (; i < count; i++)
+            {
+                _list[i] = new TestPartyMovesetSlot(moves[i], 0, settings);
+            }
+            for (; i < numMoves; i++)
+            {
+                _list[i] = new TestPartyMovesetSlot(PBEMove.None, 0, settings);
+            }
+        }
+
+        public IEnumerator<TestPartyMovesetSlot> GetEnumerator()
+        {
+            return ((IEnumerable<TestPartyMovesetSlot>)_list).GetEnumerator();
+        }
+        IEnumerator<IPBEMovesetSlot> IEnumerable<IPBEMovesetSlot>.GetEnumerator()
+        {
+            return ((IEnumerable<TestPartyMovesetSlot>)_list).GetEnumerator();
+        }
+        IEnumerator<IPBEPartyMovesetSlot> IEnumerable<IPBEPartyMovesetSlot>.GetEnumerator()
+        {
+            return ((IEnumerable<TestPartyMovesetSlot>)_list).GetEnumerator();
+        }
+        IEnumerator IEnumerable.GetEnumerator()
+        {
+            return _list.GetEnumerator();
+        }
+    }
     internal sealed class TestPokemon : IPBEPokemon
     {
         public PBESpecies Species { get; set; }
@@ -141,6 +207,44 @@ namespace Kermalis.PokemonBattleEngineTests
             Moveset = new TestMoveset(settings, moves);
         }
     }
+    internal sealed class TestPartyPokemon : IPBEPartyPokemon
+    {
+        public ushort HP { get; set; }
+        public PBEStatus1 Status1 { get; set; }
+        public byte SleepTurns { get; set; }
+        public PBESpecies Species { get; set; }
+        public PBEForm Form { get; set; }
+        public PBEGender Gender { get; set; }
+        public string Nickname { get; set; }
+        public bool Shiny { get; set; }
+        public byte Level { get; set; }
+        public uint EXP { get; set; }
+        public PBEItem Item { get; set; }
+        public byte Friendship { get; set; }
+        public PBEAbility Ability { get; set; }
+        public PBENature Nature { get; set; }
+        public PBEItem CaughtBall { get; set; }
+        public IPBEStatCollection EffortValues { get; set; }
+        public IPBEReadOnlyStatCollection IndividualValues { get; set; }
+        public TestPartyMoveset Moveset { get; set; }
+        IPBEMoveset IPBEPokemon.Moveset => Moveset;
+        IPBEPartyMoveset IPBEPartyPokemon.Moveset => Moveset;
+
+        public TestPartyPokemon(PBESettings settings, PBESpecies species, PBEForm form, byte level, params PBEMove[] moves)
+        {
+            Species = species;
+            Form = form;
+            Level = level;
+            EXP = PBEDataProvider.Instance.GetEXPRequired(PBEDataProvider.Instance.GetPokemonData(species, form).GrowthRate, level);
+            Nickname = species.ToString();
+            Gender = PBEDataProvider.GlobalRandom.RandomGender(PBEDataProvider.Instance.GetPokemonData(species, form).GenderRatio);
+            CaughtBall = PBEItem.PokeBall;
+            EffortValues = new PBEStatCollection(0, 0, 0, 0, 0, 0);
+            IndividualValues = new PBEStatCollection(0, 0, 0, 0, 0, 0);
+            Moveset = new TestPartyMoveset(settings, moves);
+            HP = PBEDataUtils.CalculateStat(species, form, PBEStat.HP, Nature, EffortValues.GetStat(PBEStat.HP), IndividualValues.GetStat(PBEStat.HP), level, settings);
+        }
+    }
     internal sealed class TestPokemonCollection : IPBEPokemonCollection, IPBEPokemonCollection<TestPokemon>
     {
         private readonly TestPokemon[] _list;
@@ -164,6 +268,41 @@ namespace Kermalis.PokemonBattleEngineTests
         IEnumerator<IPBEPokemon> IEnumerable<IPBEPokemon>.GetEnumerator()
         {
             return ((IEnumerable<TestPokemon>)_list).GetEnumerator();
+        }
+        IEnumerator IEnumerable.GetEnumerator()
+        {
+            return _list.GetEnumerator();
+        }
+    }
+    internal sealed class TestPartyPokemonCollection : IPBEPokemonCollection, IPBEPartyPokemonCollection, IPBEPokemonCollection<TestPartyPokemon>, IPBEPartyPokemonCollection<TestPartyPokemon>
+    {
+        private readonly TestPartyPokemon[] _list;
+        public int Count => _list.Length;
+
+        public TestPartyPokemon this[int index]
+        {
+            get => _list[index];
+            set => _list[index] = value;
+        }
+        IPBEPartyPokemon IReadOnlyList<IPBEPartyPokemon>.this[int index] => this[index];
+        IPBEPokemon IReadOnlyList<IPBEPokemon>.this[int index] => this[index];
+
+        public TestPartyPokemonCollection(int count)
+        {
+            _list = new TestPartyPokemon[count];
+        }
+
+        public IEnumerator<TestPartyPokemon> GetEnumerator()
+        {
+            return ((IEnumerable<TestPartyPokemon>)_list).GetEnumerator();
+        }
+        IEnumerator<IPBEPartyPokemon> IEnumerable<IPBEPartyPokemon>.GetEnumerator()
+        {
+            return ((IEnumerable<TestPartyPokemon>)_list).GetEnumerator();
+        }
+        IEnumerator<IPBEPokemon> IEnumerable<IPBEPokemon>.GetEnumerator()
+        {
+            return ((IEnumerable<TestPartyPokemon>)_list).GetEnumerator();
         }
         IEnumerator IEnumerable.GetEnumerator()
         {
