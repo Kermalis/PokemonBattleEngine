@@ -1032,6 +1032,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
             BroadcastItemTurn(user, item, PBEItemTurnAction.Attempt);
             if (PBEDataUtils.AllBalls.Contains(item))
             {
+                user.Trainer.Inventory.Remove(item);
                 if (BattleType != PBEBattleType.Wild)
                 {
                     goto fail;
@@ -1054,10 +1055,10 @@ namespace Kermalis.PokemonBattleEngine.Battle
                     case PBEItem.PokeDoll:
                     case PBEItem.PokeToy:
                     {
+                        user.Trainer.Inventory.Remove(item);
                         if (BattleType == PBEBattleType.Wild)
                         {
                             SetEscaped(user);
-                            user.Trainer.Inventory.Remove(item);
                             return;
                         }
                         goto fail;
