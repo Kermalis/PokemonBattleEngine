@@ -242,6 +242,10 @@ namespace Kermalis.PokemonBattleEngine.Battle
             {
                 throw new ArgumentOutOfRangeException(nameof(pkmn.Status1));
             }
+            if (status1 == PBEStatus1.BadlyPoisoned)
+            {
+                Status1Counter = 1;
+            }
             Status1 = OriginalStatus1 = status1;
             byte sleepTurns = pkmn.SleepTurns;
             if (status1 != PBEStatus1.Asleep && sleepTurns != 0)
