@@ -260,7 +260,13 @@ namespace Kermalis.PokemonBattleEngine.Battle
                   info.Species, info.Form, info.Nickname, info.Level, info.EXP, info.Friendship, info.Shiny,
                   info.Ability, info.Nature, info.Gender, info.Item, info.CaughtBall,
                   info.EffortValues, info.IndividualValues, info.Moveset)
-        { }
+        {
+            Status1 = info.Status1;
+            if (Status1 == PBEStatus1.BadlyPoisoned)
+            {
+                Status1Counter = 1;
+            }
+        }
         private PBEBattlePokemon(PBETrainer trainer, IPBEPkmnAppearedInfo_Hidden info)
         {
             if (trainer is null)
@@ -277,6 +283,10 @@ namespace Kermalis.PokemonBattleEngine.Battle
             FieldPosition = info.FieldPosition;
             HPPercentage = info.HPPercentage;
             Status1 = info.Status1;
+            if (Status1 == PBEStatus1.BadlyPoisoned)
+            {
+                Status1Counter = 1;
+            }
             Level = info.Level;
             KnownAbility = Ability = PBEAbility.MAX;
             KnownGender = Gender = info.Gender;
