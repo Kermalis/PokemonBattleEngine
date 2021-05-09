@@ -128,6 +128,19 @@ namespace Kermalis.PokemonBattleEngine.Data.Legality
                 }
             }
         }
+        private bool _pokerus;
+        public bool Pokerus
+        {
+            get => _pokerus;
+            set
+            {
+                if (value != _pokerus)
+                {
+                    _pokerus = value;
+                    OnPropertyChanged(nameof(Pokerus));
+                }
+            }
+        }
         private PBEAbility _ability;
         public PBEAbility Ability
         {
@@ -225,6 +238,7 @@ namespace Kermalis.PokemonBattleEngine.Data.Legality
             _exp = exp;
             _friendship = r.ReadByte();
             _shiny = r.ReadBoolean();
+            _pokerus = r.ReadBoolean();
             PBEAbility ability = r.ReadEnum<PBEAbility>();
             PBELegalityChecker.ValidateAbility(SelectableAbilities, ability);
             _ability = ability;
@@ -249,6 +263,7 @@ namespace Kermalis.PokemonBattleEngine.Data.Legality
             Settings = settings;
             _friendship = jToken[nameof(Friendship)].Value<byte>();
             _shiny = jToken[nameof(Shiny)].Value<bool>();
+            _pokerus = jToken[nameof(Pokerus)].Value<bool>();
             byte level = jToken[nameof(Level)].Value<byte>();
             PBELegalityChecker.ValidateLevel(level, Settings);
             _level = level;

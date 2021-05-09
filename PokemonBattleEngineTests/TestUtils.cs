@@ -184,6 +184,7 @@ namespace Kermalis.PokemonBattleEngineTests
         public bool Shiny { get; set; }
         public byte Level { get; set; }
         public uint EXP { get; set; }
+        public bool Pokerus { get; set; }
         public PBEItem Item { get; set; }
         public byte Friendship { get; set; }
         public PBEAbility Ability { get; set; }
@@ -221,6 +222,7 @@ namespace Kermalis.PokemonBattleEngineTests
         public bool Shiny { get; set; }
         public byte Level { get; set; }
         public uint EXP { get; set; }
+        public bool Pokerus { get; set; }
         public PBEItem Item { get; set; }
         public byte Friendship { get; set; }
         public PBEAbility Ability { get; set; }

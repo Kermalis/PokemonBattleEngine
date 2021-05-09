@@ -97,6 +97,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
         public bool Shiny { get; set; }
         /// <summary>The shininess everyone sees the Pokémon has.</summary>
         public bool KnownShiny { get; set; }
+        public bool Pokerus { get; set; }
         /// <summary>The current species of the Pokémon (affected by transforming and form changing).</summary>
         public PBESpecies Species { get; set; }
         /// <summary>The species everyone sees the Pokémon as (affected by transforming, disguising, and form changing).</summary>
@@ -178,7 +179,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
 
         #region Constructors
         private PBEBattlePokemon(PBETrainer trainer, byte id,
-            PBESpecies species, PBEForm form, string nickname, byte level, uint exp, byte friendship, bool shiny,
+            PBESpecies species, PBEForm form, string nickname, byte level, uint exp, byte friendship, bool shiny, bool pokerus,
             PBEAbility ability, PBENature nature, PBEGender gender, PBEItem item, PBEItem caughtBall,
             PBEReadOnlyStatCollection evs, PBEReadOnlyStatCollection ivs, PBEReadOnlyPartyMoveset moves)
         {
@@ -197,6 +198,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
             EXP = OriginalEXP = exp;
             Friendship = friendship;
             Shiny = KnownShiny = shiny;
+            Pokerus = pokerus;
             Ability = OriginalAbility = RevertAbility = ability;
             KnownAbility = PBEAbility.MAX;
             Nature = nature;
@@ -216,7 +218,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
         }
         private PBEBattlePokemon(PBETrainer trainer, byte id, IPBEPokemon pkmn, PBEReadOnlyPartyMoveset moves)
             : this(trainer, id,
-                  pkmn.Species, pkmn.Form, pkmn.Nickname, pkmn.Level, pkmn.EXP, pkmn.Friendship, pkmn.Shiny,
+                  pkmn.Species, pkmn.Form, pkmn.Nickname, pkmn.Level, pkmn.EXP, pkmn.Friendship, pkmn.Shiny, pkmn.Pokerus,
                   pkmn.Ability, pkmn.Nature, pkmn.Gender, pkmn.Item, pkmn.CaughtBall,
                   new PBEReadOnlyStatCollection(pkmn.EffortValues), new PBEReadOnlyStatCollection(pkmn.IndividualValues), moves)
         {
@@ -257,7 +259,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
         }
         internal PBEBattlePokemon(PBETrainer trainer, PBEBattlePacket.PBETeamInfo.PBETrainerInfo.PBEBattlePokemonInfo info)
             : this(trainer, info.Id,
-                  info.Species, info.Form, info.Nickname, info.Level, info.EXP, info.Friendship, info.Shiny,
+                  info.Species, info.Form, info.Nickname, info.Level, info.EXP, info.Friendship, info.Shiny, info.Pokerus,
                   info.Ability, info.Nature, info.Gender, info.Item, info.CaughtBall,
                   info.EffortValues, info.IndividualValues, info.Moveset)
         {

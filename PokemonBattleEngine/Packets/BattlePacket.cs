@@ -25,6 +25,7 @@ namespace Kermalis.PokemonBattleEngine.Packets
                     public string Nickname { get; }
                     public byte Level { get; }
                     public uint EXP { get; }
+                    public bool Pokerus { get; }
                     public byte Friendship { get; }
                     public bool Shiny { get; }
                     public PBEAbility Ability { get; }
@@ -47,6 +48,7 @@ namespace Kermalis.PokemonBattleEngine.Packets
                         EXP = pkmn.OriginalEXP;
                         Friendship = pkmn.Friendship;
                         Shiny = pkmn.Shiny;
+                        Pokerus = pkmn.Pokerus;
                         Ability = pkmn.OriginalAbility;
                         Nature = pkmn.Nature;
                         Gender = pkmn.Gender;
@@ -67,6 +69,7 @@ namespace Kermalis.PokemonBattleEngine.Packets
                         EXP = r.ReadUInt32();
                         Friendship = r.ReadByte();
                         Shiny = r.ReadBoolean();
+                        Pokerus = r.ReadBoolean();
                         Ability = r.ReadEnum<PBEAbility>();
                         Nature = r.ReadEnum<PBENature>();
                         Gender = r.ReadEnum<PBEGender>();
@@ -88,6 +91,7 @@ namespace Kermalis.PokemonBattleEngine.Packets
                         w.Write(EXP);
                         w.Write(Friendship);
                         w.Write(Shiny);
+                        w.Write(Pokerus);
                         w.Write(Ability);
                         w.Write(Nature);
                         w.Write(Gender);

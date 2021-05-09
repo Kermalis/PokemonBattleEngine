@@ -20,6 +20,7 @@ namespace Kermalis.PokemonBattleEngine.Data
         bool Shiny { get; }
         byte Level { get; }
         uint EXP { get; }
+        bool Pokerus { get; }
         PBEItem Item { get; }
         byte Friendship { get; }
         PBEAbility Ability { get; }
@@ -121,6 +122,7 @@ namespace Kermalis.PokemonBattleEngine.Data
             w.Write(pkmn.EXP);
             w.Write(pkmn.Friendship);
             w.Write(pkmn.Shiny);
+            w.Write(pkmn.Pokerus);
             w.Write(pkmn.Ability);
             w.Write(pkmn.Nature);
             w.Write(pkmn.CaughtBall);
@@ -151,6 +153,8 @@ namespace Kermalis.PokemonBattleEngine.Data
             w.WriteValue(pkmn.Friendship);
             w.WritePropertyName(nameof(IPBEPokemon.Shiny));
             w.WriteValue(pkmn.Shiny);
+            w.WritePropertyName(nameof(IPBEPokemon.Pokerus));
+            w.WriteValue(pkmn.Pokerus);
             w.WritePropertyName(nameof(IPBEPokemon.Ability));
             w.WriteValue(pkmn.Ability.ToString());
             w.WritePropertyName(nameof(IPBEPokemon.Nature));

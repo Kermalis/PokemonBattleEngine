@@ -12,6 +12,7 @@ namespace Kermalis.PokemonBattleEngine.Data
         public bool Shiny { get; }
         public byte Level { get; }
         public uint EXP { get; }
+        public bool Pokerus { get; }
         public PBEItem Item { get; }
         public byte Friendship { get; }
         public PBEAbility Ability { get; }
@@ -30,6 +31,7 @@ namespace Kermalis.PokemonBattleEngine.Data
             EXP = r.ReadUInt32();
             Friendship = r.ReadByte();
             Shiny = r.ReadBoolean();
+            Pokerus = r.ReadBoolean();
             Ability = r.ReadEnum<PBEAbility>();
             Nature = r.ReadEnum<PBENature>();
             CaughtBall = r.ReadEnum<PBEItem>();
