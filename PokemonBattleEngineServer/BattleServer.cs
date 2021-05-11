@@ -30,7 +30,7 @@ namespace Kermalis.PokemonBattleEngineServer
         private PBEBattle _battle;
         public readonly PBESettings Settings = PBESettings.DefaultSettings;
         private const PBEBattleFormat BattleFormat = PBEBattleFormat.Double;
-        private const int NumTrainersPerTeam = 2; // Must be changed if BattleFormat is changed
+        private const int NumTrainersPerTeam = 1; // Must be changed if BattleFormat is changed
         private const int NumBattlers = 2 * NumTrainersPerTeam;
         private Player[] _battlers;
         private readonly List<IPBEPacket> _spectatorPackets = new List<IPBEPacket>();
