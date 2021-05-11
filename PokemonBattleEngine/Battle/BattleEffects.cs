@@ -2428,7 +2428,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
         {
             if (pkmn.Ability == PBEAbility.Illusion)
             {
-                PBEBattlePokemon p = pkmn.Trainer.GetPkmnWouldDisguiseAs(pkmn);
+                PBEBattlePokemon p = pkmn.GetPkmnWouldDisguiseAs();
                 if (p != null)
                 {
                     pkmn.Status2 |= PBEStatus2.Disguised; // No broadcast, not known
