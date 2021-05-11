@@ -165,6 +165,26 @@ namespace Kermalis.PokemonBattleEngine.Battle
             trainers.Add(this);
         }
 
+        public PBEBattlePokemon GetPkmnWouldDisguiseAs(PBEBattlePokemon pkmn)
+        {
+            for (int i = Party.Count - 1; i >= 0; i--)
+            {
+                PBEBattlePokemon p = Party[i];
+                // Does not copy eggs
+                if (p.CanBattle)
+                {
+                    // If this Pokémon is the "last" conscious one, it will go out as itself (loop breaks)
+                    // The only way to disguise as a Pokémon that's on the battlefield is the first turn of a Double/Triple/Rotation battle
+                    if (p.OriginalSpecies != pkmn.OriginalSpecies)
+                    {
+                        return p;
+                    }
+                    break;
+                }
+            }
+            return null;
+        }
+
         public static void Remove(PBEBattlePokemon pokemon)
         {
             pokemon.Trainer.Party.Remove(pokemon);

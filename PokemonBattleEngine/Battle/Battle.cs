@@ -343,7 +343,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                         (PBEBattlePokemon pkmn, PBEFieldPosition pos) = trainer.SwitchInQueue[i];
                         pkmn.FieldPosition = pos;
                         switches[i] = CreateSwitchInInfo(pkmn);
-                        PBETrainer.SwitchTwoPokemon(pkmn, pos);
+                        PBETrainer.SwitchTwoPokemon(pkmn, pos); // Swap after Illusion
                         ActiveBattlers.Add(pkmn); // Add before broadcast
                         list.Add(pkmn);
                     }

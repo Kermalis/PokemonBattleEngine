@@ -2428,30 +2428,19 @@ namespace Kermalis.PokemonBattleEngine.Battle
         {
             if (pkmn.Ability == PBEAbility.Illusion)
             {
-                PBEList<PBEBattlePokemon> party = pkmn.Trainer.Party;
-                for (int i = party.Count - 1; i >= 0; i--)
+                PBEBattlePokemon p = pkmn.Trainer.GetPkmnWouldDisguiseAs(pkmn);
+                if (p != null)
                 {
-                    PBEBattlePokemon p = party[i];
-                    // Does not copy eggs
-                    if (p.CanBattle)
-                    {
-                        // If this Pokémon is the "last" conscious one, it will go out as itself (loop breaks)
-                        // The only way to disguise as a Pokémon that's on the battlefield is the first turn of a Double/Triple/Rotation battle
-                        if (p.OriginalSpecies != pkmn.OriginalSpecies)
-                        {
-                            pkmn.Status2 |= PBEStatus2.Disguised; // No broadcast, not known
-                            pkmn.KnownGender = p.Gender;
-                            pkmn.KnownCaughtBall = p.CaughtBall;
-                            pkmn.KnownNickname = p.Nickname;
-                            pkmn.KnownShiny = p.Shiny;
-                            pkmn.KnownSpecies = p.OriginalSpecies;
-                            pkmn.KnownForm = p.Form;
-                            IPBEPokemonData pData = PBEDataProvider.Instance.GetPokemonData(pkmn.KnownSpecies, pkmn.KnownForm);
-                            pkmn.KnownType1 = pData.Type1;
-                            pkmn.KnownType2 = pData.Type2;
-                        }
-                        break;
-                    }
+                    pkmn.Status2 |= PBEStatus2.Disguised; // No broadcast, not known
+                    pkmn.KnownGender = p.Gender;
+                    pkmn.KnownCaughtBall = p.CaughtBall;
+                    pkmn.KnownNickname = p.Nickname;
+                    pkmn.KnownShiny = p.Shiny;
+                    pkmn.KnownSpecies = p.OriginalSpecies;
+                    pkmn.KnownForm = p.Form;
+                    IPBEPokemonData pData = PBEDataProvider.Instance.GetPokemonData(pkmn.KnownSpecies, pkmn.KnownForm);
+                    pkmn.KnownType1 = pData.Type1;
+                    pkmn.KnownType2 = pData.Type2;
                 }
             }
             return new PBEPkmnAppearedInfo(pkmn);
@@ -2466,7 +2455,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
             RemoveInfatuationsAndLockOns(pkmnLeaving);
             pkmnComing.FieldPosition = pos;
             var switches = new PBEPkmnAppearedInfo[] { CreateSwitchInInfo(pkmnComing) };
-            PBETrainer.SwitchTwoPokemon(pkmnLeaving, pkmnComing);
+            PBETrainer.SwitchTwoPokemon(pkmnLeaving, pkmnComing); // Swap after Illusion
             ActiveBattlers.Add(pkmnComing); // Add to active before broadcast
             BroadcastPkmnSwitchIn(pkmnComing.Trainer, switches, forcedByPkmn);
             if (forcedByPkmn != null)

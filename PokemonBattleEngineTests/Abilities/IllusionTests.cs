@@ -121,6 +121,102 @@ namespace Kermalis.PokemonBattleEngineTests.Abilities
         }
 
         [Fact]
+        public void Illusion_Does_Not_Copy_Just_Swapped_Mon()
+        {
+            #region Setup
+            PBEDataProvider.GlobalRandom.Seed = 0;
+            PBESettings settings = PBESettings.DefaultSettings;
+
+            var p0 = new TestPokemonCollection(1);
+            p0[0] = new TestPokemon(settings, PBESpecies.Happiny, 0, 1, PBEMove.Splash);
+
+            var p1 = new TestPokemonCollection(3);
+            p1[0] = new TestPokemon(settings, PBESpecies.Feebas, 0, 1, PBEMove.Splash);
+            p1[1] = new TestPokemon(settings, PBESpecies.Magikarp, 0, 1, PBEMove.Splash);
+            p1[2] = new TestPokemon(settings, PBESpecies.Zoroark, 0, 100, PBEMove.Splash)
+            {
+                Ability = PBEAbility.Illusion
+            };
+
+            var battle = new PBEBattle(PBEBattleFormat.Single, settings, new PBETrainerInfo(p0, "Trainer 0", false), new PBETrainerInfo(p1, "Trainer 1", false),
+                battleTerrain: PBEBattleTerrain.Snow);
+            battle.OnNewEvent += PBEBattle.ConsoleBattleEventHandler;
+
+            PBETrainer t0 = battle.Trainers[0];
+            PBETrainer t1 = battle.Trainers[1];
+            PBEBattlePokemon happiny = t0.Party[0];
+            PBEBattlePokemon feebas = t1.Party[0];
+            PBEBattlePokemon zoroark = t1.Party[2];
+
+            battle.Begin();
+            #endregion
+
+            #region Swap Feebas for Zoroark and check
+            Assert.Null(t0.SelectActionsIfValid(new PBETurnAction(happiny, PBEMove.Splash, PBETurnTarget.AllyCenter)));
+            Assert.Null(t1.SelectActionsIfValid(new PBETurnAction(feebas, zoroark)));
+
+            battle.RunTurn();
+
+            Assert.True(zoroark.KnownSpecies == PBESpecies.Zoroark && zoroark.KnownForm == 0);
+            #endregion
+
+            #region Cleanup
+            battle.OnNewEvent -= PBEBattle.ConsoleBattleEventHandler;
+            #endregion
+        }
+
+        [Fact]
+        public void Illusion_Copies_Just_Swapped_Mon()
+        {
+            #region Setup
+            PBEDataProvider.GlobalRandom.Seed = 0;
+            PBESettings settings = PBESettings.DefaultSettings;
+
+            var p0 = new TestPokemonCollection(1);
+            p0[0] = new TestPokemon(settings, PBESpecies.Happiny, 0, 1, PBEMove.Splash);
+
+            var p1 = new TestPokemonCollection(4);
+            p1[0] = new TestPokemon(settings, PBESpecies.Trubbish, 0, 10, PBEMove.Splash); // Trubbish needs more speed to swap first
+            p1[1] = new TestPokemon(settings, PBESpecies.Magikarp, 0, 1, PBEMove.Splash);
+            p1[2] = new TestPokemon(settings, PBESpecies.Zoroark, 0, 100, PBEMove.Splash)
+            {
+                Ability = PBEAbility.Illusion
+            };
+            p1[3] = new TestPokemon(settings, PBESpecies.Feebas, 0, 1, PBEMove.Splash);
+
+            var battle = new PBEBattle(PBEBattleFormat.Double, settings, new PBETrainerInfo(p0, "Trainer 0", false), new PBETrainerInfo(p1, "Trainer 1", false),
+                battleTerrain: PBEBattleTerrain.Snow);
+            battle.OnNewEvent += PBEBattle.ConsoleBattleEventHandler;
+
+            PBETrainer t0 = battle.Trainers[0];
+            PBETrainer t1 = battle.Trainers[1];
+            PBEBattlePokemon happiny = t0.Party[0];
+            PBEBattlePokemon trubbish = t1.Party[0];
+            PBEBattlePokemon magikarp = t1.Party[1];
+            PBEBattlePokemon zoroark = t1.Party[2];
+            PBEBattlePokemon feebas = t1.Party[3];
+
+            battle.Begin();
+            #endregion
+
+            #region Swap Trubbish and Magikarp for Feebas and Zoroark then check
+            Assert.Null(t0.SelectActionsIfValid(
+                new PBETurnAction(happiny, PBEMove.Splash, PBETurnTarget.AllyLeft)));
+            Assert.Null(t1.SelectActionsIfValid(
+                new PBETurnAction(trubbish, feebas),
+                new PBETurnAction(magikarp, zoroark)));
+
+            battle.RunTurn();
+
+            Assert.True(zoroark.KnownSpecies == trubbish.Species && zoroark.KnownForm == trubbish.Form);
+            #endregion
+
+            #region Cleanup
+            battle.OnNewEvent -= PBEBattle.ConsoleBattleEventHandler;
+            #endregion
+        }
+
+        [Fact]
         public void Illusion_Copies_Shaymin_Reversion()
         {
             #region Setup
