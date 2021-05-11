@@ -135,7 +135,9 @@ namespace Kermalis.PokemonBattleEngine.Battle
                 pokemon.RevertForm = newForm;
                 pokemon.RevertAbility = newAbility;
             }
-            pokemon.SetStats(false, false);
+            // This calcs all stats and then adds/removes HP based on the new MaxHP. So if the new MaxHP was 5 more than old, the mon would gain 5 HP.
+            // This is the same logic a level-up and evolution would use when HP changes.
+            pokemon.SetStats(true, false);
             IPBEPokemonData pData = PBEDataProvider.Instance.GetPokemonData(pokemon.Species, newForm);
             PBEType type1 = pData.Type1;
             pokemon.Type1 = type1;

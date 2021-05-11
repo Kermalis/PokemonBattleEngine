@@ -246,6 +246,7 @@ namespace Kermalis.PokemonBattleEngineClient.Clients
                 case PBEPkmnFormChangedPacket_Hidden pfcph:
                 {
                     PBEBattlePokemon pokemon = pfcph.PokemonTrainer.TryGetPokemon(pfcph.Pokemon);
+                    pokemon.HPPercentage = pfcph.NewHPPercentage;
                     pokemon.KnownAbility = pfcph.NewKnownAbility;
                     pokemon.KnownForm = pfcph.NewForm;
                     pokemon.KnownType1 = pfcph.NewType1;

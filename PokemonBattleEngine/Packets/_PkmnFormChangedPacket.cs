@@ -11,6 +11,7 @@ namespace Kermalis.PokemonBattleEngine.Packets
     {
         PBETrainer PokemonTrainer { get; }
         PBEFieldPosition Pokemon { get; }
+        double NewHPPercentage { get; }
         PBEAbility NewKnownAbility { get; }
         PBEForm NewForm { get; }
         PBEType NewType1 { get; }
@@ -25,6 +26,9 @@ namespace Kermalis.PokemonBattleEngine.Packets
 
         public PBETrainer PokemonTrainer { get; }
         public PBEFieldPosition Pokemon { get; }
+        public ushort NewHP { get; }
+        public ushort NewMaxHP { get; }
+        public double NewHPPercentage { get; }
         public ushort NewAttack { get; }
         public ushort NewDefense { get; }
         public ushort NewSpAttack { get; }
@@ -46,6 +50,9 @@ namespace Kermalis.PokemonBattleEngine.Packets
                 w.Write(Code);
                 w.Write((PokemonTrainer = pokemon.Trainer).Id);
                 w.Write(Pokemon = pokemon.FieldPosition);
+                w.Write(NewHP = pokemon.HP);
+                w.Write(NewMaxHP = pokemon.MaxHP);
+                w.Write(NewHPPercentage = pokemon.HPPercentage);
                 w.Write(NewAttack = pokemon.Attack);
                 w.Write(NewDefense = pokemon.Defense);
                 w.Write(NewSpAttack = pokemon.SpAttack);
@@ -66,6 +73,9 @@ namespace Kermalis.PokemonBattleEngine.Packets
             Data = new ReadOnlyCollection<byte>(data);
             PokemonTrainer = battle.Trainers[r.ReadByte()];
             Pokemon = r.ReadEnum<PBEFieldPosition>();
+            NewHP = r.ReadUInt16();
+            NewMaxHP = r.ReadUInt16();
+            NewHPPercentage = r.ReadDouble();
             NewAttack = r.ReadUInt16();
             NewDefense = r.ReadUInt16();
             NewSpAttack = r.ReadUInt16();
@@ -86,6 +96,7 @@ namespace Kermalis.PokemonBattleEngine.Packets
 
         public PBETrainer PokemonTrainer { get; }
         public PBEFieldPosition Pokemon { get; }
+        public double NewHPPercentage { get; }
         public PBEAbility NewKnownAbility { get; }
         public PBEForm NewForm { get; }
         public PBEType NewType1 { get; }
@@ -105,6 +116,7 @@ namespace Kermalis.PokemonBattleEngine.Packets
                 w.Write(Code);
                 w.Write((PokemonTrainer = other.PokemonTrainer).Id);
                 w.Write(Pokemon = other.Pokemon);
+                w.Write(NewHPPercentage = other.NewHPPercentage);
                 w.Write(NewKnownAbility = other.NewKnownAbility);
                 w.Write(NewForm = other.NewForm);
                 w.Write(NewType1 = other.NewType1);
@@ -119,6 +131,7 @@ namespace Kermalis.PokemonBattleEngine.Packets
             Data = new ReadOnlyCollection<byte>(data);
             PokemonTrainer = battle.Trainers[r.ReadByte()];
             Pokemon = r.ReadEnum<PBEFieldPosition>();
+            NewHPPercentage = r.ReadDouble();
             NewKnownAbility = r.ReadEnum<PBEAbility>();
             NewForm = r.ReadEnum<PBEForm>();
             NewType1 = r.ReadEnum<PBEType>();

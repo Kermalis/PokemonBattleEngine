@@ -209,7 +209,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
             OriginalEffortValues = evs;
             EffortValues = new PBEStatCollection(evs);
             IndividualValues = new PBEReadOnlyStatCollection(ivs);
-            SetStats(true, false);
+            SetStats(true, true);
             OriginalMoveset = moves;
             PBESettings settings = Battle.Settings;
             Moves = new PBEBattleMoveset(settings, moves);
@@ -421,7 +421,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
             ResetVolatileStuff();
             SetStats(false, false);
         }
-        public void SetStats(bool calculateHP, bool hpLevelUp)
+        public void SetStats(bool calculateHP, bool setMaxHPIfCalcHP)
         {
             IPBEPokemonData pData = PBEDataProvider.Instance.GetPokemonData(this);
             PBENature nature = Nature;
@@ -431,16 +431,16 @@ namespace Kermalis.PokemonBattleEngine.Battle
             PBESettings settings = Battle.Settings;
             if (calculateHP)
             {
-                ushort oldHP = MaxHP;
+                ushort oldMaxHP = MaxHP;
                 ushort hp = PBEDataUtils.CalculateStat(pData, PBEStat.HP, nature, evs.HP, ivs.HP, level, settings);
                 MaxHP = hp;
-                if (hpLevelUp)
-                {
-                    HP += (ushort)(hp - oldHP);
-                }
-                else
+                if (setMaxHPIfCalcHP)
                 {
                     HP = hp;
+                }
+                else if (HP != 0 && oldMaxHP != hp) // Don't change for a fainted mon
+                {
+                    HP = (ushort)Math.Max(1, HP + (hp - oldMaxHP));
                 }
                 UpdateHPPercentage();
             }

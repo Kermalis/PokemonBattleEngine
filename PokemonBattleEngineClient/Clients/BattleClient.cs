@@ -121,7 +121,7 @@ namespace Kermalis.PokemonBattleEngineClient.Clients
                 case IPBEPkmnFormChangedPacket pfcp:
                 {
                     PBEBattlePokemon pokemon = pfcp.PokemonTrainer.TryGetPokemon(pfcp.Pokemon);
-                    BattleView.Field.UpdatePokemon(pokemon, false, true);
+                    BattleView.Field.UpdatePokemon(pokemon, true, true);
                     break;
                 }
                 case IPBEPkmnHPChangedPacket phcp:

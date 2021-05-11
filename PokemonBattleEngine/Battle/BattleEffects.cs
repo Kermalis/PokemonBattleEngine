@@ -802,7 +802,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                 uint growBy = nextLevelAmt - victor.EXP;
                 victor.EXP += growBy;
                 victor.Level++;
-                victor.SetStats(true, true);
+                victor.SetStats(true, false);
                 Console.WriteLine("{0} leveled up ({1} to {2})", victor.Nickname, victor.Level - 1, victor.Level);
                 // learn stuff, redraw the hp bars, etc. packets
                 if (victor.Level == Settings.MaxLevel)

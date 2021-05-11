@@ -203,6 +203,9 @@ namespace Kermalis.PokemonBattleEngineClient.Clients
                 case PBEPkmnFormChangedPacket pfcp:
                 {
                     PBEBattlePokemon pokemon = pfcp.PokemonTrainer.TryGetPokemon(pfcp.Pokemon);
+                    pokemon.HP = pfcp.NewHP;
+                    pokemon.MaxHP = pfcp.NewMaxHP;
+                    pokemon.HPPercentage = pfcp.NewHPPercentage;
                     pokemon.Attack = pfcp.NewAttack;
                     pokemon.Defense = pfcp.NewDefense;
                     pokemon.SpAttack = pfcp.NewSpAttack;
