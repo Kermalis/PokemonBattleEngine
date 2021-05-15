@@ -325,6 +325,30 @@ namespace Kermalis.PokemonBattleEngine.Battle
                 EXPPokemon.Add(pkmn);
             }
         }
+        /// <summary>For use with level ups. Does not send any packets.</summary>
+        public void LearnMove(PBEMove move, int index)
+        {
+            bool transformed = Status2.HasFlag(PBEStatus2.Transformed);
+            PBEBattleMoveset moves = transformed ? TransformBackupMoves : Moves;
+            PBEBattleMoveset.PBEBattleMovesetSlot slot = moves[index];
+            PBEMove oldMove = slot.Move;
+            slot.Move = move;
+            int pp = PBEDataUtils.CalcMaxPP(move, 0, Battle.Settings);
+            slot.PP = pp;
+            slot.MaxPP = pp;
+            // Update known moves below
+            if (!transformed && FieldPosition != PBEFieldPosition.None)
+            {
+                moves = KnownMoves;
+                slot = moves[oldMove];
+                if (slot != null) // Check if move is known first
+                {
+                    slot.Move = PBEMove.MAX; // Make the move unknown if the old move was known
+                    slot.PP = 0;
+                    moves.Organize();
+                }
+            }
+        }
 
         public void ApplyPowerTrickChange()
         {
@@ -421,6 +445,8 @@ namespace Kermalis.PokemonBattleEngine.Battle
             ResetVolatileStuff();
             SetStats(false, false);
         }
+        // GameFreak are very inconsistent with how they handle Power Trick when recalculating stats
+        // Form change, Transform, Level up
         public void SetStats(bool calculateHP, bool setMaxHPIfCalcHP)
         {
             IPBEPokemonData pData = PBEDataProvider.Instance.GetPokemonData(this);

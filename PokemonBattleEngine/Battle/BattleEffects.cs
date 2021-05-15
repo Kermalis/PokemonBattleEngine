@@ -793,24 +793,30 @@ namespace Kermalis.PokemonBattleEngine.Battle
         }
         private void GiveEXP(PBEBattlePokemon victor, uint amount)
         {
-            Console.WriteLine("{0} gained {1} exp ({2} to {3})", victor.Nickname, amount, victor.EXP, victor.EXP + amount);
+            // TODO: Should we allow remote battles with learning moves? No packets right now
+            BroadcastPkmnEXPEarned(victor, amount);
             PBEGrowthRate growthRate = PBEDataProvider.Instance.GetPokemonData(victor).GrowthRate;
         top:
+            uint oldEXP = victor.EXP;
             uint nextLevelAmt = PBEDataProvider.Instance.GetEXPRequired(growthRate, (byte)(victor.Level + 1));
-            if (victor.EXP + amount >= nextLevelAmt)
+            if (oldEXP + amount >= nextLevelAmt)
             {
-                uint growBy = nextLevelAmt - victor.EXP;
-                victor.EXP += growBy;
+                victor.EXP = nextLevelAmt;
+                BroadcastPkmnEXPChanged(victor, oldEXP);
                 victor.Level++;
                 victor.SetStats(true, false);
-                Console.WriteLine("{0} leveled up ({1} to {2})", victor.Nickname, victor.Level - 1, victor.Level);
-                // learn stuff, redraw the hp bars, etc. packets
+                BroadcastPkmnLevelChanged(victor);
+                // BUG: PBEStatus2.PowerTrick is not cleared when leveling up, even though the stats are replaced (meaning it can still be baton passed)
+                if (Settings.BugFix && victor.Status2.HasFlag(PBEStatus2.PowerTrick))
+                {
+                    BroadcastStatus2(victor, victor, PBEStatus2.PowerTrick, PBEStatusAction.Ended);
+                }
                 if (victor.Level == Settings.MaxLevel)
                 {
-                    victor.EXP = nextLevelAmt; // Cap it
                     return;
                 }
-                amount -= growBy;
+                uint grewBy = nextLevelAmt - oldEXP;
+                amount -= grewBy;
                 if (amount > 0)
                 {
                     goto top; // Keep gaining and leveling
@@ -818,7 +824,8 @@ namespace Kermalis.PokemonBattleEngine.Battle
             }
             else
             {
-                victor.EXP += amount;
+                victor.EXP = oldEXP + amount;
+                BroadcastPkmnEXPChanged(victor, oldEXP);
             }
         }
 
@@ -2129,6 +2136,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
             user.Transform(target);
             BroadcastTransform(user, target);
             BroadcastStatus2(user, target, PBEStatus2.Transformed, PBEStatusAction.Added);
+            // Remove power trick (so it cannot be baton passed)
             if (user.Status2.HasFlag(PBEStatus2.PowerTrick))
             {
                 BroadcastStatus2(user, user, PBEStatus2.PowerTrick, PBEStatusAction.Ended);

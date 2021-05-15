@@ -77,6 +77,9 @@ namespace Kermalis.PokemonBattleEngine.Packets
                     case PBEItemTurnPacket.Code: return new PBEItemTurnPacket(data, r, battle);
                     case PBECapturePacket.Code: return new PBECapturePacket(data, r, battle);
                     case PBEWildPkmnAppearedPacket_Hidden.Code: return new PBEWildPkmnAppearedPacket_Hidden(data, r);
+                    case PBEPkmnEXPChangedPacket.Code: return new PBEPkmnEXPChangedPacket(data, r, battle);
+                    case PBEPkmnEXPEarnedPacket.Code: return new PBEPkmnEXPEarnedPacket(data, r, battle);
+                    case PBEPkmnLevelChangedPacket.Code: return new PBEPkmnLevelChangedPacket(data, r, battle);
                     default: throw new InvalidDataException();
                 }
             }

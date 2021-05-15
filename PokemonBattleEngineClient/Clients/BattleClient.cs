@@ -99,6 +99,7 @@ namespace Kermalis.PokemonBattleEngineClient.Clients
         {
             switch (packet)
             {
+                case PBEPkmnEXPChangedPacket _:
                 case PBEMoveLockPacket _:
                 case PBEMovePPChangedPacket _:
                 case PBEIllusionPacket _:
@@ -106,6 +107,15 @@ namespace Kermalis.PokemonBattleEngineClient.Clients
                 case PBEBattlePacket _:
                 case PBEActionsRequestPacket _:
                 case PBESwitchInRequestPacket _: return true;
+                /*case PBEPkmnEXPChangedPacket pecp:
+                {
+                    PBEBattlePokemon pokemon = pecp.PokemonTrainer.TryGetPokemon(pecp.Pokemon);
+                    if (pokemon.FieldPosition != PBEFieldPosition.None)
+                    {
+                        BattleView.Field.UpdatePokemon(pokemon, true, false);
+                    }
+                    break;
+                }*/ // Commented out because we don't have EXP bars
                 case PBEPkmnFaintedPacket pfp:
                 {
                     PBEBattlePokemon pokemon = pfp.PokemonTrainer.TryGetPokemon(pfp.Pokemon);
@@ -128,6 +138,15 @@ namespace Kermalis.PokemonBattleEngineClient.Clients
                 {
                     PBEBattlePokemon pokemon = phcp.PokemonTrainer.TryGetPokemon(phcp.Pokemon);
                     BattleView.Field.UpdatePokemon(pokemon, true, false);
+                    break;
+                }
+                case PBEPkmnLevelChangedPacket plcp:
+                {
+                    PBEBattlePokemon pokemon = plcp.PokemonTrainer.TryGetPokemon(plcp.Pokemon);
+                    if (pokemon.FieldPosition != PBEFieldPosition.None)
+                    {
+                        BattleView.Field.UpdatePokemon(pokemon, true, false);
+                    }
                     break;
                 }
                 case IPBEPkmnSwitchInPacket psip:

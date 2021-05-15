@@ -120,6 +120,14 @@ namespace Kermalis.PokemonBattleEngine.Battle
             }
             Broadcast(new PBEMoveUsedPacket(moveUser, move, owned));
         }
+        private void BroadcastPkmnEXPChanged(PBEBattlePokemon pokemon, uint oldEXP)
+        {
+            Broadcast(new PBEPkmnEXPChangedPacket(pokemon, oldEXP));
+        }
+        private void BroadcastPkmnEXPEarned(PBEBattlePokemon pokemon, uint earned)
+        {
+            Broadcast(new PBEPkmnEXPEarnedPacket(pokemon, earned));
+        }
         private void BroadcastPkmnFainted(PBEBattlePokemon pokemon, PBEFieldPosition oldPosition)
         {
             Broadcast(new PBEPkmnFaintedPacket(pokemon, oldPosition));
@@ -149,7 +157,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
             pokemon.Weight = weight;
             pokemon.KnownWeight = weight;
             Broadcast(new PBEPkmnFormChangedPacket(pokemon, isRevertForm));
-            // BUG: PBEStatus2.PowerTrick is not cleared when changing form
+            // BUG: PBEStatus2.PowerTrick is not cleared when changing form (meaning it can still be baton passed)
             if (Settings.BugFix && pokemon.Status2.HasFlag(PBEStatus2.PowerTrick))
             {
                 BroadcastStatus2(pokemon, pokemon, PBEStatus2.PowerTrick, PBEStatusAction.Ended);
@@ -158,6 +166,10 @@ namespace Kermalis.PokemonBattleEngine.Battle
         private void BroadcastPkmnHPChanged(PBEBattlePokemon pokemon, ushort oldHP, double oldHPPercentage)
         {
             Broadcast(new PBEPkmnHPChangedPacket(pokemon, oldHP, oldHPPercentage));
+        }
+        private void BroadcastPkmnLevelChanged(PBEBattlePokemon pokemon)
+        {
+            Broadcast(new PBEPkmnLevelChangedPacket(pokemon));
         }
         private void BroadcastPkmnStatChanged(PBEBattlePokemon pokemon, PBEStat stat, sbyte oldValue, sbyte newValue)
         {
@@ -966,6 +978,11 @@ namespace Kermalis.PokemonBattleEngine.Battle
                     PBEBattlePokemon pokemon = pfp.PokemonTrainer.TryGetPokemon(pfp.Pokemon);
                     return string.Format("{0} fainted!", GetPkmnName(pokemon, true));
                 }
+                case PBEPkmnEXPEarnedPacket peep:
+                {
+                    PBEBattlePokemon pokemon = peep.PokemonTrainer.TryGetPokemon(peep.Pokemon);
+                    return string.Format("{0} earned {1} EXP points!", GetPkmnName(pokemon, true), peep.Earned);
+                }
                 case PBEPkmnFaintedPacket_Hidden pfph:
                 {
                     PBEBattlePokemon pokemon = pfph.PokemonTrainer.TryGetPokemon(pfph.OldPosition);
@@ -995,6 +1012,11 @@ namespace Kermalis.PokemonBattleEngine.Battle
                     double percentageChange = phcph.NewHPPercentage - phcph.OldHPPercentage;
                     double absPercentageChange = Math.Abs(percentageChange);
                     return DoHiddenHP(pokemon, percentageChange, absPercentageChange);
+                }
+                case PBEPkmnLevelChangedPacket plcp:
+                {
+                    PBEBattlePokemon pokemon = plcp.PokemonTrainer.TryGetPokemon(plcp.Pokemon);
+                    return string.Format("{0} grew to level {1}!", GetPkmnName(pokemon, true), plcp.NewLevel);
                 }
                 case PBEPkmnStatChangedPacket pscp:
                 {

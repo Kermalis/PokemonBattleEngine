@@ -13,7 +13,8 @@ namespace Kermalis.PokemonBattleEngineServer
     internal sealed class BattleServer
     {
         // TODO: Events still sent after someone disconnects during a turn, need to return out of event subscription
-        // Server does not support wild battles yet
+        // Server does not support wild battles
+        // Server does not support gaining EXP or levels
         private enum ServerState
         {
             Resetting,           // Server is currently resetting the game

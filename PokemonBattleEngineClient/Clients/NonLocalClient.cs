@@ -192,6 +192,12 @@ namespace Kermalis.PokemonBattleEngineClient.Clients
                     }
                     break;
                 }
+                case PBEPkmnEXPChangedPacket pecp:
+                {
+                    PBEBattlePokemon pokemon = pecp.PokemonTrainer.TryGetPokemon(pecp.Pokemon);
+                    pokemon.EXP = pecp.NewEXP;
+                    break;
+                }
                 case PBEPkmnFaintedPacket pfp:
                 {
                     bool ret = base.ProcessPacket(packet); // Process before removal
@@ -229,6 +235,12 @@ namespace Kermalis.PokemonBattleEngineClient.Clients
                     PBEBattlePokemon pokemon = phcp.PokemonTrainer.TryGetPokemon(phcp.Pokemon);
                     pokemon.HP = phcp.NewHP;
                     pokemon.HPPercentage = phcp.NewHPPercentage;
+                    break;
+                }
+                case PBEPkmnLevelChangedPacket plcp:
+                {
+                    PBEBattlePokemon pokemon = plcp.PokemonTrainer.TryGetPokemon(plcp.Pokemon);
+                    pokemon.Level = plcp.NewLevel;
                     break;
                 }
                 case PBEPkmnStatChangedPacket pscp:

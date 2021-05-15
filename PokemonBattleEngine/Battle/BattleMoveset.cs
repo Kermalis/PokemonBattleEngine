@@ -251,6 +251,25 @@ namespace Kermalis.PokemonBattleEngine.Battle
             }
             return new ReadOnlyCollection<PBEMove>(moves);
         }
+        // Reorders after one move is changed. It won't work if there are multiple culprit spots
+        internal void Organize()
+        {
+            for (int i = 0; i < _list.Length - 1; i++)
+            {
+                PBEBattleMovesetSlot slot = _list[i];
+                if (slot.Move != PBEMove.None && slot.Move != PBEMove.MAX)
+                {
+                    continue; // Skip populated slots
+                }
+
+                PBEBattleMovesetSlot nextSlot = _list[i + 1];
+                if (nextSlot.Move != PBEMove.None && nextSlot.Move != PBEMove.MAX)
+                {
+                    _list[i] = nextSlot;
+                    _list[i + 1] = slot; // Swap slots since next slot has a move but current doesn't
+                }
+            }
+        }
         internal void Reset(PBEBattleMoveset other)
         {
             for (int i = 0; i < _list.Length; i++)
