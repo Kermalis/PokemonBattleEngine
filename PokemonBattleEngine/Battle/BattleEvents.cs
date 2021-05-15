@@ -981,7 +981,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                 case PBEPkmnEXPEarnedPacket peep:
                 {
                     PBEBattlePokemon pokemon = peep.PokemonTrainer.TryGetPokemon(peep.Pokemon);
-                    return string.Format("{0} earned {1} EXP points!", GetPkmnName(pokemon, true), peep.Earned);
+                    return string.Format("{0} earned {1} EXP point(s)!", GetPkmnName(pokemon, true), peep.Earned);
                 }
                 case PBEPkmnFaintedPacket_Hidden pfph:
                 {
