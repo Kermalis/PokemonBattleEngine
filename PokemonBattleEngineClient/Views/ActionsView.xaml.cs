@@ -674,6 +674,10 @@ namespace Kermalis.PokemonBattleEngineClient.Views
                 TargetsVisible = true;
             }
         }
+        private bool CanUsePosition(PBEFieldPosition pos)
+        {
+            return !BattleView.Client.PositionStandBy.Contains(pos) && BattleView.Client.Trainer.OwnsSpot(pos) && BattleView.Client.Trainer.Team.TryGetPokemon(pos) == null;
+        }
         private void DisplayPositions()
         {
             LeftPositionEnabled = CenterPositionEnabled = RightPositionEnabled = false;
@@ -686,8 +690,8 @@ namespace Kermalis.PokemonBattleEngineClient.Views
                 }
                 case PBEBattleFormat.Double:
                 {
-                    LeftPositionEnabled = !BattleView.Client.PositionStandBy.Contains(PBEFieldPosition.Left) && BattleView.Client.Trainer.OwnsSpot(PBEFieldPosition.Left) && BattleView.Client.Trainer.Team.TryGetPokemon(PBEFieldPosition.Left) == null;
-                    RightPositionEnabled = !BattleView.Client.PositionStandBy.Contains(PBEFieldPosition.Right) && BattleView.Client.Trainer.OwnsSpot(PBEFieldPosition.Right) && BattleView.Client.Trainer.Team.TryGetPokemon(PBEFieldPosition.Right) == null;
+                    LeftPositionEnabled = CanUsePosition(PBEFieldPosition.Left);
+                    RightPositionEnabled = CanUsePosition(PBEFieldPosition.Right);
                     if (_leftPositionEnabled && !_rightPositionEnabled)
                     {
                         SelectPosition("Left");
@@ -706,9 +710,9 @@ namespace Kermalis.PokemonBattleEngineClient.Views
                 case PBEBattleFormat.Triple:
                 case PBEBattleFormat.Rotation:
                 {
-                    LeftPositionEnabled = !BattleView.Client.PositionStandBy.Contains(PBEFieldPosition.Left) && BattleView.Client.Trainer.OwnsSpot(PBEFieldPosition.Left) && BattleView.Client.Trainer.Team.TryGetPokemon(PBEFieldPosition.Left) == null;
-                    CenterPositionEnabled = !BattleView.Client.PositionStandBy.Contains(PBEFieldPosition.Center) && BattleView.Client.Trainer.OwnsSpot(PBEFieldPosition.Center) && BattleView.Client.Trainer.Team.TryGetPokemon(PBEFieldPosition.Center) == null;
-                    RightPositionEnabled = !BattleView.Client.PositionStandBy.Contains(PBEFieldPosition.Right) && BattleView.Client.Trainer.OwnsSpot(PBEFieldPosition.Right) && BattleView.Client.Trainer.Team.TryGetPokemon(PBEFieldPosition.Right) == null;
+                    LeftPositionEnabled = CanUsePosition(PBEFieldPosition.Left);
+                    CenterPositionEnabled = CanUsePosition(PBEFieldPosition.Center);
+                    RightPositionEnabled = CanUsePosition(PBEFieldPosition.Right);
                     if (_leftPositionEnabled && !_centerPositionEnabled && !_rightPositionEnabled)
                     {
                         SelectPosition("Left");
