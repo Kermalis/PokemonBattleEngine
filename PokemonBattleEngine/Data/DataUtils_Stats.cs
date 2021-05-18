@@ -99,6 +99,38 @@ namespace Kermalis.PokemonBattleEngine.Data
 
             return nature.GetRelationshipToFlavor((PBEFlavor)(stat - 1));
         }
+        public static PBEFlavor? GetLikedFlavor(PBENature nature)
+        {
+            if (nature >= PBENature.MAX)
+            {
+                throw new ArgumentOutOfRangeException(nameof(nature));
+            }
+            if (_natureBoosts.TryGetValue(nature, out (PBEFlavor Favored, PBEFlavor Disliked) t))
+            {
+                return t.Favored;
+            }
+            return null;
+        }
+        public static PBEFlavor? GetDislikedFlavor(PBENature nature)
+        {
+            if (nature >= PBENature.MAX)
+            {
+                throw new ArgumentOutOfRangeException(nameof(nature));
+            }
+            if (_natureBoosts.TryGetValue(nature, out (PBEFlavor Favored, PBEFlavor Disliked) t))
+            {
+                return t.Disliked;
+            }
+            return null;
+        }
+        public static bool IsNeutralNature(this PBENature nature)
+        {
+            if (nature >= PBENature.MAX)
+            {
+                throw new ArgumentOutOfRangeException(nameof(nature));
+            }
+            return !_natureBoosts.ContainsKey(nature);
+        }
 
         public static int CalcMaxPP(byte ppTier, byte ppUps, PBESettings settings)
         {
