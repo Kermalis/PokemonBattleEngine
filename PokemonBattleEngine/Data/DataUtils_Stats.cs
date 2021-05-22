@@ -99,7 +99,7 @@ namespace Kermalis.PokemonBattleEngine.Data
 
             return nature.GetRelationshipToFlavor((PBEFlavor)(stat - 1));
         }
-        public static PBEFlavor? GetLikedFlavor(PBENature nature)
+        public static PBEFlavor? GetLikedFlavor(this PBENature nature)
         {
             if (nature >= PBENature.MAX)
             {
@@ -111,7 +111,7 @@ namespace Kermalis.PokemonBattleEngine.Data
             }
             return null;
         }
-        public static PBEFlavor? GetDislikedFlavor(PBENature nature)
+        public static PBEFlavor? GetDislikedFlavor(this PBENature nature)
         {
             if (nature >= PBENature.MAX)
             {
@@ -120,6 +120,30 @@ namespace Kermalis.PokemonBattleEngine.Data
             if (_natureBoosts.TryGetValue(nature, out (PBEFlavor Favored, PBEFlavor Disliked) t))
             {
                 return t.Disliked;
+            }
+            return null;
+        }
+        public static PBEStat? GetLikedStat(this PBENature nature)
+        {
+            if (nature >= PBENature.MAX)
+            {
+                throw new ArgumentOutOfRangeException(nameof(nature));
+            }
+            if (_natureBoosts.TryGetValue(nature, out (PBEFlavor Favored, PBEFlavor Disliked) t))
+            {
+                return (PBEStat)(t.Favored + 1);
+            }
+            return null;
+        }
+        public static PBEStat? GetDislikedStat(this PBENature nature)
+        {
+            if (nature >= PBENature.MAX)
+            {
+                throw new ArgumentOutOfRangeException(nameof(nature));
+            }
+            if (_natureBoosts.TryGetValue(nature, out (PBEFlavor Favored, PBEFlavor Disliked) t))
+            {
+                return (PBEStat)(t.Disliked + 1);
             }
             return null;
         }
