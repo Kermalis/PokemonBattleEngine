@@ -27,7 +27,7 @@ namespace Kermalis.PokemonBattleEngine.AI
             }
             if (trainer.IsWild)
             {
-                trainer.CreateWildAIActions();
+                trainer.CreateWildAIActions(false);
                 return;
             }
             var actions = new PBETurnAction[trainer.ActionsRequired.Count];
@@ -64,7 +64,7 @@ namespace Kermalis.PokemonBattleEngine.AI
 
         // Wild Pokémon always select a random usable move (unless they are forced to use a move)
         // They will flee randomly based on their PBEPokemonData.FleeRate only if it's a single battle and they are allowed to flee
-        public static void CreateWildAIActions(this PBETrainer trainer)
+        public static void CreateWildAIActions(this PBETrainer trainer, bool allowFlee)
         {
             if (trainer is null)
             {
@@ -75,7 +75,7 @@ namespace Kermalis.PokemonBattleEngine.AI
                 throw new InvalidOperationException($"{nameof(trainer.Battle.BattleState)} must be {PBEBattleState.WaitingForActions} to create actions.");
             }
             // Try to flee if it's a single wild battle and the Pokémon is a runner
-            if (trainer.IsWild && trainer.Battle.BattleFormat == PBEBattleFormat.Single && trainer.IsFleeValid() is null)
+            if (allowFlee && trainer.IsWild && trainer.Battle.BattleFormat == PBEBattleFormat.Single && trainer.IsFleeValid() is null)
             {
                 PBEBattlePokemon user = trainer.ActionsRequired[0];
                 IPBEPokemonData pData = PBEDataProvider.Instance.GetPokemonData(user);
@@ -105,7 +105,7 @@ namespace Kermalis.PokemonBattleEngine.AI
                     actions[i] = new PBETurnAction(user, user.TempLockedMove, user.TempLockedTargets);
                     continue;
                 }
-                // The Pokémon is free to fight
+                // The Pokémon is free to fight, so pick a random move
                 PBEMove[] usableMoves = user.GetUsableMoves();
                 PBEMove move = PBEDataProvider.GlobalRandom.RandomElement(usableMoves);
                 actions[i] = new PBETurnAction(user, move, PBEBattle.GetRandomTargetForMetronome(user, move, PBEDataProvider.GlobalRandom));
