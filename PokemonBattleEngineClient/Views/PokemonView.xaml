@@ -4,9 +4,9 @@
              xmlns:infrastructure="clr-namespace:Kermalis.PokemonBattleEngineClient.Infrastructure;assembly=PokemonBattleEngineClient"
              x:Class="Kermalis.PokemonBattleEngineClient.Views.PokemonView"
              Width="192" Height="192" RenderOptions.BitmapInterpolationMode="Default" IsVisible="False">
-  <Image Name="Sprite" Stretch="None" HorizontalAlignment="Center" VerticalAlignment="Bottom">
+  <gif:GifImage Name="Sprite" Stretch="None" HorizontalAlignment="Center" VerticalAlignment="Bottom">
     <ToolTip.Tip>
       <Image Source="{Binding Description, Converter={x:Static infrastructure:ObjectToTextBitmapConverter.Instance}, ConverterParameter=MenuBlack, Mode=OneWay}"/>
     </ToolTip.Tip>
-  </Image>
+  </gif:GifImage>
 </UserControl>

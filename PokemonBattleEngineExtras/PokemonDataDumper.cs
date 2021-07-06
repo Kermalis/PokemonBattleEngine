@@ -157,7 +157,7 @@ namespace Kermalis.PokemonBattleEngineExtras
                                 }
                                 pkmn.FleeRate = pokedata.ReadByte(0x1B);
                                 pkmn.BaseEXPYield = pokedata.ReadUInt16(0x22);
-                                pkmn.Weight = Math.Round(pokedata.ReadUInt16(0x26) * 0.1, 1);
+                                pkmn.Weight = MathF.Round(pokedata.ReadUInt16(0x26) * 0.1f, 1);
                                 // Evolution
                                 for (int i = 0; i < 7; i++)
                                 {

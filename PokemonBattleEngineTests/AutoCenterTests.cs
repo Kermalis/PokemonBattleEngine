@@ -69,7 +69,7 @@ namespace Kermalis.PokemonBattleEngineTests
         public void AutoCenter_Works_Despite_Available(bool faintLeft)
         {
             #region Setup
-            PBEDataProvider.GlobalRandom.Seed = 2; // Seed ensures protect doesn't fail
+            PBEDataProvider.GlobalRandom.Seed = 0; // Seed ensures protect doesn't fail
             PBESettings settings = PBESettings.DefaultSettings;
 
             var p0L = new TestPokemonCollection(faintLeft ? 1 : 2);

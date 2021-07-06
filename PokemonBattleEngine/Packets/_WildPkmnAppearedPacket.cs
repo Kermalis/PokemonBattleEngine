@@ -14,7 +14,7 @@ namespace Kermalis.PokemonBattleEngine.Packets
         byte Level { get; }
         bool Shiny { get; }
         PBEGender Gender { get; }
-        double HPPercentage { get; }
+        float HPPercentage { get; }
         PBEStatus1 Status1 { get; }
         PBEFieldPosition FieldPosition { get; }
     }
@@ -35,7 +35,7 @@ namespace Kermalis.PokemonBattleEngine.Packets
         public PBEItem CaughtBall { get; }
         public ushort HP { get; }
         public ushort MaxHP { get; }
-        public double HPPercentage { get; }
+        public float HPPercentage { get; }
         public PBEStatus1 Status1 { get; }
         public PBEFieldPosition FieldPosition { get; }
 
@@ -69,7 +69,7 @@ namespace Kermalis.PokemonBattleEngine.Packets
             CaughtBall = r.ReadEnum<PBEItem>();
             HP = r.ReadUInt16();
             MaxHP = r.ReadUInt16();
-            HPPercentage = r.ReadDouble();
+            HPPercentage = r.ReadSingle();
             Status1 = r.ReadEnum<PBEStatus1>();
             FieldPosition = r.ReadEnum<PBEFieldPosition>();
         }
@@ -139,7 +139,7 @@ namespace Kermalis.PokemonBattleEngine.Packets
             public byte Level { get; }
             public bool Shiny { get; }
             public PBEGender Gender { get; }
-            public double HPPercentage { get; }
+            public float HPPercentage { get; }
             public PBEStatus1 Status1 { get; }
             public PBEFieldPosition FieldPosition { get; }
 
@@ -163,7 +163,7 @@ namespace Kermalis.PokemonBattleEngine.Packets
                 Level = r.ReadByte();
                 Shiny = r.ReadBoolean();
                 Gender = r.ReadEnum<PBEGender>();
-                HPPercentage = r.ReadDouble();
+                HPPercentage = r.ReadSingle();
                 Status1 = r.ReadEnum<PBEStatus1>();
                 FieldPosition = r.ReadEnum<PBEFieldPosition>();
             }

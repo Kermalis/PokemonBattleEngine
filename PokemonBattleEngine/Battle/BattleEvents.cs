@@ -153,7 +153,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
             PBEType type2 = pData.Type2;
             pokemon.Type2 = type2;
             pokemon.KnownType2 = type2;
-            double weight = pData.Weight; // TODO: Is weight updated here? Bulbapedia claims in Autotomize's page that it is not
+            float weight = pData.Weight; // TODO: Is weight updated here? Bulbapedia claims in Autotomize's page that it is not
             pokemon.Weight = weight;
             pokemon.KnownWeight = weight;
             Broadcast(new PBEPkmnFormChangedPacket(pokemon, isRevertForm));
@@ -163,7 +163,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                 BroadcastStatus2(pokemon, pokemon, PBEStatus2.PowerTrick, PBEStatusAction.Ended);
             }
         }
-        private void BroadcastPkmnHPChanged(PBEBattlePokemon pokemon, ushort oldHP, double oldHPPercentage)
+        private void BroadcastPkmnHPChanged(PBEBattlePokemon pokemon, ushort oldHP, float oldHPPercentage)
         {
             Broadcast(new PBEPkmnHPChangedPacket(pokemon, oldHP, oldHPPercentage));
         }
@@ -391,7 +391,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                 string foePrefix = firstLetterCapitalized ? "The opposing" : "the opposing";
                 return team == userTrainer.Team ? ownerPrefix : foePrefix;
             }
-            string DoHiddenHP(PBEBattlePokemon pokemon, double percentageChange, double absPercentageChange)
+            string DoHiddenHP(PBEBattlePokemon pokemon, float percentageChange, float absPercentageChange)
             {
                 return string.Format("{0} {1} {2:P2} of its HP!", GetPkmnName(pokemon, true), percentageChange <= 0 ? "lost" : "restored", absPercentageChange);
             }
@@ -996,8 +996,8 @@ namespace Kermalis.PokemonBattleEngine.Battle
                 case PBEPkmnHPChangedPacket phcp:
                 {
                     PBEBattlePokemon pokemon = phcp.PokemonTrainer.TryGetPokemon(phcp.Pokemon);
-                    double percentageChange = phcp.NewHPPercentage - phcp.OldHPPercentage;
-                    double absPercentageChange = Math.Abs(percentageChange);
+                    float percentageChange = phcp.NewHPPercentage - phcp.OldHPPercentage;
+                    float absPercentageChange = Math.Abs(percentageChange);
                     if (showRawHP || userTrainer == pokemon.Trainer) // Owner should see raw values
                     {
                         int change = phcp.NewHP - phcp.OldHP;
@@ -1009,8 +1009,8 @@ namespace Kermalis.PokemonBattleEngine.Battle
                 case PBEPkmnHPChangedPacket_Hidden phcph:
                 {
                     PBEBattlePokemon pokemon = phcph.PokemonTrainer.TryGetPokemon(phcph.Pokemon);
-                    double percentageChange = phcph.NewHPPercentage - phcph.OldHPPercentage;
-                    double absPercentageChange = Math.Abs(percentageChange);
+                    float percentageChange = phcph.NewHPPercentage - phcph.OldHPPercentage;
+                    float absPercentageChange = Math.Abs(percentageChange);
                     return DoHiddenHP(pokemon, percentageChange, absPercentageChange);
                 }
                 case PBEPkmnLevelChangedPacket plcp:

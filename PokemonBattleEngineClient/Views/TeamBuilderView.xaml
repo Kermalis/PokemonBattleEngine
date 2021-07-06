@@ -92,11 +92,11 @@
           <ComboBox Grid.Row="11" Grid.Column="1" Items="{x:Static pbedata:PBEDataUtils.AllBalls}" ItemTemplate="{StaticResource MenuBlack}" SelectedItem="{Binding Pkmn.CaughtBall}"/>
         </Grid>
         <Panel Width="192" Height="192">
-          <Image Stretch="None" HorizontalAlignment="Center" VerticalAlignment="Center" RenderOptions.BitmapInterpolationMode="Default" gif:GifImage.SourceUri="{Binding SpriteUri}">
-            <Image.RenderTransform>
+          <gif:GifImage Stretch="None" HorizontalAlignment="Center" VerticalAlignment="Center" RenderOptions.BitmapInterpolationMode="Default" SourceUri="{Binding SpriteUri}">
+            <gif:GifImage.RenderTransform>
               <ScaleTransform ScaleX="2" ScaleY="2"/>
-            </Image.RenderTransform>
-          </Image>
+            </gif:GifImage.RenderTransform>
+          </gif:GifImage>
         </Panel>
       </StackPanel>
       <Grid>
@@ -176,7 +176,7 @@
           <Image Stretch="None" Source="{Binding Source='Remove', Converter={x:Static infrastructure:ObjectToTextBitmapConverter.Instance}, ConverterParameter=MenuBlack, Mode=OneWay}"/>
         </Button>
       </StackPanel>
-      <ListBox Name="Party" Items="{Binding Team.Party, Mode=OneWay}" SelectedItem="{Binding Pkmn}" SelectionMode="AlwaysSelected">
+      <ListBox Name="Party" SelectionMode="AlwaysSelected">
         <ListBox.ItemTemplate>
           <DataTemplate>
             <StackPanel Spacing="4" Orientation="Horizontal">
@@ -199,7 +199,7 @@
       <Button Command="{Binding SaveTeam}">
         <Image Stretch="None" Source="{Binding Source='Save', Converter={x:Static infrastructure:ObjectToTextBitmapConverter.Instance}, ConverterParameter=MenuBlack, Mode=OneWay}"/>
       </Button>
-      <ListBox Name="SavedTeams" Items="{Binding Teams, Mode=OneWay}" SelectedItem="{Binding Team}" SelectionMode="AlwaysSelected">
+      <ListBox Name="SavedTeams" Items="{Binding Teams, Mode=OneWay}" SelectionMode="AlwaysSelected">
         <ListBox.ItemTemplate>
           <DataTemplate>
             <Image Stretch="None" Source="{Binding Name, Converter={x:Static infrastructure:ObjectToTextBitmapConverter.Instance}, ConverterParameter=MenuBlack, Mode=OneWay}"/>

@@ -750,10 +750,10 @@ namespace Kermalis.PokemonBattleEngine.Battle
         private void CalcEXP(PBEBattlePokemon loser)
         {
             IPBEPokemonData loserPData = PBEDataProvider.Instance.GetPokemonData(loser);
-            double modTrainer = loser.IsWild ? 1 : 1.5;
+            float modTrainer = loser.IsWild ? 1 : 1.5f;
             int expYield = loserPData.BaseEXPYield;
             int levelLoser = loser.Level;
-            double modPassPower = PBEDataProvider.Instance.GetEXPModifier(this);
+            float modPassPower = PBEDataProvider.Instance.GetEXPModifier(this);
             int amtParticipated = loser.EXPPokemon.Count(pk => pk.Trainer.GainsEXP && pk.HP > 0);
             int amtEXPShare = loser.EXPPokemon.Count(pk => pk.Trainer.GainsEXP && pk.Item == PBEItem.ExpShare);
             foreach (PBEBattlePokemon victor in loser.EXPPokemon)
@@ -764,7 +764,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                 }
 
                 int levelVictor = victor.Level;
-                double modParticipators;
+                float modParticipators;
                 if (amtEXPShare == 0)
                 {
                     modParticipators = amtParticipated;
@@ -777,17 +777,17 @@ namespace Kermalis.PokemonBattleEngine.Battle
                 {
                     modParticipators = 2 * amtParticipated;
                 }
-                double modTraded = PBEDataProvider.Instance.GetEXPTradeModifier(victor);
-                double modLuckyEgg = victor.Item == PBEItem.LuckyEgg ? 1.5 : 1;
+                float modTraded = PBEDataProvider.Instance.GetEXPTradeModifier(victor);
+                float modLuckyEgg = victor.Item == PBEItem.LuckyEgg ? 1.5f : 1;
 
-                double result1H = modTrainer * expYield * levelLoser;
-                double result1L = 5 * modParticipators;
-                double result1 = result1H / result1L;
-                double result2H = Math.Pow(2 * levelLoser + 10, 2.5);
-                double result2L = Math.Pow(levelLoser + levelVictor + 10, 2.5);
-                double result2 = result2H / result2L;
-                double combined = result1 * result2 + 1;
-                double final = combined * modTraded * modLuckyEgg * modPassPower;
+                float result1H = modTrainer * expYield * levelLoser;
+                float result1L = 5 * modParticipators;
+                float result1 = result1H / result1L;
+                float result2H = MathF.Pow(2 * levelLoser + 10, 2.5f);
+                float result2L = MathF.Pow(levelLoser + levelVictor + 10, 2.5f);
+                float result2 = result2H / result2L;
+                float combined = result1 * result2 + 1;
+                float final = combined * modTraded * modLuckyEgg * modPassPower;
                 GiveEXP(victor, (uint)final);
             }
         }
@@ -829,7 +829,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
             }
         }
 
-        private double PokedexCountTable(int count, double g600, double g450, double g300, double g150, double g30, double ge0)
+        private static float PokedexCountTable(int count, float g600, float g450, float g300, float g150, float g30, float ge0)
         {
             if (count > 600)
             {
@@ -863,13 +863,13 @@ namespace Kermalis.PokemonBattleEngine.Battle
                 return;
             }
             IPBEPokemonData pData = PBEDataProvider.Instance.GetPokemonData(wildPkmn.OriginalSpecies, wildPkmn.RevertForm);
-            double rate = pData.CatchRate * PBEDataProvider.Instance.GetCatchRateModifier(this);
-            double bonusBall = 1;
+            float rate = pData.CatchRate * PBEDataProvider.Instance.GetCatchRateModifier(this);
+            float bonusBall = 1;
             switch (ball)
             {
                 case PBEItem.GreatBall:
                 case PBEItem.SafariBall:
-                case PBEItem.SportBall: bonusBall = 1.5; break;
+                case PBEItem.SportBall: bonusBall = 1.5f; break;
                 case PBEItem.UltraBall: bonusBall = 2; break;
                 case PBEItem.MasterBall:
                 case PBEItem.ParkBall: bonusBall = 255; break;
@@ -909,16 +909,16 @@ namespace Kermalis.PokemonBattleEngine.Battle
                 }
                 case PBEItem.HeavyBall:
                 {
-                    double weight = pData.Weight;
-                    if (weight >= 409.6)
+                    float weight = pData.Weight;
+                    if (weight >= 409.6f)
                     {
                         rate += 40;
                     }
-                    else if (weight >= 307.2)
+                    else if (weight >= 307.2f)
                     {
                         rate += 30;
                     }
-                    else if (weight >= 204.8)
+                    else if (weight >= 204.8f)
                     {
                         rate += 20;
                     }
@@ -967,14 +967,14 @@ namespace Kermalis.PokemonBattleEngine.Battle
                 }
                 case PBEItem.TimerBall:
                 {
-                    bonusBall = Math.Min(4, 1 + (TurnNumber * 0.3));
+                    bonusBall = Math.Min(4, 1 + (TurnNumber * 0.3f));
                     break;
                 }
                 case PBEItem.DiveBall:
                 {
                     if (PBEDataProvider.Instance.IsFishing(this) || PBEDataProvider.Instance.IsSurfing(this) || PBEDataProvider.Instance.IsUnderwater(this))
                     {
-                        bonusBall = 3.5;
+                        bonusBall = 3.5f;
                     }
                     break;
                 }
@@ -982,7 +982,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                 {
                     if (PBEDataProvider.Instance.IsDuskBallSetting(this))
                     {
-                        bonusBall = 3.5;
+                        bonusBall = 3.5f;
                     }
                     break;
                 }
@@ -996,22 +996,22 @@ namespace Kermalis.PokemonBattleEngine.Battle
                 }
             }
             rate = PBEUtils.Clamp(rate, 1, 255);
-            double bonusStatus;
+            float bonusStatus;
             switch (wildPkmn.Status1)
             {
                 case PBEStatus1.Asleep:
-                case PBEStatus1.Frozen: bonusStatus = 2.5; break;
+                case PBEStatus1.Frozen: bonusStatus = 2.5f; break;
                 case PBEStatus1.None: bonusStatus = 1; break;
-                default: bonusStatus = 1.5; break;
+                default: bonusStatus = 1.5f; break;
             }
-            double pkmnFactor = (3 * wildPkmn.MaxHP) - (2 * wildPkmn.HP);
+            float pkmnFactor = (3 * wildPkmn.MaxHP) - (2 * wildPkmn.HP);
             int pkmnCaught = PBEDataProvider.Instance.GetSpeciesCaught();
             if (PBEDataProvider.Instance.IsDarkGrass(this))
             {
-                pkmnFactor *= PokedexCountTable(pkmnCaught, 1, 0.9, 0.8, 0.7, 0.5, 0.3);
+                pkmnFactor *= PokedexCountTable(pkmnCaught, 1, 0.9f, 0.8f, 0.7f, 0.5f, 0.3f);
             }
-            double a = pkmnFactor * rate * bonusBall / (3 * wildPkmn.MaxHP) * bonusStatus;
-            double c = a * PokedexCountTable(pkmnCaught, 2.5, 2, 1.5, 1, 0.5, 0); // Critical capture modifier
+            float a = pkmnFactor * rate * bonusBall / (3 * wildPkmn.MaxHP) * bonusStatus;
+            float c = a * PokedexCountTable(pkmnCaught, 2.5f, 2, 1.5f, 1, 0.5f, 0); // Critical capture modifier
             isCriticalCapture = _rand.RandomInt(0, 0xFF) < c / 6;
             byte numShakes = isCriticalCapture ? (byte)1 : (byte)3;
             if (a >= 0xFF)
@@ -1020,7 +1020,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                 success = true;
                 return;
             }
-            double b = 0x10000 / Math.Sqrt(Math.Sqrt(0xFF / a));
+            float b = 0x10000 / MathF.Sqrt(MathF.Sqrt(0xFF / a));
             for (shakes = 0; shakes < numShakes; shakes++)
             {
                 if (_rand.RandomInt(0, 0xFFFF) >= b)
@@ -1415,7 +1415,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                 goto miss;
             }
             // These go after semi-invulnerable
-            double chance = mData.Accuracy;
+            float chance = mData.Accuracy;
             if (chance == 0) // Moves that don't miss
             {
                 return false;
@@ -1456,8 +1456,8 @@ namespace Kermalis.PokemonBattleEngine.Battle
             }
             bool ignoreA = mData.Category != PBEMoveCategory.Status && target.Ability == PBEAbility.Unaware && !user.HasCancellingAbility();
             bool ignoreE = mData.Effect == PBEMoveEffect.ChipAway || (mData.Category != PBEMoveCategory.Status && user.Ability == PBEAbility.Unaware);
-            double accuracy = ignoreA ? 1 : GetStatChangeModifier(user.AccuracyChange, true);
-            double evasion;
+            float accuracy = ignoreA ? 1 : GetStatChangeModifier(user.AccuracyChange, true);
+            float evasion;
             if (ignoreE)
             {
                 evasion = 1;
@@ -1470,42 +1470,42 @@ namespace Kermalis.PokemonBattleEngine.Battle
             chance *= accuracy / evasion;
             if (user.Ability == PBEAbility.Compoundeyes)
             {
-                chance *= 1.3;
+                chance *= 1.3f;
             }
             if (user.Team.ActiveBattlers.Any(p => p.Ability == PBEAbility.VictoryStar))
             {
-                chance *= 1.1;
+                chance *= 1.1f;
             }
             if (user.Ability == PBEAbility.Hustle && mData.Category == PBEMoveCategory.Physical)
             {
-                chance *= 0.8;
+                chance *= 0.8f;
             }
             if (!user.HasCancellingAbility() && ShouldDoWeatherEffects())
             {
                 if (Weather == PBEWeather.Sandstorm && target.Ability == PBEAbility.SandVeil)
                 {
-                    chance *= 0.8;
+                    chance *= 0.8f;
                 }
                 if (Weather == PBEWeather.Hailstorm && target.Ability == PBEAbility.SnowCloak)
                 {
-                    chance *= 0.8;
+                    chance *= 0.8f;
                 }
             }
             if (target.Item == PBEItem.BrightPowder)
             {
-                chance *= 0.9;
+                chance *= 0.9f;
             }
             if (target.Item == PBEItem.LaxIncense)
             {
-                chance *= 0.9;
+                chance *= 0.9f;
             }
             if (user.Item == PBEItem.WideLens)
             {
-                chance *= 1.1;
+                chance *= 1.1f;
             }
             if (target.Ability == PBEAbility.TangledFeet && target.Status2.HasFlag(PBEStatus2.Confused) && !user.HasCancellingAbility())
             {
-                chance *= 0.5;
+                chance *= 0.5f;
             }
         roll:
             if (_rand.RandomBool((int)chance, 100))
@@ -1516,7 +1516,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
             BroadcastMoveResult(user, target, PBEResult.Missed);
             return true;
         }
-        private bool AttackTypeCheck(PBEBattlePokemon user, PBEBattlePokemon target, PBEType moveType, out PBEResult result, out double damageMultiplier)
+        private bool AttackTypeCheck(PBEBattlePokemon user, PBEBattlePokemon target, PBEType moveType, out PBEResult result, out float damageMultiplier)
         {
             result = PBETypeEffectiveness.IsAffectedByAttack(user, target, moveType, out damageMultiplier);
             if (result == PBEResult.Ineffective_Ability)
@@ -1566,13 +1566,13 @@ namespace Kermalis.PokemonBattleEngine.Battle
             {
                 stage += 1;
             }
-            double chance;
+            float chance;
             switch (stage)
             {
-                case 0: chance = 6.25; break;
-                case 1: chance = 12.5; break;
+                case 0: chance = 6.25f; break;
+                case 1: chance = 12.5f; break;
                 case 2: chance = 25; break;
-                case 3: chance = 33.3; break;
+                case 3: chance = 33.3f; break;
                 default: chance = 50; break;
             }
             return _rand.RandomBool((int)(chance * 100), 100 * 100);
@@ -1652,7 +1652,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                                 IPBEMoveData mData = PBEDataProvider.Instance.GetMoveData(move);
                                 if (mData.Category != PBEMoveCategory.Status)
                                 {
-                                    double d = PBETypeEffectiveness.GetEffectiveness(mData.Type, pkmn);
+                                    float d = PBETypeEffectiveness.GetEffectiveness(mData.Type, pkmn);
                                     if (d > 1)
                                     {
                                         BroadcastAbility(pkmn, pkmn, PBEAbility.Anticipation, PBEAbilityAction.Announced);

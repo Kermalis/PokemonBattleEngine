@@ -20,7 +20,7 @@ namespace Kermalis.PokemonBattleEngineExtras
             public ushort BaseEXPYield;
             public byte CatchRate;
             public byte FleeRate;
-            public double Weight;
+            public float Weight;
             public List<(PBESpecies, PBEForm)> PreEvolutions = new List<(PBESpecies, PBEForm)>();
             public List<(PBESpecies, PBEForm)> Evolutions = new List<(PBESpecies, PBEForm)>();
             public List<PBEAbility> Abilities = new List<PBEAbility>();

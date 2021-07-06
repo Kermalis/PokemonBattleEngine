@@ -8,408 +8,408 @@ namespace Kermalis.PokemonBattleEngine.Battle
     {
         #region Static Collections
         /// <summary>The type effectiveness table. The first key is the attacking type and the second key is the defending type.</summary>
-        private static readonly Dictionary<PBEType, Dictionary<PBEType, double>> _table = new Dictionary<PBEType, Dictionary<PBEType, double>>
+        private static readonly Dictionary<PBEType, Dictionary<PBEType, float>> _table = new Dictionary<PBEType, Dictionary<PBEType, float>>
         {
-            { PBEType.None, new Dictionary<PBEType, double>
+            { PBEType.None, new Dictionary<PBEType, float>
             {
-                { PBEType.None, 1.0 },
-                { PBEType.Bug, 1.0 },
-                { PBEType.Dark, 1.0 },
-                { PBEType.Dragon, 1.0 },
-                { PBEType.Electric, 1.0 },
-                { PBEType.Fighting, 1.0 },
-                { PBEType.Fire, 1.0 },
-                { PBEType.Flying, 1.0 },
-                { PBEType.Ghost, 1.0 },
-                { PBEType.Grass, 1.0 },
-                { PBEType.Ground, 1.0 },
-                { PBEType.Ice, 1.0 },
-                { PBEType.Normal, 1.0 },
-                { PBEType.Poison, 1.0 },
-                { PBEType.Psychic, 1.0 },
-                { PBEType.Rock, 1.0 },
-                { PBEType.Steel, 1.0 },
-                { PBEType.Water, 1.0 },
+                { PBEType.None, 1.0f },
+                { PBEType.Bug, 1.0f },
+                { PBEType.Dark, 1.0f },
+                { PBEType.Dragon, 1.0f },
+                { PBEType.Electric, 1.0f },
+                { PBEType.Fighting, 1.0f },
+                { PBEType.Fire, 1.0f },
+                { PBEType.Flying, 1.0f },
+                { PBEType.Ghost, 1.0f },
+                { PBEType.Grass, 1.0f },
+                { PBEType.Ground, 1.0f },
+                { PBEType.Ice, 1.0f },
+                { PBEType.Normal, 1.0f },
+                { PBEType.Poison, 1.0f },
+                { PBEType.Psychic, 1.0f },
+                { PBEType.Rock, 1.0f },
+                { PBEType.Steel, 1.0f },
+                { PBEType.Water, 1.0f },
             }
             },
-            { PBEType.Bug, new Dictionary<PBEType, double>
+            { PBEType.Bug, new Dictionary<PBEType, float>
             {
-                { PBEType.None, 1.0 },
-                { PBEType.Bug, 1.0 },
-                { PBEType.Dark, 2.0 },
-                { PBEType.Dragon, 1.0 },
-                { PBEType.Electric, 1.0 },
-                { PBEType.Fighting, 0.5 },
-                { PBEType.Fire, 0.5 },
-                { PBEType.Flying, 0.5 },
-                { PBEType.Ghost, 0.5 },
-                { PBEType.Grass, 2.0 },
-                { PBEType.Ground, 1.0 },
-                { PBEType.Ice, 1.0 },
-                { PBEType.Normal, 1.0 },
-                { PBEType.Poison, 0.5 },
-                { PBEType.Psychic, 2.0 },
-                { PBEType.Rock, 1.0 },
-                { PBEType.Steel, 0.5 },
-                { PBEType.Water, 1.0 },
+                { PBEType.None, 1.0f },
+                { PBEType.Bug, 1.0f },
+                { PBEType.Dark, 2.0f },
+                { PBEType.Dragon, 1.0f },
+                { PBEType.Electric, 1.0f },
+                { PBEType.Fighting, 0.5f },
+                { PBEType.Fire, 0.5f },
+                { PBEType.Flying, 0.5f },
+                { PBEType.Ghost, 0.5f },
+                { PBEType.Grass, 2.0f },
+                { PBEType.Ground, 1.0f },
+                { PBEType.Ice, 1.0f },
+                { PBEType.Normal, 1.0f },
+                { PBEType.Poison, 0.5f },
+                { PBEType.Psychic, 2.0f },
+                { PBEType.Rock, 1.0f },
+                { PBEType.Steel, 0.5f },
+                { PBEType.Water, 1.0f },
             }
             },
-            { PBEType.Dark, new Dictionary<PBEType, double>
+            { PBEType.Dark, new Dictionary<PBEType, float>
             {
-                { PBEType.None, 1.0 },
-                { PBEType.Bug, 1.0 },
-                { PBEType.Dark, 0.5 },
-                { PBEType.Dragon, 1.0 },
-                { PBEType.Electric, 1.0 },
-                { PBEType.Fighting, 0.5 },
-                { PBEType.Fire, 1.0 },
-                { PBEType.Flying, 1.0 },
-                { PBEType.Ghost, 2.0 },
-                { PBEType.Grass, 1.0 },
-                { PBEType.Ground, 1.0 },
-                { PBEType.Ice, 1.0 },
-                { PBEType.Normal, 1.0 },
-                { PBEType.Poison, 1.0 },
-                { PBEType.Psychic, 2.0 },
-                { PBEType.Rock, 1.0 },
-                { PBEType.Steel, 0.5 },
-                { PBEType.Water, 1.0 },
+                { PBEType.None, 1.0f },
+                { PBEType.Bug, 1.0f },
+                { PBEType.Dark, 0.5f },
+                { PBEType.Dragon, 1.0f },
+                { PBEType.Electric, 1.0f },
+                { PBEType.Fighting, 0.5f },
+                { PBEType.Fire, 1.0f },
+                { PBEType.Flying, 1.0f },
+                { PBEType.Ghost, 2.0f },
+                { PBEType.Grass, 1.0f },
+                { PBEType.Ground, 1.0f },
+                { PBEType.Ice, 1.0f },
+                { PBEType.Normal, 1.0f },
+                { PBEType.Poison, 1.0f },
+                { PBEType.Psychic, 2.0f },
+                { PBEType.Rock, 1.0f },
+                { PBEType.Steel, 0.5f },
+                { PBEType.Water, 1.0f },
             }
             },
-            { PBEType.Dragon, new Dictionary<PBEType, double>
+            { PBEType.Dragon, new Dictionary<PBEType, float>
             {
-                { PBEType.None, 1.0 },
-                { PBEType.Bug, 1.0 },
-                { PBEType.Dark, 1.0 },
-                { PBEType.Dragon, 2.0 },
-                { PBEType.Electric, 1.0 },
-                { PBEType.Fighting, 1.0 },
-                { PBEType.Fire, 1.0 },
-                { PBEType.Flying, 1.0 },
-                { PBEType.Ghost, 1.0 },
-                { PBEType.Grass, 1.0 },
-                { PBEType.Ground, 1.0 },
-                { PBEType.Ice, 1.0 },
-                { PBEType.Normal, 1.0 },
-                { PBEType.Poison, 1.0 },
-                { PBEType.Psychic, 1.0 },
-                { PBEType.Rock, 1.0 },
-                { PBEType.Steel, 0.5 },
-                { PBEType.Water, 1.0 },
+                { PBEType.None, 1.0f },
+                { PBEType.Bug, 1.0f },
+                { PBEType.Dark, 1.0f },
+                { PBEType.Dragon, 2.0f },
+                { PBEType.Electric, 1.0f },
+                { PBEType.Fighting, 1.0f },
+                { PBEType.Fire, 1.0f },
+                { PBEType.Flying, 1.0f },
+                { PBEType.Ghost, 1.0f },
+                { PBEType.Grass, 1.0f },
+                { PBEType.Ground, 1.0f },
+                { PBEType.Ice, 1.0f },
+                { PBEType.Normal, 1.0f },
+                { PBEType.Poison, 1.0f },
+                { PBEType.Psychic, 1.0f },
+                { PBEType.Rock, 1.0f },
+                { PBEType.Steel, 0.5f },
+                { PBEType.Water, 1.0f },
             }
             },
-            { PBEType.Electric, new Dictionary<PBEType, double>
+            { PBEType.Electric, new Dictionary<PBEType, float>
             {
-                { PBEType.None, 1.0 },
-                { PBEType.Bug, 1.0 },
-                { PBEType.Dark, 1.0 },
-                { PBEType.Dragon, 0.5 },
-                { PBEType.Electric, 0.5 },
-                { PBEType.Fighting, 1.0 },
-                { PBEType.Fire, 1.0 },
-                { PBEType.Flying, 2.0 },
-                { PBEType.Ghost, 1.0 },
-                { PBEType.Grass, 0.5 },
-                { PBEType.Ground, 0.0 },
-                { PBEType.Ice, 1.0 },
-                { PBEType.Normal, 1.0 },
-                { PBEType.Poison, 1.0 },
-                { PBEType.Psychic, 1.0 },
-                { PBEType.Rock, 1.0 },
-                { PBEType.Steel, 1.0 },
-                { PBEType.Water, 2.0 },
+                { PBEType.None, 1.0f },
+                { PBEType.Bug, 1.0f },
+                { PBEType.Dark, 1.0f },
+                { PBEType.Dragon, 0.5f },
+                { PBEType.Electric, 0.5f },
+                { PBEType.Fighting, 1.0f },
+                { PBEType.Fire, 1.0f },
+                { PBEType.Flying, 2.0f },
+                { PBEType.Ghost, 1.0f },
+                { PBEType.Grass, 0.5f },
+                { PBEType.Ground, 0.0f },
+                { PBEType.Ice, 1.0f },
+                { PBEType.Normal, 1.0f },
+                { PBEType.Poison, 1.0f },
+                { PBEType.Psychic, 1.0f },
+                { PBEType.Rock, 1.0f },
+                { PBEType.Steel, 1.0f },
+                { PBEType.Water, 2.0f },
             }
             },
-            { PBEType.Fighting, new Dictionary<PBEType, double>
+            { PBEType.Fighting, new Dictionary<PBEType, float>
             {
-                { PBEType.None, 1.0 },
-                { PBEType.Bug, 0.5 },
-                { PBEType.Dark, 2.0 },
-                { PBEType.Dragon, 1.0 },
-                { PBEType.Electric, 1.0 },
-                { PBEType.Fighting, 1.0 },
-                { PBEType.Fire, 1.0 },
-                { PBEType.Flying, 0.5 },
-                { PBEType.Ghost, 0.0 },
-                { PBEType.Grass, 1.0 },
-                { PBEType.Ground, 1.0 },
-                { PBEType.Ice, 2.0 },
-                { PBEType.Normal, 2.0 },
-                { PBEType.Poison, 0.5 },
-                { PBEType.Psychic, 0.5 },
-                { PBEType.Rock, 2.0 },
-                { PBEType.Steel, 2.0 },
-                { PBEType.Water, 1.0 },
+                { PBEType.None, 1.0f },
+                { PBEType.Bug, 0.5f },
+                { PBEType.Dark, 2.0f },
+                { PBEType.Dragon, 1.0f },
+                { PBEType.Electric, 1.0f },
+                { PBEType.Fighting, 1.0f },
+                { PBEType.Fire, 1.0f },
+                { PBEType.Flying, 0.5f },
+                { PBEType.Ghost, 0.0f },
+                { PBEType.Grass, 1.0f },
+                { PBEType.Ground, 1.0f },
+                { PBEType.Ice, 2.0f },
+                { PBEType.Normal, 2.0f },
+                { PBEType.Poison, 0.5f },
+                { PBEType.Psychic, 0.5f },
+                { PBEType.Rock, 2.0f },
+                { PBEType.Steel, 2.0f },
+                { PBEType.Water, 1.0f },
             }
             },
-            { PBEType.Fire, new Dictionary<PBEType, double>
+            { PBEType.Fire, new Dictionary<PBEType, float>
             {
-                { PBEType.None, 1.0 },
-                { PBEType.Bug, 2.0 },
-                { PBEType.Dark, 1.0 },
-                { PBEType.Dragon, 0.5 },
-                { PBEType.Electric, 1.0 },
-                { PBEType.Fighting, 1.0 },
-                { PBEType.Fire, 0.5 },
-                { PBEType.Flying, 1.0 },
-                { PBEType.Ghost, 1.0 },
-                { PBEType.Grass, 2.0 },
-                { PBEType.Ground, 1.0 },
-                { PBEType.Ice, 2.0 },
-                { PBEType.Normal, 1.0 },
-                { PBEType.Poison, 1.0 },
-                { PBEType.Psychic, 1.0 },
-                { PBEType.Rock, 0.5 },
-                { PBEType.Steel, 2.0 },
-                { PBEType.Water, 0.5 },
+                { PBEType.None, 1.0f },
+                { PBEType.Bug, 2.0f },
+                { PBEType.Dark, 1.0f },
+                { PBEType.Dragon, 0.5f },
+                { PBEType.Electric, 1.0f },
+                { PBEType.Fighting, 1.0f },
+                { PBEType.Fire, 0.5f },
+                { PBEType.Flying, 1.0f },
+                { PBEType.Ghost, 1.0f },
+                { PBEType.Grass, 2.0f },
+                { PBEType.Ground, 1.0f },
+                { PBEType.Ice, 2.0f },
+                { PBEType.Normal, 1.0f },
+                { PBEType.Poison, 1.0f },
+                { PBEType.Psychic, 1.0f },
+                { PBEType.Rock, 0.5f },
+                { PBEType.Steel, 2.0f },
+                { PBEType.Water, 0.5f },
             }
             },
-            { PBEType.Flying, new Dictionary<PBEType, double>
+            { PBEType.Flying, new Dictionary<PBEType, float>
             {
-                { PBEType.None, 1.0 },
-                { PBEType.Bug, 2.0 },
-                { PBEType.Dark, 1.0 },
-                { PBEType.Dragon, 1.0 },
-                { PBEType.Electric, 0.5 },
-                { PBEType.Fighting, 2.0 },
-                { PBEType.Fire, 1.0 },
-                { PBEType.Flying, 1.0 },
-                { PBEType.Ghost, 1.0 },
-                { PBEType.Grass, 2.0 },
-                { PBEType.Ground, 1.0 },
-                { PBEType.Ice, 1.0 },
-                { PBEType.Normal, 1.0 },
-                { PBEType.Poison, 1.0 },
-                { PBEType.Psychic, 1.0 },
-                { PBEType.Rock, 0.5 },
-                { PBEType.Steel, 0.5 },
-                { PBEType.Water, 1.0 },
+                { PBEType.None, 1.0f },
+                { PBEType.Bug, 2.0f },
+                { PBEType.Dark, 1.0f },
+                { PBEType.Dragon, 1.0f },
+                { PBEType.Electric, 0.5f },
+                { PBEType.Fighting, 2.0f },
+                { PBEType.Fire, 1.0f },
+                { PBEType.Flying, 1.0f },
+                { PBEType.Ghost, 1.0f },
+                { PBEType.Grass, 2.0f },
+                { PBEType.Ground, 1.0f },
+                { PBEType.Ice, 1.0f },
+                { PBEType.Normal, 1.0f },
+                { PBEType.Poison, 1.0f },
+                { PBEType.Psychic, 1.0f },
+                { PBEType.Rock, 0.5f },
+                { PBEType.Steel, 0.5f },
+                { PBEType.Water, 1.0f },
             }
             },
-            { PBEType.Ghost, new Dictionary<PBEType, double>
+            { PBEType.Ghost, new Dictionary<PBEType, float>
             {
-                { PBEType.None, 1.0 },
-                { PBEType.Bug, 1.0 },
-                { PBEType.Dark, 0.5 },
-                { PBEType.Dragon, 1.0 },
-                { PBEType.Electric, 1.0 },
-                { PBEType.Fighting, 1.0 },
-                { PBEType.Fire, 1.0 },
-                { PBEType.Flying, 1.0 },
-                { PBEType.Ghost, 2.0 },
-                { PBEType.Grass, 1.0 },
-                { PBEType.Ground, 1.0 },
-                { PBEType.Ice, 1.0 },
-                { PBEType.Normal, 0.0 },
-                { PBEType.Poison, 1.0 },
-                { PBEType.Psychic, 2.0 },
-                { PBEType.Rock, 1.0 },
-                { PBEType.Steel, 0.5 },
-                { PBEType.Water, 1.0 },
+                { PBEType.None, 1.0f },
+                { PBEType.Bug, 1.0f },
+                { PBEType.Dark, 0.5f },
+                { PBEType.Dragon, 1.0f },
+                { PBEType.Electric, 1.0f },
+                { PBEType.Fighting, 1.0f },
+                { PBEType.Fire, 1.0f },
+                { PBEType.Flying, 1.0f },
+                { PBEType.Ghost, 2.0f },
+                { PBEType.Grass, 1.0f },
+                { PBEType.Ground, 1.0f },
+                { PBEType.Ice, 1.0f },
+                { PBEType.Normal, 0.0f },
+                { PBEType.Poison, 1.0f },
+                { PBEType.Psychic, 2.0f },
+                { PBEType.Rock, 1.0f },
+                { PBEType.Steel, 0.5f },
+                { PBEType.Water, 1.0f },
             }
             },
-            { PBEType.Grass, new Dictionary<PBEType, double>
+            { PBEType.Grass, new Dictionary<PBEType, float>
             {
-                { PBEType.None, 1.0 },
-                { PBEType.Bug, 0.5 },
-                { PBEType.Dark, 1.0 },
-                { PBEType.Dragon, 0.5 },
-                { PBEType.Electric, 1.0 },
-                { PBEType.Fighting, 1.0 },
-                { PBEType.Fire, 0.5 },
-                { PBEType.Flying, 0.5 },
-                { PBEType.Ghost, 1.0 },
-                { PBEType.Grass, 0.5 },
-                { PBEType.Ground, 2.0 },
-                { PBEType.Ice, 1.0 },
-                { PBEType.Normal, 1.0 },
-                { PBEType.Poison, 0.5 },
-                { PBEType.Psychic, 1.0 },
-                { PBEType.Rock, 2.0 },
-                { PBEType.Steel, 0.5 },
-                { PBEType.Water, 2.0 },
+                { PBEType.None, 1.0f },
+                { PBEType.Bug, 0.5f },
+                { PBEType.Dark, 1.0f },
+                { PBEType.Dragon, 0.5f },
+                { PBEType.Electric, 1.0f },
+                { PBEType.Fighting, 1.0f },
+                { PBEType.Fire, 0.5f },
+                { PBEType.Flying, 0.5f },
+                { PBEType.Ghost, 1.0f },
+                { PBEType.Grass, 0.5f },
+                { PBEType.Ground, 2.0f },
+                { PBEType.Ice, 1.0f },
+                { PBEType.Normal, 1.0f },
+                { PBEType.Poison, 0.5f },
+                { PBEType.Psychic, 1.0f },
+                { PBEType.Rock, 2.0f },
+                { PBEType.Steel, 0.5f },
+                { PBEType.Water, 2.0f },
             }
             },
-            { PBEType.Ground, new Dictionary<PBEType, double>
+            { PBEType.Ground, new Dictionary<PBEType, float>
             {
-                { PBEType.None, 1.0 },
-                { PBEType.Bug, 0.5 },
-                { PBEType.Dark, 1.0 },
-                { PBEType.Dragon, 1.0 },
-                { PBEType.Electric, 2.0 },
-                { PBEType.Fighting, 1.0 },
-                { PBEType.Fire, 2.0 },
-                { PBEType.Flying, 0.0 },
-                { PBEType.Ghost, 1.0 },
-                { PBEType.Grass, 0.5 },
-                { PBEType.Ground, 1.0 },
-                { PBEType.Ice, 1.0 },
-                { PBEType.Normal, 1.0 },
-                { PBEType.Poison, 2.0 },
-                { PBEType.Psychic, 1.0 },
-                { PBEType.Rock, 2.0 },
-                { PBEType.Steel, 2.0 },
-                { PBEType.Water, 1.0 },
+                { PBEType.None, 1.0f },
+                { PBEType.Bug, 0.5f },
+                { PBEType.Dark, 1.0f },
+                { PBEType.Dragon, 1.0f },
+                { PBEType.Electric, 2.0f },
+                { PBEType.Fighting, 1.0f },
+                { PBEType.Fire, 2.0f },
+                { PBEType.Flying, 0.0f },
+                { PBEType.Ghost, 1.0f },
+                { PBEType.Grass, 0.5f },
+                { PBEType.Ground, 1.0f },
+                { PBEType.Ice, 1.0f },
+                { PBEType.Normal, 1.0f },
+                { PBEType.Poison, 2.0f },
+                { PBEType.Psychic, 1.0f },
+                { PBEType.Rock, 2.0f },
+                { PBEType.Steel, 2.0f },
+                { PBEType.Water, 1.0f },
             }
             },
-            { PBEType.Ice, new Dictionary<PBEType, double>
+            { PBEType.Ice, new Dictionary<PBEType, float>
             {
-                { PBEType.None, 1.0 },
-                { PBEType.Bug, 1.0 },
-                { PBEType.Dark, 1.0 },
-                { PBEType.Dragon, 2.0 },
-                { PBEType.Electric, 1.0 },
-                { PBEType.Fighting, 1.0 },
-                { PBEType.Fire, 0.5 },
-                { PBEType.Flying, 2.0 },
-                { PBEType.Ghost, 1.0 },
-                { PBEType.Grass, 2.0 },
-                { PBEType.Ground, 2.0 },
-                { PBEType.Ice, 0.5 },
-                { PBEType.Normal, 1.0 },
-                { PBEType.Poison, 1.0 },
-                { PBEType.Psychic, 1.0 },
-                { PBEType.Rock, 1.0 },
-                { PBEType.Steel, 0.5 },
-                { PBEType.Water, 0.5 },
+                { PBEType.None, 1.0f },
+                { PBEType.Bug, 1.0f },
+                { PBEType.Dark, 1.0f },
+                { PBEType.Dragon, 2.0f },
+                { PBEType.Electric, 1.0f },
+                { PBEType.Fighting, 1.0f },
+                { PBEType.Fire, 0.5f },
+                { PBEType.Flying, 2.0f },
+                { PBEType.Ghost, 1.0f },
+                { PBEType.Grass, 2.0f },
+                { PBEType.Ground, 2.0f },
+                { PBEType.Ice, 0.5f },
+                { PBEType.Normal, 1.0f },
+                { PBEType.Poison, 1.0f },
+                { PBEType.Psychic, 1.0f },
+                { PBEType.Rock, 1.0f },
+                { PBEType.Steel, 0.5f },
+                { PBEType.Water, 0.5f },
             }
             },
-            { PBEType.Normal, new Dictionary<PBEType, double>
+            { PBEType.Normal, new Dictionary<PBEType, float>
             {
-                { PBEType.None, 1.0 },
-                { PBEType.Bug, 1.0 },
-                { PBEType.Dark, 1.0 },
-                { PBEType.Dragon, 1.0 },
-                { PBEType.Electric, 1.0 },
-                { PBEType.Fighting, 1.0 },
-                { PBEType.Fire, 1.0 },
-                { PBEType.Flying, 1.0 },
-                { PBEType.Ghost, 0.0 },
-                { PBEType.Grass, 1.0 },
-                { PBEType.Ground, 1.0 },
-                { PBEType.Ice, 1.0 },
-                { PBEType.Normal, 1.0 },
-                { PBEType.Poison, 1.0 },
-                { PBEType.Psychic, 1.0 },
-                { PBEType.Rock, 0.5 },
-                { PBEType.Steel, 0.5 },
-                { PBEType.Water, 1.0 },
+                { PBEType.None, 1.0f },
+                { PBEType.Bug, 1.0f },
+                { PBEType.Dark, 1.0f },
+                { PBEType.Dragon, 1.0f },
+                { PBEType.Electric, 1.0f },
+                { PBEType.Fighting, 1.0f },
+                { PBEType.Fire, 1.0f },
+                { PBEType.Flying, 1.0f },
+                { PBEType.Ghost, 0.0f },
+                { PBEType.Grass, 1.0f },
+                { PBEType.Ground, 1.0f },
+                { PBEType.Ice, 1.0f },
+                { PBEType.Normal, 1.0f },
+                { PBEType.Poison, 1.0f },
+                { PBEType.Psychic, 1.0f },
+                { PBEType.Rock, 0.5f },
+                { PBEType.Steel, 0.5f },
+                { PBEType.Water, 1.0f },
             }
             },
-            { PBEType.Poison, new Dictionary<PBEType, double>
+            { PBEType.Poison, new Dictionary<PBEType, float>
             {
-                { PBEType.None, 1.0 },
-                { PBEType.Bug, 1.0 },
-                { PBEType.Dark, 1.0 },
-                { PBEType.Dragon, 1.0 },
-                { PBEType.Electric, 1.0 },
-                { PBEType.Fighting, 1.0 },
-                { PBEType.Fire, 1.0 },
-                { PBEType.Flying, 1.0 },
-                { PBEType.Ghost, 0.5 },
-                { PBEType.Grass, 2.0 },
-                { PBEType.Ground, 0.5 },
-                { PBEType.Ice, 1.0 },
-                { PBEType.Normal, 1.0 },
-                { PBEType.Poison, 0.5 },
-                { PBEType.Psychic, 1.0 },
-                { PBEType.Rock, 0.5 },
-                { PBEType.Steel, 0.0 },
-                { PBEType.Water, 1.0 },
+                { PBEType.None, 1.0f },
+                { PBEType.Bug, 1.0f },
+                { PBEType.Dark, 1.0f },
+                { PBEType.Dragon, 1.0f },
+                { PBEType.Electric, 1.0f },
+                { PBEType.Fighting, 1.0f },
+                { PBEType.Fire, 1.0f },
+                { PBEType.Flying, 1.0f },
+                { PBEType.Ghost, 0.5f },
+                { PBEType.Grass, 2.0f },
+                { PBEType.Ground, 0.5f },
+                { PBEType.Ice, 1.0f },
+                { PBEType.Normal, 1.0f },
+                { PBEType.Poison, 0.5f },
+                { PBEType.Psychic, 1.0f },
+                { PBEType.Rock, 0.5f },
+                { PBEType.Steel, 0.0f },
+                { PBEType.Water, 1.0f },
             }
             },
-            { PBEType.Psychic, new Dictionary<PBEType, double>
+            { PBEType.Psychic, new Dictionary<PBEType, float>
             {
-                { PBEType.None, 1.0 },
-                { PBEType.Bug, 1.0 },
-                { PBEType.Dark, 0.0 },
-                { PBEType.Dragon, 1.0 },
-                { PBEType.Electric, 1.0 },
-                { PBEType.Fighting, 2.0 },
-                { PBEType.Fire, 1.0 },
-                { PBEType.Flying, 1.0 },
-                { PBEType.Ghost, 1.0 },
-                { PBEType.Grass, 1.0 },
-                { PBEType.Ground, 1.0 },
-                { PBEType.Ice, 1.0 },
-                { PBEType.Normal, 1.0 },
-                { PBEType.Poison, 2.0 },
-                { PBEType.Psychic, 0.5 },
-                { PBEType.Rock, 1.0 },
-                { PBEType.Steel, 0.5 },
-                { PBEType.Water, 1.0 },
+                { PBEType.None, 1.0f },
+                { PBEType.Bug, 1.0f },
+                { PBEType.Dark, 0.0f },
+                { PBEType.Dragon, 1.0f },
+                { PBEType.Electric, 1.0f },
+                { PBEType.Fighting, 2.0f },
+                { PBEType.Fire, 1.0f },
+                { PBEType.Flying, 1.0f },
+                { PBEType.Ghost, 1.0f },
+                { PBEType.Grass, 1.0f },
+                { PBEType.Ground, 1.0f },
+                { PBEType.Ice, 1.0f },
+                { PBEType.Normal, 1.0f },
+                { PBEType.Poison, 2.0f },
+                { PBEType.Psychic, 0.5f },
+                { PBEType.Rock, 1.0f },
+                { PBEType.Steel, 0.5f },
+                { PBEType.Water, 1.0f },
             }
             },
-            { PBEType.Rock, new Dictionary<PBEType, double>
+            { PBEType.Rock, new Dictionary<PBEType, float>
             {
-                { PBEType.None, 1.0 },
-                { PBEType.Bug, 2.0 },
-                { PBEType.Dark, 1.0 },
-                { PBEType.Dragon, 1.0 },
-                { PBEType.Electric, 1.0 },
-                { PBEType.Fighting, 0.5 },
-                { PBEType.Fire, 2.0 },
-                { PBEType.Flying, 2.0 },
-                { PBEType.Ghost, 1.0 },
-                { PBEType.Grass, 1.0 },
-                { PBEType.Ground, 0.5 },
-                { PBEType.Ice, 2.0 },
-                { PBEType.Normal, 1.0 },
-                { PBEType.Poison, 1.0 },
-                { PBEType.Psychic, 1.0 },
-                { PBEType.Rock, 1.0 },
-                { PBEType.Steel, 0.5 },
-                { PBEType.Water, 1.0 },
+                { PBEType.None, 1.0f },
+                { PBEType.Bug, 2.0f },
+                { PBEType.Dark, 1.0f },
+                { PBEType.Dragon, 1.0f },
+                { PBEType.Electric, 1.0f },
+                { PBEType.Fighting, 0.5f },
+                { PBEType.Fire, 2.0f },
+                { PBEType.Flying, 2.0f },
+                { PBEType.Ghost, 1.0f },
+                { PBEType.Grass, 1.0f },
+                { PBEType.Ground, 0.5f },
+                { PBEType.Ice, 2.0f },
+                { PBEType.Normal, 1.0f },
+                { PBEType.Poison, 1.0f },
+                { PBEType.Psychic, 1.0f },
+                { PBEType.Rock, 1.0f },
+                { PBEType.Steel, 0.5f },
+                { PBEType.Water, 1.0f },
             }
             },
-            { PBEType.Steel, new Dictionary<PBEType, double>
+            { PBEType.Steel, new Dictionary<PBEType, float>
             {
-                { PBEType.None, 1.0 },
-                { PBEType.Bug, 1.0 },
-                { PBEType.Dark, 1.0 },
-                { PBEType.Dragon, 1.0 },
-                { PBEType.Electric, 0.5 },
-                { PBEType.Fighting, 1.0 },
-                { PBEType.Fire, 0.5 },
-                { PBEType.Flying, 1.0 },
-                { PBEType.Ghost, 1.0 },
-                { PBEType.Grass, 1.0 },
-                { PBEType.Ground, 1.0 },
-                { PBEType.Ice, 2.0 },
-                { PBEType.Normal, 1.0 },
-                { PBEType.Poison, 1.0 },
-                { PBEType.Psychic, 1.0 },
-                { PBEType.Rock, 2.0 },
-                { PBEType.Steel, 0.5 },
-                { PBEType.Water, 0.5 },
+                { PBEType.None, 1.0f },
+                { PBEType.Bug, 1.0f },
+                { PBEType.Dark, 1.0f },
+                { PBEType.Dragon, 1.0f },
+                { PBEType.Electric, 0.5f },
+                { PBEType.Fighting, 1.0f },
+                { PBEType.Fire, 0.5f },
+                { PBEType.Flying, 1.0f },
+                { PBEType.Ghost, 1.0f },
+                { PBEType.Grass, 1.0f },
+                { PBEType.Ground, 1.0f },
+                { PBEType.Ice, 2.0f },
+                { PBEType.Normal, 1.0f },
+                { PBEType.Poison, 1.0f },
+                { PBEType.Psychic, 1.0f },
+                { PBEType.Rock, 2.0f },
+                { PBEType.Steel, 0.5f },
+                { PBEType.Water, 0.5f },
             }
             },
-            { PBEType.Water, new Dictionary<PBEType, double>
+            { PBEType.Water, new Dictionary<PBEType, float>
             {
-                { PBEType.None, 1.0 },
-                { PBEType.Bug, 1.0 },
-                { PBEType.Dark, 1.0 },
-                { PBEType.Dragon, 0.5 },
-                { PBEType.Electric, 1.0 },
-                { PBEType.Fighting, 1.0 },
-                { PBEType.Fire, 2.0 },
-                { PBEType.Flying, 1.0 },
-                { PBEType.Ghost, 1.0 },
-                { PBEType.Grass, 0.5 },
-                { PBEType.Ground, 2.0 },
-                { PBEType.Ice, 1.0 },
-                { PBEType.Normal, 1.0 },
-                { PBEType.Poison, 1.0 },
-                { PBEType.Psychic, 1.0 },
-                { PBEType.Rock, 2.0 },
-                { PBEType.Steel, 1.0 },
-                { PBEType.Water, 0.5 },
+                { PBEType.None, 1.0f },
+                { PBEType.Bug, 1.0f },
+                { PBEType.Dark, 1.0f },
+                { PBEType.Dragon, 0.5f },
+                { PBEType.Electric, 1.0f },
+                { PBEType.Fighting, 1.0f },
+                { PBEType.Fire, 2.0f },
+                { PBEType.Flying, 1.0f },
+                { PBEType.Ghost, 1.0f },
+                { PBEType.Grass, 0.5f },
+                { PBEType.Ground, 2.0f },
+                { PBEType.Ice, 1.0f },
+                { PBEType.Normal, 1.0f },
+                { PBEType.Poison, 1.0f },
+                { PBEType.Psychic, 1.0f },
+                { PBEType.Rock, 2.0f },
+                { PBEType.Steel, 1.0f },
+                { PBEType.Water, 0.5f },
             }
             }
         };
         #endregion
 
-        public static PBEResult IsAffectedByAttack(PBEBattlePokemon user, PBEBattlePokemon target, PBEType moveType, out double damageMultiplier, bool useKnownInfo = false)
+        public static PBEResult IsAffectedByAttack(PBEBattlePokemon user, PBEBattlePokemon target, PBEType moveType, out float damageMultiplier, bool useKnownInfo = false)
         {
             if (user == null)
             {
@@ -475,7 +475,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
             }
 
             PBEType moveType = user.GetMoveType(move);
-            double d = GetEffectiveness(moveType, target, useKnownInfo);
+            float d = GetEffectiveness(moveType, target, useKnownInfo);
             if (d <= 0)
             {
                 return PBEResult.Ineffective_Type;
@@ -483,7 +483,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
             return PBEResult.Success;
         }
 
-        public static double GetEffectiveness(PBEType attackingType, PBEType defendingType, bool ignoreGhost = false, bool ignoreDark = false)
+        public static float GetEffectiveness(PBEType attackingType, PBEType defendingType, bool ignoreGhost = false, bool ignoreDark = false)
         {
             if (attackingType >= PBEType.MAX)
             {
@@ -494,20 +494,20 @@ namespace Kermalis.PokemonBattleEngine.Battle
                 throw new ArgumentOutOfRangeException(nameof(defendingType));
             }
 
-            double d = _table[attackingType][defendingType];
+            float d = _table[attackingType][defendingType];
             if (d <= 0 && ((ignoreGhost && defendingType == PBEType.Ghost) || (ignoreDark && defendingType == PBEType.Dark)))
             {
                 return 1;
             }
             return d;
         }
-        public static double GetEffectiveness(PBEType attackingType, PBEType defendingType1, PBEType defendingType2, bool ignoreGhost = false, bool ignoreDark = false)
+        public static float GetEffectiveness(PBEType attackingType, PBEType defendingType1, PBEType defendingType2, bool ignoreGhost = false, bool ignoreDark = false)
         {
-            double d = GetEffectiveness(attackingType, defendingType1, ignoreGhost: ignoreGhost, ignoreDark: ignoreDark);
+            float d = GetEffectiveness(attackingType, defendingType1, ignoreGhost: ignoreGhost, ignoreDark: ignoreDark);
             d *= GetEffectiveness(attackingType, defendingType2, ignoreGhost: ignoreGhost, ignoreDark: ignoreDark);
             return d;
         }
-        public static double GetEffectiveness(PBEType attackingType, IPBEPokemonTypes defendingTypes, bool ignoreGhost = false, bool ignoreDark = false)
+        public static float GetEffectiveness(PBEType attackingType, IPBEPokemonTypes defendingTypes, bool ignoreGhost = false, bool ignoreDark = false)
         {
             if (defendingTypes == null)
             {
@@ -515,7 +515,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
             }
             return GetEffectiveness(attackingType, defendingTypes.Type1, defendingTypes.Type2, ignoreGhost: ignoreGhost, ignoreDark: ignoreDark);
         }
-        public static double GetEffectiveness_Known(PBEType attackingType, IPBEPokemonKnownTypes defendingTypes, bool ignoreGhost = false, bool ignoreDark = false)
+        public static float GetEffectiveness_Known(PBEType attackingType, IPBEPokemonKnownTypes defendingTypes, bool ignoreGhost = false, bool ignoreDark = false)
         {
             if (defendingTypes == null)
             {
@@ -523,7 +523,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
             }
             return GetEffectiveness(attackingType, defendingTypes.KnownType1, defendingTypes.KnownType2, ignoreGhost: ignoreGhost, ignoreDark: ignoreDark);
         }
-        public static double GetEffectiveness<T>(PBEType attackingType, T defendingTypes, bool useKnownInfo, bool ignoreGhost = false, bool ignoreDark = false)
+        public static float GetEffectiveness<T>(PBEType attackingType, T defendingTypes, bool useKnownInfo, bool ignoreGhost = false, bool ignoreDark = false)
             where T : IPBEPokemonTypes, IPBEPokemonKnownTypes
         {
             if (defendingTypes == null)
@@ -532,7 +532,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
             }
             return GetEffectiveness(attackingType, useKnownInfo ? defendingTypes.KnownType1 : defendingTypes.Type1, useKnownInfo ? defendingTypes.KnownType2 : defendingTypes.Type2, ignoreGhost: ignoreGhost, ignoreDark: ignoreDark);
         }
-        public static double GetStealthRockMultiplier(PBEType type1, PBEType type2)
+        public static float GetStealthRockMultiplier(PBEType type1, PBEType type2)
         {
             if (type1 >= PBEType.MAX)
             {
@@ -542,7 +542,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
             {
                 throw new ArgumentOutOfRangeException(nameof(type2));
             }
-            double d = 0.125;
+            float d = 0.125f;
             d *= _table[PBEType.Rock][type1];
             d *= _table[PBEType.Rock][type2];
             return d;

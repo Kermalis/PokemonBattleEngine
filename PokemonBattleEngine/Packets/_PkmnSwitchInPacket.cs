@@ -86,7 +86,7 @@ namespace Kermalis.PokemonBattleEngine.Packets
             public bool Shiny { get; }
             public PBEGender Gender { get; }
             public PBEItem CaughtBall { get; }
-            public double HPPercentage { get; }
+            public float HPPercentage { get; }
             public PBEStatus1 Status1 { get; }
             public PBEFieldPosition FieldPosition { get; }
 
@@ -112,7 +112,7 @@ namespace Kermalis.PokemonBattleEngine.Packets
                 Shiny = r.ReadBoolean();
                 Gender = r.ReadEnum<PBEGender>();
                 CaughtBall = r.ReadEnum<PBEItem>();
-                HPPercentage = r.ReadDouble();
+                HPPercentage = r.ReadSingle();
                 Status1 = r.ReadEnum<PBEStatus1>();
                 FieldPosition = r.ReadEnum<PBEFieldPosition>();
             }

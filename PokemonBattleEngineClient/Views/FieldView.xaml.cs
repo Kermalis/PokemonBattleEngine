@@ -53,7 +53,7 @@ namespace Kermalis.PokemonBattleEngineClient.Views
 
         private BattleView _battleView;
         private readonly Rectangle _dim;
-        private readonly Image _gif;
+        private readonly GifImage _gif;
         private static IBrush _hailstormDim, _harshSunlightDim, _rainDim, _sandstormDim;
         private static Dictionary<PBEWeather, Stream> _weathers;
 
@@ -96,7 +96,7 @@ namespace Kermalis.PokemonBattleEngineClient.Views
             AvaloniaXamlLoader.Load(this);
 
             _dim = this.FindControl<Rectangle>("WeatherDim");
-            _gif = this.FindControl<Image>("WeatherGif");
+            _gif = this.FindControl<GifImage>("WeatherGif");
         }
         internal void SetBattleView(BattleView battleView)
         {
@@ -190,7 +190,7 @@ namespace Kermalis.PokemonBattleEngineClient.Views
                     {
                         _dim.Fill = _hailstormDim;
                         _dim.IsVisible = true;
-                        GifImage.SetSourceStream(_gif, _weathers[PBEWeather.Hailstorm]);
+                        _gif.SourceStream = _weathers[PBEWeather.Hailstorm];
                         _gif.IsVisible = true;
                         break;
                     }
@@ -205,7 +205,7 @@ namespace Kermalis.PokemonBattleEngineClient.Views
                     {
                         _dim.Fill = _rainDim;
                         _dim.IsVisible = true;
-                        GifImage.SetSourceStream(_gif, _weathers[PBEWeather.Rain]);
+                        _gif.SourceStream = _weathers[PBEWeather.Rain];
                         _gif.IsVisible = true;
                         break;
                     }

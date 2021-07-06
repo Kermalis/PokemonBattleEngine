@@ -13,7 +13,7 @@ namespace Kermalis.PokemonBattleEngine.Data
         byte CatchRate { get; }
         byte FleeRate { get; }
         /// <summary>Weight in Kilograms</summary>
-        double Weight { get; }
+        float Weight { get; }
         IReadOnlyList<PBEAbility> Abilities { get; }
     }
     public interface IPBEPokemonDataExtended : IPBEPokemonData

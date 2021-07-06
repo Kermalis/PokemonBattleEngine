@@ -75,7 +75,7 @@ namespace Kermalis.PokemonBattleEngineDiscord
         #endregion
 
         // https://stackoverflow.com/a/3722337
-        public static Color Blend(this Color color, Color backColor, double depth = 0.5)
+        public static Color Blend(this Color color, Color backColor, float depth = 0.5f)
         {
             byte r = (byte)((color.R * depth) + (backColor.R * (1 - depth)));
             byte g = (byte)((color.G * depth) + (backColor.G * (1 - depth)));

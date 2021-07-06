@@ -9,11 +9,11 @@ namespace Kermalis.PokemonBattleEngine.Battle
         /// <summary>Gets the influence a stat change has on a stat.</summary>
         /// <param name="change">The stat change.</param>
         /// <param name="forMissing">True if the stat is <see cref="PBEStat.Accuracy"/> or <see cref="PBEStat.Evasion"/>.</param>
-        public static double GetStatChangeModifier(sbyte change, bool forMissing)
+        public static float GetStatChangeModifier(sbyte change, bool forMissing)
         {
-            double baseVal = forMissing ? 3 : 2;
-            double numerator = Math.Max(baseVal, baseVal + change);
-            double denominator = Math.Max(baseVal, baseVal - change);
+            float baseVal = forMissing ? 3 : 2;
+            float numerator = Math.Max(baseVal, baseVal + change);
+            float denominator = Math.Max(baseVal, baseVal - change);
             return numerator / denominator;
         }
 
@@ -33,7 +33,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                 return damageAmt;
             }
             ushort oldHP = victim.HP;
-            double oldPercentage = victim.HPPercentage;
+            float oldPercentage = victim.HPPercentage;
             victim.HP = (ushort)Math.Max(0, victim.HP - hp);
             bool sturdyHappened = false, focusBandHappened = false, focusSashHappened = false;
             if (!ignoreSturdy && victim.HP == 0)
@@ -83,7 +83,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                 hp = 1;
             }
             ushort oldHP = pkmn.HP;
-            double oldPercentage = pkmn.HPPercentage;
+            float oldPercentage = pkmn.HPPercentage;
             pkmn.HP = (ushort)Math.Min(pkmn.MaxHP, pkmn.HP + hp); // Always try to heal at least 1 HP
             ushort healAmt = (ushort)(pkmn.HP - oldHP);
             if (healAmt > 0)
@@ -94,16 +94,16 @@ namespace Kermalis.PokemonBattleEngine.Battle
             return healAmt;
         }
 
-        private double CalculateBasePower(PBEBattlePokemon user, PBEBattlePokemon[] targets, IPBEMoveData mData, PBEType moveType)
+        private float CalculateBasePower(PBEBattlePokemon user, PBEBattlePokemon[] targets, IPBEMoveData mData, PBEType moveType)
         {
-            double basePower;
+            float basePower;
 
             #region Get move's base power
             switch (mData.Effect)
             {
                 case PBEMoveEffect.CrushGrip:
                 {
-                    basePower = Math.Max(1, targets.Select(t => mData.Power * t.HP / t.MaxHP).Average());
+                    basePower = Math.Max(1, targets.Select(t => (float)mData.Power * t.HP / t.MaxHP).Average());
                     break;
                 }
                 case PBEMoveEffect.Eruption:
@@ -142,34 +142,34 @@ namespace Kermalis.PokemonBattleEngine.Battle
                 }
                 case PBEMoveEffect.Frustration:
                 {
-                    basePower = Math.Max(1, (byte.MaxValue - user.Friendship) / 2.5);
+                    basePower = Math.Max(1, (byte.MaxValue - user.Friendship) / 2.5f);
                     break;
                 }
                 case PBEMoveEffect.GrassKnot:
                 {
                     basePower = targets.Select(t =>
                     {
-                        if (t.Weight >= 200.0)
+                        if (t.Weight >= 200.0f)
                         {
-                            return 120;
+                            return 120f;
                         }
-                        else if (t.Weight >= 100.0)
+                        else if (t.Weight >= 100.0f)
                         {
-                            return 100;
+                            return 100f;
                         }
-                        else if (t.Weight >= 50.0)
+                        else if (t.Weight >= 50.0f)
                         {
-                            return 80;
+                            return 80f;
                         }
-                        else if (t.Weight >= 25.0)
+                        else if (t.Weight >= 25.0f)
                         {
-                            return 60;
+                            return 60f;
                         }
-                        else if (t.Weight >= 10.0)
+                        else if (t.Weight >= 10.0f)
                         {
-                            return 40;
+                            return 40f;
                         }
-                        return 20;
+                        return 20f;
                     }).Average();
                     break;
                 }
@@ -177,24 +177,24 @@ namespace Kermalis.PokemonBattleEngine.Battle
                 {
                     basePower = targets.Select(t =>
                     {
-                        double relative = user.Weight / t.Weight;
+                        float relative = user.Weight / t.Weight;
                         if (relative < 2)
                         {
-                            return 40;
+                            return 40f;
                         }
                         else if (relative < 3)
                         {
-                            return 60;
+                            return 60f;
                         }
                         else if (relative < 4)
                         {
-                            return 80;
+                            return 80f;
                         }
                         else if (relative < 5)
                         {
-                            return 100;
+                            return 100f;
                         }
-                        return 120;
+                        return 120f;
                     }).Average();
                     break;
                 }
@@ -247,12 +247,12 @@ namespace Kermalis.PokemonBattleEngine.Battle
                 }
                 case PBEMoveEffect.Punishment:
                 {
-                    basePower = Math.Max(1, Math.Min(200, targets.Select(t => mData.Power + (20 * t.GetPositiveStatTotal())).Average()));
+                    basePower = Math.Max(1, Math.Min(200, targets.Select(t => mData.Power + (20f * t.GetPositiveStatTotal())).Average()));
                     break;
                 }
                 case PBEMoveEffect.Return:
                 {
-                    basePower = Math.Max(1, user.Friendship / 2.5);
+                    basePower = Math.Max(1, user.Friendship / 2.5f);
                     break;
                 }
                 case PBEMoveEffect.StoredPower:
@@ -271,7 +271,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
             // Technician goes before any other power boosts
             if (user.Ability == PBEAbility.Technician && basePower <= 60)
             {
-                basePower *= 1.5;
+                basePower *= 1.5f;
             }
 
             #region Item-specific power boosts
@@ -284,13 +284,13 @@ namespace Kermalis.PokemonBattleEngine.Battle
                         case PBEItem.InsectPlate:
                         case PBEItem.SilverPowder:
                         {
-                            basePower *= 1.2;
+                            basePower *= 1.2f;
                             break;
                         }
                         case PBEItem.BugGem:
                         {
                             BroadcastItem(user, user, PBEItem.BugGem, PBEItemAction.Consumed);
-                            basePower *= 1.5;
+                            basePower *= 1.5f;
                             break;
                         }
                     }
@@ -303,13 +303,13 @@ namespace Kermalis.PokemonBattleEngine.Battle
                         case PBEItem.BlackGlasses:
                         case PBEItem.DreadPlate:
                         {
-                            basePower *= 1.2;
+                            basePower *= 1.2f;
                             break;
                         }
                         case PBEItem.DarkGem:
                         {
                             BroadcastItem(user, user, PBEItem.DarkGem, PBEItemAction.Consumed);
-                            basePower *= 1.5;
+                            basePower *= 1.5f;
                             break;
                         }
                     }
@@ -323,21 +323,21 @@ namespace Kermalis.PokemonBattleEngine.Battle
                         {
                             if (user.OriginalSpecies == PBESpecies.Dialga)
                             {
-                                basePower *= 1.2;
+                                basePower *= 1.2f;
                             }
                             break;
                         }
                         case PBEItem.DracoPlate:
                         case PBEItem.DragonFang:
                         {
-                            basePower *= 1.2;
+                            basePower *= 1.2f;
                             break;
                         }
                         case PBEItem.GriseousOrb:
                         {
                             if (user.OriginalSpecies == PBESpecies.Giratina && user.RevertForm == PBEForm.Giratina_Origin)
                             {
-                                basePower *= 1.2;
+                                basePower *= 1.2f;
                             }
                             break;
                         }
@@ -345,14 +345,14 @@ namespace Kermalis.PokemonBattleEngine.Battle
                         {
                             if (user.OriginalSpecies == PBESpecies.Palkia)
                             {
-                                basePower *= 1.2;
+                                basePower *= 1.2f;
                             }
                             break;
                         }
                         case PBEItem.DragonGem:
                         {
                             BroadcastItem(user, user, PBEItem.DragonGem, PBEItemAction.Consumed);
-                            basePower *= 1.5;
+                            basePower *= 1.5f;
                             break;
                         }
                     }
@@ -365,13 +365,13 @@ namespace Kermalis.PokemonBattleEngine.Battle
                         case PBEItem.Magnet:
                         case PBEItem.ZapPlate:
                         {
-                            basePower *= 1.2;
+                            basePower *= 1.2f;
                             break;
                         }
                         case PBEItem.ElectricGem:
                         {
                             BroadcastItem(user, user, PBEItem.ElectricGem, PBEItemAction.Consumed);
-                            basePower *= 1.5;
+                            basePower *= 1.5f;
                             break;
                         }
                     }
@@ -384,13 +384,13 @@ namespace Kermalis.PokemonBattleEngine.Battle
                         case PBEItem.BlackBelt:
                         case PBEItem.FistPlate:
                         {
-                            basePower *= 1.2;
+                            basePower *= 1.2f;
                             break;
                         }
                         case PBEItem.FightingGem:
                         {
                             BroadcastItem(user, user, PBEItem.FightingGem, PBEItemAction.Consumed);
-                            basePower *= 1.5;
+                            basePower *= 1.5f;
                             break;
                         }
                     }
@@ -403,13 +403,13 @@ namespace Kermalis.PokemonBattleEngine.Battle
                         case PBEItem.Charcoal:
                         case PBEItem.FlamePlate:
                         {
-                            basePower *= 1.2;
+                            basePower *= 1.2f;
                             break;
                         }
                         case PBEItem.FireGem:
                         {
                             BroadcastItem(user, user, PBEItem.FireGem, PBEItemAction.Consumed);
-                            basePower *= 1.5;
+                            basePower *= 1.5f;
                             break;
                         }
                     }
@@ -422,13 +422,13 @@ namespace Kermalis.PokemonBattleEngine.Battle
                         case PBEItem.SharpBeak:
                         case PBEItem.SkyPlate:
                         {
-                            basePower *= 1.2;
+                            basePower *= 1.2f;
                             break;
                         }
                         case PBEItem.FlyingGem:
                         {
                             BroadcastItem(user, user, PBEItem.FlyingGem, PBEItemAction.Consumed);
-                            basePower *= 1.5;
+                            basePower *= 1.5f;
                             break;
                         }
                     }
@@ -442,20 +442,20 @@ namespace Kermalis.PokemonBattleEngine.Battle
                         {
                             if (user.OriginalSpecies == PBESpecies.Giratina && user.RevertForm == PBEForm.Giratina_Origin)
                             {
-                                basePower *= 1.2;
+                                basePower *= 1.2f;
                             }
                             break;
                         }
                         case PBEItem.SpellTag:
                         case PBEItem.SpookyPlate:
                         {
-                            basePower *= 1.2;
+                            basePower *= 1.2f;
                             break;
                         }
                         case PBEItem.GhostGem:
                         {
                             BroadcastItem(user, user, PBEItem.GhostGem, PBEItemAction.Consumed);
-                            basePower *= 1.5;
+                            basePower *= 1.5f;
                             break;
                         }
                     }
@@ -469,13 +469,13 @@ namespace Kermalis.PokemonBattleEngine.Battle
                         case PBEItem.MiracleSeed:
                         case PBEItem.RoseIncense:
                         {
-                            basePower *= 1.2;
+                            basePower *= 1.2f;
                             break;
                         }
                         case PBEItem.GrassGem:
                         {
                             BroadcastItem(user, user, PBEItem.GrassGem, PBEItemAction.Consumed);
-                            basePower *= 1.5;
+                            basePower *= 1.5f;
                             break;
                         }
                     }
@@ -488,13 +488,13 @@ namespace Kermalis.PokemonBattleEngine.Battle
                         case PBEItem.EarthPlate:
                         case PBEItem.SoftSand:
                         {
-                            basePower *= 1.2;
+                            basePower *= 1.2f;
                             break;
                         }
                         case PBEItem.GroundGem:
                         {
                             BroadcastItem(user, user, PBEItem.GroundGem, PBEItemAction.Consumed);
-                            basePower *= 1.5;
+                            basePower *= 1.5f;
                             break;
                         }
                     }
@@ -507,13 +507,13 @@ namespace Kermalis.PokemonBattleEngine.Battle
                         case PBEItem.IciclePlate:
                         case PBEItem.NeverMeltIce:
                         {
-                            basePower *= 1.2;
+                            basePower *= 1.2f;
                             break;
                         }
                         case PBEItem.IceGem:
                         {
                             BroadcastItem(user, user, PBEItem.IceGem, PBEItemAction.Consumed);
-                            basePower *= 1.5;
+                            basePower *= 1.5f;
                             break;
                         }
                     }
@@ -529,13 +529,13 @@ namespace Kermalis.PokemonBattleEngine.Battle
                     {
                         case PBEItem.SilkScarf:
                         {
-                            basePower *= 1.2;
+                            basePower *= 1.2f;
                             break;
                         }
                         case PBEItem.NormalGem:
                         {
                             BroadcastItem(user, user, PBEItem.NormalGem, PBEItemAction.Consumed);
-                            basePower *= 1.5;
+                            basePower *= 1.5f;
                             break;
                         }
                     }
@@ -548,13 +548,13 @@ namespace Kermalis.PokemonBattleEngine.Battle
                         case PBEItem.PoisonBarb:
                         case PBEItem.ToxicPlate:
                         {
-                            basePower *= 1.2;
+                            basePower *= 1.2f;
                             break;
                         }
                         case PBEItem.PoisonGem:
                         {
                             BroadcastItem(user, user, PBEItem.PoisonGem, PBEItemAction.Consumed);
-                            basePower *= 1.5;
+                            basePower *= 1.5f;
                             break;
                         }
                     }
@@ -568,13 +568,13 @@ namespace Kermalis.PokemonBattleEngine.Battle
                         case PBEItem.OddIncense:
                         case PBEItem.TwistedSpoon:
                         {
-                            basePower *= 1.2;
+                            basePower *= 1.2f;
                             break;
                         }
                         case PBEItem.PsychicGem:
                         {
                             BroadcastItem(user, user, PBEItem.PsychicGem, PBEItemAction.Consumed);
-                            basePower *= 1.5;
+                            basePower *= 1.5f;
                             break;
                         }
                     }
@@ -588,13 +588,13 @@ namespace Kermalis.PokemonBattleEngine.Battle
                         case PBEItem.RockIncense:
                         case PBEItem.StonePlate:
                         {
-                            basePower *= 1.2;
+                            basePower *= 1.2f;
                             break;
                         }
                         case PBEItem.RockGem:
                         {
                             BroadcastItem(user, user, PBEItem.RockGem, PBEItemAction.Consumed);
-                            basePower *= 1.5;
+                            basePower *= 1.5f;
                             break;
                         }
                     }
@@ -608,20 +608,20 @@ namespace Kermalis.PokemonBattleEngine.Battle
                         {
                             if (user.OriginalSpecies == PBESpecies.Dialga)
                             {
-                                basePower *= 1.2;
+                                basePower *= 1.2f;
                             }
                             break;
                         }
                         case PBEItem.IronPlate:
                         case PBEItem.MetalCoat:
                         {
-                            basePower *= 1.2;
+                            basePower *= 1.2f;
                             break;
                         }
                         case PBEItem.SteelGem:
                         {
                             BroadcastItem(user, user, PBEItem.SteelGem, PBEItemAction.Consumed);
-                            basePower *= 1.5;
+                            basePower *= 1.5f;
                             break;
                         }
                     }
@@ -635,7 +635,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                         {
                             if (user.OriginalSpecies == PBESpecies.Palkia)
                             {
-                                basePower *= 1.2;
+                                basePower *= 1.2f;
                             }
                             break;
                         }
@@ -644,13 +644,13 @@ namespace Kermalis.PokemonBattleEngine.Battle
                         case PBEItem.SplashPlate:
                         case PBEItem.WaveIncense:
                         {
-                            basePower *= 1.2;
+                            basePower *= 1.2f;
                             break;
                         }
                         case PBEItem.WaterGem:
                         {
                             BroadcastItem(user, user, PBEItem.WaterGem, PBEItemAction.Consumed);
-                            basePower *= 1.5;
+                            basePower *= 1.5f;
                             break;
                         }
                     }
@@ -667,7 +667,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                 {
                     if (user.Item == PBEItem.None)
                     {
-                        basePower *= 2.0;
+                        basePower *= 2.0f;
                     }
                     break;
                 }
@@ -675,7 +675,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                 {
                     if (targets.Any(t => t.HP <= t.HP / 2))
                     {
-                        basePower *= 2.0;
+                        basePower *= 2.0f;
                     }
                     break;
                 }
@@ -683,7 +683,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                 {
                     if (user.Status1 == PBEStatus1.Burned || user.Status1 == PBEStatus1.Paralyzed || user.Status1 == PBEStatus1.Poisoned || user.Status1 == PBEStatus1.BadlyPoisoned)
                     {
-                        basePower *= 2.0;
+                        basePower *= 2.0f;
                     }
                     break;
                 }
@@ -691,7 +691,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                 {
                     if (targets.Any(t => t.Status1 != PBEStatus1.None))
                     {
-                        basePower *= 2.0;
+                        basePower *= 2.0f;
                     }
                     break;
                 }
@@ -699,7 +699,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                 {
                     if (targets.Any(t => t.HasUsedMoveThisTurn))
                     {
-                        basePower *= 2.0;
+                        basePower *= 2.0f;
                     }
                     break;
                 }
@@ -707,7 +707,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                 {
                     if (user.Team.MonFaintedLastTurn)
                     {
-                        basePower *= 2.0;
+                        basePower *= 2.0f;
                     }
                     break;
                 }
@@ -715,7 +715,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                 {
                     if (targets.Any(t => t.Status1 == PBEStatus1.Paralyzed))
                     {
-                        basePower *= 2.0;
+                        basePower *= 2.0f;
                     }
                     break;
                 }
@@ -723,7 +723,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                 {
                     if (targets.Any(t => t.Status1 == PBEStatus1.Poisoned || t.Status1 == PBEStatus1.BadlyPoisoned))
                     {
-                        basePower *= 2.0;
+                        basePower *= 2.0f;
                     }
                     break;
                 }
@@ -731,7 +731,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                 {
                     if (targets.Any(t => t.Status1 == PBEStatus1.Asleep))
                     {
-                        basePower *= 2.0;
+                        basePower *= 2.0f;
                     }
                     break;
                 }
@@ -739,7 +739,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                 {
                     if (ShouldDoWeatherEffects() && Weather != PBEWeather.None)
                     {
-                        basePower *= 2.0;
+                        basePower *= 2.0f;
                     }
                     break;
                 }
@@ -755,11 +755,11 @@ namespace Kermalis.PokemonBattleEngine.Battle
                     {
                         if (moveType == PBEType.Fire)
                         {
-                            basePower *= 1.5;
+                            basePower *= 1.5f;
                         }
                         else if (moveType == PBEType.Water)
                         {
-                            basePower *= 0.5;
+                            basePower *= 0.5f;
                         }
                         break;
                     }
@@ -767,11 +767,11 @@ namespace Kermalis.PokemonBattleEngine.Battle
                     {
                         if (moveType == PBEType.Water)
                         {
-                            basePower *= 1.5;
+                            basePower *= 1.5f;
                         }
                         else if (moveType == PBEType.Fire)
                         {
-                            basePower *= 0.5;
+                            basePower *= 0.5f;
                         }
                         break;
                     }
@@ -779,7 +779,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                     {
                         if (user.Ability == PBEAbility.SandForce && (moveType == PBEType.Rock || moveType == PBEType.Ground || moveType == PBEType.Steel))
                         {
-                            basePower *= 1.3;
+                            basePower *= 1.3f;
                         }
                         break;
                     }
@@ -790,58 +790,58 @@ namespace Kermalis.PokemonBattleEngine.Battle
             #region Other power boosts
             if (user.Status2.HasFlag(PBEStatus2.HelpingHand))
             {
-                basePower *= 1.5;
+                basePower *= 1.5f;
             }
             if (user.Ability == PBEAbility.FlareBoost && mData.Category == PBEMoveCategory.Special && user.Status1 == PBEStatus1.Burned)
             {
-                basePower *= 1.5;
+                basePower *= 1.5f;
             }
             if (user.Ability == PBEAbility.ToxicBoost && mData.Category == PBEMoveCategory.Physical && (user.Status1 == PBEStatus1.Poisoned || user.Status1 == PBEStatus1.BadlyPoisoned))
             {
-                basePower *= 1.5;
+                basePower *= 1.5f;
             }
             if (user.Item == PBEItem.LifeOrb)
             {
-                basePower *= 1.3;
+                basePower *= 1.3f;
             }
             if (user.Ability == PBEAbility.IronFist && mData.Flags.HasFlag(PBEMoveFlag.AffectedByIronFist))
             {
-                basePower *= 1.2;
+                basePower *= 1.2f;
             }
             if (user.Ability == PBEAbility.Reckless && mData.Flags.HasFlag(PBEMoveFlag.AffectedByReckless))
             {
-                basePower *= 1.2;
+                basePower *= 1.2f;
             }
             if (user.Item == PBEItem.MuscleBand && mData.Category == PBEMoveCategory.Physical)
             {
-                basePower *= 1.1;
+                basePower *= 1.1f;
             }
             if (user.Item == PBEItem.WiseGlasses && mData.Category == PBEMoveCategory.Special)
             {
-                basePower *= 1.1;
+                basePower *= 1.1f;
             }
             #endregion
 
             return basePower;
         }
-        private double CalculateDamageMultiplier(PBEBattlePokemon user, PBEBattlePokemon target, IPBEMoveData mData, PBEType moveType, PBEResult moveResult, bool criticalHit)
+        private float CalculateDamageMultiplier(PBEBattlePokemon user, PBEBattlePokemon target, IPBEMoveData mData, PBEType moveType, PBEResult moveResult, bool criticalHit)
         {
-            double damageMultiplier = 1;
+            float damageMultiplier = 1;
             if (target.Status2.HasFlag(PBEStatus2.Airborne) && mData.Flags.HasFlag(PBEMoveFlag.DoubleDamageAirborne))
             {
-                damageMultiplier *= 2.0;
+                damageMultiplier *= 2.0f;
             }
             if (target.Minimize_Used && mData.Flags.HasFlag(PBEMoveFlag.DoubleDamageMinimized))
             {
-                damageMultiplier *= 2.0;
+                damageMultiplier *= 2.0f;
             }
             if (target.Status2.HasFlag(PBEStatus2.Underground) && mData.Flags.HasFlag(PBEMoveFlag.DoubleDamageUnderground))
             {
-                damageMultiplier *= 2.0;
+                damageMultiplier *= 2.0f;
             }
             if (target.Status2.HasFlag(PBEStatus2.Underwater) && mData.Flags.HasFlag(PBEMoveFlag.DoubleDamageUnderwater))
             {
-                damageMultiplier *= 2.0;
+                damageMultiplier *= 2.0f;
             }
 
             if (criticalHit)
@@ -849,7 +849,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                 damageMultiplier *= Settings.CritMultiplier;
                 if (user.Ability == PBEAbility.Sniper)
                 {
-                    damageMultiplier *= 1.5;
+                    damageMultiplier *= 1.5f;
                 }
             }
             else if (user.Ability != PBEAbility.Infiltrator)
@@ -859,11 +859,11 @@ namespace Kermalis.PokemonBattleEngine.Battle
                 {
                     if (target.Team.NumPkmnOnField == 1)
                     {
-                        damageMultiplier *= 0.5;
+                        damageMultiplier *= 0.5f;
                     }
                     else
                     {
-                        damageMultiplier *= 0.66;
+                        damageMultiplier *= 0.66f;
                     }
                 }
             }
@@ -874,7 +874,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                 {
                     if (user.Ability == PBEAbility.TintedLens)
                     {
-                        damageMultiplier *= 2.0;
+                        damageMultiplier *= 2.0f;
                     }
                     break;
                 }
@@ -882,11 +882,11 @@ namespace Kermalis.PokemonBattleEngine.Battle
                 {
                     if ((target.Ability == PBEAbility.Filter || target.Ability == PBEAbility.SolidRock) && !user.HasCancellingAbility())
                     {
-                        damageMultiplier *= 0.75;
+                        damageMultiplier *= 0.75f;
                     }
                     if (user.Item == PBEItem.ExpertBelt)
                     {
-                        damageMultiplier *= 1.2;
+                        damageMultiplier *= 1.2f;
                     }
                     break;
                 }
@@ -895,196 +895,196 @@ namespace Kermalis.PokemonBattleEngine.Battle
             {
                 if (user.Ability == PBEAbility.Adaptability)
                 {
-                    damageMultiplier *= 2.0;
+                    damageMultiplier *= 2.0f;
                 }
                 else
                 {
-                    damageMultiplier *= 1.5;
+                    damageMultiplier *= 1.5f;
                 }
             }
             if (mData.Category == PBEMoveCategory.Physical && user.Status1 == PBEStatus1.Burned && user.Ability != PBEAbility.Guts)
             {
-                damageMultiplier *= 0.5;
+                damageMultiplier *= 0.5f;
             }
             if (moveType == PBEType.Fire && target.Ability == PBEAbility.Heatproof && !user.HasCancellingAbility())
             {
-                damageMultiplier *= 0.5;
+                damageMultiplier *= 0.5f;
             }
 
             return damageMultiplier;
         }
 
-        private double CalculateAttack(PBEBattlePokemon user, PBEBattlePokemon target, PBEType moveType, double initialAttack)
+        private float CalculateAttack(PBEBattlePokemon user, PBEBattlePokemon target, PBEType moveType, float initialAttack)
         {
-            double attack = initialAttack;
+            float attack = initialAttack;
 
             if (user.Ability == PBEAbility.HugePower || user.Ability == PBEAbility.PurePower)
             {
-                attack *= 2.0;
+                attack *= 2.0f;
             }
             if (user.Item == PBEItem.ThickClub && (user.OriginalSpecies == PBESpecies.Cubone || user.OriginalSpecies == PBESpecies.Marowak))
             {
-                attack *= 2.0;
+                attack *= 2.0f;
             }
             if (user.Item == PBEItem.LightBall && user.OriginalSpecies == PBESpecies.Pikachu)
             {
-                attack *= 2.0;
+                attack *= 2.0f;
             }
             if (moveType == PBEType.Bug && user.Ability == PBEAbility.Swarm && user.HP <= user.MaxHP / 3)
             {
-                attack *= 1.5;
+                attack *= 1.5f;
             }
             if (moveType == PBEType.Fire && user.Ability == PBEAbility.Blaze && user.HP <= user.MaxHP / 3)
             {
-                attack *= 1.5;
+                attack *= 1.5f;
             }
             if (moveType == PBEType.Grass && user.Ability == PBEAbility.Overgrow && user.HP <= user.MaxHP / 3)
             {
-                attack *= 1.5;
+                attack *= 1.5f;
             }
             if (moveType == PBEType.Water && user.Ability == PBEAbility.Torrent && user.HP <= user.MaxHP / 3)
             {
-                attack *= 1.5;
+                attack *= 1.5f;
             }
             if (user.Ability == PBEAbility.Hustle)
             {
-                attack *= 1.5;
+                attack *= 1.5f;
             }
             if (user.Ability == PBEAbility.Guts && user.Status1 != PBEStatus1.None)
             {
-                attack *= 1.5;
+                attack *= 1.5f;
             }
             if (user.Item == PBEItem.ChoiceBand)
             {
-                attack *= 1.5;
+                attack *= 1.5f;
             }
             if (!user.HasCancellingAbility() && ShouldDoWeatherEffects() && Weather == PBEWeather.HarshSunlight && user.Team.ActiveBattlers.Any(p => p.Ability == PBEAbility.FlowerGift))
             {
-                attack *= 1.5;
+                attack *= 1.5f;
             }
             if ((moveType == PBEType.Fire || moveType == PBEType.Ice) && target.Ability == PBEAbility.ThickFat && !user.HasCancellingAbility())
             {
-                attack *= 0.5;
+                attack *= 0.5f;
             }
             if (user.Ability == PBEAbility.Defeatist && user.HP <= user.MaxHP / 2)
             {
-                attack *= 0.5;
+                attack *= 0.5f;
             }
             if (user.Ability == PBEAbility.SlowStart && user.SlowStart_HinderTurnsLeft > 0)
             {
-                attack *= 0.5;
+                attack *= 0.5f;
             }
 
             return attack;
         }
-        private double CalculateDefense(PBEBattlePokemon user, PBEBattlePokemon target, double initialDefense)
+        private float CalculateDefense(PBEBattlePokemon user, PBEBattlePokemon target, float initialDefense)
         {
-            double defense = initialDefense;
+            float defense = initialDefense;
 
             if (target.Item == PBEItem.MetalPowder && target.OriginalSpecies == PBESpecies.Ditto && !target.Status2.HasFlag(PBEStatus2.Transformed))
             {
-                defense *= 2.0;
+                defense *= 2.0f;
             }
             if (target.Ability == PBEAbility.MarvelScale && target.Status1 != PBEStatus1.None && !user.HasCancellingAbility())
             {
-                defense *= 1.5;
+                defense *= 1.5f;
             }
             if (target.Item == PBEItem.Eviolite && PBEDataProvider.Instance.HasEvolutions(target.OriginalSpecies, target.RevertForm))
             {
-                defense *= 1.5;
+                defense *= 1.5f;
             }
 
             return defense;
         }
-        private double CalculateSpAttack(PBEBattlePokemon user, PBEBattlePokemon target, PBEType moveType, double initialSpAttack)
+        private float CalculateSpAttack(PBEBattlePokemon user, PBEBattlePokemon target, PBEType moveType, float initialSpAttack)
         {
-            double spAttack = initialSpAttack;
+            float spAttack = initialSpAttack;
 
             if (user.Item == PBEItem.DeepSeaTooth && user.OriginalSpecies == PBESpecies.Clamperl)
             {
-                spAttack *= 2.0;
+                spAttack *= 2.0f;
             }
             if (user.Item == PBEItem.LightBall && user.OriginalSpecies == PBESpecies.Pikachu)
             {
-                spAttack *= 2.0;
+                spAttack *= 2.0f;
             }
             if (moveType == PBEType.Bug && user.Ability == PBEAbility.Swarm && user.HP <= user.MaxHP / 3)
             {
-                spAttack *= 1.5;
+                spAttack *= 1.5f;
             }
             if (moveType == PBEType.Fire && user.Ability == PBEAbility.Blaze && user.HP <= user.MaxHP / 3)
             {
-                spAttack *= 1.5;
+                spAttack *= 1.5f;
             }
             if (moveType == PBEType.Grass && user.Ability == PBEAbility.Overgrow && user.HP <= user.MaxHP / 3)
             {
-                spAttack *= 1.5;
+                spAttack *= 1.5f;
             }
             if (moveType == PBEType.Water && user.Ability == PBEAbility.Torrent && user.HP <= user.MaxHP / 3)
             {
-                spAttack *= 1.5;
+                spAttack *= 1.5f;
             }
             if (ShouldDoWeatherEffects() && Weather == PBEWeather.HarshSunlight && user.Ability == PBEAbility.SolarPower)
             {
-                spAttack *= 1.5;
+                spAttack *= 1.5f;
             }
             if (user.Item == PBEItem.SoulDew && (user.OriginalSpecies == PBESpecies.Latias || user.OriginalSpecies == PBESpecies.Latios))
             {
-                spAttack *= 1.5;
+                spAttack *= 1.5f;
             }
             if (user.Item == PBEItem.ChoiceSpecs)
             {
-                spAttack *= 1.5;
+                spAttack *= 1.5f;
             }
             if ((user.Ability == PBEAbility.Minus || user.Ability == PBEAbility.Plus) && user.Team.ActiveBattlers.Any(p => p != user && (p.Ability == PBEAbility.Minus || p.Ability == PBEAbility.Plus)))
             {
-                spAttack *= 1.5;
+                spAttack *= 1.5f;
             }
             if ((moveType == PBEType.Fire || moveType == PBEType.Ice) && target.Ability == PBEAbility.ThickFat && !user.HasCancellingAbility())
             {
-                spAttack *= 0.5;
+                spAttack *= 0.5f;
             }
             if (user.Ability == PBEAbility.Defeatist && user.HP <= user.MaxHP / 2)
             {
-                spAttack *= 0.5;
+                spAttack *= 0.5f;
             }
 
             return spAttack;
         }
-        private double CalculateSpDefense(PBEBattlePokemon user, PBEBattlePokemon target, double initialSpDefense)
+        private float CalculateSpDefense(PBEBattlePokemon user, PBEBattlePokemon target, float initialSpDefense)
         {
-            double spDefense = initialSpDefense;
+            float spDefense = initialSpDefense;
 
             if (target.Item == PBEItem.DeepSeaScale && target.OriginalSpecies == PBESpecies.Clamperl)
             {
-                spDefense *= 2.0;
+                spDefense *= 2.0f;
             }
             if (target.Item == PBEItem.SoulDew && (target.OriginalSpecies == PBESpecies.Latias || target.OriginalSpecies == PBESpecies.Latios))
             {
-                spDefense *= 1.5;
+                spDefense *= 1.5f;
             }
             if (target.Item == PBEItem.Eviolite && PBEDataProvider.Instance.HasEvolutions(target.OriginalSpecies, target.RevertForm))
             {
-                spDefense *= 1.5;
+                spDefense *= 1.5f;
             }
             if (ShouldDoWeatherEffects())
             {
                 if (Weather == PBEWeather.Sandstorm && target.HasType(PBEType.Rock))
                 {
-                    spDefense *= 1.5;
+                    spDefense *= 1.5f;
                 }
                 if (!user.HasCancellingAbility() && Weather == PBEWeather.HarshSunlight && target.Team.ActiveBattlers.Any(p => p.Ability == PBEAbility.FlowerGift))
                 {
-                    spDefense *= 1.5;
+                    spDefense *= 1.5f;
                 }
             }
 
             return spDefense;
         }
 
-        private int CalculateDamage(PBEBattlePokemon user, double a, double d, double basePower)
+        private int CalculateDamage(PBEBattlePokemon user, float a, float d, float basePower)
         {
-            double damage;
+            float damage;
             damage = (2 * user.Level / 5) + 2;
             damage = damage * a * basePower / d;
             damage /= 50;
@@ -1094,13 +1094,13 @@ namespace Kermalis.PokemonBattleEngine.Battle
         private int CalculateConfusionDamage(PBEBattlePokemon pkmn)
         {
             // Verified: Unaware has no effect on confusion damage
-            double m = GetStatChangeModifier(pkmn.AttackChange, false);
-            double a = CalculateAttack(pkmn, pkmn, PBEType.None, pkmn.Attack * m);
+            float m = GetStatChangeModifier(pkmn.AttackChange, false);
+            float a = CalculateAttack(pkmn, pkmn, PBEType.None, pkmn.Attack * m);
             m = GetStatChangeModifier(pkmn.DefenseChange, false);
-            double d = CalculateDefense(pkmn, pkmn, pkmn.Defense * m);
+            float d = CalculateDefense(pkmn, pkmn, pkmn.Defense * m);
             return CalculateDamage(pkmn, a, d, 40);
         }
-        private int CalculateDamage(PBEBattlePokemon user, PBEBattlePokemon target, IPBEMoveData mData, PBEType moveType, double basePower, bool criticalHit)
+        private int CalculateDamage(PBEBattlePokemon user, PBEBattlePokemon target, IPBEMoveData mData, PBEType moveType, float basePower, bool criticalHit)
         {
             PBEBattlePokemon aPkmn;
             PBEMoveCategory aCat = mData.Category, dCat;
@@ -1128,25 +1128,25 @@ namespace Kermalis.PokemonBattleEngine.Battle
 
             bool ignoreA = user != target && target.Ability == PBEAbility.Unaware && !user.HasCancellingAbility();
             bool ignoreD = user != target && (mData.Effect == PBEMoveEffect.ChipAway || user.Ability == PBEAbility.Unaware);
-            double a, d;
+            float a, d;
             if (aCat == PBEMoveCategory.Physical)
             {
-                double m = ignoreA ? 1 : GetStatChangeModifier(criticalHit ? Math.Max((sbyte)0, aPkmn.AttackChange) : aPkmn.AttackChange, false);
+                float m = ignoreA ? 1 : GetStatChangeModifier(criticalHit ? Math.Max((sbyte)0, aPkmn.AttackChange) : aPkmn.AttackChange, false);
                 a = CalculateAttack(user, target, moveType, aPkmn.Attack * m);
             }
             else
             {
-                double m = ignoreA ? 1 : GetStatChangeModifier(criticalHit ? Math.Max((sbyte)0, aPkmn.SpAttackChange) : aPkmn.SpAttackChange, false);
+                float m = ignoreA ? 1 : GetStatChangeModifier(criticalHit ? Math.Max((sbyte)0, aPkmn.SpAttackChange) : aPkmn.SpAttackChange, false);
                 a = CalculateSpAttack(user, target, moveType, aPkmn.SpAttack * m);
             }
             if (dCat == PBEMoveCategory.Physical)
             {
-                double m = ignoreD ? 1 : GetStatChangeModifier(criticalHit ? Math.Min((sbyte)0, target.DefenseChange) : target.DefenseChange, false);
+                float m = ignoreD ? 1 : GetStatChangeModifier(criticalHit ? Math.Min((sbyte)0, target.DefenseChange) : target.DefenseChange, false);
                 d = CalculateDefense(user, target, target.Defense * m);
             }
             else
             {
-                double m = ignoreD ? 1 : GetStatChangeModifier(criticalHit ? Math.Min((sbyte)0, target.SpDefenseChange) : target.SpDefenseChange, false);
+                float m = ignoreD ? 1 : GetStatChangeModifier(criticalHit ? Math.Min((sbyte)0, target.SpDefenseChange) : target.SpDefenseChange, false);
                 d = CalculateSpDefense(user, target, target.SpDefense * m);
             }
 

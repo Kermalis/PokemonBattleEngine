@@ -37,7 +37,7 @@ namespace Kermalis.PokemonBattleEngineTests.Items
         public void Gem_Works(PBEMove move, PBEItem item)
         {
             #region Setup
-            PBEDataProvider.GlobalRandom.Seed = 1; // Seed ensures all moves do not miss
+            PBEDataProvider.GlobalRandom.Seed = 4; // Seed ensures all moves do not miss
             PBESettings settings = PBESettings.DefaultSettings;
 
             var p0 = new TestPokemonCollection(1);
@@ -234,7 +234,7 @@ namespace Kermalis.PokemonBattleEngineTests.Items
         public void Gem_Does_Not_Activate__Miss()
         {
             #region Setup
-            PBEDataProvider.GlobalRandom.Seed = 1; // Seed ensures all miss
+            PBEDataProvider.GlobalRandom.Seed = 2; // Seed ensures all miss
             PBESettings settings = PBESettings.DefaultSettings;
 
             var p0 = new TestPokemonCollection(2);

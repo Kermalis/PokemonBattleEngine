@@ -158,7 +158,7 @@ namespace Kermalis.PokemonBattleEngineClient.Infrastructure
 
             // Draw the string
             var dpi = new Vector(96, 96);
-            var wb = new WriteableBitmap(new PixelSize(stringWidth, stringHeight), dpi, PixelFormat.Bgra8888);
+            var wb = new WriteableBitmap(new PixelSize(stringWidth, stringHeight), dpi, PixelFormat.Bgra8888, AlphaFormat.Premul);
             using (IRenderTarget rtb = Utils.RenderInterface.CreateRenderTarget(new[] { new WriteableBitmapSurface(wb) }))
             using (IDrawingContextImpl ctx = rtb.CreateDrawingContext(null))
             {
@@ -175,7 +175,7 @@ namespace Kermalis.PokemonBattleEngineClient.Infrastructure
                     else
                     {
                         var size = new Size(bmp.PixelSize.Width, bmp.PixelSize.Height); // TODO: Verify and/or try other options with different dpi
-                        ctx.DrawImage(bmp.PlatformImpl, 1d, new Rect(size), new Rect(new Point(x, y), size));
+                        ctx.DrawBitmap(bmp.PlatformImpl, 1d, new Rect(size), new Rect(new Point(x, y), size));
                         x += bmp.PixelSize.Width;
                     }
                 }

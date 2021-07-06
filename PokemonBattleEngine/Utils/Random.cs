@@ -115,7 +115,7 @@ namespace Kermalis.PokemonBattleEngine.Utils
                 }
                 scale = (uint)EndianBitConverter.BytesToInt32(bytes, 0, Endianness.LittleEndian);
             } while (scale == uint.MaxValue); // "d" should not be 1.0
-            double d = scale / (double)uint.MaxValue;
+            float d = scale / (float)uint.MaxValue;
             return (int)(minValue + (((long)maxValue + 1 - minValue) * d)); // Remove "+ 1" for exclusive maxValue
         }
         /// <summary>Returns a random <see cref="byte"/> value that is between <paramref name="settings"/>'s <see cref="PBESettings.MinLevel"/> and <see cref="PBESettings.MaxLevel"/>.</summary>

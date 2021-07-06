@@ -21,7 +21,7 @@ namespace Kermalis.PokemonBattleEngine.Packets
         public PBEForm ActualForm { get; }
         public PBEType ActualType1 { get; }
         public PBEType ActualType2 { get; }
-        public double ActualWeight { get; }
+        public float ActualWeight { get; }
 
         internal PBEIllusionPacket(PBEBattlePokemon pokemon)
         {
@@ -56,7 +56,7 @@ namespace Kermalis.PokemonBattleEngine.Packets
             ActualForm = r.ReadEnum<PBEForm>();
             ActualType1 = r.ReadEnum<PBEType>();
             ActualType2 = r.ReadEnum<PBEType>();
-            ActualWeight = r.ReadDouble();
+            ActualWeight = r.ReadSingle();
         }
     }
 }

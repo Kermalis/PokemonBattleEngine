@@ -13,11 +13,11 @@ namespace Kermalis.PokemonBattleEngine.Battle
         {
             public PBEBattlePokemon Pkmn { get; }
             public PBEResult Result { get; }
-            public double TypeEffectiveness { get; }
+            public float TypeEffectiveness { get; }
             public bool Crit { get; set; }
             public ushort Damage { get; set; }
 
-            public PBEAttackVictim(PBEBattlePokemon pkmn, PBEResult result, double typeEffectiveness)
+            public PBEAttackVictim(PBEBattlePokemon pkmn, PBEResult result, float typeEffectiveness)
             {
                 Pkmn = pkmn; Result = result; TypeEffectiveness = typeEffectiveness;
             }
@@ -30,7 +30,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
             victims = new List<PBEAttackVictim>(targets.Length);
             foreach (PBEBattlePokemon target in targets)
             {
-                if (!AttackTypeCheck(user, target, moveType, out PBEResult result, out double typeEffectiveness))
+                if (!AttackTypeCheck(user, target, moveType, out PBEResult result, out float typeEffectiveness))
                 {
                     continue;
                 }
@@ -49,7 +49,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
             return;
         }
         // Outs are for hit targets that were not behind substitute
-        private void Hit_HitTargets(PBETeam user, Action<IEnumerable<PBEAttackVictim>> doSub, Action<IEnumerable<PBEAttackVictim>> doNormal, List<PBEAttackVictim> victims,
+        private static void Hit_HitTargets(PBETeam user, Action<IEnumerable<PBEAttackVictim>> doSub, Action<IEnumerable<PBEAttackVictim>> doNormal, List<PBEAttackVictim> victims,
             out IEnumerable<PBEAttackVictim> allies, out IEnumerable<PBEAttackVictim> foes)
         {
             IEnumerable<PBEAttackVictim> subAllies = victims.Where(v =>
@@ -129,14 +129,14 @@ namespace Kermalis.PokemonBattleEngine.Battle
             {
                 return;
             }
-            double basePower = CalculateBasePower(user, targets, mData, moveType); // Gem activates here
-            double initDamageMultiplier = victims.Count > 1 ? 0.75 : 1d;
+            float basePower = CalculateBasePower(user, targets, mData, moveType); // Gem activates here
+            float initDamageMultiplier = victims.Count > 1 ? 0.75f : 1;
             int totalDamageDealt = 0;
             void CalcDamage(PBEAttackVictim victim)
             {
                 PBEBattlePokemon target = victim.Pkmn;
                 PBEResult result = victim.Result;
-                double damageMultiplier = initDamageMultiplier * victim.TypeEffectiveness;
+                float damageMultiplier = initDamageMultiplier * victim.TypeEffectiveness;
                 // Brick Break destroys Light Screen and Reflect before doing damage (after gem)
                 // Feint destroys protection
                 // Pay Day scatters coins
@@ -211,7 +211,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
             // BUG: Gems activate for these moves despite base power not being involved
             if (!Settings.BugFix)
             {
-                double unused = CalculateBasePower(user, targets, mData, moveType);
+                _ = CalculateBasePower(user, targets, mData, moveType);
             }
             void CalcDamage(PBEAttackVictim victim)
             {
@@ -261,13 +261,13 @@ namespace Kermalis.PokemonBattleEngine.Battle
             {
                 return;
             }
-            double basePower = CalculateBasePower(user, targets, mData, moveType); // Verified: Gem boost applies to all hits
-            double initDamageMultiplier = victims.Count > 1 ? 0.75 : 1d;
+            float basePower = CalculateBasePower(user, targets, mData, moveType); // Verified: Gem boost applies to all hits
+            float initDamageMultiplier = victims.Count > 1 ? 0.75f : 1;
             void CalcDamage(PBEAttackVictim victim)
             {
                 PBEBattlePokemon target = victim.Pkmn;
                 PBEResult result = victim.Result;
-                double damageMultiplier = initDamageMultiplier * victim.TypeEffectiveness;
+                float damageMultiplier = initDamageMultiplier * victim.TypeEffectiveness;
                 bool crit = CritCheck(user, target, mData);
                 damageMultiplier *= CalculateDamageMultiplier(user, target, mData, moveType, result, crit);
                 int damage = (int)(damageMultiplier * CalculateDamage(user, target, mData, moveType, basePower, crit));

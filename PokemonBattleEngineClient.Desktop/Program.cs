@@ -1,5 +1,4 @@
 using Avalonia;
-using Avalonia.Logging.Serilog;
 using Avalonia.ReactiveUI;
 using Kermalis.PokemonBattleEngineClient.Infrastructure;
 using System;
@@ -20,7 +19,7 @@ namespace Kermalis.PokemonBattleEngineClient.Desktop
             return AppBuilder.Configure<App>()
                            .UsePlatformDetect()
                            .UseReactiveUI()
-                           .LogToDebug();
+                           .LogToTrace();
         }
     }
 }

@@ -187,10 +187,10 @@ namespace Kermalis.PokemonBattleEngine.Data
             }
         }
         /// <summary>The default value of <see cref="NatureStatBoost"/>.</summary>
-        public const double DefaultNatureStatBoost = 0.1;
-        private double _natureStatBoost = DefaultNatureStatBoost;
+        public const float DefaultNatureStatBoost = 0.1f;
+        private float _natureStatBoost = DefaultNatureStatBoost;
         /// <summary>The amount of influence a Pokémon's <see cref="PBENature"/> has on its stats.</summary>
-        public double NatureStatBoost
+        public float NatureStatBoost
         {
             get => _natureStatBoost;
             set
@@ -284,10 +284,10 @@ namespace Kermalis.PokemonBattleEngine.Data
             }
         }
         /// <summary>The default value of <see cref="CritMultiplier"/>.</summary>
-        public const double DefaultCritMultiplier = 2.0;
-        private double _critMultiplier = DefaultCritMultiplier;
+        public const float DefaultCritMultiplier = 2.0f;
+        private float _critMultiplier = DefaultCritMultiplier;
         /// <summary>The damage boost awarded by critical hits.</summary>
-        public double CritMultiplier
+        public float CritMultiplier
         {
             get => _critMultiplier;
             set
@@ -1451,12 +1451,12 @@ namespace Kermalis.PokemonBattleEngine.Data
                     case PBESettingID.MaxTrainerNameLength: MaxTrainerNameLength = r.ReadByte(); break;
                     case PBESettingID.MaxTotalEVs: MaxTotalEVs = r.ReadUInt16(); break;
                     case PBESettingID.MaxIVs: MaxIVs = r.ReadByte(); break;
-                    case PBESettingID.NatureStatBoost: NatureStatBoost = r.ReadDouble(); break;
+                    case PBESettingID.NatureStatBoost: NatureStatBoost = r.ReadSingle(); break;
                     case PBESettingID.MaxStatChange: MaxStatChange = r.ReadSByte(); break;
                     case PBESettingID.NumMoves: NumMoves = r.ReadByte(); break;
                     case PBESettingID.PPMultiplier: PPMultiplier = r.ReadByte(); break;
                     case PBESettingID.MaxPPUps: MaxPPUps = r.ReadByte(); break;
-                    case PBESettingID.CritMultiplier: CritMultiplier = r.ReadDouble(); break;
+                    case PBESettingID.CritMultiplier: CritMultiplier = r.ReadSingle(); break;
                     case PBESettingID.ConfusionMaxTurns: ConfusionMaxTurns = r.ReadByte(); break;
                     case PBESettingID.ConfusionMinTurns: ConfusionMinTurns = r.ReadByte(); break;
                     case PBESettingID.SleepMaxTurns: SleepMaxTurns = r.ReadByte(); break;

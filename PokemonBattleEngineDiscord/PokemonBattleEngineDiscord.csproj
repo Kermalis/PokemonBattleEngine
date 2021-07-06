@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>netcoreapp3.1</TargetFramework>
+    <TargetFramework>net5.0</TargetFramework>
     <OutputType>Exe</OutputType>
     <RootNamespace>Kermalis.PokemonBattleEngineDiscord</RootNamespace>
     <Authors>Kermalis</Authors>
@@ -12,7 +12,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Discord.Net" Version="2.2.0" />
+    <PackageReference Include="Discord.Net" Version="2.4.0" />
     <ProjectReference Include="..\PokemonBattleEngine\PokemonBattleEngine.csproj" />
   </ItemGroup>
 

@@ -33,14 +33,14 @@ namespace Kermalis.PokemonBattleEngineClient.Views
         private bool _useKnownInfo;
         public string Description => Utils.CustomPokemonToString(_pokemon, _useKnownInfo);
 
-        private readonly Image _sprite;
+        private readonly GifImage _sprite;
 
         public PokemonView()
         {
             DataContext = this;
             AvaloniaXamlLoader.Load(this);
 
-            _sprite = this.FindControl<Image>("Sprite");
+            _sprite = this.FindControl<GifImage>("Sprite");
         }
 
         public void Update(PBEBattlePokemon pkmn, bool backSprite, bool useKnownInfo)
@@ -62,7 +62,7 @@ namespace Kermalis.PokemonBattleEngineClient.Views
                 }
             }
             _sprite.Opacity = opacity;
-            GifImage.SetSourceUri(_sprite, Utils.GetPokemonSpriteUri(_pokemon, backSprite));
+            _sprite.SourceUri = Utils.GetPokemonSpriteUri(_pokemon, backSprite);
         }
     }
 }

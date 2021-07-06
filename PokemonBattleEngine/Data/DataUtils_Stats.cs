@@ -198,7 +198,7 @@ namespace Kermalis.PokemonBattleEngine.Data
         }
         private static ushort CalcOtherStat(IPBEReadOnlyStatCollection baseStats, PBEStat stat, sbyte statRelationship, byte evs, byte ivs, byte level, PBESettings settings)
         {
-            double natureMultiplier = 1 + (statRelationship * settings.NatureStatBoost);
+            float natureMultiplier = 1 + (statRelationship * settings.NatureStatBoost);
             return (ushort)(((((2 * baseStats.GetStat(stat)) + ivs + (evs / 4)) * level / 100) + 5) * natureMultiplier);
         }
         public static ushort CalculateStat(PBESpecies species, IPBEReadOnlyStatCollection baseStats, PBEStat stat, PBENature nature, byte evs, byte ivs, byte level, PBESettings settings)

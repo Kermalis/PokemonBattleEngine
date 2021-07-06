@@ -19,7 +19,7 @@ namespace Kermalis.PokemonBattleEngineTests.Moves
         public void SecretPower_SereneGrace__Bug(bool bugFix)
         {
             #region Setup
-            PBEDataProvider.GlobalRandom.Seed = 473; // Seed ensures SecretPower does not freeze without the bugfix
+            PBEDataProvider.GlobalRandom.Seed = 2; // Seed ensures SecretPower does not freeze without the bugfix
             var settings = new PBESettings { BugFix = bugFix };
             settings.MakeReadOnly();
 

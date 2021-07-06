@@ -300,7 +300,7 @@ namespace Kermalis.PokemonBattleEngineClient.Infrastructure
                 sb.AppendLine($"Item: {PBEDataProvider.Instance.GetItemName(pkmn.Item).FromPBECultureInfo()}");
                 if (pkmn.Moves.Contains(PBEMoveEffect.Frustration) || pkmn.Moves.Contains(PBEMoveEffect.Return))
                 {
-                    sb.AppendLine($"Friendship: {pkmn.Friendship} ({pkmn.Friendship / (double)byte.MaxValue:P2})");
+                    sb.AppendLine($"Friendship: {pkmn.Friendship} ({pkmn.Friendship / (float)byte.MaxValue:P2})");
                 }
                 if (pkmn.Moves.Contains(PBEMoveEffect.HiddenPower))
                 {

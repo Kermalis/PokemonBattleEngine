@@ -43,7 +43,7 @@ namespace Kermalis.PokemonBattleEngineClient.Views
                 if (_pkmn != value)
                 {
                     PBELegalPokemon old = _pkmn;
-                    if (old != null)
+                    if (old is not null)
                     {
                         old.PropertyChanged -= OnPkmnPropertyChanged;
                     }
@@ -51,6 +51,7 @@ namespace Kermalis.PokemonBattleEngineClient.Views
                     value.PropertyChanged += OnPkmnPropertyChanged;
                     _ignoreComboBoxChanges = true;
                     OnPropertyChanged(nameof(Pkmn));
+                    _partyListBox.SelectedItem = value;
                     UpdateEXPRequirements();
                     UpdateComboBoxes(null);
                     _ignoreComboBoxChanges = false;
@@ -91,6 +92,7 @@ namespace Kermalis.PokemonBattleEngineClient.Views
             {
                 if (_team != value)
                 {
+                    _teamListBox.SelectedItem = value;
                     _team = value;
                     OnPropertyChanged(nameof(Team));
                 }
@@ -101,7 +103,9 @@ namespace Kermalis.PokemonBattleEngineClient.Views
         private readonly string _teamPath;
         private readonly Button _addPartyButton;
         private readonly Button _removePartyButton;
+        // Avalonia selection is broken (as always) so I need to manually get the SelectedItem instead of using the bindings :))))))))))))))
         private readonly ListBox _partyListBox;
+        private readonly ListBox _teamListBox;
         private bool _ignoreComboBoxChanges = false;
         private readonly ComboBox _abilityComboBox;
         private readonly ComboBox _formComboBox;
@@ -213,10 +217,12 @@ namespace Kermalis.PokemonBattleEngineClient.Views
             _speciesComboBox = this.FindControl<ComboBox>("Species");
             _speciesComboBox.SelectionChanged += OnComboBoxSelectionChanged;
             _speciesComboBox.SelectionChanged += OnVisualChanged;
-            this.FindControl<ListBox>("SavedTeams").SelectionChanged += OnSelectedTeamChanged;
+            _teamListBox = this.FindControl<ListBox>("SavedTeams");
+            _teamListBox.SelectionChanged += OnSelectedTeamChanged;
             _addPartyButton = this.FindControl<Button>("AddParty");
             _removePartyButton = this.FindControl<Button>("RemoveParty");
             _partyListBox = this.FindControl<ListBox>("Party");
+            _partyListBox.SelectionChanged += OnSelectedMonChanged;
 
             _teamPath = Path.Combine(Utils.WorkingDirectory, "Teams");
             if (Directory.Exists(_teamPath))
@@ -227,9 +233,14 @@ namespace Kermalis.PokemonBattleEngineClient.Views
                     for (int i = 0; i < files.Length; i++)
                     {
                         string file = files[i];
-                        Teams.Add(new TeamInfo(Path.GetFileNameWithoutExtension(file), new PBELegalPokemonCollection(file)));
+                        var t = new TeamInfo(Path.GetFileNameWithoutExtension(file), new PBELegalPokemonCollection(file));
+                        Teams.Add(t);
+                        if (i == 0)
+                        {
+                            Team = t;
+                            Pkmn = t.Party[0];
+                        }
                     }
-                    Team = Teams[0];
                     return;
                 }
             }
@@ -261,15 +272,30 @@ namespace Kermalis.PokemonBattleEngineClient.Views
         {
             _team.Party.ToJsonFile(Path.Combine(_teamPath, $"{_team.Name}.json"));
         }
+        // I love Avalonia :))))))))))
+        // Using it for years and still has the same problems
         public void AddPartyMember()
         {
             int index = _team.Party.Count;
             _team.Party.AddRandom(true);
+            _partyListBox.Items = null; // How is it so broken still
+            _partyListBox.Items = _team.Party;
             Pkmn = _team.Party[index];
         }
         public void RemovePartyMember()
         {
             _team.Party.Remove(_pkmn);
+            _partyListBox.Items = null;
+            _partyListBox.Items = _team.Party;
+            Pkmn = _team.Party[_team.Party.Count - 1];
+        }
+        private void OnSelectedMonChanged(object sender, SelectionChangedEventArgs e)
+        {
+            var s = (PBELegalPokemon)_partyListBox.SelectedItem;
+            if (s is not null)
+            {
+                Pkmn = s;
+            }
         }
         private void OnSelectedTeamSizeChanged(object sender, NotifyCollectionChangedEventArgs e)
         {
@@ -278,11 +304,13 @@ namespace Kermalis.PokemonBattleEngineClient.Views
         }
         private void OnSelectedTeamChanged(object sender, SelectionChangedEventArgs e)
         {
-            for (int i = 0; i < e.RemovedItems.Count; i++)
+            if (_team is not null)
             {
-                ((TeamInfo)e.RemovedItems[i]).Party.CollectionChanged -= OnSelectedTeamSizeChanged;
+                _team.Party.CollectionChanged -= OnSelectedTeamSizeChanged;
             }
+            _team = (TeamInfo)_teamListBox.SelectedItem;
             _team.Party.CollectionChanged += OnSelectedTeamSizeChanged;
+            _partyListBox.Items = _team.Party;
             OnSelectedTeamSizeChanged(null, null);
             Pkmn = _team.Party[0];
         }
@@ -294,7 +322,8 @@ namespace Kermalis.PokemonBattleEngineClient.Views
         {
             SpriteUri = Utils.GetPokemonSpriteUri(_pkmn);
             // Force redraw of minisprite
-            if (_partyListBox.ItemContainerGenerator.ContainerFromIndex(_partyListBox.SelectedIndex) is ListBoxItem item)
+            IControl c = _partyListBox.ItemContainerGenerator.ContainerFromIndex(_partyListBox.SelectedIndex);
+            if (c is ListBoxItem item)
             {
                 object old = item.Content;
                 item.Content = null;

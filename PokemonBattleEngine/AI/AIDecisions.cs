@@ -14,7 +14,7 @@ namespace Kermalis.PokemonBattleEngine.AI
         {
             // Gather all options of switching and moves
             PBEMove[] usableMoves = user.GetUsableMoves();
-            var possibleActions = new List<(PBETurnAction Action, double Score)>();
+            var possibleActions = new List<(PBETurnAction Action, float Score)>();
             for (int m = 0; m < usableMoves.Length; m++) // Score moves
             {
                 PBEMove move = usableMoves[m];
@@ -52,7 +52,7 @@ namespace Kermalis.PokemonBattleEngine.AI
                     {
                         targets.Add(trainer.Team.OpposingTeam.TryGetPokemon(PBEFieldPosition.Right));
                     }
-                    double score;
+                    float score;
                     if (targets.All(p => p == null))
                     {
                         score = -100;
@@ -147,7 +147,7 @@ namespace Kermalis.PokemonBattleEngine.AI
                                     // TODO: Check items
                                     // TODO: Stat changes and accuracy (even thunder/guillotine accuracy)
                                     // TODO: Check base power specifically against hp remaining (include spread move damage reduction)
-                                    PBETypeEffectiveness.IsAffectedByAttack(user, target, moveType, out double damageMultiplier, useKnownInfo: true);
+                                    PBETypeEffectiveness.IsAffectedByAttack(user, target, moveType, out float damageMultiplier, useKnownInfo: true);
                                     if (damageMultiplier <= 0) // (-infinity, 0.0] Ineffective
                                     {
                                         score += target.Team == trainer.Team ? 0 : -60;
@@ -594,12 +594,12 @@ namespace Kermalis.PokemonBattleEngine.AI
                     // TODO: Entry hazards
                     // TODO: Known moves of active battlers
                     // TODO: Type effectiveness
-                    double score = -10d;
+                    float score = -10;
                     possibleActions.Add((new PBETurnAction(user, switchPkmn), score));
                 }
             }
 
-            string ToDebugString((PBETurnAction Action, double Score) t)
+            string ToDebugString((PBETurnAction Action, float Score) t)
             {
                 string str = "{";
                 if (t.Action.Decision == PBETurnDecision.Fight)
@@ -613,12 +613,12 @@ namespace Kermalis.PokemonBattleEngine.AI
                 str += " [" + t.Score + "]}";
                 return str;
             }
-            IOrderedEnumerable<(PBETurnAction Action, double Score)> byScore = possibleActions.OrderByDescending(t => t.Score);
+            IOrderedEnumerable<(PBETurnAction Action, float Score)> byScore = possibleActions.OrderByDescending(t => t.Score);
             Debug.WriteLine("{0}'s possible actions: {1}", user.Nickname, byScore.Select(t => ToDebugString(t)).Print());
-            double bestScore = byScore.First().Score;
+            float bestScore = byScore.First().Score;
             return PBEDataProvider.GlobalRandom.RandomElement(byScore.Where(t => t.Score == bestScore).ToArray()).Action; // Pick random action of the ones that tied for best score
         }
-        private static void ScoreStatChange(PBEBattlePokemon user, PBEBattlePokemon target, PBEStat stat, int change, ref double score)
+        private static void ScoreStatChange(PBEBattlePokemon user, PBEBattlePokemon target, PBEStat stat, int change, ref float score)
         {
             // TODO: Do we need the stat change? Physical vs special vs status users, and base stats/transform stats/power trick stats
             sbyte original = target.GetStatChange(stat);
@@ -634,7 +634,7 @@ namespace Kermalis.PokemonBattleEngine.AI
         {
             return actions.Any(a => a != null && a.Decision == PBETurnDecision.Fight && PBEDataProvider.Instance.GetMoveData(a.FightMove).Effect == effect);
         }
-        private static double HPAware(double hpPercentage, double zeroPercentScore, double hundredPercentScore)
+        private static float HPAware(float hpPercentage, float zeroPercentScore, float hundredPercentScore)
         {
             return ((-zeroPercentScore + hundredPercentScore) * hpPercentage) + zeroPercentScore;
         }

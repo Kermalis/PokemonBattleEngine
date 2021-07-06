@@ -273,7 +273,7 @@ namespace Kermalis.PokemonBattleEngineDiscord
                         immunities = string.Empty;
                         for (PBEType atk = PBEType.None + 1; atk < PBEType.MAX; atk++)
                         {
-                            double d = PBETypeEffectiveness.GetEffectiveness(atk, pData);
+                            float d = PBETypeEffectiveness.GetEffectiveness(atk, pData);
                             if (d <= 0)
                             {
                                 if (immunities != string.Empty)
@@ -375,7 +375,7 @@ namespace Kermalis.PokemonBattleEngineDiscord
                         description += $"\n{(doOffense ? _offense : _defense)}{Utils.TypeEmotes[type]}";
                         for (PBEType other = PBEType.None + 1; other < PBEType.MAX; other++)
                         {
-                            double d = PBETypeEffectiveness.GetEffectiveness(doOffense ? type : other, doOffense ? other : type);
+                            float d = PBETypeEffectiveness.GetEffectiveness(doOffense ? type : other, doOffense ? other : type);
                             string s;
                             if (d <= 0) // (-infinity, 0]
                             {
@@ -424,7 +424,7 @@ namespace Kermalis.PokemonBattleEngineDiscord
                     description += $"\n{Utils.TypeEmotes[atk]}";
                     for (PBEType def = PBEType.None + 1; def < PBEType.MAX; def++)
                     {
-                        double d = PBETypeEffectiveness.GetEffectiveness(atk, def);
+                        float d = PBETypeEffectiveness.GetEffectiveness(atk, def);
                         string s;
                         if (d <= 0) // (-infinity, 0]
                         {

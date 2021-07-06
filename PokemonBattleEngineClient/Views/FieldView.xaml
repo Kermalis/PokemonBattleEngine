@@ -29,7 +29,7 @@
       </views:PokemonView.RenderTransform>
     </views:PokemonView>
 
-    <Image Name="WeatherGif" IsHitTestVisible="false"/>
+    <gif:GifImage Name="WeatherGif" IsHitTestVisible="false"/>
     <Rectangle Name="WeatherDim" Width="512" Height="384" IsHitTestVisible="false"/>
 
     <views:HPBarView Name="Bar0_Left" Canvas.Left="{Binding Location.X}" Canvas.Top="{Binding Location.Y}"/>

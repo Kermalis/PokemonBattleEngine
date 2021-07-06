@@ -512,16 +512,16 @@ namespace Kermalis.PokemonBattleEngine.Battle
         }
         private IEnumerable<PBEBattlePokemon> GetActingOrder(IEnumerable<PBEBattlePokemon> pokemon, bool ignoreItemsThatActivate)
         {
-            var evaluated = new List<(PBEBattlePokemon Pokemon, double Speed)>(); // TODO: Full Incense, Lagging Tail, Stall, Quick Claw
+            var evaluated = new List<(PBEBattlePokemon Pokemon, float Speed)>(); // TODO: Full Incense, Lagging Tail, Stall, Quick Claw
             foreach (PBEBattlePokemon pkmn in pokemon)
             {
-                double speed = pkmn.Speed * GetStatChangeModifier(pkmn.SpeedChange, false);
+                float speed = pkmn.Speed * GetStatChangeModifier(pkmn.SpeedChange, false);
 
                 switch (pkmn.Item)
                 {
                     case PBEItem.ChoiceScarf:
                     {
-                        speed *= 1.5;
+                        speed *= 1.5f;
                         break;
                     }
                     case PBEItem.MachoBrace:
@@ -532,14 +532,14 @@ namespace Kermalis.PokemonBattleEngine.Battle
                     case PBEItem.PowerLens:
                     case PBEItem.PowerWeight:
                     {
-                        speed *= 0.5;
+                        speed *= 0.5f;
                         break;
                     }
                     case PBEItem.QuickPowder:
                     {
                         if (pkmn.OriginalSpecies == PBESpecies.Ditto && !pkmn.Status2.HasFlag(PBEStatus2.Transformed))
                         {
-                            speed *= 2.0;
+                            speed *= 2.0f;
                         }
                         break;
                     }
@@ -548,15 +548,15 @@ namespace Kermalis.PokemonBattleEngine.Battle
                 {
                     if (Weather == PBEWeather.HarshSunlight && pkmn.Ability == PBEAbility.Chlorophyll)
                     {
-                        speed *= 2.0;
+                        speed *= 2.0f;
                     }
                     else if (Weather == PBEWeather.Rain && pkmn.Ability == PBEAbility.SwiftSwim)
                     {
-                        speed *= 2.0;
+                        speed *= 2.0f;
                     }
                     else if (Weather == PBEWeather.Sandstorm && pkmn.Ability == PBEAbility.SandRush)
                     {
-                        speed *= 2.0;
+                        speed *= 2.0f;
                     }
                 }
                 switch (pkmn.Ability)
@@ -565,7 +565,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                     {
                         if (pkmn.Status1 != PBEStatus1.None)
                         {
-                            speed *= 1.5;
+                            speed *= 1.5f;
                         }
                         break;
                     }
@@ -573,21 +573,21 @@ namespace Kermalis.PokemonBattleEngine.Battle
                     {
                         if (pkmn.SlowStart_HinderTurnsLeft > 0)
                         {
-                            speed *= 0.5;
+                            speed *= 0.5f;
                         }
                         break;
                     }
                 }
                 if (pkmn.Ability != PBEAbility.QuickFeet && pkmn.Status1 == PBEStatus1.Paralyzed)
                 {
-                    speed *= 0.25;
+                    speed *= 0.25f;
                 }
                 if (pkmn.Team.TeamStatus.HasFlag(PBETeamStatus.Tailwind))
                 {
-                    speed *= 2.0;
+                    speed *= 2.0f;
                 }
 
-                (PBEBattlePokemon Pokemon, double Speed) tup = (pkmn, speed);
+                (PBEBattlePokemon Pokemon, float Speed) tup = (pkmn, speed);
                 if (evaluated.Count == 0)
                 {
                     evaluated.Add(tup);

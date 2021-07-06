@@ -32,7 +32,7 @@ namespace Kermalis.PokemonBattleEngine.Packets
         public PBEForm TargetForm { get; }
         public PBEType TargetType1 { get; }
         public PBEType TargetType2 { get; }
-        public double TargetWeight { get; }
+        public float TargetWeight { get; }
         public ReadOnlyCollection<PBEMove> TargetMoves { get; }
 
         internal PBETransformPacket(PBEBattlePokemon user, PBEBattlePokemon target)
@@ -95,7 +95,7 @@ namespace Kermalis.PokemonBattleEngine.Packets
             TargetForm = r.ReadEnum<PBEForm>();
             TargetType1 = r.ReadEnum<PBEType>();
             TargetType2 = r.ReadEnum<PBEType>();
-            TargetWeight = r.ReadDouble();
+            TargetWeight = r.ReadSingle();
             var moves = new PBEMove[battle.Settings.NumMoves];
             for (int i = 0; i < moves.Length; i++)
             {

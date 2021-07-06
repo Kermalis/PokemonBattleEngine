@@ -19,7 +19,7 @@ namespace Kermalis.PokemonBattleEngine.Data
         public byte CatchRate { get; }
         public byte FleeRate { get; }
         /// <summary>Weight in Kilograms</summary>
-        public double Weight { get; }
+        public float Weight { get; }
         public ReadOnlyCollection<PBEAbility> Abilities { get; }
         IReadOnlyList<PBEAbility> IPBEPokemonData.Abilities => Abilities;
         public ReadOnlyCollection<(PBESpecies Species, PBEForm Form)> PreEvolutions { get; }
@@ -107,7 +107,7 @@ namespace Kermalis.PokemonBattleEngine.Data
             public ushort BaseEXPYield { get; set; }
             public byte CatchRate { get; set; }
             public byte FleeRate { get; set; }
-            public double Weight { get; set; }
+            public float Weight { get; set; }
             public string PreEvolutions { get; set; }
             public string Evolutions { get; set; }
             public string Abilities { get; set; }

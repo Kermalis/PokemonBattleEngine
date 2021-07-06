@@ -172,12 +172,12 @@ namespace Kermalis.PokemonBattleEngine.Data
             return PBEEXPTables.GetEXPLevel(type, exp);
         }
         /// <summary>This is the boost to the EXP rate. In generation 5, Pass Powers boost the EXP rate.</summary>
-        public virtual double GetEXPModifier(PBEBattle battle)
+        public virtual float GetEXPModifier(PBEBattle battle)
         {
             return 1;
         }
         /// <summary>In generation 5, this is 1 for ot, 1.5 for domestic trade, and 1.7 for international trade.</summary>
-        public virtual double GetEXPTradeModifier(PBEBattlePokemon pkmn)
+        public virtual float GetEXPTradeModifier(PBEBattlePokemon pkmn)
         {
             return 1;
         }
@@ -225,7 +225,7 @@ namespace Kermalis.PokemonBattleEngine.Data
             return false;
         }
         /// <summary>This is the boost to the catch rate. In generation 5, Capture Powers boost the catch rate.</summary>
-        public virtual double GetCatchRateModifier(PBEBattle battle)
+        public virtual float GetCatchRateModifier(PBEBattle battle)
         {
             return 1;
         }

@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>netstandard2.0</TargetFramework>
+    <TargetFramework>net5.0</TargetFramework>
     <OutputType>Library</OutputType>
     <RootNamespace>Kermalis.PokemonBattleEngine</RootNamespace>
     <Authors>Kermalis</Authors>
@@ -13,8 +13,8 @@
 
   <ItemGroup>
     <PackageReference Include="EndianBinaryIO" Version="1.1.2" />
-    <PackageReference Include="Microsoft.Data.Sqlite" Version="3.1.4" />
-    <PackageReference Include="Newtonsoft.Json" Version="12.0.3" />
+    <PackageReference Include="Microsoft.Data.Sqlite" Version="5.0.7" />
+    <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
     <PackageReference Include="SQLitePCLRaw.bundle_e_sqlite3" Version="2.0.4" />
     <None Update="PokemonBattleEngine.db">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>

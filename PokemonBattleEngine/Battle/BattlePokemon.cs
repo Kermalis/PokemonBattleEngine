@@ -27,7 +27,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
         /// <summary>The Pokémon's maximum HP.</summary>
         public ushort MaxHP { get; set; }
         /// <summary>The Pokémon's current HP as a percentage.</summary>
-        public double HPPercentage { get; set; }
+        public float HPPercentage { get; set; }
         /// <summary>The Pokémon's attack stat.</summary>
         public ushort Attack { get; set; }
         public sbyte AttackChange { get; set; }
@@ -120,8 +120,8 @@ namespace Kermalis.PokemonBattleEngine.Battle
         public PBEType Type2 { get; set; }
         /// <summary>The second type everyone believes the Pokémon has.</summary>
         public PBEType KnownType2 { get; set; }
-        public double Weight { get; set; }
-        public double KnownWeight { get; set; }
+        public float Weight { get; set; }
+        public float KnownWeight { get; set; }
         #endregion
 
         #region Statuses
@@ -544,7 +544,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
         /// <summary>Divides <see cref="HP"/> by <see cref="MaxHP"/> and places the result in <see cref="HPPercentage"/>.</summary>
         public void UpdateHPPercentage()
         {
-            HPPercentage = (double)HP / MaxHP;
+            HPPercentage = (float)HP / MaxHP;
         }
         public void StartRoost()
         {

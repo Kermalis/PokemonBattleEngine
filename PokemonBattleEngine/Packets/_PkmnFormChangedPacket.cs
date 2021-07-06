@@ -11,12 +11,12 @@ namespace Kermalis.PokemonBattleEngine.Packets
     {
         PBETrainer PokemonTrainer { get; }
         PBEFieldPosition Pokemon { get; }
-        double NewHPPercentage { get; }
+        float NewHPPercentage { get; }
         PBEAbility NewKnownAbility { get; }
         PBEForm NewForm { get; }
         PBEType NewType1 { get; }
         PBEType NewType2 { get; }
-        double NewWeight { get; }
+        float NewWeight { get; }
         bool IsRevertForm { get; }
     }
     public sealed class PBEPkmnFormChangedPacket : IPBEPkmnFormChangedPacket
@@ -28,7 +28,7 @@ namespace Kermalis.PokemonBattleEngine.Packets
         public PBEFieldPosition Pokemon { get; }
         public ushort NewHP { get; }
         public ushort NewMaxHP { get; }
-        public double NewHPPercentage { get; }
+        public float NewHPPercentage { get; }
         public ushort NewAttack { get; }
         public ushort NewDefense { get; }
         public ushort NewSpAttack { get; }
@@ -39,7 +39,7 @@ namespace Kermalis.PokemonBattleEngine.Packets
         public PBEForm NewForm { get; }
         public PBEType NewType1 { get; }
         public PBEType NewType2 { get; }
-        public double NewWeight { get; }
+        public float NewWeight { get; }
         public bool IsRevertForm { get; }
 
         internal PBEPkmnFormChangedPacket(PBEBattlePokemon pokemon, bool isRevertForm)
@@ -75,7 +75,7 @@ namespace Kermalis.PokemonBattleEngine.Packets
             Pokemon = r.ReadEnum<PBEFieldPosition>();
             NewHP = r.ReadUInt16();
             NewMaxHP = r.ReadUInt16();
-            NewHPPercentage = r.ReadDouble();
+            NewHPPercentage = r.ReadSingle();
             NewAttack = r.ReadUInt16();
             NewDefense = r.ReadUInt16();
             NewSpAttack = r.ReadUInt16();
@@ -86,7 +86,7 @@ namespace Kermalis.PokemonBattleEngine.Packets
             NewForm = r.ReadEnum<PBEForm>();
             NewType1 = r.ReadEnum<PBEType>();
             NewType2 = r.ReadEnum<PBEType>();
-            NewWeight = r.ReadDouble();
+            NewWeight = r.ReadSingle();
         }
     }
     public sealed class PBEPkmnFormChangedPacket_Hidden : IPBEPkmnFormChangedPacket
@@ -96,12 +96,12 @@ namespace Kermalis.PokemonBattleEngine.Packets
 
         public PBETrainer PokemonTrainer { get; }
         public PBEFieldPosition Pokemon { get; }
-        public double NewHPPercentage { get; }
+        public float NewHPPercentage { get; }
         public PBEAbility NewKnownAbility { get; }
         public PBEForm NewForm { get; }
         public PBEType NewType1 { get; }
         public PBEType NewType2 { get; }
-        public double NewWeight { get; }
+        public float NewWeight { get; }
         public bool IsRevertForm { get; }
 
         public PBEPkmnFormChangedPacket_Hidden(PBEPkmnFormChangedPacket other)
@@ -131,12 +131,12 @@ namespace Kermalis.PokemonBattleEngine.Packets
             Data = new ReadOnlyCollection<byte>(data);
             PokemonTrainer = battle.Trainers[r.ReadByte()];
             Pokemon = r.ReadEnum<PBEFieldPosition>();
-            NewHPPercentage = r.ReadDouble();
+            NewHPPercentage = r.ReadSingle();
             NewKnownAbility = r.ReadEnum<PBEAbility>();
             NewForm = r.ReadEnum<PBEForm>();
             NewType1 = r.ReadEnum<PBEType>();
             NewType2 = r.ReadEnum<PBEType>();
-            NewWeight = r.ReadDouble();
+            NewWeight = r.ReadSingle();
         }
     }
 }

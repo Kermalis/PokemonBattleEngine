@@ -17,7 +17,7 @@ namespace Kermalis.PokemonBattleEngineTests.Forms
         public void Shaymin_Reverts_To_Normal_Form_Forever()
         {
             #region Setup
-            PBEDataProvider.GlobalRandom.Seed = 40703; // Seed ensures SecretPower freezes
+            PBEDataProvider.GlobalRandom.Seed = 0; // Seed ensures SecretPower freezes
             PBESettings settings = PBESettings.DefaultSettings;
 
             var p0 = new TestPokemonCollection(1);

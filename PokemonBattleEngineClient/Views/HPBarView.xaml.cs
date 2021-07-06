@@ -92,19 +92,19 @@ namespace Kermalis.PokemonBattleEngineClient.Views
                     yOffset = 0;
                 }
                 Bitmap hpBar = _hpBars[barResource];
-                ctx.DrawImage(hpBar.PlatformImpl, 1.0, new Rect(0, 0, hpBar.PixelSize.Width, hpBar.PixelSize.Height), new Rect(0, 11 + yOffset, hpBar.PixelSize.Width, hpBar.PixelSize.Height));
+                ctx.DrawBitmap(hpBar.PlatformImpl, 1.0, new Rect(0, 0, hpBar.PixelSize.Width, hpBar.PixelSize.Height), new Rect(0, 11 + yOffset, hpBar.PixelSize.Width, hpBar.PixelSize.Height));
 
                 Bitmap nickname = StringRenderer.Render(pkmn.KnownNickname, "BattleName");
-                ctx.DrawImage(nickname.PlatformImpl, 1.0, new Rect(0, 0, nickname.PixelSize.Width, nickname.PixelSize.Height), new Rect(72 - Math.Max(54, nickname.PixelSize.Width), yOffset, nickname.PixelSize.Width, nickname.PixelSize.Height));
+                ctx.DrawBitmap(nickname.PlatformImpl, 1.0, new Rect(0, 0, nickname.PixelSize.Width, nickname.PixelSize.Height), new Rect(72 - Math.Max(54, nickname.PixelSize.Width), yOffset, nickname.PixelSize.Width, nickname.PixelSize.Height));
 
                 PBEGender gender = useKnownInfo && !pkmn.KnownStatus2.HasFlag(PBEStatus2.Transformed) ? pkmn.KnownGender : pkmn.Gender;
                 Bitmap level = StringRenderer.Render($"{(gender == PBEGender.Female ? "♀" : gender == PBEGender.Male ? "♂" : " ")}[LV]{pkmn.Level}", "BattleLevel");
-                ctx.DrawImage(level.PlatformImpl, 1.0, new Rect(0, 0, level.PixelSize.Width, level.PixelSize.Height), new Rect(70, 1 + yOffset, level.PixelSize.Width, level.PixelSize.Height));
+                ctx.DrawBitmap(level.PlatformImpl, 1.0, new Rect(0, 0, level.PixelSize.Width, level.PixelSize.Height), new Rect(70, 1 + yOffset, level.PixelSize.Width, level.PixelSize.Height));
 
                 if (pkmn.Status1 != PBEStatus1.None)
                 {
                     Bitmap status = _status1s[pkmn.Status1];
-                    ctx.DrawImage(status.PlatformImpl, 1.0, new Rect(0, 0, status.PixelSize.Width, status.PixelSize.Height), new Rect(1, 11 + yOffset, status.PixelSize.Width, status.PixelSize.Height));
+                    ctx.DrawBitmap(status.PlatformImpl, 1.0, new Rect(0, 0, status.PixelSize.Width, status.PixelSize.Height), new Rect(1, 11 + yOffset, status.PixelSize.Width, status.PixelSize.Height));
                 }
 
                 IBrush hpSides, hpMid;
@@ -129,16 +129,16 @@ namespace Kermalis.PokemonBattleEngineClient.Views
                 {
                     theW = 1;
                 }
-                ctx.FillRectangle(hpSides, new Rect(38, 13 + yOffset, theW, 1));
-                ctx.FillRectangle(hpMid, new Rect(38, 13 + yOffset + 1, theW, 1));
-                ctx.FillRectangle(hpSides, new Rect(38, 13 + yOffset + 2, theW, 1));
+                ctx.DrawRectangle(hpSides, null, new Rect(38, 13 + yOffset, theW, 1));
+                ctx.DrawRectangle(hpMid, null, new Rect(38, 13 + yOffset + 1, theW, 1));
+                ctx.DrawRectangle(hpSides, null, new Rect(38, 13 + yOffset + 2, theW, 1));
 
                 if (!useKnownInfo)
                 {
                     Bitmap hp = StringRenderer.Render(pkmn.HP.ToString(), "BattleHP");
-                    ctx.DrawImage(hp.PlatformImpl, 1.0, new Rect(0, 0, hp.PixelSize.Width, hp.PixelSize.Height), new Rect(62 - hp.PixelSize.Width, 16 + yOffset, hp.PixelSize.Width, hp.PixelSize.Height));
+                    ctx.DrawBitmap(hp.PlatformImpl, 1.0, new Rect(0, 0, hp.PixelSize.Width, hp.PixelSize.Height), new Rect(62 - hp.PixelSize.Width, 16 + yOffset, hp.PixelSize.Width, hp.PixelSize.Height));
                     Bitmap maxHP = StringRenderer.Render(pkmn.MaxHP.ToString(), "BattleHP");
-                    ctx.DrawImage(maxHP.PlatformImpl, 1.0, new Rect(0, 0, maxHP.PixelSize.Width, maxHP.PixelSize.Height), new Rect(70, 16 + yOffset, maxHP.PixelSize.Width, maxHP.PixelSize.Height));
+                    ctx.DrawBitmap(maxHP.PlatformImpl, 1.0, new Rect(0, 0, maxHP.PixelSize.Width, maxHP.PixelSize.Height), new Rect(70, 16 + yOffset, maxHP.PixelSize.Width, maxHP.PixelSize.Height));
                 }
             }
             _drawn.Source = wb;

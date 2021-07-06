@@ -19,7 +19,7 @@ namespace Kermalis.PokemonBattleEngineTests.Statuses
         public void Confusion_Heal__Bug(bool bugFix)
         {
             #region Setup
-            PBEDataProvider.GlobalRandom.Seed = 40703; // Seed ensures Swagger does not miss and Deoxys hurts itself
+            PBEDataProvider.GlobalRandom.Seed = 0; // Seed ensures Swagger does not miss and Deoxys hurts itself
             var settings = new PBESettings { BugFix = bugFix };
             settings.MakeReadOnly();
 
@@ -72,7 +72,7 @@ namespace Kermalis.PokemonBattleEngineTests.Statuses
         public void Confusion_Does_Not_Ignore_Sturdy()
         {
             #region Setup
-            PBEDataProvider.GlobalRandom.Seed = 40703; // Seed ensures Swagger does not miss and Deoxys hurts itself
+            PBEDataProvider.GlobalRandom.Seed = 0; // Seed ensures Swagger does not miss and Deoxys hurts itself
             PBESettings settings = PBESettings.DefaultSettings;
 
             var p0 = new TestPokemonCollection(1);
