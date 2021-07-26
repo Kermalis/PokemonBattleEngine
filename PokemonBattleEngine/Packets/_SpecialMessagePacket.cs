@@ -98,7 +98,7 @@ namespace Kermalis.PokemonBattleEngine.Packets
                     Params = new ReadOnlyCollection<object>(new object[] { battle.Trainers[r.ReadByte()], r.ReadEnum<PBEFieldPosition>(), battle.Trainers[r.ReadByte()], r.ReadEnum<PBEFieldPosition>() });
                     break;
                 }
-                throw new InvalidDataException();
+                default: throw new InvalidDataException();
             }
         }
     }
