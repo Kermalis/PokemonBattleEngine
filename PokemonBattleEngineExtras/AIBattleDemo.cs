@@ -14,11 +14,11 @@ namespace Kermalis.PokemonBattleEngineExtras
     {
         private const string LogFile = "AI Demo Log.txt";
         private const string ReplayFile = "AI Demo.pbereplay";
-        private static PBEBattle _battle;
-        private static StreamWriter _writer;
-        private static TextWriter _oldWriter;
+        private readonly PBEBattle _battle;
+        private readonly StreamWriter _writer;
+        private readonly TextWriter _oldWriter;
 
-        public static void Run()
+        public AIBattleDemo()
         {
             Console.WriteLine("----- Pokémon Battle Engine - AI Battle Demo -----");
             try
@@ -29,6 +29,9 @@ namespace Kermalis.PokemonBattleEngineExtras
             {
                 Console.WriteLine($"Cannot open \"{LogFile}\" for writing.");
                 Console.WriteLine(e.Message);
+                _battle = null!;
+                _writer = null!;
+                _oldWriter = null!;
                 return;
             }
 
@@ -62,7 +65,7 @@ namespace Kermalis.PokemonBattleEngineExtras
             { Name = "Battle Thread" }.Start();
         }
 
-        private static void CatchException(Exception e)
+        private void CatchException(Exception e)
         {
             Console.WriteLine(e.Message);
             Console.WriteLine(e.StackTrace);
@@ -75,7 +78,7 @@ namespace Kermalis.PokemonBattleEngineExtras
             Console.ReadKey();
         }
 
-        private static void Battle_OnNewEvent(PBEBattle battle, IPBEPacket packet)
+        private void Battle_OnNewEvent(PBEBattle battle, IPBEPacket packet)
         {
             try
             {
@@ -106,7 +109,7 @@ namespace Kermalis.PokemonBattleEngineExtras
                 CatchException(e);
             }
         }
-        private static void Battle_OnStateChanged(PBEBattle battle)
+        private void Battle_OnStateChanged(PBEBattle battle)
         {
             try
             {

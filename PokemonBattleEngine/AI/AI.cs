@@ -2,7 +2,6 @@
 using Kermalis.PokemonBattleEngine.Data;
 using System;
 using System.Collections.Generic;
-using System.Linq;
 
 namespace Kermalis.PokemonBattleEngine.AI
 {
@@ -17,10 +16,6 @@ namespace Kermalis.PokemonBattleEngine.AI
         /// <exception cref="ArgumentOutOfRangeException">Thrown when a Pokémon has no moves, the AI tries to use a move with invalid targets, or <paramref name="trainer"/>'s <see cref="PBETrainer.Battle"/>'s <see cref="PBEBattle.BattleFormat"/> is invalid.</exception>
         public static void CreateAIActions(this PBETrainer trainer)
         {
-            if (trainer is null)
-            {
-                throw new ArgumentNullException(nameof(trainer));
-            }
             if (trainer.Battle.BattleState != PBEBattleState.WaitingForActions)
             {
                 throw new InvalidOperationException($"{nameof(trainer.Battle.BattleState)} must be {PBEBattleState.WaitingForActions} to create actions.");
@@ -30,33 +25,34 @@ namespace Kermalis.PokemonBattleEngine.AI
                 trainer.CreateWildAIActions(false);
                 return;
             }
-            var actions = new PBETurnAction[trainer.ActionsRequired.Count];
+            int count = trainer.ActionsRequired.Count;
+            var actions = new List<PBETurnAction>(count);
             var standBy = new List<PBEBattlePokemon>();
-            for (int i = 0; i < actions.Length; i++)
+            for (int i = 0; i < count; i++)
             {
                 PBEBattlePokemon user = trainer.ActionsRequired[i];
                 // If a Pokémon is forced to struggle, it is best that it just stays in until it faints
                 if (user.IsForcedToStruggle())
                 {
-                    actions[i] = new PBETurnAction(user, PBEMove.Struggle, PBEBattleUtils.GetPossibleTargets(user, user.GetMoveTargets(PBEMove.Struggle))[0]);
+                    actions.Add(new PBETurnAction(user, PBEMove.Struggle, PBEBattleUtils.GetPossibleTargets(user, user.GetMoveTargets(PBEMove.Struggle))[0]));
                     continue;
                 }
                 // If a Pokémon has a temp locked move (Dig, Dive, ShadowForce) it must be used
                 else if (user.TempLockedMove != PBEMove.None)
                 {
-                    actions[i] = new PBETurnAction(user, user.TempLockedMove, user.TempLockedTargets);
+                    actions.Add(new PBETurnAction(user, user.TempLockedMove, user.TempLockedTargets));
                     continue;
                 }
                 // The Pokémon is free to switch or fight (unless it cannot switch due to Magnet Pull etc)
-                actions[i] = DecideAction(trainer, user, actions, standBy);
+                PBETurnAction a = DecideAction(trainer, user, actions, standBy);
                 // Action was chosen, finish up for this Pokémon
-                if (actions[i].Decision == PBETurnDecision.SwitchOut)
+                if (a.Decision == PBETurnDecision.SwitchOut)
                 {
-                    standBy.Add(trainer.TryGetPokemon(actions[i].SwitchPokemonId));
+                    standBy.Add(trainer.GetPokemon(a.SwitchPokemonId));
                 }
+                actions.Add(a);
             }
-            string valid = trainer.SelectActionsIfValid(actions);
-            if (valid != null)
+            if (!trainer.SelectActionsIfValid(actions, out string? valid))
             {
                 throw new Exception("AI created bad actions. - " + valid);
             }
@@ -66,23 +62,18 @@ namespace Kermalis.PokemonBattleEngine.AI
         // They will flee randomly based on their PBEPokemonData.FleeRate only if it's a single battle and they are allowed to flee
         public static void CreateWildAIActions(this PBETrainer trainer, bool allowFlee)
         {
-            if (trainer is null)
-            {
-                throw new ArgumentNullException(nameof(trainer));
-            }
             if (trainer.Battle.BattleState != PBEBattleState.WaitingForActions)
             {
                 throw new InvalidOperationException($"{nameof(trainer.Battle.BattleState)} must be {PBEBattleState.WaitingForActions} to create actions.");
             }
             // Try to flee if it's a single wild battle and the Pokémon is a runner
-            if (allowFlee && trainer.IsWild && trainer.Battle.BattleFormat == PBEBattleFormat.Single && trainer.IsFleeValid() is null)
+            if (allowFlee && trainer.IsWild && trainer.Battle.BattleFormat == PBEBattleFormat.Single && trainer.IsFleeValid(out _))
             {
                 PBEBattlePokemon user = trainer.ActionsRequired[0];
                 IPBEPokemonData pData = PBEDataProvider.Instance.GetPokemonData(user);
                 if (PBEDataProvider.GlobalRandom.RandomBool(pData.FleeRate, 255))
                 {
-                    string valid = trainer.SelectFleeIfValid();
-                    if (valid != null)
+                    if (!trainer.SelectFleeIfValid(out string? valid))
                     {
                         throw new Exception("Wild AI tried to flee but couldn't. - " + valid);
                     }
@@ -110,8 +101,7 @@ namespace Kermalis.PokemonBattleEngine.AI
                 PBEMove move = PBEDataProvider.GlobalRandom.RandomElement(usableMoves);
                 actions[i] = new PBETurnAction(user, move, PBEBattle.GetRandomTargetForMetronome(user, move, PBEDataProvider.GlobalRandom));
             }
-            string valid2 = trainer.SelectActionsIfValid(actions);
-            if (valid2 != null)
+            if (!trainer.SelectActionsIfValid(out string? valid2, actions))
             {
                 throw new Exception("Wild AI created bad actions. - " + valid2);
             }
@@ -123,10 +113,6 @@ namespace Kermalis.PokemonBattleEngine.AI
         /// <exception cref="ArgumentOutOfRangeException">Thrown when <paramref name="trainer"/>'s <see cref="PBETrainer.Battle"/>'s <see cref="PBEBattle.BattleFormat"/> is invalid.</exception>
         public static void CreateAISwitches(this PBETrainer trainer)
         {
-            if (trainer == null)
-            {
-                throw new ArgumentNullException(nameof(trainer));
-            }
             if (trainer.Battle.BattleState != PBEBattleState.WaitingForSwitchIns)
             {
                 throw new InvalidOperationException($"{nameof(trainer.Battle.BattleState)} must be {PBEBattleState.WaitingForSwitchIns} to create switch-ins.");
@@ -135,7 +121,7 @@ namespace Kermalis.PokemonBattleEngine.AI
             {
                 throw new InvalidOperationException($"{nameof(trainer)} must require switch-ins.");
             }
-            PBEBattlePokemon[] available = trainer.Party.Where(p => p.FieldPosition == PBEFieldPosition.None && p.CanBattle).ToArray();
+            List<PBEBattlePokemon> available = trainer.Party.FindAll(p => p.FieldPosition == PBEFieldPosition.None && p.CanBattle);
             PBEDataProvider.GlobalRandom.Shuffle(available);
             var availablePositions = new List<PBEFieldPosition>();
             switch (trainer.Battle.BattleFormat)
@@ -147,11 +133,11 @@ namespace Kermalis.PokemonBattleEngine.AI
                 }
                 case PBEBattleFormat.Double:
                 {
-                    if (trainer.OwnsSpot(PBEFieldPosition.Left) && trainer.TryGetPokemon(PBEFieldPosition.Left) == null)
+                    if (trainer.OwnsSpot(PBEFieldPosition.Left) && !trainer.IsSpotOccupied(PBEFieldPosition.Left))
                     {
                         availablePositions.Add(PBEFieldPosition.Left);
                     }
-                    if (trainer.OwnsSpot(PBEFieldPosition.Right) && trainer.TryGetPokemon(PBEFieldPosition.Right) == null)
+                    if (trainer.OwnsSpot(PBEFieldPosition.Right) && !trainer.IsSpotOccupied(PBEFieldPosition.Right))
                     {
                         availablePositions.Add(PBEFieldPosition.Right);
                     }
@@ -160,29 +146,28 @@ namespace Kermalis.PokemonBattleEngine.AI
                 case PBEBattleFormat.Triple:
                 case PBEBattleFormat.Rotation:
                 {
-                    if (trainer.OwnsSpot(PBEFieldPosition.Left) && trainer.TryGetPokemon(PBEFieldPosition.Left) == null)
+                    if (trainer.OwnsSpot(PBEFieldPosition.Left) && !trainer.IsSpotOccupied(PBEFieldPosition.Left))
                     {
                         availablePositions.Add(PBEFieldPosition.Left);
                     }
-                    if (trainer.OwnsSpot(PBEFieldPosition.Center) && trainer.TryGetPokemon(PBEFieldPosition.Center) == null)
+                    if (trainer.OwnsSpot(PBEFieldPosition.Center) && !trainer.IsSpotOccupied(PBEFieldPosition.Center))
                     {
                         availablePositions.Add(PBEFieldPosition.Center);
                     }
-                    if (trainer.OwnsSpot(PBEFieldPosition.Right) && trainer.TryGetPokemon(PBEFieldPosition.Right) == null)
+                    if (trainer.OwnsSpot(PBEFieldPosition.Right) && !trainer.IsSpotOccupied(PBEFieldPosition.Right))
                     {
                         availablePositions.Add(PBEFieldPosition.Right);
                     }
                     break;
                 }
-                default: throw new ArgumentOutOfRangeException(nameof(trainer.Battle.BattleFormat));
+                default: throw new InvalidOperationException(nameof(trainer.Battle.BattleFormat));
             }
             var switches = new PBESwitchIn[trainer.SwitchInsRequired];
             for (int i = 0; i < trainer.SwitchInsRequired; i++)
             {
                 switches[i] = new PBESwitchIn(available[i], availablePositions[i]);
             }
-            string valid = trainer.SelectSwitchesIfValid(switches);
-            if (valid != null)
+            if (!trainer.SelectSwitchesIfValid(out string? valid, switches))
             {
                 throw new Exception("AI created bad switches. - " + valid);
             }

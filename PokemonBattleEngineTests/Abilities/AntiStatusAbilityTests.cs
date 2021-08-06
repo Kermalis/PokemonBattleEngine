@@ -8,9 +8,9 @@ namespace Kermalis.PokemonBattleEngineTests.Abilities
     [Collection("Utils")]
     public class AntiStatusAbilityTests
     {
-        public AntiStatusAbilityTests(TestUtils utils, ITestOutputHelper output)
+        public AntiStatusAbilityTests(TestUtils _, ITestOutputHelper output)
         {
-            utils.SetOutputHelper(output);
+            TestUtils.SetOutputHelper(output);
         }
 
         [Fact]
@@ -41,8 +41,8 @@ namespace Kermalis.PokemonBattleEngineTests.Abilities
             #endregion
 
             #region Badly Poison Zangoose and check
-            Assert.Null(t0.SelectActionsIfValid(new PBETurnAction(seviper, PBEMove.Toxic, PBETurnTarget.FoeCenter)));
-            Assert.Null(t1.SelectActionsIfValid(new PBETurnAction(zangoose, PBEMove.Splash, PBETurnTarget.AllyCenter)));
+            Assert.True(t0.SelectActionsIfValid(out _, new PBETurnAction(seviper, PBEMove.Toxic, PBETurnTarget.FoeCenter)));
+            Assert.True(t1.SelectActionsIfValid(out _, new PBETurnAction(zangoose, PBEMove.Splash, PBETurnTarget.AllyCenter)));
 
             battle.RunTurn();
 

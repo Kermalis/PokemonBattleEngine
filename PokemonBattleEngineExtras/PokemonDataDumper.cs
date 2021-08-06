@@ -9,7 +9,7 @@ using System.Linq;
 
 namespace Kermalis.PokemonBattleEngineExtras
 {
-    internal sealed partial class PokemonDataDumper
+    internal static partial class PokemonDataDumper
     {
         // You must dump everything yourself
         // The GBA ROMs must all be USA v1.0
@@ -48,11 +48,11 @@ namespace Kermalis.PokemonBattleEngineExtras
             {
                 cmd.Transaction = transaction;
 
-                var dict = new Dictionary<(PBESpecies, PBEForm), Pokemon>();
+                Dictionary<(PBESpecies, PBEForm), Pokemon> dict = new();
                 #region Helpers
                 Pokemon AddSpecies((PBESpecies, PBEForm) key)
                 {
-                    if (!dict.TryGetValue(key, out Pokemon pkmn))
+                    if (!dict.TryGetValue(key, out Pokemon? pkmn))
                     {
                         pkmn = new Pokemon();
                         dict.Add(key, pkmn);
@@ -955,7 +955,7 @@ namespace Kermalis.PokemonBattleEngineExtras
                     }
                     if (o == PBEMoveObtainMethod.None)
                     {
-                        throw new ArgumentException($"Problem with Dream World - {species}", nameof(_dreamWorld));
+                        throw new Exception($"Problem with Dream World - {species}");
                     }
                     (PBESpecies, PBEForm) key = (species, form);
                     AddOtherMove(key, moveA, o);

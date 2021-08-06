@@ -9,9 +9,9 @@ namespace Kermalis.PokemonBattleEngineTests
     [Collection("Utils")]
     public class BehaviorTests
     {
-        public BehaviorTests(TestUtils utils, ITestOutputHelper output)
+        public BehaviorTests(TestUtils _, ITestOutputHelper output)
         {
-            utils.SetOutputHelper(output);
+            TestUtils.SetOutputHelper(output);
         }
 
         [Fact]
@@ -186,8 +186,8 @@ namespace Kermalis.PokemonBattleEngineTests
             #endregion
 
             #region Darkrai uses Protect, Koffing uses Selfdestruct and faints
-            Assert.Null(t0.SelectActionsIfValid(new PBETurnAction(koffing, PBEMove.Selfdestruct, PBETurnTarget.FoeCenter)));
-            Assert.Null(t1.SelectActionsIfValid(new PBETurnAction(darkrai, PBEMove.Protect, PBETurnTarget.AllyCenter)));
+            Assert.True(t0.SelectActionsIfValid(out _, new PBETurnAction(koffing, PBEMove.Selfdestruct, PBETurnTarget.FoeCenter)));
+            Assert.True(t1.SelectActionsIfValid(out _, new PBETurnAction(darkrai, PBEMove.Protect, PBETurnTarget.AllyCenter)));
 
             battle.RunTurn();
             #endregion

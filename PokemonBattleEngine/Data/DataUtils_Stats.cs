@@ -1,4 +1,5 @@
 ﻿using Kermalis.PokemonBattleEngine.Data.Legality;
+using Kermalis.PokemonBattleEngine.Utils;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -8,11 +9,11 @@ namespace Kermalis.PokemonBattleEngine.Data
     public static partial class PBEDataUtils
     {
         #region Static Collections
-        public static PBEAlphabeticalList<PBENature> AllNatures { get; } = new PBEAlphabeticalList<PBENature>(Enum.GetValues(typeof(PBENature)).Cast<PBENature>().Except(new[] { PBENature.MAX }));
-        public static PBEAlphabeticalList<PBESpecies> MoonStoneSpecies { get; } = new PBEAlphabeticalList<PBESpecies>(new[] { PBESpecies.Nidoran_F, PBESpecies.Nidorina, PBESpecies.Nidoqueen,
+        public static PBEAlphabeticalList<PBENature> AllNatures { get; } = new(Enum.GetValues<PBENature>().ExceptOne(PBENature.MAX));
+        public static PBEAlphabeticalList<PBESpecies> MoonStoneSpecies { get; } = new(new[] { PBESpecies.Nidoran_F, PBESpecies.Nidorina, PBESpecies.Nidoqueen,
             PBESpecies.Nidoran_M, PBESpecies.Nidorino, PBESpecies.Nidoking, PBESpecies.Cleffa, PBESpecies.Clefairy, PBESpecies.Clefable, PBESpecies.Igglybuff, PBESpecies.Jigglypuff,
             PBESpecies.Wigglytuff, PBESpecies.Skitty, PBESpecies.Delcatty, PBESpecies.Munna, PBESpecies.Musharna });
-        private static readonly Dictionary<PBENature, (PBEFlavor Favored, PBEFlavor Disliked)> _natureBoosts = new Dictionary<PBENature, (PBEFlavor Favored, PBEFlavor Disliked)>
+        private static readonly Dictionary<PBENature, (PBEFlavor Favored, PBEFlavor Disliked)> _natureBoosts = new()
         {
             { PBENature.Adamant, (PBEFlavor.Spicy, PBEFlavor.Dry) },
             { PBENature.Bold, (PBEFlavor.Sour, PBEFlavor.Spicy) },
@@ -55,10 +56,10 @@ namespace Kermalis.PokemonBattleEngine.Data
             PBEType.Dark      // 1.5625 %
         };
         #region Genders
-        private static readonly PBEAlphabeticalList<PBEGender> _genderless = new PBEAlphabeticalList<PBEGender>(new[] { PBEGender.Genderless });
-        private static readonly PBEAlphabeticalList<PBEGender> _male = new PBEAlphabeticalList<PBEGender>(new[] { PBEGender.Male });
-        private static readonly PBEAlphabeticalList<PBEGender> _female = new PBEAlphabeticalList<PBEGender>(new[] { PBEGender.Female });
-        private static readonly PBEAlphabeticalList<PBEGender> _maleFemale = new PBEAlphabeticalList<PBEGender>(new[] { PBEGender.Male, PBEGender.Female });
+        private static readonly PBEAlphabeticalList<PBEGender> _genderless = new(new[] { PBEGender.Genderless });
+        private static readonly PBEAlphabeticalList<PBEGender> _male = new(new[] { PBEGender.Male });
+        private static readonly PBEAlphabeticalList<PBEGender> _female = new(new[] { PBEGender.Female });
+        private static readonly PBEAlphabeticalList<PBEGender> _maleFemale = new(new[] { PBEGender.Male, PBEGender.Female });
         #endregion
         #endregion
 
@@ -158,26 +159,12 @@ namespace Kermalis.PokemonBattleEngine.Data
 
         public static int CalcMaxPP(byte ppTier, byte ppUps, PBESettings settings)
         {
-            if (settings == null)
-            {
-                throw new ArgumentNullException(nameof(settings));
-            }
-            if (!settings.IsReadOnly)
-            {
-                throw new ArgumentException("Settings must be read-only.", nameof(settings));
-            }
+            settings.ShouldBeReadOnly(nameof(settings));
             return Math.Max(1, (ppTier * settings.PPMultiplier) + (ppTier * ppUps));
         }
         public static int CalcMaxPP(PBEMove move, byte ppUps, PBESettings settings)
         {
-            if (settings == null)
-            {
-                throw new ArgumentNullException(nameof(settings));
-            }
-            if (!settings.IsReadOnly)
-            {
-                throw new ArgumentException("Settings must be read-only.", nameof(settings));
-            }
+            settings.ShouldBeReadOnly(nameof(settings));
             if (move >= PBEMove.MAX)
             {
                 throw new ArgumentOutOfRangeException(nameof(move));
@@ -203,18 +190,7 @@ namespace Kermalis.PokemonBattleEngine.Data
         }
         public static ushort CalculateStat(PBESpecies species, IPBEReadOnlyStatCollection baseStats, PBEStat stat, PBENature nature, byte evs, byte ivs, byte level, PBESettings settings)
         {
-            if (baseStats == null)
-            {
-                throw new ArgumentNullException(nameof(baseStats));
-            }
-            if (settings == null)
-            {
-                throw new ArgumentNullException(nameof(settings));
-            }
-            if (!settings.IsReadOnly)
-            {
-                throw new ArgumentException("Settings must be read-only.", nameof(settings));
-            }
+            settings.ShouldBeReadOnly(nameof(settings));
             PBELegalityChecker.ValidateLevel(level, settings);
             if (ivs > settings.MaxIVs)
             {
@@ -240,10 +216,6 @@ namespace Kermalis.PokemonBattleEngine.Data
         }
         public static ushort CalculateStat(IPBEPokemonData pData, PBEStat stat, PBENature nature, byte evs, byte ivs, byte level, PBESettings settings)
         {
-            if (pData == null)
-            {
-                throw new ArgumentNullException(nameof(pData));
-            }
             return CalculateStat(pData.Species, pData.BaseStats, stat, nature, evs, ivs, level, settings);
         }
         public static ushort CalculateStat(IPBESpeciesForm pkmn, PBEStat stat, PBENature nature, byte evs, byte ivs, byte level, PBESettings settings)
@@ -257,18 +229,7 @@ namespace Kermalis.PokemonBattleEngine.Data
         }
         public static void GetStatRange(PBESpecies species, IPBEReadOnlyStatCollection baseStats, PBEStat stat, byte level, PBESettings settings, out ushort low, out ushort high)
         {
-            if (baseStats == null)
-            {
-                throw new ArgumentNullException(nameof(baseStats));
-            }
-            if (settings == null)
-            {
-                throw new ArgumentNullException(nameof(settings));
-            }
-            if (!settings.IsReadOnly)
-            {
-                throw new ArgumentException("Settings must be read-only.", nameof(settings));
-            }
+            settings.ShouldBeReadOnly(nameof(settings));
             PBELegalityChecker.ValidateLevel(level, settings);
             switch (stat)
             {
@@ -293,10 +254,6 @@ namespace Kermalis.PokemonBattleEngine.Data
         }
         public static void GetStatRange(IPBEPokemonData pData, PBEStat stat, byte level, PBESettings settings, out ushort low, out ushort high)
         {
-            if (pData == null)
-            {
-                throw new ArgumentNullException(nameof(pData));
-            }
             GetStatRange(pData.Species, pData.BaseStats, stat, level, settings, out low, out high);
         }
         public static void GetStatRange(IPBESpeciesForm pkmn, PBEStat stat, byte level, PBESettings settings, out ushort low, out ushort high)
@@ -321,14 +278,7 @@ namespace Kermalis.PokemonBattleEngine.Data
         }
         public static byte GetHiddenPowerBasePower(byte hpIV, byte attackIV, byte defenseIV, byte spAttackIV, byte spDefenseIV, byte speedIV, PBESettings settings)
         {
-            if (settings == null)
-            {
-                throw new ArgumentNullException(nameof(settings));
-            }
-            if (!settings.IsReadOnly)
-            {
-                throw new ArgumentException("Settings must be read-only.", nameof(settings));
-            }
+            settings.ShouldBeReadOnly(nameof(settings));
             int a = (hpIV & 2) == 2 ? 1 : 0,
                 b = (attackIV & 2) == 2 ? 1 : 0,
                 c = (defenseIV & 2) == 2 ? 1 : 0,
@@ -349,6 +299,14 @@ namespace Kermalis.PokemonBattleEngine.Data
                 case PBEGenderRatio.M0_F1: return _female;
                 default: return _maleFemale;
             }
+        }
+        public static bool IsOppositeGender(this PBEGender gender, PBEGender otherGender)
+        {
+            return gender != PBEGender.Genderless && otherGender != PBEGender.Genderless && gender != otherGender;
+        }
+        public static string ToSymbol(this PBEGender gender)
+        {
+            return gender == PBEGender.Female ? "♀" : gender == PBEGender.Male ? "♂" : string.Empty;
         }
     }
 }

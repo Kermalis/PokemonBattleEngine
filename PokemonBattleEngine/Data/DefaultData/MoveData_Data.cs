@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 
-namespace Kermalis.PokemonBattleEngine.Data
+namespace Kermalis.PokemonBattleEngine.Data.DefaultData
 {
     public sealed partial class PBEMoveData
     {

@@ -8,7 +8,7 @@ namespace Kermalis.PokemonBattleEngine.Utils
 {
     public class PBERandom
     {
-        private readonly object _randLockObj = new object();
+        private readonly object _randLockObj = new();
         private Random _rand;
         private int _seed;
         /// <summary>Gets or sets the seed of this <see cref="PBERandom"/>. The chain will be reset even if the seed is the same as the previous seed.</summary>
@@ -59,10 +59,6 @@ namespace Kermalis.PokemonBattleEngine.Utils
         }
         public T RandomElement<T>(IReadOnlyList<T> source)
         {
-            if (source is null)
-            {
-                throw new ArgumentNullException(nameof(source));
-            }
             int count = source.Count - 1;
             if (count == 0)
             {
@@ -120,17 +116,9 @@ namespace Kermalis.PokemonBattleEngine.Utils
         }
         /// <summary>Returns a random <see cref="byte"/> value that is between <paramref name="settings"/>'s <see cref="PBESettings.MinLevel"/> and <see cref="PBESettings.MaxLevel"/>.</summary>
         /// <param name="settings">The <see cref="PBESettings"/> object to use.</param>
-        /// <exception cref="ArgumentNullException">Thrown when <paramref name="settings"/> == null.</exception>
         public byte RandomLevel(PBESettings settings)
         {
-            if (settings is null)
-            {
-                throw new ArgumentNullException(nameof(settings));
-            }
-            if (!settings.IsReadOnly)
-            {
-                throw new ArgumentException("Settings must be read-only.", nameof(settings));
-            }
+            settings.ShouldBeReadOnly(nameof(settings));
             return (byte)RandomInt(settings.MinLevel, settings.MaxLevel);
         }
         /// <summary>Returns a random <see cref="bool"/> value that represents shininess using shiny odds.</summary>
@@ -153,10 +141,6 @@ namespace Kermalis.PokemonBattleEngine.Utils
         /// <summary>Shuffles the items in <paramref name="source"/> using the Fisher-Yates Shuffle algorithm.</summary>
         public void Shuffle<T>(IList<T> source)
         {
-            if (source is null)
-            {
-                throw new ArgumentNullException(nameof(source));
-            }
             int count = source.Count - 1;
             if (count < 0)
             {

@@ -1,9 +1,11 @@
 ﻿using Kermalis.PokemonBattleEngine.Data.Legality;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
+using System.IO;
 
-namespace Kermalis.PokemonBattleEngine.Data
+namespace Kermalis.PokemonBattleEngine.Data.DefaultData
 {
     public sealed class PBELocalizedString : IPBELocalizedString
     {
@@ -28,19 +30,9 @@ namespace Kermalis.PokemonBattleEngine.Data
             Spanish = other.Spanish;
         }
 
-        public static bool IsCultureValid(CultureInfo cultureInfo)
-        {
-            if (cultureInfo == null)
-            {
-                throw new ArgumentNullException(nameof(cultureInfo));
-            }
-            string id = cultureInfo.TwoLetterISOLanguageName;
-            return id == "en" || id == "fr" || id == "de" || id == "it" || id == "ja" || id == "ko" || id == "es";
-        }
-
         public override string ToString()
         {
-            return this.FromPBECultureInfo();
+            return this.FromGlobalLanguage();
         }
 
         #region Database Querying
@@ -56,6 +48,7 @@ namespace Kermalis.PokemonBattleEngine.Data
             new string Korean { get; set; }
             new string Spanish { get; set; }
         }
+#pragma warning disable CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
         private class SearchResult : ISearchResult
         {
             public uint Id { get; set; }
@@ -81,13 +74,14 @@ namespace Kermalis.PokemonBattleEngine.Data
             public string Korean { get; set; }
             public string Spanish { get; set; }
         }
+#pragma warning restore CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
         private const string QueryText = "SELECT * FROM {0} WHERE StrCmp(English,'{1}') OR StrCmp(French,'{1}') OR StrCmp(German,'{1}') OR StrCmp(Italian,'{1}') OR StrCmp(Japanese_Kana,'{1}') OR StrCmp(Japanese_Kanji,'{1}') OR StrCmp(Korean,'{1}') OR StrCmp(Spanish,'{1}')";
         private const string QueryId = "SELECT * FROM {0} WHERE Id={1}";
         private const string QuerySpeciesAndText = "SELECT * FROM {0} WHERE (StrCmp(English,'{1}') OR StrCmp(French,'{1}') OR StrCmp(German,'{1}') OR StrCmp(Italian,'{1}') OR StrCmp(Japanese_Kana,'{1}') OR StrCmp(Japanese_Kanji,'{1}') OR StrCmp(Korean,'{1}') OR StrCmp(Spanish,'{1}')) AND (Species={2})";
         private const string QuerySpecies = "SELECT * FROM {0} WHERE Species={1} AND Form={2}";
-        private static bool GetEnumValue<TEnum>(string value, out TEnum result) where TEnum : struct, Enum
+        private static bool GetEnumValue<TEnum>(string value, [NotNullWhen(true)] out TEnum? result) where TEnum : struct, Enum
         {
-            foreach (TEnum v in Enum.GetValues(typeof(TEnum)))
+            foreach (TEnum v in Enum.GetValues<TEnum>())
             {
                 if (v.ToString().Equals(value, StringComparison.InvariantCultureIgnoreCase))
                 {
@@ -95,23 +89,23 @@ namespace Kermalis.PokemonBattleEngine.Data
                     return true;
                 }
             }
-            result = default;
+            result = null;
             return false;
         }
 
-        public static PBEAbility? GetAbilityByName(string abilityName)
+        public static bool GetAbilityByName(string abilityName, [NotNullWhen(true)] out PBEAbility? ability)
         {
-            PBEAbility ability;
-            List<SearchResult> results = PBEDataProvider.QueryDatabase<SearchResult>(string.Format(QueryText, "AbilityNames", abilityName));
+            List<SearchResult> results = PBEDefaultDataProvider.Instance.QueryDatabase<SearchResult>(string.Format(QueryText, "AbilityNames", abilityName));
             if (results.Count == 1)
             {
                 ability = (PBEAbility)results[0].Id;
             }
             else if (!GetEnumValue(abilityName, out ability) || ability == PBEAbility.MAX)
             {
-                return null;
+                ability = null;
+                return false;
             }
-            return ability;
+            return true;
         }
         public static PBELocalizedString GetAbilityDescription(PBEAbility ability)
         {
@@ -119,7 +113,12 @@ namespace Kermalis.PokemonBattleEngine.Data
             {
                 throw new ArgumentOutOfRangeException(nameof(ability));
             }
-            return new PBELocalizedString(PBEDataProvider.QueryDatabase<SearchResult>(string.Format(QueryId, "AbilityDescriptions", (byte)ability))[0]);
+            List<SearchResult> results = PBEDefaultDataProvider.Instance.QueryDatabase<SearchResult>(string.Format(QueryId, "AbilityDescriptions", (byte)ability));
+            if (results.Count == 1)
+            {
+                return new PBELocalizedString(results[0]);
+            }
+            throw new InvalidDataException();
         }
         public static PBELocalizedString GetAbilityName(PBEAbility ability)
         {
@@ -127,40 +126,50 @@ namespace Kermalis.PokemonBattleEngine.Data
             {
                 throw new ArgumentOutOfRangeException(nameof(ability));
             }
-            return new PBELocalizedString(PBEDataProvider.QueryDatabase<SearchResult>(string.Format(QueryId, "AbilityNames", (byte)ability))[0]);
+            List<SearchResult> results = PBEDefaultDataProvider.Instance.QueryDatabase<SearchResult>(string.Format(QueryId, "AbilityNames", (byte)ability));
+            if (results.Count == 1)
+            {
+                return new PBELocalizedString(results[0]);
+            }
+            throw new InvalidDataException();
         }
-        public static PBEForm? GetFormByName(PBESpecies species, string formName)
+        public static bool GetFormByName(PBESpecies species, string formName, [NotNullWhen(true)] out PBEForm? form)
         {
-            PBEForm form;
-            List<FormNameSearchResult> results = PBEDataProvider.QueryDatabase<FormNameSearchResult>(string.Format(QuerySpeciesAndText, "FormNames", formName, (ushort)species));
+            List<FormNameSearchResult> results = PBEDefaultDataProvider.Instance.QueryDatabase<FormNameSearchResult>(string.Format(QuerySpeciesAndText, "FormNames", formName, (ushort)species));
             if (results.Count == 1)
             {
                 form = (PBEForm)results[0].Form;
             }
             else if (!GetEnumValue(formName, out form))
             {
-                return null;
+                form = null;
+                return false;
             }
-            return form;
+            return true;
         }
         public static PBELocalizedString GetFormName(PBESpecies species, PBEForm form)
         {
             PBELegalityChecker.ValidateSpecies(species, form, false);
-            return new PBELocalizedString(PBEDataProvider.QueryDatabase<FormNameSearchResult>(string.Format(QuerySpecies, "FormNames", (ushort)species, (byte)form))[0]);
+            List<FormNameSearchResult> results = PBEDefaultDataProvider.Instance.QueryDatabase<FormNameSearchResult>(string.Format(QuerySpecies, "FormNames", (ushort)species, (byte)form));
+            if (results.Count == 1)
+            {
+                return new PBELocalizedString(results[0]);
+            }
+            throw new InvalidDataException();
         }
-        public static PBEGender? GetGenderByName(string genderName)
+        public static bool GetGenderByName(string genderName, [NotNullWhen(true)] out PBEGender? gender)
         {
-            PBEGender gender;
-            List<SearchResult> results = PBEDataProvider.QueryDatabase<SearchResult>(string.Format(QueryText, "GenderNames", genderName));
+            List<SearchResult> results = PBEDefaultDataProvider.Instance.QueryDatabase<SearchResult>(string.Format(QueryText, "GenderNames", genderName));
             if (results.Count == 1)
             {
                 gender = (PBEGender)results[0].Id;
             }
             else if (!GetEnumValue(genderName, out gender) || gender == PBEGender.MAX)
             {
-                return null;
+                gender = null;
+                return false;
             }
-            return gender;
+            return true;
         }
         public static PBELocalizedString GetGenderName(PBEGender gender)
         {
@@ -168,51 +177,66 @@ namespace Kermalis.PokemonBattleEngine.Data
             {
                 throw new ArgumentOutOfRangeException(nameof(gender));
             }
-            return new PBELocalizedString(PBEDataProvider.QueryDatabase<SearchResult>(string.Format(QueryId, "GenderNames", (byte)gender))[0]);
+            List<SearchResult> results = PBEDefaultDataProvider.Instance.QueryDatabase<SearchResult>(string.Format(QueryId, "GenderNames", (byte)gender));
+            if (results.Count == 1)
+            {
+                return new PBELocalizedString(results[0]);
+            }
+            throw new InvalidDataException();
         }
-        public static PBEItem? GetItemByName(string itemName)
+        public static bool GetItemByName(string itemName, [NotNullWhen(true)] out PBEItem? item)
         {
-            PBEItem item;
-            List<SearchResult> results = PBEDataProvider.QueryDatabase<SearchResult>(string.Format(QueryText, "ItemNames", itemName));
+            List<SearchResult> results = PBEDefaultDataProvider.Instance.QueryDatabase<SearchResult>(string.Format(QueryText, "ItemNames", itemName));
             if (results.Count == 1)
             {
                 item = (PBEItem)results[0].Id;
             }
             else if (!GetEnumValue(itemName, out item))
             {
-                return null;
+                item = null;
+                return false;
             }
-            return item;
+            return true;
         }
         public static PBELocalizedString GetItemDescription(PBEItem item)
         {
-            if (!Enum.IsDefined(typeof(PBEItem), item))
+            if (!Enum.IsDefined(item))
             {
                 throw new ArgumentOutOfRangeException(nameof(item));
             }
-            return new PBELocalizedString(PBEDataProvider.QueryDatabase<SearchResult>(string.Format(QueryId, "ItemDescriptions", (ushort)item))[0]);
+            List<SearchResult> results = PBEDefaultDataProvider.Instance.QueryDatabase<SearchResult>(string.Format(QueryId, "ItemDescriptions", (ushort)item));
+            if (results.Count == 1)
+            {
+                return new PBELocalizedString(results[0]);
+            }
+            throw new InvalidDataException();
         }
         public static PBELocalizedString GetItemName(PBEItem item)
         {
-            if (!Enum.IsDefined(typeof(PBEItem), item))
+            if (!Enum.IsDefined(item))
             {
                 throw new ArgumentOutOfRangeException(nameof(item));
             }
-            return new PBELocalizedString(PBEDataProvider.QueryDatabase<SearchResult>(string.Format(QueryId, "ItemNames", (ushort)item))[0]);
+            List<SearchResult> results = PBEDefaultDataProvider.Instance.QueryDatabase<SearchResult>(string.Format(QueryId, "ItemNames", (ushort)item));
+            if (results.Count == 1)
+            {
+                return new PBELocalizedString(results[0]);
+            }
+            throw new InvalidDataException();
         }
-        public static PBEMove? GetMoveByName(string moveName)
+        public static bool GetMoveByName(string moveName, [NotNullWhen(true)] out PBEMove? move)
         {
-            PBEMove move;
-            List<SearchResult> results = PBEDataProvider.QueryDatabase<SearchResult>(string.Format(QueryText, "MoveNames", moveName));
+            List<SearchResult> results = PBEDefaultDataProvider.Instance.QueryDatabase<SearchResult>(string.Format(QueryText, "MoveNames", moveName));
             if (results.Count == 1)
             {
                 move = (PBEMove)results[0].Id;
             }
             else if (!GetEnumValue(moveName, out move) || move == PBEMove.MAX)
             {
-                return null;
+                move = null;
+                return false;
             }
-            return move;
+            return true;
         }
         public static PBELocalizedString GetMoveDescription(PBEMove move)
         {
@@ -220,7 +244,12 @@ namespace Kermalis.PokemonBattleEngine.Data
             {
                 throw new ArgumentOutOfRangeException(nameof(move));
             }
-            return new PBELocalizedString(PBEDataProvider.QueryDatabase<SearchResult>(string.Format(QueryId, "MoveDescriptions", (ushort)move))[0]);
+            List<SearchResult> results = PBEDefaultDataProvider.Instance.QueryDatabase<SearchResult>(string.Format(QueryId, "MoveDescriptions", (ushort)move));
+            if (results.Count == 1)
+            {
+                return new PBELocalizedString(results[0]);
+            }
+            throw new InvalidDataException();
         }
         public static PBELocalizedString GetMoveName(PBEMove move)
         {
@@ -228,21 +257,26 @@ namespace Kermalis.PokemonBattleEngine.Data
             {
                 throw new ArgumentOutOfRangeException(nameof(move));
             }
-            return new PBELocalizedString(PBEDataProvider.QueryDatabase<SearchResult>(string.Format(QueryId, "MoveNames", (ushort)move))[0]);
+            List<SearchResult> results = PBEDefaultDataProvider.Instance.QueryDatabase<SearchResult>(string.Format(QueryId, "MoveNames", (ushort)move));
+            if (results.Count == 1)
+            {
+                return new PBELocalizedString(results[0]);
+            }
+            throw new InvalidDataException();
         }
-        public static PBENature? GetNatureByName(string natureName)
+        public static bool GetNatureByName(string natureName, [NotNullWhen(true)] out PBENature? nature)
         {
-            PBENature nature;
-            List<SearchResult> results = PBEDataProvider.QueryDatabase<SearchResult>(string.Format(QueryText, "NatureNames", natureName));
+            List<SearchResult> results = PBEDefaultDataProvider.Instance.QueryDatabase<SearchResult>(string.Format(QueryText, "NatureNames", natureName));
             if (results.Count == 1)
             {
                 nature = (PBENature)results[0].Id;
             }
             else if (!GetEnumValue(natureName, out nature) || nature == PBENature.MAX)
             {
-                return null;
+                nature = null;
+                return false;
             }
-            return nature;
+            return true;
         }
         public static PBELocalizedString GetNatureName(PBENature nature)
         {
@@ -250,21 +284,26 @@ namespace Kermalis.PokemonBattleEngine.Data
             {
                 throw new ArgumentOutOfRangeException(nameof(nature));
             }
-            return new PBELocalizedString(PBEDataProvider.QueryDatabase<SearchResult>(string.Format(QueryId, "NatureNames", (byte)nature))[0]);
+            List<SearchResult> results = PBEDefaultDataProvider.Instance.QueryDatabase<SearchResult>(string.Format(QueryId, "NatureNames", (byte)nature));
+            if (results.Count == 1)
+            {
+                return new PBELocalizedString(results[0]);
+            }
+            throw new InvalidDataException();
         }
-        public static PBESpecies? GetSpeciesByName(string speciesName)
+        public static bool GetSpeciesByName(string speciesName, [NotNullWhen(true)] out PBESpecies? species)
         {
-            PBESpecies species;
-            List<SearchResult> results = PBEDataProvider.QueryDatabase<SearchResult>(string.Format(QueryText, "SpeciesNames", speciesName));
+            List<SearchResult> results = PBEDefaultDataProvider.Instance.QueryDatabase<SearchResult>(string.Format(QueryText, "SpeciesNames", speciesName));
             if (results.Count == 1)
             {
                 species = (PBESpecies)results[0].Id;
             }
             else if (!GetEnumValue(speciesName, out species))
             {
-                return null;
+                species = null;
+                return false;
             }
-            return species;
+            return true;
         }
         public static PBELocalizedString GetSpeciesCategory(PBESpecies species)
         {
@@ -272,7 +311,12 @@ namespace Kermalis.PokemonBattleEngine.Data
             {
                 throw new ArgumentOutOfRangeException(nameof(species));
             }
-            return new PBELocalizedString(PBEDataProvider.QueryDatabase<SearchResult>(string.Format(QueryId, "SpeciesCategories", (ushort)species))[0]);
+            List<SearchResult> results = PBEDefaultDataProvider.Instance.QueryDatabase<SearchResult>(string.Format(QueryId, "SpeciesCategories", (ushort)species));
+            if (results.Count == 1)
+            {
+                return new PBELocalizedString(results[0]);
+            }
+            throw new InvalidDataException();
         }
         public static PBELocalizedString GetSpeciesEntry(PBESpecies species)
         {
@@ -280,7 +324,12 @@ namespace Kermalis.PokemonBattleEngine.Data
             {
                 throw new ArgumentOutOfRangeException(nameof(species));
             }
-            return new PBELocalizedString(PBEDataProvider.QueryDatabase<SearchResult>(string.Format(QueryId, "SpeciesEntries", (ushort)species))[0]);
+            List<SearchResult> results = PBEDefaultDataProvider.Instance.QueryDatabase<SearchResult>(string.Format(QueryId, "SpeciesEntries", (ushort)species));
+            if (results.Count == 1)
+            {
+                return new PBELocalizedString(results[0]);
+            }
+            throw new InvalidDataException();
         }
         public static PBELocalizedString GetSpeciesName(PBESpecies species)
         {
@@ -288,43 +337,53 @@ namespace Kermalis.PokemonBattleEngine.Data
             {
                 throw new ArgumentOutOfRangeException(nameof(species));
             }
-            return new PBELocalizedString(PBEDataProvider.QueryDatabase<SearchResult>(string.Format(QueryId, "SpeciesNames", (ushort)species))[0]);
+            List<SearchResult> results = PBEDefaultDataProvider.Instance.QueryDatabase<SearchResult>(string.Format(QueryId, "SpeciesNames", (ushort)species));
+            if (results.Count == 1)
+            {
+                return new PBELocalizedString(results[0]);
+            }
+            throw new InvalidDataException();
         }
-        public static PBEStat? GetStatByName(string statName)
+        public static bool GetStatByName(string statName, [NotNullWhen(true)] out PBEStat? stat)
         {
-            PBEStat stat;
-            List<SearchResult> results = PBEDataProvider.QueryDatabase<SearchResult>(string.Format(QueryText, "StatNames", statName));
+            List<SearchResult> results = PBEDefaultDataProvider.Instance.QueryDatabase<SearchResult>(string.Format(QueryText, "StatNames", statName));
             if (results.Count == 1)
             {
                 stat = (PBEStat)results[0].Id;
             }
             else if (!GetEnumValue(statName, out stat))
             {
-                return null;
+                stat = null;
+                return false;
             }
-            return stat;
+            return true;
         }
         public static PBELocalizedString GetStatName(PBEStat stat)
         {
-            if (!Enum.IsDefined(typeof(PBEStat), stat))
+            if (!Enum.IsDefined(stat))
             {
                 throw new ArgumentOutOfRangeException(nameof(stat));
             }
-            return new PBELocalizedString(PBEDataProvider.QueryDatabase<SearchResult>(string.Format(QueryId, "StatNames", (byte)stat))[0]);
+            List<SearchResult> results = PBEDefaultDataProvider.Instance.QueryDatabase<SearchResult>(string.Format(QueryId, "StatNames", (byte)stat));
+            if (results.Count == 1)
+            {
+                return new PBELocalizedString(results[0]);
+            }
+            throw new InvalidDataException();
         }
-        public static PBEType? GetTypeByName(string typeName)
+        public static bool GetTypeByName(string typeName, [NotNullWhen(true)] out PBEType? type)
         {
-            PBEType type;
-            List<SearchResult> results = PBEDataProvider.QueryDatabase<SearchResult>(string.Format(QueryText, "TypeNames", typeName));
+            List<SearchResult> results = PBEDefaultDataProvider.Instance.QueryDatabase<SearchResult>(string.Format(QueryText, "TypeNames", typeName));
             if (results.Count == 1)
             {
                 type = (PBEType)results[0].Id;
             }
             else if (!GetEnumValue(typeName, out type))
             {
-                return null;
+                type = null;
+                return false;
             }
-            return type;
+            return true;
         }
         public static PBELocalizedString GetTypeName(PBEType type)
         {
@@ -332,7 +391,12 @@ namespace Kermalis.PokemonBattleEngine.Data
             {
                 throw new ArgumentOutOfRangeException(nameof(type));
             }
-            return new PBELocalizedString(PBEDataProvider.QueryDatabase<SearchResult>(string.Format(QueryId, "TypeNames", (byte)type))[0]);
+            List<SearchResult> results = PBEDefaultDataProvider.Instance.QueryDatabase<SearchResult>(string.Format(QueryId, "TypeNames", (byte)type));
+            if (results.Count == 1)
+            {
+                return new PBELocalizedString(results[0]);
+            }
+            throw new InvalidDataException();
         }
 
         #endregion

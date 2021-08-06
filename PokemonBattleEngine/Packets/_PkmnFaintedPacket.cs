@@ -50,10 +50,6 @@ namespace Kermalis.PokemonBattleEngine.Packets
 
         public PBEPkmnFaintedPacket_Hidden(PBEPkmnFaintedPacket other)
         {
-            if (other == null)
-            {
-                throw new ArgumentNullException(nameof(other));
-            }
             using (var ms = new MemoryStream())
             using (var w = new EndianBinaryWriter(ms, encoding: EncodingType.UTF16))
             {

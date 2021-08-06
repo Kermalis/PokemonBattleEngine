@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace Kermalis.PokemonBattleEngineExtras
 {
-    internal sealed partial class PokemonDataDumper
+    internal static partial class PokemonDataDumper
     {
         private sealed class Pokemon : IPBEPokemonTypes
         {
@@ -21,16 +21,16 @@ namespace Kermalis.PokemonBattleEngineExtras
             public byte CatchRate;
             public byte FleeRate;
             public float Weight;
-            public List<(PBESpecies, PBEForm)> PreEvolutions = new List<(PBESpecies, PBEForm)>();
-            public List<(PBESpecies, PBEForm)> Evolutions = new List<(PBESpecies, PBEForm)>();
-            public List<PBEAbility> Abilities = new List<PBEAbility>();
-            public Dictionary<(PBEMove Move, byte Level), PBEMoveObtainMethod> LevelUpMoves = new Dictionary<(PBEMove Move, byte Level), PBEMoveObtainMethod>();
-            public Dictionary<PBEMove, PBEMoveObtainMethod> OtherMoves = new Dictionary<PBEMove, PBEMoveObtainMethod>();
+            public List<(PBESpecies, PBEForm)> PreEvolutions = new();
+            public List<(PBESpecies, PBEForm)> Evolutions = new();
+            public List<PBEAbility> Abilities = new();
+            public Dictionary<(PBEMove Move, byte Level), PBEMoveObtainMethod> LevelUpMoves = new();
+            public Dictionary<PBEMove, PBEMoveObtainMethod> OtherMoves = new();
         }
 
         #region Static Collections
         #region Gen 3
-        private static readonly Dictionary<int, PBESpecies> _gen3SpeciesIndexToPBESpecies = new Dictionary<int, PBESpecies>
+        private static readonly Dictionary<int, PBESpecies> _gen3SpeciesIndexToPBESpecies = new()
         {
             { 1, PBESpecies.Bulbasaur },
             { 2, PBESpecies.Ivysaur },
@@ -548,7 +548,7 @@ namespace Kermalis.PokemonBattleEngineExtras
         };
         #endregion
         #region Gen 4
-        private static readonly Dictionary<int, (PBESpecies, PBEForm)> _gen4SpeciesIndexToPBESpecies = new Dictionary<int, (PBESpecies, PBEForm)>
+        private static readonly Dictionary<int, (PBESpecies, PBEForm)> _gen4SpeciesIndexToPBESpecies = new()
         {
             { 496, (PBESpecies.Deoxys, PBEForm.Deoxys_Attack) },
             { 497, (PBESpecies.Deoxys, PBEForm.Deoxys_Defense) },
@@ -779,7 +779,7 @@ namespace Kermalis.PokemonBattleEngineExtras
         };
         #endregion
         #region Gen 5
-        private static readonly Dictionary<int, (PBESpecies, PBEForm)> _bwSpeciesIndexToPBESpecies = new Dictionary<int, (PBESpecies, PBEForm)>
+        private static readonly Dictionary<int, (PBESpecies, PBEForm)> _bwSpeciesIndexToPBESpecies = new()
         {
             { 650, (PBESpecies.Deoxys, PBEForm.Deoxys_Attack) },
             { 651, (PBESpecies.Deoxys, PBEForm.Deoxys_Defense) },
@@ -800,7 +800,7 @@ namespace Kermalis.PokemonBattleEngineExtras
             { 666, (PBESpecies.Darmanitan, PBEForm.Darmanitan_Zen) },
             { 667, (PBESpecies.Meloetta, PBEForm.Meloetta_Pirouette) }
         };
-        private static readonly Dictionary<int, (PBESpecies, PBEForm)> _b2w2SpeciesIndexToPBESpecies = new Dictionary<int, (PBESpecies, PBEForm)>
+        private static readonly Dictionary<int, (PBESpecies, PBEForm)> _b2w2SpeciesIndexToPBESpecies = new()
         {
             { 685, (PBESpecies.Deoxys, PBEForm.Deoxys_Attack) },
             { 686, (PBESpecies.Deoxys, PBEForm.Deoxys_Defense) },

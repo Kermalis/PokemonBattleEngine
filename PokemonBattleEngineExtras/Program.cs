@@ -1,4 +1,4 @@
-﻿using Kermalis.PokemonBattleEngine.Data;
+﻿using Kermalis.PokemonBattleEngine.Data.DefaultData;
 using Microsoft.Data.Sqlite;
 using System;
 
@@ -30,8 +30,8 @@ namespace Kermalis.PokemonBattleEngineExtras
             {
                 case Extra.AIBattle:
                 {
-                    PBEDataProvider.InitEngine(string.Empty);
-                    AIBattleDemo.Run();
+                    PBEDefaultDataProvider.InitEngine(string.Empty);
+                    _ = new AIBattleDemo();
                     break;
                 }
                 case Extra.LocalizationDumper:

@@ -1,24 +1,25 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
-  <PropertyGroup>
-    <TargetFramework>net5.0</TargetFramework>
-    <OutputType>Exe</OutputType>
-    <RootNamespace>Kermalis.PokemonBattleEngineExtras</RootNamespace>
-    <Authors>Kermalis</Authors>
-    <Copyright>Kermalis</Copyright>
-    <RepositoryUrl>https://github.com/Kermalis/PokemonBattleEngine</RepositoryUrl>
-    <NoWarn />
-    <StartupObject>Kermalis.PokemonBattleEngineExtras.Program</StartupObject>
-  </PropertyGroup>
+	<PropertyGroup>
+		<TargetFramework>net5.0</TargetFramework>
+		<OutputType>Exe</OutputType>
+		<RootNamespace>Kermalis.PokemonBattleEngineExtras</RootNamespace>
+		<Authors>Kermalis</Authors>
+		<Copyright>Kermalis</Copyright>
+		<RepositoryUrl>https://github.com/Kermalis/PokemonBattleEngine</RepositoryUrl>
+		<NoWarn />
+		<StartupObject>Kermalis.PokemonBattleEngineExtras.Program</StartupObject>
+		<Nullable>enable</Nullable>
+	</PropertyGroup>
 
-  <ItemGroup>
-    <None Remove="Dependencies\**" />
-    <None Remove="DumpedData\**" />
-    <PackageReference Include="System.Drawing.Common" Version="5.0.2" />
-    <ProjectReference Include="..\PokemonBattleEngine\PokemonBattleEngine.csproj" />
-    <Reference Include="SimpleNARC">
-      <HintPath>Dependencies\SimpleNARC.dll</HintPath>
-    </Reference>
-  </ItemGroup>
+	<ItemGroup>
+		<None Remove="Dependencies\**" />
+		<None Remove="DumpedData\**" />
+		<PackageReference Include="System.Drawing.Common" Version="5.0.2" />
+		<ProjectReference Include="..\PokemonBattleEngine\PokemonBattleEngine.csproj" />
+		<Reference Include="SimpleNARC">
+			<HintPath>Dependencies\SimpleNARC.dll</HintPath>
+		</Reference>
+	</ItemGroup>
 
 </Project>

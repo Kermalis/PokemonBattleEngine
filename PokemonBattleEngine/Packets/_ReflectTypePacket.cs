@@ -57,10 +57,6 @@ namespace Kermalis.PokemonBattleEngine.Packets
 
         public PBEReflectTypePacket_Hidden(PBEReflectTypePacket other)
         {
-            if (other == null)
-            {
-                throw new ArgumentNullException(nameof(other));
-            }
             using (var ms = new MemoryStream())
             using (var w = new EndianBinaryWriter(ms, encoding: EncodingType.UTF16))
             {

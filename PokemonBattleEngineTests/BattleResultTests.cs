@@ -8,9 +8,9 @@ namespace Kermalis.PokemonBattleEngineTests
     [Collection("Utils")]
     public class BattleResultTests
     {
-        public BattleResultTests(TestUtils utils, ITestOutputHelper output)
+        public BattleResultTests(TestUtils _, ITestOutputHelper output)
         {
-            utils.SetOutputHelper(output);
+            TestUtils.SetOutputHelper(output);
         }
 
         // TODO: Who wins if you use PerishSong and everyone faints at the same time? Is it based on who's slowest?
@@ -40,8 +40,8 @@ namespace Kermalis.PokemonBattleEngineTests
             #endregion
 
             #region Use move and check
-            Assert.Null(t0.SelectActionsIfValid(new PBETurnAction(golem, PBEMove.Explosion, PBETurnTarget.FoeCenter)));
-            Assert.Null(t1.SelectActionsIfValid(new PBETurnAction(magikarp, PBEMove.Splash, PBETurnTarget.AllyCenter)));
+            Assert.True(t0.SelectActionsIfValid(out _, new PBETurnAction(golem, PBEMove.Explosion, PBETurnTarget.FoeCenter)));
+            Assert.True(t1.SelectActionsIfValid(out _, new PBETurnAction(magikarp, PBEMove.Splash, PBETurnTarget.AllyCenter)));
 
             battle.RunTurn();
 
@@ -87,11 +87,11 @@ namespace Kermalis.PokemonBattleEngineTests
             #endregion
 
             #region Use move and check
-            Assert.Null(t0.SelectActionsIfValid(
+            Assert.True(t0.SelectActionsIfValid(out _,
                 new PBETurnAction(qwilfish, PBEMove.Splash, PBETurnTarget.AllyLeft),
                 new PBETurnAction(golem, PBEMove.Explosion, PBETurnTarget.AllyLeft | PBETurnTarget.AllyRight | PBETurnTarget.FoeLeft | PBETurnTarget.FoeCenter | PBETurnTarget.FoeRight),
                 new PBETurnAction(magikarp, PBEMove.Splash, PBETurnTarget.AllyRight)));
-            Assert.Null(t1.SelectActionsIfValid(
+            Assert.True(t1.SelectActionsIfValid(out _,
                 new PBETurnAction(patrat, PBEMove.Splash, PBETurnTarget.AllyLeft),
                 new PBETurnAction(lickilicky, PBEMove.Splash, PBETurnTarget.AllyCenter),
                 new PBETurnAction(happiny, PBEMove.Splash, PBETurnTarget.AllyRight)));
@@ -132,8 +132,8 @@ namespace Kermalis.PokemonBattleEngineTests
             #endregion
 
             #region Use FinalGambit and check
-            Assert.Null(t0.SelectActionsIfValid(new PBETurnAction(staraptor, PBEMove.FinalGambit, PBETurnTarget.FoeCenter)));
-            Assert.Null(t1.SelectActionsIfValid(new PBETurnAction(magikarp, PBEMove.Splash, PBETurnTarget.AllyCenter)));
+            Assert.True(t0.SelectActionsIfValid(out _, new PBETurnAction(staraptor, PBEMove.FinalGambit, PBETurnTarget.FoeCenter)));
+            Assert.True(t1.SelectActionsIfValid(out _, new PBETurnAction(magikarp, PBEMove.Splash, PBETurnTarget.AllyCenter)));
 
             battle.RunTurn();
 
@@ -174,8 +174,8 @@ namespace Kermalis.PokemonBattleEngineTests
             #endregion
 
             #region Use DrainPunch and check
-            Assert.Null(t0.SelectActionsIfValid(new PBETurnAction(deoxys, PBEMove.DrainPunch, PBETurnTarget.FoeCenter)));
-            Assert.Null(t1.SelectActionsIfValid(new PBETurnAction(blissey, PBEMove.Splash, PBETurnTarget.AllyCenter)));
+            Assert.True(t0.SelectActionsIfValid(out _, new PBETurnAction(deoxys, PBEMove.DrainPunch, PBETurnTarget.FoeCenter)));
+            Assert.True(t1.SelectActionsIfValid(out _, new PBETurnAction(blissey, PBEMove.Splash, PBETurnTarget.AllyCenter)));
 
             battle.RunTurn();
 
@@ -219,8 +219,8 @@ namespace Kermalis.PokemonBattleEngineTests
             #endregion
 
             #region Use Pound and check
-            Assert.Null(t0.SelectActionsIfValid(new PBETurnAction(lucario, PBEMove.Pound, PBETurnTarget.FoeCenter)));
-            Assert.Null(t1.SelectActionsIfValid(new PBETurnAction(ferroseed, PBEMove.Splash, PBETurnTarget.AllyCenter)));
+            Assert.True(t0.SelectActionsIfValid(out _, new PBETurnAction(lucario, PBEMove.Pound, PBETurnTarget.FoeCenter)));
+            Assert.True(t1.SelectActionsIfValid(out _, new PBETurnAction(ferroseed, PBEMove.Splash, PBETurnTarget.AllyCenter)));
 
             battle.RunTurn();
 
@@ -262,8 +262,8 @@ namespace Kermalis.PokemonBattleEngineTests
             #endregion
 
             #region Use LeechSeed and check
-            Assert.Null(t0.SelectActionsIfValid(new PBETurnAction(shroomish, PBEMove.LeechSeed, PBETurnTarget.FoeCenter)));
-            Assert.Null(t1.SelectActionsIfValid(new PBETurnAction(tentacruel, PBEMove.Splash, PBETurnTarget.AllyCenter)));
+            Assert.True(t0.SelectActionsIfValid(out _, new PBETurnAction(shroomish, PBEMove.LeechSeed, PBETurnTarget.FoeCenter)));
+            Assert.True(t1.SelectActionsIfValid(out _, new PBETurnAction(tentacruel, PBEMove.Splash, PBETurnTarget.AllyCenter)));
 
             battle.RunTurn();
 
@@ -306,8 +306,8 @@ namespace Kermalis.PokemonBattleEngineTests
             #endregion
 
             #region Use HeadCharge and check
-            Assert.Null(t0.SelectActionsIfValid(new PBETurnAction(riolu, PBEMove.VacuumWave, PBETurnTarget.FoeCenter)));
-            Assert.Null(t1.SelectActionsIfValid(new PBETurnAction(magikarp, PBEMove.Splash, PBETurnTarget.AllyCenter)));
+            Assert.True(t0.SelectActionsIfValid(out _, new PBETurnAction(riolu, PBEMove.VacuumWave, PBETurnTarget.FoeCenter)));
+            Assert.True(t1.SelectActionsIfValid(out _, new PBETurnAction(magikarp, PBEMove.Splash, PBETurnTarget.AllyCenter)));
 
             battle.RunTurn();
 
@@ -347,8 +347,8 @@ namespace Kermalis.PokemonBattleEngineTests
             #endregion
 
             #region Use HeadCharge and check
-            Assert.Null(t0.SelectActionsIfValid(new PBETurnAction(bouffalant, PBEMove.HeadCharge, PBETurnTarget.FoeCenter)));
-            Assert.Null(t1.SelectActionsIfValid(new PBETurnAction(magikarp, PBEMove.Splash, PBETurnTarget.AllyCenter)));
+            Assert.True(t0.SelectActionsIfValid(out _, new PBETurnAction(bouffalant, PBEMove.HeadCharge, PBETurnTarget.FoeCenter)));
+            Assert.True(t1.SelectActionsIfValid(out _, new PBETurnAction(magikarp, PBEMove.Splash, PBETurnTarget.AllyCenter)));
 
             battle.RunTurn();
 

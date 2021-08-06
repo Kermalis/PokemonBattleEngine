@@ -17,8 +17,8 @@ namespace Kermalis.PokemonBattleEngine.Data
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(property));
         }
-        public event NotifyCollectionChangedEventHandler CollectionChanged;
-        public event PropertyChangedEventHandler PropertyChanged;
+        public event NotifyCollectionChangedEventHandler? CollectionChanged;
+        public event PropertyChangedEventHandler? PropertyChanged;
 
         private readonly List<T> _list;
         public int Count => _list.Count;
@@ -92,10 +92,6 @@ namespace Kermalis.PokemonBattleEngine.Data
         }
         internal void Reset(IEnumerable<T> collection)
         {
-            if (collection == null)
-            {
-                throw new ArgumentNullException(nameof(collection));
-            }
             int oldCount = _list.Count;
             if (!_list.SequenceEqual(collection))
             {
@@ -132,9 +128,18 @@ namespace Kermalis.PokemonBattleEngine.Data
         {
             return _list.IndexOf(item) != -1;
         }
+        public List<T> FindAll(Predicate<T> match)
+        {
+            return _list.FindAll(match);
+        }
         public int IndexOf(T item)
         {
             return _list.IndexOf(item);
+        }
+
+        public T[] ToArray()
+        {
+            return _list.ToArray();
         }
 
         public IEnumerator<T> GetEnumerator()

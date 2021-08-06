@@ -8,9 +8,9 @@ namespace Kermalis.PokemonBattleEngineTests.Moves
     [Collection("Utils")]
     public class WhirlwindTests
     {
-        public WhirlwindTests(TestUtils utils, ITestOutputHelper output)
+        public WhirlwindTests(TestUtils _, ITestOutputHelper output)
         {
-            utils.SetOutputHelper(output);
+            TestUtils.SetOutputHelper(output);
         }
 
         [Fact]
@@ -41,13 +41,13 @@ namespace Kermalis.PokemonBattleEngineTests.Moves
             #endregion
 
             #region Use Whirlwind and check
-            Assert.Null(t0.SelectActionsIfValid(new PBETurnAction(tropius, PBEMove.Whirlwind, PBETurnTarget.FoeCenter)));
-            Assert.Null(t1.SelectActionsIfValid(new PBETurnAction(magikarp, PBEMove.Splash, PBETurnTarget.AllyCenter)));
+            Assert.True(t0.SelectActionsIfValid(out _, new PBETurnAction(tropius, PBEMove.Whirlwind, PBETurnTarget.FoeCenter)));
+            Assert.True(t1.SelectActionsIfValid(out _, new PBETurnAction(magikarp, PBEMove.Splash, PBETurnTarget.AllyCenter)));
 
             battle.RunTurn();
 
             Assert.True(battle.VerifyMoveResultHappened(tropius, magikarp, PBEResult.Ineffective_Level) // Fail
-                && !battle.BattleResult.HasValue); // Did not flee
+                && battle.BattleResult is null); // Did not flee
             #endregion
 
             #region Cleanup
@@ -88,16 +88,16 @@ namespace Kermalis.PokemonBattleEngineTests.Moves
             #endregion
 
             #region Use Whirlwind and check
-            Assert.Null(t0.SelectActionsIfValid(
+            Assert.True(t0.SelectActionsIfValid(out _,
                 new PBETurnAction(tropius, PBEMove.Whirlwind, PBETurnTarget.FoeLeft)));
-            Assert.Null(t1.SelectActionsIfValid(
+            Assert.True(t1.SelectActionsIfValid(out _,
                 new PBETurnAction(magikarp, PBEMove.Splash, PBETurnTarget.AllyLeft),
                 new PBETurnAction(happiny, PBEMove.Splash, PBETurnTarget.AllyRight)));
 
             battle.RunTurn();
 
             Assert.True(battle.VerifyMoveResultHappened(tropius, magikarp, PBEResult.InvalidConditions) // Fail
-                && !battle.BattleResult.HasValue); // Did not flee
+                && battle.BattleResult is null); // Did not flee
             #endregion
 
             #region Cleanup
@@ -133,8 +133,8 @@ namespace Kermalis.PokemonBattleEngineTests.Moves
             #endregion
 
             #region Use Whirlwind and check
-            Assert.Null(t0.SelectActionsIfValid(new PBETurnAction(tropius, PBEMove.Whirlwind, PBETurnTarget.FoeCenter)));
-            Assert.Null(t1.SelectActionsIfValid(new PBETurnAction(magikarp, PBEMove.Splash, PBETurnTarget.AllyCenter)));
+            Assert.True(t0.SelectActionsIfValid(out _, new PBETurnAction(tropius, PBEMove.Whirlwind, PBETurnTarget.FoeCenter)));
+            Assert.True(t1.SelectActionsIfValid(out _, new PBETurnAction(magikarp, PBEMove.Splash, PBETurnTarget.AllyCenter)));
 
             battle.RunTurn();
 
@@ -184,10 +184,10 @@ namespace Kermalis.PokemonBattleEngineTests.Moves
             #endregion
 
             #region Use Whirlwind and check
-            Assert.Null(t0.SelectActionsIfValid(
+            Assert.True(t0.SelectActionsIfValid(out _,
                 new PBETurnAction(diglett, PBEMove.Splash, PBETurnTarget.AllyLeft),
                 new PBETurnAction(geodude, PBEMove.Splash, PBETurnTarget.AllyRight)));
-            Assert.Null(t1.SelectActionsIfValid(
+            Assert.True(t1.SelectActionsIfValid(out _,
                 new PBETurnAction(starly, PBEMove.Whirlwind, PBETurnTarget.FoeLeft),
                 new PBETurnAction(magikarp, PBEMove.Splash, PBETurnTarget.AllyRight)));
 
@@ -195,7 +195,7 @@ namespace Kermalis.PokemonBattleEngineTests.Moves
 
             Assert.True(!battle.VerifyMoveResultHappened(starly, diglett, PBEResult.InvalidConditions) // No fail
                 && diglett.FieldPosition == PBEFieldPosition.None && trubbish.FieldPosition == PBEFieldPosition.Left // Properly swapped
-                && !battle.BattleResult.HasValue); // Did not flee
+                && battle.BattleResult is null); // Did not flee
             #endregion
 
             #region Cleanup

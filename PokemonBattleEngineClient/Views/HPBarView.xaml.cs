@@ -20,7 +20,7 @@ namespace Kermalis.PokemonBattleEngineClient.Views
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(property));
 
         }
-        public new event PropertyChangedEventHandler PropertyChanged;
+        public new event PropertyChangedEventHandler? PropertyChanged;
 
         private PBEBattlePokemon _pokemon;
         private Point _location;
@@ -41,9 +41,14 @@ namespace Kermalis.PokemonBattleEngineClient.Views
 
         private readonly Image _drawn;
 
-        private static SolidColorBrush _greenSides, _greenMid, _yellowSides, _yellowMid, _redSides, _redMid;
-        private static Bitmap[] _hpBars;
-        private static Dictionary<PBEStatus1, Bitmap> _status1s;
+        private static SolidColorBrush _greenSides = null!,
+            _greenMid = null!,
+            _yellowSides = null!,
+            _yellowMid = null!,
+            _redSides = null!,
+            _redMid = null!;
+        private static Bitmap[] _hpBars = null!;
+        private static Dictionary<PBEStatus1, Bitmap> _status1s = null!;
 
         internal static void CreateResources()
         {
@@ -68,6 +73,7 @@ namespace Kermalis.PokemonBattleEngineClient.Views
             AvaloniaXamlLoader.Load(this);
 
             _drawn = this.FindControl<Image>("Drawn");
+            _pokemon = null!;
         }
 
         internal void Update(PBEBattlePokemon pkmn, bool useKnownInfo)
@@ -75,7 +81,7 @@ namespace Kermalis.PokemonBattleEngineClient.Views
             _useKnownInfo = useKnownInfo;
             _pokemon = pkmn;
 
-            var wb = new WriteableBitmap(new PixelSize(104, 27), new Vector(96, 96), PixelFormat.Bgra8888);
+            var wb = new WriteableBitmap(new PixelSize(104, 27), new Vector(96, 96), PixelFormat.Bgra8888, AlphaFormat.Premul);
             using (IRenderTarget rtb = Utils.RenderInterface.CreateRenderTarget(new[] { new WriteableBitmapSurface(wb) }))
             using (IDrawingContextImpl ctx = rtb.CreateDrawingContext(null))
             {

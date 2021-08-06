@@ -14,7 +14,7 @@ namespace Kermalis.PokemonBattleEngineClient.Views
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(property));
         }
-        public new event PropertyChangedEventHandler PropertyChanged;
+        public new event PropertyChangedEventHandler? PropertyChanged;
 
         private PBEBattlePokemon _pokemon;
         private Point _location;
@@ -41,6 +41,7 @@ namespace Kermalis.PokemonBattleEngineClient.Views
             AvaloniaXamlLoader.Load(this);
 
             _sprite = this.FindControl<GifImage>("Sprite");
+            _pokemon = null!;
         }
 
         public void Update(PBEBattlePokemon pkmn, bool backSprite, bool useKnownInfo)

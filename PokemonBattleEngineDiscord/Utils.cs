@@ -14,7 +14,7 @@ namespace Kermalis.PokemonBattleEngineDiscord
         private const string ImageURL = "https://raw.githubusercontent.com/Kermalis/PokemonBattleEngine/master/Shared%20Assets/PKMN/";
 
         #region Static Collections
-        public static readonly Dictionary<PBEType, Color> TypeColors = new Dictionary<PBEType, Color>
+        public static readonly Dictionary<PBEType, Color> TypeColors = new()
         {
             { PBEType.None, new Color(146, 154, 156) },
             { PBEType.Bug, new Color(162, 212, 56) },
@@ -35,7 +35,7 @@ namespace Kermalis.PokemonBattleEngineDiscord
             { PBEType.Steel, new Color(94, 160, 178) },
             { PBEType.Water, new Color(58, 176, 232) }
         };
-        public static readonly Dictionary<PBEType, Emote> TypeEmotes = new Dictionary<PBEType, Emote>
+        public static readonly Dictionary<PBEType, Emote> TypeEmotes = new()
         {
             { PBEType.None, Emote.Parse("<:Normal:708768400167665755>") },
             { PBEType.Bug, Emote.Parse("<:Bug:708768296731934751>") },
@@ -56,7 +56,7 @@ namespace Kermalis.PokemonBattleEngineDiscord
             { PBEType.Steel, Emote.Parse("<:Steel:708768399383330867>") },
             { PBEType.Water, Emote.Parse("<:Water:708768402356830268>") }
         };
-        public static readonly Dictionary<PBEStatus1, Emote> Status1Emotes = new Dictionary<PBEStatus1, Emote>
+        public static readonly Dictionary<PBEStatus1, Emote> Status1Emotes = new()
         {
             { PBEStatus1.Asleep, Emote.Parse("<:Asleep:708841651690537030>") },
             { PBEStatus1.BadlyPoisoned, Emote.Parse("<:BadlyPoisoned:708841652151910400>") },
@@ -65,7 +65,7 @@ namespace Kermalis.PokemonBattleEngineDiscord
             { PBEStatus1.Paralyzed, Emote.Parse("<:Paralyzed:708841651568771093>") },
             { PBEStatus1.Poisoned, Emote.Parse("<:Poisoned:708841651787005962>") }
         };
-        public static readonly Dictionary<PBEWeather, Emote> WeatherEmotes = new Dictionary<PBEWeather, Emote>
+        public static readonly Dictionary<PBEWeather, Emote> WeatherEmotes = new()
         {
             { PBEWeather.Hailstorm, Emote.Parse("<a:Hailstorm:709213589612920834>") },
             { PBEWeather.HarshSunlight, Emote.Parse("<a:HarshSunlight:709213589587755121>") },
@@ -96,7 +96,7 @@ namespace Kermalis.PokemonBattleEngineDiscord
             return GetColor(pkmn.KnownType1, pkmn.KnownType2);
         }
 
-        private static readonly Random _rand = new Random();
+        private static readonly Random _rand = new();
         public static Color RandomColor()
         {
             byte[] bytes = new byte[3];
@@ -117,16 +117,16 @@ namespace Kermalis.PokemonBattleEngineDiscord
             return source[_rand.Next(count)];
         }
 
-        private static readonly object _femaleSpriteLookupLockObj = new object();
-        private static readonly List<PBESpecies> _femaleSpriteLookup = new List<PBESpecies>();
+        private static readonly object _femaleSpriteLookupLockObj = new();
+        private static readonly List<PBESpecies> _femaleSpriteLookup = new();
         public static void InitFemaleSpriteLookup()
         {
             const string address = ImageURL + "FemaleSpriteLookup.txt";
             using (var w = new WebClient())
             using (var reader = new StringReader(w.DownloadString(address)))
             {
-                string line;
-                while ((line = reader.ReadLine()) != null)
+                string? line;
+                while ((line = reader.ReadLine()) is not null)
                 {
                     if (!Enum.TryParse(line, out PBESpecies species))
                     {

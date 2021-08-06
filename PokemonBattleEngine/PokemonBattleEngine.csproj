@@ -1,24 +1,25 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
-  <PropertyGroup>
-    <TargetFramework>net5.0</TargetFramework>
-    <OutputType>Library</OutputType>
-    <RootNamespace>Kermalis.PokemonBattleEngine</RootNamespace>
-    <Authors>Kermalis</Authors>
-    <Copyright>Kermalis</Copyright>
-    <RepositoryUrl>https://github.com/Kermalis/PokemonBattleEngine</RepositoryUrl>
-    <DocumentationFile>bin\$(Configuration)\$(TargetFramework)\$(AssemblyName).xml</DocumentationFile>
-    <NoWarn>1591</NoWarn>
-  </PropertyGroup>
+	<PropertyGroup>
+		<TargetFramework>net5.0</TargetFramework>
+		<OutputType>Library</OutputType>
+		<RootNamespace>Kermalis.PokemonBattleEngine</RootNamespace>
+		<Authors>Kermalis</Authors>
+		<Copyright>Kermalis</Copyright>
+		<RepositoryUrl>https://github.com/Kermalis/PokemonBattleEngine</RepositoryUrl>
+		<DocumentationFile>bin\$(Configuration)\$(TargetFramework)\$(AssemblyName).xml</DocumentationFile>
+		<NoWarn>1591</NoWarn>
+		<Nullable>enable</Nullable>
+	</PropertyGroup>
 
-  <ItemGroup>
-    <PackageReference Include="EndianBinaryIO" Version="1.1.2" />
-    <PackageReference Include="Microsoft.Data.Sqlite" Version="5.0.7" />
-    <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
-    <PackageReference Include="SQLitePCLRaw.bundle_e_sqlite3" Version="2.0.4" />
-    <None Update="PokemonBattleEngine.db">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-  </ItemGroup>
+	<ItemGroup>
+		<PackageReference Include="EndianBinaryIO" Version="1.1.2" />
+		<PackageReference Include="Microsoft.Data.Sqlite" Version="5.0.7" />
+		<PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
+		<PackageReference Include="SQLitePCLRaw.bundle_e_sqlite3" Version="2.0.4" />
+		<None Update="PokemonBattleEngine.db">
+			<CopyToOutputDirectory>Always</CopyToOutputDirectory>
+		</None>
+	</ItemGroup>
 
 </Project>

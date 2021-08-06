@@ -22,26 +22,27 @@ namespace Kermalis.PokemonBattleEngineDiscord
             }
         }
 
-        private static readonly object _reactionListenersLockObj = new object();
-        private static readonly Dictionary<IUser, List<Reaction>> _reactionListeners = new Dictionary<IUser, List<Reaction>>(DiscordComparers.UserComparer);
+        private static readonly object _reactionListenersLockObj = new();
+        private static readonly Dictionary<IUser, List<Reaction>> _reactionListeners = new(DiscordComparers.UserComparer);
 
         public static void OnReactionAdded(SocketReaction inEvent)
         {
             lock (_reactionListenersLockObj)
             {
                 IUser user = inEvent.User.Value;
-                if (_reactionListeners.TryGetValue(user, out List<Reaction> list))
+                if (!_reactionListeners.TryGetValue(user, out List<Reaction>? list))
                 {
-                    ulong msg = inEvent.MessageId;
-                    IEmote emote = inEvent.Emote;
-                    foreach (Reaction r in list)
+                    return;
+                }
+                ulong msg = inEvent.MessageId;
+                IEmote emote = inEvent.Emote;
+                foreach (Reaction r in list)
+                {
+                    if (r.Message.Id == msg && emote.Equals(r.Emote))
                     {
-                        if (r.Message.Id == msg && emote.Equals(r.Emote))
-                        {
-                            _reactionListeners.Remove(user);
-                            r.ClickFunc.Invoke(); // Do not return Task because we do not want to block the main thread
-                            return;
-                        }
+                        _reactionListeners.Remove(user);
+                        r.ClickFunc.Invoke(); // Do not return Task because we do not want to block the main thread
+                        return;
                     }
                 }
             }
@@ -51,7 +52,7 @@ namespace Kermalis.PokemonBattleEngineDiscord
         {
             lock (_reactionListenersLockObj)
             {
-                if (!_reactionListeners.TryGetValue(user, out List<Reaction> list))
+                if (!_reactionListeners.TryGetValue(user, out List<Reaction>? list))
                 {
                     list = new List<Reaction>();
                     _reactionListeners.Add(user, list);
@@ -59,15 +60,15 @@ namespace Kermalis.PokemonBattleEngineDiscord
                 list.Add(new Reaction(msg, emote, clickFunc));
             }
         }
-        public static void RemoveListeners(IUser a, IUser b)
+        public static void RemoveListeners(IUser? a, IUser? b)
         {
             lock (_reactionListenersLockObj)
             {
-                if (a != null)
+                if (a is not null)
                 {
                     _reactionListeners.Remove(a);
                 }
-                if (b != null)
+                if (b is not null)
                 {
                     _reactionListeners.Remove(b);
                 }

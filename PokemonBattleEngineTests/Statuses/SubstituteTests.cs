@@ -8,9 +8,9 @@ namespace Kermalis.PokemonBattleEngineTests.Statuses
     [Collection("Utils")]
     public class SubstituteTests
     {
-        public SubstituteTests(TestUtils utils, ITestOutputHelper output)
+        public SubstituteTests(TestUtils _, ITestOutputHelper output)
         {
-            utils.SetOutputHelper(output);
+            TestUtils.SetOutputHelper(output);
         }
 
         [Fact]
@@ -41,8 +41,8 @@ namespace Kermalis.PokemonBattleEngineTests.Statuses
             #endregion
 
             #region Use and check
-            Assert.Null(t0.SelectActionsIfValid(new PBETurnAction(conkeldurr, PBEMove.CloseCombat, PBETurnTarget.FoeCenter)));
-            Assert.Null(t1.SelectActionsIfValid(new PBETurnAction(kecleon, PBEMove.Substitute, PBETurnTarget.AllyCenter)));
+            Assert.True(t0.SelectActionsIfValid(out _, new PBETurnAction(conkeldurr, PBEMove.CloseCombat, PBETurnTarget.FoeCenter)));
+            Assert.True(t1.SelectActionsIfValid(out _, new PBETurnAction(kecleon, PBEMove.Substitute, PBETurnTarget.AllyCenter)));
 
             battle.RunTurn();
 

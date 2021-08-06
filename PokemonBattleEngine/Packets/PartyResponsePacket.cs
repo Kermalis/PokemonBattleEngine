@@ -16,10 +16,6 @@ namespace Kermalis.PokemonBattleEngine.Packets
 
         public PBEPartyResponsePacket(IPBEPokemonCollection party)
         {
-            if (party == null)
-            {
-                throw new ArgumentNullException(nameof(party));
-            }
             using (var ms = new MemoryStream())
             using (var w = new EndianBinaryWriter(ms, encoding: EncodingType.UTF16))
             {
@@ -43,10 +39,6 @@ namespace Kermalis.PokemonBattleEngine.Packets
 
         public PBELegalPartyResponsePacket(PBELegalPokemonCollection party)
         {
-            if (party == null)
-            {
-                throw new ArgumentNullException(nameof(party));
-            }
             using (var ms = new MemoryStream())
             using (var w = new EndianBinaryWriter(ms, encoding: EncodingType.UTF16))
             {

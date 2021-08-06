@@ -1,39 +1,40 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
-  <PropertyGroup>
-    <TargetFramework>net5.0</TargetFramework>
-    <OutputType>Library</OutputType>
-    <RootNamespace>Kermalis.PokemonBattleEngineClient</RootNamespace>
-    <Authors>Kermalis</Authors>
-    <Copyright>Kermalis</Copyright>
-    <RepositoryUrl>https://github.com/Kermalis/PokemonBattleEngine</RepositoryUrl>
-    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
-    <NoWarn />
-    <TreatWarningsAsErrors>false</TreatWarningsAsErrors>
-    <WarningsAsErrors>NU1605</WarningsAsErrors>
-  </PropertyGroup>
+	<PropertyGroup>
+		<TargetFramework>net5.0</TargetFramework>
+		<OutputType>Library</OutputType>
+		<RootNamespace>Kermalis.PokemonBattleEngineClient</RootNamespace>
+		<Authors>Kermalis</Authors>
+		<Copyright>Kermalis</Copyright>
+		<RepositoryUrl>https://github.com/Kermalis/PokemonBattleEngine</RepositoryUrl>
+		<AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+		<NoWarn />
+		<TreatWarningsAsErrors>false</TreatWarningsAsErrors>
+		<WarningsAsErrors>NU1605</WarningsAsErrors>
+		<Nullable>enable</Nullable>
+	</PropertyGroup>
 
-  <ItemGroup>
-    <Compile Update="**\*.xaml.cs">
-      <DependentUpon>%(Filename)</DependentUpon>
-    </Compile>
-    <AvaloniaResource Include="**\*.xaml">
-      <SubType>Designer</SubType>
-    </AvaloniaResource>
-    <EmbeddedResource Include="..\Shared Assets\**" />
-    <EmbeddedResource Include="..\PokemonBattleEngine\PokemonBattleEngine.db">
-      <Link>PokemonBattleEngine.db</Link>
-    </EmbeddedResource>
-    <Compile Remove="Dependencies\**" />
-    <EmbeddedResource Remove="Dependencies\**" />
-    <None Remove="Dependencies\**" />
-    <PackageReference Include="Avalonia" Version="0.10.6" />
-    <PackageReference Include="Avalonia.Desktop" Version="0.10.6" />
-    <PackageReference Include="Avalonia.ReactiveUI" Version="0.10.6" />
-    <ProjectReference Include="..\PokemonBattleEngine\PokemonBattleEngine.csproj" />
-    <Reference Include="AvaloniaGif">
-      <HintPath>Dependencies\AvaloniaGif.dll</HintPath>
-    </Reference>
-  </ItemGroup>
-  
+	<ItemGroup>
+		<Compile Update="**\*.xaml.cs">
+			<DependentUpon>%(Filename)</DependentUpon>
+		</Compile>
+		<AvaloniaResource Include="**\*.xaml">
+			<SubType>Designer</SubType>
+		</AvaloniaResource>
+		<EmbeddedResource Include="..\Shared Assets\**" />
+		<EmbeddedResource Include="..\PokemonBattleEngine\PokemonBattleEngine.db">
+			<Link>PokemonBattleEngine.db</Link>
+		</EmbeddedResource>
+		<Compile Remove="Dependencies\**" />
+		<EmbeddedResource Remove="Dependencies\**" />
+		<None Remove="Dependencies\**" />
+		<PackageReference Include="Avalonia" Version="0.10.6" />
+		<PackageReference Include="Avalonia.Desktop" Version="0.10.6" />
+		<PackageReference Include="Avalonia.ReactiveUI" Version="0.10.6" />
+		<ProjectReference Include="..\PokemonBattleEngine\PokemonBattleEngine.csproj" />
+		<Reference Include="AvaloniaGif">
+			<HintPath>Dependencies\AvaloniaGif.dll</HintPath>
+		</Reference>
+	</ItemGroup>
+
 </Project>

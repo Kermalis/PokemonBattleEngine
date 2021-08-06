@@ -41,9 +41,9 @@ namespace Kermalis.PokemonBattleEngine.Utils
             public int Hazards;
             public int DamagingMoves;
             public char SetupCategory; // 'N', 'M', 'P', 'S' - None, Mixed, Physical, Special
-            private readonly Dictionary<PBEMoveCategory, float> _categories = new Dictionary<PBEMoveCategory, float>();
-            private readonly Dictionary<PBEType, int> _types = new Dictionary<PBEType, int>();
-            private readonly Dictionary<PBEAbility, int> _abilities = new Dictionary<PBEAbility, int>();
+            private readonly Dictionary<PBEMoveCategory, float> _categories = new();
+            private readonly Dictionary<PBEType, int> _types = new();
+            private readonly Dictionary<PBEAbility, int> _abilities = new();
 
             public PBECounter()
             {
@@ -1336,10 +1336,6 @@ namespace Kermalis.PokemonBattleEngine.Utils
             if (numPkmn < 1 || numPkmn > PBESettings.DefaultMaxPartySize)
             {
                 throw new ArgumentOutOfRangeException(nameof(numPkmn));
-            }
-            if (allowedSpecies == null)
-            {
-                throw new ArgumentNullException(nameof(allowedSpecies));
             }
 
             int maxShared = numPkmn / 3;

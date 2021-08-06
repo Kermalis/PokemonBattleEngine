@@ -27,8 +27,8 @@ namespace Kermalis.PokemonBattleEngine.Packets
                 w.Write(MoveUser = moveUser.FieldPosition);
                 w.Write(MoveLockType = moveLockType);
                 w.Write(LockedMove = lockedMove);
-                w.Write(lockedTargets.HasValue);
-                if (lockedTargets.HasValue)
+                w.Write(lockedTargets is not null);
+                if (lockedTargets is not null)
                 {
                     w.Write((LockedTargets = lockedTargets).Value);
                 }

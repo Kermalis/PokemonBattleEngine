@@ -22,7 +22,7 @@ namespace Kermalis.PokemonBattleEngineClient.Views
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(property));
         }
-        public new event PropertyChangedEventHandler PropertyChanged;
+        public new event PropertyChangedEventHandler? PropertyChanged;
 
         private string _connectText;
         public string ConnectText
@@ -38,7 +38,7 @@ namespace Kermalis.PokemonBattleEngineClient.Views
             }
         }
 
-        private readonly List<BattleClient> _battles = new List<BattleClient>();
+        private readonly List<BattleClient> _battles = new();
 
         private readonly TabControl _tabs;
         private readonly TeamBuilderView _teamBuilder;
@@ -48,7 +48,9 @@ namespace Kermalis.PokemonBattleEngineClient.Views
         private readonly TextBox _name;
         private readonly CheckBox _multi;
 
+#pragma warning disable CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
         public MainView()
+#pragma warning restore CS8618 // _connectText is set in ResetConnectButton()
         {
             DataContext = this;
             AvaloniaXamlLoader.Load(this);
@@ -76,19 +78,19 @@ namespace Kermalis.PokemonBattleEngineClient.Views
             ushort port = (ushort)_port.Value;
             new Thread(() =>
             {
-                NetworkClientConnection con = null;
-                void ConnectHandler(object arg)
+                NetworkClientConnection? con = null;
+                void ConnectHandler(object? arg)
                 {
                     Dispatcher.UIThread.InvokeAsync(() =>
                     {
-                        if (arg is null)
+                        if (arg is string str)
+                        {
+                            ConnectText = str;
+                        }
+                        else if (arg is null)
                         {
                             ResetConnectButton();
                             con?.Dispose();
-                        }
-                        else if (arg is string str)
-                        {
-                            ConnectText = str;
                         }
                         else
                         {

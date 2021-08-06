@@ -8,9 +8,9 @@ namespace Kermalis.PokemonBattleEngineTests.Moves
     [Collection("Utils")]
     public class TeleportTests
     {
-        public TeleportTests(TestUtils utils, ITestOutputHelper output)
+        public TeleportTests(TestUtils _, ITestOutputHelper output)
         {
-            utils.SetOutputHelper(output);
+            TestUtils.SetOutputHelper(output);
         }
 
         [Fact]
@@ -41,8 +41,8 @@ namespace Kermalis.PokemonBattleEngineTests.Moves
             #endregion
 
             #region Use Teleport and check
-            Assert.Null(t0.SelectActionsIfValid(new PBETurnAction(abra, PBEMove.Teleport, PBETurnTarget.AllyCenter)));
-            Assert.Null(t1.SelectActionsIfValid(new PBETurnAction(magikarp, PBEMove.Splash, PBETurnTarget.AllyCenter)));
+            Assert.True(t0.SelectActionsIfValid(out _, new PBETurnAction(abra, PBEMove.Teleport, PBETurnTarget.AllyCenter)));
+            Assert.True(t1.SelectActionsIfValid(out _, new PBETurnAction(magikarp, PBEMove.Splash, PBETurnTarget.AllyCenter)));
 
             battle.RunTurn();
 

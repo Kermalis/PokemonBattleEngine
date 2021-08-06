@@ -8,9 +8,9 @@ namespace Kermalis.PokemonBattleEngineTests.Statuses
     [Collection("Utils")]
     public class ConfusionTests
     {
-        public ConfusionTests(TestUtils utils, ITestOutputHelper output)
+        public ConfusionTests(TestUtils _, ITestOutputHelper output)
         {
-            utils.SetOutputHelper(output);
+            TestUtils.SetOutputHelper(output);
         }
 
         [Theory]
@@ -44,8 +44,8 @@ namespace Kermalis.PokemonBattleEngineTests.Statuses
             #endregion
 
             #region Use and check
-            Assert.Null(t0.SelectActionsIfValid(new PBETurnAction(deoxys, PBEMove.Splash, PBETurnTarget.AllyCenter)));
-            Assert.Null(t1.SelectActionsIfValid(new PBETurnAction(accelgor, PBEMove.Swagger, PBETurnTarget.FoeCenter)));
+            Assert.True(t0.SelectActionsIfValid(out _, new PBETurnAction(deoxys, PBEMove.Splash, PBETurnTarget.AllyCenter)));
+            Assert.True(t1.SelectActionsIfValid(out _, new PBETurnAction(accelgor, PBEMove.Swagger, PBETurnTarget.FoeCenter)));
 
             battle.RunTurn();
 
@@ -96,8 +96,8 @@ namespace Kermalis.PokemonBattleEngineTests.Statuses
             #endregion
 
             #region Use and check
-            Assert.Null(t0.SelectActionsIfValid(new PBETurnAction(deoxys, PBEMove.Splash, PBETurnTarget.AllyCenter)));
-            Assert.Null(t1.SelectActionsIfValid(new PBETurnAction(accelgor, PBEMove.Swagger, PBETurnTarget.FoeCenter)));
+            Assert.True(t0.SelectActionsIfValid(out _, new PBETurnAction(deoxys, PBEMove.Splash, PBETurnTarget.AllyCenter)));
+            Assert.True(t1.SelectActionsIfValid(out _, new PBETurnAction(accelgor, PBEMove.Swagger, PBETurnTarget.FoeCenter)));
 
             battle.RunTurn();
 

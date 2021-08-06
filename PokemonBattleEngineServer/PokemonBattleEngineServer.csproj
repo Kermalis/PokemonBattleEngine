@@ -1,18 +1,19 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
-  <PropertyGroup>
-    <TargetFramework>net5.0</TargetFramework>
-    <OutputType>Exe</OutputType>
-    <RootNamespace>Kermalis.PokemonBattleEngineServer</RootNamespace>
-    <Authors>Kermalis</Authors>
-    <Copyright>Kermalis</Copyright>
-    <RepositoryUrl>https://github.com/Kermalis/PokemonBattleEngine</RepositoryUrl>
-    <NoWarn />
-    <StartupObject>Kermalis.PokemonBattleEngineServer.BattleServer</StartupObject>
-  </PropertyGroup>
+	<PropertyGroup>
+		<TargetFramework>net5.0</TargetFramework>
+		<OutputType>Exe</OutputType>
+		<RootNamespace>Kermalis.PokemonBattleEngineServer</RootNamespace>
+		<Authors>Kermalis</Authors>
+		<Copyright>Kermalis</Copyright>
+		<RepositoryUrl>https://github.com/Kermalis/PokemonBattleEngine</RepositoryUrl>
+		<NoWarn />
+		<StartupObject>Kermalis.PokemonBattleEngineServer.BattleServer</StartupObject>
+		<Nullable>enable</Nullable>
+	</PropertyGroup>
 
-  <ItemGroup>
-    <ProjectReference Include="..\PokemonBattleEngine\PokemonBattleEngine.csproj" />
-  </ItemGroup>
+	<ItemGroup>
+		<ProjectReference Include="..\PokemonBattleEngine\PokemonBattleEngine.csproj" />
+	</ItemGroup>
 
 </Project>

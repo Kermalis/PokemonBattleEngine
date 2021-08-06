@@ -8,7 +8,7 @@ namespace Kermalis.PokemonBattleEngineClient.Clients
     internal sealed class ReplayClient : NonLocalClient
     {
         public override PBEBattle Battle { get; }
-        public override PBETrainer Trainer => null;
+        public override PBETrainer? Trainer => null;
         public override BattleView BattleView { get; }
         public override bool HideNonOwned => false;
 
@@ -35,8 +35,8 @@ namespace Kermalis.PokemonBattleEngineClient.Clients
             {
                 case PBEMovePPChangedPacket mpcp:
                 {
-                    PBEBattlePokemon moveUser = mpcp.MoveUserTrainer.TryGetPokemon(mpcp.MoveUser);
-                    moveUser.Moves[mpcp.Move].PP -= mpcp.AmountReduced;
+                    PBEBattlePokemon moveUser = mpcp.MoveUserTrainer.GetPokemon(mpcp.MoveUser);
+                    moveUser.Moves[mpcp.Move]!.PP -= mpcp.AmountReduced;
                     break;
                 }
                 case PBEActionsRequestPacket _:

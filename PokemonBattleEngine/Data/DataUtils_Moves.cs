@@ -7,21 +7,21 @@ namespace Kermalis.PokemonBattleEngine.Data
     public static partial class PBEDataUtils
     {
         #region Static Collections
-        public static PBEAlphabeticalList<PBEMove> AllMoves { get; } = new PBEAlphabeticalList<PBEMove>(Enum.GetValues(typeof(PBEMove)).Cast<PBEMove>().Except(new[] { PBEMove.None, PBEMove.MAX }));
-        public static PBEAlphabeticalList<PBEMove> MetronomeMoves { get; } = new PBEAlphabeticalList<PBEMove>(GetMovesWithoutFlag(PBEMoveFlag.BlockedFromMetronome));
-        public static PBEAlphabeticalList<PBEMove> SketchLegalMoves { get; } = new PBEAlphabeticalList<PBEMove>(GetMovesWithoutFlag(PBEMoveFlag.BlockedFromSketch, exception: PBEMoveEffect.Sketch));
+        public static PBEAlphabeticalList<PBEMove> AllMoves { get; } = new(Enum.GetValues<PBEMove>().Except(new[] { PBEMove.None, PBEMove.MAX }));
+        public static PBEAlphabeticalList<PBEMove> MetronomeMoves { get; } = new(GetMovesWithoutFlag(PBEMoveFlag.BlockedFromMetronome));
+        public static PBEAlphabeticalList<PBEMove> SketchLegalMoves { get; } = new(GetMovesWithoutFlag(PBEMoveFlag.BlockedFromSketch, exception: PBEMoveEffect.Sketch));
         #endregion
 
-        private static IEnumerable<PBEMove> GetMovesWithoutFlag(PBEMoveFlag flag, PBEMoveEffect? exception = null)
+        private static List<PBEMove> GetMovesWithoutFlag(PBEMoveFlag flag, PBEMoveEffect? exception = null)
         {
-            return AllMoves.Where(m =>
+            return AllMoves.FindAll(m =>
             {
                 IPBEMoveData mData = PBEDataProvider.Instance.GetMoveData(m, cache: false);
                 if (!mData.IsMoveUsable())
                 {
                     return false;
                 }
-                if (exception.HasValue && mData.Effect == exception.Value)
+                if (exception is not null && mData.Effect == exception.Value)
                 {
                     return true;
                 }
@@ -31,14 +31,7 @@ namespace Kermalis.PokemonBattleEngine.Data
 
         public static bool HasSecondaryEffects(PBEMoveEffect effect, PBESettings settings)
         {
-            if (settings == null)
-            {
-                throw new ArgumentNullException(nameof(settings));
-            }
-            if (!settings.IsReadOnly)
-            {
-                throw new ArgumentException("Settings must be read-only.", nameof(settings));
-            }
+            settings.ShouldBeReadOnly(nameof(settings));
             switch (effect)
             {
                 case PBEMoveEffect.Hit__MaybeBurn:

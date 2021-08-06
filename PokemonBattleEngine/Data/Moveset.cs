@@ -1,8 +1,10 @@
 ﻿using Kermalis.EndianBinaryIO;
+using Kermalis.PokemonBattleEngine.Utils;
 using Newtonsoft.Json.Linq;
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.IO;
 
 namespace Kermalis.PokemonBattleEngine.Data
 {
@@ -51,17 +53,16 @@ namespace Kermalis.PokemonBattleEngine.Data
             for (int i = 0; i < count; i++)
             {
                 JToken jToken = jArray[i];
-                PBEMove move = PBEDataProvider.Instance.GetMoveByName(jToken[nameof(IPBEMovesetSlot.Move)].Value<string>()).Value;
-                byte ppUps = jToken[nameof(IPBEMovesetSlot.PPUps)].Value<byte>();
-                _list[i] = new PBEReadOnlyMovesetSlot(move, ppUps);
+                if (!PBEDataProvider.Instance.GetMoveByName(jToken.GetSafeString(nameof(IPBEMovesetSlot.Move)), out PBEMove? move))
+                {
+                    throw new InvalidDataException("Invalid move");
+                }
+                byte ppUps = jToken.GetSafe(nameof(IPBEMovesetSlot.PPUps)).Value<byte>();
+                _list[i] = new PBEReadOnlyMovesetSlot(move.Value, ppUps);
             }
         }
         public PBEReadOnlyMoveset(IPBEMoveset other)
         {
-            if (other == null)
-            {
-                throw new ArgumentNullException(nameof(other));
-            }
             int count = other.Count;
             _list = new PBEReadOnlyMovesetSlot[count];
             for (int i = 0; i < count; i++)
@@ -141,26 +142,18 @@ namespace Kermalis.PokemonBattleEngine.Data
             for (int i = 0; i < count; i++)
             {
                 JToken jToken = jArray[i];
-                PBEMove move = PBEDataProvider.Instance.GetMoveByName(jToken[nameof(IPBEPartyMovesetSlot.Move)].Value<string>()).Value;
-                int pp = jToken[nameof(IPBEPartyMovesetSlot.PP)].Value<int>();
-                byte ppUps = jToken[nameof(IPBEPartyMovesetSlot.PPUps)].Value<byte>();
-                _list[i] = new PBEReadOnlyPartyMovesetSlot(move, pp, ppUps);
+                if (!PBEDataProvider.Instance.GetMoveByName(jToken.GetSafeString(nameof(IPBEMovesetSlot.Move)), out PBEMove? move))
+                {
+                    throw new InvalidDataException("Invalid move");
+                }
+                int pp = jToken.GetSafe(nameof(IPBEPartyMovesetSlot.PP)).Value<int>();
+                byte ppUps = jToken.GetSafe(nameof(IPBEPartyMovesetSlot.PPUps)).Value<byte>();
+                _list[i] = new PBEReadOnlyPartyMovesetSlot(move.Value, pp, ppUps);
             }
         }
         public PBEReadOnlyPartyMoveset(PBESettings settings, IPBEMoveset other)
         {
-            if (settings == null)
-            {
-                throw new ArgumentNullException(nameof(settings));
-            }
-            if (!settings.IsReadOnly)
-            {
-                throw new ArgumentException("Settings must be read-only.", nameof(settings));
-            }
-            if (other == null)
-            {
-                throw new ArgumentNullException(nameof(other));
-            }
+            settings.ShouldBeReadOnly(nameof(settings));
             int count = other.Count;
             _list = new PBEReadOnlyPartyMovesetSlot[count];
             for (int i = 0; i < count; i++)

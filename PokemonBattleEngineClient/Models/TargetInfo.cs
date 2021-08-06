@@ -9,7 +9,7 @@ namespace Kermalis.PokemonBattleEngineClient.Models
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(property));
         }
-        public event PropertyChangedEventHandler PropertyChanged;
+        public event PropertyChangedEventHandler? PropertyChanged;
 
         private bool _enabled;
         public bool Enabled
@@ -24,7 +24,7 @@ namespace Kermalis.PokemonBattleEngineClient.Models
                 }
             }
         }
-        private PokemonInfo _pokemon;
+        private PokemonInfo _pokemon; // TODO: Can be null?
         public PokemonInfo Pokemon
         {
             get => _pokemon;

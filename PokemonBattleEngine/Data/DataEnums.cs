@@ -3,6 +3,19 @@ using System;
 
 namespace Kermalis.PokemonBattleEngine.Data
 {
+    /// <summary>Represents a language the engine supports.</summary>
+    public enum PBELanguage : byte
+    {
+        English,
+        French,
+        German,
+        Italian,
+        Japanese_Kana,
+        Japanese_Kanji,
+        Korean,
+        Spanish,
+        MAX
+    }
     /// <summary>Represents a specific Pokémon's gender.</summary>
     public enum PBEGender : byte
     {
@@ -76,7 +89,7 @@ namespace Kermalis.PokemonBattleEngine.Data
         MAX
     }
     /// <summary>Represents the various methods in which a Pokémon can learn a <see cref="PBEMove"/>.</summary>
-    [Flags]
+    [Flags] // TODO: This can be part of defaultdata
     public enum PBEMoveObtainMethod : ulong
     {
         /// <summary>There is no way to learn this move.</summary>
@@ -955,6 +968,7 @@ namespace Kermalis.PokemonBattleEngine.Data
         MAX = 165,
     }
     // Official IDs for the forms
+#pragma warning disable CA1069 // Enums values should not be duplicated
     public enum PBEForm : byte
     {
         Arceus = 0,
@@ -1062,6 +1076,7 @@ namespace Kermalis.PokemonBattleEngine.Data
         Wormadam_Plant = 0,
         Wormadam_Sandy = 1,
         Wormadam_Trash = 2
+#pragma warning restore CA1069 // Enums values should not be duplicated
     }
     /// <summary>Represents a specific Pokémon species.</summary>
     public enum PBESpecies : ushort

@@ -11,7 +11,7 @@ namespace Kermalis.PokemonBattleEngineClient.Models
 {
     public sealed class MoveInfo
     {
-        private static Dictionary<PBEType, (SolidColorBrush Brush, SolidColorBrush BorderBrush)> _typeToBrush;
+        private static Dictionary<PBEType, (SolidColorBrush Brush, SolidColorBrush BorderBrush)> _typeToBrush = null!;
         internal static void CreateBrushes()
         {
             _typeToBrush = new Dictionary<PBEType, (SolidColorBrush Brush, SolidColorBrush BorderBrush)>
@@ -55,16 +55,16 @@ namespace Kermalis.PokemonBattleEngineClient.Models
             else
             {
                 IPBEMoveData mData = PBEDataProvider.Instance.GetMoveData(move);
-                string s = $"Type: {PBEDataProvider.Instance.GetTypeName(mData.Type).FromPBECultureInfo()}";
+                string s = $"Type: {PBEDataProvider.Instance.GetTypeName(mData.Type).FromGlobalLanguage()}";
                 if (mData.Type != moveType)
                 {
-                    s += $" → {PBEDataProvider.Instance.GetTypeName(moveType).FromPBECultureInfo()}";
+                    s += $" → {PBEDataProvider.Instance.GetTypeName(moveType).FromGlobalLanguage()}";
                 }
                 var sb = new StringBuilder();
                 sb.AppendLine(s);
                 sb.AppendLine($"Category: {mData.Category}");
-                PBEBattleMoveset.PBEBattleMovesetSlot slot = pkmn.Moves[move];
-                if (slot != null) // TempLocked move you do not own (like Struggle)
+                PBEBattleMoveset.PBEBattleMovesetSlot? slot = pkmn.Moves[move];
+                if (slot is not null) // TempLocked move you do not own (like Struggle)
                 {
                     sb.AppendLine($"PP: {slot.PP}/{slot.MaxPP}");
                 }
@@ -87,7 +87,7 @@ namespace Kermalis.PokemonBattleEngineClient.Models
                     case PBEMoveEffect.Struggle: sb.AppendLine("Recoil: 1/4 user's max HP"); break;
                 }
                 sb.AppendLine();
-                sb.Append(PBEDataProvider.Instance.GetMoveDescription(move).FromPBECultureInfo().Replace('\n', ' '));
+                sb.Append(PBEDataProvider.Instance.GetMoveDescription(move).FromGlobalLanguage().Replace('\n', ' '));
                 Description = sb.ToString();
             }
             SelectMoveCommand = ReactiveCommand.Create(() => clickAction(move));

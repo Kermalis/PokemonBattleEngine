@@ -21,7 +21,7 @@ namespace Kermalis.PokemonBattleEngineClient.Views
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(property));
         }
-        public new event PropertyChangedEventHandler PropertyChanged;
+        public new event PropertyChangedEventHandler? PropertyChanged;
 
         public IBitmap BGSource { get; private set; }
         private string _message;
@@ -54,8 +54,11 @@ namespace Kermalis.PokemonBattleEngineClient.Views
         private BattleView _battleView;
         private readonly Rectangle _dim;
         private readonly GifImage _gif;
-        private static IBrush _hailstormDim, _harshSunlightDim, _rainDim, _sandstormDim;
-        private static Dictionary<PBEWeather, Stream> _weathers;
+        private static IBrush _hailstormDim = null!,
+            _harshSunlightDim = null!,
+            _rainDim = null!,
+            _sandstormDim = null!;
+        private static Dictionary<PBEWeather, Stream> _weathers = null!;
 
         internal static void CreateResources()
         {
@@ -97,6 +100,10 @@ namespace Kermalis.PokemonBattleEngineClient.Views
 
             _dim = this.FindControl<Rectangle>("WeatherDim");
             _gif = this.FindControl<GifImage>("WeatherGif");
+            // These are set in the appropriate states
+            BGSource = null!;
+            _message = null!;
+            _battleView = null!;
         }
         internal void SetBattleView(BattleView battleView)
         {
@@ -177,7 +184,7 @@ namespace Kermalis.PokemonBattleEngineClient.Views
         internal void SetMessage(string message)
         {
             Message = message;
-            MessageBoxVisible = !string.IsNullOrWhiteSpace(message);
+            MessageBoxVisible = !string.IsNullOrWhiteSpace(message); // Currently always true
         }
 
         internal void UpdateWeather()

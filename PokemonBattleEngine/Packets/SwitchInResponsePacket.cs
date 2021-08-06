@@ -17,17 +17,9 @@ namespace Kermalis.PokemonBattleEngine.Packets
 
         public PBESwitchInResponsePacket(IList<PBESwitchIn> switches)
         {
-            if (switches == null)
-            {
-                throw new ArgumentNullException(nameof(switches));
-            }
             if (switches.Count == 0)
             {
                 throw new ArgumentOutOfRangeException(nameof(switches));
-            }
-            if (switches.Any(s => s == null))
-            {
-                throw new ArgumentNullException(nameof(switches));
             }
             using (var ms = new MemoryStream())
             using (var w = new EndianBinaryWriter(ms, encoding: EncodingType.UTF16))

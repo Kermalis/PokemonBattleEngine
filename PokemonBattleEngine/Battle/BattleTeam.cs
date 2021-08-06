@@ -4,6 +4,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Diagnostics.CodeAnalysis;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -60,6 +61,11 @@ namespace Kermalis.PokemonBattleEngine.Battle
             trainers = new ReadOnlyCollection<PBETrainer>(allTrainers);
         }
 
+        public bool All(Predicate<PBETeam> match)
+        {
+            return match(_team0) && match(_team1);
+        }
+
         public IEnumerator<PBETeam> GetEnumerator()
         {
             yield return _team0;
@@ -67,7 +73,8 @@ namespace Kermalis.PokemonBattleEngine.Battle
         }
         IEnumerator IEnumerable.GetEnumerator()
         {
-            return GetEnumerator();
+            yield return _team0;
+            yield return _team1;
         }
     }
     // TODO: INPC
@@ -81,9 +88,9 @@ namespace Kermalis.PokemonBattleEngine.Battle
         public byte Id { get; }
         public bool IsWild => Battle.BattleType == PBEBattleType.Wild && Id == 1;
 
-        public string CombinedName => Trainers.Select(t => t.Name).ToArray().Andify();
+        public string CombinedName => Trainers.Select(t => t.Name).ToArray().Andify(); // TODO: Calculate this once
         public IEnumerable<PBEBattlePokemon> CombinedParty => Trainers.SelectMany(t => t.Party);
-        public IEnumerable<PBEBattlePokemon> ActiveBattlers => Battle.ActiveBattlers.Where(p => p.Team == this);
+        public List<PBEBattlePokemon> ActiveBattlers => Battle.ActiveBattlers.FindAll(p => p.Team == this);
         public int NumConsciousPkmn => Trainers.Sum(t => t.NumConsciousPkmn);
         public int NumPkmnOnField => Trainers.Sum(t => t.NumPkmnOnField);
 
@@ -122,6 +129,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                 trainers[i] = new PBETrainer(this, ti[i], allTrainers);
             }
             Trainers = new ReadOnlyCollection<PBETrainer>(trainers);
+            OpposingTeam = null!; // OpposingTeam is set in PBETeams after both are created
         }
         // Wild battle
         internal PBETeam(PBEBattle battle, byte id, PBEWildInfo wi, List<PBETrainer> allTrainers)
@@ -138,6 +146,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
             Battle = battle;
             Id = id;
             Trainers = new ReadOnlyCollection<PBETrainer>(new[] { new PBETrainer(this, wi, allTrainers) });
+            OpposingTeam = null!; // OpposingTeam is set in PBETeams after both are created
         }
         // Remote battle
         internal PBETeam(PBEBattle battle, PBEBattlePacket.PBETeamInfo info, List<PBETrainer> allTrainers)
@@ -156,8 +165,9 @@ namespace Kermalis.PokemonBattleEngine.Battle
                 trainers[i] = new PBETrainer(this, ti[i], allTrainers);
             }
             Trainers = new ReadOnlyCollection<PBETrainer>(trainers);
+            OpposingTeam = null!; // OpposingTeam is set in PBETeams after both are created
         }
-        private bool VerifyWildCount(PBEBattleFormat format, int count)
+        private static bool VerifyWildCount(PBEBattleFormat format, int count)
         {
             switch (format)
             {
@@ -168,7 +178,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                 default: throw new ArgumentOutOfRangeException(nameof(format));
             }
         }
-        private bool VerifyTrainerCount(PBEBattleFormat format, int count)
+        private static bool VerifyTrainerCount(PBEBattleFormat format, int count)
         {
             switch (format)
             {
@@ -180,11 +190,36 @@ namespace Kermalis.PokemonBattleEngine.Battle
             }
         }
 
-        /// <summary>Gets a specific active <see cref="PBEBattlePokemon"/> by its <see cref="PBEBattlePokemon.FieldPosition"/>.</summary>
-        /// <param name="pos">The <see cref="PBEFieldPosition"/> of the <see cref="PBEBattlePokemon"/>.</param>
-        public PBEBattlePokemon TryGetPokemon(PBEFieldPosition pos)
+        public bool IsSpotOccupied(PBEFieldPosition pos)
         {
-            return ActiveBattlers.SingleOrDefault(p => p.FieldPosition == pos);
+            foreach (PBEBattlePokemon p in ActiveBattlers)
+            {
+                if (p.FieldPosition == pos)
+                {
+                    return true;
+                }
+            }
+            return false;
+        }
+        public bool TryGetPokemon(PBEFieldPosition pos, [NotNullWhen(true)] out PBEBattlePokemon? pkmn)
+        {
+            foreach (PBEBattlePokemon p in ActiveBattlers)
+            {
+                if (p.FieldPosition == pos)
+                {
+                    pkmn = p;
+                    return true;
+                }
+            }
+            pkmn = null;
+            return false;
+        }
+        public void TryAddPokemonToCollection(PBEFieldPosition pos, ICollection<PBEBattlePokemon> list)
+        {
+            if (TryGetPokemon(pos, out PBEBattlePokemon? pkmn))
+            {
+                list.Add(pkmn);
+            }
         }
 
         public override string ToString()

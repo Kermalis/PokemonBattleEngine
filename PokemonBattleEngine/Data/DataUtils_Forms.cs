@@ -1,4 +1,5 @@
 ﻿using Kermalis.PokemonBattleEngine.Data.Legality;
+using Kermalis.PokemonBattleEngine.Utils;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -9,14 +10,14 @@ namespace Kermalis.PokemonBattleEngine.Data
     public static partial class PBEDataUtils
     {
         #region Static Collections
-        public static PBEAlphabeticalList<PBEItem> AllItems { get; } = new PBEAlphabeticalList<PBEItem>(Enum.GetValues(typeof(PBEItem)).Cast<PBEItem>());
-        public static PBEAlphabeticalList<PBEItem> AllBalls { get; } = new PBEAlphabeticalList<PBEItem>(new[] { PBEItem.MasterBall, PBEItem.UltraBall, PBEItem.GreatBall, PBEItem.PokeBall,
+        public static PBEAlphabeticalList<PBEItem> AllItems { get; } = new(Enum.GetValues<PBEItem>());
+        public static PBEAlphabeticalList<PBEItem> AllBalls { get; } = new(new[] { PBEItem.MasterBall, PBEItem.UltraBall, PBEItem.GreatBall, PBEItem.PokeBall,
             PBEItem.SafariBall, PBEItem.NetBall, PBEItem.DiveBall, PBEItem.NestBall, PBEItem.RepeatBall, PBEItem.TimerBall, PBEItem.LuxuryBall, PBEItem.PremierBall, PBEItem.DuskBall, PBEItem.HealBall,
             PBEItem.QuickBall, PBEItem.CherishBall, PBEItem.FastBall, PBEItem.LevelBall, PBEItem.LureBall, PBEItem.HeavyBall, PBEItem.LoveBall, PBEItem.FriendBall, PBEItem.MoonBall, PBEItem.SportBall,
             PBEItem.ParkBall, PBEItem.DreamBall });
-        public static PBEAlphabeticalList<PBESpecies> AllSpecies { get; } = new PBEAlphabeticalList<PBESpecies>(Enum.GetValues(typeof(PBESpecies)).Cast<PBESpecies>().Except(new[] { PBESpecies.MAX }));
-        public static PBEAlphabeticalList<PBESpecies> FullyEvolvedSpecies { get; } = new PBEAlphabeticalList<PBESpecies>(AllSpecies.Where(s => !PBEDataProvider.Instance.HasEvolutions(s, 0)));
-        public static ReadOnlyDictionary<PBEType, PBEItem> TypeToGem { get; } = new ReadOnlyDictionary<PBEType, PBEItem>(new Dictionary<PBEType, PBEItem>()
+        public static PBEAlphabeticalList<PBESpecies> AllSpecies { get; } = new(Enum.GetValues<PBESpecies>().ExceptOne(PBESpecies.MAX));
+        public static PBEAlphabeticalList<PBESpecies> FullyEvolvedSpecies { get; } = new(AllSpecies.FindAll(s => !PBEDataProvider.Instance.HasEvolutions(s, 0)));
+        public static ReadOnlyDictionary<PBEType, PBEItem> TypeToGem { get; } = new(new Dictionary<PBEType, PBEItem>()
         {
             { PBEType.Bug, PBEItem.BugGem },
             { PBEType.Dark, PBEItem.DarkGem },
@@ -37,69 +38,69 @@ namespace Kermalis.PokemonBattleEngine.Data
             { PBEType.Water, PBEItem.WaterGem }
         });
         #region Forms
-        private static readonly PBEAlphabeticalList<PBEForm> _arceus = new PBEAlphabeticalList<PBEForm>(new[] { PBEForm.Arceus, PBEForm.Arceus_Bug, PBEForm.Arceus_Dark,
+        private static readonly PBEAlphabeticalList<PBEForm> _arceus = new(new[] { PBEForm.Arceus, PBEForm.Arceus_Bug, PBEForm.Arceus_Dark,
             PBEForm.Arceus_Dragon, PBEForm.Arceus_Electric, PBEForm.Arceus_Fighting, PBEForm.Arceus_Fire, PBEForm.Arceus_Flying, PBEForm.Arceus_Ghost, PBEForm.Arceus_Grass,
             PBEForm.Arceus_Ground, PBEForm.Arceus_Ice, PBEForm.Arceus_Poison, PBEForm.Arceus_Psychic, PBEForm.Arceus_Rock, PBEForm.Arceus_Steel, PBEForm.Arceus_Water }, PBESpecies.Arceus);
-        private static readonly PBEAlphabeticalList<PBEForm> _basculin = new PBEAlphabeticalList<PBEForm>(new[] { PBEForm.Basculin_Blue, PBEForm.Basculin_Red }, PBESpecies.Basculin);
-        private static readonly PBEAlphabeticalList<PBEForm> _burmy = new PBEAlphabeticalList<PBEForm>(new[] { PBEForm.Burmy_Plant, PBEForm.Burmy_Sandy, PBEForm.Burmy_Trash }, PBESpecies.Burmy);
-        private static readonly PBEAlphabeticalList<PBEForm> _castform = new PBEAlphabeticalList<PBEForm>(new[] { PBEForm.Castform, PBEForm.Castform_Rainy, PBEForm.Castform_Snowy,
+        private static readonly PBEAlphabeticalList<PBEForm> _basculin = new(new[] { PBEForm.Basculin_Blue, PBEForm.Basculin_Red }, PBESpecies.Basculin);
+        private static readonly PBEAlphabeticalList<PBEForm> _burmy = new(new[] { PBEForm.Burmy_Plant, PBEForm.Burmy_Sandy, PBEForm.Burmy_Trash }, PBESpecies.Burmy);
+        private static readonly PBEAlphabeticalList<PBEForm> _castform = new(new[] { PBEForm.Castform, PBEForm.Castform_Rainy, PBEForm.Castform_Snowy,
             PBEForm.Castform_Sunny }, PBESpecies.Castform);
-        private static readonly PBEAlphabeticalList<PBEForm> _cherrim = new PBEAlphabeticalList<PBEForm>(new[] { PBEForm.Cherrim, PBEForm.Cherrim_Sunshine }, PBESpecies.Cherrim);
-        private static readonly PBEAlphabeticalList<PBEForm> _darmanitan = new PBEAlphabeticalList<PBEForm>(new[] { PBEForm.Darmanitan, PBEForm.Darmanitan_Zen }, PBESpecies.Darmanitan);
-        private static readonly PBEAlphabeticalList<PBEForm> _deerling = new PBEAlphabeticalList<PBEForm>(new[] { PBEForm.Deerling_Autumn, PBEForm.Deerling_Spring, PBEForm.Deerling_Summer,
+        private static readonly PBEAlphabeticalList<PBEForm> _cherrim = new(new[] { PBEForm.Cherrim, PBEForm.Cherrim_Sunshine }, PBESpecies.Cherrim);
+        private static readonly PBEAlphabeticalList<PBEForm> _darmanitan = new(new[] { PBEForm.Darmanitan, PBEForm.Darmanitan_Zen }, PBESpecies.Darmanitan);
+        private static readonly PBEAlphabeticalList<PBEForm> _deerling = new(new[] { PBEForm.Deerling_Autumn, PBEForm.Deerling_Spring, PBEForm.Deerling_Summer,
             PBEForm.Deerling_Winter }, PBESpecies.Deerling);
-        private static readonly PBEAlphabeticalList<PBEForm> _deoxys = new PBEAlphabeticalList<PBEForm>(new[] { PBEForm.Deoxys, PBEForm.Deoxys_Attack, PBEForm.Deoxys_Defense,
+        private static readonly PBEAlphabeticalList<PBEForm> _deoxys = new(new[] { PBEForm.Deoxys, PBEForm.Deoxys_Attack, PBEForm.Deoxys_Defense,
             PBEForm.Deoxys_Speed }, PBESpecies.Deoxys);
-        private static readonly PBEAlphabeticalList<PBEForm> _gastrodon = new PBEAlphabeticalList<PBEForm>(new[] { PBEForm.Gastrodon_East, PBEForm.Gastrodon_West }, PBESpecies.Gastrodon);
-        private static readonly PBEAlphabeticalList<PBEForm> _genesect = new PBEAlphabeticalList<PBEForm>(new[] { PBEForm.Genesect, PBEForm.Genesect_Burn, PBEForm.Genesect_Chill,
+        private static readonly PBEAlphabeticalList<PBEForm> _gastrodon = new(new[] { PBEForm.Gastrodon_East, PBEForm.Gastrodon_West }, PBESpecies.Gastrodon);
+        private static readonly PBEAlphabeticalList<PBEForm> _genesect = new(new[] { PBEForm.Genesect, PBEForm.Genesect_Burn, PBEForm.Genesect_Chill,
             PBEForm.Genesect_Douse, PBEForm.Genesect_Shock }, PBESpecies.Genesect);
-        private static readonly PBEAlphabeticalList<PBEForm> _giratina = new PBEAlphabeticalList<PBEForm>(new[] { PBEForm.Giratina, PBEForm.Giratina_Origin }, PBESpecies.Giratina);
-        private static readonly PBEAlphabeticalList<PBEForm> _keldeo = new PBEAlphabeticalList<PBEForm>(new[] { PBEForm.Keldeo, PBEForm.Keldeo_Resolute }, PBESpecies.Keldeo);
-        private static readonly PBEAlphabeticalList<PBEForm> _kyurem = new PBEAlphabeticalList<PBEForm>(new[] { PBEForm.Kyurem, PBEForm.Kyurem_Black, PBEForm.Kyurem_White }, PBESpecies.Kyurem);
-        private static readonly PBEAlphabeticalList<PBEForm> _landorus = new PBEAlphabeticalList<PBEForm>(new[] { PBEForm.Landorus, PBEForm.Landorus_Therian }, PBESpecies.Landorus);
-        private static readonly PBEAlphabeticalList<PBEForm> _meloetta = new PBEAlphabeticalList<PBEForm>(new[] { PBEForm.Meloetta, PBEForm.Meloetta_Pirouette }, PBESpecies.Meloetta);
-        private static readonly PBEAlphabeticalList<PBEForm> _rotom = new PBEAlphabeticalList<PBEForm>(new[] { PBEForm.Rotom, PBEForm.Rotom_Fan, PBEForm.Rotom_Frost, PBEForm.Rotom_Heat,
+        private static readonly PBEAlphabeticalList<PBEForm> _giratina = new(new[] { PBEForm.Giratina, PBEForm.Giratina_Origin }, PBESpecies.Giratina);
+        private static readonly PBEAlphabeticalList<PBEForm> _keldeo = new(new[] { PBEForm.Keldeo, PBEForm.Keldeo_Resolute }, PBESpecies.Keldeo);
+        private static readonly PBEAlphabeticalList<PBEForm> _kyurem = new(new[] { PBEForm.Kyurem, PBEForm.Kyurem_Black, PBEForm.Kyurem_White }, PBESpecies.Kyurem);
+        private static readonly PBEAlphabeticalList<PBEForm> _landorus = new(new[] { PBEForm.Landorus, PBEForm.Landorus_Therian }, PBESpecies.Landorus);
+        private static readonly PBEAlphabeticalList<PBEForm> _meloetta = new(new[] { PBEForm.Meloetta, PBEForm.Meloetta_Pirouette }, PBESpecies.Meloetta);
+        private static readonly PBEAlphabeticalList<PBEForm> _rotom = new(new[] { PBEForm.Rotom, PBEForm.Rotom_Fan, PBEForm.Rotom_Frost, PBEForm.Rotom_Heat,
             PBEForm.Rotom_Mow, PBEForm.Rotom_Wash }, PBESpecies.Rotom);
-        private static readonly PBEAlphabeticalList<PBEForm> _sawsbuck = new PBEAlphabeticalList<PBEForm>(new[] { PBEForm.Sawsbuck_Autumn, PBEForm.Sawsbuck_Spring, PBEForm.Sawsbuck_Summer,
+        private static readonly PBEAlphabeticalList<PBEForm> _sawsbuck = new(new[] { PBEForm.Sawsbuck_Autumn, PBEForm.Sawsbuck_Spring, PBEForm.Sawsbuck_Summer,
             PBEForm.Sawsbuck_Winter }, PBESpecies.Sawsbuck);
-        private static readonly PBEAlphabeticalList<PBEForm> _shaymin = new PBEAlphabeticalList<PBEForm>(new[] { PBEForm.Shaymin, PBEForm.Shaymin_Sky }, PBESpecies.Shaymin);
-        private static readonly PBEAlphabeticalList<PBEForm> _shellos = new PBEAlphabeticalList<PBEForm>(new[] { PBEForm.Shellos_East, PBEForm.Shellos_West }, PBESpecies.Shellos);
-        private static readonly PBEAlphabeticalList<PBEForm> _thundurus = new PBEAlphabeticalList<PBEForm>(new[] { PBEForm.Thundurus, PBEForm.Thundurus_Therian }, PBESpecies.Thundurus);
-        private static readonly PBEAlphabeticalList<PBEForm> _tornadus = new PBEAlphabeticalList<PBEForm>(new[] { PBEForm.Tornadus, PBEForm.Tornadus_Therian }, PBESpecies.Tornadus);
-        private static readonly PBEAlphabeticalList<PBEForm> _unown = new PBEAlphabeticalList<PBEForm>(new[] { PBEForm.Unown_A, PBEForm.Unown_B, PBEForm.Unown_C, PBEForm.Unown_D,
+        private static readonly PBEAlphabeticalList<PBEForm> _shaymin = new(new[] { PBEForm.Shaymin, PBEForm.Shaymin_Sky }, PBESpecies.Shaymin);
+        private static readonly PBEAlphabeticalList<PBEForm> _shellos = new(new[] { PBEForm.Shellos_East, PBEForm.Shellos_West }, PBESpecies.Shellos);
+        private static readonly PBEAlphabeticalList<PBEForm> _thundurus = new(new[] { PBEForm.Thundurus, PBEForm.Thundurus_Therian }, PBESpecies.Thundurus);
+        private static readonly PBEAlphabeticalList<PBEForm> _tornadus = new(new[] { PBEForm.Tornadus, PBEForm.Tornadus_Therian }, PBESpecies.Tornadus);
+        private static readonly PBEAlphabeticalList<PBEForm> _unown = new(new[] { PBEForm.Unown_A, PBEForm.Unown_B, PBEForm.Unown_C, PBEForm.Unown_D,
             PBEForm.Unown_E, PBEForm.Unown_Exclamation, PBEForm.Unown_F, PBEForm.Unown_G, PBEForm.Unown_H, PBEForm.Unown_I, PBEForm.Unown_J, PBEForm.Unown_K, PBEForm.Unown_L, PBEForm.Unown_M,
             PBEForm.Unown_N, PBEForm.Unown_O, PBEForm.Unown_P, PBEForm.Unown_Q, PBEForm.Unown_Question, PBEForm.Unown_R, PBEForm.Unown_S, PBEForm.Unown_T, PBEForm.Unown_U, PBEForm.Unown_V,
             PBEForm.Unown_W, PBEForm.Unown_X, PBEForm.Unown_Y, PBEForm.Unown_Z }, PBESpecies.Unown);
-        private static readonly PBEAlphabeticalList<PBEForm> _wormadam = new PBEAlphabeticalList<PBEForm>(new[] { PBEForm.Wormadam_Plant, PBEForm.Wormadam_Sandy, PBEForm.Wormadam_Trash },
+        private static readonly PBEAlphabeticalList<PBEForm> _wormadam = new(new[] { PBEForm.Wormadam_Plant, PBEForm.Wormadam_Sandy, PBEForm.Wormadam_Trash },
             PBESpecies.Wormadam);
         #region Items
-        private static readonly PBEAlphabeticalList<PBEItem> _arceusItems = new PBEAlphabeticalList<PBEItem>(AllItems.Except(new[] { PBEItem.DracoPlate, PBEItem.DreadPlate, PBEItem.EarthPlate,
+        private static readonly PBEAlphabeticalList<PBEItem> _arceusItems = new(AllItems.Except(new[] { PBEItem.DracoPlate, PBEItem.DreadPlate, PBEItem.EarthPlate,
             PBEItem.FistPlate, PBEItem.FlamePlate, PBEItem.IciclePlate, PBEItem.InsectPlate, PBEItem.IronPlate, PBEItem.MeadowPlate, PBEItem.MindPlate, PBEItem.SkyPlate, PBEItem.SplashPlate,
             PBEItem.SpookyPlate, PBEItem.StonePlate, PBEItem.ToxicPlate, PBEItem.ZapPlate }));
-        private static readonly PBEAlphabeticalList<PBEItem> _arceusBugItems = new PBEAlphabeticalList<PBEItem>(new[] { PBEItem.InsectPlate });
-        private static readonly PBEAlphabeticalList<PBEItem> _arceusDarkItems = new PBEAlphabeticalList<PBEItem>(new[] { PBEItem.DreadPlate });
-        private static readonly PBEAlphabeticalList<PBEItem> _arceusDragonItems = new PBEAlphabeticalList<PBEItem>(new[] { PBEItem.DracoPlate });
-        private static readonly PBEAlphabeticalList<PBEItem> _arceusElectricItems = new PBEAlphabeticalList<PBEItem>(new[] { PBEItem.ZapPlate });
-        private static readonly PBEAlphabeticalList<PBEItem> _arceusFightingItems = new PBEAlphabeticalList<PBEItem>(new[] { PBEItem.FistPlate });
-        private static readonly PBEAlphabeticalList<PBEItem> _arceusFireItems = new PBEAlphabeticalList<PBEItem>(new[] { PBEItem.FlamePlate });
-        private static readonly PBEAlphabeticalList<PBEItem> _arceusFlyingItems = new PBEAlphabeticalList<PBEItem>(new[] { PBEItem.SkyPlate });
-        private static readonly PBEAlphabeticalList<PBEItem> _arceusGhostItems = new PBEAlphabeticalList<PBEItem>(new[] { PBEItem.SpookyPlate });
-        private static readonly PBEAlphabeticalList<PBEItem> _arceusGrassItems = new PBEAlphabeticalList<PBEItem>(new[] { PBEItem.MeadowPlate });
-        private static readonly PBEAlphabeticalList<PBEItem> _arceusGroundItems = new PBEAlphabeticalList<PBEItem>(new[] { PBEItem.EarthPlate });
-        private static readonly PBEAlphabeticalList<PBEItem> _arceusIceItems = new PBEAlphabeticalList<PBEItem>(new[] { PBEItem.IciclePlate });
-        private static readonly PBEAlphabeticalList<PBEItem> _arceusPoisonItems = new PBEAlphabeticalList<PBEItem>(new[] { PBEItem.ToxicPlate });
-        private static readonly PBEAlphabeticalList<PBEItem> _arceusPsychicItems = new PBEAlphabeticalList<PBEItem>(new[] { PBEItem.MindPlate });
-        private static readonly PBEAlphabeticalList<PBEItem> _arceusRockItems = new PBEAlphabeticalList<PBEItem>(new[] { PBEItem.StonePlate });
-        private static readonly PBEAlphabeticalList<PBEItem> _arceusSteelItems = new PBEAlphabeticalList<PBEItem>(new[] { PBEItem.IronPlate });
-        private static readonly PBEAlphabeticalList<PBEItem> _arceusWaterItems = new PBEAlphabeticalList<PBEItem>(new[] { PBEItem.SplashPlate });
-        private static readonly PBEAlphabeticalList<PBEItem> _genesectItems = new PBEAlphabeticalList<PBEItem>(AllItems.Except(new[] { PBEItem.BurnDrive, PBEItem.ChillDrive, PBEItem.DouseDrive,
+        private static readonly PBEAlphabeticalList<PBEItem> _arceusBugItems = new(new[] { PBEItem.InsectPlate });
+        private static readonly PBEAlphabeticalList<PBEItem> _arceusDarkItems = new(new[] { PBEItem.DreadPlate });
+        private static readonly PBEAlphabeticalList<PBEItem> _arceusDragonItems = new(new[] { PBEItem.DracoPlate });
+        private static readonly PBEAlphabeticalList<PBEItem> _arceusElectricItems = new(new[] { PBEItem.ZapPlate });
+        private static readonly PBEAlphabeticalList<PBEItem> _arceusFightingItems = new(new[] { PBEItem.FistPlate });
+        private static readonly PBEAlphabeticalList<PBEItem> _arceusFireItems = new(new[] { PBEItem.FlamePlate });
+        private static readonly PBEAlphabeticalList<PBEItem> _arceusFlyingItems = new(new[] { PBEItem.SkyPlate });
+        private static readonly PBEAlphabeticalList<PBEItem> _arceusGhostItems = new(new[] { PBEItem.SpookyPlate });
+        private static readonly PBEAlphabeticalList<PBEItem> _arceusGrassItems = new(new[] { PBEItem.MeadowPlate });
+        private static readonly PBEAlphabeticalList<PBEItem> _arceusGroundItems = new(new[] { PBEItem.EarthPlate });
+        private static readonly PBEAlphabeticalList<PBEItem> _arceusIceItems = new(new[] { PBEItem.IciclePlate });
+        private static readonly PBEAlphabeticalList<PBEItem> _arceusPoisonItems = new(new[] { PBEItem.ToxicPlate });
+        private static readonly PBEAlphabeticalList<PBEItem> _arceusPsychicItems = new(new[] { PBEItem.MindPlate });
+        private static readonly PBEAlphabeticalList<PBEItem> _arceusRockItems = new(new[] { PBEItem.StonePlate });
+        private static readonly PBEAlphabeticalList<PBEItem> _arceusSteelItems = new(new[] { PBEItem.IronPlate });
+        private static readonly PBEAlphabeticalList<PBEItem> _arceusWaterItems = new(new[] { PBEItem.SplashPlate });
+        private static readonly PBEAlphabeticalList<PBEItem> _genesectItems = new(AllItems.Except(new[] { PBEItem.BurnDrive, PBEItem.ChillDrive, PBEItem.DouseDrive,
             PBEItem.ShockDrive }));
-        private static readonly PBEAlphabeticalList<PBEItem> _genesectBurnItems = new PBEAlphabeticalList<PBEItem>(new[] { PBEItem.BurnDrive });
-        private static readonly PBEAlphabeticalList<PBEItem> _genesectChillItems = new PBEAlphabeticalList<PBEItem>(new[] { PBEItem.ChillDrive });
-        private static readonly PBEAlphabeticalList<PBEItem> _genesectDouseItems = new PBEAlphabeticalList<PBEItem>(new[] { PBEItem.DouseDrive });
-        private static readonly PBEAlphabeticalList<PBEItem> _genesectShockItems = new PBEAlphabeticalList<PBEItem>(new[] { PBEItem.ShockDrive });
-        private static readonly PBEAlphabeticalList<PBEItem> _giratinaItems = new PBEAlphabeticalList<PBEItem>(AllItems.Except(new[] { PBEItem.GriseousOrb }));
-        private static readonly PBEAlphabeticalList<PBEItem> _giratinaOriginItems = new PBEAlphabeticalList<PBEItem>(new[] { PBEItem.GriseousOrb });
+        private static readonly PBEAlphabeticalList<PBEItem> _genesectBurnItems = new(new[] { PBEItem.BurnDrive });
+        private static readonly PBEAlphabeticalList<PBEItem> _genesectChillItems = new(new[] { PBEItem.ChillDrive });
+        private static readonly PBEAlphabeticalList<PBEItem> _genesectDouseItems = new(new[] { PBEItem.DouseDrive });
+        private static readonly PBEAlphabeticalList<PBEItem> _genesectShockItems = new(new[] { PBEItem.ShockDrive });
+        private static readonly PBEAlphabeticalList<PBEItem> _giratinaItems = new(AllItems.ExceptOne(PBEItem.GriseousOrb));
+        private static readonly PBEAlphabeticalList<PBEItem> _giratinaOriginItems = new(new[] { PBEItem.GriseousOrb });
         #endregion
         #endregion
         #endregion
@@ -168,19 +169,21 @@ namespace Kermalis.PokemonBattleEngine.Data
             }
         }
 
-        public static string GetNameOfForm(PBESpecies species, PBEForm form)
+        public static string? GetNameOfForm(PBESpecies species, PBEForm form)
         {
             PBELegalityChecker.ValidateSpecies(species, form, false);
-            string[] names = Enum.GetNames(typeof(PBEForm));
-            Array forms = Enum.GetValues(typeof(PBEForm));
-            IEnumerable<(PBEForm Form, string Name)> GetCombo()
+            string[] names = Enum.GetNames<PBEForm>();
+            PBEForm[] forms = Enum.GetValues<PBEForm>();
+            Dictionary<PBEForm, string> combo = new();
+            for (int i = 0; i < names.Length; i++)
             {
-                for (int i = 0; i < names.Length; i++)
+                PBEForm f = forms[i];
+                string name = names[i];
+                if (name.StartsWith(species.ToString()))
                 {
-                    yield return ((PBEForm)forms.GetValue(i), names[i]);
+                    combo.Add(f, name);
                 }
             }
-            var combo = GetCombo().Where(c => c.Name.StartsWith(species.ToString())).ToDictionary(c => c.Form, c => c.Name);
             if (combo.Count == 0)
             {
                 return null;

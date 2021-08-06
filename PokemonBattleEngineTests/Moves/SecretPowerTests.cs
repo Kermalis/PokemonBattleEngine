@@ -8,9 +8,9 @@ namespace Kermalis.PokemonBattleEngineTests.Moves
     [Collection("Utils")]
     public class SecretPowerTests
     {
-        public SecretPowerTests(TestUtils utils, ITestOutputHelper output)
+        public SecretPowerTests(TestUtils _, ITestOutputHelper output)
         {
-            utils.SetOutputHelper(output);
+            TestUtils.SetOutputHelper(output);
         }
 
         [Theory]
@@ -45,8 +45,8 @@ namespace Kermalis.PokemonBattleEngineTests.Moves
             #endregion
 
             #region Use and check
-            Assert.Null(t0.SelectActionsIfValid(new PBETurnAction(makuhita, PBEMove.SecretPower, PBETurnTarget.FoeCenter)));
-            Assert.Null(t1.SelectActionsIfValid(new PBETurnAction(magikarp, PBEMove.Splash, PBETurnTarget.AllyCenter)));
+            Assert.True(t0.SelectActionsIfValid(out _, new PBETurnAction(makuhita, PBEMove.SecretPower, PBETurnTarget.FoeCenter)));
+            Assert.True(t1.SelectActionsIfValid(out _, new PBETurnAction(magikarp, PBEMove.Splash, PBETurnTarget.AllyCenter)));
 
             battle.RunTurn();
 

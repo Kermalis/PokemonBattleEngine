@@ -10,7 +10,7 @@ namespace Kermalis.PokemonBattleEngineClient.Clients
     {
         private const string ThreadName = "Battle Thread";
         public override PBEBattle Battle { get; }
-        public override PBETrainer Trainer { get; }
+        public override PBETrainer? Trainer { get; }
         public override BattleView BattleView { get; }
         public override bool HideNonOwned => true;
 
@@ -44,11 +44,11 @@ namespace Kermalis.PokemonBattleEngineClient.Clients
 
         protected override void OnActionsReady(PBETurnAction[] acts)
         {
-            new Thread(() => Trainer.SelectActionsIfValid(acts)) { Name = ThreadName }.Start();
+            new Thread(() => Trainer!.SelectActionsIfValid(out _, acts)) { Name = ThreadName }.Start();
         }
         protected override void OnSwitchesReady()
         {
-            new Thread(() => Trainer.SelectSwitchesIfValid(Switches)) { Name = ThreadName }.Start();
+            new Thread(() => Trainer!.SelectSwitchesIfValid(Switches, out _)) { Name = ThreadName }.Start();
         }
 
         public override void Dispose()

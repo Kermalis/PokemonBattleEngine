@@ -9,9 +9,9 @@ namespace Kermalis.PokemonBattleEngineTests
     [Collection("Utils")]
     public class ThrowTests
     {
-        public ThrowTests(TestUtils utils, ITestOutputHelper output)
+        public ThrowTests(TestUtils _, ITestOutputHelper output)
         {
-            utils.SetOutputHelper(output);
+            TestUtils.SetOutputHelper(output);
         }
 
         [Theory]

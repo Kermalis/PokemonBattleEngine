@@ -10,9 +10,9 @@ namespace Kermalis.PokemonBattleEngineTests.Abilities
     [Collection("Utils")]
     public class IllusionTests
     {
-        public IllusionTests(TestUtils utils, ITestOutputHelper output)
+        public IllusionTests(TestUtils _, ITestOutputHelper output)
         {
-            utils.SetOutputHelper(output);
+            TestUtils.SetOutputHelper(output);
         }
 
         [Fact]
@@ -152,8 +152,8 @@ namespace Kermalis.PokemonBattleEngineTests.Abilities
             #endregion
 
             #region Swap Feebas for Zoroark and check
-            Assert.Null(t0.SelectActionsIfValid(new PBETurnAction(happiny, PBEMove.Splash, PBETurnTarget.AllyCenter)));
-            Assert.Null(t1.SelectActionsIfValid(new PBETurnAction(feebas, zoroark)));
+            Assert.True(t0.SelectActionsIfValid(out _, new PBETurnAction(happiny, PBEMove.Splash, PBETurnTarget.AllyCenter)));
+            Assert.True(t1.SelectActionsIfValid(out _, new PBETurnAction(feebas, zoroark)));
 
             battle.RunTurn();
 
@@ -200,9 +200,9 @@ namespace Kermalis.PokemonBattleEngineTests.Abilities
             #endregion
 
             #region Swap Trubbish and Magikarp for Feebas and Zoroark then check
-            Assert.Null(t0.SelectActionsIfValid(
+            Assert.True(t0.SelectActionsIfValid(out _,
                 new PBETurnAction(happiny, PBEMove.Splash, PBETurnTarget.AllyLeft)));
-            Assert.Null(t1.SelectActionsIfValid(
+            Assert.True(t1.SelectActionsIfValid(out _,
                 new PBETurnAction(trubbish, feebas),
                 new PBETurnAction(magikarp, zoroark)));
 
@@ -252,8 +252,8 @@ namespace Kermalis.PokemonBattleEngineTests.Abilities
             #endregion
 
             #region Freeze Shaymin
-            Assert.Null(t0.SelectActionsIfValid(new PBETurnAction(happiny, PBEMove.SecretPower, PBETurnTarget.FoeCenter)));
-            Assert.Null(t1.SelectActionsIfValid(new PBETurnAction(shaymin, PBEMove.Splash, PBETurnTarget.AllyCenter)));
+            Assert.True(t0.SelectActionsIfValid(out _, new PBETurnAction(happiny, PBEMove.SecretPower, PBETurnTarget.FoeCenter)));
+            Assert.True(t1.SelectActionsIfValid(out _, new PBETurnAction(shaymin, PBEMove.Splash, PBETurnTarget.AllyCenter)));
 
             battle.RunTurn();
 
@@ -261,8 +261,8 @@ namespace Kermalis.PokemonBattleEngineTests.Abilities
             #endregion
 
             #region Swap Shaymin for Magikarp
-            Assert.Null(t0.SelectActionsIfValid(new PBETurnAction(happiny, PBEMove.Splash, PBETurnTarget.AllyCenter)));
-            Assert.Null(t1.SelectActionsIfValid(new PBETurnAction(shaymin, magikarp)));
+            Assert.True(t0.SelectActionsIfValid(out _, new PBETurnAction(happiny, PBEMove.Splash, PBETurnTarget.AllyCenter)));
+            Assert.True(t1.SelectActionsIfValid(out _, new PBETurnAction(shaymin, magikarp)));
 
             battle.RunTurn();
 
@@ -270,8 +270,8 @@ namespace Kermalis.PokemonBattleEngineTests.Abilities
             #endregion
 
             #region Swap Magikarp for Zoroark and check
-            Assert.Null(t0.SelectActionsIfValid(new PBETurnAction(happiny, PBEMove.Splash, PBETurnTarget.AllyCenter)));
-            Assert.Null(t1.SelectActionsIfValid(new PBETurnAction(magikarp, zoroark)));
+            Assert.True(t0.SelectActionsIfValid(out _, new PBETurnAction(happiny, PBEMove.Splash, PBETurnTarget.AllyCenter)));
+            Assert.True(t1.SelectActionsIfValid(out _, new PBETurnAction(magikarp, zoroark)));
 
             battle.RunTurn();
 
@@ -328,8 +328,8 @@ namespace Kermalis.PokemonBattleEngineTests.Abilities
             #endregion
 
             #region Break the disguise and check
-            Assert.Null(t0.SelectActionsIfValid(new PBETurnAction(magikarp, PBEMove.Tackle, PBETurnTarget.FoeCenter)));
-            Assert.Null(t1.SelectActionsIfValid(new PBETurnAction(zoroark, PBEMove.Splash, PBETurnTarget.AllyCenter)));
+            Assert.True(t0.SelectActionsIfValid(out _, new PBETurnAction(magikarp, PBEMove.Tackle, PBETurnTarget.FoeCenter)));
+            Assert.True(t1.SelectActionsIfValid(out _, new PBETurnAction(zoroark, PBEMove.Splash, PBETurnTarget.AllyCenter)));
 
             battle.RunTurn();
 

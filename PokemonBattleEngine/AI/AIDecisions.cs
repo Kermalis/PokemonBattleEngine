@@ -4,13 +4,14 @@ using Kermalis.PokemonBattleEngine.Utils;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.IO;
 using System.Linq;
 
 namespace Kermalis.PokemonBattleEngine.AI
 {
     public static partial class PBEAI
     {
-        private static PBETurnAction DecideAction(PBETrainer trainer, PBEBattlePokemon user, IEnumerable<PBETurnAction> actions, IEnumerable<PBEBattlePokemon> standBy)
+        private static PBETurnAction DecideAction(PBETrainer trainer, PBEBattlePokemon user, List<PBETurnAction> actions, List<PBEBattlePokemon> standBy)
         {
             // Gather all options of switching and moves
             PBEMove[] usableMoves = user.GetUsableMoves();
@@ -30,37 +31,36 @@ namespace Kermalis.PokemonBattleEngine.AI
                     var targets = new List<PBEBattlePokemon>();
                     if (possibleTarget.HasFlag(PBETurnTarget.AllyLeft))
                     {
-                        targets.Add(trainer.TryGetPokemon(PBEFieldPosition.Left));
+                        trainer.Team.TryAddPokemonToCollection(PBEFieldPosition.Left, targets);
                     }
                     if (possibleTarget.HasFlag(PBETurnTarget.AllyCenter))
                     {
-                        targets.Add(trainer.TryGetPokemon(PBEFieldPosition.Center));
+                        trainer.Team.TryAddPokemonToCollection(PBEFieldPosition.Center, targets);
                     }
                     if (possibleTarget.HasFlag(PBETurnTarget.AllyRight))
                     {
-                        targets.Add(trainer.TryGetPokemon(PBEFieldPosition.Right));
+                        trainer.Team.TryAddPokemonToCollection(PBEFieldPosition.Right, targets);
                     }
                     if (possibleTarget.HasFlag(PBETurnTarget.FoeLeft))
                     {
-                        targets.Add(trainer.Team.OpposingTeam.TryGetPokemon(PBEFieldPosition.Left));
+                        trainer.Team.OpposingTeam.TryAddPokemonToCollection(PBEFieldPosition.Left, targets);
                     }
                     if (possibleTarget.HasFlag(PBETurnTarget.FoeCenter))
                     {
-                        targets.Add(trainer.Team.OpposingTeam.TryGetPokemon(PBEFieldPosition.Center));
+                        trainer.Team.OpposingTeam.TryAddPokemonToCollection(PBEFieldPosition.Center, targets);
                     }
                     if (possibleTarget.HasFlag(PBETurnTarget.FoeRight))
                     {
-                        targets.Add(trainer.Team.OpposingTeam.TryGetPokemon(PBEFieldPosition.Right));
+                        trainer.Team.OpposingTeam.TryAddPokemonToCollection(PBEFieldPosition.Right, targets);
                     }
                     float score;
-                    if (targets.All(p => p == null))
+                    if (targets.Count == 0)
                     {
                         score = -100;
                     }
                     else
                     {
                         score = 0;
-                        targets.RemoveAll(p => p == null);
                         IPBEMoveData mData = PBEDataProvider.Instance.GetMoveData(move);
                         if (!mData.IsMoveUsable())
                         {
@@ -579,7 +579,7 @@ namespace Kermalis.PokemonBattleEngine.AI
                                 // TODO
                                 break;
                             }
-                            default: throw new ArgumentOutOfRangeException(nameof(IPBEMoveData.Effect));
+                            default: throw new InvalidDataException(nameof(IPBEMoveData.Effect));
                         }
                     }
                     possibleActions.Add((new PBETurnAction(user, move, possibleTarget), score));
@@ -608,7 +608,7 @@ namespace Kermalis.PokemonBattleEngine.AI
                 }
                 else
                 {
-                    str += string.Format("Switch {0}", trainer.TryGetPokemon(t.Action.SwitchPokemonId).Nickname);
+                    str += string.Format("Switch {0}", trainer.GetPokemon(t.Action.SwitchPokemonId).Nickname);
                 }
                 str += " [" + t.Score + "]}";
                 return str;
@@ -630,9 +630,9 @@ namespace Kermalis.PokemonBattleEngine.AI
                 score += HPAware(target.HPPercentage, -20, +10);
             }
         }
-        private static bool IsTeammateUsingEffect(IEnumerable<PBETurnAction> actions, PBEMoveEffect effect)
+        private static bool IsTeammateUsingEffect(List<PBETurnAction> actions, PBEMoveEffect effect)
         {
-            return actions.Any(a => a != null && a.Decision == PBETurnDecision.Fight && PBEDataProvider.Instance.GetMoveData(a.FightMove).Effect == effect);
+            return actions.FindIndex(a => a.Decision == PBETurnDecision.Fight && PBEDataProvider.Instance.GetMoveData(a.FightMove).Effect == effect) != -1;
         }
         private static float HPAware(float hpPercentage, float zeroPercentScore, float hundredPercentScore)
         {

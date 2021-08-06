@@ -8,9 +8,9 @@ namespace Kermalis.PokemonBattleEngineTests.Abilities
     [Collection("Utils")]
     public class NaturalCureTests
     {
-        public NaturalCureTests(TestUtils utils, ITestOutputHelper output)
+        public NaturalCureTests(TestUtils _, ITestOutputHelper output)
         {
-            utils.SetOutputHelper(output);
+            TestUtils.SetOutputHelper(output);
         }
 
         [Fact]
@@ -42,8 +42,8 @@ namespace Kermalis.PokemonBattleEngineTests.Abilities
             #endregion
 
             #region Burn Shaymin
-            Assert.Null(t0.SelectActionsIfValid(new PBETurnAction(happiny, PBEMove.Splash, PBETurnTarget.AllyCenter)));
-            Assert.Null(t1.SelectActionsIfValid(new PBETurnAction(shaymin, PBEMove.Splash, PBETurnTarget.AllyCenter)));
+            Assert.True(t0.SelectActionsIfValid(out _, new PBETurnAction(happiny, PBEMove.Splash, PBETurnTarget.AllyCenter)));
+            Assert.True(t1.SelectActionsIfValid(out _, new PBETurnAction(shaymin, PBEMove.Splash, PBETurnTarget.AllyCenter)));
 
             battle.RunTurn();
 
@@ -51,8 +51,8 @@ namespace Kermalis.PokemonBattleEngineTests.Abilities
             #endregion
 
             #region End battle and check
-            Assert.Null(t0.SelectActionsIfValid(new PBETurnAction(happiny, PBEMove.Splash, PBETurnTarget.AllyCenter)));
-            Assert.Null(t1.SelectActionsIfValid(new PBETurnAction(shaymin, PBEMove.QuickAttack, PBETurnTarget.FoeCenter)));
+            Assert.True(t0.SelectActionsIfValid(out _, new PBETurnAction(happiny, PBEMove.Splash, PBETurnTarget.AllyCenter)));
+            Assert.True(t1.SelectActionsIfValid(out _, new PBETurnAction(shaymin, PBEMove.QuickAttack, PBETurnTarget.FoeCenter)));
 
             battle.RunTurn();
 

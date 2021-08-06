@@ -8,7 +8,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
     {
         #region Static Collections
         /// <summary>The type effectiveness table. The first key is the attacking type and the second key is the defending type.</summary>
-        private static readonly Dictionary<PBEType, Dictionary<PBEType, float>> _table = new Dictionary<PBEType, Dictionary<PBEType, float>>
+        private static readonly Dictionary<PBEType, Dictionary<PBEType, float>> _table = new()
         {
             { PBEType.None, new Dictionary<PBEType, float>
             {
@@ -411,14 +411,6 @@ namespace Kermalis.PokemonBattleEngine.Battle
 
         public static PBEResult IsAffectedByAttack(PBEBattlePokemon user, PBEBattlePokemon target, PBEType moveType, out float damageMultiplier, bool useKnownInfo = false)
         {
-            if (user == null)
-            {
-                throw new ArgumentNullException(nameof(user));
-            }
-            if (target == null)
-            {
-                throw new ArgumentNullException(nameof(target));
-            }
             if (moveType >= PBEType.MAX)
             {
                 throw new ArgumentOutOfRangeException(nameof(moveType));
@@ -465,15 +457,6 @@ namespace Kermalis.PokemonBattleEngine.Battle
         /// <summary>Checks if <see cref="PBEMoveEffect.ThunderWave"/>'s type affects the target, taking into account <see cref="PBEAbility.Normalize"/>.</summary>
         public static PBEResult ThunderWaveTypeCheck(PBEBattlePokemon user, PBEBattlePokemon target, PBEMove move, bool useKnownInfo = false)
         {
-            if (user == null)
-            {
-                throw new ArgumentNullException(nameof(user));
-            }
-            if (target == null)
-            {
-                throw new ArgumentNullException(nameof(target));
-            }
-
             PBEType moveType = user.GetMoveType(move);
             float d = GetEffectiveness(moveType, target, useKnownInfo);
             if (d <= 0)
@@ -509,27 +492,15 @@ namespace Kermalis.PokemonBattleEngine.Battle
         }
         public static float GetEffectiveness(PBEType attackingType, IPBEPokemonTypes defendingTypes, bool ignoreGhost = false, bool ignoreDark = false)
         {
-            if (defendingTypes == null)
-            {
-                throw new ArgumentNullException(nameof(defendingTypes));
-            }
             return GetEffectiveness(attackingType, defendingTypes.Type1, defendingTypes.Type2, ignoreGhost: ignoreGhost, ignoreDark: ignoreDark);
         }
         public static float GetEffectiveness_Known(PBEType attackingType, IPBEPokemonKnownTypes defendingTypes, bool ignoreGhost = false, bool ignoreDark = false)
         {
-            if (defendingTypes == null)
-            {
-                throw new ArgumentNullException(nameof(defendingTypes));
-            }
             return GetEffectiveness(attackingType, defendingTypes.KnownType1, defendingTypes.KnownType2, ignoreGhost: ignoreGhost, ignoreDark: ignoreDark);
         }
         public static float GetEffectiveness<T>(PBEType attackingType, T defendingTypes, bool useKnownInfo, bool ignoreGhost = false, bool ignoreDark = false)
             where T : IPBEPokemonTypes, IPBEPokemonKnownTypes
         {
-            if (defendingTypes == null)
-            {
-                throw new ArgumentNullException(nameof(defendingTypes));
-            }
             return GetEffectiveness(attackingType, useKnownInfo ? defendingTypes.KnownType1 : defendingTypes.Type1, useKnownInfo ? defendingTypes.KnownType2 : defendingTypes.Type2, ignoreGhost: ignoreGhost, ignoreDark: ignoreDark);
         }
         public static float GetStealthRockMultiplier(PBEType type1, PBEType type2)

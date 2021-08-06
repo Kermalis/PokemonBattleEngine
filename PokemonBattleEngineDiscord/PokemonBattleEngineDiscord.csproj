@@ -1,19 +1,20 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
-  <PropertyGroup>
-    <TargetFramework>net5.0</TargetFramework>
-    <OutputType>Exe</OutputType>
-    <RootNamespace>Kermalis.PokemonBattleEngineDiscord</RootNamespace>
-    <Authors>Kermalis</Authors>
-    <Copyright>Kermalis</Copyright>
-    <RepositoryUrl>https://github.com/Kermalis/PokemonBattleEngine</RepositoryUrl>
-    <NoWarn />
-    <StartupObject>Kermalis.PokemonBattleEngineDiscord.Program</StartupObject>
-  </PropertyGroup>
+	<PropertyGroup>
+		<TargetFramework>net5.0</TargetFramework>
+		<OutputType>Exe</OutputType>
+		<RootNamespace>Kermalis.PokemonBattleEngineDiscord</RootNamespace>
+		<Authors>Kermalis</Authors>
+		<Copyright>Kermalis</Copyright>
+		<RepositoryUrl>https://github.com/Kermalis/PokemonBattleEngine</RepositoryUrl>
+		<NoWarn />
+		<StartupObject>Kermalis.PokemonBattleEngineDiscord.Program</StartupObject>
+		<Nullable>enable</Nullable>
+	</PropertyGroup>
 
-  <ItemGroup>
-    <PackageReference Include="Discord.Net" Version="2.4.0" />
-    <ProjectReference Include="..\PokemonBattleEngine\PokemonBattleEngine.csproj" />
-  </ItemGroup>
+	<ItemGroup>
+		<PackageReference Include="Discord.Net" Version="2.4.0" />
+		<ProjectReference Include="..\PokemonBattleEngine\PokemonBattleEngine.csproj" />
+	</ItemGroup>
 
 </Project>

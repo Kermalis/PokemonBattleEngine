@@ -187,10 +187,6 @@ namespace Kermalis.PokemonBattleEngine.Packets
 
         public PBEWildPkmnAppearedPacket_Hidden(PBEWildPkmnAppearedPacket other)
         {
-            if (other is null)
-            {
-                throw new ArgumentNullException(nameof(other));
-            }
             using (var ms = new MemoryStream())
             using (var w = new EndianBinaryWriter(ms, encoding: EncodingType.UTF16))
             {

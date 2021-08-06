@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.ComponentModel;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 
 namespace Kermalis.PokemonBattleEngine.Data
@@ -14,12 +15,12 @@ namespace Kermalis.PokemonBattleEngine.Data
             public T Key { get; }
             public IPBELocalizedString Value { get; }
 
-            public PBEAlphabeticalListEntry(T key, object parameter)
+            public PBEAlphabeticalListEntry(T key, object? parameter)
             {
                 switch (key)
                 {
                     case PBEAbility ability: Value = PBEDataProvider.Instance.GetAbilityName(ability); break;
-                    case PBEForm form: Value = PBEDataProvider.Instance.GetFormName((PBESpecies)parameter, form); break;
+                    case PBEForm form: Value = PBEDataProvider.Instance.GetFormName((PBESpecies)parameter!, form); break;
                     case PBEGender gender: Value = PBEDataProvider.Instance.GetGenderName(gender); break;
                     case PBEItem item: Value = PBEDataProvider.Instance.GetItemName(item); break;
                     case PBEMove move: Value = PBEDataProvider.Instance.GetMoveName(move); break;
@@ -41,8 +42,8 @@ namespace Kermalis.PokemonBattleEngine.Data
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(property));
         }
-        public event NotifyCollectionChangedEventHandler CollectionChanged;
-        public event PropertyChangedEventHandler PropertyChanged;
+        public event NotifyCollectionChangedEventHandler? CollectionChanged;
+        public event PropertyChangedEventHandler? PropertyChanged;
 
         private PBEAlphabeticalListEntry[] _list;
         public int Count => _list.Length;
@@ -62,18 +63,18 @@ namespace Kermalis.PokemonBattleEngine.Data
         {
             _list = Array.Empty<PBEAlphabeticalListEntry>();
         }
-        internal PBEAlphabeticalList(IEnumerable<T> collection, object parameter = null)
+        internal PBEAlphabeticalList(IEnumerable<T> collection, object? parameter = null)
         {
             Reset(collection, parameter: parameter);
         }
 
-        private void Sort(PBEAlphabeticalListEntry[] old)
+        private void Sort(PBEAlphabeticalListEntry[]? old)
         {
-            if (old == null || old == _list)
+            if (old is null || old == _list)
             {
                 old = (PBEAlphabeticalListEntry[])_list.Clone();
             }
-            Array.Sort(_list, (x, y) => x.Value.FromPBECultureInfo().CompareTo(y.Value.FromPBECultureInfo()));
+            Array.Sort(_list, (x, y) => x.Value.FromGlobalLanguage().CompareTo(y.Value.FromGlobalLanguage()));
             if (!_list.SequenceEqual(old))
             {
                 OnPropertyChanged("Item[]");
@@ -81,13 +82,10 @@ namespace Kermalis.PokemonBattleEngine.Data
             }
         }
 
-        internal void Reset(IEnumerable<T> collection, object parameter = null)
+        [MemberNotNull(nameof(_list))]
+        internal void Reset(IEnumerable<T> collection, object? parameter = null)
         {
-            if (collection == null)
-            {
-                throw new ArgumentNullException(nameof(collection));
-            }
-            PBEAlphabeticalListEntry[] old = _list;
+            PBEAlphabeticalListEntry[]? old = _list;
             if (collection is PBEAlphabeticalList<T> other)
             {
                 _list = (PBEAlphabeticalListEntry[])other._list.Clone();
@@ -96,20 +94,33 @@ namespace Kermalis.PokemonBattleEngine.Data
             {
                 _list = collection.Select(t => new PBEAlphabeticalListEntry(t, parameter)).ToArray();
             }
-            if (old != null && old.Length != _list.Length)
+            if (old is not null && old.Length != _list.Length)
             {
                 OnPropertyChanged(nameof(Count));
             }
             Sort(old);
         }
 
-        public bool Contains(T item)
+        public bool Contains(T? item)
         {
             return IndexOf(item) != -1;
         }
-        public int IndexOf(T item)
+        public List<T> FindAll(Predicate<T> match)
         {
-            if (item != null)
+            var results = new List<T>(_list.Length);
+            for (int i = 0; i < _list.Length; i++)
+            {
+                T key = _list[i].Key;
+                if (match(key))
+                {
+                    results.Add(key);
+                }
+            }
+            return results;
+        }
+        public int IndexOf(T? item)
+        {
+            if (item is not null)
             {
                 for (int i = 0; i < _list.Length; i++)
                 {

@@ -13,10 +13,10 @@ namespace Kermalis.PokemonBattleEngineDiscord
         private const int NumMinutesUntilChannelDeleted = 60; // 60 is fine for the small userbase now, 15 is probably the target later (add customization)
         private const string CategoryName1 = "Ongoing Pokémon Battles";
         private const string CategoryName2 = "Ended Pokémon Battles";
-        private static readonly object _channelHandlerLockObj = new object();
-        private static readonly Dictionary<IGuild, (ICategoryChannel, ICategoryChannel)> _categoryLookup = new Dictionary<IGuild, (ICategoryChannel, ICategoryChannel)>(DiscordComparers.GuildComparer);
-        private static readonly Dictionary<ITextChannel, (DateTime, IUserMessage)> _channelDeletion = new Dictionary<ITextChannel, (DateTime, IUserMessage)>(DiscordComparers.ChannelComparer);
-        private static Timer _channelDeletionTimer;
+        private static readonly object _channelHandlerLockObj = new();
+        private static readonly Dictionary<IGuild, (ICategoryChannel, ICategoryChannel)> _categoryLookup = new(DiscordComparers.GuildComparer);
+        private static readonly Dictionary<ITextChannel, (DateTime, IUserMessage)> _channelDeletion = new(DiscordComparers.ChannelComparer);
+        private static Timer? _channelDeletionTimer;
 
         public static Task OnChannelDeleted(SocketChannel channel)
         {
@@ -56,11 +56,13 @@ namespace Kermalis.PokemonBattleEngineDiscord
         }
         public static void OnConnected()
         {
-            _channelDeletionTimer = new Timer(CheckChannelsForDeletion, null, 0, 1000 * 60);
+            _channelDeletionTimer?.Dispose();
+            _channelDeletionTimer = new Timer(CheckChannelsForDeletion, null, 0, 1_000 * 60);
         }
         public static void OnDisconnected()
         {
-            _channelDeletionTimer.Dispose();
+            _channelDeletionTimer?.Dispose();
+            _channelDeletionTimer = null;
         }
 
         private static async Task CreateCategories(IGuild guild)
@@ -68,13 +70,13 @@ namespace Kermalis.PokemonBattleEngineDiscord
             if (!_categoryLookup.ContainsKey(guild))
             {
                 IReadOnlyCollection<ICategoryChannel> all = await guild.GetCategoriesAsync();
-                ICategoryChannel c1 = null, c2 = null;
+                ICategoryChannel? c1 = null, c2 = null;
                 foreach (ICategoryChannel c in all)
                 {
                     if (c.Name == CategoryName1)
                     {
                         c1 = c;
-                        if (c2 != null)
+                        if (c2 is not null)
                         {
                             break;
                         }
@@ -82,17 +84,17 @@ namespace Kermalis.PokemonBattleEngineDiscord
                     else if (c.Name == CategoryName2)
                     {
                         c2 = c;
-                        if (c1 != null)
+                        if (c1 is not null)
                         {
                             break;
                         }
                     }
                 }
-                if (c1 == null)
+                if (c1 is null)
                 {
                     c1 = await CreateCategory(guild, CategoryName1);
                 }
-                if (c2 == null)
+                if (c2 is null)
                 {
                     c2 = await CreateCategory(guild, CategoryName2);
                 }
@@ -118,7 +120,7 @@ namespace Kermalis.PokemonBattleEngineDiscord
                 .WithColor(Utils.RandomColor())
                 .Build();
         }
-        private static void CheckChannelsForDeletion(object state)
+        private static void CheckChannelsForDeletion(object? state)
         {
             lock (_channelHandlerLockObj)
             {

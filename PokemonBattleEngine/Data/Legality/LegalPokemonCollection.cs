@@ -1,4 +1,5 @@
 ﻿using Kermalis.EndianBinaryIO;
+using Kermalis.PokemonBattleEngine.Utils;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using System;
@@ -20,8 +21,8 @@ namespace Kermalis.PokemonBattleEngine.Data.Legality
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(property));
         }
-        public event NotifyCollectionChangedEventHandler CollectionChanged;
-        public event PropertyChangedEventHandler PropertyChanged;
+        public event NotifyCollectionChangedEventHandler? CollectionChanged;
+        public event PropertyChangedEventHandler? PropertyChanged;
 
         private readonly List<PBELegalPokemon> _list;
         public int Count => _list.Count;
@@ -57,14 +58,10 @@ namespace Kermalis.PokemonBattleEngine.Data.Legality
         }
         public PBELegalPokemonCollection(string path)
         {
-            if (path == null)
-            {
-                throw new ArgumentNullException(nameof(path));
-            }
             var json = JObject.Parse(File.ReadAllText(path));
-            Settings = new PBESettings(json[nameof(Settings)].Value<string>());
+            Settings = new PBESettings(json.GetSafeString(nameof(Settings)));
             Settings.MakeReadOnly();
-            var jArray = (JArray)json["Party"];
+            var jArray = (JArray)json.GetSafe("Party");
             if (jArray.Count < 1 || jArray.Count > Settings.MaxPartySize)
             {
                 throw new InvalidDataException("Invalid party size.");
@@ -77,27 +74,13 @@ namespace Kermalis.PokemonBattleEngine.Data.Legality
         }
         public PBELegalPokemonCollection(PBESettings settings)
         {
-            if (settings == null)
-            {
-                throw new ArgumentNullException(nameof(settings));
-            }
-            if (!settings.IsReadOnly)
-            {
-                throw new ArgumentException("Settings must be read-only.", nameof(settings));
-            }
+            settings.ShouldBeReadOnly(nameof(settings));
             Settings = settings;
             _list = new List<PBELegalPokemon>(Settings.MaxPartySize);
         }
         public PBELegalPokemonCollection(PBESettings settings, int numPkmnToGenerate, bool setToMaxLevel)
         {
-            if (settings == null)
-            {
-                throw new ArgumentNullException(nameof(settings));
-            }
-            if (!settings.IsReadOnly)
-            {
-                throw new ArgumentException("Settings must be read-only.", nameof(settings));
-            }
+            settings.ShouldBeReadOnly(nameof(settings));
             if (numPkmnToGenerate < 1 || numPkmnToGenerate > settings.MaxPartySize)
             {
                 throw new ArgumentOutOfRangeException(nameof(numPkmnToGenerate));
@@ -179,10 +162,6 @@ namespace Kermalis.PokemonBattleEngine.Data.Legality
         }
         public void Add(PBELegalPokemon item)
         {
-            if (item == null)
-            {
-                throw new ArgumentNullException(nameof(item));
-            }
             if (!Settings.Equals(item.Settings))
             {
                 throw new ArgumentException("Settings must be equal.", nameof(item));
@@ -222,10 +201,6 @@ namespace Kermalis.PokemonBattleEngine.Data.Legality
         }
         public void Insert(PBELegalPokemon item, int index)
         {
-            if (item == null)
-            {
-                throw new ArgumentNullException(nameof(item));
-            }
             if (!Settings.Equals(item.Settings))
             {
                 throw new ArgumentException("Settings must be equal.", nameof(item));
@@ -277,10 +252,6 @@ namespace Kermalis.PokemonBattleEngine.Data.Legality
             if (index >= _list.Count)
             {
                 throw new ArgumentOutOfRangeException(nameof(index));
-            }
-            if (item == null)
-            {
-                throw new ArgumentNullException(nameof(item));
             }
             if (!Settings.Equals(item.Settings))
             {

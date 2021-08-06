@@ -7,7 +7,7 @@ using System.Linq;
 
 namespace Kermalis.PokemonBattleEngineExtras
 {
-    internal sealed class LocalizationDumper
+    internal static class LocalizationDumper
     {
         // You must dump the NARC files yourself (/a/0/0/2 in each language)
         public static void Run(SqliteConnection con)
@@ -242,7 +242,7 @@ namespace Kermalis.PokemonBattleEngineExtras
                 }
                 // Items
                 {
-                    IEnumerable<PBEItem> allItems = Enum.GetValues(typeof(PBEItem)).Cast<PBEItem>();
+                    PBEItem[] allItems = Enum.GetValues<PBEItem>();
                     void WriteAll(string tableName)
                     {
                         CreateTable(tableName);

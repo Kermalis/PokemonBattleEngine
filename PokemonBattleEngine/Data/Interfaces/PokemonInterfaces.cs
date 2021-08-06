@@ -74,10 +74,6 @@ namespace Kermalis.PokemonBattleEngine.Data
     {
         public static bool HasType(this IPBEPokemonTypes pkmn, PBEType type)
         {
-            if (pkmn == null)
-            {
-                throw new ArgumentException(nameof(pkmn));
-            }
             if (type >= PBEType.MAX)
             {
                 throw new ArgumentOutOfRangeException(nameof(type));
@@ -86,10 +82,6 @@ namespace Kermalis.PokemonBattleEngine.Data
         }
         public static bool HasType_Known(this IPBEPokemonKnownTypes pkmn, PBEType type)
         {
-            if (pkmn == null)
-            {
-                throw new ArgumentException(nameof(pkmn));
-            }
             if (type >= PBEType.MAX)
             {
                 throw new ArgumentOutOfRangeException(nameof(type));

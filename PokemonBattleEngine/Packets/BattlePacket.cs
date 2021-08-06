@@ -55,9 +55,9 @@ namespace Kermalis.PokemonBattleEngine.Packets
                         Item = pkmn.OriginalItem;
                         CaughtBall = pkmn.OriginalCaughtBall;
                         Status1 = pkmn.OriginalStatus1;
-                        EffortValues = pkmn.OriginalEffortValues;
-                        IndividualValues = pkmn.IndividualValues;
-                        Moveset = pkmn.OriginalMoveset;
+                        EffortValues = pkmn.OriginalEffortValues!;
+                        IndividualValues = pkmn.IndividualValues!;
+                        Moveset = pkmn.OriginalMoveset!;
                     }
                     internal PBEBattlePokemonInfo(EndianBinaryReader r)
                     {
@@ -185,7 +185,7 @@ namespace Kermalis.PokemonBattleEngine.Packets
                 {
                     Id = other.Id;
                     Name = other.Name;
-                    if (onlyForTrainer.HasValue && onlyForTrainer.Value == Id)
+                    if (onlyForTrainer is not null && onlyForTrainer.Value == Id)
                     {
                         Inventory = other.Inventory;
                         Party = other.Party;

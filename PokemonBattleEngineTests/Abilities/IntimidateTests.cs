@@ -8,9 +8,9 @@ namespace Kermalis.PokemonBattleEngineTests.Abilities
     [Collection("Utils")]
     public class IntimidateTests
     {
-        public IntimidateTests(TestUtils utils, ITestOutputHelper output)
+        public IntimidateTests(TestUtils _, ITestOutputHelper output)
         {
-            utils.SetOutputHelper(output);
+            TestUtils.SetOutputHelper(output);
         }
 
         [Fact]
@@ -86,7 +86,7 @@ namespace Kermalis.PokemonBattleEngineTests.Abilities
             #endregion
 
             #region Check
-            Assert.True(!battle.VerifyAbilityHappened(luxray, luxray, PBEAbility.Intimidate, PBEAbilityAction.Stats)); // Did not activate
+            Assert.False(battle.VerifyAbilityHappened(luxray, luxray, PBEAbility.Intimidate, PBEAbilityAction.Stats)); // Did not activate
             #endregion
 
             #region Cleanup
@@ -124,8 +124,8 @@ namespace Kermalis.PokemonBattleEngineTests.Abilities
             #endregion
 
             #region Use Substitute
-            Assert.Null(t0.SelectActionsIfValid(new PBETurnAction(shuckle, PBEMove.Substitute, PBETurnTarget.AllyCenter)));
-            Assert.Null(t1.SelectActionsIfValid(new PBETurnAction(skitty, PBEMove.Splash, PBETurnTarget.AllyCenter)));
+            Assert.True(t0.SelectActionsIfValid(out _, new PBETurnAction(shuckle, PBEMove.Substitute, PBETurnTarget.AllyCenter)));
+            Assert.True(t1.SelectActionsIfValid(out _, new PBETurnAction(skitty, PBEMove.Splash, PBETurnTarget.AllyCenter)));
 
             battle.RunTurn();
 
@@ -133,8 +133,8 @@ namespace Kermalis.PokemonBattleEngineTests.Abilities
             #endregion
 
             #region Switch in Luxray and check
-            Assert.Null(t0.SelectActionsIfValid(new PBETurnAction(shuckle, PBEMove.Splash, PBETurnTarget.AllyCenter)));
-            Assert.Null(t1.SelectActionsIfValid(new PBETurnAction(skitty, luxray)));
+            Assert.True(t0.SelectActionsIfValid(out _, new PBETurnAction(shuckle, PBEMove.Splash, PBETurnTarget.AllyCenter)));
+            Assert.True(t1.SelectActionsIfValid(out _, new PBETurnAction(skitty, luxray)));
 
             battle.RunTurn();
 

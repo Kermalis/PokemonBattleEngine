@@ -3,7 +3,7 @@ using Avalonia.Media.Imaging;
 using Avalonia.Platform;
 using Kermalis.PokemonBattleEngine.Battle;
 using Kermalis.PokemonBattleEngine.Data;
-using Kermalis.PokemonBattleEngine.Utils;
+using Kermalis.PokemonBattleEngine.Data.DefaultData;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -18,13 +18,13 @@ namespace Kermalis.PokemonBattleEngineClient.Infrastructure
         private const string AssemblyPrefix = "Kermalis.PokemonBattleEngineClient.";
         private static readonly Assembly _assembly = Assembly.GetExecutingAssembly();
         private static readonly string[] _resources = _assembly.GetManifestResourceNames();
-        private static IPlatformRenderInterface _renderInterface = null;
+        private static IPlatformRenderInterface? _renderInterface = null;
         public static IPlatformRenderInterface RenderInterface
         {
             get
             {
                 // This is done because the static constructor of Utils is called (by SetWorkingDirectory) before the Avalonia app is built
-                if (_renderInterface == null)
+                if (_renderInterface is null)
                 {
                     _renderInterface = AvaloniaLocator.Current.GetService<IPlatformRenderInterface>();
                 }
@@ -34,12 +34,14 @@ namespace Kermalis.PokemonBattleEngineClient.Infrastructure
 
         static Utils()
         {
-            void Add(string resource, List<PBESpecies> list)
+            _femaleMinispriteLookup = new List<PBESpecies>();
+            _femaleSpriteLookup = new List<PBESpecies>();
+            static void Add(string resource, List<PBESpecies> list)
             {
                 using (var reader = new StreamReader(GetResourceStream(resource)))
                 {
-                    string line;
-                    while ((line = reader.ReadLine()) != null)
+                    string? line;
+                    while ((line = reader.ReadLine()) is not null)
                     {
                         if (!Enum.TryParse(line, out PBESpecies species))
                         {
@@ -53,8 +55,8 @@ namespace Kermalis.PokemonBattleEngineClient.Infrastructure
             Add("PKMN.FemaleSpriteLookup.txt", _femaleSpriteLookup);
         }
 
-        private static readonly object _resourceExistsCacheLockObj = new object();
-        private static readonly Dictionary<string, bool> _resourceExistsCache = new Dictionary<string, bool>();
+        private static readonly object _resourceExistsCacheLockObj = new();
+        private static readonly Dictionary<string, bool> _resourceExistsCache = new();
         public static bool DoesResourceExist(string resource)
         {
             lock (_resourceExistsCacheLockObj)
@@ -69,29 +71,30 @@ namespace Kermalis.PokemonBattleEngineClient.Infrastructure
         }
         public static Stream GetResourceStream(string resource)
         {
-            return _assembly.GetManifestResourceStream(AssemblyPrefix + resource);
+            Stream? ret = _assembly.GetManifestResourceStream(AssemblyPrefix + resource);
+            if (ret is null)
+            {
+                throw new ArgumentOutOfRangeException(nameof(resource), "Resource not found: " + resource);
+            }
+            return ret;
         }
         public static Uri GetResourceUri(string resource)
         {
             return new Uri("resm:" + AssemblyPrefix + resource);
         }
 
-        public static string WorkingDirectory { get; private set; }
+        public static string WorkingDirectory { get; private set; } = null!;
         public static void SetWorkingDirectory(string workingDirectory)
         {
-            PBEDataProvider.InitEngine(workingDirectory);
+            PBEDefaultDataProvider.InitEngine(workingDirectory);
             WorkingDirectory = workingDirectory;
         }
 
-        private static readonly object _femaleSpriteLookupLockObj = new object();
-        private static readonly List<PBESpecies> _femaleMinispriteLookup = new List<PBESpecies>();
-        private static readonly List<PBESpecies> _femaleSpriteLookup = new List<PBESpecies>();
+        private static readonly List<PBESpecies> _femaleMinispriteLookup;
+        private static readonly List<PBESpecies> _femaleSpriteLookup;
         private static bool HasFemaleSprite(PBESpecies species, bool minisprite)
         {
-            lock (_femaleSpriteLookupLockObj)
-            {
-                return (minisprite ? _femaleMinispriteLookup : _femaleSpriteLookup).Contains(species);
-            }
+            return (minisprite ? _femaleMinispriteLookup : _femaleSpriteLookup).Contains(species);
         }
         public static Bitmap GetMinispriteBitmap(PBESpecies species, PBEForm form, PBEGender gender, bool shiny)
         {
@@ -189,22 +192,22 @@ namespace Kermalis.PokemonBattleEngineClient.Infrastructure
                 sb.AppendLine($"Volatile status: {status2}");
                 if (status2.HasFlag(PBEStatus2.Disguised))
                 {
-                    string formStr = PBEDataUtils.HasForms(pkmn.KnownSpecies, false) ? $" ({PBEDataProvider.Instance.GetFormName(pkmn.KnownSpecies, pkmn.KnownForm).FromPBECultureInfo()})" : string.Empty;
-                    sb.AppendLine($"Disguised as: {pkmn.KnownNickname}/{PBEDataProvider.Instance.GetSpeciesName(pkmn.KnownSpecies).FromPBECultureInfo()}{formStr} {pkmn.KnownGender.ToSymbol()}");
+                    string formStr = PBEDataUtils.HasForms(pkmn.KnownSpecies, false) ? $" ({PBEDataProvider.Instance.GetFormName(pkmn.KnownSpecies, pkmn.KnownForm).FromGlobalLanguage()})" : string.Empty;
+                    sb.AppendLine($"Disguised as: {pkmn.KnownNickname}/{PBEDataProvider.Instance.GetSpeciesName(pkmn.KnownSpecies).FromGlobalLanguage()}{formStr} {pkmn.KnownGender.ToSymbol()}");
                 }
                 if (pkmn.Battle.BattleFormat != PBEBattleFormat.Single)
                 {
                     if (status2.HasFlag(PBEStatus2.Infatuated))
                     {
-                        sb.AppendLine($"Infatuated with: {GetTeamNickname(pkmn.InfatuatedWithPokemon)}");
+                        sb.AppendLine($"Infatuated with: {GetTeamNickname(pkmn.InfatuatedWithPokemon!)}");
                     }
                     if (status2.HasFlag(PBEStatus2.LeechSeed))
                     {
-                        sb.AppendLine($"Seeded position: {pkmn.SeededTeam.CombinedName}'s {pkmn.SeededPosition}");
+                        sb.AppendLine($"Seeded position: {pkmn.SeededTeam!.CombinedName}'s {pkmn.SeededPosition}");
                     }
                     if (status2.HasFlag(PBEStatus2.LockOn))
                     {
-                        sb.AppendLine($"Taking aim at: {GetTeamNickname(pkmn.LockOnPokemon)}");
+                        sb.AppendLine($"Taking aim at: {GetTeamNickname(pkmn.LockOnPokemon!)}");
                     }
                 }
             }
@@ -212,13 +215,13 @@ namespace Kermalis.PokemonBattleEngineClient.Infrastructure
             if (useKnownInfo)
             {
                 IPBEPokemonData pData = PBEDataProvider.Instance.GetPokemonData(pkmn.KnownSpecies, pkmn.KnownForm);
-                string formStr = PBEDataUtils.HasForms(pkmn.KnownSpecies, false) ? $" ({PBEDataProvider.Instance.GetFormName(pkmn.KnownSpecies, pkmn.KnownForm).FromPBECultureInfo()})" : string.Empty;
-                sb.AppendLine($"{pkmn.KnownNickname}/{PBEDataProvider.Instance.GetSpeciesName(pkmn.KnownSpecies).FromPBECultureInfo()}{formStr} {(pkmn.KnownStatus2.HasFlag(PBEStatus2.Transformed) ? pkmn.Gender.ToSymbol() : pkmn.KnownGender.ToSymbol())} Lv.{pkmn.Level}");
+                string formStr = PBEDataUtils.HasForms(pkmn.KnownSpecies, false) ? $" ({PBEDataProvider.Instance.GetFormName(pkmn.KnownSpecies, pkmn.KnownForm).FromGlobalLanguage()})" : string.Empty;
+                sb.AppendLine($"{pkmn.KnownNickname}/{PBEDataProvider.Instance.GetSpeciesName(pkmn.KnownSpecies).FromGlobalLanguage()}{formStr} {(pkmn.KnownStatus2.HasFlag(PBEStatus2.Transformed) ? pkmn.Gender.ToSymbol() : pkmn.KnownGender.ToSymbol())} Lv.{pkmn.Level}");
                 sb.AppendLine($"HP: {pkmn.HPPercentage:P2}");
-                sb.Append($"Known types: {PBEDataProvider.Instance.GetTypeName(pkmn.KnownType1).FromPBECultureInfo()}");
+                sb.Append($"Known types: {PBEDataProvider.Instance.GetTypeName(pkmn.KnownType1).FromGlobalLanguage()}");
                 if (pkmn.KnownType2 != PBEType.None)
                 {
-                    sb.Append($"/{PBEDataProvider.Instance.GetTypeName(pkmn.KnownType2).FromPBECultureInfo()}");
+                    sb.Append($"/{PBEDataProvider.Instance.GetTypeName(pkmn.KnownType2).FromGlobalLanguage()}");
                 }
                 sb.AppendLine();
                 if (pkmn.FieldPosition != PBEFieldPosition.None)
@@ -246,13 +249,13 @@ namespace Kermalis.PokemonBattleEngineClient.Infrastructure
                 }
                 if (pkmn.KnownAbility == PBEAbility.MAX)
                 {
-                    sb.AppendLine($"Possible abilities: {string.Join(", ", pData.Abilities.Select(a => PBEDataProvider.Instance.GetAbilityName(a).FromPBECultureInfo()))}");
+                    sb.AppendLine($"Possible abilities: {string.Join(", ", pData.Abilities.Select(a => PBEDataProvider.Instance.GetAbilityName(a).FromGlobalLanguage()))}");
                 }
                 else
                 {
-                    sb.AppendLine($"Known ability: {PBEDataProvider.Instance.GetAbilityName(pkmn.KnownAbility).FromPBECultureInfo()}");
+                    sb.AppendLine($"Known ability: {PBEDataProvider.Instance.GetAbilityName(pkmn.KnownAbility).FromGlobalLanguage()}");
                 }
-                sb.AppendLine($"Known item: {(pkmn.KnownItem == (PBEItem)ushort.MaxValue ? "???" : PBEDataProvider.Instance.GetItemName(pkmn.KnownItem).FromPBECultureInfo())}");
+                sb.AppendLine($"Known item: {(pkmn.KnownItem == (PBEItem)ushort.MaxValue ? "???" : PBEDataProvider.Instance.GetItemName(pkmn.KnownItem).FromGlobalLanguage())}");
                 sb.Append("Known moves: ");
                 for (int i = 0; i < pkmn.Battle.Settings.NumMoves; i++)
                 {
@@ -264,7 +267,7 @@ namespace Kermalis.PokemonBattleEngineClient.Infrastructure
                     {
                         sb.Append(", ");
                     }
-                    sb.Append(move == PBEMove.MAX ? "???" : PBEDataProvider.Instance.GetMoveName(move).FromPBECultureInfo());
+                    sb.Append(move == PBEMove.MAX ? "???" : PBEDataProvider.Instance.GetMoveName(move).FromGlobalLanguage());
                     if (move != PBEMove.None && move != PBEMove.MAX)
                     {
                         sb.Append($" ({pp}{(maxPP == 0 ? ")" : $"/{maxPP})")}");
@@ -273,13 +276,13 @@ namespace Kermalis.PokemonBattleEngineClient.Infrastructure
             }
             else
             {
-                string formStr = PBEDataUtils.HasForms(pkmn.Species, false) ? $" ({PBEDataProvider.Instance.GetFormName(pkmn).FromPBECultureInfo()})" : string.Empty;
-                sb.AppendLine($"{pkmn.Nickname}/{PBEDataProvider.Instance.GetSpeciesName(pkmn.Species).FromPBECultureInfo()}{formStr} {pkmn.Gender.ToSymbol()} Lv.{pkmn.Level}");
+                string formStr = PBEDataUtils.HasForms(pkmn.Species, false) ? $" ({PBEDataProvider.Instance.GetFormName(pkmn).FromGlobalLanguage()})" : string.Empty;
+                sb.AppendLine($"{pkmn.Nickname}/{PBEDataProvider.Instance.GetSpeciesName(pkmn.Species).FromGlobalLanguage()}{formStr} {pkmn.Gender.ToSymbol()} Lv.{pkmn.Level}");
                 sb.AppendLine($"HP: {pkmn.HP}/{pkmn.MaxHP} ({pkmn.HPPercentage:P2})");
-                sb.Append($"Types: {PBEDataProvider.Instance.GetTypeName(pkmn.Type1).FromPBECultureInfo()}");
+                sb.Append($"Types: {PBEDataProvider.Instance.GetTypeName(pkmn.Type1).FromGlobalLanguage()}");
                 if (pkmn.Type2 != PBEType.None)
                 {
-                    sb.Append($"/{PBEDataProvider.Instance.GetTypeName(pkmn.Type2).FromPBECultureInfo()}");
+                    sb.Append($"/{PBEDataProvider.Instance.GetTypeName(pkmn.Type2).FromGlobalLanguage()}");
                 }
                 sb.AppendLine();
                 if (pkmn.FieldPosition != PBEFieldPosition.None)
@@ -296,15 +299,16 @@ namespace Kermalis.PokemonBattleEngineClient.Infrastructure
                 {
                     AddStatChanges();
                 }
-                sb.AppendLine($"Ability: {PBEDataProvider.Instance.GetAbilityName(pkmn.Ability).FromPBECultureInfo()}");
-                sb.AppendLine($"Item: {PBEDataProvider.Instance.GetItemName(pkmn.Item).FromPBECultureInfo()}");
+                sb.AppendLine($"Ability: {PBEDataProvider.Instance.GetAbilityName(pkmn.Ability).FromGlobalLanguage()}");
+                sb.AppendLine($"Item: {PBEDataProvider.Instance.GetItemName(pkmn.Item).FromGlobalLanguage()}");
                 if (pkmn.Moves.Contains(PBEMoveEffect.Frustration) || pkmn.Moves.Contains(PBEMoveEffect.Return))
                 {
                     sb.AppendLine($"Friendship: {pkmn.Friendship} ({pkmn.Friendship / (float)byte.MaxValue:P2})");
                 }
                 if (pkmn.Moves.Contains(PBEMoveEffect.HiddenPower))
                 {
-                    sb.AppendLine($"{PBEDataProvider.Instance.GetMoveName(PBEMove.HiddenPower).FromPBECultureInfo()}: {PBEDataProvider.Instance.GetTypeName(pkmn.IndividualValues.GetHiddenPowerType()).FromPBECultureInfo()}|{pkmn.IndividualValues.GetHiddenPowerBasePower(pkmn.Battle.Settings)}");
+                    PBEReadOnlyStatCollection ivs = pkmn.IndividualValues!;
+                    sb.AppendLine($"{PBEDataProvider.Instance.GetMoveName(PBEMove.HiddenPower).FromGlobalLanguage()}: {PBEDataProvider.Instance.GetTypeName(ivs.GetHiddenPowerType()).FromGlobalLanguage()}|{ivs.GetHiddenPowerBasePower(pkmn.Battle.Settings)}");
                 }
                 sb.Append("Moves: ");
                 for (int i = 0; i < pkmn.Battle.Settings.NumMoves; i++)
@@ -315,14 +319,14 @@ namespace Kermalis.PokemonBattleEngineClient.Infrastructure
                     {
                         sb.Append(", ");
                     }
-                    sb.Append(PBEDataProvider.Instance.GetMoveName(slot.Move).FromPBECultureInfo());
+                    sb.Append(PBEDataProvider.Instance.GetMoveName(slot.Move).FromGlobalLanguage());
                     if (move != PBEMove.None)
                     {
                         sb.Append($" ({slot.PP}/{slot.MaxPP})");
                     }
                 }
                 sb.AppendLine();
-                sb.Append($"Usable moves: {string.Join(", ", pkmn.GetUsableMoves().Select(m => PBEDataProvider.Instance.GetMoveName(m).FromPBECultureInfo()))}");
+                sb.Append($"Usable moves: {string.Join(", ", pkmn.GetUsableMoves().Select(m => PBEDataProvider.Instance.GetMoveName(m).FromGlobalLanguage()))}");
             }
             return sb.ToString();
         }

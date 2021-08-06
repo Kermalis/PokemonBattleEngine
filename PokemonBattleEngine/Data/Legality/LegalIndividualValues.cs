@@ -1,4 +1,5 @@
 ﻿using Kermalis.EndianBinaryIO;
+using Kermalis.PokemonBattleEngine.Utils;
 using Newtonsoft.Json.Linq;
 using System;
 using System.Collections;
@@ -16,7 +17,7 @@ namespace Kermalis.PokemonBattleEngine.Data.Legality
             {
                 PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(property));
             }
-            public event PropertyChangedEventHandler PropertyChanged;
+            public event PropertyChangedEventHandler? PropertyChanged;
 
             private readonly PBELegalIndividualValues _parent;
 
@@ -52,10 +53,10 @@ namespace Kermalis.PokemonBattleEngine.Data.Legality
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(property));
         }
-        public event PropertyChangedEventHandler PropertyChanged;
+        public event PropertyChangedEventHandler? PropertyChanged;
 
         public PBESettings Settings { get; }
-        private PBELegalIndividualValue[] _ivs;
+        private readonly PBELegalIndividualValue[] _ivs;
         public PBELegalIndividualValue this[PBEStat stat]
         {
             get
@@ -149,7 +150,7 @@ namespace Kermalis.PokemonBattleEngine.Data.Legality
             byte speed = r.ReadByte();
             Validate(speed);
             Settings = settings;
-            CreateIVs(hp, attack, defense, spAttack, spDefense, speed);
+            _ivs = CreateIVs(hp, attack, defense, spAttack, spDefense, speed);
         }
         internal PBELegalIndividualValues(PBESettings settings, JToken jToken)
         {
@@ -157,50 +158,43 @@ namespace Kermalis.PokemonBattleEngine.Data.Legality
             {
                 if (val > settings.MaxIVs)
                 {
-                    throw new ArgumentOutOfRangeException(nameof(IPBEPokemon.IndividualValues), $"\"{name}\" individual value must not exceed \"{nameof(settings.MaxIVs)}\" ({settings.MaxIVs})");
+                    throw new InvalidDataException($"\"{name}\" individual value must not exceed \"{nameof(settings.MaxIVs)}\" ({settings.MaxIVs})");
                 }
             }
-            byte hp = jToken[nameof(PBEStat.HP)].Value<byte>();
+            byte hp = jToken.GetSafe(nameof(PBEStat.HP)).Value<byte>();
             Validate(hp, nameof(PBEStat.HP));
-            byte attack = jToken[nameof(PBEStat.Attack)].Value<byte>();
+            byte attack = jToken.GetSafe(nameof(PBEStat.Attack)).Value<byte>();
             Validate(attack, nameof(PBEStat.Attack));
-            byte defense = jToken[nameof(PBEStat.Defense)].Value<byte>();
+            byte defense = jToken.GetSafe(nameof(PBEStat.Defense)).Value<byte>();
             Validate(defense, nameof(PBEStat.Defense));
-            byte spAttack = jToken[nameof(PBEStat.SpAttack)].Value<byte>();
+            byte spAttack = jToken.GetSafe(nameof(PBEStat.SpAttack)).Value<byte>();
             Validate(spAttack, nameof(PBEStat.SpAttack));
-            byte spDefense = jToken[nameof(PBEStat.SpDefense)].Value<byte>();
+            byte spDefense = jToken.GetSafe(nameof(PBEStat.SpDefense)).Value<byte>();
             Validate(spDefense, nameof(PBEStat.SpDefense));
-            byte speed = jToken[nameof(PBEStat.Speed)].Value<byte>();
+            byte speed = jToken.GetSafe(nameof(PBEStat.Speed)).Value<byte>();
             Validate(speed, nameof(PBEStat.Speed));
             Settings = settings;
-            CreateIVs(hp, attack, defense, spAttack, spDefense, speed);
+            _ivs = CreateIVs(hp, attack, defense, spAttack, spDefense, speed);
         }
         internal PBELegalIndividualValues(PBELegalIndividualValues other)
         {
             Settings = other.Settings;
-            CreateIVs(other.HP, other.Attack, other.Defense, other.SpAttack, other.SpDefense, other.Speed);
+            _ivs = CreateIVs(other.HP, other.Attack, other.Defense, other.SpAttack, other.SpDefense, other.Speed);
         }
         public PBELegalIndividualValues(PBESettings settings, bool randomize)
         {
-            if (settings == null)
-            {
-                throw new ArgumentNullException(nameof(settings));
-            }
-            if (!settings.IsReadOnly)
-            {
-                throw new ArgumentException("Settings must be read-only.", nameof(settings));
-            }
+            settings.ShouldBeReadOnly(nameof(settings));
             Settings = settings;
-            CreateIVs(0, 0, 0, 0, 0, 0);
+            _ivs = CreateIVs(0, 0, 0, 0, 0, 0);
             if (randomize)
             {
                 Randomize();
             }
         }
 
-        private void CreateIVs(byte hp, byte attack, byte defense, byte spAttack, byte spDefense, byte speed)
+        private PBELegalIndividualValue[] CreateIVs(byte hp, byte attack, byte defense, byte spAttack, byte spDefense, byte speed)
         {
-            _ivs = new PBELegalIndividualValue[6]
+            var ivs = new PBELegalIndividualValue[6]
             {
                 new PBELegalIndividualValue(this, PBEStat.HP, hp),
                 new PBELegalIndividualValue(this, PBEStat.Attack, attack),
@@ -210,6 +204,7 @@ namespace Kermalis.PokemonBattleEngine.Data.Legality
                 new PBELegalIndividualValue(this, PBEStat.Speed, speed)
             };
             UpdateHiddenPower();
+            return ivs;
         }
         private void UpdateHiddenPower()
         {

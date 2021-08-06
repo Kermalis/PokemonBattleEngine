@@ -72,10 +72,6 @@ namespace Kermalis.PokemonBattleEngine.Packets
 
         public PBEAutoCenterPacket_Hidden0(PBEAutoCenterPacket other)
         {
-            if (other == null)
-            {
-                throw new ArgumentNullException(nameof(other));
-            }
             using (var ms = new MemoryStream())
             using (var w = new EndianBinaryWriter(ms, encoding: EncodingType.UTF16))
             {
@@ -111,10 +107,6 @@ namespace Kermalis.PokemonBattleEngine.Packets
 
         public PBEAutoCenterPacket_Hidden1(PBEAutoCenterPacket other)
         {
-            if (other == null)
-            {
-                throw new ArgumentNullException(nameof(other));
-            }
             using (var ms = new MemoryStream())
             using (var w = new EndianBinaryWriter(ms, encoding: EncodingType.UTF16))
             {
@@ -149,10 +141,6 @@ namespace Kermalis.PokemonBattleEngine.Packets
 
         public PBEAutoCenterPacket_Hidden01(PBEAutoCenterPacket other)
         {
-            if (other == null)
-            {
-                throw new ArgumentNullException(nameof(other));
-            }
             using (var ms = new MemoryStream())
             using (var w = new EndianBinaryWriter(ms, encoding: EncodingType.UTF16))
             {

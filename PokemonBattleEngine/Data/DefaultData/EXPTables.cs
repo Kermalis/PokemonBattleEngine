@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace Kermalis.PokemonBattleEngine.Data
+namespace Kermalis.PokemonBattleEngine.Data.DefaultData
 {
     public static class PBEEXPTables
     {
@@ -633,7 +633,7 @@ namespace Kermalis.PokemonBattleEngine.Data
 
         #endregion
 
-        private static readonly Dictionary<PBEGrowthRate, uint[]> _table = new Dictionary<PBEGrowthRate, uint[]>
+        private static readonly Dictionary<PBEGrowthRate, uint[]> _table = new()
         {
             { PBEGrowthRate.Erratic, _erraticTable },
             { PBEGrowthRate.Fast, _fastTable },

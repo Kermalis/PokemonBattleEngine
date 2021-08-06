@@ -5,7 +5,7 @@ using System.Text;
 
 namespace Kermalis.PokemonBattleEngineExtras
 {
-    internal sealed class NARCTextDumper
+    internal static class NARCTextDumper
     {
         private static readonly string[] _langs = new string[] { "English", "French", "German", "Italian", "Japanese", "Korean", "Spanish" };
 

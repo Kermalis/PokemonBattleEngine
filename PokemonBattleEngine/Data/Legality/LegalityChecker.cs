@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Kermalis.PokemonBattleEngine.Data.DefaultData;
+using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
@@ -41,14 +42,7 @@ namespace Kermalis.PokemonBattleEngine.Data.Legality
 
         public static IReadOnlyCollection<PBEMove> GetLegalMoves(PBESpecies species, PBEForm form, byte level, PBESettings settings)
         {
-            if (settings == null)
-            {
-                throw new ArgumentNullException(nameof(settings));
-            }
-            if (!settings.IsReadOnly)
-            {
-                throw new ArgumentException("Settings must be read-only.", nameof(settings));
-            }
+            settings.ShouldBeReadOnly(nameof(settings));
             ValidateSpecies(species, form, true);
             ValidateLevel(level, settings);
             List<(PBESpecies, PBEForm)> speciesToStealFrom = GetSpecies(species, form);
@@ -62,12 +56,12 @@ namespace Kermalis.PokemonBattleEngine.Data.Legality
                 // Disallow form-specific moves from other forms (Rotom)
                 moves.AddRange(pData.OtherMoves.Where(t => (spe == species && fo == form) || t.ObtainMethod != PBEMoveObtainMethod.Form).Select(t => t.Move));
                 // Event Pokémon checking is extremely basic and wrong, but the goal is not to be super restricting or accurate
-                if (PBEEventPokemon.Events.TryGetValue(spe, out ReadOnlyCollection<PBEEventPokemon> events))
+                if (PBEEventPokemon.Events.TryGetValue(spe, out ReadOnlyCollection<PBEEventPokemon>? events))
                 {
                     // Disallow moves learned after the current level
                     moves.AddRange(events.Where(e => e.Level <= level).SelectMany(e => e.Moves).Where(m => m != PBEMove.None));
                 }
-                if (moves.Any(m => PBEDataProvider.Instance.GetMoveData(m, cache: false).Effect == PBEMoveEffect.Sketch))
+                if (moves.FindIndex(m => PBEDataProvider.Instance.GetMoveData(m, cache: false).Effect == PBEMoveEffect.Sketch) != -1)
                 {
                     return PBEDataUtils.SketchLegalMoves;
                 }

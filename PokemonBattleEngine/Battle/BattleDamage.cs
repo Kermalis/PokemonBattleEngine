@@ -200,7 +200,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                 }
                 case PBEMoveEffect.HiddenPower:
                 {
-                    basePower = user.IndividualValues.GetHiddenPowerBasePower(Settings);
+                    basePower = user.IndividualValues!.GetHiddenPowerBasePower(Settings);
                     break;
                 }
                 case PBEMoveEffect.Magnitude:
@@ -673,7 +673,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                 }
                 case PBEMoveEffect.Brine:
                 {
-                    if (targets.Any(t => t.HP <= t.HP / 2))
+                    if (Array.FindIndex(targets, t => t.HP <= t.HP / 2) != -1)
                     {
                         basePower *= 2.0f;
                     }
@@ -689,7 +689,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                 }
                 case PBEMoveEffect.Hex:
                 {
-                    if (targets.Any(t => t.Status1 != PBEStatus1.None))
+                    if (Array.FindIndex(targets, t => t.Status1 != PBEStatus1.None) != -1)
                     {
                         basePower *= 2.0f;
                     }
@@ -697,7 +697,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                 }
                 case PBEMoveEffect.Payback:
                 {
-                    if (targets.Any(t => t.HasUsedMoveThisTurn))
+                    if (Array.FindIndex(targets, t => t.HasUsedMoveThisTurn) != -1)
                     {
                         basePower *= 2.0f;
                     }
@@ -713,7 +713,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                 }
                 case PBEMoveEffect.SmellingSalt:
                 {
-                    if (targets.Any(t => t.Status1 == PBEStatus1.Paralyzed))
+                    if (Array.FindIndex(targets, t => t.Status1 == PBEStatus1.Paralyzed) != -1)
                     {
                         basePower *= 2.0f;
                     }
@@ -721,7 +721,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                 }
                 case PBEMoveEffect.Venoshock:
                 {
-                    if (targets.Any(t => t.Status1 == PBEStatus1.Poisoned || t.Status1 == PBEStatus1.BadlyPoisoned))
+                    if (Array.FindIndex(targets, t => t.Status1 == PBEStatus1.Poisoned || t.Status1 == PBEStatus1.BadlyPoisoned) != -1)
                     {
                         basePower *= 2.0f;
                     }
@@ -729,7 +729,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                 }
                 case PBEMoveEffect.WakeUpSlap:
                 {
-                    if (targets.Any(t => t.Status1 == PBEStatus1.Asleep))
+                    if (Array.FindIndex(targets, t => t.Status1 == PBEStatus1.Asleep) != -1)
                     {
                         basePower *= 2.0f;
                     }
@@ -958,7 +958,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
             {
                 attack *= 1.5f;
             }
-            if (!user.HasCancellingAbility() && ShouldDoWeatherEffects() && Weather == PBEWeather.HarshSunlight && user.Team.ActiveBattlers.Any(p => p.Ability == PBEAbility.FlowerGift))
+            if (!user.HasCancellingAbility() && ShouldDoWeatherEffects() && Weather == PBEWeather.HarshSunlight && user.Team.ActiveBattlers.FindIndex(p => p.Ability == PBEAbility.FlowerGift) != -1)
             {
                 attack *= 1.5f;
             }
@@ -977,7 +977,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
 
             return attack;
         }
-        private float CalculateDefense(PBEBattlePokemon user, PBEBattlePokemon target, float initialDefense)
+        private static float CalculateDefense(PBEBattlePokemon user, PBEBattlePokemon target, float initialDefense)
         {
             float defense = initialDefense;
 
@@ -1036,7 +1036,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
             {
                 spAttack *= 1.5f;
             }
-            if ((user.Ability == PBEAbility.Minus || user.Ability == PBEAbility.Plus) && user.Team.ActiveBattlers.Any(p => p != user && (p.Ability == PBEAbility.Minus || p.Ability == PBEAbility.Plus)))
+            if ((user.Ability == PBEAbility.Minus || user.Ability == PBEAbility.Plus) && user.Team.ActiveBattlers.FindIndex(p => p != user && (p.Ability == PBEAbility.Minus || p.Ability == PBEAbility.Plus)) != -1)
             {
                 spAttack *= 1.5f;
             }
@@ -1073,7 +1073,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                 {
                     spDefense *= 1.5f;
                 }
-                if (!user.HasCancellingAbility() && Weather == PBEWeather.HarshSunlight && target.Team.ActiveBattlers.Any(p => p.Ability == PBEAbility.FlowerGift))
+                if (!user.HasCancellingAbility() && Weather == PBEWeather.HarshSunlight && target.Team.ActiveBattlers.FindIndex(p => p.Ability == PBEAbility.FlowerGift) != -1)
                 {
                     spDefense *= 1.5f;
                 }

@@ -106,10 +106,6 @@ namespace Kermalis.PokemonBattleEngine.Packets
 
         public PBEPkmnFormChangedPacket_Hidden(PBEPkmnFormChangedPacket other)
         {
-            if (other == null)
-            {
-                throw new ArgumentNullException(nameof(other));
-            }
             using (var ms = new MemoryStream())
             using (var w = new EndianBinaryWriter(ms, encoding: EncodingType.UTF16))
             {

@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Text;
 
-namespace Kermalis.PokemonBattleEngine.Data
+namespace Kermalis.PokemonBattleEngine.Data.DefaultData
 {
     public sealed partial class PBEMoveData : IPBEMoveData
     {

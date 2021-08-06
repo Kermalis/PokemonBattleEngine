@@ -8,9 +8,9 @@ namespace Kermalis.PokemonBattleEngineTests.Forms
     [Collection("Utils")]
     public class CastformCherrimTests
     {
-        public CastformCherrimTests(TestUtils utils, ITestOutputHelper output)
+        public CastformCherrimTests(TestUtils _, ITestOutputHelper output)
         {
-            utils.SetOutputHelper(output);
+            TestUtils.SetOutputHelper(output);
         }
 
         [Theory]
@@ -53,8 +53,8 @@ namespace Kermalis.PokemonBattleEngineTests.Forms
             #endregion
 
             #region Swap Magikarp for Rayquaza and check for no form
-            Assert.Null(t0.SelectActionsIfValid(new PBETurnAction(magikarp, rayquaza)));
-            Assert.Null(t1.SelectActionsIfValid(new PBETurnAction(castformCherrim, PBEMove.Splash, PBETurnTarget.AllyCenter)));
+            Assert.True(t0.SelectActionsIfValid(out _, new PBETurnAction(magikarp, rayquaza)));
+            Assert.True(t1.SelectActionsIfValid(out _, new PBETurnAction(castformCherrim, PBEMove.Splash, PBETurnTarget.AllyCenter)));
 
             battle.RunTurn();
 
@@ -62,8 +62,8 @@ namespace Kermalis.PokemonBattleEngineTests.Forms
             #endregion
 
             #region Swap Rayquaza for Magikarp and check for correct form
-            Assert.Null(t0.SelectActionsIfValid(new PBETurnAction(rayquaza, magikarp)));
-            Assert.Null(t1.SelectActionsIfValid(new PBETurnAction(castformCherrim, PBEMove.Splash, PBETurnTarget.AllyCenter)));
+            Assert.True(t0.SelectActionsIfValid(out _, new PBETurnAction(rayquaza, magikarp)));
+            Assert.True(t1.SelectActionsIfValid(out _, new PBETurnAction(castformCherrim, PBEMove.Splash, PBETurnTarget.AllyCenter)));
 
             battle.RunTurn();
 
@@ -105,8 +105,8 @@ namespace Kermalis.PokemonBattleEngineTests.Forms
             #endregion
 
             #region Use Sunny Day and check for correct form
-            Assert.Null(t0.SelectActionsIfValid(new[] { new PBETurnAction(shuckle, PBEMove.Splash, PBETurnTarget.AllyCenter) }));
-            Assert.Null(t1.SelectActionsIfValid(new[] { new PBETurnAction(castformCherrim, PBEMove.SunnyDay, PBETurnTarget.AllyCenter | PBETurnTarget.FoeCenter) }));
+            Assert.True(t0.SelectActionsIfValid(out _, new PBETurnAction(shuckle, PBEMove.Splash, PBETurnTarget.AllyCenter)));
+            Assert.True(t1.SelectActionsIfValid(out _, new PBETurnAction(castformCherrim, PBEMove.SunnyDay, PBETurnTarget.AllyCenter | PBETurnTarget.FoeCenter)));
 
             battle.RunTurn();
 
@@ -114,8 +114,8 @@ namespace Kermalis.PokemonBattleEngineTests.Forms
             #endregion
 
             #region Use Gastro Acid and check for no form
-            Assert.Null(t0.SelectActionsIfValid(new[] { new PBETurnAction(shuckle, PBEMove.GastroAcid, PBETurnTarget.FoeCenter) }));
-            Assert.Null(t1.SelectActionsIfValid(new[] { new PBETurnAction(castformCherrim, PBEMove.Splash, PBETurnTarget.AllyCenter) }));
+            Assert.True(t0.SelectActionsIfValid(out _, new PBETurnAction(shuckle, PBEMove.GastroAcid, PBETurnTarget.FoeCenter)));
+            Assert.True(t1.SelectActionsIfValid(out _, new PBETurnAction(castformCherrim, PBEMove.Splash, PBETurnTarget.AllyCenter)));
 
             battle.RunTurn();
 

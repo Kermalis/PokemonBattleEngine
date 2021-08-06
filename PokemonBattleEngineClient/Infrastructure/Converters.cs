@@ -11,7 +11,7 @@ namespace Kermalis.PokemonBattleEngineClient.Infrastructure
     public sealed class FormToTextBitmapConverter : IMultiValueConverter
     {
         public static FormToTextBitmapConverter Instance { get; } = new FormToTextBitmapConverter();
-        public object Convert(IList<object> values, Type targetType, object parameter, CultureInfo culture)
+        public object? Convert(IList<object> values, Type? targetType, object? parameter, CultureInfo? culture)
         {
             var species = (PBESpecies)values[0];
             if (!PBEDataUtils.HasForms(species, true))
@@ -20,19 +20,19 @@ namespace Kermalis.PokemonBattleEngineClient.Infrastructure
             }
             PBEForm form = true ? 0 : (PBEForm)values[1]; // TODO
             IPBELocalizedString localized = PBEDataProvider.Instance.GetFormName(species, form);
-            return StringRenderer.Render(localized.FromPBECultureInfo(), parameter?.ToString());
+            return StringRenderer.Render(localized.FromGlobalLanguage(), parameter?.ToString());
         }
     }
     public sealed class ObjectToTextBitmapConverter : IValueConverter
     {
         public static ObjectToTextBitmapConverter Instance { get; } = new ObjectToTextBitmapConverter();
-        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+        public object? Convert(object? value, Type? targetType, object? parameter, CultureInfo? culture)
         {
             if (value is null)
             {
                 return AvaloniaProperty.UnsetValue;
             }
-            IPBELocalizedString localized = null;
+            IPBELocalizedString? localized = null;
             switch (value)
             {
                 case PBEAbility ability: localized = PBEDataProvider.Instance.GetAbilityName(ability); break;
@@ -45,9 +45,9 @@ namespace Kermalis.PokemonBattleEngineClient.Infrastructure
                 case PBEStat stat: localized = PBEDataProvider.Instance.GetStatName(stat); break;
                 case PBEType type: localized = PBEDataProvider.Instance.GetTypeName(type); break;
             }
-            return StringRenderer.Render(localized is null ? value.ToString() : localized.FromPBECultureInfo(), parameter?.ToString()) ?? AvaloniaProperty.UnsetValue;
+            return StringRenderer.Render(localized is null ? value.ToString() : localized.FromGlobalLanguage(), parameter?.ToString()) ?? AvaloniaProperty.UnsetValue;
         }
-        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+        public object? ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
         {
             throw new NotImplementedException();
         }
@@ -55,7 +55,7 @@ namespace Kermalis.PokemonBattleEngineClient.Infrastructure
     public sealed class SpeciesToMinispriteConverter : IValueConverter
     {
         public static SpeciesToMinispriteConverter Instance { get; } = new SpeciesToMinispriteConverter();
-        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+        public object? Convert(object? value, Type? targetType, object? parameter, CultureInfo? culture)
         {
             PBESpecies species;
             PBEForm form;
@@ -85,11 +85,11 @@ namespace Kermalis.PokemonBattleEngineClient.Infrastructure
             }
             else
             {
-                throw new ArgumentException();
+                throw new ArgumentOutOfRangeException(nameof(value));
             }
             return Utils.GetMinispriteBitmap(species, form, gender, shiny);
         }
-        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+        public object? ConvertBack(object? value, Type? targetType, object? parameter, CultureInfo? culture)
         {
             throw new NotImplementedException();
         }
