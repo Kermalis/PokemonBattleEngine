@@ -2,13 +2,13 @@
 using Kermalis.PokemonBattleEngine.DefaultData.AI;
 using Kermalis.PokemonBattleEngine.Packets;
 using Kermalis.PokemonBattleEngineClient.Views;
+using System.Collections.Generic;
 using System.Threading;
 
 namespace Kermalis.PokemonBattleEngineClient.Clients
 {
     internal sealed class SinglePlayerClient : BattleClient
     {
-        private const string ThreadName = "Battle Thread";
         public override PBEBattle Battle { get; }
         public override PBETrainer? Trainer { get; }
         public override BattleView BattleView { get; }
@@ -28,7 +28,11 @@ namespace Kermalis.PokemonBattleEngineClient.Clients
                 _ais[i] = new PBEDDAI(b.Trainers[i + 1]);
             }
             ShowAllPokemon();
-            new Thread(b.Begin) { Name = ThreadName }.Start();
+            CreateBattleThread(b.Begin);
+        }
+        private static void CreateBattleThread(ThreadStart start)
+        {
+            new Thread(start) { Name = "Battle Thread" }.Start();
         }
 
         private void SinglePlayerBattle_OnNewEvent(PBEBattle battle, IPBEPacket packet)
@@ -43,18 +47,18 @@ namespace Kermalis.PokemonBattleEngineClient.Clients
             switch (battle.BattleState)
             {
                 case PBEBattleState.Ended: battle.SaveReplay("SinglePlayer Battle.pbereplay"); break;
-                case PBEBattleState.ReadyToRunSwitches: new Thread(battle.RunSwitches) { Name = ThreadName }.Start(); break;
-                case PBEBattleState.ReadyToRunTurn: new Thread(battle.RunTurn) { Name = ThreadName }.Start(); break;
+                case PBEBattleState.ReadyToRunSwitches: CreateBattleThread(battle.RunSwitches); break;
+                case PBEBattleState.ReadyToRunTurn: CreateBattleThread(battle.RunTurn); break;
             }
         }
 
-        protected override void OnActionsReady(PBETurnAction[] acts)
+        private void OnActionsReady(IReadOnlyCollection<PBETurnAction> acts)
         {
-            new Thread(() => Trainer!.SelectActionsIfValid(out _, acts)) { Name = ThreadName }.Start();
+            CreateBattleThread(() => Trainer!.SelectActionsIfValid(acts, out _));
         }
-        protected override void OnSwitchesReady()
+        private void OnSwitchesReady(IReadOnlyCollection<PBESwitchIn> switches)
         {
-            new Thread(() => Trainer!.SelectSwitchesIfValid(Switches, out _)) { Name = ThreadName }.Start();
+            CreateBattleThread(() => Trainer!.SelectSwitchesIfValid(switches, out _));
         }
 
         private PBEDDAI GetAI(PBETrainer t)
@@ -76,11 +80,11 @@ namespace Kermalis.PokemonBattleEngineClient.Clients
                     PBETrainer t = arp.Trainer;
                     if (t == Trainer)
                     {
-                        ActionsLoop(true);
+                        _ = new ActionsBuilder(BattleView, Trainer, OnActionsReady);
                     }
                     else
                     {
-                        new Thread(GetAI(t).CreateActions) { Name = ThreadName }.Start();
+                        CreateBattleThread(GetAI(t).CreateActions);
                     }
                     return true;
                 }
@@ -89,12 +93,11 @@ namespace Kermalis.PokemonBattleEngineClient.Clients
                     PBETrainer t = sirp.Trainer;
                     if (t == Trainer)
                     {
-                        _switchesRequired = sirp.Amount;
-                        SwitchesLoop(true);
+                        _ = new SwitchesBuilder(BattleView, sirp.Amount, OnSwitchesReady);
                     }
                     else
                     {
-                        new Thread(GetAI(t).CreateAISwitches) { Name = ThreadName }.Start();
+                        CreateBattleThread(GetAI(t).CreateAISwitches);
                     }
                     return true;
                 }

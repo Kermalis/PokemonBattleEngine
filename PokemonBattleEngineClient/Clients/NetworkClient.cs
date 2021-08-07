@@ -4,6 +4,7 @@ using Kermalis.PokemonBattleEngine.Network;
 using Kermalis.PokemonBattleEngine.Packets;
 using Kermalis.PokemonBattleEngineClient.Views;
 using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.Net;
 
@@ -169,15 +170,15 @@ namespace Kermalis.PokemonBattleEngineClient.Clients
             }
         }
 
-        protected override void OnActionsReady(PBETurnAction[] acts)
+        private void OnActionsReady(Queue<PBETurnAction> acts)
         {
             BattleView.AddMessage("Waiting for players...", messageLog: false);
-            Send(new PBEActionsResponsePacket(acts));
+            Send(new PBEActionsResponsePacket(acts.ToArray()));
         }
-        protected override void OnSwitchesReady()
+        private void OnSwitchesReady(Queue<PBESwitchIn> switches)
         {
             BattleView.AddMessage("Waiting for players...", messageLog: false);
-            Send(new PBESwitchInResponsePacket(Switches));
+            Send(new PBESwitchInResponsePacket(switches.ToArray()));
         }
 
         private void Send(IPBEPacket packet)
@@ -211,7 +212,7 @@ namespace Kermalis.PokemonBattleEngineClient.Clients
                 {
                     if (arp.Trainer == Trainer)
                     {
-                        ActionsLoop(true);
+                        _ = new ActionsBuilder(BattleView, Trainer, OnActionsReady);
                     }
                     else if (Trainer is null || Trainer.NumConsciousPkmn == 0) // Spectators/KO'd
                     {
@@ -225,10 +226,9 @@ namespace Kermalis.PokemonBattleEngineClient.Clients
                     t.SwitchInsRequired = sirp.Amount;
                     if (t == Trainer)
                     {
-                        _switchesRequired = sirp.Amount;
-                        SwitchesLoop(true);
+                        _ = new SwitchesBuilder(BattleView, sirp.Amount, OnSwitchesReady);
                     }
-                    else if (_switchesRequired == 0) // No need to switch/Spectators/KO'd
+                    else if (BattleView.Actions.SwitchesBuilder?.SwitchesRequired == 0) // No need to switch/Spectators/KO'd
                     {
                         BattleView.AddMessage("Waiting for players...", messageLog: false);
                     }

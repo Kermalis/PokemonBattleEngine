@@ -37,62 +37,6 @@ namespace Kermalis.PokemonBattleEngineClient.Clients
             }
         }
 
-        #region Actions
-        private readonly List<PBEBattlePokemon> _actions = new(3);
-        public List<PBEBattlePokemon> StandBy { get; } = new(3);
-        public void ActionsLoop(bool begin)
-        {
-            if (begin)
-            {
-                foreach (PBEBattlePokemon pkmn in Trainer!.Party)
-                {
-                    pkmn.TurnAction = null;
-                }
-                _actions.Clear();
-                _actions.AddRange(Trainer.ActiveBattlersOrdered);
-                StandBy.Clear();
-            }
-            int i = _actions.FindIndex(p => p.TurnAction is null);
-            if (i == -1)
-            {
-                OnActionsReady(_actions.Select(p => p.TurnAction!).ToArray());
-            }
-            else
-            {
-                BattleView.AddMessage($"What will {_actions[i].Nickname} do?", messageLog: false);
-                BattleView.Actions.DisplayActions(_actions[i]);
-            }
-        }
-        protected abstract void OnActionsReady(PBETurnAction[] acts);
-
-        public List<PBESwitchIn> Switches { get; } = new(3);
-        protected byte _switchesRequired;
-        public List<PBEFieldPosition> PositionStandBy { get; } = new(3);
-        public void SwitchesLoop(bool begin)
-        {
-            if (begin)
-            {
-                Switches.Clear();
-                StandBy.Clear();
-                PositionStandBy.Clear();
-            }
-            else
-            {
-                _switchesRequired--;
-            }
-            if (_switchesRequired == 0)
-            {
-                OnSwitchesReady();
-            }
-            else
-            {
-                BattleView.AddMessage($"You must send in {_switchesRequired} Pokémon.", messageLog: false);
-                BattleView.Actions.DisplaySwitches();
-            }
-        }
-        protected abstract void OnSwitchesReady();
-        #endregion
-
         #region Automatic packet processing
         // Returns true if the next packet should be run immediately
         protected virtual bool ProcessPacket(IPBEPacket packet)

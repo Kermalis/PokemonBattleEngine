@@ -15,7 +15,6 @@ namespace Kermalis.PokemonBattleEngineClient.Views
         public BattleView()
         {
             // This constructor only exists so xaml compiles
-            // TODO: Necessary now?
             Field = null!;
             Actions = null!;
             _messages = null!;

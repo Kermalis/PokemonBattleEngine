@@ -24,8 +24,8 @@ namespace Kermalis.PokemonBattleEngineClient.Models
                 }
             }
         }
-        private PokemonInfo _pokemon; // TODO: Can be null?
-        public PokemonInfo Pokemon
+        private PokemonInfo? _pokemon;
+        public PokemonInfo? Pokemon
         {
             get => _pokemon;
             internal set

@@ -1,7 +1,6 @@
 ﻿using Kermalis.PokemonBattleEngine.Battle;
 using Kermalis.PokemonBattleEngine.Packets;
 using Kermalis.PokemonBattleEngineClient.Views;
-using System;
 
 namespace Kermalis.PokemonBattleEngineClient.Clients
 {
@@ -18,15 +17,6 @@ namespace Kermalis.PokemonBattleEngineClient.Clients
             BattleView = new BattleView(this);
             ShowAllPokemon();
             StartPacketThread();
-        }
-
-        protected override void OnActionsReady(PBETurnAction[] acts)
-        {
-            throw new NotImplementedException();
-        }
-        protected override void OnSwitchesReady()
-        {
-            throw new NotImplementedException();
         }
 
         protected override bool ProcessPacket(IPBEPacket packet)

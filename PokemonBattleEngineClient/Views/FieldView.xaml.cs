@@ -54,6 +54,7 @@ namespace Kermalis.PokemonBattleEngineClient.Views
         private BattleView _battleView;
         private readonly Rectangle _dim;
         private readonly GifImage _gif;
+        // Resources
         private static IBrush _hailstormDim = null!,
             _harshSunlightDim = null!,
             _rainDim = null!,
