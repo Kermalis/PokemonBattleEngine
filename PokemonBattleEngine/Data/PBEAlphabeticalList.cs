@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Collections.Specialized;
 using System.ComponentModel;
 using System.Diagnostics.CodeAnalysis;
@@ -13,7 +14,7 @@ namespace Kermalis.PokemonBattleEngine.Data
         private sealed class PBEAlphabeticalListEntry
         {
             public T Key { get; }
-            public IPBELocalizedString Value { get; }
+            public IPBEReadOnlyLocalizedString Value { get; }
 
             public PBEAlphabeticalListEntry(T key, object? parameter)
             {
@@ -143,6 +144,29 @@ namespace Kermalis.PokemonBattleEngine.Data
         IEnumerator IEnumerable.GetEnumerator()
         {
             return GetEnumerator();
+        }
+
+        public ReadOnlyCollection<T> AsReadOnly()
+        {
+            return ToList().AsReadOnly();
+        }
+        public T[] ToArray()
+        {
+            var arr = new T[_list.Length];
+            for (int i = 0; i < _list.Length; i++)
+            {
+                arr[i] = _list[i].Key;
+            }
+            return arr;
+        }
+        public List<T> ToList()
+        {
+            var list = new List<T>(_list.Length);
+            for (int i = 0; i < _list.Length; i++)
+            {
+                list.Add(_list[i].Key);
+            }
+            return list;
         }
     }
 }

@@ -22,16 +22,13 @@
 			<SubType>Designer</SubType>
 		</AvaloniaResource>
 		<EmbeddedResource Include="..\Shared Assets\**" />
-		<EmbeddedResource Include="..\PokemonBattleEngine\PokemonBattleEngine.db">
-			<Link>PokemonBattleEngine.db</Link>
-		</EmbeddedResource>
 		<Compile Remove="Dependencies\**" />
 		<EmbeddedResource Remove="Dependencies\**" />
 		<None Remove="Dependencies\**" />
 		<PackageReference Include="Avalonia" Version="0.10.6" />
 		<PackageReference Include="Avalonia.Desktop" Version="0.10.6" />
 		<PackageReference Include="Avalonia.ReactiveUI" Version="0.10.6" />
-		<ProjectReference Include="..\PokemonBattleEngine\PokemonBattleEngine.csproj" />
+		<ProjectReference Include="..\PokemonBattleEngine.DefaultData\PokemonBattleEngine.DefaultData.csproj" />
 		<Reference Include="AvaloniaGif">
 			<HintPath>Dependencies\AvaloniaGif.dll</HintPath>
 		</Reference>

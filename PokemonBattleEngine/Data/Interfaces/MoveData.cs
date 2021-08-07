@@ -1,4 +1,6 @@
-﻿namespace Kermalis.PokemonBattleEngine.Data
+﻿using Kermalis.PokemonBattleEngine.Data.Utils;
+
+namespace Kermalis.PokemonBattleEngine.Data
 {
     public interface IPBEMoveData
     {

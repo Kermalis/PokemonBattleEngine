@@ -3,6 +3,7 @@ using Discord.Commands;
 using Discord.WebSocket;
 using Kermalis.PokemonBattleEngine.Battle;
 using Kermalis.PokemonBattleEngine.Data;
+using Kermalis.PokemonBattleEngine.Data.Utils;
 using System;
 using System.IO;
 using System.Linq;

@@ -24,7 +24,7 @@ namespace Kermalis.PokemonBattleEngineClient.Clients
             _client.Disconnected += OnDisconnected;
             _client.Error += OnError;
             _client.PacketReceived += OnPacketReceived;
-            if (_client.Connect(new IPEndPoint(IPAddress.Parse(host), port), 10 * 1000))
+            if (_client.Connect(new IPEndPoint(IPAddress.Parse(host), port), 10 * 1000, new PBEPacketProcessor()))
             {
                 OnConnected();
             }

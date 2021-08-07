@@ -10,7 +10,9 @@ namespace Kermalis.PokemonBattleEngine.Battle
         /// <summary>The type effectiveness table. The first key is the attacking type and the second key is the defending type.</summary>
         private static readonly Dictionary<PBEType, Dictionary<PBEType, float>> _table = new()
         {
-            { PBEType.None, new Dictionary<PBEType, float>
+            {
+                PBEType.None,
+                new Dictionary<PBEType, float>
             {
                 { PBEType.None, 1.0f },
                 { PBEType.Bug, 1.0f },
@@ -32,7 +34,9 @@ namespace Kermalis.PokemonBattleEngine.Battle
                 { PBEType.Water, 1.0f },
             }
             },
-            { PBEType.Bug, new Dictionary<PBEType, float>
+            {
+                PBEType.Bug,
+                new Dictionary<PBEType, float>
             {
                 { PBEType.None, 1.0f },
                 { PBEType.Bug, 1.0f },
@@ -54,7 +58,9 @@ namespace Kermalis.PokemonBattleEngine.Battle
                 { PBEType.Water, 1.0f },
             }
             },
-            { PBEType.Dark, new Dictionary<PBEType, float>
+            {
+                PBEType.Dark,
+                new Dictionary<PBEType, float>
             {
                 { PBEType.None, 1.0f },
                 { PBEType.Bug, 1.0f },
@@ -76,7 +82,9 @@ namespace Kermalis.PokemonBattleEngine.Battle
                 { PBEType.Water, 1.0f },
             }
             },
-            { PBEType.Dragon, new Dictionary<PBEType, float>
+            {
+                PBEType.Dragon,
+                new Dictionary<PBEType, float>
             {
                 { PBEType.None, 1.0f },
                 { PBEType.Bug, 1.0f },
@@ -98,7 +106,9 @@ namespace Kermalis.PokemonBattleEngine.Battle
                 { PBEType.Water, 1.0f },
             }
             },
-            { PBEType.Electric, new Dictionary<PBEType, float>
+            {
+                PBEType.Electric,
+                new Dictionary<PBEType, float>
             {
                 { PBEType.None, 1.0f },
                 { PBEType.Bug, 1.0f },
@@ -120,7 +130,9 @@ namespace Kermalis.PokemonBattleEngine.Battle
                 { PBEType.Water, 2.0f },
             }
             },
-            { PBEType.Fighting, new Dictionary<PBEType, float>
+            {
+                PBEType.Fighting,
+                new Dictionary<PBEType, float>
             {
                 { PBEType.None, 1.0f },
                 { PBEType.Bug, 0.5f },
@@ -142,7 +154,9 @@ namespace Kermalis.PokemonBattleEngine.Battle
                 { PBEType.Water, 1.0f },
             }
             },
-            { PBEType.Fire, new Dictionary<PBEType, float>
+            {
+                PBEType.Fire,
+                new Dictionary<PBEType, float>
             {
                 { PBEType.None, 1.0f },
                 { PBEType.Bug, 2.0f },
@@ -164,7 +178,9 @@ namespace Kermalis.PokemonBattleEngine.Battle
                 { PBEType.Water, 0.5f },
             }
             },
-            { PBEType.Flying, new Dictionary<PBEType, float>
+            {
+                PBEType.Flying,
+                new Dictionary<PBEType, float>
             {
                 { PBEType.None, 1.0f },
                 { PBEType.Bug, 2.0f },
@@ -186,7 +202,9 @@ namespace Kermalis.PokemonBattleEngine.Battle
                 { PBEType.Water, 1.0f },
             }
             },
-            { PBEType.Ghost, new Dictionary<PBEType, float>
+            {
+                PBEType.Ghost,
+                new Dictionary<PBEType, float>
             {
                 { PBEType.None, 1.0f },
                 { PBEType.Bug, 1.0f },
@@ -208,7 +226,9 @@ namespace Kermalis.PokemonBattleEngine.Battle
                 { PBEType.Water, 1.0f },
             }
             },
-            { PBEType.Grass, new Dictionary<PBEType, float>
+            {
+                PBEType.Grass,
+                new Dictionary<PBEType, float>
             {
                 { PBEType.None, 1.0f },
                 { PBEType.Bug, 0.5f },
@@ -230,7 +250,9 @@ namespace Kermalis.PokemonBattleEngine.Battle
                 { PBEType.Water, 2.0f },
             }
             },
-            { PBEType.Ground, new Dictionary<PBEType, float>
+            {
+                PBEType.Ground,
+                new Dictionary<PBEType, float>
             {
                 { PBEType.None, 1.0f },
                 { PBEType.Bug, 0.5f },
@@ -252,7 +274,9 @@ namespace Kermalis.PokemonBattleEngine.Battle
                 { PBEType.Water, 1.0f },
             }
             },
-            { PBEType.Ice, new Dictionary<PBEType, float>
+            {
+                PBEType.Ice,
+                new Dictionary<PBEType, float>
             {
                 { PBEType.None, 1.0f },
                 { PBEType.Bug, 1.0f },
@@ -274,7 +298,9 @@ namespace Kermalis.PokemonBattleEngine.Battle
                 { PBEType.Water, 0.5f },
             }
             },
-            { PBEType.Normal, new Dictionary<PBEType, float>
+            {
+                PBEType.Normal,
+                new Dictionary<PBEType, float>
             {
                 { PBEType.None, 1.0f },
                 { PBEType.Bug, 1.0f },
@@ -296,7 +322,9 @@ namespace Kermalis.PokemonBattleEngine.Battle
                 { PBEType.Water, 1.0f },
             }
             },
-            { PBEType.Poison, new Dictionary<PBEType, float>
+            {
+                PBEType.Poison,
+                new Dictionary<PBEType, float>
             {
                 { PBEType.None, 1.0f },
                 { PBEType.Bug, 1.0f },
@@ -318,7 +346,9 @@ namespace Kermalis.PokemonBattleEngine.Battle
                 { PBEType.Water, 1.0f },
             }
             },
-            { PBEType.Psychic, new Dictionary<PBEType, float>
+            {
+                PBEType.Psychic,
+                new Dictionary<PBEType, float>
             {
                 { PBEType.None, 1.0f },
                 { PBEType.Bug, 1.0f },
@@ -340,7 +370,9 @@ namespace Kermalis.PokemonBattleEngine.Battle
                 { PBEType.Water, 1.0f },
             }
             },
-            { PBEType.Rock, new Dictionary<PBEType, float>
+            {
+                PBEType.Rock,
+                new Dictionary<PBEType, float>
             {
                 { PBEType.None, 1.0f },
                 { PBEType.Bug, 2.0f },
@@ -362,7 +394,9 @@ namespace Kermalis.PokemonBattleEngine.Battle
                 { PBEType.Water, 1.0f },
             }
             },
-            { PBEType.Steel, new Dictionary<PBEType, float>
+            {
+                PBEType.Steel,
+                new Dictionary<PBEType, float>
             {
                 { PBEType.None, 1.0f },
                 { PBEType.Bug, 1.0f },
@@ -384,7 +418,9 @@ namespace Kermalis.PokemonBattleEngine.Battle
                 { PBEType.Water, 0.5f },
             }
             },
-            { PBEType.Water, new Dictionary<PBEType, float>
+            {
+                PBEType.Water,
+                new Dictionary<PBEType, float>
             {
                 { PBEType.None, 1.0f },
                 { PBEType.Bug, 1.0f },

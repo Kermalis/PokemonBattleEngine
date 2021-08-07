@@ -965,7 +965,7 @@ namespace Kermalis.PokemonBattleEngine.Data
             HiddenPowerMin = other._hiddenPowerMin;
             BugFix = other._bugFix;
         }
-        internal PBESettings(EndianBinaryReader r)
+        public PBESettings(EndianBinaryReader r)
         {
             FromBytes(r);
         }
@@ -1168,7 +1168,7 @@ namespace Kermalis.PokemonBattleEngine.Data
             return Convert.ToBase64String(ToBytes());
         }
 
-        internal byte[] ToBytes()
+        public byte[] ToBytes()
         {
             byte[] data;
             ushort numChanged = 0;

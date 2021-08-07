@@ -35,6 +35,7 @@ namespace Kermalis.PokemonBattleEngine.Network
 
         private Socket? _listener;
         private PBEEncryption? _encryption;
+        private PBEPacketProcessor _packetProcessor = null!; // Set in Start()
         private int _maxConnections;
 
         [MemberNotNullWhen(true, nameof(_listener))]
@@ -48,7 +49,7 @@ namespace Kermalis.PokemonBattleEngine.Network
         public delegate void PBEClientRefusedEventHandler(object? sender, IPEndPoint refusedIP, bool refusedForBan);
         public event PBEClientRefusedEventHandler? ClientRefused;
 
-        public void Start(IPEndPoint ip, int maxConnections, PBEEncryption? encryption = null, bool dualMode = false)
+        public void Start(IPEndPoint ip, int maxConnections, PBEPacketProcessor packetProcessor, PBEEncryption? encryption = null, bool dualMode = false)
         {
             if (IsRunning)
             {
@@ -66,6 +67,7 @@ namespace Kermalis.PokemonBattleEngine.Network
             }
             _listener.Bind(ip);
             _encryption = encryption;
+            _packetProcessor = packetProcessor;
 
             try
             {
@@ -219,7 +221,7 @@ namespace Kermalis.PokemonBattleEngine.Network
                     {
                         data = _encryption.Decrypt(data);
                     }
-                    client.FirePacketReceived(PBEPacketProcessor.CreatePacket(Battle, data));
+                    client.FirePacketReceived(_packetProcessor.CreatePacket(data, Battle));
                     BeginReceive(client);
                 }
             }

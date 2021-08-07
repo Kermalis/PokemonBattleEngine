@@ -1,4 +1,4 @@
-﻿using Kermalis.PokemonBattleEngine.Data.DefaultData;
+﻿using Kermalis.PokemonBattleEngine.DefaultData;
 using Microsoft.Data.Sqlite;
 using System;
 
@@ -19,7 +19,7 @@ namespace Kermalis.PokemonBattleEngineExtras
             static SqliteConnection GetConnection()
             {
                 SQLitePCL.Batteries_V2.Init();
-                const string databasePath = @"../../../../\PokemonBattleEngine\PokemonBattleEngine.db";
+                const string databasePath = @"PokemonBattleEngine.db";
                 var con = new SqliteConnection($"Filename={databasePath};");
                 con.Open();
                 return con;

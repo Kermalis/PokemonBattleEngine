@@ -1,6 +1,7 @@
 ﻿using Discord;
 using Kermalis.PokemonBattleEngine.Battle;
 using Kermalis.PokemonBattleEngine.Data;
+using Kermalis.PokemonBattleEngine.Data.Utils;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -117,7 +118,6 @@ namespace Kermalis.PokemonBattleEngineDiscord
             return source[_rand.Next(count)];
         }
 
-        private static readonly object _femaleSpriteLookupLockObj = new();
         private static readonly List<PBESpecies> _femaleSpriteLookup = new();
         public static void InitFemaleSpriteLookup()
         {
@@ -138,10 +138,7 @@ namespace Kermalis.PokemonBattleEngineDiscord
         }
         private static bool HasFemaleSprite(PBESpecies species)
         {
-            lock (_femaleSpriteLookupLockObj)
-            {
-                return _femaleSpriteLookup.Contains(species);
-            }
+            return _femaleSpriteLookup.Contains(species);
         }
         public static string GetPokemonSprite(PBEBattlePokemon pokemon)
         {

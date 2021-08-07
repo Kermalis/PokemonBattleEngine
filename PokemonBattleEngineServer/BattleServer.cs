@@ -1,6 +1,6 @@
 ﻿using Kermalis.PokemonBattleEngine.Battle;
 using Kermalis.PokemonBattleEngine.Data;
-using Kermalis.PokemonBattleEngine.Data.DefaultData;
+using Kermalis.PokemonBattleEngine.DefaultData;
 using Kermalis.PokemonBattleEngine.Network;
 using Kermalis.PokemonBattleEngine.Packets;
 using Kermalis.PokemonBattleEngine.Utils;
@@ -69,7 +69,7 @@ namespace Kermalis.PokemonBattleEngineServer
                 _server.ClientDisconnected += OnClientDisconnected;
                 _server.ClientRefused += OnClientRefused;
                 _server.Error += OnError; // Events unsubscribe in _server.Dispose()
-                _server.Start(new IPEndPoint(ip, port), 100);
+                _server.Start(new IPEndPoint(ip, port), 100, new PBEPacketProcessor());
                 RequireLegalParties = requireLegalParties;
                 PBEDefaultDataProvider.InitEngine(string.Empty);
                 Console.WriteLine("Server online.");

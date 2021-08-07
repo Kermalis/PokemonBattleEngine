@@ -1,4 +1,5 @@
 ﻿using Kermalis.EndianBinaryIO;
+using Kermalis.PokemonBattleEngine.Data.Utils;
 using Kermalis.PokemonBattleEngine.Utils;
 using Newtonsoft.Json.Linq;
 using System;
@@ -34,7 +35,7 @@ namespace Kermalis.PokemonBattleEngine.Data.Legality
             {
                 if (_species != value)
                 {
-                    PBELegalityChecker.ValidateSpecies(value, 0, true);
+                    PBEDataUtils.ValidateSpecies(value, 0, true);
                     PBESpecies oldSpecies = _species;
                     _species = value;
                     _form = 0;
@@ -52,7 +53,7 @@ namespace Kermalis.PokemonBattleEngine.Data.Legality
             {
                 if (_form != value)
                 {
-                    PBELegalityChecker.ValidateSpecies(_species, value, true);
+                    PBEDataUtils.ValidateSpecies(_species, value, true);
                     _form = value;
                     OnPropertyChanged(nameof(Form));
                     OnFormChanged();
@@ -67,7 +68,7 @@ namespace Kermalis.PokemonBattleEngine.Data.Legality
             {
                 if (_nickname != value)
                 {
-                    PBELegalityChecker.ValidateNickname(value, Settings);
+                    PBEDataUtils.ValidateNickname(value, Settings);
                     _nickname = value;
                     OnPropertyChanged(nameof(Nickname));
                 }
@@ -81,7 +82,7 @@ namespace Kermalis.PokemonBattleEngine.Data.Legality
             {
                 if (_level != value)
                 {
-                    PBELegalityChecker.ValidateLevel(value, Settings);
+                    PBEDataUtils.ValidateLevel(value, Settings);
                     _level = value;
                     OnPropertyChanged(nameof(Level));
                     Moveset.Level = value;
@@ -152,7 +153,7 @@ namespace Kermalis.PokemonBattleEngine.Data.Legality
             {
                 if (value != _ability)
                 {
-                    PBELegalityChecker.ValidateAbility(SelectableAbilities, value);
+                    PBEDataUtils.ValidateAbility(SelectableAbilities, value);
                     _ability = value;
                     OnPropertyChanged(nameof(Ability));
                 }
@@ -166,7 +167,7 @@ namespace Kermalis.PokemonBattleEngine.Data.Legality
             {
                 if (value != _nature)
                 {
-                    PBELegalityChecker.ValidateNature(value);
+                    PBEDataUtils.ValidateNature(value);
                     _nature = value;
                     OnPropertyChanged(nameof(Nature));
                 }
@@ -180,7 +181,7 @@ namespace Kermalis.PokemonBattleEngine.Data.Legality
             {
                 if (value != _caughtBall)
                 {
-                    PBELegalityChecker.ValidateCaughtBall(value);
+                    PBEDataUtils.ValidateCaughtBall(value);
                     _caughtBall = value;
                     OnPropertyChanged(nameof(CaughtBall));
                 }
@@ -194,7 +195,7 @@ namespace Kermalis.PokemonBattleEngine.Data.Legality
             {
                 if (value != _gender)
                 {
-                    PBELegalityChecker.ValidateGender(SelectableGenders, value);
+                    PBEDataUtils.ValidateGender(SelectableGenders, value);
                     _gender = value;
                     OnPropertyChanged(nameof(Gender));
                 }
@@ -208,7 +209,7 @@ namespace Kermalis.PokemonBattleEngine.Data.Legality
             {
                 if (value != _item)
                 {
-                    PBELegalityChecker.ValidateItem(SelectableItems, value);
+                    PBEDataUtils.ValidateItem(SelectableItems, value);
                     _item = value;
                     OnPropertyChanged(nameof(Item));
                 }
@@ -226,36 +227,36 @@ namespace Kermalis.PokemonBattleEngine.Data.Legality
             Settings = settings;
             PBESpecies species = r.ReadEnum<PBESpecies>();
             PBEForm form = r.ReadEnum<PBEForm>();
-            PBELegalityChecker.ValidateSpecies(species, form, true);
+            PBEDataUtils.ValidateSpecies(species, form, true);
             _species = species;
             _form = form;
             SetSelectable();
             string nickname = r.ReadStringNullTerminated();
-            PBELegalityChecker.ValidateNickname(nickname, Settings);
+            PBEDataUtils.ValidateNickname(nickname, Settings);
             _nickname = nickname;
             byte level = r.ReadByte();
-            PBELegalityChecker.ValidateLevel(level, Settings);
+            PBEDataUtils.ValidateLevel(level, Settings);
             _level = level;
             uint exp = r.ReadUInt32();
-            PBELegalityChecker.ValidateEXP(_pData!.GrowthRate, exp, level);
+            PBEDataUtils.ValidateEXP(_pData!.GrowthRate, exp, level);
             _exp = exp;
             _friendship = r.ReadByte();
             _shiny = r.ReadBoolean();
             _pokerus = r.ReadBoolean();
             PBEAbility ability = r.ReadEnum<PBEAbility>();
-            PBELegalityChecker.ValidateAbility(SelectableAbilities, ability);
+            PBEDataUtils.ValidateAbility(SelectableAbilities, ability);
             _ability = ability;
             PBENature nature = r.ReadEnum<PBENature>();
-            PBELegalityChecker.ValidateNature(nature);
+            PBEDataUtils.ValidateNature(nature);
             _nature = nature;
             PBEItem caughtBall = r.ReadEnum<PBEItem>();
-            PBELegalityChecker.ValidateCaughtBall(caughtBall);
+            PBEDataUtils.ValidateCaughtBall(caughtBall);
             _caughtBall = caughtBall;
             PBEGender gender = r.ReadEnum<PBEGender>();
-            PBELegalityChecker.ValidateGender(SelectableGenders, gender);
+            PBEDataUtils.ValidateGender(SelectableGenders, gender);
             _gender = gender;
             PBEItem item = r.ReadEnum<PBEItem>();
-            PBELegalityChecker.ValidateItem(SelectableItems, item);
+            PBEDataUtils.ValidateItem(SelectableItems, item);
             _item = item;
             EffortValues = new PBELegalEffortValues(Settings, r);
             IndividualValues = new PBELegalIndividualValues(Settings, r);
@@ -268,22 +269,22 @@ namespace Kermalis.PokemonBattleEngine.Data.Legality
             _shiny = jToken.GetSafe(nameof(Shiny)).Value<bool>();
             _pokerus = jToken.GetSafe(nameof(Pokerus)).Value<bool>();
             byte level = jToken.GetSafe(nameof(Level)).Value<byte>();
-            PBELegalityChecker.ValidateLevel(level, Settings);
+            PBEDataUtils.ValidateLevel(level, Settings);
             _level = level;
             string nickname = jToken.GetSafeString(nameof(Nickname));
-            PBELegalityChecker.ValidateNickname(nickname, Settings);
+            PBEDataUtils.ValidateNickname(nickname, Settings);
             _nickname = nickname;
             if (!PBEDataProvider.Instance.GetNatureByName(jToken.GetSafeString(nameof(Nature)), out PBENature? nature))
             {
                 throw new InvalidDataException("Invalid nature");
             }
-            PBELegalityChecker.ValidateNature(nature.Value);
+            PBEDataUtils.ValidateNature(nature.Value);
             _nature = nature.Value;
             if (!PBEDataProvider.Instance.GetItemByName(jToken.GetSafeString(nameof(CaughtBall)), out PBEItem? caughtBall))
             {
                 throw new InvalidDataException("Invalid caught ball");
             }
-            PBELegalityChecker.ValidateCaughtBall(caughtBall.Value);
+            PBEDataUtils.ValidateCaughtBall(caughtBall.Value);
             _caughtBall = caughtBall.Value;
             if (!PBEDataProvider.Instance.GetSpeciesByName(jToken.GetSafeString(nameof(Species)), out PBESpecies? species))
             {
@@ -298,30 +299,30 @@ namespace Kermalis.PokemonBattleEngine.Data.Legality
             {
                 form = 0;
             }
-            PBELegalityChecker.ValidateSpecies(species.Value, form, true);
+            PBEDataUtils.ValidateSpecies(species.Value, form, true);
             _species = species.Value;
             _form = form;
             SetSelectable();
             uint exp = jToken.GetSafe(nameof(EXP)).Value<uint>();
-            PBELegalityChecker.ValidateEXP(_pData.GrowthRate, exp, level);
+            PBEDataUtils.ValidateEXP(_pData.GrowthRate, exp, level);
             _exp = exp;
             if (!PBEDataProvider.Instance.GetAbilityByName(jToken.GetSafeString(nameof(Ability)), out PBEAbility? ability))
             {
                 throw new InvalidDataException("Invalid ability");
             }
-            PBELegalityChecker.ValidateAbility(SelectableAbilities, ability.Value);
+            PBEDataUtils.ValidateAbility(SelectableAbilities, ability.Value);
             _ability = ability.Value;
             if (!PBEDataProvider.Instance.GetGenderByName(jToken.GetSafeString(nameof(Gender)), out PBEGender? gender))
             {
                 throw new InvalidDataException("Invalid gender");
             }
-            PBELegalityChecker.ValidateGender(SelectableGenders, gender.Value);
+            PBEDataUtils.ValidateGender(SelectableGenders, gender.Value);
             _gender = gender.Value;
             if (!PBEDataProvider.Instance.GetItemByName(jToken.GetSafeString(nameof(Item)), out PBEItem? item))
             {
                 throw new InvalidDataException("Invalid item");
             }
-            PBELegalityChecker.ValidateItem(SelectableItems, item.Value);
+            PBEDataUtils.ValidateItem(SelectableItems, item.Value);
             _item = item.Value;
             EffortValues = new PBELegalEffortValues(Settings, jToken.GetSafe(nameof(EffortValues)));
             IndividualValues = new PBELegalIndividualValues(Settings, jToken.GetSafe(nameof(IndividualValues)));
@@ -330,9 +331,9 @@ namespace Kermalis.PokemonBattleEngine.Data.Legality
         public PBELegalPokemon(PBESpecies species, PBEForm form, byte level, uint exp, PBESettings settings)
         {
             settings.ShouldBeReadOnly(nameof(settings));
-            PBELegalityChecker.ValidateSpecies(species, form, true);
-            PBELegalityChecker.ValidateLevel(level, settings);
-            PBELegalityChecker.ValidateEXP(PBEDataProvider.Instance.GetPokemonData(species, form).GrowthRate, exp, level);
+            PBEDataUtils.ValidateSpecies(species, form, true);
+            PBEDataUtils.ValidateLevel(level, settings);
+            PBEDataUtils.ValidateEXP(PBEDataProvider.Instance.GetPokemonData(species, form).GrowthRate, exp, level);
             Settings = settings;
             _species = species;
             _form = form;

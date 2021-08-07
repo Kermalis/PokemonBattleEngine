@@ -393,7 +393,7 @@ namespace Kermalis.PokemonBattleEngineClient.Clients
                             switch (tsp.TeamStatusAction)
                             {
                                 case PBETeamStatusAction.Added: team.SpikeCount++; break;
-                                //case PBETeamStatusAction.Cleared: team.SpikeCount = 0; break;
+                                    //case PBETeamStatusAction.Cleared: team.SpikeCount = 0; break;
                             }
                             break;
                         }

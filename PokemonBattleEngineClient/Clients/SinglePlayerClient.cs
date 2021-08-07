@@ -1,5 +1,5 @@
-﻿using Kermalis.PokemonBattleEngine.AI;
-using Kermalis.PokemonBattleEngine.Battle;
+﻿using Kermalis.PokemonBattleEngine.Battle;
+using Kermalis.PokemonBattleEngine.DefaultData.AI;
 using Kermalis.PokemonBattleEngine.Packets;
 using Kermalis.PokemonBattleEngineClient.Views;
 using System.Threading;
@@ -13,6 +13,7 @@ namespace Kermalis.PokemonBattleEngineClient.Clients
         public override PBETrainer? Trainer { get; }
         public override BattleView BattleView { get; }
         public override bool HideNonOwned => true;
+        private readonly PBEDDAI[] _ais;
 
         public SinglePlayerClient(PBEBattle b, string name) : base(name)
         {
@@ -21,6 +22,11 @@ namespace Kermalis.PokemonBattleEngineClient.Clients
             BattleView = new BattleView(this);
             b.OnNewEvent += SinglePlayerBattle_OnNewEvent;
             b.OnStateChanged += SinglePlayerBattle_OnStateChanged;
+            _ais = new PBEDDAI[b.Trainers.Count - 1];
+            for (int i = 0; i < _ais.Length; i++)
+            {
+                _ais[i] = new PBEDDAI(b.Trainers[i + 1]);
+            }
             ShowAllPokemon();
             new Thread(b.Begin) { Name = ThreadName }.Start();
         }
@@ -51,6 +57,11 @@ namespace Kermalis.PokemonBattleEngineClient.Clients
             new Thread(() => Trainer!.SelectSwitchesIfValid(Switches, out _)) { Name = ThreadName }.Start();
         }
 
+        private PBEDDAI GetAI(PBETrainer t)
+        {
+            return _ais[t.Id - 1];
+        }
+
         public override void Dispose()
         {
             Battle.SetEnded(); // Events unsubscribed
@@ -69,7 +80,7 @@ namespace Kermalis.PokemonBattleEngineClient.Clients
                     }
                     else
                     {
-                        new Thread(t.CreateAIActions) { Name = ThreadName }.Start();
+                        new Thread(GetAI(t).CreateActions) { Name = ThreadName }.Start();
                     }
                     return true;
                 }
@@ -83,7 +94,7 @@ namespace Kermalis.PokemonBattleEngineClient.Clients
                     }
                     else
                     {
-                        new Thread(t.CreateAISwitches) { Name = ThreadName }.Start();
+                        new Thread(GetAI(t).CreateAISwitches) { Name = ThreadName }.Start();
                     }
                     return true;
                 }

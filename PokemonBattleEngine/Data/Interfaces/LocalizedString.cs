@@ -3,7 +3,7 @@ using System.Globalization;
 
 namespace Kermalis.PokemonBattleEngine.Data
 {
-    public interface IPBELocalizedString
+    public interface IPBEReadOnlyLocalizedString
     {
         string English { get; }
         string French { get; }
@@ -13,6 +13,17 @@ namespace Kermalis.PokemonBattleEngine.Data
         string Japanese_Kanji { get; }
         string Korean { get; }
         string Spanish { get; }
+    }
+    public interface IPBELocalizedString : IPBEReadOnlyLocalizedString
+    {
+        new string English { get; set; }
+        new string French { get; set; }
+        new string German { get; set; }
+        new string Italian { get; set; }
+        new string Japanese_Kana { get; set; }
+        new string Japanese_Kanji { get; set; }
+        new string Korean { get; set; }
+        new string Spanish { get; set; }
     }
 
     public static class PBELanguageExtensions
@@ -53,11 +64,11 @@ namespace Kermalis.PokemonBattleEngine.Data
             }
         }
 
-        public static string FromGlobalLanguage(this IPBELocalizedString str)
+        public static string FromGlobalLanguage(this IPBEReadOnlyLocalizedString str)
         {
             return str.Get(PBEDataProvider.GlobalLanguage);
         }
-        public static string Get(this IPBELocalizedString str, PBELanguage lang)
+        public static string Get(this IPBEReadOnlyLocalizedString str, PBELanguage lang)
         {
             switch (lang)
             {

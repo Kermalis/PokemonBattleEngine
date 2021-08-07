@@ -1,6 +1,6 @@
 ﻿using Avalonia.Media.Imaging;
 using Kermalis.PokemonBattleEngine.Battle;
-using Kermalis.PokemonBattleEngine.Data;
+using Kermalis.PokemonBattleEngine.Data.Utils;
 using Kermalis.PokemonBattleEngineClient.Clients;
 using Kermalis.PokemonBattleEngineClient.Infrastructure;
 

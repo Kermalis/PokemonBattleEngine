@@ -1,6 +1,7 @@
 ﻿using Kermalis.PokemonBattleEngine.Battle;
 using Kermalis.PokemonBattleEngine.Data;
-using Kermalis.PokemonBattleEngine.Data.DefaultData;
+using Kermalis.PokemonBattleEngine.Data.Utils;
+using Kermalis.PokemonBattleEngine.DefaultData;
 using Kermalis.PokemonBattleEngine.Packets;
 using System;
 using System.Collections;

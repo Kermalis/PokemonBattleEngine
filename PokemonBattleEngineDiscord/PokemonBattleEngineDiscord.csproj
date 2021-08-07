@@ -14,7 +14,7 @@
 
 	<ItemGroup>
 		<PackageReference Include="Discord.Net" Version="2.4.0" />
-		<ProjectReference Include="..\PokemonBattleEngine\PokemonBattleEngine.csproj" />
+		<ProjectReference Include="..\PokemonBattleEngine.DefaultData\PokemonBattleEngine.DefaultData.csproj" />
 	</ItemGroup>
 
 </Project>

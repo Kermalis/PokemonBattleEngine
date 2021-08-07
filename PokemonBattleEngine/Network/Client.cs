@@ -35,6 +35,7 @@ namespace Kermalis.PokemonBattleEngine.Network
 
         private Socket? _socket;
         private PBEEncryption? _encryption;
+        private PBEPacketProcessor _packetProcessor = null!; // Set in Connect()
         private byte[]? _buffer;
 
         public IPEndPoint? RemoteIP { get; private set; }
@@ -45,7 +46,7 @@ namespace Kermalis.PokemonBattleEngine.Network
         public event EventHandler<Exception>? Error;
         public event EventHandler<IPBEPacket>? PacketReceived;
 
-        public bool Connect(IPEndPoint ip, int millisecondsTimeout, PBEEncryption? encryption = null)
+        public bool Connect(IPEndPoint ip, int millisecondsTimeout, PBEPacketProcessor packetProcessor, PBEEncryption? encryption = null)
         {
             if (millisecondsTimeout < -1)
             {
@@ -62,6 +63,7 @@ namespace Kermalis.PokemonBattleEngine.Network
                     IsConnected = true;
                     RemoteIP = ip;
                     _encryption = encryption;
+                    _packetProcessor = packetProcessor;
                     BeginReceive();
                     return true;
                 }
@@ -166,7 +168,7 @@ namespace Kermalis.PokemonBattleEngine.Network
                     {
                         data = _encryption.Decrypt(data);
                     }
-                    PacketReceived?.Invoke(this, PBEPacketProcessor.CreatePacket(Battle, data));
+                    PacketReceived?.Invoke(this, _packetProcessor.CreatePacket(data, Battle));
                     BeginReceive();
                 }
             }

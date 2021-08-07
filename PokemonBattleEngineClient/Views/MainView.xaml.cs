@@ -4,9 +4,9 @@ using Avalonia.Threading;
 using Kermalis.PokemonBattleEngine.Battle;
 using Kermalis.PokemonBattleEngine.Data;
 using Kermalis.PokemonBattleEngine.Data.Legality;
+using Kermalis.PokemonBattleEngine.DefaultData;
 using Kermalis.PokemonBattleEngine.Network;
 using Kermalis.PokemonBattleEngine.Packets;
-using Kermalis.PokemonBattleEngine.Utils;
 using Kermalis.PokemonBattleEngineClient.Clients;
 using System;
 using System.Collections.Generic;
@@ -130,8 +130,8 @@ namespace Kermalis.PokemonBattleEngineClient.Views
             {
                 PBELegalPokemonCollection p0, p1;
                 int numPerTrainer = settings.MaxPartySize;
-                p0 = PBERandomTeamGenerator.CreateRandomTeam(numPerTrainer);
-                p1 = PBERandomTeamGenerator.CreateRandomTeam(numPerTrainer);
+                p0 = PBEDDRandomTeamGenerator.CreateRandomTeam(numPerTrainer);
+                p1 = PBEDDRandomTeamGenerator.CreateRandomTeam(numPerTrainer);
                 t0 = new[] { new PBETrainerInfo(p0, GetName(), true) };
                 t1 = new[] { new PBETrainerInfo(p1, "Champion Cynthia", false) };
             }
@@ -154,10 +154,10 @@ namespace Kermalis.PokemonBattleEngineClient.Views
                     {
                         PBELegalPokemonCollection p0, p1, p2, p3;
                         int numPerTrainer = settings.MaxPartySize / 2;
-                        p0 = PBERandomTeamGenerator.CreateRandomTeam(numPerTrainer);
-                        p1 = PBERandomTeamGenerator.CreateRandomTeam(numPerTrainer);
-                        p2 = PBERandomTeamGenerator.CreateRandomTeam(numPerTrainer);
-                        p3 = PBERandomTeamGenerator.CreateRandomTeam(numPerTrainer);
+                        p0 = PBEDDRandomTeamGenerator.CreateRandomTeam(numPerTrainer);
+                        p1 = PBEDDRandomTeamGenerator.CreateRandomTeam(numPerTrainer);
+                        p2 = PBEDDRandomTeamGenerator.CreateRandomTeam(numPerTrainer);
+                        p3 = PBEDDRandomTeamGenerator.CreateRandomTeam(numPerTrainer);
                         t0 = new[] { new PBETrainerInfo(p0, GetName(), true), new PBETrainerInfo(p1, "Barry", false) };
                         t1 = new[] { new PBETrainerInfo(p2, "Leader Volkner", false), new PBETrainerInfo(p3, "Elite Four Flint", false) };
                     }
@@ -174,12 +174,12 @@ namespace Kermalis.PokemonBattleEngineClient.Views
                     {
                         PBELegalPokemonCollection p0, p1, p2, p3, p4, p5;
                         int numPerTrainer = settings.MaxPartySize / 3;
-                        p0 = PBERandomTeamGenerator.CreateRandomTeam(numPerTrainer);
-                        p1 = PBERandomTeamGenerator.CreateRandomTeam(numPerTrainer);
-                        p2 = PBERandomTeamGenerator.CreateRandomTeam(numPerTrainer);
-                        p3 = PBERandomTeamGenerator.CreateRandomTeam(numPerTrainer);
-                        p4 = PBERandomTeamGenerator.CreateRandomTeam(numPerTrainer);
-                        p5 = PBERandomTeamGenerator.CreateRandomTeam(numPerTrainer);
+                        p0 = PBEDDRandomTeamGenerator.CreateRandomTeam(numPerTrainer);
+                        p1 = PBEDDRandomTeamGenerator.CreateRandomTeam(numPerTrainer);
+                        p2 = PBEDDRandomTeamGenerator.CreateRandomTeam(numPerTrainer);
+                        p3 = PBEDDRandomTeamGenerator.CreateRandomTeam(numPerTrainer);
+                        p4 = PBEDDRandomTeamGenerator.CreateRandomTeam(numPerTrainer);
+                        p5 = PBEDDRandomTeamGenerator.CreateRandomTeam(numPerTrainer);
                         t0 = new[] { new PBETrainerInfo(p0, GetName(), true), new PBETrainerInfo(p1, "Barry", false), new PBETrainerInfo(p2, "Lucas", false) };
                         t1 = new[] { new PBETrainerInfo(p3, "Champion Cynthia", false), new PBETrainerInfo(p4, "Leader Volkner", false), new PBETrainerInfo(p5, "Elite Four Flint", false) };
                     }

@@ -1,7 +1,6 @@
 ﻿using Kermalis.PokemonBattleEngine.Data;
 using System;
 using System.Collections.Generic;
-using System.Linq;
 
 namespace Kermalis.PokemonBattleEngine.Battle
 {

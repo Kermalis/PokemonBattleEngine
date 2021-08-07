@@ -1,4 +1,5 @@
 ﻿using Kermalis.EndianBinaryIO;
+using Kermalis.PokemonBattleEngine.Data.Utils;
 using Kermalis.PokemonBattleEngine.Utils;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
@@ -148,9 +149,9 @@ namespace Kermalis.PokemonBattleEngine.Data.Legality
         }
         public void Add(PBESpecies species, PBEForm form, byte level, uint exp)
         {
-            PBELegalityChecker.ValidateSpecies(species, form, true);
-            PBELegalityChecker.ValidateLevel(level, Settings);
-            PBELegalityChecker.ValidateEXP(PBEDataProvider.Instance.GetPokemonData(species, form).GrowthRate, exp, level);
+            PBEDataUtils.ValidateSpecies(species, form, true);
+            PBEDataUtils.ValidateLevel(level, Settings);
+            PBEDataUtils.ValidateEXP(PBEDataProvider.Instance.GetPokemonData(species, form).GrowthRate, exp, level);
             if (_list.Count < Settings.MaxPartySize)
             {
                 Insert(species, form, level, exp, true, _list.Count);
@@ -188,8 +189,8 @@ namespace Kermalis.PokemonBattleEngine.Data.Legality
         }
         public void Insert(PBESpecies species, PBEForm form, byte level, uint exp, int index)
         {
-            PBELegalityChecker.ValidateSpecies(species, form, true);
-            PBELegalityChecker.ValidateLevel(level, Settings);
+            PBEDataUtils.ValidateSpecies(species, form, true);
+            PBEDataUtils.ValidateLevel(level, Settings);
             if (_list.Count < Settings.MaxPartySize)
             {
                 Insert(species, form, level, exp, true, index);

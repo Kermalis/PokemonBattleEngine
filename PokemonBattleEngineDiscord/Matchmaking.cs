@@ -4,7 +4,7 @@ using Discord.WebSocket;
 using Kermalis.PokemonBattleEngine.Battle;
 using Kermalis.PokemonBattleEngine.Data;
 using Kermalis.PokemonBattleEngine.Data.Legality;
-using Kermalis.PokemonBattleEngine.Utils;
+using Kermalis.PokemonBattleEngine.DefaultData;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
@@ -81,8 +81,8 @@ namespace Kermalis.PokemonBattleEngineDiscord
         {
             PBELegalPokemonCollection p0, p1;
             // Competitively Randomized Pokémon
-            p0 = PBERandomTeamGenerator.CreateRandomTeam(3);
-            p1 = PBERandomTeamGenerator.CreateRandomTeam(3);
+            p0 = PBEDDRandomTeamGenerator.CreateRandomTeam(3);
+            p1 = PBEDDRandomTeamGenerator.CreateRandomTeam(3);
 
             var battle = new PBEBattle(PBEBattleFormat.Single, PBESettings.DefaultSettings, new PBETrainerInfo(p0, team0Name, false), new PBETrainerInfo(p1, team1Name, false));
 

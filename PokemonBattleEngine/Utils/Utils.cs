@@ -35,15 +35,11 @@ namespace Kermalis.PokemonBattleEngine.Utils
         {
             foreach (T t in source)
             {
-                if (Equals(t, one))
+                if (!Equals(t, one))
                 {
                     yield return t;
                 }
             }
-        }
-        internal static string Print<T>(this IEnumerable<T> source)
-        {
-            return "( " + string.Join(", ", source) + " )";
         }
         /// <summary>Removes all invalid file name characters from <paramref name="fileName"/>.</summary>
         internal static string ToSafeFileName(string fileName)

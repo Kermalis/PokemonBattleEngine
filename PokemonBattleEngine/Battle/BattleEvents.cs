@@ -1,8 +1,8 @@
 ﻿using Kermalis.PokemonBattleEngine.Data;
+using Kermalis.PokemonBattleEngine.Data.Utils;
 using Kermalis.PokemonBattleEngine.Packets;
 using Kermalis.PokemonBattleEngine.Utils;
 using System;
-using System.Diagnostics.CodeAnalysis;
 using System.IO;
 using System.Linq;
 
@@ -1603,8 +1603,8 @@ namespace Kermalis.PokemonBattleEngine.Battle
                         {
                             switch (wp.WeatherAction)
                             {
-                                case PBEWeatherAction.Added: return  "It started to rain!";
-                                case PBEWeatherAction.Ended: return  "The rain stopped.";
+                                case PBEWeatherAction.Added: return "It started to rain!";
+                                case PBEWeatherAction.Ended: return "The rain stopped.";
                                 default: throw new InvalidDataException(nameof(wp.WeatherAction));
                             }
                         }
@@ -1612,8 +1612,8 @@ namespace Kermalis.PokemonBattleEngine.Battle
                         {
                             switch (wp.WeatherAction)
                             {
-                                case PBEWeatherAction.Added: return  "A sandstorm kicked up!";
-                                case PBEWeatherAction.Ended: return  "The sandstorm subsided.";
+                                case PBEWeatherAction.Added: return "A sandstorm kicked up!";
+                                case PBEWeatherAction.Ended: return "The sandstorm subsided.";
                                 default: throw new InvalidDataException(nameof(wp.WeatherAction));
                             }
                         }

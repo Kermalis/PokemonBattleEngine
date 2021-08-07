@@ -1,4 +1,5 @@
 ﻿using Kermalis.EndianBinaryIO;
+using Kermalis.PokemonBattleEngine.Data.Utils;
 using Kermalis.PokemonBattleEngine.Utils;
 using Newtonsoft.Json.Linq;
 using System;
@@ -151,6 +152,7 @@ namespace Kermalis.PokemonBattleEngine.Data.Legality
             Validate(speed);
             Settings = settings;
             _ivs = CreateIVs(hp, attack, defense, spAttack, spDefense, speed);
+            UpdateHiddenPower();
         }
         internal PBELegalIndividualValues(PBESettings settings, JToken jToken)
         {
@@ -175,17 +177,20 @@ namespace Kermalis.PokemonBattleEngine.Data.Legality
             Validate(speed, nameof(PBEStat.Speed));
             Settings = settings;
             _ivs = CreateIVs(hp, attack, defense, spAttack, spDefense, speed);
+            UpdateHiddenPower();
         }
         internal PBELegalIndividualValues(PBELegalIndividualValues other)
         {
             Settings = other.Settings;
             _ivs = CreateIVs(other.HP, other.Attack, other.Defense, other.SpAttack, other.SpDefense, other.Speed);
+            UpdateHiddenPower();
         }
         public PBELegalIndividualValues(PBESettings settings, bool randomize)
         {
             settings.ShouldBeReadOnly(nameof(settings));
             Settings = settings;
             _ivs = CreateIVs(0, 0, 0, 0, 0, 0);
+            UpdateHiddenPower();
             if (randomize)
             {
                 Randomize();
@@ -194,7 +199,7 @@ namespace Kermalis.PokemonBattleEngine.Data.Legality
 
         private PBELegalIndividualValue[] CreateIVs(byte hp, byte attack, byte defense, byte spAttack, byte spDefense, byte speed)
         {
-            var ivs = new PBELegalIndividualValue[6]
+            return new PBELegalIndividualValue[6]
             {
                 new PBELegalIndividualValue(this, PBEStat.HP, hp),
                 new PBELegalIndividualValue(this, PBEStat.Attack, attack),
@@ -203,8 +208,6 @@ namespace Kermalis.PokemonBattleEngine.Data.Legality
                 new PBELegalIndividualValue(this, PBEStat.SpDefense, spDefense),
                 new PBELegalIndividualValue(this, PBEStat.Speed, speed)
             };
-            UpdateHiddenPower();
-            return ivs;
         }
         private void UpdateHiddenPower()
         {

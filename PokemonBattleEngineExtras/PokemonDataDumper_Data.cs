@@ -1,4 +1,5 @@
 ﻿using Kermalis.PokemonBattleEngine.Data;
+using Kermalis.PokemonBattleEngine.DefaultData;
 using System.Collections.Generic;
 
 namespace Kermalis.PokemonBattleEngineExtras
@@ -24,8 +25,8 @@ namespace Kermalis.PokemonBattleEngineExtras
             public List<(PBESpecies, PBEForm)> PreEvolutions = new();
             public List<(PBESpecies, PBEForm)> Evolutions = new();
             public List<PBEAbility> Abilities = new();
-            public Dictionary<(PBEMove Move, byte Level), PBEMoveObtainMethod> LevelUpMoves = new();
-            public Dictionary<PBEMove, PBEMoveObtainMethod> OtherMoves = new();
+            public Dictionary<(PBEMove Move, byte Level), PBEDDMoveObtainMethod> LevelUpMoves = new();
+            public Dictionary<PBEMove, PBEDDMoveObtainMethod> OtherMoves = new();
         }
 
         #region Static Collections

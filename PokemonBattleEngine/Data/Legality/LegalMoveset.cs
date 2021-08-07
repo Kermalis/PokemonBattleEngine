@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Kermalis.PokemonBattleEngine.Data.Utils;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -185,7 +186,7 @@ namespace Kermalis.PokemonBattleEngine.Data.Legality
             {
                 if (_species != value)
                 {
-                    PBELegalityChecker.ValidateSpecies(value, 0, true);
+                    PBEDataUtils.ValidateSpecies(value, 0, true);
                     _species = value;
                     _form = 0;
                     OnPropertyChanged(nameof(Species));
@@ -201,7 +202,7 @@ namespace Kermalis.PokemonBattleEngine.Data.Legality
             {
                 if (_form != value)
                 {
-                    PBELegalityChecker.ValidateSpecies(_species, value, true);
+                    PBEDataUtils.ValidateSpecies(_species, value, true);
                     _form = value;
                     OnPropertyChanged(nameof(Form));
                     SetAlloweds();
@@ -216,7 +217,7 @@ namespace Kermalis.PokemonBattleEngine.Data.Legality
             {
                 if (_level != value)
                 {
-                    PBELegalityChecker.ValidateLevel(value, Settings);
+                    PBEDataUtils.ValidateLevel(value, Settings);
                     _level = value;
                     OnPropertyChanged(nameof(Level));
                     SetAlloweds();
@@ -319,8 +320,8 @@ namespace Kermalis.PokemonBattleEngine.Data.Legality
         public PBELegalMoveset(PBESpecies species, PBEForm form, byte level, PBESettings settings, bool randomize)
         {
             settings.ShouldBeReadOnly(nameof(settings));
-            PBELegalityChecker.ValidateSpecies(species, form, true);
-            PBELegalityChecker.ValidateLevel(level, settings);
+            PBEDataUtils.ValidateSpecies(species, form, true);
+            PBEDataUtils.ValidateLevel(level, settings);
             _level = level;
             _species = species;
             _form = form;
@@ -343,7 +344,7 @@ namespace Kermalis.PokemonBattleEngine.Data.Legality
         {
             // Set alloweds
             int i;
-            IReadOnlyCollection<PBEMove> legalMoves = PBELegalityChecker.GetLegalMoves(_species, _form, _level, Settings);
+            IReadOnlyCollection<PBEMove> legalMoves = PBEDataProvider.Instance.GetLegalMoves(_species, _form, _level);
             var allowed = new List<PBEMove>(legalMoves.Count + 1);
             allowed.AddRange(legalMoves);
             if (_species == PBESpecies.Keldeo && _form == PBEForm.Keldeo_Resolute)

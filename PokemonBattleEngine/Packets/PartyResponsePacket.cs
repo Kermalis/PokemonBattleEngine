@@ -1,7 +1,6 @@
 ﻿using Kermalis.EndianBinaryIO;
 using Kermalis.PokemonBattleEngine.Data;
 using Kermalis.PokemonBattleEngine.Data.Legality;
-using System;
 using System.Collections.ObjectModel;
 using System.IO;
 

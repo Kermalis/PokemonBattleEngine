@@ -1,6 +1,7 @@
 ﻿using Kermalis.PokemonBattleEngine.Battle;
 using Kermalis.PokemonBattleEngine.Utils;
 using System;
+using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 
 namespace Kermalis.PokemonBattleEngine.Data
@@ -34,10 +35,10 @@ namespace Kermalis.PokemonBattleEngine.Data
         public abstract bool HasEvolutions(PBESpecies species, PBEForm form, bool cache = true);
         public abstract IPBEPokemonData GetPokemonData(IPBESpeciesForm pkmn, bool cache = true);
         public abstract IPBEPokemonData GetPokemonData(PBESpecies species, PBEForm form, bool cache = true);
-        public abstract IPBEPokemonDataExtended GetPokemonDataExtended(IPBESpeciesForm pkmn, bool cache = true);
-        public abstract IPBEPokemonDataExtended GetPokemonDataExtended(PBESpecies species, PBEForm form, bool cache = true);
 
         public abstract int GetSpeciesCaught();
+
+        public abstract IReadOnlyCollection<PBEMove> GetLegalMoves(PBESpecies species, PBEForm form, byte level);
 
         #endregion
 
@@ -72,29 +73,29 @@ namespace Kermalis.PokemonBattleEngine.Data
         #region LocalizedString
 
         public abstract bool GetAbilityByName(string abilityName, [NotNullWhen(true)] out PBEAbility? ability);
-        public abstract IPBELocalizedString GetAbilityDescription(PBEAbility ability);
-        public abstract IPBELocalizedString GetAbilityName(PBEAbility ability);
+        public abstract IPBEReadOnlyLocalizedString GetAbilityDescription(PBEAbility ability);
+        public abstract IPBEReadOnlyLocalizedString GetAbilityName(PBEAbility ability);
         public abstract bool GetFormByName(PBESpecies species, string formName, [NotNullWhen(true)] out PBEForm? form);
-        public abstract IPBELocalizedString GetFormName(IPBESpeciesForm pkmn);
-        public abstract IPBELocalizedString GetFormName(PBESpecies species, PBEForm form);
+        public abstract IPBEReadOnlyLocalizedString GetFormName(IPBESpeciesForm pkmn);
+        public abstract IPBEReadOnlyLocalizedString GetFormName(PBESpecies species, PBEForm form);
         public abstract bool GetGenderByName(string genderName, [NotNullWhen(true)] out PBEGender? gender);
-        public abstract IPBELocalizedString GetGenderName(PBEGender gender);
+        public abstract IPBEReadOnlyLocalizedString GetGenderName(PBEGender gender);
         public abstract bool GetItemByName(string itemName, [NotNullWhen(true)] out PBEItem? item);
-        public abstract IPBELocalizedString GetItemDescription(PBEItem item);
-        public abstract IPBELocalizedString GetItemName(PBEItem item);
+        public abstract IPBEReadOnlyLocalizedString GetItemDescription(PBEItem item);
+        public abstract IPBEReadOnlyLocalizedString GetItemName(PBEItem item);
         public abstract bool GetMoveByName(string moveName, [NotNullWhen(true)] out PBEMove? move);
-        public abstract IPBELocalizedString GetMoveDescription(PBEMove move);
-        public abstract IPBELocalizedString GetMoveName(PBEMove move);
+        public abstract IPBEReadOnlyLocalizedString GetMoveDescription(PBEMove move);
+        public abstract IPBEReadOnlyLocalizedString GetMoveName(PBEMove move);
         public abstract bool GetNatureByName(string natureName, [NotNullWhen(true)] out PBENature? nature);
-        public abstract IPBELocalizedString GetNatureName(PBENature nature);
+        public abstract IPBEReadOnlyLocalizedString GetNatureName(PBENature nature);
         public abstract bool GetSpeciesByName(string speciesName, [NotNullWhen(true)] out PBESpecies? species);
-        public abstract IPBELocalizedString GetSpeciesCategory(PBESpecies species);
-        public abstract IPBELocalizedString GetSpeciesEntry(PBESpecies species);
-        public abstract IPBELocalizedString GetSpeciesName(PBESpecies species);
+        public abstract IPBEReadOnlyLocalizedString GetSpeciesCategory(PBESpecies species);
+        public abstract IPBEReadOnlyLocalizedString GetSpeciesEntry(PBESpecies species);
+        public abstract IPBEReadOnlyLocalizedString GetSpeciesName(PBESpecies species);
         public abstract bool GetStatByName(string statName, [NotNullWhen(true)] out PBEStat? stat);
-        public abstract IPBELocalizedString GetStatName(PBEStat stat);
+        public abstract IPBEReadOnlyLocalizedString GetStatName(PBEStat stat);
         public abstract bool GetTypeByName(string typeName, [NotNullWhen(true)] out PBEType? type);
-        public abstract IPBELocalizedString GetTypeName(PBEType type);
+        public abstract IPBEReadOnlyLocalizedString GetTypeName(PBEType type);
 
         #endregion
     }

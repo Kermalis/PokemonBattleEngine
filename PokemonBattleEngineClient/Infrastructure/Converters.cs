@@ -2,6 +2,7 @@
 using Avalonia.Data.Converters;
 using Kermalis.PokemonBattleEngine.Battle;
 using Kermalis.PokemonBattleEngine.Data;
+using Kermalis.PokemonBattleEngine.Data.Utils;
 using System;
 using System.Collections.Generic;
 using System.Globalization;
@@ -19,7 +20,7 @@ namespace Kermalis.PokemonBattleEngineClient.Infrastructure
                 return AvaloniaProperty.UnsetValue;
             }
             PBEForm form = true ? 0 : (PBEForm)values[1]; // TODO
-            IPBELocalizedString localized = PBEDataProvider.Instance.GetFormName(species, form);
+            IPBEReadOnlyLocalizedString localized = PBEDataProvider.Instance.GetFormName(species, form);
             return StringRenderer.Render(localized.FromGlobalLanguage(), parameter?.ToString());
         }
     }
@@ -32,13 +33,13 @@ namespace Kermalis.PokemonBattleEngineClient.Infrastructure
             {
                 return AvaloniaProperty.UnsetValue;
             }
-            IPBELocalizedString? localized = null;
+            IPBEReadOnlyLocalizedString? localized = null;
             switch (value)
             {
                 case PBEAbility ability: localized = PBEDataProvider.Instance.GetAbilityName(ability); break;
                 case PBEGender gender: localized = PBEDataProvider.Instance.GetGenderName(gender); break;
                 case PBEItem item: localized = PBEDataProvider.Instance.GetItemName(item); break;
-                case IPBELocalizedString l: localized = l; break;
+                case IPBEReadOnlyLocalizedString l: localized = l; break;
                 case PBEMove move: localized = PBEDataProvider.Instance.GetMoveName(move); break;
                 case PBENature nature: localized = PBEDataProvider.Instance.GetNatureName(nature); break;
                 case PBESpecies species: localized = PBEDataProvider.Instance.GetSpeciesName(species); break;

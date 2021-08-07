@@ -1,16 +1,18 @@
 ﻿using Kermalis.EndianBinaryIO;
 using Kermalis.PokemonBattleEngine.Battle;
 using Kermalis.PokemonBattleEngine.Data;
+using Kermalis.PokemonBattleEngine.Data.Utils;
 using System;
 using System.Collections.Generic;
 
 namespace Kermalis.PokemonBattleEngine.Utils
 {
+    /// <summary>A random helper. This class is thread-safe.</summary>
     public class PBERandom
     {
-        private readonly object _randLockObj = new();
-        private Random _rand;
-        private int _seed;
+        protected readonly object _randLockObj = new();
+        protected Random _rand;
+        protected int _seed;
         /// <summary>Gets or sets the seed of this <see cref="PBERandom"/>. The chain will be reset even if the seed is the same as the previous seed.</summary>
         public int Seed
         {

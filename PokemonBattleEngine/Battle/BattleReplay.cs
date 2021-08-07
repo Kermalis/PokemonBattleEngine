@@ -3,7 +3,6 @@ using Kermalis.PokemonBattleEngine.Data;
 using Kermalis.PokemonBattleEngine.Packets;
 using Kermalis.PokemonBattleEngine.Utils;
 using System;
-using System.Diagnostics.CodeAnalysis;
 using System.IO;
 using System.Linq;
 using System.Security.Cryptography;
@@ -69,7 +68,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
             }
         }
 
-        public static PBEBattle LoadReplay(string path)
+        public static PBEBattle LoadReplay(string path, PBEPacketProcessor packetProcessor)
         {
             byte[] fileBytes = File.ReadAllBytes(path);
             using (var s = new MemoryStream(fileBytes))
@@ -97,7 +96,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                 }
                 for (int i = 0; i < numEvents; i++)
                 {
-                    IPBEPacket packet = PBEPacketProcessor.CreatePacket(b, r.ReadBytes(r.ReadUInt16()));
+                    IPBEPacket packet = packetProcessor.CreatePacket(r.ReadBytes(r.ReadUInt16()), b);
                     if (packet is PBEBattlePacket bp)
                     {
                         if (i != 0)
