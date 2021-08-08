@@ -88,7 +88,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                 }
                 ushort version = r.ReadUInt16(); // Unused for now
                 int seed = r.ReadInt32(); // Unused for now
-                PBEBattle? b = null; // The first packet should be a PBEBattlePacket
+                PBEBattle b = null!; // The first packet should be a PBEBattlePacket
                 int numEvents = r.ReadInt32();
                 if (numEvents < 1)
                 {
@@ -113,7 +113,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                         }
                         if (packet is PBEWildPkmnAppearedPacket wpap)
                         {
-                            PBETrainer wildTrainer = b!.Teams[1].Trainers[0];
+                            PBETrainer wildTrainer = b.Teams[1].Trainers[0];
                             foreach (PBEPkmnAppearedInfo info in wpap.Pokemon)
                             {
                                 PBEBattlePokemon pkmn = wildTrainer.GetPokemon(info.Pokemon);
@@ -135,10 +135,10 @@ namespace Kermalis.PokemonBattleEngine.Battle
                                 b.ActiveBattlers.Add(pkmn);
                             }
                         }
-                        b!.Events.Add(packet);
+                        b.Events.Add(packet);
                     }
                 }
-                b!.BattleState = PBEBattleState.Ended;
+                b.BattleState = PBEBattleState.Ended;
                 return b;
             }
         }
