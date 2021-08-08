@@ -38,6 +38,19 @@ namespace Kermalis.PokemonBattleEngineClient.Views
                 }
             }
         }
+        private bool _backVisible;
+        public bool BackVisible
+        {
+            get => _backVisible;
+            private set
+            {
+                if (_backVisible != value)
+                {
+                    _backVisible = value;
+                    OnPropertyChanged(nameof(BackVisible));
+                }
+            }
+        }
 
         private bool _leftPositionEnabled;
         public bool LeftPositionEnabled
@@ -165,6 +178,7 @@ namespace Kermalis.PokemonBattleEngineClient.Views
         internal ActionsBuilder? ActionsBuilder { get; set; }
         internal SwitchesBuilder? SwitchesBuilder { get; set; }
         public PBEBattlePokemon Pokemon { get; private set; }
+        private int _pkmnIndex;
 
         public ActionsView()
         {
@@ -178,8 +192,10 @@ namespace Kermalis.PokemonBattleEngineClient.Views
             AvaloniaXamlLoader.Load(this);
         }
 
-        internal void DisplayActions(PBEBattlePokemon pkmn)
+        internal void DisplayActions(int index, PBEBattlePokemon pkmn)
         {
+            BackVisible = index != 0;
+            _pkmnIndex = index;
             Pokemon = pkmn;
             PBEMove[] usableMoves = pkmn.GetUsableMoves();
             var mInfo = new MoveInfo[usableMoves.Length];
@@ -198,8 +214,10 @@ namespace Kermalis.PokemonBattleEngineClient.Views
             MovesVisible = true;
             SwitchesVisible = true;
         }
-        internal void DisplaySwitches()
+        internal void DisplaySwitches(int index)
         {
+            BackVisible = index != 0;
+            _pkmnIndex = index;
             PBEList<PBEBattlePokemon> pa = BattleView.Client.Trainer!.Party;
             var pInfo = new SwitchInfo[pa.Count];
             for (int i = 0; i < pa.Count; i++)
@@ -211,11 +229,35 @@ namespace Kermalis.PokemonBattleEngineClient.Views
             SwitchesVisible = true;
         }
 
+        public void UndoLast()
+        {
+            // Actions mode
+            if (ActionsBuilder is not null)
+            {
+                if (_movesVisible)
+                {
+                    ActionsBuilder.Pop(); // If we're selecting a move, go back to the previous pkmn
+                }
+                else // Go from selecting targets to selecting move
+                {
+                    TargetsVisible = false;
+                    MovesVisible = true;
+                    SwitchesVisible = true;
+                    BackVisible = _pkmnIndex != 0;
+                }
+            }
+            else // Switches mode
+            {
+                SwitchesBuilder!.Pop();
+            }
+        }
+
         private void SelectPokemonForTurn(PBEBattlePokemon pkmn)
         {
             MovesVisible = false;
             SwitchesVisible = false;
-            ActionsBuilder!.EnqueueSwitch(pkmn);
+            BackVisible = false;
+            ActionsBuilder!.PushSwitch(pkmn);
         }
         private void SelectMoveForTurn(PBEMove move)
         {
@@ -253,10 +295,12 @@ namespace Kermalis.PokemonBattleEngineClient.Views
                     case PBEMoveTarget.SingleAllySurrounding: targets = PBETurnTarget.AllyCenter; break;
                     default: throw new InvalidDataException(nameof(possibleTargets));
                 }
-                ActionsBuilder!.EnqueueMove(move, targets);
+                BackVisible = false;
+                ActionsBuilder!.PushMove(move, targets);
                 return;
             }
             // Double / Triple
+            BackVisible = true;
             PBETeam team = client.Trainer!.Team;
             PBETeam oTeam = team.OpposingTeam;
             _fightMove = move;
@@ -757,13 +801,15 @@ namespace Kermalis.PokemonBattleEngineClient.Views
                 default: throw new ArgumentOutOfRangeException(nameof(arg));
             }
             TargetsVisible = false;
-            ActionsBuilder!.EnqueueMove(_fightMove, targets);
+            BackVisible = false;
+            ActionsBuilder!.PushMove(_fightMove, targets);
         }
         public void SelectPosition(string arg)
         {
             PBEFieldPosition pos = Enum.Parse<PBEFieldPosition>(arg);
             PositionsVisible = false;
-            SwitchesBuilder!.Enqueue(Pokemon, pos);
+            BackVisible = false;
+            SwitchesBuilder!.Push(Pokemon, pos);
         }
     }
 }

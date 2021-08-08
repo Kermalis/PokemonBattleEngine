@@ -4,7 +4,6 @@ using Kermalis.PokemonBattleEngine.Network;
 using Kermalis.PokemonBattleEngine.Packets;
 using Kermalis.PokemonBattleEngineClient.Views;
 using System;
-using System.Collections.Generic;
 using System.Diagnostics;
 using System.Net;
 
@@ -170,15 +169,15 @@ namespace Kermalis.PokemonBattleEngineClient.Clients
             }
         }
 
-        private void OnActionsReady(Queue<PBETurnAction> acts)
+        private void OnActionsReady(PBETurnAction[] acts)
         {
             BattleView.AddMessage("Waiting for players...", messageLog: false);
-            Send(new PBEActionsResponsePacket(acts.ToArray()));
+            Send(new PBEActionsResponsePacket(acts));
         }
-        private void OnSwitchesReady(Queue<PBESwitchIn> switches)
+        private void OnSwitchesReady(PBESwitchIn[] switches)
         {
             BattleView.AddMessage("Waiting for players...", messageLog: false);
-            Send(new PBESwitchInResponsePacket(switches.ToArray()));
+            Send(new PBESwitchInResponsePacket(switches));
         }
 
         private void Send(IPBEPacket packet)

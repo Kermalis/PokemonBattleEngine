@@ -1,16 +1,16 @@
 ﻿<UserControl xmlns="https://github.com/avaloniaui"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              x:Class="Kermalis.PokemonBattleEngineClient.Views.MessageView"
-             Width="384" Height="512">
-  <ListBox Name="List" Items="{Binding Messages}" Background="White" BorderThickness="0">
-    <ListBox.ItemTemplate>
-      <DataTemplate>
-        <Image Stretch="None" Source="{Binding Bitmap}" HorizontalAlignment="{Binding Alignment}" RenderOptions.BitmapInterpolationMode="Default" Height="{Binding Height}">
-          <Image.RenderTransform>
-            <ScaleTransform ScaleX="{Binding Scale}" ScaleY="{Binding Scale}"/>
-          </Image.RenderTransform>
-        </Image>
-      </DataTemplate>
-    </ListBox.ItemTemplate>
-  </ListBox>
+             Width="384" Height="576">
+	<ListBox Name="List" Items="{Binding Messages}" Background="White" BorderThickness="0">
+		<ListBox.ItemTemplate>
+			<DataTemplate>
+				<Image Stretch="None" Source="{Binding Bitmap}" HorizontalAlignment="{Binding Alignment}" RenderOptions.BitmapInterpolationMode="Default" Height="{Binding Height}">
+					<Image.RenderTransform>
+						<ScaleTransform ScaleX="{Binding Scale}" ScaleY="{Binding Scale}"/>
+					</Image.RenderTransform>
+				</Image>
+			</DataTemplate>
+		</ListBox.ItemTemplate>
+	</ListBox>
 </UserControl>

@@ -2,7 +2,6 @@
 using Kermalis.PokemonBattleEngine.DefaultData.AI;
 using Kermalis.PokemonBattleEngine.Packets;
 using Kermalis.PokemonBattleEngineClient.Views;
-using System.Collections.Generic;
 using System.Threading;
 
 namespace Kermalis.PokemonBattleEngineClient.Clients
@@ -52,13 +51,13 @@ namespace Kermalis.PokemonBattleEngineClient.Clients
             }
         }
 
-        private void OnActionsReady(IReadOnlyCollection<PBETurnAction> acts)
+        private void OnActionsReady(PBETurnAction[] acts)
         {
-            CreateBattleThread(() => Trainer!.SelectActionsIfValid(acts, out _));
+            CreateBattleThread(() => Trainer!.SelectActionsIfValid(out _, acts));
         }
-        private void OnSwitchesReady(IReadOnlyCollection<PBESwitchIn> switches)
+        private void OnSwitchesReady(PBESwitchIn[] switches)
         {
-            CreateBattleThread(() => Trainer!.SelectSwitchesIfValid(switches, out _));
+            CreateBattleThread(() => Trainer!.SelectSwitchesIfValid(out _, switches));
         }
 
         private PBEDDAI GetAI(PBETrainer t)

@@ -2,7 +2,6 @@
 using Kermalis.PokemonBattleEngine.Data;
 using Kermalis.PokemonBattleEngineClient.Views;
 using System;
-using System.Collections.Generic;
 using System.Linq;
 
 namespace Kermalis.PokemonBattleEngineClient.Clients
@@ -10,45 +9,52 @@ namespace Kermalis.PokemonBattleEngineClient.Clients
     internal sealed class ActionsBuilder
     {
         private readonly BattleView _bv;
-        private Action<Queue<PBETurnAction>> _onActionsReady;
+        private Action<PBETurnAction[]> _onActionsReady;
+
         private int _index;
         private readonly PBEBattlePokemon[] _pkmn;
-        private readonly Queue<PBETurnAction> _actions;
-        private readonly Queue<PBEBattlePokemon?> _standBy;
+        private readonly PBETurnAction[] _actions;
+        private readonly PBEBattlePokemon?[] _standBy;
 
-        public ActionsBuilder(BattleView bv, PBETrainer trainer, Action<Queue<PBETurnAction>> onActionsReady)
+        public ActionsBuilder(BattleView bv, PBETrainer trainer, Action<PBETurnAction[]> onActionsReady)
         {
             _bv = bv;
             bv.Actions.ActionsBuilder = this;
             _onActionsReady = onActionsReady;
             _pkmn = trainer.ActiveBattlersOrdered.ToArray();
-            _actions = new Queue<PBETurnAction>(_pkmn.Length);
-            _standBy = new Queue<PBEBattlePokemon?>(_pkmn.Length);
+            _actions = new PBETurnAction[_pkmn.Length];
+            _standBy = new PBEBattlePokemon?[_pkmn.Length];
             ActionsLoop();
         }
 
         public bool IsStandBy(PBEBattlePokemon p)
         {
-            return _standBy.Contains(p);
+            int i = Array.IndexOf(_standBy, p);
+            return i != -1 && i < _index;
         }
 
-        public void EnqueueMove(PBEMove move, PBETurnTarget targets)
+        public void Pop()
+        {
+            _index--;
+            ActionsLoop();
+        }
+        public void PushMove(PBEMove move, PBETurnTarget targets)
         {
             PBEBattlePokemon pkmn = _pkmn[_index];
             var a = new PBETurnAction(pkmn, move, targets);
             pkmn.TurnAction = a;
-            _actions.Enqueue(a);
-            _standBy.Enqueue(null);
+            _actions[_index] = a;
+            _standBy[_index] = null;
             _index++;
             ActionsLoop();
         }
-        public void EnqueueSwitch(PBEBattlePokemon switcher)
+        public void PushSwitch(PBEBattlePokemon switcher)
         {
             PBEBattlePokemon pkmn = _pkmn[_index];
             var a = new PBETurnAction(pkmn, switcher);
             pkmn.TurnAction = a;
-            _actions.Enqueue(a);
-            _standBy.Enqueue(pkmn);
+            _actions[_index] = a;
+            _standBy[_index] = switcher;
             _index++;
             ActionsLoop();
         }
@@ -65,7 +71,7 @@ namespace Kermalis.PokemonBattleEngineClient.Clients
             {
                 PBEBattlePokemon pkmn = _pkmn[_index];
                 _bv.AddMessage($"What will {pkmn.Nickname} do?", messageLog: false);
-                _bv.Actions.DisplayActions(pkmn);
+                _bv.Actions.DisplayActions(_index, pkmn);
             }
         }
     }
