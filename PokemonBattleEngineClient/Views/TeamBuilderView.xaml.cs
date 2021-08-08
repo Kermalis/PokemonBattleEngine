@@ -98,7 +98,7 @@ namespace Kermalis.PokemonBattleEngineClient.Views
                 }
             }
         }
-        public ObservableCollection<TeamInfo> Teams { get; } = new ObservableCollection<TeamInfo>();
+        public ObservableCollection<TeamInfo> Teams { get; } = new();
 
         private readonly string _teamPath;
         private readonly Button _addPartyButton;

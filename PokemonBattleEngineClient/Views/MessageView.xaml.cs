@@ -35,7 +35,7 @@ namespace Kermalis.PokemonBattleEngineClient.Views
                 Height = Bitmap.PixelSize.Height * Scale;
             }
         }
-        public ObservableCollection<Message> Messages { get; } = new ObservableCollection<Message>();
+        public ObservableCollection<Message> Messages { get; } = new();
         private readonly ListBox _listBox;
 
         public MessageView()

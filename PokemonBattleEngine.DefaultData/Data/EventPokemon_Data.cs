@@ -7,7 +7,7 @@ namespace Kermalis.PokemonBattleEngine.DefaultData.Data
 {
     public sealed partial class PBEDDEventPokemon
     {
-        public static ReadOnlyDictionary<PBESpecies, ReadOnlyCollection<PBEDDEventPokemon>> Events { get; } = new ReadOnlyDictionary<PBESpecies, ReadOnlyCollection<PBEDDEventPokemon>>(new Dictionary<PBESpecies, ReadOnlyCollection<PBEDDEventPokemon>>
+        public static ReadOnlyDictionary<PBESpecies, ReadOnlyCollection<PBEDDEventPokemon>> Events { get; } = new(new Dictionary<PBESpecies, ReadOnlyCollection<PBEDDEventPokemon>>
         {
             {
                 PBESpecies.Absol,

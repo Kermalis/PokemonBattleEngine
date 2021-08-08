@@ -6,7 +6,7 @@ namespace Kermalis.PokemonBattleEngine.DefaultData.Data
 {
     public sealed partial class PBEDDBerryData
     {
-        public static ReadOnlyDictionary<PBEItem, PBEDDBerryData> Data { get; } = new ReadOnlyDictionary<PBEItem, PBEDDBerryData>(new Dictionary<PBEItem, PBEDDBerryData>
+        public static ReadOnlyDictionary<PBEItem, PBEDDBerryData> Data { get; } = new(new Dictionary<PBEItem, PBEDDBerryData>
         {
             { PBEItem.AguavBerry, new PBEDDBerryData(60, PBEType.Dragon, bitterness: 15) },
             { PBEItem.ApicotBerry, new PBEDDBerryData(80, PBEType.Ground, spicyness: 10, dryness: 30, sourness: 30) },

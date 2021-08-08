@@ -54,7 +54,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
         public PBEBattleStatus BattleStatus { get; set; }
         public byte TrickRoomCount { get; set; }
 
-        public List<IPBEPacket> Events { get; } = new List<IPBEPacket>();
+        public List<IPBEPacket> Events { get; } = new();
 
         // Trainer battle
         public PBEBattle(PBEBattleFormat battleFormat, PBESettings settings, PBETrainerInfo ti0, PBETrainerInfo ti1,

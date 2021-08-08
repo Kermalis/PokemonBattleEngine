@@ -6,7 +6,7 @@ namespace Kermalis.PokemonBattleEngine.DefaultData.Data
 {
     public sealed partial class PBEDDItemData
     {
-        public static ReadOnlyDictionary<PBEItem, PBEDDItemData> Data { get; } = new ReadOnlyDictionary<PBEItem, PBEDDItemData>(new Dictionary<PBEItem, PBEDDItemData>
+        public static ReadOnlyDictionary<PBEItem, PBEDDItemData> Data { get; } = new(new Dictionary<PBEItem, PBEDDItemData>
         {
             { PBEItem.AbsorbBulb, new PBEDDItemData(30) },
             { PBEItem.AdamantOrb, new PBEDDItemData(60) },

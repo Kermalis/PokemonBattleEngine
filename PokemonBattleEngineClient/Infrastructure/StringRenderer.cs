@@ -22,7 +22,7 @@ namespace Kermalis.PokemonBattleEngineClient.Infrastructure
         {
             public string FontId => "BattleHP";
             public int FontHeight => 8;
-            public static BattleHPFont Instance { get; } = new BattleHPFont();
+            public static BattleHPFont Instance { get; } = new();
             public ConcurrentDictionary<string, Bitmap> LoadedKeys { get; } = new();
             public (string OldKey, string NewKey)[] OverrideKeys { get; } = Array.Empty<(string OldKey, string NewKey)>();
         }
@@ -30,7 +30,7 @@ namespace Kermalis.PokemonBattleEngineClient.Infrastructure
         {
             public string FontId => "BattleLevel";
             public int FontHeight => 10;
-            public static BattleLevelFont Instance { get; } = new BattleLevelFont();
+            public static BattleLevelFont Instance { get; } = new();
             public ConcurrentDictionary<string, Bitmap> LoadedKeys { get; } = new();
             public (string OldKey, string NewKey)[] OverrideKeys { get; } = new (string OldKey, string NewKey)[]
             {
@@ -41,7 +41,7 @@ namespace Kermalis.PokemonBattleEngineClient.Infrastructure
         {
             public string FontId => "BattleName";
             public int FontHeight => 13;
-            public static BattleNameFont Instance { get; } = new BattleNameFont();
+            public static BattleNameFont Instance { get; } = new();
             public ConcurrentDictionary<string, Bitmap> LoadedKeys { get; } = new();
             public (string OldKey, string NewKey)[] OverrideKeys { get; } = new (string OldKey, string NewKey)[]
             {
@@ -55,7 +55,7 @@ namespace Kermalis.PokemonBattleEngineClient.Infrastructure
         {
             public string FontId => "Default";
             public int FontHeight => 15;
-            public static DefaultFont Instance { get; } = new DefaultFont();
+            public static DefaultFont Instance { get; } = new();
             public ConcurrentDictionary<string, Bitmap> LoadedKeys { get; } = new();
             public (string OldKey, string NewKey)[] OverrideKeys { get; } = new (string OldKey, string NewKey)[]
             {

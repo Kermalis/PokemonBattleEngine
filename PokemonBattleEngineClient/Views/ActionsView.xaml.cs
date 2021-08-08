@@ -18,12 +18,12 @@ namespace Kermalis.PokemonBattleEngineClient.Views
         }
         public new event PropertyChangedEventHandler? PropertyChanged;
 
-        public TargetInfo TargetAllyLeft { get; } = new TargetInfo();
-        public TargetInfo TargetAllyCenter { get; } = new TargetInfo();
-        public TargetInfo TargetAllyRight { get; } = new TargetInfo();
-        public TargetInfo TargetFoeLeft { get; } = new TargetInfo();
-        public TargetInfo TargetFoeCenter { get; } = new TargetInfo();
-        public TargetInfo TargetFoeRight { get; } = new TargetInfo();
+        public TargetInfo TargetAllyLeft { get; } = new();
+        public TargetInfo TargetAllyCenter { get; } = new();
+        public TargetInfo TargetAllyRight { get; } = new();
+        public TargetInfo TargetFoeLeft { get; } = new();
+        public TargetInfo TargetFoeCenter { get; } = new();
+        public TargetInfo TargetFoeRight { get; } = new();
 
         private bool _centerTargetsVisible;
         public bool CenterTargetsVisible

@@ -11,7 +11,7 @@ namespace Kermalis.PokemonBattleEngineClient.Infrastructure
 {
     public sealed class FormToTextBitmapConverter : IMultiValueConverter
     {
-        public static FormToTextBitmapConverter Instance { get; } = new FormToTextBitmapConverter();
+        public static FormToTextBitmapConverter Instance { get; } = new();
         public object? Convert(IList<object> values, Type? targetType, object? parameter, CultureInfo? culture)
         {
             var species = (PBESpecies)values[0];
@@ -26,7 +26,7 @@ namespace Kermalis.PokemonBattleEngineClient.Infrastructure
     }
     public sealed class ObjectToTextBitmapConverter : IValueConverter
     {
-        public static ObjectToTextBitmapConverter Instance { get; } = new ObjectToTextBitmapConverter();
+        public static ObjectToTextBitmapConverter Instance { get; } = new();
         public object? Convert(object? value, Type? targetType, object? parameter, CultureInfo? culture)
         {
             if (value is null)
@@ -55,7 +55,7 @@ namespace Kermalis.PokemonBattleEngineClient.Infrastructure
     }
     public sealed class SpeciesToMinispriteConverter : IValueConverter
     {
-        public static SpeciesToMinispriteConverter Instance { get; } = new SpeciesToMinispriteConverter();
+        public static SpeciesToMinispriteConverter Instance { get; } = new();
         public object? Convert(object? value, Type? targetType, object? parameter, CultureInfo? culture)
         {
             PBESpecies species;

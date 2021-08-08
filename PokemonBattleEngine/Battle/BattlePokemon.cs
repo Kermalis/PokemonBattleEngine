@@ -184,7 +184,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
 
         #endregion
 
-        public List<PBEBattlePokemon> EXPPokemon { get; } = new List<PBEBattlePokemon>();
+        public List<PBEBattlePokemon> EXPPokemon { get; } = new();
 
         #region Constructors
 
