@@ -45,7 +45,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
         public PBEBattleFormat BattleFormat { get; }
         public PBESettings Settings { get; }
         public PBETeams Teams { get; }
-        public ReadOnlyCollection<PBETrainer> Trainers { get; } // TODO: PBETrainers
+        public ReadOnlyCollection<PBETrainer> Trainers { get; } // TODO: PBETrainers?
         public List<PBEBattlePokemon> ActiveBattlers { get; } = new(6);
         private readonly List<PBEBattlePokemon> _turnOrder;
 
@@ -224,10 +224,18 @@ namespace Kermalis.PokemonBattleEngine.Battle
 
             BattleState = PBEBattleState.ReadyToBegin;
         }
+        private void CheckLocal()
+        {
+            if (!IsLocallyHosted)
+            {
+                throw new InvalidOperationException("This battle is not locally hosted");
+            }
+        }
         /// <summary>Begins the battle.</summary>
         /// <exception cref="InvalidOperationException">Thrown when <see cref="BattleState"/> is not <see cref="PBEBattleState.ReadyToBegin"/>.</exception>
         public void Begin()
         {
+            CheckLocal();
             if (_battleState != PBEBattleState.ReadyToBegin)
             {
                 throw new InvalidOperationException($"{nameof(BattleState)} must be {PBEBattleState.ReadyToBegin} to begin the battle.");
@@ -254,6 +262,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
         /// <exception cref="InvalidOperationException">Thrown when <see cref="BattleState"/> is not <see cref="PBEBattleState.ReadyToRunTurn"/>.</exception>
         public void RunTurn()
         {
+            CheckLocal();
             if (_battleState != PBEBattleState.ReadyToRunTurn)
             {
                 throw new InvalidOperationException($"{nameof(BattleState)} must be {PBEBattleState.ReadyToRunTurn} to run a turn.");
@@ -270,6 +279,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
         }
         public void RunSwitches()
         {
+            CheckLocal();
             if (_battleState != PBEBattleState.ReadyToRunSwitches)
             {
                 throw new InvalidOperationException($"{nameof(BattleState)} must be {PBEBattleState.ReadyToRunSwitches} to run switches.");

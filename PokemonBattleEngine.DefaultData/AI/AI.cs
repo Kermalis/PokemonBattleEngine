@@ -15,7 +15,7 @@ namespace Kermalis.PokemonBattleEngine.DefaultData.AI
         {
             if (trainer.IsWild)
             {
-                throw new ArgumentOutOfRangeException(nameof(trainer), $"Cannot create actions for a wild trainer. Use {nameof(PBEDDWildAI)} or another type of AI.");
+                throw new ArgumentOutOfRangeException(nameof(trainer), $"Cannot use this AI type with a wild trainer. Use {nameof(PBEDDWildAI)} or another type of AI.");
             }
             Trainer = trainer;
         }

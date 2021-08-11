@@ -110,10 +110,10 @@ namespace Kermalis.PokemonBattleEngine.Battle
             bool owned;
             if (!_calledFromOtherMove && moveUser.Moves.Contains(move))
             {
-                PBEBattleMoveset.PBEBattleMovesetSlot? slot = moveUser.KnownMoves[PBEMove.MAX];
-                if (slot is not null)
+                // Check if this move is known first. If you check for PBEMove.MAX then you will get multiple results
+                if (!moveUser.KnownMoves.Contains(move))
                 {
-                    slot.Move = move;
+                    moveUser.KnownMoves[PBEMove.MAX]!.Move = move;
                 }
                 owned = true;
             }
