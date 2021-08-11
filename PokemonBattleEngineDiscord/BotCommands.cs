@@ -5,6 +5,7 @@ using Kermalis.PokemonBattleEngine.Battle;
 using Kermalis.PokemonBattleEngine.Data;
 using Kermalis.PokemonBattleEngine.Data.Utils;
 using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text.RegularExpressions;
@@ -247,7 +248,17 @@ namespace Kermalis.PokemonBattleEngineDiscord
                 {
                     if (!PBEDataProvider.Instance.GetFormByName(species, formName, out PBEForm? nForm))
                     {
-                        await Context.Channel.SendMessageAsync($"{Context.User.Mention} ― Invalid form for {speciesName}!");
+                        IReadOnlyList<PBEForm> forms = PBEDataUtils.GetForms(species, false);
+                        string str = $"{Context.User.Mention} ― Invalid form for {speciesName}";
+                        if (forms.Count > 0)
+                        {
+                            str += ", valid forms are:\n**" + string.Join("\n", forms.Select(f => PBEDataProvider.Instance.GetFormName(species, f).English)) + "**";
+                        }
+                        else
+                        {
+                            str += "! It has no forms!";
+                        }
+                        await Context.Channel.SendMessageAsync(str);
                         return;
                     }
                     form = nForm.Value;
