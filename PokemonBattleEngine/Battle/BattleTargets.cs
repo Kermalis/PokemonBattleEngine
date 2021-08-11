@@ -277,73 +277,79 @@ namespace Kermalis.PokemonBattleEngine.Battle
             PBETeam ot = user.Team.OpposingTeam;
             if (!ot.TryGetPokemon(PBEFieldPosition.Center, out PBEBattlePokemon? pkmn))
             {
-                // Center not found; fallback to its teammate
-                if (user.Battle.BattleFormat != PBEBattleFormat.Triple)
+                switch (user.Battle.BattleFormat)
                 {
-                    throw new InvalidOperationException();
-                }
-                switch (user.FieldPosition)
-                {
-                    case PBEFieldPosition.Left:
+                    case PBEBattleFormat.Single:
+                    case PBEBattleFormat.Rotation: return;
+                    default: throw new InvalidOperationException();
+                    case PBEBattleFormat.Triple:
                     {
-                        if (!ot.TryGetPokemon(PBEFieldPosition.Right, out pkmn))
+                        // Center not found; fallback to its teammate
+                        switch (user.FieldPosition)
                         {
-                            if (canHitFarCorners)
-                            {
-                                if (!ot.TryGetPokemon(PBEFieldPosition.Left, out pkmn))
-                                {
-                                    return; // Nobody center, right, or left; fail
-                                }
-                            }
-                            else
-                            {
-                                return; // Nobody center and nobody right; fail since we can't reach the left
-                            }
-                        }
-                        break;
-                    }
-                    case PBEFieldPosition.Center:
-                    {
-                        if (!ot.TryGetPokemon(PBEFieldPosition.Left, out PBEBattlePokemon? left))
-                        {
-                            if (!ot.TryGetPokemon(PBEFieldPosition.Right, out PBEBattlePokemon? right))
-                            {
-                                return; // Nobody left or right; fail
-                            }
-                            pkmn = right; // Nobody left; pick right
-                        }
-                        else
-                        {
-                            if (!ot.TryGetPokemon(PBEFieldPosition.Right, out PBEBattlePokemon? right))
-                            {
-                                pkmn = left; // Nobody right; pick left
-                            }
-                            else
-                            {
-                                pkmn = rand.RandomBool() ? left : right; // Left and right present; randomly select left or right
-                            }
-                        }
-                        break;
-                    }
-                    case PBEFieldPosition.Right:
-                    {
-                        if (!ot.TryGetPokemon(PBEFieldPosition.Left, out pkmn))
-                        {
-                            if (canHitFarCorners)
+                            case PBEFieldPosition.Left:
                             {
                                 if (!ot.TryGetPokemon(PBEFieldPosition.Right, out pkmn))
                                 {
-                                    return; // Nobody center, left, or right; fail
+                                    if (canHitFarCorners)
+                                    {
+                                        if (!ot.TryGetPokemon(PBEFieldPosition.Left, out pkmn))
+                                        {
+                                            return; // Nobody center, right, or left; fail
+                                        }
+                                    }
+                                    else
+                                    {
+                                        return; // Nobody center and nobody right; fail since we can't reach the left
+                                    }
                                 }
+                                break;
                             }
-                            else
+                            case PBEFieldPosition.Center:
                             {
-                                return; // Nobody center and nobody left; fail since we can't reach the right
+                                if (!ot.TryGetPokemon(PBEFieldPosition.Left, out PBEBattlePokemon? left))
+                                {
+                                    if (!ot.TryGetPokemon(PBEFieldPosition.Right, out PBEBattlePokemon? right))
+                                    {
+                                        return; // Nobody left or right; fail
+                                    }
+                                    pkmn = right; // Nobody left; pick right
+                                }
+                                else
+                                {
+                                    if (!ot.TryGetPokemon(PBEFieldPosition.Right, out PBEBattlePokemon? right))
+                                    {
+                                        pkmn = left; // Nobody right; pick left
+                                    }
+                                    else
+                                    {
+                                        pkmn = rand.RandomBool() ? left : right; // Left and right present; randomly select left or right
+                                    }
+                                }
+                                break;
                             }
+                            case PBEFieldPosition.Right:
+                            {
+                                if (!ot.TryGetPokemon(PBEFieldPosition.Left, out pkmn))
+                                {
+                                    if (canHitFarCorners)
+                                    {
+                                        if (!ot.TryGetPokemon(PBEFieldPosition.Right, out pkmn))
+                                        {
+                                            return; // Nobody center, left, or right; fail
+                                        }
+                                    }
+                                    else
+                                    {
+                                        return; // Nobody center and nobody left; fail since we can't reach the right
+                                    }
+                                }
+                                break;
+                            }
+                            default: throw new InvalidDataException();
                         }
                         break;
                     }
-                    default: throw new InvalidDataException();
                 }
             }
             targets.Add(pkmn);
