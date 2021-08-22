@@ -53,7 +53,7 @@ namespace Kermalis.PokemonBattleEngineExtras
                     }
                     break;
                 }
-                default: throw new ArgumentOutOfRangeException(nameof(e));
+                default: throw new Exception(nameof(e));
             }
         }
     }

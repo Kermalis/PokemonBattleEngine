@@ -1,5 +1,6 @@
 ﻿using Kermalis.PokemonBattleEngine.Data;
 using System;
+using System.IO;
 
 namespace Kermalis.PokemonBattleEngine.Battle
 {
@@ -21,7 +22,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                             }
                             else
                             {
-                                throw new ArgumentOutOfRangeException(nameof(pkmn.FieldPosition));
+                                throw new ArgumentException(nameof(pkmn.FieldPosition));
                             }
                         }
                         case PBEMoveTarget.AllFoes:
@@ -34,7 +35,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                             }
                             else
                             {
-                                throw new ArgumentOutOfRangeException(nameof(pkmn.FieldPosition));
+                                throw new ArgumentException(nameof(pkmn.FieldPosition));
                             }
                         }
                         case PBEMoveTarget.AllTeam:
@@ -45,7 +46,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                             }
                             else
                             {
-                                throw new ArgumentOutOfRangeException(nameof(pkmn.FieldPosition));
+                                throw new ArgumentException(nameof(pkmn.FieldPosition));
                             }
                         }
                         default: throw new ArgumentOutOfRangeException(nameof(targets));
@@ -63,7 +64,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                             }
                             else
                             {
-                                throw new ArgumentOutOfRangeException(nameof(pkmn.FieldPosition));
+                                throw new ArgumentException(nameof(pkmn.FieldPosition));
                             }
                         }
                         case PBEMoveTarget.AllFoes:
@@ -75,7 +76,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                             }
                             else
                             {
-                                throw new ArgumentOutOfRangeException(nameof(pkmn.FieldPosition));
+                                throw new ArgumentException(nameof(pkmn.FieldPosition));
                             }
                         }
                         case PBEMoveTarget.AllTeam:
@@ -86,7 +87,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                             }
                             else
                             {
-                                throw new ArgumentOutOfRangeException(nameof(pkmn.FieldPosition));
+                                throw new ArgumentException(nameof(pkmn.FieldPosition));
                             }
                         }
                         case PBEMoveTarget.AllSurrounding:
@@ -101,7 +102,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                             }
                             else
                             {
-                                throw new ArgumentOutOfRangeException(nameof(pkmn.FieldPosition));
+                                throw new ArgumentException(nameof(pkmn.FieldPosition));
                             }
                         }
                         default: throw new ArgumentOutOfRangeException(nameof(targets));
@@ -119,7 +120,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                             }
                             else
                             {
-                                throw new ArgumentOutOfRangeException(nameof(pkmn.FieldPosition));
+                                throw new ArgumentException(nameof(pkmn.FieldPosition));
                             }
                         }
                         case PBEMoveTarget.AllFoes:
@@ -130,7 +131,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                             }
                             else
                             {
-                                throw new ArgumentOutOfRangeException(nameof(pkmn.FieldPosition));
+                                throw new ArgumentException(nameof(pkmn.FieldPosition));
                             }
                         }
                         case PBEMoveTarget.AllFoesSurrounding:
@@ -149,7 +150,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                             }
                             else
                             {
-                                throw new ArgumentOutOfRangeException(nameof(pkmn.FieldPosition));
+                                throw new ArgumentException(nameof(pkmn.FieldPosition));
                             }
                         }
                         case PBEMoveTarget.AllSurrounding:
@@ -168,7 +169,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                             }
                             else
                             {
-                                throw new ArgumentOutOfRangeException(nameof(pkmn.FieldPosition));
+                                throw new ArgumentException(nameof(pkmn.FieldPosition));
                             }
                         }
                         case PBEMoveTarget.AllTeam:
@@ -179,7 +180,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                             }
                             else
                             {
-                                throw new ArgumentOutOfRangeException(nameof(pkmn.FieldPosition));
+                                throw new ArgumentException(nameof(pkmn.FieldPosition));
                             }
                         }
                         default: throw new ArgumentOutOfRangeException(nameof(targets));
@@ -197,7 +198,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                             }
                             else
                             {
-                                throw new ArgumentOutOfRangeException(nameof(pkmn.FieldPosition));
+                                throw new ArgumentException(nameof(pkmn.FieldPosition));
                             }
                         }
                         case PBEMoveTarget.AllFoes:
@@ -210,7 +211,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                             }
                             else
                             {
-                                throw new ArgumentOutOfRangeException(nameof(pkmn.FieldPosition));
+                                throw new ArgumentException(nameof(pkmn.FieldPosition));
                             }
                         }
                         case PBEMoveTarget.AllTeam:
@@ -221,13 +222,13 @@ namespace Kermalis.PokemonBattleEngine.Battle
                             }
                             else
                             {
-                                throw new ArgumentOutOfRangeException(nameof(pkmn.FieldPosition));
+                                throw new ArgumentException(nameof(pkmn.FieldPosition));
                             }
                         }
                         default: throw new ArgumentOutOfRangeException(nameof(targets));
                     }
                 }
-                default: throw new ArgumentOutOfRangeException(nameof(pkmn.Battle.BattleFormat));
+                default: throw new InvalidDataException(nameof(pkmn.Battle.BattleFormat));
             }
         }
         public static PBETurnTarget[] GetPossibleTargets(PBEBattlePokemon pkmn, PBEMoveTarget targets)
@@ -248,7 +249,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                             }
                             else
                             {
-                                throw new ArgumentOutOfRangeException(nameof(pkmn.FieldPosition));
+                                throw new ArgumentException(nameof(pkmn.FieldPosition));
                             }
                         }
                         case PBEMoveTarget.RandomFoeSurrounding:
@@ -262,7 +263,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                             }
                             else
                             {
-                                throw new ArgumentOutOfRangeException(nameof(pkmn.FieldPosition));
+                                throw new ArgumentException(nameof(pkmn.FieldPosition));
                             }
                         }
                         default: throw new ArgumentOutOfRangeException(nameof(targets));
@@ -285,7 +286,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                             }
                             else
                             {
-                                throw new ArgumentOutOfRangeException(nameof(pkmn.FieldPosition));
+                                throw new ArgumentException(nameof(pkmn.FieldPosition));
                             }
                         }
                         case PBEMoveTarget.SelfOrAllySurrounding:
@@ -296,7 +297,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                             }
                             else
                             {
-                                throw new ArgumentOutOfRangeException(nameof(pkmn.FieldPosition));
+                                throw new ArgumentException(nameof(pkmn.FieldPosition));
                             }
                         }
                         case PBEMoveTarget.SingleAllySurrounding:
@@ -311,7 +312,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                             }
                             else
                             {
-                                throw new ArgumentOutOfRangeException(nameof(pkmn.FieldPosition));
+                                throw new ArgumentException(nameof(pkmn.FieldPosition));
                             }
                         }
                         case PBEMoveTarget.SingleFoeSurrounding:
@@ -322,7 +323,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                             }
                             else
                             {
-                                throw new ArgumentOutOfRangeException(nameof(pkmn.FieldPosition));
+                                throw new ArgumentException(nameof(pkmn.FieldPosition));
                             }
                         }
                         case PBEMoveTarget.SingleNotSelf:
@@ -338,7 +339,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                             }
                             else
                             {
-                                throw new ArgumentOutOfRangeException(nameof(pkmn.FieldPosition));
+                                throw new ArgumentException(nameof(pkmn.FieldPosition));
                             }
                         }
                         default: throw new ArgumentOutOfRangeException(nameof(targets));
@@ -365,7 +366,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                             }
                             else
                             {
-                                throw new ArgumentOutOfRangeException(nameof(pkmn.FieldPosition));
+                                throw new ArgumentException(nameof(pkmn.FieldPosition));
                             }
                         }
                         case PBEMoveTarget.SelfOrAllySurrounding:
@@ -384,7 +385,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                             }
                             else
                             {
-                                throw new ArgumentOutOfRangeException(nameof(pkmn.FieldPosition));
+                                throw new ArgumentException(nameof(pkmn.FieldPosition));
                             }
                         }
                         case PBEMoveTarget.SingleAllySurrounding:
@@ -399,7 +400,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                             }
                             else
                             {
-                                throw new ArgumentOutOfRangeException(nameof(pkmn.FieldPosition));
+                                throw new ArgumentException(nameof(pkmn.FieldPosition));
                             }
                         }
                         case PBEMoveTarget.SingleFoeSurrounding:
@@ -418,7 +419,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                             }
                             else
                             {
-                                throw new ArgumentOutOfRangeException(nameof(pkmn.FieldPosition));
+                                throw new ArgumentException(nameof(pkmn.FieldPosition));
                             }
                         }
                         case PBEMoveTarget.SingleNotSelf:
@@ -437,7 +438,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                             }
                             else
                             {
-                                throw new ArgumentOutOfRangeException(nameof(pkmn.FieldPosition));
+                                throw new ArgumentException(nameof(pkmn.FieldPosition));
                             }
                         }
                         case PBEMoveTarget.SingleSurrounding:
@@ -456,7 +457,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                             }
                             else
                             {
-                                throw new ArgumentOutOfRangeException(nameof(pkmn.FieldPosition));
+                                throw new ArgumentException(nameof(pkmn.FieldPosition));
                             }
                         }
                         default: throw new ArgumentOutOfRangeException(nameof(targets));
@@ -476,7 +477,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                             }
                             else
                             {
-                                throw new ArgumentOutOfRangeException(nameof(pkmn.FieldPosition));
+                                throw new ArgumentException(nameof(pkmn.FieldPosition));
                             }
                         }
                         case PBEMoveTarget.RandomFoeSurrounding:
@@ -490,13 +491,13 @@ namespace Kermalis.PokemonBattleEngine.Battle
                             }
                             else
                             {
-                                throw new ArgumentOutOfRangeException(nameof(pkmn.FieldPosition));
+                                throw new ArgumentException(nameof(pkmn.FieldPosition));
                             }
                         }
                         default: throw new ArgumentOutOfRangeException(nameof(targets));
                     }
                 }
-                default: throw new ArgumentOutOfRangeException(nameof(pkmn.Battle.BattleFormat));
+                default: throw new InvalidDataException(nameof(pkmn.Battle.BattleFormat));
             }
         }
 

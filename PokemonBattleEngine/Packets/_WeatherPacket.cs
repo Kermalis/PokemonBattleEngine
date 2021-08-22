@@ -24,7 +24,7 @@ namespace Kermalis.PokemonBattleEngine.Packets
                 Data = new ReadOnlyCollection<byte>(ms.ToArray());
             }
         }
-        internal PBEWeatherPacket(byte[] data, EndianBinaryReader r, PBEBattle battle)
+        internal PBEWeatherPacket(byte[] data, EndianBinaryReader r)
         {
             Data = new ReadOnlyCollection<byte>(data);
             Weather = r.ReadEnum<PBEWeather>();

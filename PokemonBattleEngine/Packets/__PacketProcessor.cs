@@ -58,7 +58,7 @@ namespace Kermalis.PokemonBattleEngine.Packets
                 case PBEStatus1Packet.Code: CheckNull(battle); return new PBEStatus1Packet(data, r, battle);
                 case PBEStatus2Packet.Code: CheckNull(battle); return new PBEStatus2Packet(data, r, battle);
                 case PBETeamStatusPacket.Code: CheckNull(battle); return new PBETeamStatusPacket(data, r, battle);
-                case PBEWeatherPacket.Code: CheckNull(battle); return new PBEWeatherPacket(data, r, battle);
+                case PBEWeatherPacket.Code: CheckNull(battle); return new PBEWeatherPacket(data, r);
                 case PBEMoveResultPacket.Code: CheckNull(battle); return new PBEMoveResultPacket(data, r, battle);
                 case PBEItemPacket.Code: CheckNull(battle); return new PBEItemPacket(data, r, battle);
                 case PBEMovePPChangedPacket.Code: CheckNull(battle); return new PBEMovePPChangedPacket(data, r, battle);

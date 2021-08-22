@@ -784,7 +784,7 @@ namespace Kermalis.PokemonBattleEngineClient.Views
                     }
                     break;
                 }
-                default: throw new ArgumentOutOfRangeException(nameof(BattleView.Client.Battle.BattleFormat));
+                default: throw new InvalidDataException(nameof(BattleView.Client.Battle.BattleFormat));
             }
         }
         public void SelectTarget(string arg)

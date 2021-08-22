@@ -8,7 +8,6 @@ using Avalonia.Threading;
 using AvaloniaGif;
 using Kermalis.PokemonBattleEngine.Battle;
 using Kermalis.PokemonBattleEngineClient.Infrastructure;
-using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.IO;
@@ -176,7 +175,7 @@ namespace Kermalis.PokemonBattleEngineClient.Views
                     this.FindControl<PokemonView>("Battler1_Left").Location = new Point(421, -24);
                     break;
                 }
-                default: throw new ArgumentOutOfRangeException(nameof(_battleView.Client.Battle.BattleFormat));
+                default: throw new InvalidDataException(nameof(_battleView.Client.Battle.BattleFormat));
             }
             BGSource = new Bitmap(Utils.GetResourceStream($"BG.BG_{b.BattleTerrain}_{b.BattleFormat}.png"));
             OnPropertyChanged(nameof(BGSource));
