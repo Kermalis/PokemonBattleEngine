@@ -2,8 +2,6 @@
 using Kermalis.PokemonBattleEngine.Packets;
 using Kermalis.PokemonBattleEngineClient.Views;
 using System;
-using System.Collections.Generic;
-using System.Linq;
 
 namespace Kermalis.PokemonBattleEngineClient.Clients
 {
