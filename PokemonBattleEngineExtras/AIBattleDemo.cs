@@ -101,7 +101,7 @@ namespace Kermalis.PokemonBattleEngineExtras
                     }
                     case PBESwitchInRequestPacket sirp:
                     {
-                        GetAI(sirp.Trainer).CreateAISwitches();
+                        GetAI(sirp.Trainer).CreateSwitches();
                         break;
                     }
                     case PBETurnBeganPacket tbp:

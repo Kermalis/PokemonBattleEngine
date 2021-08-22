@@ -716,7 +716,7 @@ namespace Kermalis.PokemonBattleEngineDiscord
                     SocketUser? user = battler.User;
                     if (user is null) // PBEAI
                     {
-                        battler.AI!.CreateAISwitches();
+                        battler.AI!.CreateSwitches();
                         return;
                     }
                     ushort curTurn = _battle.TurnNumber;

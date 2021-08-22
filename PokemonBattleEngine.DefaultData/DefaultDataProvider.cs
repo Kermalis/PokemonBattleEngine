@@ -20,7 +20,8 @@ namespace Kermalis.PokemonBattleEngine.DefaultData
         private readonly object _databaseConnectLockObj = new();
         private readonly SqliteConnection _databaseConnection;
 
-        private PBEDefaultDataProvider(string databasePath)
+        protected PBEDefaultDataProvider(string databasePath, PBELanguage language, PBERandom rand)
+            : base(language, rand)
         {
             SQLitePCL.Batteries_V2.Init();
             _databaseConnection = new SqliteConnection($"Filename={Path.Combine(databasePath, "PokemonBattleEngine.db")};Mode=ReadOnly;");
@@ -29,10 +30,12 @@ namespace Kermalis.PokemonBattleEngine.DefaultData
         }
         public static void InitEngine(string databasePath, int? randomSeed = null)
         {
-            var dp = new PBEDefaultDataProvider(databasePath);
             var cultureInfo = CultureInfo.ReadOnly(CultureInfo.CurrentUICulture);
-            PBELanguage lang = cultureInfo.IsValidPBELanguage() ? cultureInfo.ToPBELanguage() : PBELanguage.English;
-            dp.Init(lang, new PBERandom(randomSeed));
+            if (!cultureInfo.ToPBELanguage(out PBELanguage? lang))
+            {
+                lang = PBELanguage.English;
+            }
+            _ = new PBEDefaultDataProvider(databasePath, lang.Value, new PBERandom(randomSeed));
         }
         public static void InitEngine(string databasePath, PBELanguage language, int? randomSeed = null)
         {
@@ -40,8 +43,7 @@ namespace Kermalis.PokemonBattleEngine.DefaultData
             {
                 throw new ArgumentOutOfRangeException(nameof(language));
             }
-            var dp = new PBEDefaultDataProvider(databasePath);
-            dp.Init(language, new PBERandom(randomSeed));
+            _ = new PBEDefaultDataProvider(databasePath, language, new PBERandom(randomSeed));
         }
 
         private static bool StrCmp(object arg0, object arg1)

@@ -65,7 +65,7 @@ namespace Kermalis.PokemonBattleEngine.DefaultData.AI
         /// <summary>Creates valid switches for a battle for a specific team.</summary>
         /// <exception cref="InvalidOperationException">Thrown when <see name="Trainer"/> does not require switch-ins or <see name="Trainer"/>'s <see cref="PBETrainer.Battle"/>'s <see cref="PBEBattle.BattleState"/> is not <see cref="PBEBattleState.WaitingForActions"/>.</exception>
         /// <exception cref="ArgumentOutOfRangeException">Thrown when <see name="Trainer"/>'s <see cref="PBETrainer.Battle"/>'s <see cref="PBEBattle.BattleFormat"/> is invalid.</exception>
-        public void CreateAISwitches()
+        public void CreateSwitches()
         {
             if (Trainer.Battle.BattleState != PBEBattleState.WaitingForSwitchIns)
             {

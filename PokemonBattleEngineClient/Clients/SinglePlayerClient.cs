@@ -96,7 +96,7 @@ namespace Kermalis.PokemonBattleEngineClient.Clients
                     }
                     else
                     {
-                        CreateBattleThread(GetAI(t).CreateAISwitches);
+                        CreateBattleThread(GetAI(t).CreateSwitches);
                     }
                     return true;
                 }

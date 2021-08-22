@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
 
 namespace Kermalis.PokemonBattleEngine.Data
@@ -28,25 +29,21 @@ namespace Kermalis.PokemonBattleEngine.Data
 
     public static class PBELanguageExtensions
     {
-        public static bool IsValidPBELanguage(this CultureInfo cultureInfo)
-        {
-            string id = cultureInfo.TwoLetterISOLanguageName;
-            return id == "en" || id == "fr" || id == "de" || id == "it" || id == "ja" || id == "ko" || id == "es";
-        }
-        public static PBELanguage ToPBELanguage(this CultureInfo cultureInfo)
+        public static bool ToPBELanguage(this CultureInfo cultureInfo, [NotNullWhen(true)] out PBELanguage? lang)
         {
             string id = cultureInfo.TwoLetterISOLanguageName;
             switch (id)
             {
-                case "en": return PBELanguage.English;
-                case "fr": return PBELanguage.French;
-                case "de": return PBELanguage.German;
-                case "it": return PBELanguage.Italian;
-                case "ja": return PBELanguage.Japanese_Kana;
-                case "ko": return PBELanguage.Korean;
-                case "es": return PBELanguage.Spanish;
-                default: throw new ArgumentOutOfRangeException(nameof(cultureInfo));
+                case "en": lang = PBELanguage.English; return true;
+                case "fr": lang = PBELanguage.French; return true;
+                case "de": lang = PBELanguage.German; return true;
+                case "it": lang = PBELanguage.Italian; return true;
+                case "ja": lang = PBELanguage.Japanese_Kana; return true;
+                case "ko": lang = PBELanguage.Korean; return true;
+                case "es": lang = PBELanguage.Spanish; return true;
             }
+            lang = default;
+            return false;
         }
         public static CultureInfo ToCultureInfo(this PBELanguage language)
         {

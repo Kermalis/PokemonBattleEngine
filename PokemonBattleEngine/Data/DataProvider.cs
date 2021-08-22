@@ -13,13 +13,13 @@ namespace Kermalis.PokemonBattleEngine.Data
         public static PBELanguage GlobalLanguage { get; private set; } = default;
         public static PBERandom GlobalRandom { get; private set; } = null!;
 
-        protected void Init(PBELanguage lang, PBERandom rand)
+        protected PBEDataProvider(PBELanguage language, PBERandom rand)
         {
-            if (lang >= PBELanguage.MAX)
+            if (language >= PBELanguage.MAX)
             {
-                throw new ArgumentOutOfRangeException(nameof(lang));
+                throw new ArgumentOutOfRangeException(nameof(language));
             }
-            GlobalLanguage = lang;
+            GlobalLanguage = language;
             GlobalRandom = rand;
             Instance = this;
         }
