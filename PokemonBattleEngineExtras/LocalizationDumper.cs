@@ -1,13 +1,12 @@
 ﻿using Kermalis.PokemonBattleEngine.Data;
+using Kermalis.PokemonBattleEngine.Data.Utils;
 using Kermalis.SimpleNARC;
 using Microsoft.Data.Sqlite;
 using System;
-using System.Collections.Generic;
-using System.Linq;
 
 namespace Kermalis.PokemonBattleEngineExtras
 {
-    internal sealed class LocalizationDumper
+    internal static class LocalizationDumper
     {
         // You must dump the NARC files yourself (/a/0/0/2 in each language)
         public static void Run(SqliteConnection con)
@@ -28,10 +27,10 @@ namespace Kermalis.PokemonBattleEngineExtras
                 {
                     cmd.CommandText = $"DROP TABLE IF EXISTS {tableName}";
                     cmd.ExecuteNonQuery();
-                    cmd.CommandText = $"CREATE TABLE {tableName}(Id INTEGER PRIMARY KEY, English TEXT, French TEXT, German TEXT, Italian TEXT, Japanese_Kana TEXT, Japanese_Kanji TEXT, Korean TEXT, Spanish TEXT)";
+                    cmd.CommandText = $"CREATE TABLE {tableName}(Id TEXT PRIMARY KEY, English TEXT, French TEXT, German TEXT, Italian TEXT, Japanese_Kana TEXT, Japanese_Kanji TEXT, Korean TEXT, Spanish TEXT)";
                     cmd.ExecuteNonQuery();
                 }
-                void Insert(string tableName, uint id, string e, string f, string g, string i, string jkana, string jkanji, string k, string s)
+                void Insert(string tableName, string id, string e, string f, string g, string i, string jkana, string jkanji, string k, string s)
                 {
                     cmd.CommandText = $"INSERT INTO {tableName} VALUES(@0, @1, @2, @3, @4, @5, @6, @7, @8)";
                     cmd.Parameters.AddWithValue("@0", id);
@@ -58,7 +57,7 @@ namespace Kermalis.PokemonBattleEngineExtras
                     kor = Utils.ReadTextFile(korean, fileNum);
                     spa = Utils.ReadTextFile(spanish, fileNum);
                 }
-                void WriteTexts(string tableName, uint id, int text)
+                void WriteTexts(string tableName, string id, int text)
                 {
                     Insert(tableName, id, eng[0][text], fre[0][text], ger[0][text], ita[0][text], jap[0][text], jap[1][text], kor[0][text], spa[0][text]);
                 }
@@ -68,9 +67,9 @@ namespace Kermalis.PokemonBattleEngineExtras
                     void WriteAll(string tableName)
                     {
                         CreateTable(tableName);
-                        for (byte i = 0; i < (byte)PBEAbility.MAX; i++)
+                        for (PBEAbility i = 0; i < PBEAbility.MAX; i++)
                         {
-                            WriteTexts(tableName, i, i);
+                            WriteTexts(tableName, i.ToString(), (int)i);
                         }
                     }
                     LoadTexts(374);
@@ -83,8 +82,8 @@ namespace Kermalis.PokemonBattleEngineExtras
                     void InsertForm(string tableName, PBESpecies species, PBEForm form, string e, string f, string g, string i, string jkana, string jkanji, string k, string s)
                     {
                         cmd.CommandText = $"INSERT INTO {tableName} VALUES(@0, @1, @2, @3, @4, @5, @6, @7, @8, @9)";
-                        cmd.Parameters.AddWithValue("@0", (ushort)species);
-                        cmd.Parameters.AddWithValue("@1", (byte)form);
+                        cmd.Parameters.AddWithValue("@0", species.ToString());
+                        cmd.Parameters.AddWithValue("@1", PBEDataUtils.GetNameOfForm(species, form) ?? "0");
                         cmd.Parameters.AddWithValue("@2", e);
                         cmd.Parameters.AddWithValue("@3", f);
                         cmd.Parameters.AddWithValue("@4", g);
@@ -121,7 +120,7 @@ namespace Kermalis.PokemonBattleEngineExtras
                     const string tableName = "FormNames";
                     cmd.CommandText = $"DROP TABLE IF EXISTS {tableName}";
                     cmd.ExecuteNonQuery();
-                    cmd.CommandText = $"CREATE TABLE {tableName}(Species INTEGER, Form INTEGER, English TEXT, French TEXT, German TEXT, Italian TEXT, Japanese_Kana TEXT, Japanese_Kanji TEXT, Korean TEXT, Spanish TEXT)";
+                    cmd.CommandText = $"CREATE TABLE {tableName}(Species TEXT, Form TEXT, English TEXT, French TEXT, German TEXT, Italian TEXT, Japanese_Kana TEXT, Japanese_Kanji TEXT, Korean TEXT, Spanish TEXT)";
                     cmd.ExecuteNonQuery();
                     WriteFormTexts(tableName, PBESpecies.Castform, PBEForm.Castform, 351);
                     WriteFormTexts(tableName, PBESpecies.Deoxys, PBEForm.Deoxys, 386);
@@ -236,20 +235,19 @@ namespace Kermalis.PokemonBattleEngineExtras
                     LoadTexts(441);
                     const string tableName = "GenderNames";
                     CreateTable(tableName);
-                    WriteTexts(tableName, (byte)PBEGender.Female, 115);
-                    Insert(tableName, (byte)PBEGender.Genderless, "Unknown", "Inconnu", "Unbekannt", "Sconosciuto", "不明のすがた", "不明のすがた", "불명의 모습", "Desconocido");
-                    WriteTexts(tableName, (byte)PBEGender.Male, 114);
+                    WriteTexts(tableName, PBEGender.Female.ToString(), 115);
+                    Insert(tableName, PBEGender.Genderless.ToString(), "Unknown", "Inconnu", "Unbekannt", "Sconosciuto", "不明のすがた", "不明のすがた", "불명의 모습", "Desconocido");
+                    WriteTexts(tableName, PBEGender.Male.ToString(), 114);
                 }
                 // Items
                 {
-                    IEnumerable<PBEItem> allItems = Enum.GetValues(typeof(PBEItem)).Cast<PBEItem>();
+                    PBEItem[] allItems = Enum.GetValues<PBEItem>();
                     void WriteAll(string tableName)
                     {
                         CreateTable(tableName);
                         foreach (PBEItem item in allItems)
                         {
-                            ushort i = (ushort)item;
-                            WriteTexts(tableName, i, i);
+                            WriteTexts(tableName, item.ToString(), (int)item);
                         }
                     }
                     LoadTexts(63);
@@ -262,9 +260,9 @@ namespace Kermalis.PokemonBattleEngineExtras
                     void WriteAll(string tableName)
                     {
                         CreateTable(tableName);
-                        for (ushort i = 0; i < (ushort)PBEMove.MAX; i++)
+                        for (PBEMove i = 0; i < PBEMove.MAX; i++)
                         {
-                            WriteTexts(tableName, i, i);
+                            WriteTexts(tableName, i.ToString(), (int)i);
                         }
                     }
                     LoadTexts(402);
@@ -277,9 +275,9 @@ namespace Kermalis.PokemonBattleEngineExtras
                     LoadTexts(379);
                     const string tableName = "NatureNames";
                     CreateTable(tableName);
-                    for (byte i = 0; i < (byte)PBENature.MAX; i++)
+                    for (PBENature i = 0; i < PBENature.MAX; i++)
                     {
-                        WriteTexts(tableName, i, i + 35); // Nature 0 is at entry 35 in this file
+                        WriteTexts(tableName, i.ToString(), (int)i + 35); // Nature 0 is at entry 35 in this file
                     }
                 }
                 // Species
@@ -287,9 +285,9 @@ namespace Kermalis.PokemonBattleEngineExtras
                     void WriteAll(string tableName)
                     {
                         CreateTable(tableName);
-                        for (ushort i = 1; i < (ushort)PBESpecies.MAX; i++)
+                        for (var i = (PBESpecies)1; i < PBESpecies.MAX; i++)
                         {
-                            WriteTexts(tableName, i, i);
+                            WriteTexts(tableName, i.ToString(), (int)i);
                         }
                     }
                     LoadTexts(90);
@@ -304,14 +302,14 @@ namespace Kermalis.PokemonBattleEngineExtras
                     LoadTexts(372);
                     const string tableName = "StatNames";
                     CreateTable(tableName);
-                    WriteTexts(tableName, (byte)PBEStat.HP, 0);
-                    WriteTexts(tableName, (byte)PBEStat.Attack, 1);
-                    WriteTexts(tableName, (byte)PBEStat.Defense, 2);
-                    WriteTexts(tableName, (byte)PBEStat.SpAttack, 4);
-                    WriteTexts(tableName, (byte)PBEStat.SpDefense, 5);
-                    WriteTexts(tableName, (byte)PBEStat.Speed, 3);
-                    Insert(tableName, (byte)PBEStat.Accuracy, "Accuracy", "Précision", "Genauigkeit", "Precisione", jap[0][6], jap[1][6], "명중률", "Precisión");
-                    Insert(tableName, (byte)PBEStat.Evasion, "Evasiveness", "Esquive", "Fluchtwert", "Elusione", jap[0][7], jap[1][7], "회피율", "Evasión");
+                    WriteTexts(tableName, PBEStat.HP.ToString(), 0);
+                    WriteTexts(tableName, PBEStat.Attack.ToString(), 1);
+                    WriteTexts(tableName, PBEStat.Defense.ToString(), 2);
+                    WriteTexts(tableName, PBEStat.SpAttack.ToString(), 4);
+                    WriteTexts(tableName, PBEStat.SpDefense.ToString(), 5);
+                    WriteTexts(tableName, PBEStat.Speed.ToString(), 3);
+                    Insert(tableName, PBEStat.Accuracy.ToString(), "Accuracy", "Précision", "Genauigkeit", "Precisione", jap[0][6], jap[1][6], "명중률", "Precisión");
+                    Insert(tableName, PBEStat.Evasion.ToString(), "Evasiveness", "Esquive", "Fluchtwert", "Elusione", jap[0][7], jap[1][7], "회피율", "Evasión");
                 }
                 // Types (Does not have PBEType.None)
                 {
@@ -319,10 +317,10 @@ namespace Kermalis.PokemonBattleEngineExtras
                     const string tableName = "TypeNames";
                     CreateTable(tableName);
                     const string none =  "-----";
-                    Insert(tableName, (byte)PBEType.None, none, none, none, none, none, none, none, none);
+                    Insert(tableName, PBEType.None.ToString(), none, none, none, none, none, none, none, none);
                     for (byte i = 0; i < Utils.Gen5Types.Length; i++)
                     {
-                        WriteTexts(tableName, (byte)Utils.Gen5Types[i], i);
+                        WriteTexts(tableName, Utils.Gen5Types[i].ToString(), i);
                     }
                 }
 

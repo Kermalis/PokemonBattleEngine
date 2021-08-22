@@ -1,7 +1,9 @@
-﻿using System;
+﻿using Kermalis.PokemonBattleEngine.Data.Utils;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.IO;
 using System.Linq;
 
 namespace Kermalis.PokemonBattleEngine.Data.Legality
@@ -14,7 +16,7 @@ namespace Kermalis.PokemonBattleEngine.Data.Legality
             {
                 PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(property));
             }
-            public event PropertyChangedEventHandler PropertyChanged;
+            public event PropertyChangedEventHandler? PropertyChanged;
 
             private readonly PBELegalMoveset _parent;
             private readonly int _index;
@@ -174,7 +176,7 @@ namespace Kermalis.PokemonBattleEngine.Data.Legality
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(property));
         }
-        public event PropertyChangedEventHandler PropertyChanged;
+        public event PropertyChangedEventHandler? PropertyChanged;
 
         private PBESpecies _species;
         public PBESpecies Species
@@ -184,7 +186,7 @@ namespace Kermalis.PokemonBattleEngine.Data.Legality
             {
                 if (_species != value)
                 {
-                    PBELegalityChecker.ValidateSpecies(value, 0, true);
+                    PBEDataUtils.ValidateSpecies(value, 0, true);
                     _species = value;
                     _form = 0;
                     OnPropertyChanged(nameof(Species));
@@ -200,7 +202,7 @@ namespace Kermalis.PokemonBattleEngine.Data.Legality
             {
                 if (_form != value)
                 {
-                    PBELegalityChecker.ValidateSpecies(_species, value, true);
+                    PBEDataUtils.ValidateSpecies(_species, value, true);
                     _form = value;
                     OnPropertyChanged(nameof(Form));
                     SetAlloweds();
@@ -215,7 +217,7 @@ namespace Kermalis.PokemonBattleEngine.Data.Legality
             {
                 if (_level != value)
                 {
-                    PBELegalityChecker.ValidateLevel(value, Settings);
+                    PBEDataUtils.ValidateLevel(value, Settings);
                     _level = value;
                     OnPropertyChanged(nameof(Level));
                     SetAlloweds();
@@ -237,7 +239,7 @@ namespace Kermalis.PokemonBattleEngine.Data.Legality
             }
         }
         IPBEMovesetSlot IReadOnlyList<IPBEMovesetSlot>.this[int index] => this[index];
-        public PBELegalMovesetSlot this[PBEMove move]
+        public PBELegalMovesetSlot? this[PBEMove move]
         {
             get
             {
@@ -255,11 +257,11 @@ namespace Kermalis.PokemonBattleEngine.Data.Legality
 
         internal PBELegalMoveset(PBELegalMoveset other)
         {
-            int count = Settings.NumMoves;
             _species = other._species;
             _form = other._form;
             _level = other._level;
             Settings = other.Settings;
+            int count = Settings.NumMoves;
             _list = new PBELegalMovesetSlot[count];
             for (int i = 0; i < count; i++)
             {
@@ -279,7 +281,7 @@ namespace Kermalis.PokemonBattleEngine.Data.Legality
             int count = other.Count;
             if (count != settings.NumMoves)
             {
-                throw new ArgumentOutOfRangeException(nameof(IPBEPokemon.Moveset), $"Moveset count must be equal to \"{nameof(settings.NumMoves)}\" ({settings.NumMoves}).");
+                throw new InvalidDataException($"Moveset count must be equal to \"{nameof(settings.NumMoves)}\" ({settings.NumMoves}).");
             }
             _species = species;
             _form = form;
@@ -317,16 +319,9 @@ namespace Kermalis.PokemonBattleEngine.Data.Legality
         /// <param name="randomize">True if <see cref="Randomize"/> should be called, False if the move slots use their default values.</param>
         public PBELegalMoveset(PBESpecies species, PBEForm form, byte level, PBESettings settings, bool randomize)
         {
-            if (settings == null)
-            {
-                throw new ArgumentNullException(nameof(settings));
-            }
-            if (!settings.IsReadOnly)
-            {
-                throw new ArgumentException("Settings must be read-only.", nameof(settings));
-            }
-            PBELegalityChecker.ValidateSpecies(species, form, true);
-            PBELegalityChecker.ValidateLevel(level, settings);
+            settings.ShouldBeReadOnly(nameof(settings));
+            PBEDataUtils.ValidateSpecies(species, form, true);
+            PBEDataUtils.ValidateLevel(level, settings);
             _level = level;
             _species = species;
             _form = form;
@@ -344,12 +339,12 @@ namespace Kermalis.PokemonBattleEngine.Data.Legality
             }
         }
 
-        private static readonly PBEAlphabeticalList<PBEMove> secretSwordArray = new PBEAlphabeticalList<PBEMove>(new PBEMove[1] { PBEMove.SecretSword });
+        private static readonly PBEAlphabeticalList<PBEMove> secretSwordArray = new(new PBEMove[1] { PBEMove.SecretSword });
         private void SetAlloweds()
         {
             // Set alloweds
             int i;
-            IReadOnlyCollection<PBEMove> legalMoves = PBELegalityChecker.GetLegalMoves(_species, _form, _level, Settings);
+            IReadOnlyCollection<PBEMove> legalMoves = PBEDataProvider.Instance.GetLegalMoves(_species, _form, _level);
             var allowed = new List<PBEMove>(legalMoves.Count + 1);
             allowed.AddRange(legalMoves);
             if (_species == PBESpecies.Keldeo && _form == PBEForm.Keldeo_Resolute)
@@ -405,7 +400,7 @@ namespace Kermalis.PokemonBattleEngine.Data.Legality
         }
         public bool Contains(PBEMove move)
         {
-            return this[move] != null;
+            return this[move] is not null;
         }
         /// <summary>Randomizes the move and PP-Ups in each slot without creating duplicate moves.</summary>
         public void Randomize()

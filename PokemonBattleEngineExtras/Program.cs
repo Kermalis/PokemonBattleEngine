@@ -1,4 +1,4 @@
-﻿using Kermalis.PokemonBattleEngine.Data;
+﻿using Kermalis.PokemonBattleEngine.DefaultData;
 using Microsoft.Data.Sqlite;
 using System;
 
@@ -19,7 +19,7 @@ namespace Kermalis.PokemonBattleEngineExtras
             static SqliteConnection GetConnection()
             {
                 SQLitePCL.Batteries_V2.Init();
-                const string databasePath = @"../../../../\PokemonBattleEngine\PokemonBattleEngine.db";
+                const string databasePath = @"PokemonBattleEngine.db";
                 var con = new SqliteConnection($"Filename={databasePath};");
                 con.Open();
                 return con;
@@ -30,8 +30,8 @@ namespace Kermalis.PokemonBattleEngineExtras
             {
                 case Extra.AIBattle:
                 {
-                    PBEDataProvider.InitEngine(string.Empty);
-                    AIBattleDemo.Run();
+                    PBEDefaultDataProvider.InitEngine(string.Empty);
+                    _ = new AIBattleDemo();
                     break;
                 }
                 case Extra.LocalizationDumper:
@@ -53,7 +53,7 @@ namespace Kermalis.PokemonBattleEngineExtras
                     }
                     break;
                 }
-                default: throw new ArgumentOutOfRangeException(nameof(e));
+                default: throw new Exception(nameof(e));
             }
         }
     }

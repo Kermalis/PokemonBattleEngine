@@ -319,12 +319,9 @@ namespace Kermalis.PokemonBattleEngine.Battle
         /// <summary>The status was forcefully removed from a team.</summary>
         /// <example>A Pokémon used <see cref="PBEMoveEffect.BrickBreak"/> and destroyed <see cref="PBETeamStatus.Reflect"/>.</example>
         Cleared = 1,
-        /// <summary>The status caused a Pokémon to take damage.</summary>
-        /// <example>A Pokémon switched in and took damage from <see cref="PBETeamStatus.StealthRock"/>.</example>
-        Damage = 2,
         /// <summary>The status ended naturally.</summary>
         /// <example><see cref="PBETeamStatus.LightScreen"/> wore off.</example>
-        Ended = 3
+        Ended = 2
     }
     /// <summary>Represents the result of an intention.</summary>
     public enum PBEResult : byte
@@ -365,10 +362,8 @@ namespace Kermalis.PokemonBattleEngine.Battle
     {
         /// <summary>The weather was added to the battle.</summary>
         Added = 0,
-        /// <summary>The weather caused a Pokémon to take damage.</summary>
-        CausedDamage = 1,
         /// <summary>The weather was removed from the battle.</summary>
-        Ended = 2
+        Ended = 1
     }
     public enum PBESpecialMessage : byte
     {

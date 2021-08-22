@@ -4,7 +4,6 @@ using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.IO;
-using System.Linq;
 
 namespace Kermalis.PokemonBattleEngine.Packets
 {
@@ -17,17 +16,9 @@ namespace Kermalis.PokemonBattleEngine.Packets
 
         public PBEActionsResponsePacket(IList<PBETurnAction> actions)
         {
-            if (actions == null)
-            {
-                throw new ArgumentNullException(nameof(actions));
-            }
             if (actions.Count == 0)
             {
                 throw new ArgumentOutOfRangeException(nameof(actions));
-            }
-            if (actions.Any(a => a == null))
-            {
-                throw new ArgumentNullException(nameof(actions));
             }
             using (var ms = new MemoryStream())
             using (var w = new EndianBinaryWriter(ms, encoding: EncodingType.UTF16))

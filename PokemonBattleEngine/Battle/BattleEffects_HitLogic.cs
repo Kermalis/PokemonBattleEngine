@@ -1,7 +1,6 @@
 ﻿using Kermalis.PokemonBattleEngine.Data;
 using System;
 using System.Collections.Generic;
-using System.Linq;
 
 namespace Kermalis.PokemonBattleEngine.Battle
 {
@@ -25,7 +24,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
 
         // TODO: TripleKick miss logic
         private void Hit_GetVictims(PBEBattlePokemon user, PBEBattlePokemon[] targets, IPBEMoveData mData, PBEType moveType, out List<PBEAttackVictim> victims,
-            Func<PBEBattlePokemon, PBEResult> failFunc = null)
+            Func<PBEBattlePokemon, PBEResult>? failFunc = null)
         {
             victims = new List<PBEAttackVictim>(targets.Length);
             foreach (PBEBattlePokemon target in targets)
@@ -35,7 +34,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                     continue;
                 }
                 // Verified: These fails are after type effectiveness (So SuckerPunch will not affect Ghost types due to Normalize before it fails due to invalid conditions)
-                if (failFunc != null && failFunc.Invoke(target) != PBEResult.Success)
+                if (failFunc is not null && failFunc.Invoke(target) != PBEResult.Success)
                 {
                     continue;
                 }
@@ -49,35 +48,35 @@ namespace Kermalis.PokemonBattleEngine.Battle
             return;
         }
         // Outs are for hit targets that were not behind substitute
-        private static void Hit_HitTargets(PBETeam user, Action<IEnumerable<PBEAttackVictim>> doSub, Action<IEnumerable<PBEAttackVictim>> doNormal, List<PBEAttackVictim> victims,
-            out IEnumerable<PBEAttackVictim> allies, out IEnumerable<PBEAttackVictim> foes)
+        private static void Hit_HitTargets(PBETeam user, Action<List<PBEAttackVictim>> doSub, Action<List<PBEAttackVictim>> doNormal, List<PBEAttackVictim> victims,
+            out List<PBEAttackVictim> allies, out List<PBEAttackVictim> foes)
         {
-            IEnumerable<PBEAttackVictim> subAllies = victims.Where(v =>
+            List<PBEAttackVictim> subAllies = victims.FindAll(v =>
             {
                 PBEBattlePokemon pkmn = v.Pkmn;
                 return pkmn.Team == user && pkmn.Status2.HasFlag(PBEStatus2.Substitute);
-            }).ToArray();
-            allies = victims.Where(v =>
+            });
+            allies = victims.FindAll(v =>
             {
                 PBEBattlePokemon pkmn = v.Pkmn;
                 return pkmn.Team == user && !pkmn.Status2.HasFlag(PBEStatus2.Substitute);
-            }).ToArray();
-            IEnumerable<PBEAttackVictim> subFoes = victims.Where(v =>
+            });
+            List<PBEAttackVictim> subFoes = victims.FindAll(v =>
             {
                 PBEBattlePokemon pkmn = v.Pkmn;
                 return pkmn.Team != user && pkmn.Status2.HasFlag(PBEStatus2.Substitute);
-            }).ToArray();
-            foes = victims.Where(v =>
+            });
+            foes = victims.FindAll(v =>
             {
                 PBEBattlePokemon pkmn = v.Pkmn;
                 return pkmn.Team != user && !pkmn.Status2.HasFlag(PBEStatus2.Substitute);
-            }).ToArray();
+            });
             doSub(subAllies);
             doNormal(allies);
             doSub(subFoes);
             doNormal(foes);
         }
-        private void Hit_DoCrit(IEnumerable<PBEAttackVictim> victims)
+        private void Hit_DoCrit(List<PBEAttackVictim> victims)
         {
             foreach (PBEAttackVictim victim in victims)
             {
@@ -87,7 +86,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                 }
             }
         }
-        private void Hit_DoMoveResult(PBEBattlePokemon user, IEnumerable<PBEAttackVictim> victims)
+        private void Hit_DoMoveResult(PBEBattlePokemon user, List<PBEAttackVictim> victims)
         {
             foreach (PBEAttackVictim victim in victims)
             {
@@ -98,7 +97,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                 }
             }
         }
-        private void Hit_FaintCheck(IEnumerable<PBEAttackVictim> victims)
+        private void Hit_FaintCheck(List<PBEAttackVictim> victims)
         {
             foreach (PBEAttackVictim victim in victims)
             {
@@ -107,11 +106,11 @@ namespace Kermalis.PokemonBattleEngine.Battle
         }
 
         private void BasicHit(PBEBattlePokemon user, PBEBattlePokemon[] targets, IPBEMoveData mData,
-            Func<PBEBattlePokemon, PBEResult> failFunc = null,
-            Action<PBEBattlePokemon> beforeDoingDamage = null,
-            Action<PBEBattlePokemon, ushort> beforePostHit = null,
-            Action<PBEBattlePokemon> afterPostHit = null,
-            Func<int, int?> recoilFunc = null)
+            Func<PBEBattlePokemon, PBEResult>? failFunc = null,
+            Action<PBEBattlePokemon>? beforeDoingDamage = null,
+            Action<PBEBattlePokemon, ushort>? beforePostHit = null,
+            Action<PBEBattlePokemon>? afterPostHit = null,
+            Func<int, int?>? recoilFunc = null)
         {
             // Targets array is [FoeLeft, FoeCenter, FoeRight, AllyLeft, AllyCenter, AllyRight]
             // User can faint or heal with a berry at LiquidOoze, IronBarbs/RockyHelmet, and also at Recoil/LifeOrb
@@ -148,7 +147,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                 totalDamageDealt += victim.Damage;
                 victim.Crit = crit;
             }
-            void DoSub(IEnumerable<PBEAttackVictim> subs)
+            void DoSub(List<PBEAttackVictim> subs)
             {
                 foreach (PBEAttackVictim victim in subs)
                 {
@@ -169,7 +168,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                     }
                 }
             }
-            void DoNormal(IEnumerable<PBEAttackVictim> normals)
+            void DoNormal(List<PBEAttackVictim> normals)
             {
                 foreach (PBEAttackVictim victim in normals)
                 {
@@ -192,13 +191,13 @@ namespace Kermalis.PokemonBattleEngine.Battle
                 Hit_FaintCheck(normals);
             }
 
-            Hit_HitTargets(user.Team, DoSub, DoNormal, victims, out IEnumerable<PBEAttackVictim> allies, out IEnumerable<PBEAttackVictim> foes);
+            Hit_HitTargets(user.Team, DoSub, DoNormal, victims, out List<PBEAttackVictim> allies, out List<PBEAttackVictim> foes);
             DoPostAttackedEffects(user, allies, foes, true, recoilDamage: recoilFunc?.Invoke(totalDamageDealt), colorChangeType: moveType);
         }
         // None of these moves are multi-target
         private void FixedDamageHit(PBEBattlePokemon user, PBEBattlePokemon[] targets, IPBEMoveData mData, Func<PBEBattlePokemon, int> damageFunc,
-            Func<PBEBattlePokemon, PBEResult> failFunc = null,
-            Action beforePostHit = null)
+            Func<PBEBattlePokemon, PBEResult>? failFunc = null,
+            Action? beforePostHit = null)
         {
             PBEType moveType = user.GetMoveType(mData);
             // Endeavor fails if the target's HP is <= the user's HP
@@ -219,7 +218,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                 // FinalGambit user faints here
                 victim.Damage = DealDamage(user, target, damageFunc.Invoke(target));
             }
-            void DoSub(IEnumerable<PBEAttackVictim> subs)
+            void DoSub(List<PBEAttackVictim> subs)
             {
                 foreach (PBEAttackVictim victim in subs)
                 {
@@ -231,7 +230,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                     }
                 }
             }
-            void DoNormal(IEnumerable<PBEAttackVictim> normals)
+            void DoNormal(List<PBEAttackVictim> normals)
             {
                 foreach (PBEAttackVictim victim in normals)
                 {
@@ -247,13 +246,13 @@ namespace Kermalis.PokemonBattleEngine.Battle
                 Hit_FaintCheck(normals);
             }
 
-            Hit_HitTargets(user.Team, DoSub, DoNormal, victims, out IEnumerable<PBEAttackVictim> allies, out IEnumerable<PBEAttackVictim> foes);
+            Hit_HitTargets(user.Team, DoSub, DoNormal, victims, out List<PBEAttackVictim> allies, out List<PBEAttackVictim> foes);
             DoPostAttackedEffects(user, allies, foes, false, colorChangeType: moveType);
         }
         // None of these moves are multi-target
         private void MultiHit(PBEBattlePokemon user, PBEBattlePokemon[] targets, IPBEMoveData mData, byte numHits,
             bool subsequentMissChecks = false,
-            Action<PBEBattlePokemon> beforePostHit = null)
+            Action<PBEBattlePokemon>? beforePostHit = null)
         {
             PBEType moveType = user.GetMoveType(mData);
             Hit_GetVictims(user, targets, mData, moveType, out List<PBEAttackVictim> victims);
@@ -274,7 +273,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                 victim.Damage = DealDamage(user, target, damage, ignoreSubstitute: false, ignoreSturdy: false);
                 victim.Crit = crit;
             }
-            void DoSub(IEnumerable<PBEAttackVictim> subs)
+            void DoSub(List<PBEAttackVictim> subs)
             {
                 foreach (PBEAttackVictim victim in subs)
                 {
@@ -290,9 +289,9 @@ namespace Kermalis.PokemonBattleEngine.Battle
                     }
                 }
             }
-            void DoNormal(IEnumerable<PBEAttackVictim> normals)
+            void DoNormal(List<PBEAttackVictim> normals)
             {
-                normals = normals.Where(v => v.Pkmn.HP > 0); // Remove ones that fainted from previous hits
+                normals.RemoveAll(v => v.Pkmn.HP == 0); // Remove ones that fainted from previous hits
                 foreach (PBEAttackVictim victim in normals)
                 {
                     CalcDamage(victim);
@@ -308,12 +307,12 @@ namespace Kermalis.PokemonBattleEngine.Battle
             }
 
             byte hit = 0;
-            IEnumerable<PBEAttackVictim> allies, foes;
+            List<PBEAttackVictim> allies, foes;
             do
             {
                 Hit_HitTargets(user.Team, DoSub, DoNormal, victims, out allies, out foes);
                 hit++;
-            } while (hit < numHits && user.HP > 0 && user.Status1 != PBEStatus1.Asleep && victims.Any(v => v.Pkmn.HP > 0));
+            } while (hit < numHits && user.HP > 0 && user.Status1 != PBEStatus1.Asleep && victims.FindIndex(v => v.Pkmn.HP > 0) != -1);
             Hit_DoMoveResult(user, allies);
             Hit_DoMoveResult(user, foes);
             BroadcastMultiHit(hit);

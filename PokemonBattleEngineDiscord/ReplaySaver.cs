@@ -42,23 +42,22 @@ namespace Kermalis.PokemonBattleEngineDiscord
             if (!Directory.Exists(ReplayDirectory))
             {
                 Directory.CreateDirectory(ReplayDirectory);
+                return;
             }
-            else
+            DateTime today = DateTime.Today;
+            foreach (string dir in Directory.EnumerateDirectories(ReplayDirectory))
             {
-                DateTime today = DateTime.Today;
-                foreach (string dir in Directory.EnumerateDirectories(ReplayDirectory))
+                string dirName = new DirectoryInfo(dir).Name;
+                Match m = Regex.Match(dirName, DateRegexPattern);
+                if (!m.Success)
                 {
-                    string dirName = new DirectoryInfo(dir).Name;
-                    Match m = Regex.Match(dirName, DateRegexPattern);
-                    if (m.Success)
-                    {
-                        TimeSpan timePassed = today - new DateTime(int.Parse(m.Groups[1].Value), int.Parse(m.Groups[2].Value), int.Parse(m.Groups[3].Value));
-                        if (timePassed.Days >= NumDaysTillRemoval)
-                        {
-                            Console.WriteLine("Deleting old replay directory: {0}", dirName);
-                            Directory.Delete(dir, true);
-                        }
-                    }
+                    continue;
+                }
+                TimeSpan timePassed = today - new DateTime(int.Parse(m.Groups[1].Value), int.Parse(m.Groups[2].Value), int.Parse(m.Groups[3].Value));
+                if (timePassed.Days >= NumDaysTillRemoval)
+                {
+                    Console.WriteLine("Deleting old replay directory: {0}", dirName);
+                    Directory.Delete(dir, true);
                 }
             }
         }

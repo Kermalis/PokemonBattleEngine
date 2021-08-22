@@ -16,13 +16,6 @@ namespace Kermalis.PokemonBattleEngine.Data
         float Weight { get; }
         IReadOnlyList<PBEAbility> Abilities { get; }
     }
-    public interface IPBEPokemonDataExtended : IPBEPokemonData
-    {
-        IReadOnlyList<(PBESpecies Species, PBEForm Form)> PreEvolutions { get; }
-        IReadOnlyList<(PBESpecies Species, PBEForm Form)> Evolutions { get; }
-        IReadOnlyList<(PBEMove Move, byte Level, PBEMoveObtainMethod ObtainMethod)> LevelUpMoves { get; }
-        IReadOnlyList<(PBEMove Move, PBEMoveObtainMethod ObtainMethod)> OtherMoves { get; }
-    }
 
     public static class PBEPokemonDataExtensions
     {
@@ -33,10 +26,6 @@ namespace Kermalis.PokemonBattleEngine.Data
                 throw new ArgumentOutOfRangeException(nameof(ability));
             }
             return pData.Abilities.Contains(ability);
-        }
-        public static bool HasEvolutions(this IPBEPokemonDataExtended pData)
-        {
-            return pData.Evolutions.Count > 0;
         }
     }
 }

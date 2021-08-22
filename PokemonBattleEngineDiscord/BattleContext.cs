@@ -1,12 +1,14 @@
 ﻿using Discord;
 using Discord.WebSocket;
-using Kermalis.PokemonBattleEngine.AI;
 using Kermalis.PokemonBattleEngine.Battle;
 using Kermalis.PokemonBattleEngine.Data;
+using Kermalis.PokemonBattleEngine.Data.Utils;
+using Kermalis.PokemonBattleEngine.DefaultData.AI;
 using Kermalis.PokemonBattleEngine.Packets;
-using Kermalis.PokemonBattleEngine.Utils;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading;
@@ -14,125 +16,60 @@ using System.Threading.Tasks;
 
 namespace Kermalis.PokemonBattleEngineDiscord
 {
-    internal sealed class BattleContext
+    internal sealed partial class BattleContext
     {
-        #region Constants
-        private const string Separator = "**--------------------**";
-        private static readonly Emoji _shinyEmoji = new Emoji("✨");
-        private static readonly Emoji _switchEmoji = new Emoji("😼");
-        private static readonly Emoji _confirmationEmoji = new Emoji("👍");
-        private static readonly Dictionary<PBEType, Emote>[] _moveEmotes = new Dictionary<PBEType, Emote>[4]
+        private sealed class Battler
         {
-            new Dictionary<PBEType, Emote>
+            public readonly PBETeam Team;
+            public readonly PBETrainer Trainer;
+            public readonly SocketUser? User; // Null means PBEAI is battling
+            public readonly PBEDDAI? AI;
+
+            public Battler(PBETeam t, SocketUser? u)
             {
-                { PBEType.None, Emote.Parse("<:Normal1:708768399538520095>") },
-                { PBEType.Bug, Emote.Parse("<:Bug1:708768297889300503>") },
-                { PBEType.Dark, Emote.Parse("<:Dark1:708768298732355667>") },
-                { PBEType.Dragon, Emote.Parse("<:Dragon1:708768299235672084>") },
-                { PBEType.Electric, Emote.Parse("<:Electric1:708768298103341073>") },
-                { PBEType.Fighting, Emote.Parse("<:Fighting1:708768297457549472>") },
-                { PBEType.Fire, Emote.Parse("<:Fire1:708768298782818394>") },
-                { PBEType.Flying, Emote.Parse("<:Flying1:708768298841669713>") },
-                { PBEType.Ghost, Emote.Parse("<:Ghost1:708768298598400081>") },
-                { PBEType.Grass, Emote.Parse("<:Grass1:708768299219025950>") },
-                { PBEType.Ground, Emote.Parse("<:Ground1:708768298317119548>") },
-                { PBEType.Ice, Emote.Parse("<:Ice1:708768397214744627>") },
-                { PBEType.Normal, Emote.Parse("<:Normal1:708768399538520095>") },
-                { PBEType.Poison, Emote.Parse("<:Poison1:708768399450308680>") },
-                { PBEType.Psychic, Emote.Parse("<:Psychic1:708768399915876462>") },
-                { PBEType.Rock, Emote.Parse("<:Rock1:708768399836315670>") },
-                { PBEType.Steel, Emote.Parse("<:Steel1:708768399400108083>") },
-                { PBEType.Water, Emote.Parse("<:Water1:708768400389963877>") }
-            },
-            new Dictionary<PBEType, Emote>
-            {
-                { PBEType.None, Emote.Parse("<:Normal2:708768399496314880>") },
-                { PBEType.Bug, Emote.Parse("<:Bug2:708768298665246791>") },
-                { PBEType.Dark, Emote.Parse("<:Dark2:708768298992533586>") },
-                { PBEType.Dragon, Emote.Parse("<:Dragon2:708768298883350570>") },
-                { PBEType.Electric, Emote.Parse("<:Electric2:708768297960603708>") },
-                { PBEType.Fighting, Emote.Parse("<:Fighting2:708768297654681620>") },
-                { PBEType.Fire, Emote.Parse("<:Fire2:708768298870767616>") },
-                { PBEType.Flying, Emote.Parse("<:Flying2:708768298921099325>") },
-                { PBEType.Ghost, Emote.Parse("<:Ghost2:708768299072356402>") },
-                { PBEType.Grass, Emote.Parse("<:Grass2:708768298900127845>") },
-                { PBEType.Ground, Emote.Parse("<:Ground2:708768298338353232>") },
-                { PBEType.Ice, Emote.Parse("<:Ice2:708768397336510534>") },
-                { PBEType.Normal, Emote.Parse("<:Normal2:708768399496314880>") },
-                { PBEType.Poison, Emote.Parse("<:Poison2:708768399647440907>") },
-                { PBEType.Psychic, Emote.Parse("<:Psychic2:708768399441788938>") },
-                { PBEType.Rock, Emote.Parse("<:Rock2:708768399442051114>") },
-                { PBEType.Steel, Emote.Parse("<:Steel2:708768399873933325>") },
-                { PBEType.Water, Emote.Parse("<:Water2:708768398829682759>") }
-            },
-            new Dictionary<PBEType, Emote>
-            {
-                { PBEType.None, Emote.Parse("<:Normal3:708768399404302426>") },
-                { PBEType.Bug, Emote.Parse("<:Bug3:708768298958979233>") },
-                { PBEType.Dark, Emote.Parse("<:Dark3:708768298690674739>") },
-                { PBEType.Dragon, Emote.Parse("<:Dragon3:708768300045434911>") },
-                { PBEType.Electric, Emote.Parse("<:Electric3:708768298057203823>") },
-                { PBEType.Fighting, Emote.Parse("<:Fighting3:708768297679847474>") },
-                { PBEType.Fire, Emote.Parse("<:Fire3:708768298744938546>") },
-                { PBEType.Flying, Emote.Parse("<:Flying3:708768298480828557>") },
-                { PBEType.Ghost, Emote.Parse("<:Ghost3:708768298845601822>") },
-                { PBEType.Grass, Emote.Parse("<:Grass3:708768298858184785>") },
-                { PBEType.Ground, Emote.Parse("<:Ground3:708768298312925244>") },
-                { PBEType.Ice, Emote.Parse("<:Ice3:708768396644450355>") },
-                { PBEType.Normal, Emote.Parse("<:Normal3:708768399404302426>") },
-                { PBEType.Poison, Emote.Parse("<:Poison3:708768399681126420>") },
-                { PBEType.Psychic, Emote.Parse("<:Psychic3:708768401123836015>") },
-                { PBEType.Rock, Emote.Parse("<:Rock3:708768399274016838>") },
-                { PBEType.Steel, Emote.Parse("<:Steel3:708768399383330836>") },
-                { PBEType.Water, Emote.Parse("<:Water3:708768399936978977>") }
-            },
-            new Dictionary<PBEType, Emote>
-            {
-                { PBEType.None, Emote.Parse("<:Normal4:708768399332999240>") },
-                { PBEType.Bug, Emote.Parse("<:Bug4:708768298883612792>") },
-                { PBEType.Dark, Emote.Parse("<:Dark4:708768298665508906>") },
-                { PBEType.Dragon, Emote.Parse("<:Dragon4:708768298627498066>") },
-                { PBEType.Electric, Emote.Parse("<:Electric4:708768297918660698>") },
-                { PBEType.Fighting, Emote.Parse("<:Fighting4:708768297532915785>") },
-                { PBEType.Fire, Emote.Parse("<:Fire4:708768298380034152>") },
-                { PBEType.Flying, Emote.Parse("<:Flying4:708768298795270245>") },
-                { PBEType.Ghost, Emote.Parse("<:Ghost4:708768298841669672>") },
-                { PBEType.Grass, Emote.Parse("<:Grass4:708768298875093084>") },
-                { PBEType.Ground, Emote.Parse("<:Ground4:708768298468114512>") },
-                { PBEType.Ice, Emote.Parse("<:Ice4:708768398821163009>") },
-                { PBEType.Normal, Emote.Parse("<:Normal4:708768399332999240>") },
-                { PBEType.Poison, Emote.Parse("<:Poison4:708768400020602910>") },
-                { PBEType.Psychic, Emote.Parse("<:Psychic4:708768399328673803>") },
-                { PBEType.Rock, Emote.Parse("<:Rock4:708768399345451009>") },
-                { PBEType.Steel, Emote.Parse("<:Steel4:708768399161032735>") },
-                { PBEType.Water, Emote.Parse("<:Water4:708768398691139656>") }
+                Team = t;
+                Trainer = t.Trainers[0];
+                User = u;
+                if (u is null)
+                {
+                    AI = new PBEDDAI(Trainer);
+                }
             }
-        };
-        #endregion
-        private static readonly object _activeBattlesLockObj = new object();
-        private static readonly List<BattleContext> _activeBattles = new List<BattleContext>();
-        private static readonly Dictionary<SocketUser, BattleContext> _activeBattlers = new Dictionary<SocketUser, BattleContext>(DiscordComparers.UserComparer);
-        private static readonly Dictionary<ITextChannel, BattleContext> _activeChannels = new Dictionary<ITextChannel, BattleContext>(DiscordComparers.ChannelComparer);
-        private static readonly Dictionary<IGuild, List<BattleContext>> _activeGuilds = new Dictionary<IGuild, List<BattleContext>>(DiscordComparers.GuildComparer);
+
+            public string GetName()
+            {
+                return User is null ? Trainer.Name : User.Username;
+            }
+            public bool Is(SocketUser u)
+            {
+                return User is not null && User.Id == u.Id;
+            }
+        }
+
+        private static readonly object _activeBattlesLockObj = new();
+        private static readonly List<BattleContext> _activeBattles = new();
+        private static readonly Dictionary<SocketUser, BattleContext> _activeBattlers = new(DiscordComparers.UserComparer);
+        private static readonly Dictionary<ITextChannel, BattleContext> _activeChannels = new(DiscordComparers.ChannelComparer);
+        private static readonly Dictionary<IGuild, List<BattleContext>> _activeGuilds = new(DiscordComparers.GuildComparer);
         private static ulong _battleCounter = 1;
 
         public readonly ulong BattleId;
         private readonly PBEBattle _battle;
-        private readonly SocketUser _battler0; // Null means PBEAI is battling
-        private readonly SocketUser _battler1; // Null means PBEAI is battling
+        private readonly Battler _battler0;
+        private readonly Battler _battler1;
         private ITextChannel _channel;
         private readonly StringBuilder _queuedMessages;
 
-        public BattleContext(PBEBattle battle, SocketUser battler0, SocketUser battler1)
+        public BattleContext(PBEBattle battle, SocketUser? battler0, SocketUser? battler1)
         {
             lock (_activeBattlesLockObj)
             {
                 _activeBattles.Add(this);
-                if (battler0 != null)
+                if (battler0 is not null)
                 {
                     _activeBattlers.Add(battler0, this);
                 }
-                if (battler1 != null)
+                if (battler1 is not null)
                 {
                     _activeBattlers.Add(battler1, this);
                 }
@@ -140,13 +77,14 @@ namespace Kermalis.PokemonBattleEngineDiscord
                 _queuedMessages = new StringBuilder();
                 BattleId = _battleCounter++;
                 _battle = battle;
-                _battler0 = battler0;
-                _battler1 = battler1;
+                _battler0 = new Battler(battle.Teams[0], battler0);
+                _battler1 = new Battler(battle.Teams[1], battler1);
                 SetEmbedTitle();
 
                 battle.OnNewEvent += Battle_OnNewEvent;
                 battle.OnStateChanged += Battle_OnStateChanged;
             }
+            _channel = null!; // _channel will be set in Begin()
         }
         public async Task Begin(ITextChannel channel)
         {
@@ -155,7 +93,7 @@ namespace Kermalis.PokemonBattleEngineDiscord
                 _activeChannels.Add(channel, this);
                 _channel = channel;
                 IGuild guild = channel.Guild;
-                if (!_activeGuilds.TryGetValue(guild, out List<BattleContext> list))
+                if (!_activeGuilds.TryGetValue(guild, out List<BattleContext>? list))
                 {
                     list = new List<BattleContext>();
                     _activeGuilds.Add(guild, list);
@@ -187,7 +125,7 @@ namespace Kermalis.PokemonBattleEngineDiscord
             {
                 lock (_activeBattlesLockObj)
                 {
-                    if (_activeChannels.TryGetValue(c, out BattleContext bc))
+                    if (_activeChannels.TryGetValue(c, out BattleContext? bc))
                     {
                         bc.CloseSilent(false);
                     }
@@ -198,7 +136,7 @@ namespace Kermalis.PokemonBattleEngineDiscord
         {
             lock (_activeBattlesLockObj)
             {
-                if (_activeGuilds.TryGetValue(guild, out List<BattleContext> list))
+                if (_activeGuilds.TryGetValue(guild, out List<BattleContext>? list))
                 {
                     foreach (BattleContext bc in list.ToArray()) // Prevent collection being modified in loop
                     {
@@ -212,7 +150,7 @@ namespace Kermalis.PokemonBattleEngineDiscord
         {
             lock (_activeBattlesLockObj)
             {
-                if (_activeBattlers.TryGetValue(user, out BattleContext bc))
+                if (_activeBattlers.TryGetValue(user, out BattleContext? bc))
                 {
                     return bc.Forfeit(user);
                 }
@@ -223,28 +161,28 @@ namespace Kermalis.PokemonBattleEngineDiscord
         {
             lock (_activeBattlesLockObj)
             {
-                if (_activeBattlers.TryGetValue(user, out BattleContext bc))
+                if (_activeBattlers.TryGetValue(user, out BattleContext? bc))
                 {
                     bc.SetEmbedTitle();
                 }
             }
         }
-        public static BattleContext GetBattleContext(SocketUser user)
+        public static bool GetBattleContext(SocketUser user, [NotNullWhen(true)] out BattleContext? bc)
         {
             lock (_activeBattlesLockObj)
             {
-                return _activeBattlers.TryGetValue(user, out BattleContext bc) ? bc : null;
+                return _activeBattlers.TryGetValue(user, out bc);
             }
         }
 
         public async Task Forfeit(SocketUser user)
         {
             // Assumes "user" is not null (AI)
-            await Forfeit(GetTrainer(user));
+            await Forfeit(GetBattler(user));
         }
-        private async Task Forfeit(PBETrainer trainer)
+        private async Task Forfeit(Battler battler)
         {
-            await CloseNormalWithMessage(string.Format("{0} has forfeited the match.", GetTrainerName(trainer)), ReplaySaver.ShouldSaveForfeits, true);
+            await CloseNormalWithMessage(string.Format("{0} has forfeited the match.", battler.GetName()), ReplaySaver.ShouldSaveForfeits, true);
         }
         private async Task CloseNormalWithException(Exception ex)
         {
@@ -275,34 +213,36 @@ namespace Kermalis.PokemonBattleEngineDiscord
         }
         private void CloseSilent(bool saveReplay)
         {
+            SocketUser? u0 = _battler0.User;
+            SocketUser? u1 = _battler1.User;
             lock (_activeBattlesLockObj)
             {
                 _activeBattles.Remove(this);
-                if (_battler0 != null)
+                if (u0 is not null)
                 {
-                    _activeBattlers.Remove(_battler0);
+                    _activeBattlers.Remove(u0);
                 }
-                if (_battler1 != null)
+                if (u1 is not null)
                 {
-                    _activeBattlers.Remove(_battler1);
+                    _activeBattlers.Remove(u1);
                 }
                 _activeChannels.Remove(_channel);
                 _activeGuilds[_channel.Guild].Remove(this);
                 // Only save replay if ((saveReplay is true) and (not battling an AI or (battling an AI and should save AI replays)))
-                if (saveReplay && ((_battler0 != null && _battler1 != null) || ReplaySaver.ShouldSaveAIBattles))
+                if (saveReplay && ((u0 is not null && u1 is not null) || ReplaySaver.ShouldSaveAIBattles))
                 {
                     ReplaySaver.SaveReplay(_battle, BattleId); // Save battle in the lock so they don't conflict while directory checking
                 }
             }
             _battle.OnNewEvent -= Battle_OnNewEvent;
             _battle.OnStateChanged -= Battle_OnStateChanged;
-            ReactionHandler.RemoveListeners(_battler0, _battler1);
+            ReactionHandler.RemoveListeners(u0, u1);
         }
 
-        private string _embedTitle; // Mini performance saver
+        private string? _embedTitle; // Mini performance saver
         private void SetEmbedTitle()
         {
-            string s = $"**[#{BattleId}] ― {GetTrainerName(_battle.Trainers[0])} vs {GetTrainerName(_battle.Trainers[1])}";
+            string s = $"**[#{BattleId}] ― {_battler0.GetName()} vs {_battler1.GetName()}";
             if (_battle.TurnNumber > 0)
             {
                 s += $" (Turn {_battle.TurnNumber})";
@@ -335,13 +275,14 @@ namespace Kermalis.PokemonBattleEngineDiscord
                 await CreateAndSendEmbedAsync(CreateKnownPokemonEmbed(pkmn), messageText: b ? Separator : string.Empty, pkmn: pkmn);
             }
         }
-        private async Task<IUserMessage> CreateAndSendEmbedAsync(string embedDescription, string messageText = "", PBEBattlePokemon pkmn = null, bool useUpperImage = false, EmbedFieldBuilder[] fields = null, SocketUser userToSendTo = null)
+        private async Task<IUserMessage> CreateAndSendEmbedAsync(string embedDescription, string messageText = "",
+            PBEBattlePokemon? pkmn = null, bool useUpperImage = false, EmbedFieldBuilder[]? fields = null, SocketUser? userToSendTo = null)
         {
             EmbedBuilder embed = new EmbedBuilder()
                 .WithUrl(Utils.URL)
                 .WithTitle(_embedTitle)
                 .WithDescription(embedDescription);
-            if (pkmn == null)
+            if (pkmn is null)
             {
                 embed.WithColor(Utils.RandomColor());
             }
@@ -358,21 +299,18 @@ namespace Kermalis.PokemonBattleEngineDiscord
                     embed.WithImageUrl(sprite);
                 }
             }
-            if (fields != null)
+            if (fields is not null)
             {
                 foreach (EmbedFieldBuilder f in fields)
                 {
                     embed.AddField(f);
                 }
             }
-            if (userToSendTo != null)
+            if (userToSendTo is not null)
             {
                 return await userToSendTo.SendMessageAsync(messageText, embed: embed.Build());
             }
-            else
-            {
-                return await _channel.SendMessageAsync(messageText, embed: embed.Build());
-            }
+            return await _channel.SendMessageAsync(messageText, embed: embed.Build());
         }
         private static void AddStatChanges(PBEBattlePokemon pkmn, StringBuilder sb)
         {
@@ -511,7 +449,7 @@ namespace Kermalis.PokemonBattleEngineDiscord
                 string powerStr;
                 if (mData.Effect == PBEMoveEffect.HiddenPower)
                 {
-                    powerStr = pkmn.IndividualValues.GetHiddenPowerBasePower(PBESettings.DefaultSettings).ToString();
+                    powerStr = pkmn.IndividualValues!.GetHiddenPowerBasePower(PBESettings.DefaultSettings).ToString();
                 }
                 else
                 {
@@ -600,20 +538,19 @@ namespace Kermalis.PokemonBattleEngineDiscord
             }
             return sb.ToString();
         }
-        private PBETrainer GetTrainer(SocketUser battler)
+        private Battler GetBattler(SocketUser battler)
         {
-            // Assumes "battler" is not null (AI)
-            if (_battler0 != null && battler.Id == _battler0.Id)
+            if (_battler0.Is(battler))
             {
-                return _battle.Trainers[0];
+                return _battler0;
             }
-            if (_battler1 != null && battler.Id == _battler1.Id)
+            if (_battler1.Is(battler))
             {
-                return _battle.Trainers[1];
+                return _battler1;
             }
             throw new ArgumentOutOfRangeException(nameof(battler));
         }
-        private SocketUser GetBattler(PBETrainer trainer)
+        private Battler GetBattler(PBETrainer trainer)
         {
             if (trainer.Id == 0)
             {
@@ -625,13 +562,12 @@ namespace Kermalis.PokemonBattleEngineDiscord
             }
             throw new ArgumentOutOfRangeException(nameof(trainer));
         }
-        // The second parameter in the following is necessary for the packet handler since funcs these are passed in as arguments
+        // These two are passed to the message handler
         private string GetTrainerName(PBETrainer trainer)
         {
-            SocketUser user = GetBattler(trainer);
-            return user == null ? trainer.Name : user.Username;
+            return GetBattler(trainer).GetName();
         }
-        private string GetTeamName(PBETeam team, bool firstLetterCapitalized = true)
+        private string GetTeamName(PBETeam team, bool _)
         {
             return GetTrainerName(team.Trainers[0]);
         }
@@ -680,142 +616,138 @@ namespace Kermalis.PokemonBattleEngineDiscord
                 case PBEActionsRequestPacket arp:
                 {
                     PBETrainer trainer = arp.Trainer;
-                    SocketUser user = GetBattler(trainer);
-                    if (user == null) // PBEAI
+                    Battler battler = GetBattler(trainer);
+                    SocketUser? user = battler.User;
+                    if (user is null) // PBEAI
                     {
-                        trainer.CreateAIActions();
+                        battler.AI!.CreateActions();
+                        return;
                     }
-                    else
+                    PBEBattlePokemon mainPkmn = trainer.ActionsRequired[0];
+                    var reactionsToAdd = new List<(IUserMessage Message, IEmote Reaction)>(PBESettings.DefaultMaxPartySize - 1 + PBESettings.DefaultNumMoves); // 5 switch reactions, 4 move reactions
+                    string description;
+                    EmbedFieldBuilder[] fields;
+
+                    if (mainPkmn.CanSwitchOut())
                     {
-                        PBEBattlePokemon mainPkmn = trainer.ActionsRequired[0];
-                        var reactionsToAdd = new List<(IUserMessage Message, IEmote Reaction)>(PBESettings.DefaultMaxPartySize - 1 + PBESettings.DefaultNumMoves); // 5 switch reactions, 4 move reactions
-                        string description;
-                        EmbedFieldBuilder[] fields;
-
-                        if (mainPkmn.CanSwitchOut())
+                        async Task SwitchReactionClicked(IUserMessage switchMsg, PBEBattlePokemon switchPkmn)
                         {
-                            async Task SwitchReactionClicked(IUserMessage switchMsg, PBEBattlePokemon switchPkmn)
+                            await switchMsg.AddReactionAsync(_confirmationEmoji); // Put this here so it happens before RunTurn() takes its time
+                            trainer.SelectActionsIfValid(out _, new PBETurnAction(mainPkmn, switchPkmn));
+                        }
+
+                        List<PBEBattlePokemon> switches = trainer.Party.FindAll(p => p != mainPkmn && p.CanBattle);
+                        for (int i = 0; i < switches.Count; i++)
+                        {
+                            PBEBattlePokemon switchPkmn = switches[i];
+                            CreatePokemonEmbed(switchPkmn, false, out description, out fields);
+                            IUserMessage switchMsg = await CreateAndSendEmbedAsync(description, messageText: i == 0 ? Separator : string.Empty, pkmn: switchPkmn, useUpperImage: true, fields: fields, userToSendTo: user);
+                            reactionsToAdd.Add((switchMsg, _switchEmoji));
+                            ReactionHandler.AddListener(user, switchMsg, _switchEmoji, () => SwitchReactionClicked(switchMsg, switchPkmn));
+                        }
+                    }
+
+                    CreatePokemonEmbed(mainPkmn, true, out description, out fields);
+                    IUserMessage mainMsg = await CreateAndSendEmbedAsync($"{description}\nTo check a move: `!move info {PBEDataProvider.Instance.GetMoveName(Utils.RandomElement(PBEDataUtils.AllMoves)).English}`", pkmn: mainPkmn, useUpperImage: false, fields: fields, userToSendTo: user);
+
+                    async Task MoveReactionClicked(PBEMove move)
+                    {
+                        await mainMsg.AddReactionAsync(_confirmationEmoji); // Put this here so it happens before RunTurn() takes its time
+                        PBEMoveTarget possibleTargets = mainPkmn.GetMoveTargets(move);
+                        PBETurnTarget targets;
+                        switch (possibleTargets)
+                        {
+                            case PBEMoveTarget.All:
                             {
-                                await switchMsg.AddReactionAsync(_confirmationEmoji); // Put this here so it happens before RunTurn() takes its time
-                                trainer.SelectActionsIfValid(new PBETurnAction(mainPkmn, switchPkmn));
+                                targets = PBETurnTarget.AllyCenter | PBETurnTarget.FoeCenter;
+                                break;
                             }
-
-                            PBEBattlePokemon[] switches = trainer.Party.Where(p => p != mainPkmn && p.CanBattle).ToArray();
-                            for (int i = 0; i < switches.Length; i++)
+                            case PBEMoveTarget.AllFoes:
+                            case PBEMoveTarget.AllFoesSurrounding:
+                            case PBEMoveTarget.AllSurrounding:
+                            case PBEMoveTarget.RandomFoeSurrounding:
+                            case PBEMoveTarget.SingleFoeSurrounding:
+                            case PBEMoveTarget.SingleNotSelf:
+                            case PBEMoveTarget.SingleSurrounding:
                             {
-                                PBEBattlePokemon switchPkmn = switches[i];
-                                CreatePokemonEmbed(switchPkmn, false, out description, out fields);
-                                IUserMessage switchMsg = await CreateAndSendEmbedAsync(description, messageText: i == 0 ? Separator : string.Empty, pkmn: switchPkmn, useUpperImage: true, fields: fields, userToSendTo: user);
-                                reactionsToAdd.Add((switchMsg, _switchEmoji));
-                                ReactionHandler.AddListener(user, switchMsg, _switchEmoji, () => SwitchReactionClicked(switchMsg, switchPkmn));
+                                targets = PBETurnTarget.FoeCenter;
+                                break;
                             }
-                        }
-
-                        CreatePokemonEmbed(mainPkmn, true, out description, out fields);
-                        IUserMessage mainMsg = await CreateAndSendEmbedAsync($"{description}\nTo check a move: `!move info {PBEDataProvider.Instance.GetMoveName(Utils.RandomElement(PBEDataUtils.AllMoves)).English}`", pkmn: mainPkmn, useUpperImage: false, fields: fields, userToSendTo: user);
-
-                        async Task MoveReactionClicked(PBEMove move)
-                        {
-                            await mainMsg.AddReactionAsync(_confirmationEmoji); // Put this here so it happens before RunTurn() takes its time
-                            PBEMoveTarget possibleTargets = mainPkmn.GetMoveTargets(move);
-                            PBETurnTarget targets;
-                            switch (possibleTargets)
+                            case PBEMoveTarget.AllTeam:
+                            case PBEMoveTarget.Self:
+                            case PBEMoveTarget.SelfOrAllySurrounding:
+                            case PBEMoveTarget.SingleAllySurrounding:
                             {
-                                case PBEMoveTarget.All:
-                                {
-                                    targets = PBETurnTarget.AllyCenter | PBETurnTarget.FoeCenter;
-                                    break;
-                                }
-                                case PBEMoveTarget.AllFoes:
-                                case PBEMoveTarget.AllFoesSurrounding:
-                                case PBEMoveTarget.AllSurrounding:
-                                case PBEMoveTarget.RandomFoeSurrounding:
-                                case PBEMoveTarget.SingleFoeSurrounding:
-                                case PBEMoveTarget.SingleNotSelf:
-                                case PBEMoveTarget.SingleSurrounding:
-                                {
-                                    targets = PBETurnTarget.FoeCenter;
-                                    break;
-                                }
-                                case PBEMoveTarget.AllTeam:
-                                case PBEMoveTarget.Self:
-                                case PBEMoveTarget.SelfOrAllySurrounding:
-                                case PBEMoveTarget.SingleAllySurrounding:
-                                {
-                                    targets = PBETurnTarget.AllyCenter;
-                                    break;
-                                }
-                                default: throw new ArgumentOutOfRangeException(nameof(possibleTargets));
+                                targets = PBETurnTarget.AllyCenter;
+                                break;
                             }
-
-                            trainer.SelectActionsIfValid(new PBETurnAction(mainPkmn, move, targets));
+                            default: throw new InvalidDataException(nameof(possibleTargets));
                         }
 
-                        PBEMove[] usableMoves = mainPkmn.GetUsableMoves();
-                        for (int i = 0; i < usableMoves.Length; i++)
-                        {
-                            PBEMove move = usableMoves[i]; // move must be evaluated before it reaches the lambda
-                            Emote emoji = _moveEmotes[i][mainPkmn.GetMoveType(move)];
-                            reactionsToAdd.Add((mainMsg, emoji));
-                            ReactionHandler.AddListener(user, mainMsg, emoji, () => MoveReactionClicked(move));
-                        }
+                        trainer.SelectActionsIfValid(out _, new PBETurnAction(mainPkmn, move, targets));
+                    }
 
-                        // All listeners are added, so now we can send the reactions
-                        foreach ((IUserMessage Message, IEmote Reaction) in reactionsToAdd)
-                        {
-                            await Message.AddReactionAsync(Reaction);
-                        }
+                    PBEMove[] usableMoves = mainPkmn.GetUsableMoves();
+                    for (int i = 0; i < usableMoves.Length; i++)
+                    {
+                        PBEMove move = usableMoves[i]; // move must be evaluated before it reaches the lambda
+                        Emote emoji = _moveEmotes[i][mainPkmn.GetMoveType(move)];
+                        reactionsToAdd.Add((mainMsg, emoji));
+                        ReactionHandler.AddListener(user, mainMsg, emoji, () => MoveReactionClicked(move));
+                    }
+
+                    // All listeners are added, so now we can send the reactions
+                    foreach ((IUserMessage Message, IEmote Reaction) in reactionsToAdd)
+                    {
+                        await Message.AddReactionAsync(Reaction);
                     }
                     return;
                 }
                 case PBESwitchInRequestPacket sirp:
                 {
                     PBETrainer trainer = sirp.Trainer;
-                    PBEBattlePokemon[] switches = trainer.Party.Where(p => p.CanBattle).ToArray();
-                    if (switches.Length == 1)
+                    List<PBEBattlePokemon> switches = trainer.Party.FindAll(p => p.CanBattle);
+                    if (switches.Count == 1)
                     {
-                        trainer.SelectSwitchesIfValid(new PBESwitchIn(switches[0], PBEFieldPosition.Center));
+                        trainer.SelectSwitchesIfValid(out _, new PBESwitchIn(switches[0], PBEFieldPosition.Center));
+                        return;
                     }
-                    else
+                    Battler battler = GetBattler(trainer);
+                    SocketUser? user = battler.User;
+                    if (user is null) // PBEAI
                     {
-                        SocketUser user = GetBattler(trainer);
-                        if (user == null) // PBEAI
-                        {
-                            trainer.CreateAISwitches();
-                        }
-                        else
-                        {
-                            ushort curTurn = _battle.TurnNumber;
-                            if (_lastSwitchinsTurn != curTurn)
-                            {
-                                await SendQueuedMessages();
-                                await SendActiveBattlerEmbeds();
-                                _lastSwitchinsTurn = curTurn;
-                            }
+                        battler.AI!.CreateAISwitches();
+                        return;
+                    }
+                    ushort curTurn = _battle.TurnNumber;
+                    if (_lastSwitchinsTurn != curTurn)
+                    {
+                        await SendQueuedMessages();
+                        await SendActiveBattlerEmbeds();
+                        _lastSwitchinsTurn = curTurn;
+                    }
 
-                            async Task SwitchReactionClicked(IUserMessage switchMsg, PBEBattlePokemon switchPkmn)
-                            {
-                                await switchMsg.AddReactionAsync(_confirmationEmoji); // Put this here so it happens before RunTurn() takes its time
-                                trainer.SelectSwitchesIfValid(new PBESwitchIn(switchPkmn, PBEFieldPosition.Center));
-                            }
+                    async Task SwitchReactionClicked(IUserMessage switchMsg, PBEBattlePokemon switchPkmn)
+                    {
+                        await switchMsg.AddReactionAsync(_confirmationEmoji); // Put this here so it happens before RunTurn() takes its time
+                        trainer.SelectSwitchesIfValid(out _, new PBESwitchIn(switchPkmn, PBEFieldPosition.Center));
+                    }
 
-                            var reactionsToAdd = new (IUserMessage Message, IEmote Reaction)[switches.Length];
-                            for (int i = 0; i < switches.Length; i++)
-                            {
-                                PBEBattlePokemon switchPkmn = switches[i];
-                                CreatePokemonEmbed(switchPkmn, false, out string description, out EmbedFieldBuilder[] fields);
-                                IUserMessage switchMsg = await CreateAndSendEmbedAsync(description, messageText: i == 0 ? Separator : string.Empty, pkmn: switchPkmn, useUpperImage: true, fields: fields, userToSendTo: user);
-                                reactionsToAdd[i] = (switchMsg, _switchEmoji);
-                                ReactionHandler.AddListener(user, switchMsg, _switchEmoji, () => SwitchReactionClicked(switchMsg, switchPkmn));
-                            }
+                    var reactionsToAdd = new (IUserMessage Message, IEmote Reaction)[switches.Count];
+                    for (int i = 0; i < switches.Count; i++)
+                    {
+                        PBEBattlePokemon switchPkmn = switches[i];
+                        CreatePokemonEmbed(switchPkmn, false, out string description, out EmbedFieldBuilder[] fields);
+                        IUserMessage switchMsg = await CreateAndSendEmbedAsync(description, messageText: i == 0 ? Separator : string.Empty, pkmn: switchPkmn, useUpperImage: true, fields: fields, userToSendTo: user);
+                        reactionsToAdd[i] = (switchMsg, _switchEmoji);
+                        ReactionHandler.AddListener(user, switchMsg, _switchEmoji, () => SwitchReactionClicked(switchMsg, switchPkmn));
+                    }
 
-                            // All listeners are added, so now we can send the reactions
-                            for (int i = 0; i < reactionsToAdd.Length; i++)
-                            {
-                                (IUserMessage Message, IEmote Reaction) = reactionsToAdd[i];
-                                await Message.AddReactionAsync(Reaction);
-                            }
-                        }
+                    // All listeners are added, so now we can send the reactions
+                    for (int i = 0; i < reactionsToAdd.Length; i++)
+                    {
+                        (IUserMessage Message, IEmote Reaction) = reactionsToAdd[i];
+                        await Message.AddReactionAsync(Reaction);
                     }
                     return;
                 }
@@ -841,15 +773,15 @@ namespace Kermalis.PokemonBattleEngineDiscord
                     {
                         case PBEBattleResult.Team0Win: m = "{0} defeated {1}!"; break;
                         case PBEBattleResult.Team1Win: m = "{1} defeated {0}!"; break;
-                        default: throw new ArgumentOutOfRangeException(nameof(brp.BattleResult));
+                        default: throw new InvalidDataException(nameof(brp.BattleResult));
                     }
-                    _queuedMessages.AppendLine(string.Format(m, GetTeamName(_battle.Teams[0]), GetTeamName(_battle.Teams[1])));
+                    _queuedMessages.AppendLine(string.Format(m, _battler0.GetName(), _battler1.GetName()));
                     await SendQueuedMessages();
                     return;
                 }
             }
             // Get default message
-            string message = PBEBattle.GetDefaultMessage(_battle, packet, trainerNameFunc: GetTrainerName, teamNameFunc: GetTeamName);
+            string? message = PBEBattle.GetDefaultMessage(_battle, packet, trainerNameFunc: GetTrainerName, teamNameFunc: GetTeamName);
             if (string.IsNullOrEmpty(message))
             {
                 return;

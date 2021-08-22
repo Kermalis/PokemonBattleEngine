@@ -15,7 +15,7 @@ namespace Kermalis.PokemonBattleEngine.Data
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(property));
         }
         /// <summary>Fires whenever a property changes.</summary>
-        public event PropertyChangedEventHandler PropertyChanged;
+        public event PropertyChangedEventHandler? PropertyChanged;
 
         private bool _isReadOnly;
         /// <summary>Gets a value that indicates whether this <see cref="PBESettings"/> object is read-only.</summary>
@@ -41,6 +41,8 @@ namespace Kermalis.PokemonBattleEngine.Data
             DefaultSettings.MakeReadOnly();
         }
 
+        #region Properties
+
         /// <summary>The default value of <see cref="MaxLevel"/>.</summary>
         public const byte DefaultMaxLevel = 100;
         private byte _maxLevel = DefaultMaxLevel;
@@ -50,7 +52,7 @@ namespace Kermalis.PokemonBattleEngine.Data
             get => _maxLevel;
             set
             {
-                ReadOnlyCheck();
+                ShouldNotBeReadOnly();
                 if (_maxLevel != value)
                 {
                     if (value < _minLevel)
@@ -71,7 +73,7 @@ namespace Kermalis.PokemonBattleEngine.Data
             get => _minLevel;
             set
             {
-                ReadOnlyCheck();
+                ShouldNotBeReadOnly();
                 if (_minLevel != value)
                 {
                     if (value < 1 || value > _maxLevel)
@@ -92,7 +94,7 @@ namespace Kermalis.PokemonBattleEngine.Data
             get => _maxPartySize;
             set
             {
-                ReadOnlyCheck();
+                ShouldNotBeReadOnly();
                 if (_maxPartySize != value)
                 {
                     if (value < 1)
@@ -113,7 +115,7 @@ namespace Kermalis.PokemonBattleEngine.Data
             get => _maxPokemonNameLength;
             set
             {
-                ReadOnlyCheck();
+                ShouldNotBeReadOnly();
                 if (_maxPokemonNameLength != value)
                 {
                     if (value < 1)
@@ -135,7 +137,7 @@ namespace Kermalis.PokemonBattleEngine.Data
             get => _maxTrainerNameLength;
             set
             {
-                ReadOnlyCheck();
+                ShouldNotBeReadOnly();
                 if (_maxTrainerNameLength != value)
                 {
                     if (value < 1)
@@ -157,7 +159,7 @@ namespace Kermalis.PokemonBattleEngine.Data
             set
             {
                 const int max = byte.MaxValue * 6;
-                ReadOnlyCheck();
+                ShouldNotBeReadOnly();
                 if (_maxTotalEVs != value)
                 {
                     if (value > max)
@@ -178,7 +180,7 @@ namespace Kermalis.PokemonBattleEngine.Data
             get => _maxIVs;
             set
             {
-                ReadOnlyCheck();
+                ShouldNotBeReadOnly();
                 if (_maxIVs != value)
                 {
                     _maxIVs = value;
@@ -195,7 +197,7 @@ namespace Kermalis.PokemonBattleEngine.Data
             get => _natureStatBoost;
             set
             {
-                ReadOnlyCheck();
+                ShouldNotBeReadOnly();
                 if (_natureStatBoost != value)
                 {
                     if (value < 0)
@@ -216,7 +218,7 @@ namespace Kermalis.PokemonBattleEngine.Data
             get => _maxStatChange;
             set
             {
-                ReadOnlyCheck();
+                ShouldNotBeReadOnly();
                 if (_maxStatChange != value)
                 {
                     _maxStatChange = value;
@@ -233,7 +235,7 @@ namespace Kermalis.PokemonBattleEngine.Data
             get => _numMoves;
             set
             {
-                ReadOnlyCheck();
+                ShouldNotBeReadOnly();
                 if (_numMoves != value)
                 {
                     if (value < 1)
@@ -254,7 +256,7 @@ namespace Kermalis.PokemonBattleEngine.Data
             get => _ppMultiplier;
             set
             {
-                ReadOnlyCheck();
+                ShouldNotBeReadOnly();
                 if (_ppMultiplier != value)
                 {
                     if (value < 1)
@@ -275,7 +277,7 @@ namespace Kermalis.PokemonBattleEngine.Data
             get => _maxPPUps;
             set
             {
-                ReadOnlyCheck();
+                ShouldNotBeReadOnly();
                 if (_maxPPUps != value)
                 {
                     _maxPPUps = value;
@@ -292,7 +294,7 @@ namespace Kermalis.PokemonBattleEngine.Data
             get => _critMultiplier;
             set
             {
-                ReadOnlyCheck();
+                ShouldNotBeReadOnly();
                 if (_critMultiplier != value)
                 {
                     _critMultiplier = value;
@@ -309,7 +311,7 @@ namespace Kermalis.PokemonBattleEngine.Data
             get => _confusionMaxTurns;
             set
             {
-                ReadOnlyCheck();
+                ShouldNotBeReadOnly();
                 if (_confusionMaxTurns != value)
                 {
                     if (value < _confusionMinTurns)
@@ -330,7 +332,7 @@ namespace Kermalis.PokemonBattleEngine.Data
             get => _confusionMinTurns;
             set
             {
-                ReadOnlyCheck();
+                ShouldNotBeReadOnly();
                 if (_confusionMinTurns != value)
                 {
                     if (value > _confusionMaxTurns)
@@ -351,7 +353,7 @@ namespace Kermalis.PokemonBattleEngine.Data
             get => _sleepMaxTurns;
             set
             {
-                ReadOnlyCheck();
+                ShouldNotBeReadOnly();
                 if (_sleepMaxTurns != value)
                 {
                     if (value < _sleepMinTurns)
@@ -372,7 +374,7 @@ namespace Kermalis.PokemonBattleEngine.Data
             get => _sleepMinTurns;
             set
             {
-                ReadOnlyCheck();
+                ShouldNotBeReadOnly();
                 if (_sleepMinTurns != value)
                 {
                     if (value > _sleepMaxTurns)
@@ -393,7 +395,7 @@ namespace Kermalis.PokemonBattleEngine.Data
             get => _burnDamageDenominator;
             set
             {
-                ReadOnlyCheck();
+                ShouldNotBeReadOnly();
                 if (_burnDamageDenominator != value)
                 {
                     if (value < 1)
@@ -414,7 +416,7 @@ namespace Kermalis.PokemonBattleEngine.Data
             get => _poisonDamageDenominator;
             set
             {
-                ReadOnlyCheck();
+                ShouldNotBeReadOnly();
                 if (_poisonDamageDenominator != value)
                 {
                     if (value < 1)
@@ -435,7 +437,7 @@ namespace Kermalis.PokemonBattleEngine.Data
             get => _toxicDamageDenominator;
             set
             {
-                ReadOnlyCheck();
+                ShouldNotBeReadOnly();
                 if (_toxicDamageDenominator != value)
                 {
                     if (value < 1)
@@ -456,7 +458,7 @@ namespace Kermalis.PokemonBattleEngine.Data
             get => _leechSeedDenominator;
             set
             {
-                ReadOnlyCheck();
+                ShouldNotBeReadOnly();
                 if (_leechSeedDenominator != value)
                 {
                     if (value < 1)
@@ -477,7 +479,7 @@ namespace Kermalis.PokemonBattleEngine.Data
             get => _curseDenominator;
             set
             {
-                ReadOnlyCheck();
+                ShouldNotBeReadOnly();
                 if (_curseDenominator != value)
                 {
                     if (value < 1)
@@ -498,7 +500,7 @@ namespace Kermalis.PokemonBattleEngine.Data
             get => _leftoversHealDenominator;
             set
             {
-                ReadOnlyCheck();
+                ShouldNotBeReadOnly();
                 if (_leftoversHealDenominator != value)
                 {
                     if (value < 1)
@@ -519,7 +521,7 @@ namespace Kermalis.PokemonBattleEngine.Data
             get => _blackSludgeDamageDenominator;
             set
             {
-                ReadOnlyCheck();
+                ShouldNotBeReadOnly();
                 if (_blackSludgeDamageDenominator != value)
                 {
                     if (value < 1)
@@ -540,7 +542,7 @@ namespace Kermalis.PokemonBattleEngine.Data
             get => _blackSludgeHealDenominator;
             set
             {
-                ReadOnlyCheck();
+                ShouldNotBeReadOnly();
                 if (_blackSludgeHealDenominator != value)
                 {
                     if (value < 1)
@@ -561,7 +563,7 @@ namespace Kermalis.PokemonBattleEngine.Data
             get => _reflectTurns;
             set
             {
-                ReadOnlyCheck();
+                ShouldNotBeReadOnly();
                 if (_reflectTurns != value)
                 {
                     if (value < 1)
@@ -582,7 +584,7 @@ namespace Kermalis.PokemonBattleEngine.Data
             get => _lightScreenTurns;
             set
             {
-                ReadOnlyCheck();
+                ShouldNotBeReadOnly();
                 if (_lightScreenTurns != value)
                 {
                     if (value < 1)
@@ -603,7 +605,7 @@ namespace Kermalis.PokemonBattleEngine.Data
             get => _lightClayTurnExtension;
             set
             {
-                ReadOnlyCheck();
+                ShouldNotBeReadOnly();
                 if (_lightClayTurnExtension != value)
                 {
                     _lightClayTurnExtension = value;
@@ -620,7 +622,7 @@ namespace Kermalis.PokemonBattleEngine.Data
             get => _hailTurns;
             set
             {
-                ReadOnlyCheck();
+                ShouldNotBeReadOnly();
                 if (_hailTurns != value)
                 {
                     if (value == 0 && _icyRockTurnExtension != 0)
@@ -641,7 +643,7 @@ namespace Kermalis.PokemonBattleEngine.Data
             get => _hailDamageDenominator;
             set
             {
-                ReadOnlyCheck();
+                ShouldNotBeReadOnly();
                 if (_hailDamageDenominator != value)
                 {
                     if (value < 1)
@@ -662,7 +664,7 @@ namespace Kermalis.PokemonBattleEngine.Data
             get => _icyRockTurnExtension;
             set
             {
-                ReadOnlyCheck();
+                ShouldNotBeReadOnly();
                 if (_icyRockTurnExtension != value)
                 {
                     if (value != 0 && _hailTurns == 0)
@@ -683,7 +685,7 @@ namespace Kermalis.PokemonBattleEngine.Data
             get => _iceBodyHealDenominator;
             set
             {
-                ReadOnlyCheck();
+                ShouldNotBeReadOnly();
                 if (_iceBodyHealDenominator != value)
                 {
                     if (value < 1)
@@ -704,7 +706,7 @@ namespace Kermalis.PokemonBattleEngine.Data
             get => _rainTurns;
             set
             {
-                ReadOnlyCheck();
+                ShouldNotBeReadOnly();
                 if (_rainTurns != value)
                 {
                     if (value == 0 && _dampRockTurnExtension != 0)
@@ -725,7 +727,7 @@ namespace Kermalis.PokemonBattleEngine.Data
             get => _dampRockTurnExtension;
             set
             {
-                ReadOnlyCheck();
+                ShouldNotBeReadOnly();
                 if (_dampRockTurnExtension != value)
                 {
                     if (value != 0 && _rainTurns == 0)
@@ -746,7 +748,7 @@ namespace Kermalis.PokemonBattleEngine.Data
             get => _sandstormTurns;
             set
             {
-                ReadOnlyCheck();
+                ShouldNotBeReadOnly();
                 if (_sandstormTurns != value)
                 {
                     if (value == 0 && _smoothRockTurnExtension != 0)
@@ -767,7 +769,7 @@ namespace Kermalis.PokemonBattleEngine.Data
             get => _sandstormDamageDenominator;
             set
             {
-                ReadOnlyCheck();
+                ShouldNotBeReadOnly();
                 if (_sandstormDamageDenominator != value)
                 {
                     if (value < 1)
@@ -788,7 +790,7 @@ namespace Kermalis.PokemonBattleEngine.Data
             get => _smoothRockTurnExtension;
             set
             {
-                ReadOnlyCheck();
+                ShouldNotBeReadOnly();
                 if (_smoothRockTurnExtension != value)
                 {
                     if (value != 0 && _sandstormTurns == 0)
@@ -809,7 +811,7 @@ namespace Kermalis.PokemonBattleEngine.Data
             get => _sunTurns;
             set
             {
-                ReadOnlyCheck();
+                ShouldNotBeReadOnly();
                 if (_sunTurns != value)
                 {
                     if (value == 0 && _heatRockTurnExtension != 0)
@@ -830,7 +832,7 @@ namespace Kermalis.PokemonBattleEngine.Data
             get => _heatRockTurnExtension;
             set
             {
-                ReadOnlyCheck();
+                ShouldNotBeReadOnly();
                 if (_heatRockTurnExtension != value)
                 {
                     if (value != 0 && _sunTurns == 0)
@@ -851,7 +853,7 @@ namespace Kermalis.PokemonBattleEngine.Data
             get => _hiddenPowerMax;
             set
             {
-                ReadOnlyCheck();
+                ShouldNotBeReadOnly();
                 if (_hiddenPowerMax != value)
                 {
                     if (value < _hiddenPowerMin)
@@ -872,7 +874,7 @@ namespace Kermalis.PokemonBattleEngine.Data
             get => _hiddenPowerMin;
             set
             {
-                ReadOnlyCheck();
+                ShouldNotBeReadOnly();
                 if (_hiddenPowerMin != value)
                 {
                     if (value == 0 || value > _hiddenPowerMax)
@@ -893,7 +895,7 @@ namespace Kermalis.PokemonBattleEngine.Data
             get => _bugFix;
             set
             {
-                ReadOnlyCheck();
+                ShouldNotBeReadOnly();
                 if (_bugFix != value)
                 {
                     _bugFix = value;
@@ -902,16 +904,14 @@ namespace Kermalis.PokemonBattleEngine.Data
             }
         }
 
+        #endregion
+
         /// <summary>Creates a new <see cref="PBESettings"/> object where every setting is pre-set to the values used in official games.</summary>
         public PBESettings() { }
         /// <summary>Creates a new <see cref="PBESettings"/> object with the specified code <see cref="string"/>.</summary>
         /// <param name="code">The code <see cref="string"/> to use.</param>
         public PBESettings(string code)
         {
-            if (code == null)
-            {
-                throw new ArgumentNullException(code);
-            }
             using (var r = new EndianBinaryReader(new MemoryStream(Convert.FromBase64String(code)), encoding: EncodingType.UTF16))
             {
                 FromBytes(r);
@@ -921,14 +921,7 @@ namespace Kermalis.PokemonBattleEngine.Data
         /// <param name="other">The <see cref="PBESettings"/> object to copy settings from.</param>
         public PBESettings(PBESettings other)
         {
-            if (other == null)
-            {
-                throw new ArgumentNullException(nameof(other));
-            }
-            if (!other.IsReadOnly)
-            {
-                throw new ArgumentException("Settings must be read-only.", nameof(other));
-            }
+            other.ShouldBeReadOnly(nameof(other));
             MaxLevel = other._maxLevel;
             MinLevel = other._minLevel;
             MaxPartySize = other._maxPartySize;
@@ -972,16 +965,23 @@ namespace Kermalis.PokemonBattleEngine.Data
             HiddenPowerMin = other._hiddenPowerMin;
             BugFix = other._bugFix;
         }
-        internal PBESettings(EndianBinaryReader r)
+        public PBESettings(EndianBinaryReader r)
         {
             FromBytes(r);
         }
 
-        private void ReadOnlyCheck()
+        private void ShouldNotBeReadOnly()
         {
             if (_isReadOnly)
             {
                 throw new InvalidOperationException($"This {nameof(PBESettings)} is marked as read-only.");
+            }
+        }
+        public void ShouldBeReadOnly(string nameOf)
+        {
+            if (!_isReadOnly)
+            {
+                throw new ArgumentException("Settings must be read-only.", nameOf);
             }
         }
         /// <summary>Marks this <see cref="PBESettings"/> object as read-only and clears <see cref="PropertyChanged"/>.</summary>
@@ -997,57 +997,55 @@ namespace Kermalis.PokemonBattleEngine.Data
 
         public override int GetHashCode()
         {
-            unchecked
-            {
-                int hash = 17;
-                hash = (hash * 31) + _maxLevel.GetHashCode();
-                hash = (hash * 31) + _minLevel.GetHashCode();
-                hash = (hash * 31) + _maxPartySize.GetHashCode();
-                hash = (hash * 31) + _maxPokemonNameLength.GetHashCode();
-                hash = (hash * 31) + _maxTrainerNameLength.GetHashCode();
-                hash = (hash * 31) + _maxTotalEVs.GetHashCode();
-                hash = (hash * 31) + _maxIVs.GetHashCode();
-                hash = (hash * 31) + _natureStatBoost.GetHashCode();
-                hash = (hash * 31) + _maxStatChange.GetHashCode();
-                hash = (hash * 31) + _numMoves.GetHashCode();
-                hash = (hash * 31) + _ppMultiplier.GetHashCode();
-                hash = (hash * 31) + _maxPPUps.GetHashCode();
-                hash = (hash * 31) + _critMultiplier.GetHashCode();
-                hash = (hash * 31) + _confusionMaxTurns.GetHashCode();
-                hash = (hash * 31) + _confusionMinTurns.GetHashCode();
-                hash = (hash * 31) + _sleepMaxTurns.GetHashCode();
-                hash = (hash * 31) + _sleepMinTurns.GetHashCode();
-                hash = (hash * 31) + _burnDamageDenominator.GetHashCode();
-                hash = (hash * 31) + _poisonDamageDenominator.GetHashCode();
-                hash = (hash * 31) + _toxicDamageDenominator.GetHashCode();
-                hash = (hash * 31) + _leechSeedDenominator.GetHashCode();
-                hash = (hash * 31) + _curseDenominator.GetHashCode();
-                hash = (hash * 31) + _leftoversHealDenominator.GetHashCode();
-                hash = (hash * 31) + _blackSludgeDamageDenominator.GetHashCode();
-                hash = (hash * 31) + _blackSludgeHealDenominator.GetHashCode();
-                hash = (hash * 31) + _reflectTurns.GetHashCode();
-                hash = (hash * 31) + _lightScreenTurns.GetHashCode();
-                hash = (hash * 31) + _lightClayTurnExtension.GetHashCode();
-                hash = (hash * 31) + _hailTurns.GetHashCode();
-                hash = (hash * 31) + _hailDamageDenominator.GetHashCode();
-                hash = (hash * 31) + _icyRockTurnExtension.GetHashCode();
-                hash = (hash * 31) + _iceBodyHealDenominator.GetHashCode();
-                hash = (hash * 31) + _rainTurns.GetHashCode();
-                hash = (hash * 31) + _dampRockTurnExtension.GetHashCode();
-                hash = (hash * 31) + _sandstormTurns.GetHashCode();
-                hash = (hash * 31) + _sandstormDamageDenominator.GetHashCode();
-                hash = (hash * 31) + _smoothRockTurnExtension.GetHashCode();
-                hash = (hash * 31) + _sunTurns.GetHashCode();
-                hash = (hash * 31) + _heatRockTurnExtension.GetHashCode();
-                hash = (hash * 31) + _hiddenPowerMax.GetHashCode();
-                hash = (hash * 31) + _hiddenPowerMin.GetHashCode();
-                hash = (hash * 31) + _bugFix.GetHashCode();
-                return hash;
-            }
+            var hash = new HashCode();
+            hash.Add(_maxLevel);
+            hash.Add(_minLevel);
+            hash.Add(_maxPartySize);
+            hash.Add(_maxPokemonNameLength);
+            hash.Add(_maxTrainerNameLength);
+            hash.Add(_maxTotalEVs);
+            hash.Add(_maxIVs);
+            hash.Add(_natureStatBoost);
+            hash.Add(_maxStatChange);
+            hash.Add(_numMoves);
+            hash.Add(_ppMultiplier);
+            hash.Add(_maxPPUps);
+            hash.Add(_critMultiplier);
+            hash.Add(_confusionMaxTurns);
+            hash.Add(_confusionMinTurns);
+            hash.Add(_sleepMaxTurns);
+            hash.Add(_sleepMinTurns);
+            hash.Add(_burnDamageDenominator);
+            hash.Add(_poisonDamageDenominator);
+            hash.Add(_toxicDamageDenominator);
+            hash.Add(_leechSeedDenominator);
+            hash.Add(_curseDenominator);
+            hash.Add(_leftoversHealDenominator);
+            hash.Add(_blackSludgeDamageDenominator);
+            hash.Add(_blackSludgeHealDenominator);
+            hash.Add(_reflectTurns);
+            hash.Add(_lightScreenTurns);
+            hash.Add(_lightClayTurnExtension);
+            hash.Add(_hailTurns);
+            hash.Add(_hailDamageDenominator);
+            hash.Add(_icyRockTurnExtension);
+            hash.Add(_iceBodyHealDenominator);
+            hash.Add(_rainTurns);
+            hash.Add(_dampRockTurnExtension);
+            hash.Add(_sandstormTurns);
+            hash.Add(_sandstormDamageDenominator);
+            hash.Add(_smoothRockTurnExtension);
+            hash.Add(_sunTurns);
+            hash.Add(_heatRockTurnExtension);
+            hash.Add(_hiddenPowerMax);
+            hash.Add(_hiddenPowerMin);
+            hash.Add(_bugFix);
+            return hash.ToHashCode();
         }
+
         /// <summary>Returns a value indicating whether a code <see cref="string"/> or another <see cref="PBESettings"/> object represents the same settings as this <see cref="PBESettings"/> object.</summary>
         /// <param name="obj">The code <see cref="string"/> or the <see cref="PBESettings"/> object to check for equality.</param>
-        public override bool Equals(object obj)
+        public override bool Equals(object? obj)
         {
             if (obj is null)
             {
@@ -1170,7 +1168,7 @@ namespace Kermalis.PokemonBattleEngine.Data
             return Convert.ToBase64String(ToBytes());
         }
 
-        internal byte[] ToBytes()
+        public byte[] ToBytes()
         {
             byte[] data;
             ushort numChanged = 0;

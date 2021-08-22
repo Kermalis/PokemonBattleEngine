@@ -8,9 +8,11 @@ namespace Kermalis.PokemonBattleEngine.Battle
     {
         #region Static Collections
         /// <summary>The type effectiveness table. The first key is the attacking type and the second key is the defending type.</summary>
-        private static readonly Dictionary<PBEType, Dictionary<PBEType, float>> _table = new Dictionary<PBEType, Dictionary<PBEType, float>>
+        private static readonly Dictionary<PBEType, Dictionary<PBEType, float>> _table = new()
         {
-            { PBEType.None, new Dictionary<PBEType, float>
+            {
+                PBEType.None,
+                new Dictionary<PBEType, float>
             {
                 { PBEType.None, 1.0f },
                 { PBEType.Bug, 1.0f },
@@ -32,7 +34,9 @@ namespace Kermalis.PokemonBattleEngine.Battle
                 { PBEType.Water, 1.0f },
             }
             },
-            { PBEType.Bug, new Dictionary<PBEType, float>
+            {
+                PBEType.Bug,
+                new Dictionary<PBEType, float>
             {
                 { PBEType.None, 1.0f },
                 { PBEType.Bug, 1.0f },
@@ -54,7 +58,9 @@ namespace Kermalis.PokemonBattleEngine.Battle
                 { PBEType.Water, 1.0f },
             }
             },
-            { PBEType.Dark, new Dictionary<PBEType, float>
+            {
+                PBEType.Dark,
+                new Dictionary<PBEType, float>
             {
                 { PBEType.None, 1.0f },
                 { PBEType.Bug, 1.0f },
@@ -76,7 +82,9 @@ namespace Kermalis.PokemonBattleEngine.Battle
                 { PBEType.Water, 1.0f },
             }
             },
-            { PBEType.Dragon, new Dictionary<PBEType, float>
+            {
+                PBEType.Dragon,
+                new Dictionary<PBEType, float>
             {
                 { PBEType.None, 1.0f },
                 { PBEType.Bug, 1.0f },
@@ -98,7 +106,9 @@ namespace Kermalis.PokemonBattleEngine.Battle
                 { PBEType.Water, 1.0f },
             }
             },
-            { PBEType.Electric, new Dictionary<PBEType, float>
+            {
+                PBEType.Electric,
+                new Dictionary<PBEType, float>
             {
                 { PBEType.None, 1.0f },
                 { PBEType.Bug, 1.0f },
@@ -120,7 +130,9 @@ namespace Kermalis.PokemonBattleEngine.Battle
                 { PBEType.Water, 2.0f },
             }
             },
-            { PBEType.Fighting, new Dictionary<PBEType, float>
+            {
+                PBEType.Fighting,
+                new Dictionary<PBEType, float>
             {
                 { PBEType.None, 1.0f },
                 { PBEType.Bug, 0.5f },
@@ -142,7 +154,9 @@ namespace Kermalis.PokemonBattleEngine.Battle
                 { PBEType.Water, 1.0f },
             }
             },
-            { PBEType.Fire, new Dictionary<PBEType, float>
+            {
+                PBEType.Fire,
+                new Dictionary<PBEType, float>
             {
                 { PBEType.None, 1.0f },
                 { PBEType.Bug, 2.0f },
@@ -164,7 +178,9 @@ namespace Kermalis.PokemonBattleEngine.Battle
                 { PBEType.Water, 0.5f },
             }
             },
-            { PBEType.Flying, new Dictionary<PBEType, float>
+            {
+                PBEType.Flying,
+                new Dictionary<PBEType, float>
             {
                 { PBEType.None, 1.0f },
                 { PBEType.Bug, 2.0f },
@@ -186,7 +202,9 @@ namespace Kermalis.PokemonBattleEngine.Battle
                 { PBEType.Water, 1.0f },
             }
             },
-            { PBEType.Ghost, new Dictionary<PBEType, float>
+            {
+                PBEType.Ghost,
+                new Dictionary<PBEType, float>
             {
                 { PBEType.None, 1.0f },
                 { PBEType.Bug, 1.0f },
@@ -208,7 +226,9 @@ namespace Kermalis.PokemonBattleEngine.Battle
                 { PBEType.Water, 1.0f },
             }
             },
-            { PBEType.Grass, new Dictionary<PBEType, float>
+            {
+                PBEType.Grass,
+                new Dictionary<PBEType, float>
             {
                 { PBEType.None, 1.0f },
                 { PBEType.Bug, 0.5f },
@@ -230,7 +250,9 @@ namespace Kermalis.PokemonBattleEngine.Battle
                 { PBEType.Water, 2.0f },
             }
             },
-            { PBEType.Ground, new Dictionary<PBEType, float>
+            {
+                PBEType.Ground,
+                new Dictionary<PBEType, float>
             {
                 { PBEType.None, 1.0f },
                 { PBEType.Bug, 0.5f },
@@ -252,7 +274,9 @@ namespace Kermalis.PokemonBattleEngine.Battle
                 { PBEType.Water, 1.0f },
             }
             },
-            { PBEType.Ice, new Dictionary<PBEType, float>
+            {
+                PBEType.Ice,
+                new Dictionary<PBEType, float>
             {
                 { PBEType.None, 1.0f },
                 { PBEType.Bug, 1.0f },
@@ -274,7 +298,9 @@ namespace Kermalis.PokemonBattleEngine.Battle
                 { PBEType.Water, 0.5f },
             }
             },
-            { PBEType.Normal, new Dictionary<PBEType, float>
+            {
+                PBEType.Normal,
+                new Dictionary<PBEType, float>
             {
                 { PBEType.None, 1.0f },
                 { PBEType.Bug, 1.0f },
@@ -296,7 +322,9 @@ namespace Kermalis.PokemonBattleEngine.Battle
                 { PBEType.Water, 1.0f },
             }
             },
-            { PBEType.Poison, new Dictionary<PBEType, float>
+            {
+                PBEType.Poison,
+                new Dictionary<PBEType, float>
             {
                 { PBEType.None, 1.0f },
                 { PBEType.Bug, 1.0f },
@@ -318,7 +346,9 @@ namespace Kermalis.PokemonBattleEngine.Battle
                 { PBEType.Water, 1.0f },
             }
             },
-            { PBEType.Psychic, new Dictionary<PBEType, float>
+            {
+                PBEType.Psychic,
+                new Dictionary<PBEType, float>
             {
                 { PBEType.None, 1.0f },
                 { PBEType.Bug, 1.0f },
@@ -340,7 +370,9 @@ namespace Kermalis.PokemonBattleEngine.Battle
                 { PBEType.Water, 1.0f },
             }
             },
-            { PBEType.Rock, new Dictionary<PBEType, float>
+            {
+                PBEType.Rock,
+                new Dictionary<PBEType, float>
             {
                 { PBEType.None, 1.0f },
                 { PBEType.Bug, 2.0f },
@@ -362,7 +394,9 @@ namespace Kermalis.PokemonBattleEngine.Battle
                 { PBEType.Water, 1.0f },
             }
             },
-            { PBEType.Steel, new Dictionary<PBEType, float>
+            {
+                PBEType.Steel,
+                new Dictionary<PBEType, float>
             {
                 { PBEType.None, 1.0f },
                 { PBEType.Bug, 1.0f },
@@ -384,7 +418,9 @@ namespace Kermalis.PokemonBattleEngine.Battle
                 { PBEType.Water, 0.5f },
             }
             },
-            { PBEType.Water, new Dictionary<PBEType, float>
+            {
+                PBEType.Water,
+                new Dictionary<PBEType, float>
             {
                 { PBEType.None, 1.0f },
                 { PBEType.Bug, 1.0f },
@@ -411,14 +447,6 @@ namespace Kermalis.PokemonBattleEngine.Battle
 
         public static PBEResult IsAffectedByAttack(PBEBattlePokemon user, PBEBattlePokemon target, PBEType moveType, out float damageMultiplier, bool useKnownInfo = false)
         {
-            if (user == null)
-            {
-                throw new ArgumentNullException(nameof(user));
-            }
-            if (target == null)
-            {
-                throw new ArgumentNullException(nameof(target));
-            }
             if (moveType >= PBEType.MAX)
             {
                 throw new ArgumentOutOfRangeException(nameof(moveType));
@@ -465,15 +493,6 @@ namespace Kermalis.PokemonBattleEngine.Battle
         /// <summary>Checks if <see cref="PBEMoveEffect.ThunderWave"/>'s type affects the target, taking into account <see cref="PBEAbility.Normalize"/>.</summary>
         public static PBEResult ThunderWaveTypeCheck(PBEBattlePokemon user, PBEBattlePokemon target, PBEMove move, bool useKnownInfo = false)
         {
-            if (user == null)
-            {
-                throw new ArgumentNullException(nameof(user));
-            }
-            if (target == null)
-            {
-                throw new ArgumentNullException(nameof(target));
-            }
-
             PBEType moveType = user.GetMoveType(move);
             float d = GetEffectiveness(moveType, target, useKnownInfo);
             if (d <= 0)
@@ -509,27 +528,15 @@ namespace Kermalis.PokemonBattleEngine.Battle
         }
         public static float GetEffectiveness(PBEType attackingType, IPBEPokemonTypes defendingTypes, bool ignoreGhost = false, bool ignoreDark = false)
         {
-            if (defendingTypes == null)
-            {
-                throw new ArgumentNullException(nameof(defendingTypes));
-            }
             return GetEffectiveness(attackingType, defendingTypes.Type1, defendingTypes.Type2, ignoreGhost: ignoreGhost, ignoreDark: ignoreDark);
         }
         public static float GetEffectiveness_Known(PBEType attackingType, IPBEPokemonKnownTypes defendingTypes, bool ignoreGhost = false, bool ignoreDark = false)
         {
-            if (defendingTypes == null)
-            {
-                throw new ArgumentNullException(nameof(defendingTypes));
-            }
             return GetEffectiveness(attackingType, defendingTypes.KnownType1, defendingTypes.KnownType2, ignoreGhost: ignoreGhost, ignoreDark: ignoreDark);
         }
         public static float GetEffectiveness<T>(PBEType attackingType, T defendingTypes, bool useKnownInfo, bool ignoreGhost = false, bool ignoreDark = false)
             where T : IPBEPokemonTypes, IPBEPokemonKnownTypes
         {
-            if (defendingTypes == null)
-            {
-                throw new ArgumentNullException(nameof(defendingTypes));
-            }
             return GetEffectiveness(attackingType, useKnownInfo ? defendingTypes.KnownType1 : defendingTypes.Type1, useKnownInfo ? defendingTypes.KnownType2 : defendingTypes.Type2, ignoreGhost: ignoreGhost, ignoreDark: ignoreDark);
         }
         public static float GetStealthRockMultiplier(PBEType type1, PBEType type2)

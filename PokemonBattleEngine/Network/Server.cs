@@ -23,6 +23,7 @@ using Kermalis.PokemonBattleEngine.Battle;
 using Kermalis.PokemonBattleEngine.Packets;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Net;
 using System.Net.Sockets;
 
@@ -30,31 +31,29 @@ namespace Kermalis.PokemonBattleEngine.Network
 {
     public sealed class PBEServer : IDisposable
     {
-        public PBEBattle Battle { get; set; }
+        public PBEBattle? Battle { get; set; }
 
-        private Socket _listener;
-        private PBEEncryption _encryption;
+        private Socket? _listener;
+        private PBEEncryption? _encryption;
+        private PBEPacketProcessor _packetProcessor = null!; // Set in Start()
         private int _maxConnections;
 
-        public bool IsRunning => _listener != null;
-        private readonly HashSet<IPEndPoint> _bannedIPs = new HashSet<IPEndPoint>();
-        private readonly HashSet<PBEServerClient> _connectedClients = new HashSet<PBEServerClient>();
+        [MemberNotNullWhen(true, nameof(_listener))]
+        public bool IsRunning => _listener is not null;
+        private readonly HashSet<IPEndPoint> _bannedIPs = new();
+        private readonly HashSet<PBEServerClient> _connectedClients = new();
 
-        public event EventHandler<PBEServerClient> ClientConnected;
-        public event EventHandler<PBEServerClient> ClientDisconnected;
-        public event EventHandler<Exception> Error;
-        public delegate void PBEClientRefusedEventHandler(object sender, IPEndPoint refusedIP, bool refusedForBan);
-        public event PBEClientRefusedEventHandler ClientRefused;
+        public event EventHandler<PBEServerClient>? ClientConnected;
+        public event EventHandler<PBEServerClient>? ClientDisconnected;
+        public event EventHandler<Exception>? Error;
+        public delegate void PBEClientRefusedEventHandler(object? sender, IPEndPoint refusedIP, bool refusedForBan);
+        public event PBEClientRefusedEventHandler? ClientRefused;
 
-        public void Start(IPEndPoint ip, int maxConnections, PBEEncryption encryption = null, bool dualMode = false)
+        public void Start(IPEndPoint ip, int maxConnections, PBEPacketProcessor packetProcessor, PBEEncryption? encryption = null, bool dualMode = false)
         {
             if (IsRunning)
             {
                 throw new InvalidOperationException("Server is already running.");
-            }
-            if (ip == null)
-            {
-                throw new ArgumentNullException(nameof(ip));
             }
             if (maxConnections <= 0)
             {
@@ -68,6 +67,7 @@ namespace Kermalis.PokemonBattleEngine.Network
             }
             _listener.Bind(ip);
             _encryption = encryption;
+            _packetProcessor = packetProcessor;
 
             try
             {
@@ -83,19 +83,20 @@ namespace Kermalis.PokemonBattleEngine.Network
         }
         public void Stop()
         {
-            if (IsRunning)
+            if (!IsRunning)
             {
-                try
-                {
-                    _listener.Shutdown(SocketShutdown.Both);
-                }
-                catch (Exception ex)
-                {
-                    NotifyError(ex);
-                }
-                _listener.Dispose();
-                _listener = null;
+                return;
             }
+            try
+            {
+                _listener.Shutdown(SocketShutdown.Both);
+            }
+            catch (Exception ex)
+            {
+                NotifyError(ex);
+            }
+            _listener.Dispose();
+            _listener = null;
         }
 
         public void SendToAll(IPBEPacket packet)
@@ -111,54 +112,55 @@ namespace Kermalis.PokemonBattleEngine.Network
 
         private void OnClientConnected(IAsyncResult ar)
         {
-            if (IsRunning)
+            if (!IsRunning)
             {
-                PBEServerClient client = null;
-                try
+                return;
+            }
+            PBEServerClient? client = null;
+            try
+            {
+                client = new PBEServerClient(_listener.EndAccept(ar), _encryption);
+                bool isBanned;
+                lock (_bannedIPs)
                 {
-                    client = new PBEServerClient(_listener.EndAccept(ar), _encryption);
-                    bool isBanned;
-                    lock (_bannedIPs)
+                    isBanned = _bannedIPs.Contains(client.IP);
+                }
+                if (isBanned)
+                {
+                    RefuseClient(client, true);
+                }
+                else
+                {
+                    int count;
+                    lock (_connectedClients)
                     {
-                        isBanned = _bannedIPs.Contains(client.IP);
+                        count = _connectedClients.Count;
                     }
-                    if (isBanned)
+                    if (count >= _maxConnections)
                     {
-                        RefuseClient(client, true);
+                        RefuseClient(client, false);
                     }
                     else
                     {
-                        int count;
                         lock (_connectedClients)
                         {
-                            count = _connectedClients.Count;
+                            _connectedClients.Add(client);
                         }
-                        if (count >= _maxConnections)
-                        {
-                            RefuseClient(client, false);
-                        }
-                        else
-                        {
-                            lock (_connectedClients)
-                            {
-                                _connectedClients.Add(client);
-                            }
-                            client.IsConnected = true;
-                            ClientConnected?.Invoke(this, client);
-                            BeginReceive(client);
-                        }
+                        client.IsConnected = true;
+                        ClientConnected?.Invoke(this, client);
+                        BeginReceive(client);
                     }
                 }
-                catch (Exception ex)
-                {
-                    NotifyError(ex);
-                    if (client != null)
-                    {
-                        DisconnectClient(client);
-                    }
-                }
-                _listener.BeginAccept(OnClientConnected, _listener);
             }
+            catch (Exception ex)
+            {
+                NotifyError(ex);
+                if (client is not null)
+                {
+                    DisconnectClient(client);
+                }
+            }
+            _listener.BeginAccept(OnClientConnected, _listener);
         }
 
         private void BeginReceive(PBEServerClient client)
@@ -169,62 +171,64 @@ namespace Kermalis.PokemonBattleEngine.Network
         }
         private void OnReceiveLength(IAsyncResult ar)
         {
-            var client = ar.AsyncState as PBEServerClient;
-            if (client.IsConnected)
+            var client = (PBEServerClient)ar.AsyncState!;
+            if (!client.IsConnected)
             {
-                try
+                return;
+            }
+            try
+            {
+                if (client.Socket.Poll(0, SelectMode.SelectRead) && client.Socket.Available <= 0)
                 {
-                    if (client.Socket.Poll(0, SelectMode.SelectRead) && client.Socket.Available <= 0)
+                    DisconnectClient(client);
+                }
+                else
+                {
+                    ushort dataLength = (ushort)(client.Buffer![0] | (client.Buffer[1] << 8));
+                    if (dataLength <= 0)
                     {
                         DisconnectClient(client);
                     }
                     else
                     {
-                        ushort dataLength = (ushort)(client.Buffer[0] | (client.Buffer[1] << 8));
-                        if (dataLength <= 0)
-                        {
-                            DisconnectClient(client);
-                        }
-                        else
-                        {
-                            client.Socket.BeginReceive(client.Buffer = new byte[dataLength], 0, dataLength, SocketFlags.None, OnReceiveData, client);
-                        }
+                        client.Socket.BeginReceive(client.Buffer = new byte[dataLength], 0, dataLength, SocketFlags.None, OnReceiveData, client);
                     }
                 }
-                catch (Exception ex)
-                {
-                    NotifyError(ex);
-                    DisconnectClient(client);
-                }
+            }
+            catch (Exception ex)
+            {
+                NotifyError(ex);
+                DisconnectClient(client);
             }
         }
         private void OnReceiveData(IAsyncResult ar)
         {
-            var client = ar.AsyncState as PBEServerClient;
-            if (client.IsConnected)
+            var client = (PBEServerClient)ar.AsyncState!;
+            if (!client.IsConnected)
             {
-                try
+                return;
+            }
+            try
+            {
+                if (client.Socket.Poll(0, SelectMode.SelectRead) && client.Socket.Available <= 0)
                 {
-                    if (client.Socket.Poll(0, SelectMode.SelectRead) && client.Socket.Available <= 0)
-                    {
-                        DisconnectClient(client);
-                    }
-                    else
-                    {
-                        byte[] data = client.Buffer;
-                        if (_encryption != null)
-                        {
-                            data = _encryption.Decrypt(data);
-                        }
-                        client.FirePacketReceived(PBEPacketProcessor.CreatePacket(Battle, data));
-                        BeginReceive(client);
-                    }
-                }
-                catch (Exception ex)
-                {
-                    NotifyError(ex);
                     DisconnectClient(client);
                 }
+                else
+                {
+                    byte[] data = client.Buffer!;
+                    if (_encryption is not null)
+                    {
+                        data = _encryption.Decrypt(data);
+                    }
+                    client.FirePacketReceived(_packetProcessor.CreatePacket(data, Battle));
+                    BeginReceive(client);
+                }
+            }
+            catch (Exception ex)
+            {
+                NotifyError(ex);
+                DisconnectClient(client);
             }
         }
 
@@ -253,7 +257,7 @@ namespace Kermalis.PokemonBattleEngine.Network
 
         private void NotifyError(Exception ex)
         {
-            if (Error != null)
+            if (Error is not null)
             {
                 Error.Invoke(this, ex);
             }

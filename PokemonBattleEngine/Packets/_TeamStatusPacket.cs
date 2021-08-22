@@ -13,10 +13,8 @@ namespace Kermalis.PokemonBattleEngine.Packets
         public PBETeam Team { get; }
         public PBETeamStatus TeamStatus { get; }
         public PBETeamStatusAction TeamStatusAction { get; }
-        public PBETrainer DamageVictimTrainer { get; }
-        public PBEFieldPosition DamageVictim { get; }
 
-        internal PBETeamStatusPacket(PBETeam team, PBETeamStatus teamStatus, PBETeamStatusAction teamStatusAction, PBEBattlePokemon damageVictim = null)
+        internal PBETeamStatusPacket(PBETeam team, PBETeamStatus teamStatus, PBETeamStatusAction teamStatusAction)
         {
             using (var ms = new MemoryStream())
             using (var w = new EndianBinaryWriter(ms, encoding: EncodingType.UTF16))
@@ -25,12 +23,6 @@ namespace Kermalis.PokemonBattleEngine.Packets
                 w.Write((Team = team).Id);
                 w.Write(TeamStatus = teamStatus);
                 w.Write(TeamStatusAction = teamStatusAction);
-                w.Write(damageVictim != null);
-                if (damageVictim != null)
-                {
-                    w.Write((DamageVictimTrainer = damageVictim.Trainer).Id);
-                    w.Write(DamageVictim = damageVictim.FieldPosition);
-                }
                 Data = new ReadOnlyCollection<byte>(ms.ToArray());
             }
         }
@@ -40,11 +32,6 @@ namespace Kermalis.PokemonBattleEngine.Packets
             Team = battle.Teams[r.ReadByte()];
             TeamStatus = r.ReadEnum<PBETeamStatus>();
             TeamStatusAction = r.ReadEnum<PBETeamStatusAction>();
-            if (r.ReadBoolean())
-            {
-                DamageVictimTrainer = battle.Trainers[r.ReadByte()];
-                DamageVictim = r.ReadEnum<PBEFieldPosition>();
-            }
         }
     }
 }

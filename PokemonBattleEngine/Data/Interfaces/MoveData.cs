@@ -1,4 +1,6 @@
-﻿namespace Kermalis.PokemonBattleEngine.Data
+﻿using Kermalis.PokemonBattleEngine.Data.Utils;
+
+namespace Kermalis.PokemonBattleEngine.Data
 {
     public interface IPBEMoveData
     {
@@ -7,8 +9,9 @@
         sbyte Priority { get; }
         /// <summary>0 PPTier will become 1 PP (unaffected by pp ups)</summary>
         byte PPTier { get; }
-        /// <summary>0 power or accuracy will show up as --</summary>
+        /// <summary>0 power will show up as --</summary>
         byte Power { get; }
+        /// <summary>0 accuracy will show up as --</summary>
         byte Accuracy { get; }
         PBEMoveEffect Effect { get; }
         int EffectParam { get; }
@@ -51,6 +54,7 @@
             return PBEDataUtils.IsWeatherMove(mData.Effect);
         }
 
+        /// <summary>Temporary check to see if a move is usable, can be removed once all moves are added</summary>
         public static bool IsMoveUsable(this IPBEMoveData mData)
         {
             return PBEDataUtils.IsMoveUsable(mData.Effect);

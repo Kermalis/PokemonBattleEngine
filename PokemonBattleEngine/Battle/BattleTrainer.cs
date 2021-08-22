@@ -1,96 +1,34 @@
 ﻿using Kermalis.PokemonBattleEngine.Data;
-using Kermalis.PokemonBattleEngine.Data.Legality;
 using Kermalis.PokemonBattleEngine.Packets;
-using Kermalis.PokemonBattleEngine.Utils;
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 
 namespace Kermalis.PokemonBattleEngine.Battle
 {
-    public abstract class PBETrainerInfoBase
+    public sealed class PBETrainers : IReadOnlyList<PBETrainer>
     {
-        public ReadOnlyCollection<IPBEPokemon> Party { get; }
-        private readonly PBESettings _requiredSettings;
+        private readonly List<PBETrainer> _trainers;
 
-        protected PBETrainerInfoBase(IPBEPokemonCollection party)
+        public int Count => _trainers.Count;
+        public PBETrainer this[int index] => _trainers[index];
+
+        internal PBETrainers(List<PBETrainer> trainers)
         {
-            if (party == null)
-            {
-                throw new ArgumentNullException(nameof(party));
-            }
-            if (party is IPBEPartyPokemonCollection ppc)
-            {
-                if (ppc.Count(p => p.HP > 0 && !p.PBEIgnore) < 1)
-                {
-                    throw new ArgumentException("Party must have at least 1 conscious battler", nameof(party));
-                }
-            }
-            else
-            {
-                if (party.Count(p => !p.PBEIgnore) < 1)
-                {
-                    throw new ArgumentException("Party must have at least 1 conscious battler", nameof(party));
-                }
-            }
-            if (party is PBELegalPokemonCollection lp)
-            {
-                _requiredSettings = lp.Settings;
-            }
-            Party = new ReadOnlyCollection<IPBEPokemon>(party.ToArray());
+            _trainers = trainers;
         }
 
-        public bool IsOkayForSettings(PBESettings settings)
+        public IEnumerator<PBETrainer> GetEnumerator()
         {
-            if (settings == null)
-            {
-                throw new ArgumentNullException(nameof(settings));
-            }
-            if (!settings.IsReadOnly)
-            {
-                throw new ArgumentException("Settings must be read-only.", nameof(settings));
-            }
-            if (_requiredSettings != null)
-            {
-                return settings.Equals(_requiredSettings);
-            }
-            if (this is PBETrainerInfo ti && ti.GainsEXP && settings.MaxLevel > 100)
-            {
-                throw new ArgumentException("Cannot start a battle with EXP enabled and a higher MaxLevel than 100. Not supported.");
-            }
-            return true;
+            return _trainers.GetEnumerator();
         }
-    }
-    public sealed class PBETrainerInfo : PBETrainerInfoBase
-    {
-        public string Name { get; }
-        public bool GainsEXP { get; }
-        public ReadOnlyCollection<(PBEItem Item, uint Quantity)> Inventory { get; }
-
-        public PBETrainerInfo(IPBEPokemonCollection party, string name, bool gainsEXP, IList<(PBEItem Item, uint Quantity)> inventory = null)
-            : base(party)
+        IEnumerator IEnumerable.GetEnumerator()
         {
-            if (string.IsNullOrWhiteSpace(name))
-            {
-                throw new ArgumentOutOfRangeException(nameof(name));
-            }
-            Name = name;
-            GainsEXP = gainsEXP;
-            if (inventory is null || inventory.Count == 0)
-            {
-                Inventory = PBEEmptyReadOnlyCollection<(PBEItem, uint)>.Value;
-            }
-            else
-            {
-                Inventory = new ReadOnlyCollection<(PBEItem, uint)>(inventory);
-            }
+            return _trainers.GetEnumerator();
         }
-    }
-    public sealed class PBEWildInfo : PBETrainerInfoBase
-    {
-        public PBEWildInfo(IPBEPokemonCollection party)
-            : base(party) { }
     }
     public sealed partial class PBETrainer
     {
@@ -103,18 +41,18 @@ namespace Kermalis.PokemonBattleEngine.Battle
         public byte Id { get; }
         public bool IsWild => Team.IsWild;
 
-        public IEnumerable<PBEBattlePokemon> ActiveBattlers => Battle.ActiveBattlers.Where(p => p.Trainer == this);
+        public List<PBEBattlePokemon> ActiveBattlers => Battle.ActiveBattlers.FindAll(p => p.Trainer == this);
         public IEnumerable<PBEBattlePokemon> ActiveBattlersOrdered => ActiveBattlers.OrderBy(p => p.FieldPosition);
         public int NumConsciousPkmn => Party.Count(p => p.CanBattle);
         public int NumPkmnOnField => Party.Count(p => p.FieldPosition != PBEFieldPosition.None);
 
         public bool RequestedFlee { get; set; }
-        public List<PBEBattlePokemon> ActionsRequired { get; } = new List<PBEBattlePokemon>(3); // PBEBattleState.WaitingForActions
+        public List<PBEBattlePokemon> ActionsRequired { get; } = new(3); // PBEBattleState.WaitingForActions
         public byte SwitchInsRequired { get; set; } // PBEBattleState.WaitingForSwitchIns
-        public List<(PBEBattlePokemon Pkmn, PBEFieldPosition Pos)> SwitchInQueue { get; } = new List<(PBEBattlePokemon, PBEFieldPosition)>(3); // PBEBattleState.WaitingForSwitchIns
+        public List<(PBEBattlePokemon Pkmn, PBEFieldPosition Pos)> SwitchInQueue { get; } = new(3); // PBEBattleState.WaitingForSwitchIns
 
         // Trainer battle / wild battle
-        private PBETrainer(PBETeam team, PBETrainerInfoBase ti, string name, ReadOnlyCollection<(PBEItem Item, uint Quantity)> inventory, List<PBETrainer> trainers)
+        private PBETrainer(PBETeam team, PBETrainerInfoBase ti, string name, ReadOnlyCollection<(PBEItem Item, uint Quantity)>? inventory, List<PBETrainer> trainers)
         {
             Battle = team.Battle;
             Team = team;
@@ -135,11 +73,11 @@ namespace Kermalis.PokemonBattleEngine.Battle
                 IPBEPokemon pkmn = tiParty[i];
                 if (pkmn is IPBEPartyPokemon partyPkmn)
                 {
-                    new PBEBattlePokemon(this, i, partyPkmn);
+                    _ = new PBEBattlePokemon(this, i, partyPkmn);
                 }
                 else
                 {
-                    new PBEBattlePokemon(this, i, pkmn);
+                    _ = new PBEBattlePokemon(this, i, pkmn);
                 }
             }
             trainers.Add(this);
@@ -171,10 +109,6 @@ namespace Kermalis.PokemonBattleEngine.Battle
         }
         public static void SwitchTwoPokemon(PBEBattlePokemon a, PBEFieldPosition pos)
         {
-            if (a == null)
-            {
-                throw new ArgumentNullException(nameof(a));
-            }
             if (pos == PBEFieldPosition.None || pos >= PBEFieldPosition.MAX)
             {
                 throw new ArgumentOutOfRangeException(nameof(pos));
@@ -190,14 +124,6 @@ namespace Kermalis.PokemonBattleEngine.Battle
         {
             if (a != b)
             {
-                if (a == null)
-                {
-                    throw new ArgumentNullException(nameof(a));
-                }
-                if (b == null)
-                {
-                    throw new ArgumentNullException(nameof(b));
-                }
                 PBETrainer t = a.Trainer;
                 if (t != b.Trainer)
                 {
@@ -207,13 +133,64 @@ namespace Kermalis.PokemonBattleEngine.Battle
             }
         }
 
-        public PBEBattlePokemon TryGetPokemon(PBEFieldPosition pos)
+        public bool IsSpotOccupied(PBEFieldPosition pos)
         {
-            return ActiveBattlers.SingleOrDefault(p => p.FieldPosition == pos);
+            foreach (PBEBattlePokemon p in ActiveBattlers)
+            {
+                if (p.FieldPosition == pos)
+                {
+                    return true;
+                }
+            }
+            return false;
         }
-        public PBEBattlePokemon TryGetPokemon(byte pkmnId)
+        public bool TryGetPokemon(PBEFieldPosition pos, [NotNullWhen(true)] out PBEBattlePokemon? pkmn)
         {
-            return Party.SingleOrDefault(p => p.Id == pkmnId);
+            foreach (PBEBattlePokemon p in ActiveBattlers)
+            {
+                if (p.FieldPosition == pos)
+                {
+                    pkmn = p;
+                    return true;
+                }
+            }
+            pkmn = null;
+            return false;
+        }
+        public bool TryGetPokemon(byte pkmnId, [NotNullWhen(true)] out PBEBattlePokemon? pkmn)
+        {
+            foreach (PBEBattlePokemon p in Party)
+            {
+                if (p.Id == pkmnId)
+                {
+                    pkmn = p;
+                    return true;
+                }
+            }
+            pkmn = null;
+            return false;
+        }
+        public PBEBattlePokemon GetPokemon(PBEFieldPosition pos)
+        {
+            foreach (PBEBattlePokemon p in ActiveBattlers)
+            {
+                if (p.FieldPosition == pos)
+                {
+                    return p;
+                }
+            }
+            throw new InvalidOperationException();
+        }
+        public PBEBattlePokemon GetPokemon(byte pkmnId)
+        {
+            foreach (PBEBattlePokemon p in Party)
+            {
+                if (p.Id == pkmnId)
+                {
+                    return p;
+                }
+            }
+            throw new InvalidOperationException();
         }
     }
 }

@@ -1,5 +1,7 @@
 ﻿using Kermalis.PokemonBattleEngine.Battle;
 using Kermalis.PokemonBattleEngine.Data;
+using Kermalis.PokemonBattleEngine.Data.Utils;
+using Kermalis.PokemonBattleEngine.DefaultData;
 using Kermalis.PokemonBattleEngine.Packets;
 using System;
 using System.Collections;
@@ -21,11 +23,11 @@ namespace Kermalis.PokemonBattleEngineTests
     {
         public TestUtils()
         {
-            PBEDataProvider.InitEngine(string.Empty);
+            PBEDefaultDataProvider.InitEngine(string.Empty);
         }
 
         #region Output
-        public void SetOutputHelper(ITestOutputHelper output)
+        public static void SetOutputHelper(ITestOutputHelper output)
         {
             Console.SetOut(new TestOutputConverter(output));
         }
@@ -38,11 +40,11 @@ namespace Kermalis.PokemonBattleEngineTests
                 _output = output;
             }
             public override Encoding Encoding => Encoding.Unicode;
-            public override void WriteLine(string message)
+            public override void WriteLine(string? message)
             {
                 _output.WriteLine(message);
             }
-            public override void WriteLine(string format, params object[] args)
+            public override void WriteLine(string format, params object?[] args)
             {
                 _output.WriteLine(format, args);
             }
@@ -323,8 +325,8 @@ namespace Kermalis.PokemonBattleEngineTests
                 if (packet is PBEAbilityPacket ap
                     && ap.Ability == ability
                     && ap.AbilityAction == abilityAction
-                    && ap.AbilityOwnerTrainer.TryGetPokemon(ap.AbilityOwner) == abilityOwner
-                    && ap.Pokemon2Trainer.TryGetPokemon(ap.Pokemon2) == pokemon2)
+                    && ap.AbilityOwnerTrainer.GetPokemon(ap.AbilityOwner) == abilityOwner
+                    && ap.Pokemon2Trainer.GetPokemon(ap.Pokemon2) == pokemon2)
                 {
                     return true;
                 }
@@ -338,8 +340,8 @@ namespace Kermalis.PokemonBattleEngineTests
                 if (packet is PBEItemPacket ip
                     && ip.Item == item
                     && ip.ItemAction == itemAction
-                    && ip.ItemHolderTrainer.TryGetPokemon(ip.ItemHolder) == itemHolder
-                    && ip.Pokemon2Trainer.TryGetPokemon(ip.Pokemon2) == pokemon2)
+                    && ip.ItemHolderTrainer.GetPokemon(ip.ItemHolder) == itemHolder
+                    && ip.Pokemon2Trainer.GetPokemon(ip.Pokemon2) == pokemon2)
                 {
                     return true;
                 }
@@ -352,8 +354,8 @@ namespace Kermalis.PokemonBattleEngineTests
             {
                 if (packet is PBEMoveResultPacket mrp
                     && mrp.Result == result
-                    && mrp.MoveUserTrainer.TryGetPokemon(mrp.MoveUser) == moveUser
-                    && mrp.Pokemon2Trainer.TryGetPokemon(mrp.Pokemon2) == pokemon2)
+                    && mrp.MoveUserTrainer.GetPokemon(mrp.MoveUser) == moveUser
+                    && mrp.Pokemon2Trainer.GetPokemon(mrp.Pokemon2) == pokemon2)
                 {
                     return true;
                 }
@@ -389,8 +391,8 @@ namespace Kermalis.PokemonBattleEngineTests
                 if (packet is PBEStatus1Packet s1p
                     && s1p.Status1 == status1
                     && s1p.StatusAction == statusAction
-                    && s1p.Status1ReceiverTrainer.TryGetPokemon(s1p.Status1Receiver) == status1Receiver
-                    && s1p.Pokemon2Trainer.TryGetPokemon(s1p.Pokemon2) == pokemon2)
+                    && s1p.Status1ReceiverTrainer.GetPokemon(s1p.Status1Receiver) == status1Receiver
+                    && s1p.Pokemon2Trainer.GetPokemon(s1p.Pokemon2) == pokemon2)
                 {
                     return true;
                 }
@@ -404,23 +406,22 @@ namespace Kermalis.PokemonBattleEngineTests
                 if (packet is PBEStatus2Packet s2p
                     && s2p.Status2 == status2
                     && s2p.StatusAction == statusAction
-                    && s2p.Status2ReceiverTrainer.TryGetPokemon(s2p.Status2Receiver) == status2Receiver
-                    && s2p.Pokemon2Trainer.TryGetPokemon(s2p.Pokemon2) == pokemon2)
+                    && s2p.Status2ReceiverTrainer.GetPokemon(s2p.Status2Receiver) == status2Receiver
+                    && s2p.Pokemon2Trainer.GetPokemon(s2p.Pokemon2) == pokemon2)
                 {
                     return true;
                 }
             }
             return false;
         }
-        public static bool VerifyTeamStatusHappened(this PBEBattle battle, PBETeam team, PBETeamStatus teamStatus, PBETeamStatusAction teamStatusAction, PBEBattlePokemon damageVictim = null)
+        public static bool VerifyTeamStatusDamageHappened(this PBEBattle battle, PBETeam team, PBETeamStatus teamStatus, PBEBattlePokemon damageVictim)
         {
             foreach (IPBEPacket packet in battle.Events)
             {
-                if (packet is PBETeamStatusPacket tsp
+                if (packet is PBETeamStatusDamagePacket tsp
                     && tsp.Team == team
                     && tsp.TeamStatus == teamStatus
-                    && tsp.TeamStatusAction == teamStatusAction
-                    && tsp.DamageVictimTrainer?.TryGetPokemon(tsp.DamageVictim) == damageVictim)
+                    && tsp.DamageVictimTrainer.GetPokemon(tsp.DamageVictim) == damageVictim)
                 {
                     return true;
                 }

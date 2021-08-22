@@ -18,7 +18,7 @@ namespace Kermalis.PokemonBattleEngineClient.Views
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(property));
         }
-        public new event PropertyChangedEventHandler PropertyChanged;
+        public new event PropertyChangedEventHandler? PropertyChanged;
 
         private Uri _spriteUri;
         public Uri SpriteUri
@@ -98,7 +98,7 @@ namespace Kermalis.PokemonBattleEngineClient.Views
                 }
             }
         }
-        public ObservableCollection<TeamInfo> Teams { get; } = new ObservableCollection<TeamInfo>();
+        public ObservableCollection<TeamInfo> Teams { get; } = new();
 
         private readonly string _teamPath;
         private readonly Button _addPartyButton;
@@ -119,9 +119,9 @@ namespace Kermalis.PokemonBattleEngineClient.Views
             MinEXP = PBEDataProvider.Instance.GetEXPRequired(type, _pkmn.Settings.MinLevel);
             MaxEXP = PBEDataProvider.Instance.GetEXPRequired(type, _pkmn.Settings.MaxLevel);
         }
-        private void UpdateComboBoxes(string property)
+        private void UpdateComboBoxes(string? property)
         {
-            bool all = property == null;
+            bool all = property is null;
             bool ability = all;
             bool form = all;
             bool gender = all;
@@ -159,7 +159,7 @@ namespace Kermalis.PokemonBattleEngineClient.Views
                 _speciesComboBox.SelectedItem = _pkmn.Species;
             }
         }
-        private void OnPkmnPropertyChanged(object sender, PropertyChangedEventArgs e)
+        private void OnPkmnPropertyChanged(object? sender, PropertyChangedEventArgs e)
         {
             UpdateComboBoxes(e.PropertyName);
             if (e.PropertyName == nameof(PBELegalPokemon.Species) || e.PropertyName == nameof(PBELegalPokemon.Form))
@@ -167,7 +167,7 @@ namespace Kermalis.PokemonBattleEngineClient.Views
                 UpdateEXPRequirements();
             }
         }
-        private void OnComboBoxSelectionChanged(object sender, SelectionChangedEventArgs thing)
+        private void OnComboBoxSelectionChanged(object? sender, SelectionChangedEventArgs thing)
         {
             if (_ignoreComboBoxChanges)
             {
@@ -175,31 +175,33 @@ namespace Kermalis.PokemonBattleEngineClient.Views
             }
 
             _ignoreComboBoxChanges = true;
-            var c = (ComboBox)sender;
+            var c = (ComboBox)sender!;
             if (c == _abilityComboBox)
             {
-                _pkmn.Ability = (PBEAbility)c.SelectedItem;
+                _pkmn.Ability = (PBEAbility)c.SelectedItem!;
             }
             else if (c == _formComboBox)
             {
-                _pkmn.Form = (PBEForm)c.SelectedItem;
+                _pkmn.Form = (PBEForm)c.SelectedItem!;
             }
             else if (c == _genderComboBox)
             {
-                _pkmn.Gender = (PBEGender)c.SelectedItem;
+                _pkmn.Gender = (PBEGender)c.SelectedItem!;
             }
             else if (c == _itemComboBox)
             {
-                _pkmn.Item = (PBEItem)c.SelectedItem;
+                _pkmn.Item = (PBEItem)c.SelectedItem!;
             }
             else if (c == _speciesComboBox)
             {
-                _pkmn.Species = (PBESpecies)c.SelectedItem;
+                _pkmn.Species = (PBESpecies)c.SelectedItem!;
             }
             _ignoreComboBoxChanges = false;
         }
 
+#pragma warning disable CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
         public TeamBuilderView()
+#pragma warning restore CS8618 // _team, _pkmn, _spriteUri
         {
             DataContext = this;
             AvaloniaXamlLoader.Load(this);
@@ -289,32 +291,32 @@ namespace Kermalis.PokemonBattleEngineClient.Views
             _partyListBox.Items = _team.Party;
             Pkmn = _team.Party[_team.Party.Count - 1];
         }
-        private void OnSelectedMonChanged(object sender, SelectionChangedEventArgs e)
+        private void OnSelectedMonChanged(object? sender, SelectionChangedEventArgs e)
         {
-            var s = (PBELegalPokemon)_partyListBox.SelectedItem;
+            var s = (PBELegalPokemon?)_partyListBox.SelectedItem;
             if (s is not null)
             {
                 Pkmn = s;
             }
         }
-        private void OnSelectedTeamSizeChanged(object sender, NotifyCollectionChangedEventArgs e)
+        private void OnSelectedTeamSizeChanged(object? sender, NotifyCollectionChangedEventArgs? e)
         {
             _addPartyButton.IsEnabled = _team.Party.Count < _team.Party.Settings.MaxPartySize;
             _removePartyButton.IsEnabled = _team.Party.Count > 1;
         }
-        private void OnSelectedTeamChanged(object sender, SelectionChangedEventArgs e)
+        private void OnSelectedTeamChanged(object? sender, SelectionChangedEventArgs e)
         {
             if (_team is not null)
             {
                 _team.Party.CollectionChanged -= OnSelectedTeamSizeChanged;
             }
-            _team = (TeamInfo)_teamListBox.SelectedItem;
+            _team = (TeamInfo)_teamListBox.SelectedItem!;
             _team.Party.CollectionChanged += OnSelectedTeamSizeChanged;
             _partyListBox.Items = _team.Party;
             OnSelectedTeamSizeChanged(null, null);
             Pkmn = _team.Party[0];
         }
-        private void OnVisualChanged(object sender, SelectionChangedEventArgs e)
+        private void OnVisualChanged(object? sender, SelectionChangedEventArgs e)
         {
             UpdateSprites();
         }

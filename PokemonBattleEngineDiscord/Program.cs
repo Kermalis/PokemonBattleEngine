@@ -1,7 +1,7 @@
 ﻿using Discord;
 using Discord.Commands;
 using Discord.WebSocket;
-using Kermalis.PokemonBattleEngine.Data;
+using Kermalis.PokemonBattleEngine.DefaultData;
 using System;
 using System.Reflection;
 using System.Threading.Tasks;
@@ -11,8 +11,8 @@ namespace Kermalis.PokemonBattleEngineDiscord
     internal sealed class Program
     {
         private const char CommandPrefix = '!';
-        private DiscordSocketClient _client;
-        private CommandService _commands;
+        private DiscordSocketClient _client = null!;
+        private CommandService _commands = null!;
 
         public static void Main(string[] args)
         {
@@ -22,7 +22,7 @@ namespace Kermalis.PokemonBattleEngineDiscord
         {
             Utils.InitFemaleSpriteLookup();
             ReplaySaver.RemoveOldReplays();
-            PBEDataProvider.InitEngine(string.Empty);
+            PBEDefaultDataProvider.InitEngine(string.Empty);
 
             _client = new DiscordSocketClient();
 
@@ -88,7 +88,7 @@ namespace Kermalis.PokemonBattleEngineDiscord
         private async Task CommandMessageReceived(SocketMessage arg)
         {
             int argPos = 0;
-            if (!(arg is SocketUserMessage message)
+            if (arg is not SocketUserMessage message
                 || message.Author.Id == _client.CurrentUser.Id
                 || !message.HasCharPrefix(CommandPrefix, ref argPos))
             {

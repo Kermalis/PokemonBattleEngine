@@ -6,9 +6,9 @@ namespace Kermalis.PokemonBattleEngineTests.Statuses
     [Collection("Utils")]
     public class PowerTrickTests
     {
-        public PowerTrickTests(TestUtils utils, ITestOutputHelper output)
+        public PowerTrickTests(TestUtils _, ITestOutputHelper output)
         {
-            utils.SetOutputHelper(output);
+            TestUtils.SetOutputHelper(output);
         }
 
         // TODO: BugFix tests

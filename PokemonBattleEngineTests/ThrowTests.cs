@@ -9,9 +9,9 @@ namespace Kermalis.PokemonBattleEngineTests
     [Collection("Utils")]
     public class ThrowTests
     {
-        public ThrowTests(TestUtils utils, ITestOutputHelper output)
+        public ThrowTests(TestUtils _, ITestOutputHelper output)
         {
-            utils.SetOutputHelper(output);
+            TestUtils.SetOutputHelper(output);
         }
 
         [Theory]
@@ -46,7 +46,7 @@ namespace Kermalis.PokemonBattleEngineTests
 
             if (expectException)
             {
-                Assert.Throws<ArgumentException>(() => new PBEBattle(format, settings, new PBETrainerInfo(p0, "Trainer 0", false), new PBEWildInfo(p1)));
+                Assert.Throws<ArgumentException>(() => PBEBattle.CreateWildBattle(format, settings, new PBETrainerInfo(p0, "Trainer 0", false), new PBEWildInfo(p1)));
             }
             #endregion
         }

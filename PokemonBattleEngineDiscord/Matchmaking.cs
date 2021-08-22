@@ -4,7 +4,7 @@ using Discord.WebSocket;
 using Kermalis.PokemonBattleEngine.Battle;
 using Kermalis.PokemonBattleEngine.Data;
 using Kermalis.PokemonBattleEngine.Data.Legality;
-using Kermalis.PokemonBattleEngine.Utils;
+using Kermalis.PokemonBattleEngine.DefaultData;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
@@ -30,8 +30,8 @@ namespace Kermalis.PokemonBattleEngineDiscord
         }
 
         private const int ChallengeMinuteExpiration = 5;
-        private static readonly object _matchmakingLockObj = new object();
-        private static readonly List<Challenge> _challenges = new List<Challenge>();
+        private static readonly object _matchmakingLockObj = new();
+        private static readonly List<Challenge> _challenges = new();
 
         public static void OnLeftGuild(SocketGuild guild)
         {
@@ -57,7 +57,7 @@ namespace Kermalis.PokemonBattleEngineDiscord
             DateTime dt = DateTime.Now;
             _challenges.RemoveAll(c => (dt - c.ChallengeTime).Minutes >= ChallengeMinuteExpiration);
         }
-        private static Challenge GetChallenge(SocketUser challengee)
+        private static Challenge? GetChallenge(SocketUser challengee)
         {
             foreach (Challenge c in _challenges)
             {
@@ -77,14 +77,14 @@ namespace Kermalis.PokemonBattleEngineDiscord
 
             await StartBattle(guild, a, b, a.Username, b.Username, a.Mention, b.Mention);
         }
-        private static async Task StartBattle(IGuild guild, SocketUser battler0, SocketUser battler1, string team0Name, string team1Name, string team0Mention, string team1Mention)
+        private static async Task StartBattle(IGuild guild, SocketUser? battler0, SocketUser? battler1, string team0Name, string team1Name, string team0Mention, string team1Mention)
         {
             PBELegalPokemonCollection p0, p1;
             // Competitively Randomized Pokémon
-            p0 = PBERandomTeamGenerator.CreateRandomTeam(3);
-            p1 = PBERandomTeamGenerator.CreateRandomTeam(3);
+            p0 = PBEDDRandomTeamGenerator.CreateRandomTeam(3);
+            p1 = PBEDDRandomTeamGenerator.CreateRandomTeam(3);
 
-            var battle = new PBEBattle(PBEBattleFormat.Single, PBESettings.DefaultSettings, new PBETrainerInfo(p0, team0Name, false), new PBETrainerInfo(p1, team1Name, false));
+            var battle = PBEBattle.CreateTrainerBattle(PBEBattleFormat.Single, PBESettings.DefaultSettings, new PBETrainerInfo(p0, team0Name, false), new PBETrainerInfo(p1, team1Name, false));
 
             var bc = new BattleContext(battle, battler0, battler1);
             ITextChannel channel = await ChannelHandler.CreateChannel(guild, $"battle-{bc.BattleId}");
@@ -99,29 +99,24 @@ namespace Kermalis.PokemonBattleEngineDiscord
                 RemoveOldChallenges();
 
                 SocketUser challengee = ctx.User;
-                if (!(BattleContext.GetBattleContext(challengee) == null))
+                if (BattleContext.GetBattleContext(challengee, out _))
                 {
                     return;
                 }
+                Challenge? c = GetChallenge(challengee);
+                if (c is null)
+                {
+                    await ctx.Channel.SendMessageAsync($"{challengee.Mention} ― You have no pending challenges.");
+                    return;
+                }
+                SocketUser challenger = c.Challenger;
+                if (BattleContext.GetBattleContext(challenger, out _))
+                {
+                    await PrintParticipating(challengee, challenger, ctx.Channel);
+                }
                 else
                 {
-                    Challenge c = GetChallenge(challengee);
-                    if (c == null)
-                    {
-                        await ctx.Channel.SendMessageAsync($"{challengee.Mention} ― You have no pending challenges.");
-                    }
-                    else
-                    {
-                        SocketUser challenger = c.Challenger;
-                        if (!(BattleContext.GetBattleContext(challenger) == null))
-                        {
-                            await PrintParticipating(challengee, challenger, ctx.Channel);
-                        }
-                        else
-                        {
-                            await StartBattle(c);
-                        }
-                    }
+                    await StartBattle(c);
                 }
             }
             lock (_matchmakingLockObj)
@@ -145,49 +140,43 @@ namespace Kermalis.PokemonBattleEngineDiscord
                 RemoveOldChallenges();
 
                 SocketUser challenger = ctx.User;
-                if (challenger.Id == challengee.Id || BattleContext.GetBattleContext(challenger) != null)
+                if (challenger.Id == challengee.Id || BattleContext.GetBattleContext(challenger, out _))
                 {
                     return;
                 }
-                else if (BattleContext.GetBattleContext(challengee) != null)
+                if (BattleContext.GetBattleContext(challengee, out _))
                 {
                     await PrintParticipating(challenger, challengee, ctx.Channel);
+                    return;
                 }
-                else
+                Challenge? c = GetChallenge(challenger);
+                if (c is not null && c.Challenger.Id == challengee.Id)
                 {
-                    Challenge c = GetChallenge(challenger);
-                    if (c != null && c.Challenger.Id == challengee.Id)
-                    {
-                        await StartBattle(c);
-                    }
-                    else
-                    {
-                        c = GetChallenge(challengee);
-                        if (c == null)
-                        {
-                            string msg = $"You were challenged to a Pokémon battle by {challenger.Mention}!\nThe challenge expires in {ChallengeMinuteExpiration} minutes.\nType `!accept` to accept the challenge.";
-                            try
-                            {
-                                await challengee.SendMessageAsync(msg);
-                            }
-                            catch (Discord.Net.HttpException ex)
-                            {
-                                if (ex.DiscordCode == 50007)
-                                {
-                                    await ctx.Channel.SendMessageAsync($"{challenger.Mention} ― Cannot challenge {challengee.Mention} because their DMs are closed.");
-                                }
-                                Console.WriteLine("Challenge exception:{0}{1}", Environment.NewLine, ex);
-                                return;
-                            }
-                            _challenges.Add(new Challenge(challenger, challengee, ctx.Guild));
-                            await ctx.Channel.SendMessageAsync($"{challenger.Mention} ― Your challenge has been sent to {challengee.Username}.");
-                        }
-                        else
-                        {
-                            await ctx.Channel.SendMessageAsync($"{challenger.Mention} ― {challengee.Username} already has a pending challenge.");
-                        }
-                    }
+                    await StartBattle(c);
+                    return;
                 }
+                c = GetChallenge(challengee);
+                if (c is not null)
+                {
+                    await ctx.Channel.SendMessageAsync($"{challenger.Mention} ― {challengee.Username} already has a pending challenge.");
+                    return;
+                }
+                string msg = $"You were challenged to a Pokémon battle by {challenger.Mention}!\nThe challenge expires in {ChallengeMinuteExpiration} minutes.\nType `!accept` to accept the challenge.";
+                try
+                {
+                    await challengee.SendMessageAsync(msg);
+                }
+                catch (Discord.Net.HttpException ex)
+                {
+                    if (ex.DiscordCode == 50007)
+                    {
+                        await ctx.Channel.SendMessageAsync($"{challenger.Mention} ― Cannot challenge {challengee.Mention} because their DMs are closed.");
+                    }
+                    Console.WriteLine("Challenge exception:{0}{1}", Environment.NewLine, ex);
+                    return;
+                }
+                _challenges.Add(new Challenge(challenger, challengee, ctx.Guild));
+                await ctx.Channel.SendMessageAsync($"{challenger.Mention} ― Your challenge has been sent to {challengee.Username}.");
             }
             lock (_matchmakingLockObj)
             {
@@ -197,8 +186,7 @@ namespace Kermalis.PokemonBattleEngineDiscord
         public static async Task Forfeit(SocketCommandContext ctx)
         {
             SocketUser sucker = ctx.User;
-            var bc = BattleContext.GetBattleContext(sucker);
-            if (bc != null)
+            if (BattleContext.GetBattleContext(sucker, out BattleContext? bc))
             {
                 await bc.Forfeit(sucker);
             }

@@ -1,7 +1,9 @@
 ﻿using Kermalis.PokemonBattleEngine.Data;
+using Kermalis.PokemonBattleEngine.Data.Utils;
 using Kermalis.PokemonBattleEngine.Utils;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 
 namespace Kermalis.PokemonBattleEngine.Battle
@@ -71,67 +73,82 @@ namespace Kermalis.PokemonBattleEngine.Battle
         /// <param name="includeAllies">True if allies should be included, False otherwise.</param>
         /// <param name="includeFoes">True if foes should be included, False otherwise.</param>
         /// <exception cref="ArgumentOutOfRangeException">Thrown when <paramref name="pkmn"/>'s <see cref="PBEBattle"/>'s <see cref="BattleFormat"/> is invalid or <paramref name="pkmn"/>'s <see cref="PBEBattlePokemon.FieldPosition"/> is invalid for <paramref name="pkmn"/>'s <see cref="PBEBattle"/>'s <see cref="BattleFormat"/>.</exception>
-        public static List<PBEBattlePokemon> GetRuntimeSurrounding(PBEBattlePokemon pkmn, bool includeAllies, bool includeFoes)
+        public static IReadOnlyList<PBEBattlePokemon> GetRuntimeSurrounding(PBEBattlePokemon pkmn, bool includeAllies, bool includeFoes)
         {
-            if (pkmn == null)
-            {
-                throw new ArgumentNullException(nameof(pkmn));
-            }
             if (!includeAllies && !includeFoes)
             {
                 throw new ArgumentException($"\"{nameof(includeAllies)}\" and \"{nameof(includeFoes)}\" were false.");
             }
-            IEnumerable<PBEBattlePokemon> allies = pkmn.Team.ActiveBattlers.Where(p => p != pkmn);
-            IEnumerable<PBEBattlePokemon> foes = pkmn.Team.OpposingTeam.ActiveBattlers;
+            List<PBEBattlePokemon> allies = pkmn.Team.ActiveBattlers.FindAll(p => p != pkmn);
+            List<PBEBattlePokemon> foes = pkmn.Team.OpposingTeam.ActiveBattlers;
             switch (pkmn.Battle.BattleFormat)
             {
                 case PBEBattleFormat.Single:
                 {
                     if (pkmn.FieldPosition == PBEFieldPosition.Center)
                     {
-                        var ret = new List<PBEBattlePokemon>();
                         if (includeFoes)
                         {
-                            ret.AddRange(foes.Where(p => p.FieldPosition == PBEFieldPosition.Center));
+                            return foes.FindAll(p => p.FieldPosition == PBEFieldPosition.Center);
                         }
-                        return ret;
+                        return Array.Empty<PBEBattlePokemon>();
                     }
                     else
                     {
-                        throw new ArgumentOutOfRangeException(nameof(pkmn.FieldPosition));
+                        throw new InvalidDataException(nameof(pkmn.FieldPosition));
                     }
                 }
                 case PBEBattleFormat.Double:
                 {
                     if (pkmn.FieldPosition == PBEFieldPosition.Left)
                     {
-                        var ret = new List<PBEBattlePokemon>();
+                        List<PBEBattlePokemon> ret = null!;
                         if (includeAllies)
                         {
-                            ret.AddRange(allies.Where(p => p.FieldPosition == PBEFieldPosition.Right));
+                            ret = allies.FindAll(p => p.FieldPosition == PBEFieldPosition.Right);
+                            if (!includeFoes)
+                            {
+                                return ret;
+                            }
                         }
                         if (includeFoes)
                         {
-                            ret.AddRange(foes.Where(p => p.FieldPosition == PBEFieldPosition.Left || p.FieldPosition == PBEFieldPosition.Right));
+                            List<PBEBattlePokemon> f = foes.FindAll(p => p.FieldPosition == PBEFieldPosition.Left || p.FieldPosition == PBEFieldPosition.Right);
+                            if (!includeAllies)
+                            {
+                                return f;
+                            }
+                            ret.AddRange(f);
+                            return ret;
                         }
-                        return ret;
+                        return Array.Empty<PBEBattlePokemon>();
                     }
                     else if (pkmn.FieldPosition == PBEFieldPosition.Right)
                     {
-                        var ret = new List<PBEBattlePokemon>();
+                        List<PBEBattlePokemon> ret = null!;
                         if (includeAllies)
                         {
-                            ret.AddRange(allies.Where(p => p.FieldPosition == PBEFieldPosition.Left));
+                            ret = allies.FindAll(p => p.FieldPosition == PBEFieldPosition.Left);
+                            if (!includeFoes)
+                            {
+                                return ret;
+                            }
                         }
                         if (includeFoes)
                         {
-                            ret.AddRange(foes.Where(p => p.FieldPosition == PBEFieldPosition.Left || p.FieldPosition == PBEFieldPosition.Right));
+                            List<PBEBattlePokemon> f = foes.FindAll(p => p.FieldPosition == PBEFieldPosition.Left || p.FieldPosition == PBEFieldPosition.Right);
+                            if (!includeAllies)
+                            {
+                                return f;
+                            }
+                            ret.AddRange(f);
+                            return ret;
                         }
-                        return ret;
+                        return Array.Empty<PBEBattlePokemon>();
                     }
                     else
                     {
-                        throw new ArgumentOutOfRangeException(nameof(pkmn.FieldPosition));
+                        throw new InvalidDataException(nameof(pkmn.FieldPosition));
                     }
                 }
                 case PBEBattleFormat.Triple:
@@ -139,166 +156,279 @@ namespace Kermalis.PokemonBattleEngine.Battle
                 {
                     if (pkmn.FieldPosition == PBEFieldPosition.Left)
                     {
-                        var ret = new List<PBEBattlePokemon>();
+                        List<PBEBattlePokemon> ret = null!;
                         if (includeAllies)
                         {
-                            ret.AddRange(allies.Where(p => p.FieldPosition == PBEFieldPosition.Center));
+                            ret = allies.FindAll(p => p.FieldPosition == PBEFieldPosition.Center);
+                            if (!includeFoes)
+                            {
+                                return ret;
+                            }
                         }
                         if (includeFoes)
                         {
-                            ret.AddRange(foes.Where(p => p.FieldPosition == PBEFieldPosition.Center || p.FieldPosition == PBEFieldPosition.Right));
+                            List<PBEBattlePokemon> f = foes.FindAll(p => p.FieldPosition == PBEFieldPosition.Center || p.FieldPosition == PBEFieldPosition.Right);
+                            if (!includeAllies)
+                            {
+                                return f;
+                            }
+                            ret.AddRange(f);
+                            return ret;
                         }
-                        return ret;
+                        return Array.Empty<PBEBattlePokemon>();
                     }
                     else if (pkmn.FieldPosition == PBEFieldPosition.Center)
                     {
-                        var ret = new List<PBEBattlePokemon>();
+                        List<PBEBattlePokemon> ret = null!;
                         if (includeAllies)
                         {
-                            ret.AddRange(allies.Where(p => p.FieldPosition == PBEFieldPosition.Left || p.FieldPosition == PBEFieldPosition.Right));
+                            ret = allies.FindAll(p => p.FieldPosition == PBEFieldPosition.Left || p.FieldPosition == PBEFieldPosition.Right);
+                            if (!includeFoes)
+                            {
+                                return ret;
+                            }
                         }
                         if (includeFoes)
                         {
-                            ret.AddRange(foes.Where(p => p.FieldPosition == PBEFieldPosition.Left || p.FieldPosition == PBEFieldPosition.Center || p.FieldPosition == PBEFieldPosition.Right));
+                            List<PBEBattlePokemon> f = foes.FindAll(p => p.FieldPosition == PBEFieldPosition.Left || p.FieldPosition == PBEFieldPosition.Center || p.FieldPosition == PBEFieldPosition.Right);
+                            if (!includeAllies)
+                            {
+                                return f;
+                            }
+                            ret.AddRange(f);
+                            return ret;
                         }
-                        return ret;
+                        return Array.Empty<PBEBattlePokemon>();
                     }
                     else if (pkmn.FieldPosition == PBEFieldPosition.Right)
                     {
-                        var ret = new List<PBEBattlePokemon>();
+                        List<PBEBattlePokemon> ret = null!;
                         if (includeAllies)
                         {
-                            ret.AddRange(allies.Where(p => p.FieldPosition == PBEFieldPosition.Center));
+                            ret = allies.FindAll(p => p.FieldPosition == PBEFieldPosition.Center);
+                            if (!includeFoes)
+                            {
+                                return ret;
+                            }
                         }
                         if (includeFoes)
                         {
-                            ret.AddRange(foes.Where(p => p.FieldPosition == PBEFieldPosition.Center || p.FieldPosition == PBEFieldPosition.Left));
+                            List<PBEBattlePokemon> f = foes.FindAll(p => p.FieldPosition == PBEFieldPosition.Center || p.FieldPosition == PBEFieldPosition.Left);
+                            if (!includeAllies)
+                            {
+                                return f;
+                            }
+                            ret.AddRange(f);
+                            return ret;
                         }
-                        return ret;
+                        return Array.Empty<PBEBattlePokemon>();
                     }
                     else
                     {
-                        throw new ArgumentOutOfRangeException(nameof(pkmn.FieldPosition));
+                        throw new InvalidDataException(nameof(pkmn.FieldPosition));
                     }
                 }
-                default: throw new ArgumentOutOfRangeException(nameof(pkmn.Battle.BattleFormat));
+                default: throw new InvalidDataException(nameof(pkmn.Battle.BattleFormat));
             }
         }
 
+        private static void FindFoeLeftTarget(PBEBattlePokemon user, bool canHitFarCorners, List<PBEBattlePokemon> targets)
+        {
+            PBETeam ot = user.Team.OpposingTeam;
+            if (!ot.TryGetPokemon(PBEFieldPosition.Left, out PBEBattlePokemon? pkmn))
+            {
+                // Left not found; fallback to its teammate
+                switch (user.Battle.BattleFormat)
+                {
+                    case PBEBattleFormat.Double:
+                    {
+                        if (!ot.TryGetPokemon(PBEFieldPosition.Right, out pkmn))
+                        {
+                            return; // Nobody left and nobody right; fail
+                        }
+                        break;
+                    }
+                    case PBEBattleFormat.Triple:
+                    {
+                        if (!ot.TryGetPokemon(PBEFieldPosition.Center, out pkmn))
+                        {
+                            if (user.FieldPosition != PBEFieldPosition.Right || canHitFarCorners)
+                            {
+                                // Center fainted as well but the user can reach far right
+                                if (!ot.TryGetPokemon(PBEFieldPosition.Right, out pkmn))
+                                {
+                                    return; // Nobody left, center, or right; fail
+                                }
+                            }
+                            else
+                            {
+                                return; // Nobody left and nobody center; fail since we can't reach the right
+                            }
+                        }
+                        break;
+                    }
+                    default: throw new InvalidOperationException();
+                }
+            }
+            targets.Add(pkmn);
+        }
+        private static void FindFoeCenterTarget(PBEBattlePokemon user, bool canHitFarCorners, PBERandom rand, List<PBEBattlePokemon> targets)
+        {
+            PBETeam ot = user.Team.OpposingTeam;
+            if (!ot.TryGetPokemon(PBEFieldPosition.Center, out PBEBattlePokemon? pkmn))
+            {
+                switch (user.Battle.BattleFormat)
+                {
+                    case PBEBattleFormat.Single:
+                    case PBEBattleFormat.Rotation: return;
+                    default: throw new InvalidOperationException();
+                    case PBEBattleFormat.Triple:
+                    {
+                        // Center not found; fallback to its teammate
+                        switch (user.FieldPosition)
+                        {
+                            case PBEFieldPosition.Left:
+                            {
+                                if (!ot.TryGetPokemon(PBEFieldPosition.Right, out pkmn))
+                                {
+                                    if (canHitFarCorners)
+                                    {
+                                        if (!ot.TryGetPokemon(PBEFieldPosition.Left, out pkmn))
+                                        {
+                                            return; // Nobody center, right, or left; fail
+                                        }
+                                    }
+                                    else
+                                    {
+                                        return; // Nobody center and nobody right; fail since we can't reach the left
+                                    }
+                                }
+                                break;
+                            }
+                            case PBEFieldPosition.Center:
+                            {
+                                if (!ot.TryGetPokemon(PBEFieldPosition.Left, out PBEBattlePokemon? left))
+                                {
+                                    if (!ot.TryGetPokemon(PBEFieldPosition.Right, out PBEBattlePokemon? right))
+                                    {
+                                        return; // Nobody left or right; fail
+                                    }
+                                    pkmn = right; // Nobody left; pick right
+                                }
+                                else
+                                {
+                                    if (!ot.TryGetPokemon(PBEFieldPosition.Right, out PBEBattlePokemon? right))
+                                    {
+                                        pkmn = left; // Nobody right; pick left
+                                    }
+                                    else
+                                    {
+                                        pkmn = rand.RandomBool() ? left : right; // Left and right present; randomly select left or right
+                                    }
+                                }
+                                break;
+                            }
+                            case PBEFieldPosition.Right:
+                            {
+                                if (!ot.TryGetPokemon(PBEFieldPosition.Left, out pkmn))
+                                {
+                                    if (canHitFarCorners)
+                                    {
+                                        if (!ot.TryGetPokemon(PBEFieldPosition.Right, out pkmn))
+                                        {
+                                            return; // Nobody center, left, or right; fail
+                                        }
+                                    }
+                                    else
+                                    {
+                                        return; // Nobody center and nobody left; fail since we can't reach the right
+                                    }
+                                }
+                                break;
+                            }
+                            default: throw new InvalidDataException();
+                        }
+                        break;
+                    }
+                }
+            }
+            targets.Add(pkmn);
+        }
+        private static void FindFoeRightTarget(PBEBattlePokemon user, bool canHitFarCorners, List<PBEBattlePokemon> targets)
+        {
+            PBETeam ot = user.Team.OpposingTeam;
+            if (!ot.TryGetPokemon(PBEFieldPosition.Right, out PBEBattlePokemon? pkmn))
+            {
+                // Right not found; fallback to its teammate
+                switch (user.Battle.BattleFormat)
+                {
+                    case PBEBattleFormat.Double:
+                    {
+                        if (!ot.TryGetPokemon(PBEFieldPosition.Left, out pkmn))
+                        {
+                            return; // Nobody right and nobody left; fail
+                        }
+                        break;
+                    }
+                    case PBEBattleFormat.Triple:
+                    {
+                        if (!ot.TryGetPokemon(PBEFieldPosition.Center, out pkmn))
+                        {
+                            if (user.FieldPosition != PBEFieldPosition.Left || canHitFarCorners)
+                            {
+                                // Center fainted as well but the user can reach far left
+                                if (!ot.TryGetPokemon(PBEFieldPosition.Left, out pkmn))
+                                {
+                                    return; // Nobody right, center, or left; fail
+                                }
+                            }
+                            else
+                            {
+                                return; // Nobody right and nobody center; fail since we can't reach the left
+                            }
+                        }
+                        break;
+                    }
+                    default: throw new InvalidOperationException();
+                }
+            }
+            targets.Add(pkmn);
+        }
         /// <summary>Gets all Pokémon that will be hit.</summary>
         /// <param name="user">The Pokémon that will act.</param>
         /// <param name="requestedTargets">The targets the Pokémon wishes to hit.</param>
         /// <param name="canHitFarCorners">Whether the move can hit far Pokémon in a triple battle.</param>
+        /// <param name="rand">The random to use.</param>
         private static PBEBattlePokemon[] GetRuntimeTargets(PBEBattlePokemon user, PBETurnTarget requestedTargets, bool canHitFarCorners, PBERandom rand)
         {
             var targets = new List<PBEBattlePokemon>();
             // Foes first, then allies (since initial attack effects run that way)
             if (requestedTargets.HasFlag(PBETurnTarget.FoeLeft))
             {
-                PBEBattlePokemon pkmn = user.Team.OpposingTeam.TryGetPokemon(PBEFieldPosition.Left);
-                if (pkmn == null)
-                {
-                    if (user.Battle.BattleFormat == PBEBattleFormat.Double)
-                    {
-                        pkmn = user.Team.OpposingTeam.TryGetPokemon(PBEFieldPosition.Right);
-                    }
-                    else if (user.Battle.BattleFormat == PBEBattleFormat.Triple)
-                    {
-                        pkmn = user.Team.OpposingTeam.TryGetPokemon(PBEFieldPosition.Center);
-                        // Center fainted as well and user can reach far right
-                        if (pkmn == null && (user.FieldPosition != PBEFieldPosition.Right || canHitFarCorners))
-                        {
-                            pkmn = user.Team.OpposingTeam.TryGetPokemon(PBEFieldPosition.Right);
-                        }
-                    }
-                }
-                targets.Add(pkmn);
+                FindFoeLeftTarget(user, canHitFarCorners, targets);
             }
             if (requestedTargets.HasFlag(PBETurnTarget.FoeCenter))
             {
-                PBEBattlePokemon pkmn = user.Team.OpposingTeam.TryGetPokemon(PBEFieldPosition.Center);
-                // Target fainted, fallback to its teammate
-                if (pkmn == null)
-                {
-                    if (user.Battle.BattleFormat == PBEBattleFormat.Triple)
-                    {
-                        if (user.FieldPosition == PBEFieldPosition.Left)
-                        {
-                            pkmn = user.Team.OpposingTeam.TryGetPokemon(PBEFieldPosition.Right);
-                            // Right fainted as well and user can reach far left
-                            if (pkmn == null && (user.FieldPosition != PBEFieldPosition.Left || canHitFarCorners))
-                            {
-                                pkmn = user.Team.OpposingTeam.TryGetPokemon(PBEFieldPosition.Left);
-                            }
-                        }
-                        else if (user.FieldPosition == PBEFieldPosition.Right)
-                        {
-                            pkmn = user.Team.OpposingTeam.TryGetPokemon(PBEFieldPosition.Left);
-                            // Left fainted as well and user can reach far right
-                            if (pkmn == null && (user.FieldPosition != PBEFieldPosition.Right || canHitFarCorners))
-                            {
-                                pkmn = user.Team.OpposingTeam.TryGetPokemon(PBEFieldPosition.Right);
-                            }
-                        }
-                        else // Center
-                        {
-                            PBEBattlePokemon oppLeft = user.Team.OpposingTeam.TryGetPokemon(PBEFieldPosition.Left),
-                                oppRight = user.Team.OpposingTeam.TryGetPokemon(PBEFieldPosition.Right);
-                            // Left is dead but not right
-                            if (oppLeft == null && oppRight != null)
-                            {
-                                pkmn = oppRight;
-                            }
-                            // Right is dead but not left
-                            else if (oppLeft != null && oppRight == null)
-                            {
-                                pkmn = oppLeft;
-                            }
-                            // Randomly select left or right
-                            else
-                            {
-                                pkmn = rand.RandomBool() ? oppLeft : oppRight;
-                            }
-                        }
-                    }
-                }
-                targets.Add(pkmn);
+                FindFoeCenterTarget(user, canHitFarCorners, rand, targets);
             }
             if (requestedTargets.HasFlag(PBETurnTarget.FoeRight))
             {
-                PBEBattlePokemon pkmn = user.Team.OpposingTeam.TryGetPokemon(PBEFieldPosition.Right);
-                // Target fainted, fallback to its teammate
-                if (pkmn == null)
-                {
-                    if (user.Battle.BattleFormat == PBEBattleFormat.Double)
-                    {
-                        pkmn = user.Team.OpposingTeam.TryGetPokemon(PBEFieldPosition.Left);
-                    }
-                    else if (user.Battle.BattleFormat == PBEBattleFormat.Triple)
-                    {
-                        pkmn = user.Team.OpposingTeam.TryGetPokemon(PBEFieldPosition.Center);
-                        // Center fainted as well and user can reach far left
-                        if (pkmn == null && (user.FieldPosition != PBEFieldPosition.Left || canHitFarCorners))
-                        {
-                            pkmn = user.Team.OpposingTeam.TryGetPokemon(PBEFieldPosition.Left);
-                        }
-                    }
-                }
-                targets.Add(pkmn);
+                FindFoeRightTarget(user, canHitFarCorners, targets);
             }
+            PBETeam t = user.Team;
             if (requestedTargets.HasFlag(PBETurnTarget.AllyLeft))
             {
-                targets.Add(user.Team.TryGetPokemon(PBEFieldPosition.Left));
+                t.TryAddPokemonToCollection(PBEFieldPosition.Left, targets);
             }
             if (requestedTargets.HasFlag(PBETurnTarget.AllyCenter))
             {
-                targets.Add(user.Team.TryGetPokemon(PBEFieldPosition.Center));
+                t.TryAddPokemonToCollection(PBEFieldPosition.Center, targets);
             }
             if (requestedTargets.HasFlag(PBETurnTarget.AllyRight))
             {
-                targets.Add(user.Team.TryGetPokemon(PBEFieldPosition.Right));
+                t.TryAddPokemonToCollection(PBEFieldPosition.Right, targets);
             }
-            return targets.Where(p => p != null).Distinct().ToArray(); // Remove duplicate targets
+            return targets.Distinct().ToArray(); // Remove duplicate targets
         }
 
         /// <summary>Determines whether chosen targets are valid for a given move.</summary>
@@ -308,10 +438,6 @@ namespace Kermalis.PokemonBattleEngine.Battle
         /// <exception cref="ArgumentOutOfRangeException">Thrown when <paramref name="targets"/>, <paramref name="move"/>, <paramref name="pkmn"/>'s <see cref="PBEBattlePokemon.FieldPosition"/>, or <paramref name="pkmn"/>'s <see cref="PBEBattle"/>'s <see cref="BattleFormat"/> is invalid.</exception>
         public static bool AreTargetsValid(PBEBattlePokemon pkmn, PBEMove move, PBETurnTarget targets)
         {
-            if (pkmn is null)
-            {
-                throw new ArgumentNullException(nameof(pkmn));
-            }
             if (move == PBEMove.None || move >= PBEMove.MAX)
             {
                 throw new ArgumentOutOfRangeException(nameof(move));
@@ -325,14 +451,6 @@ namespace Kermalis.PokemonBattleEngine.Battle
         }
         public static bool AreTargetsValid(PBEBattlePokemon pkmn, IPBEMoveData mData, PBETurnTarget targets)
         {
-            if (pkmn is null)
-            {
-                throw new ArgumentNullException(nameof(pkmn));
-            }
-            if (mData is null)
-            {
-                throw new ArgumentNullException(nameof(mData));
-            }
             PBEMoveTarget possibleTargets = pkmn.GetMoveTargets(mData);
             switch (pkmn.Battle.BattleFormat)
             {
@@ -348,7 +466,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                             }
                             else
                             {
-                                throw new ArgumentOutOfRangeException(nameof(pkmn.FieldPosition));
+                                throw new InvalidDataException(nameof(pkmn.FieldPosition));
                             }
                         }
                         case PBEMoveTarget.AllFoes:
@@ -364,7 +482,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                             }
                             else
                             {
-                                throw new ArgumentOutOfRangeException(nameof(pkmn.FieldPosition));
+                                throw new InvalidDataException(nameof(pkmn.FieldPosition));
                             }
                         }
                         case PBEMoveTarget.AllTeam:
@@ -379,10 +497,10 @@ namespace Kermalis.PokemonBattleEngine.Battle
                             }
                             else
                             {
-                                throw new ArgumentOutOfRangeException(nameof(pkmn.FieldPosition));
+                                throw new InvalidDataException(nameof(pkmn.FieldPosition));
                             }
                         }
-                        default: throw new ArgumentOutOfRangeException(nameof(possibleTargets));
+                        default: throw new InvalidDataException(nameof(possibleTargets));
                     }
                 }
                 case PBEBattleFormat.Double:
@@ -397,7 +515,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                             }
                             else
                             {
-                                throw new ArgumentOutOfRangeException(nameof(pkmn.FieldPosition));
+                                throw new InvalidDataException(nameof(pkmn.FieldPosition));
                             }
                         }
                         case PBEMoveTarget.AllFoes:
@@ -409,7 +527,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                             }
                             else
                             {
-                                throw new ArgumentOutOfRangeException(nameof(pkmn.FieldPosition));
+                                throw new InvalidDataException(nameof(pkmn.FieldPosition));
                             }
                         }
                         case PBEMoveTarget.AllTeam:
@@ -420,7 +538,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                             }
                             else
                             {
-                                throw new ArgumentOutOfRangeException(nameof(pkmn.FieldPosition));
+                                throw new InvalidDataException(nameof(pkmn.FieldPosition));
                             }
                         }
                         case PBEMoveTarget.AllSurrounding:
@@ -435,7 +553,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                             }
                             else
                             {
-                                throw new ArgumentOutOfRangeException(nameof(pkmn.FieldPosition));
+                                throw new InvalidDataException(nameof(pkmn.FieldPosition));
                             }
                         }
                         case PBEMoveTarget.RandomFoeSurrounding:
@@ -451,7 +569,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                             }
                             else
                             {
-                                throw new ArgumentOutOfRangeException(nameof(pkmn.FieldPosition));
+                                throw new InvalidDataException(nameof(pkmn.FieldPosition));
                             }
                         }
                         case PBEMoveTarget.SelfOrAllySurrounding:
@@ -462,7 +580,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                             }
                             else
                             {
-                                throw new ArgumentOutOfRangeException(nameof(pkmn.FieldPosition));
+                                throw new InvalidDataException(nameof(pkmn.FieldPosition));
                             }
                         }
                         case PBEMoveTarget.SingleAllySurrounding:
@@ -477,7 +595,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                             }
                             else
                             {
-                                throw new ArgumentOutOfRangeException(nameof(pkmn.FieldPosition));
+                                throw new InvalidDataException(nameof(pkmn.FieldPosition));
                             }
                         }
                         case PBEMoveTarget.SingleFoeSurrounding:
@@ -488,7 +606,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                             }
                             else
                             {
-                                throw new ArgumentOutOfRangeException(nameof(pkmn.FieldPosition));
+                                throw new InvalidDataException(nameof(pkmn.FieldPosition));
                             }
                         }
                         case PBEMoveTarget.SingleNotSelf:
@@ -504,10 +622,10 @@ namespace Kermalis.PokemonBattleEngine.Battle
                             }
                             else
                             {
-                                throw new ArgumentOutOfRangeException(nameof(pkmn.FieldPosition));
+                                throw new InvalidDataException(nameof(pkmn.FieldPosition));
                             }
                         }
-                        default: throw new ArgumentOutOfRangeException(nameof(possibleTargets));
+                        default: throw new InvalidDataException(nameof(possibleTargets));
                     }
                 }
                 case PBEBattleFormat.Triple:
@@ -522,7 +640,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                             }
                             else
                             {
-                                throw new ArgumentOutOfRangeException(nameof(pkmn.FieldPosition));
+                                throw new InvalidDataException(nameof(pkmn.FieldPosition));
                             }
                         }
                         case PBEMoveTarget.AllFoes:
@@ -533,7 +651,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                             }
                             else
                             {
-                                throw new ArgumentOutOfRangeException(nameof(pkmn.FieldPosition));
+                                throw new InvalidDataException(nameof(pkmn.FieldPosition));
                             }
                         }
                         case PBEMoveTarget.AllFoesSurrounding:
@@ -552,7 +670,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                             }
                             else
                             {
-                                throw new ArgumentOutOfRangeException(nameof(pkmn.FieldPosition));
+                                throw new InvalidDataException(nameof(pkmn.FieldPosition));
                             }
                         }
                         case PBEMoveTarget.AllSurrounding:
@@ -571,7 +689,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                             }
                             else
                             {
-                                throw new ArgumentOutOfRangeException(nameof(pkmn.FieldPosition));
+                                throw new InvalidDataException(nameof(pkmn.FieldPosition));
                             }
                         }
                         case PBEMoveTarget.AllTeam:
@@ -582,7 +700,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                             }
                             else
                             {
-                                throw new ArgumentOutOfRangeException(nameof(pkmn.FieldPosition));
+                                throw new InvalidDataException(nameof(pkmn.FieldPosition));
                             }
                         }
                         case PBEMoveTarget.RandomFoeSurrounding:
@@ -602,7 +720,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                             }
                             else
                             {
-                                throw new ArgumentOutOfRangeException(nameof(pkmn.FieldPosition));
+                                throw new InvalidDataException(nameof(pkmn.FieldPosition));
                             }
                         }
                         case PBEMoveTarget.SelfOrAllySurrounding:
@@ -621,7 +739,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                             }
                             else
                             {
-                                throw new ArgumentOutOfRangeException(nameof(pkmn.FieldPosition));
+                                throw new InvalidDataException(nameof(pkmn.FieldPosition));
                             }
                         }
                         case PBEMoveTarget.SingleAllySurrounding:
@@ -636,7 +754,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                             }
                             else
                             {
-                                throw new ArgumentOutOfRangeException(nameof(pkmn.FieldPosition));
+                                throw new InvalidDataException(nameof(pkmn.FieldPosition));
                             }
                         }
                         case PBEMoveTarget.SingleFoeSurrounding:
@@ -655,7 +773,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                             }
                             else
                             {
-                                throw new ArgumentOutOfRangeException(nameof(pkmn.FieldPosition));
+                                throw new InvalidDataException(nameof(pkmn.FieldPosition));
                             }
                         }
                         case PBEMoveTarget.SingleNotSelf:
@@ -674,7 +792,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                             }
                             else
                             {
-                                throw new ArgumentOutOfRangeException(nameof(pkmn.FieldPosition));
+                                throw new InvalidDataException(nameof(pkmn.FieldPosition));
                             }
                         }
                         case PBEMoveTarget.SingleSurrounding:
@@ -693,10 +811,10 @@ namespace Kermalis.PokemonBattleEngine.Battle
                             }
                             else
                             {
-                                throw new ArgumentOutOfRangeException(nameof(pkmn.FieldPosition));
+                                throw new InvalidDataException(nameof(pkmn.FieldPosition));
                             }
                         }
-                        default: throw new ArgumentOutOfRangeException(nameof(possibleTargets));
+                        default: throw new InvalidDataException(nameof(possibleTargets));
                     }
                 }
                 case PBEBattleFormat.Rotation:
@@ -711,7 +829,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                             }
                             else
                             {
-                                throw new ArgumentOutOfRangeException(nameof(pkmn.FieldPosition));
+                                throw new InvalidDataException(nameof(pkmn.FieldPosition));
                             }
                         }
                         case PBEMoveTarget.AllFoes:
@@ -727,7 +845,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                             }
                             else
                             {
-                                throw new ArgumentOutOfRangeException(nameof(pkmn.FieldPosition));
+                                throw new InvalidDataException(nameof(pkmn.FieldPosition));
                             }
                         }
                         case PBEMoveTarget.AllTeam:
@@ -742,26 +860,23 @@ namespace Kermalis.PokemonBattleEngine.Battle
                             }
                             else
                             {
-                                throw new ArgumentOutOfRangeException(nameof(pkmn.FieldPosition));
+                                throw new InvalidDataException(nameof(pkmn.FieldPosition));
                             }
                         }
-                        default: throw new ArgumentOutOfRangeException(nameof(possibleTargets));
+                        default: throw new InvalidDataException(nameof(possibleTargets));
                     }
                 }
-                default: throw new ArgumentOutOfRangeException(nameof(pkmn.Battle.BattleFormat));
+                default: throw new InvalidDataException(nameof(pkmn.Battle.BattleFormat));
             }
         }
 
         /// <summary>Gets a random target a move can hit when called by <see cref="PBEMoveEffect.Metronome"/>.</summary>
         /// <param name="pkmn">The Pokémon using <paramref name="calledMove"/>.</param>
         /// <param name="calledMove">The move being called.</param>
+        /// <param name="rand">The random to use.</param>
         /// <exception cref="ArgumentOutOfRangeException">Thrown when <paramref name="calledMove"/>, <paramref name="pkmn"/>'s <see cref="PBEBattlePokemon.FieldPosition"/>, or <paramref name="pkmn"/>'s <see cref="PBEBattle"/>'s <see cref="BattleFormat"/> is invalid.</exception>
         public static PBETurnTarget GetRandomTargetForMetronome(PBEBattlePokemon pkmn, PBEMove calledMove, PBERandom rand)
         {
-            if (pkmn == null)
-            {
-                throw new ArgumentNullException(nameof(pkmn));
-            }
             if (calledMove == PBEMove.None || calledMove >= PBEMove.MAX || !PBEDataUtils.IsMoveUsable(calledMove))
             {
                 throw new ArgumentOutOfRangeException(nameof(calledMove));
@@ -786,7 +901,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                             }
                             else
                             {
-                                throw new ArgumentOutOfRangeException(nameof(pkmn.FieldPosition));
+                                throw new InvalidDataException(nameof(pkmn.FieldPosition));
                             }
                         }
                         case PBEMoveTarget.AllFoes:
@@ -803,7 +918,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                             }
                             else
                             {
-                                throw new ArgumentOutOfRangeException(nameof(pkmn.FieldPosition));
+                                throw new InvalidDataException(nameof(pkmn.FieldPosition));
                             }
                         }
                         case PBEMoveTarget.AllTeam:
@@ -817,10 +932,10 @@ namespace Kermalis.PokemonBattleEngine.Battle
                             }
                             else
                             {
-                                throw new ArgumentOutOfRangeException(nameof(pkmn.FieldPosition));
+                                throw new InvalidDataException(nameof(pkmn.FieldPosition));
                             }
                         }
-                        default: throw new ArgumentOutOfRangeException(nameof(possibleTargets));
+                        default: throw new InvalidDataException(nameof(possibleTargets));
                     }
                 }
                 case PBEBattleFormat.Double:
@@ -835,7 +950,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                             }
                             else
                             {
-                                throw new ArgumentOutOfRangeException(nameof(pkmn.FieldPosition));
+                                throw new InvalidDataException(nameof(pkmn.FieldPosition));
                             }
                         }
                         case PBEMoveTarget.AllFoes:
@@ -847,7 +962,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                             }
                             else
                             {
-                                throw new ArgumentOutOfRangeException(nameof(pkmn.FieldPosition));
+                                throw new InvalidDataException(nameof(pkmn.FieldPosition));
                             }
                         }
                         case PBEMoveTarget.AllTeam:
@@ -858,7 +973,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                             }
                             else
                             {
-                                throw new ArgumentOutOfRangeException(nameof(pkmn.FieldPosition));
+                                throw new InvalidDataException(nameof(pkmn.FieldPosition));
                             }
                         }
                         case PBEMoveTarget.AllSurrounding:
@@ -873,7 +988,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                             }
                             else
                             {
-                                throw new ArgumentOutOfRangeException(nameof(pkmn.FieldPosition));
+                                throw new InvalidDataException(nameof(pkmn.FieldPosition));
                             }
                         }
                         case PBEMoveTarget.Self:
@@ -888,7 +1003,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                             }
                             else
                             {
-                                throw new ArgumentOutOfRangeException(nameof(pkmn.FieldPosition));
+                                throw new InvalidDataException(nameof(pkmn.FieldPosition));
                             }
                         }
                         case PBEMoveTarget.SelfOrAllySurrounding:
@@ -906,7 +1021,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                             }
                             else
                             {
-                                throw new ArgumentOutOfRangeException(nameof(pkmn.FieldPosition));
+                                throw new InvalidDataException(nameof(pkmn.FieldPosition));
                             }
                         }
                         case PBEMoveTarget.SingleAllySurrounding: // Helping Hand cannot be called by Metronome anyway
@@ -921,7 +1036,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                             }
                             else
                             {
-                                throw new ArgumentOutOfRangeException(nameof(pkmn.FieldPosition));
+                                throw new InvalidDataException(nameof(pkmn.FieldPosition));
                             }
                         }
                         case PBEMoveTarget.RandomFoeSurrounding:
@@ -942,10 +1057,10 @@ namespace Kermalis.PokemonBattleEngine.Battle
                             }
                             else
                             {
-                                throw new ArgumentOutOfRangeException(nameof(pkmn.FieldPosition));
+                                throw new InvalidDataException(nameof(pkmn.FieldPosition));
                             }
                         }
-                        default: throw new ArgumentOutOfRangeException(nameof(possibleTargets));
+                        default: throw new InvalidDataException(nameof(possibleTargets));
                     }
                 }
                 case PBEBattleFormat.Triple:
@@ -960,7 +1075,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                             }
                             else
                             {
-                                throw new ArgumentOutOfRangeException(nameof(pkmn.FieldPosition));
+                                throw new InvalidDataException(nameof(pkmn.FieldPosition));
                             }
                         }
                         case PBEMoveTarget.AllFoes:
@@ -971,7 +1086,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                             }
                             else
                             {
-                                throw new ArgumentOutOfRangeException(nameof(pkmn.FieldPosition));
+                                throw new InvalidDataException(nameof(pkmn.FieldPosition));
                             }
                         }
                         case PBEMoveTarget.AllFoesSurrounding:
@@ -990,7 +1105,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                             }
                             else
                             {
-                                throw new ArgumentOutOfRangeException(nameof(pkmn.FieldPosition));
+                                throw new InvalidDataException(nameof(pkmn.FieldPosition));
                             }
                         }
                         case PBEMoveTarget.AllSurrounding:
@@ -1009,7 +1124,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                             }
                             else
                             {
-                                throw new ArgumentOutOfRangeException(nameof(pkmn.FieldPosition));
+                                throw new InvalidDataException(nameof(pkmn.FieldPosition));
                             }
                         }
                         case PBEMoveTarget.AllTeam:
@@ -1020,7 +1135,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                             }
                             else
                             {
-                                throw new ArgumentOutOfRangeException(nameof(pkmn.FieldPosition));
+                                throw new InvalidDataException(nameof(pkmn.FieldPosition));
                             }
                         }
                         case PBEMoveTarget.Self:
@@ -1039,7 +1154,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                             }
                             else
                             {
-                                throw new ArgumentOutOfRangeException(nameof(pkmn.FieldPosition));
+                                throw new InvalidDataException(nameof(pkmn.FieldPosition));
                             }
                         }
                         case PBEMoveTarget.SelfOrAllySurrounding:
@@ -1084,7 +1199,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                             }
                             else
                             {
-                                throw new ArgumentOutOfRangeException(nameof(pkmn.FieldPosition));
+                                throw new InvalidDataException(nameof(pkmn.FieldPosition));
                             }
                         }
                         case PBEMoveTarget.SingleAllySurrounding: // Helping Hand cannot be called by Metronome anyway
@@ -1110,7 +1225,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                             }
                             else
                             {
-                                throw new ArgumentOutOfRangeException(nameof(pkmn.FieldPosition));
+                                throw new InvalidDataException(nameof(pkmn.FieldPosition));
                             }
                         }
                         case PBEMoveTarget.RandomFoeSurrounding:
@@ -1157,7 +1272,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                             }
                             else
                             {
-                                throw new ArgumentOutOfRangeException(nameof(pkmn.FieldPosition));
+                                throw new InvalidDataException(nameof(pkmn.FieldPosition));
                             }
                         }
                         case PBEMoveTarget.SingleNotSelf:
@@ -1180,10 +1295,10 @@ namespace Kermalis.PokemonBattleEngine.Battle
                             }
                             else
                             {
-                                throw new ArgumentOutOfRangeException(nameof(pkmn.FieldPosition));
+                                throw new InvalidDataException(nameof(pkmn.FieldPosition));
                             }
                         }
-                        default: throw new ArgumentOutOfRangeException(nameof(possibleTargets));
+                        default: throw new InvalidDataException(nameof(possibleTargets));
                     }
                 }
                 case PBEBattleFormat.Rotation:
@@ -1198,7 +1313,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                             }
                             else
                             {
-                                throw new ArgumentOutOfRangeException(nameof(pkmn.FieldPosition));
+                                throw new InvalidDataException(nameof(pkmn.FieldPosition));
                             }
                         }
                         case PBEMoveTarget.AllFoes:
@@ -1215,7 +1330,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                             }
                             else
                             {
-                                throw new ArgumentOutOfRangeException(nameof(pkmn.FieldPosition));
+                                throw new InvalidDataException(nameof(pkmn.FieldPosition));
                             }
                         }
                         case PBEMoveTarget.AllTeam:
@@ -1229,13 +1344,13 @@ namespace Kermalis.PokemonBattleEngine.Battle
                             }
                             else
                             {
-                                throw new ArgumentOutOfRangeException(nameof(pkmn.FieldPosition));
+                                throw new InvalidDataException(nameof(pkmn.FieldPosition));
                             }
                         }
-                        default: throw new ArgumentOutOfRangeException(nameof(possibleTargets));
+                        default: throw new InvalidDataException(nameof(possibleTargets));
                     }
                 }
-                default: throw new ArgumentOutOfRangeException(nameof(pkmn.Battle.BattleFormat));
+                default: throw new InvalidDataException(nameof(pkmn.Battle.BattleFormat));
             }
         }
     }

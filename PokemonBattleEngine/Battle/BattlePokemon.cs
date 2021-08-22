@@ -1,14 +1,14 @@
 ﻿using Kermalis.PokemonBattleEngine.Data;
+using Kermalis.PokemonBattleEngine.Data.Utils;
 using Kermalis.PokemonBattleEngine.Packets;
-using Kermalis.PokemonBattleEngine.Utils;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
 
 namespace Kermalis.PokemonBattleEngine.Battle
 {
-    // TODO: INPC
     /// <summary>Represents a specific Pokémon during a battle.</summary>
     public sealed class PBEBattlePokemon : IPBEPokemonKnownTypes, IPBEPokemonTypes, IPBESpeciesForm
     {
@@ -17,11 +17,13 @@ namespace Kermalis.PokemonBattleEngine.Battle
         public PBETrainer Trainer { get; }
         public byte Id { get; }
         public bool IsWild => Team.IsWild;
+        public bool IsLocallyHosted => Battle.IsLocallyHosted;
         public bool PBEIgnore { get; }
 
         public bool CanBattle => HP > 0 && !PBEIgnore;
 
         #region Basic Properties
+
         /// <summary>The Pokémon's current HP.</summary>
         public ushort HP { get; set; }
         /// <summary>The Pokémon's maximum HP.</summary>
@@ -45,9 +47,9 @@ namespace Kermalis.PokemonBattleEngine.Battle
         public sbyte SpeedChange { get; set; }
         public sbyte AccuracyChange { get; set; }
         public sbyte EvasionChange { get; set; }
-        public PBEReadOnlyStatCollection OriginalEffortValues { get; }
-        public PBEStatCollection EffortValues { get; }
-        public PBEReadOnlyStatCollection IndividualValues { get; }
+        public PBEReadOnlyStatCollection? OriginalEffortValues { get; }
+        public PBEStatCollection? EffortValues { get; }
+        public PBEReadOnlyStatCollection? IndividualValues { get; }
         public byte Friendship { get; set; }
         public byte OriginalLevel { get; set; }
         /// <summary>The Pokémon's level.</summary>
@@ -57,7 +59,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
         /// <summary>The Pokémon's nature.</summary>
         public PBENature Nature { get; set; }
         /// <summary>The moveset the Pokémon had upon entering battle.</summary>
-        public PBEReadOnlyPartyMoveset OriginalMoveset { get; }
+        public PBEReadOnlyPartyMoveset? OriginalMoveset { get; }
 
         /// <summary>The Pokémon's field position.</summary>
         public PBEFieldPosition FieldPosition { get; set; }
@@ -122,9 +124,11 @@ namespace Kermalis.PokemonBattleEngine.Battle
         public PBEType KnownType2 { get; set; }
         public float Weight { get; set; }
         public float KnownWeight { get; set; }
+
         #endregion
 
         #region Statuses
+
         /// <summary>The counter used for <see cref="PBEStatus1.BadlyPoisoned"/> and <see cref="PBEStatus1.Asleep"/>.</summary>
         public byte Status1Counter { get; set; }
         /// <summary>The amount of turns the Pokémon will sleep for before waking.</summary>
@@ -134,11 +138,11 @@ namespace Kermalis.PokemonBattleEngine.Battle
         /// <summary>The amount of turns the Pokémon will be confused for before snapping out of it.</summary>
         public byte ConfusionTurns { get; set; }
         /// <summary>The Pokémon that <see cref="PBEStatus2.Infatuated"/> is bound to.</summary>
-        public PBEBattlePokemon InfatuatedWithPokemon { get; set; }
+        public PBEBattlePokemon? InfatuatedWithPokemon { get; set; }
         /// <summary>The amount of turns until <see cref="PBEStatus2.MagnetRise"/> ends.</summary>
         public byte MagnetRiseTurns { get; set; }
         /// <summary>The Pokémon that <see cref="PBEStatus2.LockOn"/> is bound to.</summary>
-        public PBEBattlePokemon LockOnPokemon { get; set; }
+        public PBEBattlePokemon? LockOnPokemon { get; set; }
         public byte LockOnTurns { get; set; }
         /// <summary>The amount of times the Pokémon has successfully used <see cref="PBEMoveEffect.Protect"/>, <see cref="PBEMoveEffect.QuickGuard"/>, and/or <see cref="PBEMoveEffect.WideGuard"/> consecutively.</summary>
         public int Protection_Counter { get; set; }
@@ -147,37 +151,43 @@ namespace Kermalis.PokemonBattleEngine.Battle
         /// <summary>The position to return <see cref="PBEStatus2.LeechSeed"/> HP to on <see cref="SeededTeam"/>.</summary>
         public PBEFieldPosition SeededPosition { get; set; }
         /// <summary>The team responsible for <see cref="PBEStatus2.LeechSeed"/>.</summary>
-        public PBETeam SeededTeam { get; set; }
+        public PBETeam? SeededTeam { get; set; }
         /// <summary>The amount of HP the Pokémon's <see cref="PBEStatus2.Substitute"/> has left.</summary>
         public ushort SubstituteHP { get; set; }
         public PBEBattleMoveset TransformBackupMoves { get; }
+
         #endregion
 
         #region Actions
-        /// <summary>True if the Pokémon has successfully executed a move this turn.</summary>
+
+        /// <summary><see langword="true"/> if the Pokémon has successfully executed a move this turn.</summary>
         public bool HasUsedMoveThisTurn { get; set; }
-        /// <summary>The action the Pokémon will try to perform when the turn is run.</summary>
-        public PBETurnAction TurnAction { get; set; }
+        /// <summary>The action the Pokémon will try to perform when the turn is run. <see langword="null"/> if the Pokémon just switched in, attempted to flee, etc.</summary>
+        public PBETurnAction? TurnAction { get; set; }
         /// <summary>The move the Pokémon is forced to use by multi-turn moves.</summary>
-        public PBEMove TempLockedMove { get; set; }
+        public PBEMove TempLockedMove { get; set; } // TODO: Tests - Does a pkmn lose its temp locked move if it runs out of pp on the move, all moves, or ever? (Some move can lower its pp while it's being used?)
         /// <summary>The targets the Pokémon is forced to target by multi-turn moves.</summary>
         public PBETurnTarget TempLockedTargets { get; set; }
         /// <summary>The move the Pokémon is forced to use by its choice item.</summary>
-        public PBEMove ChoiceLockedMove { get; set; }
+        public PBEMove ChoiceLockedMove { get; set; } // TODO: Tests - Does a pkmn lose its choice locked move if it runs out of pp on the move, all moves, or ever?
+
         #endregion
 
         #region Special Flags
+
         /// <summary>True if the Pokémon has successfully used <see cref="PBEMoveEffect.Minimize"/> which makes it succeptible to double damage from <see cref="PBEMoveFlag.DoubleDamageMinimized"/>.</summary>
         public bool Minimize_Used { get; set; }
         /// <summary>The amount of turns left until a Pokémon with <see cref="PBEAbility.SlowStart"/> loses its hinderance.</summary>
         public byte SlowStart_HinderTurnsLeft { get; set; }
         /// <summary>True if the Pokémon was present at the start of the turn, which would allow <see cref="PBEAbility.SpeedBoost"/> to activate.</summary>
         public bool SpeedBoost_AbleToSpeedBoostThisTurn { get; set; }
+
         #endregion
 
-        public List<PBEBattlePokemon> EXPPokemon { get; } = new List<PBEBattlePokemon>();
+        public List<PBEBattlePokemon> EXPPokemon { get; } = new();
 
         #region Constructors
+
         private PBEBattlePokemon(PBETrainer trainer, byte id,
             PBESpecies species, PBEForm form, string nickname, byte level, uint exp, byte friendship, bool shiny, bool pokerus,
             PBEAbility ability, PBENature nature, PBEGender gender, PBEItem item, PBEItem caughtBall,
@@ -235,14 +245,14 @@ namespace Kermalis.PokemonBattleEngine.Battle
             ushort hp = pkmn.HP;
             if (hp > MaxHP)
             {
-                throw new ArgumentOutOfRangeException(nameof(pkmn.HP));
+                throw new InvalidDataException(nameof(pkmn.HP));
             }
             HP = hp;
             UpdateHPPercentage();
             PBEStatus1 status1 = pkmn.Status1;
             if (status1 >= PBEStatus1.MAX)
             {
-                throw new ArgumentOutOfRangeException(nameof(pkmn.Status1));
+                throw new InvalidDataException(nameof(pkmn.Status1));
             }
             if (status1 == PBEStatus1.BadlyPoisoned)
             {
@@ -252,7 +262,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
             byte sleepTurns = pkmn.SleepTurns;
             if (status1 != PBEStatus1.Asleep && sleepTurns != 0)
             {
-                throw new ArgumentOutOfRangeException(nameof(pkmn.SleepTurns));
+                throw new InvalidDataException(nameof(pkmn.SleepTurns));
             }
             SleepTurns = sleepTurns;
             trainer.Party.Add(this);
@@ -271,14 +281,6 @@ namespace Kermalis.PokemonBattleEngine.Battle
         }
         private PBEBattlePokemon(PBETrainer trainer, IPBEPkmnAppearedInfo_Hidden info)
         {
-            if (trainer is null)
-            {
-                throw new ArgumentNullException(nameof(trainer));
-            }
-            if (info is null)
-            {
-                throw new ArgumentNullException(nameof(info));
-            }
             Battle = trainer.Battle;
             Team = trainer.Team;
             Trainer = trainer;
@@ -316,6 +318,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
             : this(trainer, (IPBEPkmnSwitchInInfo_Hidden)info) { }
         public PBEBattlePokemon(PBEBattle battle, PBEWildPkmnAppearedPacket_Hidden.PBEWildPkmnInfo info)
             : this(battle.Teams[1].Trainers[0], info) { }
+
         #endregion
 
         public void AddEXPPokemon(PBEBattlePokemon pkmn)
@@ -340,11 +343,11 @@ namespace Kermalis.PokemonBattleEngine.Battle
             if (!transformed && FieldPosition != PBEFieldPosition.None)
             {
                 moves = KnownMoves;
-                slot = moves[oldMove];
-                if (slot != null) // Check if move is known first
+                PBEBattleMoveset.PBEBattleMovesetSlot? slot2 = moves[oldMove];
+                if (slot2 is not null) // Check if move is known first
                 {
-                    slot.Move = PBEMove.MAX; // Make the move unknown if the old move was known
-                    slot.PP = 0;
+                    slot2.Move = PBEMove.MAX; // Make the move unknown if the old move was known
+                    slot2.PP = 0;
                     moves.Organize();
                 }
             }
@@ -419,7 +422,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
             ApplyNaturalCure();
             if (Ability == PBEAbility.Regenerator)
             {
-                HP = PBEUtils.Clamp((ushort)(HP + (MaxHP / 3)), ushort.MinValue, MaxHP);
+                HP = Math.Clamp((ushort)(HP + (MaxHP / 3)), ushort.MinValue, MaxHP);
                 UpdateHPPercentage();
             }
             ResetSpecies();
@@ -451,8 +454,8 @@ namespace Kermalis.PokemonBattleEngine.Battle
         {
             IPBEPokemonData pData = PBEDataProvider.Instance.GetPokemonData(this);
             PBENature nature = Nature;
-            PBEStatCollection evs = EffortValues;
-            PBEReadOnlyStatCollection ivs = IndividualValues;
+            PBEStatCollection evs = EffortValues!;
+            PBEReadOnlyStatCollection ivs = IndividualValues!;
             byte level = Level;
             PBESettings settings = Battle.Settings;
             if (calculateHP)
@@ -480,10 +483,6 @@ namespace Kermalis.PokemonBattleEngine.Battle
         /// <param name="target">The Pokémon to transform into.</param>
         public void Transform(PBEBattlePokemon target)
         {
-            if (target == null)
-            {
-                throw new ArgumentNullException(nameof(target));
-            }
             if (Trainer != target.Trainer)
             {
                 KnownAbility = target.KnownAbility = Ability = target.Ability;
@@ -527,7 +526,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
             {
                 throw new ArgumentOutOfRangeException(nameof(move));
             }
-            PBEBattleMoveset.PBEBattleMovesetSlot knownSlot = KnownMoves[move];
+            PBEBattleMoveset.PBEBattleMovesetSlot knownSlot = KnownMoves[move]!;
             knownSlot.PP += amountReduced;
             if (knownSlot.MaxPP == 0)
             {
@@ -731,7 +730,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
         public sbyte SetStatChange(PBEStat stat, int value)
         {
             sbyte maxStatChange = Battle.Settings.MaxStatChange;
-            sbyte val = (sbyte)PBEUtils.Clamp(value, -maxStatChange, maxStatChange);
+            sbyte val = (sbyte)Math.Clamp(value, -maxStatChange, maxStatChange);
             switch (stat)
             {
                 case PBEStat.Accuracy: AccuracyChange = val; break;
@@ -747,11 +746,6 @@ namespace Kermalis.PokemonBattleEngine.Battle
         }
         public PBEResult IsStatChangePossible(PBEStat stat, PBEBattlePokemon causer, int change, out sbyte oldValue, out sbyte newValue, bool useKnownInfo = false, bool ignoreSubstitute = false)
         {
-            if (causer is null)
-            {
-                throw new ArgumentNullException(nameof(causer));
-            }
-
             oldValue = GetStatChange(stat);
 
             if (causer != this && !ignoreSubstitute && (useKnownInfo ? KnownStatus2 : Status2).HasFlag(PBEStatus2.Substitute))
@@ -817,7 +811,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
             }
 
             sbyte maxStatChange = Battle.Settings.MaxStatChange;
-            newValue = (sbyte)PBEUtils.Clamp(oldValue + change, -maxStatChange, maxStatChange);
+            newValue = (sbyte)Math.Clamp(oldValue + change, -maxStatChange, maxStatChange);
 
             if (oldValue == newValue)
             {
@@ -842,10 +836,6 @@ namespace Kermalis.PokemonBattleEngine.Battle
         }
         public PBEType GetMoveType(IPBEMoveData mData, bool useKnownInfo = false)
         {
-            if (mData == null)
-            {
-                throw new ArgumentNullException(nameof(mData));
-            }
             if (!mData.IsMoveUsable())
             {
                 throw new ArgumentOutOfRangeException(nameof(mData));
@@ -856,7 +846,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                 {
                     if (!useKnownInfo)
                     {
-                        return IndividualValues.GetHiddenPowerType();
+                        return IndividualValues!.GetHiddenPowerType();
                     }
                     break;
                 }
@@ -929,10 +919,6 @@ namespace Kermalis.PokemonBattleEngine.Battle
         }
         public PBEMoveTarget GetMoveTargets(IPBEMoveData mData)
         {
-            if (mData == null)
-            {
-                throw new ArgumentNullException(nameof(mData));
-            }
             if (!mData.IsMoveUsable())
             {
                 throw new ArgumentOutOfRangeException(nameof(mData));
@@ -965,7 +951,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
             {
                 return false;
             }
-            else if ((ChoiceLockedMove != PBEMove.None && Moves[ChoiceLockedMove].PP == 0) // If the choice locked move has 0 pp, it is forced to struggle
+            else if ((ChoiceLockedMove != PBEMove.None && Moves[ChoiceLockedMove]!.PP == 0) // If the choice locked move has 0 pp, it is forced to struggle
                 || Moves.All(s => s.PP == 0) // If all moves have 0 pp, then the user is forced to struggle
                 )
             {
@@ -987,10 +973,6 @@ namespace Kermalis.PokemonBattleEngine.Battle
         }
         public PBEResult IsAttractionPossible(PBEBattlePokemon causer, bool useKnownInfo = false, bool ignoreCurrentStatus = false)
         {
-            if (causer == null)
-            {
-                throw new ArgumentNullException(nameof(causer));
-            }
             if (causer == this)
             {
                 return PBEResult.InvalidConditions;
@@ -1012,7 +994,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
             }
             return PBEResult.Success;
         }
-        public PBEResult IsBurnPossible(PBEBattlePokemon other, bool useKnownInfo = false, bool ignoreSubstitute = false, bool ignoreCurrentStatus = false, bool ignoreSafeguard = false)
+        public PBEResult IsBurnPossible(PBEBattlePokemon? other, bool useKnownInfo = false, bool ignoreSubstitute = false, bool ignoreCurrentStatus = false, bool ignoreSafeguard = false)
         {
             PBEStatus2 kStatus2 = useKnownInfo ? KnownStatus2 : Status2;
             if (!ignoreSubstitute && kStatus2.HasFlag(PBEStatus2.Substitute))
@@ -1038,7 +1020,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
             }
             return PBEResult.Success;
         }
-        public PBEResult IsConfusionPossible(PBEBattlePokemon other, bool useKnownInfo = false, bool ignoreSubstitute = false, bool ignoreCurrentStatus = false, bool ignoreSafeguard = false)
+        public PBEResult IsConfusionPossible(PBEBattlePokemon? other, bool useKnownInfo = false, bool ignoreSubstitute = false, bool ignoreCurrentStatus = false, bool ignoreSafeguard = false)
         {
             PBEStatus2 kStatus2 = useKnownInfo ? KnownStatus2 : Status2;
             if (!ignoreSubstitute && kStatus2.HasFlag(PBEStatus2.Substitute))
@@ -1060,7 +1042,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
             }
             return PBEResult.Success;
         }
-        public PBEResult IsFreezePossible(PBEBattlePokemon other, bool useKnownInfo = false, bool ignoreSubstitute = false, bool ignoreCurrentStatus = false, bool ignoreSafeguard = false)
+        public PBEResult IsFreezePossible(PBEBattlePokemon? other, bool useKnownInfo = false, bool ignoreSubstitute = false, bool ignoreCurrentStatus = false, bool ignoreSafeguard = false)
         {
             PBEStatus2 kStatus2 = useKnownInfo ? KnownStatus2 : Status2;
             if (!ignoreSubstitute && kStatus2.HasFlag(PBEStatus2.Substitute))
@@ -1086,7 +1068,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
             }
             return PBEResult.Success;
         }
-        public PBEResult IsFlinchPossible(PBEBattlePokemon other, bool useKnownInfo = false)
+        public PBEResult IsFlinchPossible(PBEBattlePokemon? other, bool useKnownInfo = false)
         {
             PBEStatus2 kStatus2 = useKnownInfo ? KnownStatus2 : Status2;
             if (kStatus2.HasFlag(PBEStatus2.Substitute))
@@ -1104,7 +1086,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
             }
             return PBEResult.Success;
         }
-        public PBEResult IsGrounded(PBEBattlePokemon other, bool useKnownInfo = false)
+        public PBEResult IsGrounded(PBEBattlePokemon? other, bool useKnownInfo = false)
         {
             if (this.HasType(PBEType.Flying, useKnownInfo))
             {
@@ -1148,7 +1130,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
             }
             return PBEResult.Success;
         }
-        public PBEResult IsParalysisPossible(PBEBattlePokemon other, bool useKnownInfo = false, bool ignoreSubstitute = false, bool ignoreCurrentStatus = false, bool ignoreSafeguard = false)
+        public PBEResult IsParalysisPossible(PBEBattlePokemon? other, bool useKnownInfo = false, bool ignoreSubstitute = false, bool ignoreCurrentStatus = false, bool ignoreSafeguard = false)
         {
             PBEStatus2 kStatus2 = useKnownInfo ? KnownStatus2 : Status2;
             if (!ignoreSubstitute && kStatus2.HasFlag(PBEStatus2.Substitute))
@@ -1170,7 +1152,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
             }
             return PBEResult.Success;
         }
-        public PBEResult IsPoisonPossible(PBEBattlePokemon other, bool useKnownInfo = false, bool ignoreSubstitute = false, bool ignoreCurrentStatus = false, bool ignoreSafeguard = false)
+        public PBEResult IsPoisonPossible(PBEBattlePokemon? other, bool useKnownInfo = false, bool ignoreSubstitute = false, bool ignoreCurrentStatus = false, bool ignoreSafeguard = false)
         {
             PBEStatus2 kStatus2 = useKnownInfo ? KnownStatus2 : Status2;
             if (!ignoreSubstitute && kStatus2.HasFlag(PBEStatus2.Substitute))
@@ -1196,7 +1178,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
             }
             return PBEResult.Success;
         }
-        public PBEResult IsSleepPossible(PBEBattlePokemon other, bool useKnownInfo = false, bool ignoreSubstitute = false, bool ignoreCurrentStatus = false, bool ignoreSafeguard = false)
+        public PBEResult IsSleepPossible(PBEBattlePokemon? other, bool useKnownInfo = false, bool ignoreSubstitute = false, bool ignoreCurrentStatus = false, bool ignoreSafeguard = false)
         {
             PBEStatus2 kStatus2 = useKnownInfo ? KnownStatus2 : Status2;
             if (!ignoreSubstitute && kStatus2.HasFlag(PBEStatus2.Substitute))
@@ -1232,18 +1214,18 @@ namespace Kermalis.PokemonBattleEngine.Battle
             }
             return PBEResult.Success;
         }
-        public PBEResult IsTransformPossible(PBEBattlePokemon other, bool useKnownInfo = false)
+        public PBEResult IsTransformPossible(PBEBattlePokemon user, bool useKnownInfo = false)
         {
-            if (other == null)
+            if (user.Status2.HasFlag(PBEStatus2.Transformed))
             {
-                throw new ArgumentNullException(nameof(other));
+                return PBEResult.Ineffective_Status;
             }
             PBEStatus2 kStatus2 = useKnownInfo ? KnownStatus2 : Status2;
             if (kStatus2.HasFlag(PBEStatus2.Substitute))
             {
                 return PBEResult.Ineffective_Substitute;
             }
-            if (kStatus2.HasFlag(PBEStatus2.Disguised) || kStatus2.HasFlag(PBEStatus2.Transformed) || other.Status2.HasFlag(PBEStatus2.Transformed))
+            if (kStatus2.HasFlag(PBEStatus2.Disguised) || kStatus2.HasFlag(PBEStatus2.Transformed))
             {
                 return PBEResult.Ineffective_Status;
             }
@@ -1285,7 +1267,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
             int count = Protection_Counter;
             return count == 0 ? ushort.MaxValue : (ushort)(ushort.MaxValue / (count * 2));
         }
-        public PBEBattlePokemon GetPkmnWouldDisguiseAs()
+        public PBEBattlePokemon? GetPkmnWouldDisguiseAs()
         {
             PBEList<PBEBattlePokemon> party = Trainer.Party;
             for (int i = party.Count - 1; i >= 0; i--)
@@ -1306,7 +1288,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
             return null;
         }
 
-        // Will only be accurate for the host
+        /// <summary>Will only be accurate for the host</summary>
         public override string ToString()
         {
             var sb = new StringBuilder();
@@ -1349,15 +1331,15 @@ namespace Kermalis.PokemonBattleEngine.Battle
             {
                 if (Status2.HasFlag(PBEStatus2.Infatuated))
                 {
-                    sb.AppendLine($"Infatuated with: {InfatuatedWithPokemon.Trainer.Name}'s {InfatuatedWithPokemon.Nickname}");
+                    sb.AppendLine($"Infatuated with: {InfatuatedWithPokemon!.Trainer.Name}'s {InfatuatedWithPokemon.Nickname}");
                 }
                 if (Status2.HasFlag(PBEStatus2.LeechSeed))
                 {
-                    sb.AppendLine($"Seeded position: {SeededTeam.CombinedName}'s {SeededPosition}");
+                    sb.AppendLine($"Seeded position: {SeededTeam!.CombinedName}'s {SeededPosition}");
                 }
                 if (Status2.HasFlag(PBEStatus2.LockOn))
                 {
-                    sb.AppendLine($"Taking aim at: {LockOnPokemon.Trainer.Name}'s {LockOnPokemon.Nickname}");
+                    sb.AppendLine($"Taking aim at: {LockOnPokemon!.Trainer.Name}'s {LockOnPokemon.Nickname}");
                 }
             }
             if (Status2.HasFlag(PBEStatus2.Substitute))
@@ -1409,7 +1391,8 @@ namespace Kermalis.PokemonBattleEngine.Battle
             }
             if (Moves.Contains(PBEMoveEffect.HiddenPower))
             {
-                sb.AppendLine($"{PBEDataProvider.Instance.GetMoveName(PBEMove.HiddenPower).English}: {PBEDataProvider.Instance.GetTypeName(IndividualValues.GetHiddenPowerType()).English}|{IndividualValues.GetHiddenPowerBasePower(Battle.Settings)}");
+                PBEReadOnlyStatCollection ivs = IndividualValues!;
+                sb.AppendLine($"{PBEDataProvider.Instance.GetMoveName(PBEMove.HiddenPower).English}: {PBEDataProvider.Instance.GetTypeName(ivs.GetHiddenPowerType()).English}|{ivs.GetHiddenPowerBasePower(Battle.Settings)}");
             }
             sb.Append("Moves: ");
             for (int i = 0; i < Battle.Settings.NumMoves; i++)

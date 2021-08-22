@@ -2,7 +2,7 @@
 
 namespace Kermalis.PokemonBattleEngineExtras
 {
-    internal sealed partial class PokemonDataDumper
+    internal static partial class PokemonDataDumper
     {
         private static readonly (PBESpecies Species, PBEForm Form, PBEMove MoveA, PBEMove MoveB, PBEMove MoveC, bool BW, bool B2W2)[] _dreamWorld = new (PBESpecies, PBEForm, PBEMove, PBEMove, PBEMove, bool, bool)[]
         {

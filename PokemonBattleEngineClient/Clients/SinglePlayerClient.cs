@@ -1,5 +1,5 @@
-﻿using Kermalis.PokemonBattleEngine.AI;
-using Kermalis.PokemonBattleEngine.Battle;
+﻿using Kermalis.PokemonBattleEngine.Battle;
+using Kermalis.PokemonBattleEngine.DefaultData.AI;
 using Kermalis.PokemonBattleEngine.Packets;
 using Kermalis.PokemonBattleEngineClient.Views;
 using System.Threading;
@@ -8,11 +8,11 @@ namespace Kermalis.PokemonBattleEngineClient.Clients
 {
     internal sealed class SinglePlayerClient : BattleClient
     {
-        private const string ThreadName = "Battle Thread";
         public override PBEBattle Battle { get; }
-        public override PBETrainer Trainer { get; }
+        public override PBETrainer? Trainer { get; }
         public override BattleView BattleView { get; }
         public override bool HideNonOwned => true;
+        private readonly PBEDDAI[] _ais;
 
         public SinglePlayerClient(PBEBattle b, string name) : base(name)
         {
@@ -21,8 +21,17 @@ namespace Kermalis.PokemonBattleEngineClient.Clients
             BattleView = new BattleView(this);
             b.OnNewEvent += SinglePlayerBattle_OnNewEvent;
             b.OnStateChanged += SinglePlayerBattle_OnStateChanged;
+            _ais = new PBEDDAI[b.Trainers.Count - 1];
+            for (int i = 0; i < _ais.Length; i++)
+            {
+                _ais[i] = new PBEDDAI(b.Trainers[i + 1]);
+            }
             ShowAllPokemon();
-            new Thread(b.Begin) { Name = ThreadName }.Start();
+            CreateBattleThread(b.Begin);
+        }
+        private static void CreateBattleThread(ThreadStart start)
+        {
+            new Thread(start) { Name = "Battle Thread" }.Start();
         }
 
         private void SinglePlayerBattle_OnNewEvent(PBEBattle battle, IPBEPacket packet)
@@ -37,18 +46,23 @@ namespace Kermalis.PokemonBattleEngineClient.Clients
             switch (battle.BattleState)
             {
                 case PBEBattleState.Ended: battle.SaveReplay("SinglePlayer Battle.pbereplay"); break;
-                case PBEBattleState.ReadyToRunSwitches: new Thread(battle.RunSwitches) { Name = ThreadName }.Start(); break;
-                case PBEBattleState.ReadyToRunTurn: new Thread(battle.RunTurn) { Name = ThreadName }.Start(); break;
+                case PBEBattleState.ReadyToRunSwitches: CreateBattleThread(battle.RunSwitches); break;
+                case PBEBattleState.ReadyToRunTurn: CreateBattleThread(battle.RunTurn); break;
             }
         }
 
-        protected override void OnActionsReady(PBETurnAction[] acts)
+        private void OnActionsReady(PBETurnAction[] acts)
         {
-            new Thread(() => Trainer.SelectActionsIfValid(acts)) { Name = ThreadName }.Start();
+            CreateBattleThread(() => Trainer!.SelectActionsIfValid(out _, acts));
         }
-        protected override void OnSwitchesReady()
+        private void OnSwitchesReady(PBESwitchIn[] switches)
         {
-            new Thread(() => Trainer.SelectSwitchesIfValid(Switches)) { Name = ThreadName }.Start();
+            CreateBattleThread(() => Trainer!.SelectSwitchesIfValid(out _, switches));
+        }
+
+        private PBEDDAI GetAI(PBETrainer t)
+        {
+            return _ais[t.Id - 1];
         }
 
         public override void Dispose()
@@ -65,11 +79,11 @@ namespace Kermalis.PokemonBattleEngineClient.Clients
                     PBETrainer t = arp.Trainer;
                     if (t == Trainer)
                     {
-                        ActionsLoop(true);
+                        _ = new ActionsBuilder(BattleView, Trainer, OnActionsReady);
                     }
                     else
                     {
-                        new Thread(t.CreateAIActions) { Name = ThreadName }.Start();
+                        CreateBattleThread(GetAI(t).CreateActions);
                     }
                     return true;
                 }
@@ -78,12 +92,11 @@ namespace Kermalis.PokemonBattleEngineClient.Clients
                     PBETrainer t = sirp.Trainer;
                     if (t == Trainer)
                     {
-                        _switchesRequired = sirp.Amount;
-                        SwitchesLoop(true);
+                        _ = new SwitchesBuilder(BattleView, sirp.Amount, OnSwitchesReady);
                     }
                     else
                     {
-                        new Thread(t.CreateAISwitches) { Name = ThreadName }.Start();
+                        CreateBattleThread(GetAI(t).CreateAISwitches);
                     }
                     return true;
                 }

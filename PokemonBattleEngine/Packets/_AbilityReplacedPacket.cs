@@ -24,8 +24,8 @@ namespace Kermalis.PokemonBattleEngine.Packets
                 w.Write(Code);
                 w.Write((AbilityOwnerTrainer = abilityOwner.Trainer).Id);
                 w.Write(AbilityOwner = abilityOwner.FieldPosition);
-                w.Write(oldAbility.HasValue);
-                if (oldAbility.HasValue)
+                w.Write(oldAbility is not null);
+                if (oldAbility is not null)
                 {
                     w.Write((OldAbility = oldAbility).Value);
                 }

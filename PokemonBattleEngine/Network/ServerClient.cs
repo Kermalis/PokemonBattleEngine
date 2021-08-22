@@ -9,30 +9,26 @@ namespace Kermalis.PokemonBattleEngine.Network
     public sealed class PBEServerClient
     {
         internal readonly Socket Socket;
-        internal byte[] Buffer;
+        internal byte[]? Buffer;
 
-        private readonly PBEEncryption _encryption;
+        private readonly PBEEncryption? _encryption;
 
         public IPEndPoint IP { get; }
         public bool IsConnected { get; internal set; }
 
-        public event EventHandler<IPBEPacket> PacketReceived;
+        public event EventHandler<IPBEPacket>? PacketReceived;
 
-        internal PBEServerClient(Socket socket, PBEEncryption encryption)
+        internal PBEServerClient(Socket socket, PBEEncryption? encryption)
         {
             Socket = socket;
-            IP = (IPEndPoint)socket.RemoteEndPoint;
+            IP = (IPEndPoint)socket.RemoteEndPoint!;
             _encryption = encryption;
         }
 
         public void Send(IPBEPacket packet)
         {
-            if (packet == null)
-            {
-                throw new ArgumentNullException(nameof(packet));
-            }
             byte[] data = packet.Data.ToArray();
-            if (_encryption != null)
+            if (_encryption is not null)
             {
                 data = _encryption.Encrypt(data);
             }

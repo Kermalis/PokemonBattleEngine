@@ -1,7 +1,6 @@
 using Kermalis.PokemonBattleEngine.Battle;
 using Kermalis.PokemonBattleEngine.Data;
 using System;
-using System.Collections.Generic;
 using Xunit;
 using Xunit.Abstractions;
 
@@ -10,9 +9,9 @@ namespace Kermalis.PokemonBattleEngineTests
     [Collection("Utils")]
     public class ActionsTests
     {
-        public ActionsTests(TestUtils utils, ITestOutputHelper output)
+        public ActionsTests(TestUtils _, ITestOutputHelper output)
         {
-            utils.SetOutputHelper(output);
+            TestUtils.SetOutputHelper(output);
         }
 
         // TODO: bad field position to switch into, bad move, bad targets, bad targets with templockedmove, battle status, bad pkmn id,
@@ -33,7 +32,7 @@ namespace Kermalis.PokemonBattleEngineTests
             var p1 = new TestPokemonCollection(1);
             p1[0] = new TestPokemon(settings, PBESpecies.Darkrai, 0, 100, PBEMove.Protect);
 
-            var battle = new PBEBattle(PBEBattleFormat.Single, settings, new PBETrainerInfo(p0, "Trainer 0", false), new PBETrainerInfo(p1, "Trainer 1", false));
+            var battle = PBEBattle.CreateTrainerBattle(PBEBattleFormat.Single, settings, new PBETrainerInfo(p0, "Trainer 0", false), new PBETrainerInfo(p1, "Trainer 1", false));
             battle.OnNewEvent += PBEBattle.ConsoleBattleEventHandler;
 
             PBETrainer t0 = battle.Trainers[0];
@@ -47,28 +46,24 @@ namespace Kermalis.PokemonBattleEngineTests
 
             #region Darkrai uses Protect, Koffing uses Selfdestruct and faints
             var a = new PBETurnAction(koffing, PBEMove.Selfdestruct, PBETurnTarget.FoeCenter);
-            Assert.Throws<ArgumentNullException>(() => t0.SelectActionsIfValid((IReadOnlyList<PBETurnAction>)null)); // Throw for null collection
-            Assert.Throws<ArgumentNullException>(() => t0.SelectActionsIfValid(new PBETurnAction[] { null })); // Throw for null elements
-            Assert.NotNull(t0.SelectActionsIfValid(a, a)); // Too many actions
-            Assert.Null(t0.SelectActionsIfValid(a)); // Good actions
-            Assert.NotNull(t0.SelectActionsIfValid(a)); // Actions were already submitted
-            Assert.NotNull(t0.SelectActionsIfValid(Array.Empty<PBETurnAction>())); // 0 despite us now needing 0 additional actions
+            Assert.False(t0.SelectActionsIfValid(out _, a, a)); // Too many actions
+            Assert.True(t0.SelectActionsIfValid(out _, a)); // Good actions
+            Assert.False(t0.SelectActionsIfValid(out _, a)); // Actions were already submitted
+            Assert.False(t0.SelectActionsIfValid(out _, Array.Empty<PBETurnAction>())); // 0 despite us now needing 0 additional actions
 
-            Assert.Null(t1.SelectActionsIfValid(new PBETurnAction(darkrai, PBEMove.Protect, PBETurnTarget.AllyCenter))); // True for good actions
+            Assert.True(t1.SelectActionsIfValid(out _, new PBETurnAction(darkrai, PBEMove.Protect, PBETurnTarget.AllyCenter))); // True for good actions
 
             battle.RunTurn();
             #endregion
 
             #region More checks
             var s = new PBESwitchIn(magikarp, PBEFieldPosition.Center);
-            Assert.Throws<ArgumentNullException>(() => t0.SelectSwitchesIfValid((IReadOnlyList<PBESwitchIn>)null)); // Throw for null collection
-            Assert.Throws<ArgumentNullException>(() => t0.SelectSwitchesIfValid(new PBESwitchIn[] { null })); // Throw for null elements
-            Assert.NotNull(t0.SelectSwitchesIfValid(s, s)); // Too many
-            Assert.Null(t0.SelectSwitchesIfValid(s)); // Good switches
+            Assert.False(t0.SelectSwitchesIfValid(out _, s, s)); // Too many
+            Assert.True(t0.SelectSwitchesIfValid(out _, s)); // Good switches
 
             // Below two wouldn't work because of battle status lol
-            //Assert.NotNull(t0.SelectSwitchesIfValid(s)); // Switches were already submitted
-            //Assert.NotNull(t0.SelectSwitchesIfValid(Array.Empty<PBESwitchIn>())); // 0 despite us now needing 0 additional switches
+            //Assert.False(t0.SelectSwitchesIfValid(out _, s)); // Switches were already submitted
+            //Assert.False(t0.SelectSwitchesIfValid(out _, Array.Empty<PBESwitchIn>())); // 0 despite us now needing 0 additional switches
 
             //battle.RunSwitches();
             #endregion
@@ -96,7 +91,7 @@ namespace Kermalis.PokemonBattleEngineTests
             var p1 = new TestPokemonCollection(1);
             p1[0] = new TestPokemon(settings, PBESpecies.Darkrai, 0, 100, PBEMove.Protect);
 
-            var battle = new PBEBattle(PBEBattleFormat.Single, settings, new PBETrainerInfo(p0, "Trainer 0", false), new PBETrainerInfo(p1, "Trainer 1", false));
+            var battle = PBEBattle.CreateTrainerBattle(PBEBattleFormat.Single, settings, new PBETrainerInfo(p0, "Trainer 0", false), new PBETrainerInfo(p1, "Trainer 1", false));
             battle.OnNewEvent += PBEBattle.ConsoleBattleEventHandler;
 
             PBETrainer t0 = battle.Trainers[0];
@@ -109,14 +104,14 @@ namespace Kermalis.PokemonBattleEngineTests
             #endregion
 
             #region Darkrai uses Protect, Koffing uses Selfdestruct and faints
-            Assert.Null(t0.SelectActionsIfValid(new PBETurnAction(koffing, PBEMove.Selfdestruct, PBETurnTarget.FoeCenter)));
-            Assert.Null(t1.SelectActionsIfValid(new PBETurnAction(darkrai, PBEMove.Protect, PBETurnTarget.AllyCenter)));
+            Assert.True(t0.SelectActionsIfValid(out _, new PBETurnAction(koffing, PBEMove.Selfdestruct, PBETurnTarget.FoeCenter)));
+            Assert.True(t1.SelectActionsIfValid(out _, new PBETurnAction(darkrai, PBEMove.Protect, PBETurnTarget.AllyCenter)));
 
             battle.RunTurn();
             #endregion
 
             #region Check
-            Assert.NotNull(t0.SelectSwitchesIfValid(new PBESwitchIn(magikarp, PBEFieldPosition.Center)));
+            Assert.False(t0.SelectSwitchesIfValid(out _, new PBESwitchIn(magikarp, PBEFieldPosition.Center)));
             #endregion
 
             #region Cleanup
@@ -141,7 +136,7 @@ namespace Kermalis.PokemonBattleEngineTests
             var p1 = new TestPokemonCollection(1);
             p1[0] = new TestPokemon(settings, PBESpecies.Darkrai, 0, 100, PBEMove.Protect);
 
-            var battle = new PBEBattle(PBEBattleFormat.Single, settings, new PBETrainerInfo(p0, "Trainer 0", false), new PBETrainerInfo(p1, "Trainer 1", false));
+            var battle = PBEBattle.CreateTrainerBattle(PBEBattleFormat.Single, settings, new PBETrainerInfo(p0, "Trainer 0", false), new PBETrainerInfo(p1, "Trainer 1", false));
             battle.OnNewEvent += PBEBattle.ConsoleBattleEventHandler;
 
             PBETrainer t0 = battle.Trainers[0];
@@ -154,7 +149,7 @@ namespace Kermalis.PokemonBattleEngineTests
             #endregion
 
             #region Check
-            Assert.NotNull(t0.SelectActionsIfValid(new PBETurnAction(koffing, magikarp)));
+            Assert.False(t0.SelectActionsIfValid(out _, new PBETurnAction(koffing, magikarp)));
             #endregion
 
             #region Cleanup

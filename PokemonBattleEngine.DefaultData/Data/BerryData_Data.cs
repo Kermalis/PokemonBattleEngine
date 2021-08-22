@@ -1,0 +1,77 @@
+﻿using Kermalis.PokemonBattleEngine.Data;
+using System.Collections.Generic;
+using System.Collections.ObjectModel;
+
+namespace Kermalis.PokemonBattleEngine.DefaultData.Data
+{
+    public sealed partial class PBEDDBerryData
+    {
+        public static ReadOnlyDictionary<PBEItem, PBEDDBerryData> Data { get; } = new(new Dictionary<PBEItem, PBEDDBerryData>
+        {
+            { PBEItem.AguavBerry, new PBEDDBerryData(60, PBEType.Dragon, bitterness: 15) },
+            { PBEItem.ApicotBerry, new PBEDDBerryData(80, PBEType.Ground, spicyness: 10, dryness: 30, sourness: 30) },
+            { PBEItem.AspearBerry, new PBEDDBerryData(60, PBEType.Ice, sourness: 10) },
+            { PBEItem.BabiriBerry, new PBEDDBerryData(60, PBEType.Steel, spicyness: 25, dryness: 10) },
+            { PBEItem.BelueBerry, new PBEDDBerryData(80, PBEType.Electric, spicyness: 10, sourness: 30) },
+            { PBEItem.BlukBerry, new PBEDDBerryData(70, PBEType.Fire, dryness: 10, sweetness: 10) },
+            { PBEItem.ChartiBerry, new PBEDDBerryData(60, PBEType.Rock, spicyness: 10, dryness: 20) },
+            { PBEItem.CheriBerry, new PBEDDBerryData(60, PBEType.Fire, spicyness: 10) },
+            { PBEItem.ChestoBerry, new PBEDDBerryData(60, PBEType.Water, dryness: 10) },
+            { PBEItem.ChilanBerry, new PBEDDBerryData(60, PBEType.Normal, dryness: 25, sweetness: 10) },
+            { PBEItem.ChopleBerry, new PBEDDBerryData(60, PBEType.Fighting, spicyness: 15, bitterness: 10) },
+            { PBEItem.CobaBerry, new PBEDDBerryData(60, PBEType.Flying, dryness: 10, bitterness: 15) },
+            { PBEItem.ColburBerry, new PBEDDBerryData(60, PBEType.Dark, bitterness: 10, sourness: 20) },
+            { PBEItem.CornnBerry, new PBEDDBerryData(70, PBEType.Bug, dryness: 20, sweetness: 10) },
+            { PBEItem.CustapBerry, new PBEDDBerryData(80, PBEType.Ghost, sweetness: 40, bitterness: 10) },
+            { PBEItem.DurinBerry, new PBEDDBerryData(80, PBEType.Water, bitterness: 30, sourness: 10) },
+            { PBEItem.EnigmaBerry, new PBEDDBerryData(80, PBEType.Bug, spicyness: 40, dryness: 10) },
+            { PBEItem.FigyBerry, new PBEDDBerryData(60, PBEType.Bug, spicyness: 15) },
+            { PBEItem.GanlonBerry, new PBEDDBerryData(80, PBEType.Ice, dryness: 30, sweetness: 10, bitterness: 30) },
+            { PBEItem.GrepaBerry, new PBEDDBerryData(70, PBEType.Flying, dryness: 10, sweetness: 10, sourness: 10) },
+            { PBEItem.HabanBerry, new PBEDDBerryData(60, PBEType.Dragon, sweetness: 10, bitterness: 20) },
+            { PBEItem.HondewBerry, new PBEDDBerryData(70, PBEType.Ground, spicyness: 10, dryness: 10, bitterness: 10) },
+            { PBEItem.IapapaBerry, new PBEDDBerryData(60, PBEType.Dark, sourness: 15) },
+            { PBEItem.JabocaBerry, new PBEDDBerryData(80, PBEType.Dragon, bitterness: 40, sourness: 10) },
+            { PBEItem.KasibBerry, new PBEDDBerryData(60, PBEType.Ghost, dryness: 10, sweetness: 20) },
+            { PBEItem.KebiaBerry, new PBEDDBerryData(60, PBEType.Poison, dryness: 15, sourness: 10) },
+            { PBEItem.KelpsyBerry, new PBEDDBerryData(70, PBEType.Fighting, dryness: 10, bitterness: 10, sourness: 10) },
+            { PBEItem.LansatBerry, new PBEDDBerryData(80, PBEType.Flying, spicyness: 30, dryness: 10, sweetness: 30, bitterness: 10, sourness: 30) },
+            { PBEItem.LeppaBerry, new PBEDDBerryData(60, PBEType.Fighting, spicyness: 10, sweetness: 10, bitterness: 10, sourness: 10) },
+            { PBEItem.LiechiBerry, new PBEDDBerryData(80, PBEType.Grass, spicyness: 30, dryness: 10, sweetness: 30) },
+            { PBEItem.LumBerry, new PBEDDBerryData(60, PBEType.Flying, spicyness: 10, dryness: 10, sweetness: 10, bitterness: 10) },
+            { PBEItem.MagoBerry, new PBEDDBerryData(60, PBEType.Ghost, sweetness: 15) },
+            { PBEItem.MagostBerry, new PBEDDBerryData(70, PBEType.Rock, sweetness: 20, bitterness: 10) },
+            { PBEItem.MicleBerry, new PBEDDBerryData(80, PBEType.Rock, dryness: 40, sweetness: 10) },
+            { PBEItem.NanabBerry, new PBEDDBerryData(70, PBEType.Water, sweetness: 10, bitterness: 10) },
+            { PBEItem.NomelBerry, new PBEDDBerryData(70, PBEType.Dragon, spicyness: 10, sourness: 20) },
+            { PBEItem.OccaBerry, new PBEDDBerryData(60, PBEType.Fire, spicyness: 15, sweetness: 10) },
+            { PBEItem.OranBerry, new PBEDDBerryData(60, PBEType.Poison, spicyness: 10, dryness: 10, bitterness: 10, sourness: 10) },
+            { PBEItem.PamtreBerry, new PBEDDBerryData(70, PBEType.Steel, dryness: 30, sweetness: 10) },
+            { PBEItem.PasshoBerry, new PBEDDBerryData(60, PBEType.Water, dryness: 15, bitterness: 10) },
+            { PBEItem.PayapaBerry, new PBEDDBerryData(60, PBEType.Psychic, sweetness: 10, sourness: 15) },
+            { PBEItem.PechaBerry, new PBEDDBerryData(60, PBEType.Electric, sweetness: 10) },
+            { PBEItem.PersimBerry, new PBEDDBerryData(60, PBEType.Ground, spicyness: 10, dryness: 10, sweetness: 10, sourness: 10) },
+            { PBEItem.PetayaBerry, new PBEDDBerryData(80, PBEType.Poison, spicyness: 30, bitterness: 30, sourness: 10) },
+            { PBEItem.PinapBerry, new PBEDDBerryData(70, PBEType.Grass, spicyness: 10, sourness: 10) },
+            { PBEItem.PomegBerry, new PBEDDBerryData(70, PBEType.Ice, spicyness: 10, sweetness: 10, bitterness: 10) },
+            { PBEItem.QualotBerry, new PBEDDBerryData(70, PBEType.Poison, spicyness: 10, sweetness: 10, sourness: 10) },
+            { PBEItem.RabutaBerry, new PBEDDBerryData(70, PBEType.Ghost, bitterness: 20, sourness: 10) },
+            { PBEItem.RawstBerry, new PBEDDBerryData(60, PBEType.Grass, bitterness: 10) },
+            { PBEItem.RazzBerry, new PBEDDBerryData(60, PBEType.Steel, spicyness: 10, dryness: 10) },
+            { PBEItem.RindoBerry, new PBEDDBerryData(60, PBEType.Grass, spicyness: 10, bitterness: 15) },
+            { PBEItem.RowapBerry, new PBEDDBerryData(80, PBEType.Dark, spicyness: 10, sourness: 40) },
+            { PBEItem.SalacBerry, new PBEDDBerryData(80, PBEType.Fighting, sweetness: 30, bitterness: 10, sourness: 30) },
+            { PBEItem.ShucaBerry, new PBEDDBerryData(60, PBEType.Ground, spicyness: 10, sweetness: 15) },
+            { PBEItem.SitrusBerry, new PBEDDBerryData(60, PBEType.Psychic, dryness: 10, sweetness: 10, bitterness: 10, sourness: 10) },
+            { PBEItem.SpelonBerry, new PBEDDBerryData(70, PBEType.Dark, spicyness: 30, dryness: 10) },
+            { PBEItem.StarfBerry, new PBEDDBerryData(80, PBEType.Psychic, spicyness: 30, dryness: 10, sweetness: 30, bitterness: 10, sourness: 30) },
+            { PBEItem.TamatoBerry, new PBEDDBerryData(70, PBEType.Psychic, spicyness: 20, dryness: 10) },
+            { PBEItem.TangaBerry, new PBEDDBerryData(60, PBEType.Bug, spicyness: 20, sourness: 10) },
+            { PBEItem.WacanBerry, new PBEDDBerryData(60, PBEType.Electric, sweetness: 15, sourness: 10) },
+            { PBEItem.WatmelBerry, new PBEDDBerryData(80, PBEType.Fire, sweetness: 30, bitterness: 10) },
+            { PBEItem.WepearBerry, new PBEDDBerryData(70, PBEType.Electric, bitterness: 10, sourness: 10) },
+            { PBEItem.WikiBerry, new PBEDDBerryData(60, PBEType.Rock, dryness: 15) },
+            { PBEItem.YacheBerry, new PBEDDBerryData(60, PBEType.Ice, dryness: 10, sourness: 15) }
+        });
+    }
+}

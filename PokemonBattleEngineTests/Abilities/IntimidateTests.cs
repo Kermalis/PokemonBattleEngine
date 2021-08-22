@@ -8,9 +8,9 @@ namespace Kermalis.PokemonBattleEngineTests.Abilities
     [Collection("Utils")]
     public class IntimidateTests
     {
-        public IntimidateTests(TestUtils utils, ITestOutputHelper output)
+        public IntimidateTests(TestUtils _, ITestOutputHelper output)
         {
-            utils.SetOutputHelper(output);
+            TestUtils.SetOutputHelper(output);
         }
 
         [Fact]
@@ -32,7 +32,7 @@ namespace Kermalis.PokemonBattleEngineTests.Abilities
             };
             p1[1] = new TestPokemon(settings, PBESpecies.Skitty, 0, 100, PBEMove.Splash);
 
-            var battle = new PBEBattle(PBEBattleFormat.Triple, settings, new PBETrainerInfo(p0, "Trainer 0", false), new PBETrainerInfo(p1, "Trainer 1", false));
+            var battle = PBEBattle.CreateTrainerBattle(PBEBattleFormat.Triple, settings, new PBETrainerInfo(p0, "Trainer 0", false), new PBETrainerInfo(p1, "Trainer 1", false));
             battle.OnNewEvent += PBEBattle.ConsoleBattleEventHandler;
 
             PBETrainer t0 = battle.Trainers[0];
@@ -73,7 +73,7 @@ namespace Kermalis.PokemonBattleEngineTests.Abilities
             };
             p1[1] = new TestPokemon(settings, PBESpecies.Skitty, 0, 100, PBEMove.Splash);
 
-            var battle = new PBEBattle(PBEBattleFormat.Triple, settings, new PBETrainerInfo(p0, "Trainer 0", false), new PBETrainerInfo(p1, "Trainer 1", false));
+            var battle = PBEBattle.CreateTrainerBattle(PBEBattleFormat.Triple, settings, new PBETrainerInfo(p0, "Trainer 0", false), new PBETrainerInfo(p1, "Trainer 1", false));
             battle.OnNewEvent += PBEBattle.ConsoleBattleEventHandler;
 
             PBETrainer t0 = battle.Trainers[0];
@@ -86,7 +86,7 @@ namespace Kermalis.PokemonBattleEngineTests.Abilities
             #endregion
 
             #region Check
-            Assert.True(!battle.VerifyAbilityHappened(luxray, luxray, PBEAbility.Intimidate, PBEAbilityAction.Stats)); // Did not activate
+            Assert.False(battle.VerifyAbilityHappened(luxray, luxray, PBEAbility.Intimidate, PBEAbilityAction.Stats)); // Did not activate
             #endregion
 
             #region Cleanup
@@ -111,7 +111,7 @@ namespace Kermalis.PokemonBattleEngineTests.Abilities
                 Ability = PBEAbility.Intimidate
             };
 
-            var battle = new PBEBattle(PBEBattleFormat.Single, settings, new PBETrainerInfo(p0, "Trainer 0", false), new PBETrainerInfo(p1, "Trainer 1", false));
+            var battle = PBEBattle.CreateTrainerBattle(PBEBattleFormat.Single, settings, new PBETrainerInfo(p0, "Trainer 0", false), new PBETrainerInfo(p1, "Trainer 1", false));
             battle.OnNewEvent += PBEBattle.ConsoleBattleEventHandler;
 
             PBETrainer t0 = battle.Trainers[0];
@@ -124,8 +124,8 @@ namespace Kermalis.PokemonBattleEngineTests.Abilities
             #endregion
 
             #region Use Substitute
-            Assert.Null(t0.SelectActionsIfValid(new PBETurnAction(shuckle, PBEMove.Substitute, PBETurnTarget.AllyCenter)));
-            Assert.Null(t1.SelectActionsIfValid(new PBETurnAction(skitty, PBEMove.Splash, PBETurnTarget.AllyCenter)));
+            Assert.True(t0.SelectActionsIfValid(out _, new PBETurnAction(shuckle, PBEMove.Substitute, PBETurnTarget.AllyCenter)));
+            Assert.True(t1.SelectActionsIfValid(out _, new PBETurnAction(skitty, PBEMove.Splash, PBETurnTarget.AllyCenter)));
 
             battle.RunTurn();
 
@@ -133,8 +133,8 @@ namespace Kermalis.PokemonBattleEngineTests.Abilities
             #endregion
 
             #region Switch in Luxray and check
-            Assert.Null(t0.SelectActionsIfValid(new PBETurnAction(shuckle, PBEMove.Splash, PBETurnTarget.AllyCenter)));
-            Assert.Null(t1.SelectActionsIfValid(new PBETurnAction(skitty, luxray)));
+            Assert.True(t0.SelectActionsIfValid(out _, new PBETurnAction(shuckle, PBEMove.Splash, PBETurnTarget.AllyCenter)));
+            Assert.True(t1.SelectActionsIfValid(out _, new PBETurnAction(skitty, luxray)));
 
             battle.RunTurn();
 

@@ -3,100 +3,102 @@
              xmlns:infrastructure="clr-namespace:Kermalis.PokemonBattleEngineClient.Infrastructure;assembly=PokemonBattleEngineClient"
              xmlns:models="clr-namespace:Kermalis.PokemonBattleEngineClient.Models;assembly=PokemonBattleEngineClient"
              x:Class="Kermalis.PokemonBattleEngineClient.Views.ActionsView"
-             Width="512" Height="128" Background="#313131">
-  <UserControl.DataTemplates>
-    <DataTemplate DataType="models:MoveInfo">
-      <Button Background="{Binding Brush}" BorderBrush="{Binding BorderBrush}" Margin="4,*" Command="{Binding SelectMoveCommand}">
-        <Image Stretch="None" Source="{Binding Move, Converter={x:Static infrastructure:ObjectToTextBitmapConverter.Instance}, Mode=OneWay}"/>
-        <ToolTip.Tip>
-          <Image Stretch="None" Source="{Binding Description, Converter={x:Static infrastructure:ObjectToTextBitmapConverter.Instance}, ConverterParameter=MenuBlack, Mode=OneWay}"/>
-        </ToolTip.Tip>
-      </Button>
-    </DataTemplate>
-    <DataTemplate DataType="models:PokemonInfo">
-      <StackPanel Orientation="Horizontal">
-        <Image Stretch="None" Source="{Binding MiniSprite, Mode=OneWay}"/>
-        <Image Stretch="None" Source="{Binding Name, Converter={x:Static infrastructure:ObjectToTextBitmapConverter.Instance}, Mode=OneWay}"/>
-      </StackPanel>
-    </DataTemplate>
-    <DataTemplate DataType="models:SwitchInfo">
-      <Button Background="#313131" BorderBrush="#4A4A4A" Margin="4,*" Command="{Binding SelectPokemonCommand}"
-              IsEnabled="{Binding Enabled}" Content="{Binding Pokemon}">
-        <ToolTip.Tip>
-          <Image Stretch="None" Source="{Binding Description, Converter={x:Static infrastructure:ObjectToTextBitmapConverter.Instance}, ConverterParameter=MenuBlack, Mode=OneWay}"/>
-        </ToolTip.Tip>
-      </Button>
-    </DataTemplate>
-  </UserControl.DataTemplates>
-  <UserControl.Resources>
-    <DataTemplate x:Key="PositionButtonTemplate">
-      <Image Stretch="None" Source="{Binding Converter={x:Static infrastructure:ObjectToTextBitmapConverter.Instance}, ConverterParameter=MenuBlack, Mode=OneWay}"/>
-    </DataTemplate>
-    <ItemsPanelTemplate x:Key="WrapPanelTemplate">
-      <infrastructure:BetterWrapPanel Orientation="Horizontal" HorizontalContentAlignment="Center"/>
-    </ItemsPanelTemplate>
-  </UserControl.Resources>
-  <UserControl.Styles>
-    <Style Selector="Button">
-      <Setter Property="BorderThickness" Value="4"/>
-    </Style>
-    <Style Selector="Button /template/ ContentPresenter">
-      <Setter Property="CornerRadius" Value="4"/>
-    </Style>
-  </UserControl.Styles>
-  <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
-    <StackPanel Orientation="Vertical" HorizontalAlignment="Center" VerticalAlignment="Center">
-      <ItemsControl IsVisible="{Binding MovesVisible}" Items="{Binding Moves}" ItemsPanel="{StaticResource WrapPanelTemplate}"/>
-      <ItemsControl IsVisible="{Binding SwitchesVisible}" Items="{Binding Party}" ItemsPanel="{StaticResource WrapPanelTemplate}"/>
-      <Grid IsVisible="{Binding TargetsVisible}">
-        <Grid.RowDefinitions>
-          <RowDefinition Height="3*"/>
-          <RowDefinition Height="1*"/>
-          <RowDefinition Height="3*"/>
-        </Grid.RowDefinitions>
-        <Grid.ColumnDefinitions>
-          <ColumnDefinition Width="3*"/>
-          <ColumnDefinition Width="1*"/>
-          <ColumnDefinition Width="3*"/>
-          <ColumnDefinition Width="1*"/>
-          <ColumnDefinition Width="3*"/>
-        </Grid.ColumnDefinitions>
-        <Button Grid.Column="0" Grid.Row="0" MinWidth="100" MinHeight="50" Background="#F75231" BorderBrush="#732108" Command="{Binding SelectTarget}"
-                CommandParameter="FoeRight" IsEnabled="{Binding TargetFoeRight.Enabled}" Content="{Binding TargetFoeRight.Pokemon}"/>
-        <Button Grid.Column="0" Grid.Row="2" MinWidth="100" MinHeight="50" Background="#7B63E7" BorderBrush="#4A3994" Command="{Binding SelectTarget}"
-                CommandParameter="AllyLeft" IsEnabled="{Binding TargetAllyLeft.Enabled}" Content="{Binding TargetAllyLeft.Pokemon}"/>
-        <Button Grid.Column="2" Grid.Row="0" MinWidth="100" MinHeight="50" Background="#F75231" BorderBrush="#732108" Command="{Binding SelectTarget}"
-                CommandParameter="FoeCenter" IsEnabled="{Binding TargetFoeCenter.Enabled}" IsVisible="{Binding CenterTargetsVisible}" Content="{Binding TargetFoeCenter.Pokemon}"/>
-        <Button Grid.Column="2" Grid.Row="2" MinWidth="100" MinHeight="50" Background="#7B63E7" BorderBrush="#4A3994" Command="{Binding SelectTarget}"
-                CommandParameter="AllyCenter" IsEnabled="{Binding TargetAllyCenter.Enabled}" IsVisible="{Binding CenterTargetsVisible}" Content="{Binding TargetAllyCenter.Pokemon}"/>
-        <Button Grid.Column="4" Grid.Row="0" MinWidth="100" MinHeight="50" Background="#F75231" BorderBrush="#732108" Command="{Binding SelectTarget}"
-                CommandParameter="FoeLeft" IsEnabled="{Binding TargetFoeLeft.Enabled}" Content="{Binding TargetFoeLeft.Pokemon}"/>
-        <Button Grid.Column="4" Grid.Row="2" MinWidth="100" MinHeight="50" Background="#7B63E7" BorderBrush="#4A3994" Command="{Binding SelectTarget}"
-                CommandParameter="AllyRight" IsEnabled="{Binding TargetAllyRight.Enabled}" Content="{Binding TargetAllyRight.Pokemon}"/>
+             Width="512" Height="192" Background="#313131">
+	<UserControl.DataTemplates>
+		<DataTemplate DataType="models:MoveInfo">
+			<Button Background="{Binding Brush}" BorderBrush="{Binding BorderBrush}" Margin="4,*" Command="{Binding SelectMoveCommand}">
+				<Image Stretch="None" Source="{Binding Move, Converter={x:Static infrastructure:ObjectToTextBitmapConverter.Instance}, Mode=OneWay}"/>
+				<ToolTip.Tip>
+					<Image Stretch="None" Source="{Binding Description, Converter={x:Static infrastructure:ObjectToTextBitmapConverter.Instance}, ConverterParameter=MenuBlack, Mode=OneWay}"/>
+				</ToolTip.Tip>
+			</Button>
+		</DataTemplate>
+		<DataTemplate DataType="models:PokemonInfo">
+			<StackPanel Orientation="Horizontal">
+				<Image Stretch="None" Source="{Binding MiniSprite, Mode=OneWay}"/>
+				<Image Stretch="None" Source="{Binding Name, Converter={x:Static infrastructure:ObjectToTextBitmapConverter.Instance}, Mode=OneWay}"/>
+			</StackPanel>
+		</DataTemplate>
+		<DataTemplate DataType="models:SwitchInfo">
+			<Button Background="#313131" BorderBrush="#4A4A4A" Margin="4,*" Command="{Binding SelectPokemonCommand}"
+					IsEnabled="{Binding Enabled}" Content="{Binding Pokemon}">
+				<ToolTip.Tip>
+					<Image Stretch="None" Source="{Binding Description, Converter={x:Static infrastructure:ObjectToTextBitmapConverter.Instance}, ConverterParameter=MenuBlack, Mode=OneWay}"/>
+				</ToolTip.Tip>
+			</Button>
+		</DataTemplate>
+	</UserControl.DataTemplates>
+	<UserControl.Resources>
+		<DataTemplate x:Key="PositionButtonTemplate">
+			<Image Stretch="None" Source="{Binding Converter={x:Static infrastructure:ObjectToTextBitmapConverter.Instance}, ConverterParameter=MenuBlack, Mode=OneWay}"/>
+		</DataTemplate>
+		<ItemsPanelTemplate x:Key="WrapPanelTemplate">
+			<infrastructure:BetterWrapPanel Orientation="Horizontal" HorizontalContentAlignment="Center"/>
+		</ItemsPanelTemplate>
+	</UserControl.Resources>
+	<UserControl.Styles>
+		<Style Selector="Button">
+			<Setter Property="BorderThickness" Value="4"/>
+		</Style>
+		<Style Selector="Button /template/ ContentPresenter">
+			<Setter Property="CornerRadius" Value="4"/>
+		</Style>
+	</UserControl.Styles>
+	<ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
+		<StackPanel Orientation="Vertical" HorizontalAlignment="Center" VerticalAlignment="Center">
+			<ItemsControl IsVisible="{Binding MovesVisible}" Items="{Binding Moves}" ItemsPanel="{StaticResource WrapPanelTemplate}"/>
+			<ItemsControl IsVisible="{Binding SwitchesVisible}" Items="{Binding Party}" ItemsPanel="{StaticResource WrapPanelTemplate}"/>
+			<Grid IsVisible="{Binding TargetsVisible}">
+				<Grid.RowDefinitions>
+					<RowDefinition Height="3*"/>
+					<RowDefinition Height="1*"/>
+					<RowDefinition Height="3*"/>
+				</Grid.RowDefinitions>
+				<Grid.ColumnDefinitions>
+					<ColumnDefinition Width="3*"/>
+					<ColumnDefinition Width="1*"/>
+					<ColumnDefinition Width="3*"/>
+					<ColumnDefinition Width="1*"/>
+					<ColumnDefinition Width="3*"/>
+				</Grid.ColumnDefinitions>
+				<Button Grid.Column="0" Grid.Row="0" MinWidth="100" MinHeight="50" Background="#F75231" BorderBrush="#732108" Command="{Binding SelectTarget}"
+						CommandParameter="FoeRight" IsEnabled="{Binding TargetFoeRight.Enabled}" Content="{Binding TargetFoeRight.Pokemon}"/>
+				<Button Grid.Column="0" Grid.Row="2" MinWidth="100" MinHeight="50" Background="#7B63E7" BorderBrush="#4A3994" Command="{Binding SelectTarget}"
+						CommandParameter="AllyLeft" IsEnabled="{Binding TargetAllyLeft.Enabled}" Content="{Binding TargetAllyLeft.Pokemon}"/>
+				<Button Grid.Column="2" Grid.Row="0" MinWidth="100" MinHeight="50" Background="#F75231" BorderBrush="#732108" Command="{Binding SelectTarget}"
+						CommandParameter="FoeCenter" IsEnabled="{Binding TargetFoeCenter.Enabled}" IsVisible="{Binding CenterTargetsVisible}" Content="{Binding TargetFoeCenter.Pokemon}"/>
+				<Button Grid.Column="2" Grid.Row="2" MinWidth="100" MinHeight="50" Background="#7B63E7" BorderBrush="#4A3994" Command="{Binding SelectTarget}"
+						CommandParameter="AllyCenter" IsEnabled="{Binding TargetAllyCenter.Enabled}" IsVisible="{Binding CenterTargetsVisible}" Content="{Binding TargetAllyCenter.Pokemon}"/>
+				<Button Grid.Column="4" Grid.Row="0" MinWidth="100" MinHeight="50" Background="#F75231" BorderBrush="#732108" Command="{Binding SelectTarget}"
+						CommandParameter="FoeLeft" IsEnabled="{Binding TargetFoeLeft.Enabled}" Content="{Binding TargetFoeLeft.Pokemon}"/>
+				<Button Grid.Column="4" Grid.Row="2" MinWidth="100" MinHeight="50" Background="#7B63E7" BorderBrush="#4A3994" Command="{Binding SelectTarget}"
+						CommandParameter="AllyRight" IsEnabled="{Binding TargetAllyRight.Enabled}" Content="{Binding TargetAllyRight.Pokemon}"/>
 
-        <Rectangle Grid.Column="0" Grid.Row="1" Stroke="#425294" StrokeThickness="2" Fill="#9CADF7"
-                   Width="12" Height="24" Opacity="{Binding TargetFoeRight.LineDownVisible}"/>
-        <Rectangle Grid.Column="1" Grid.Row="0" Stroke="#425294" StrokeThickness="2" Fill="#9CADF7"
-                   Width="48" Height="12" Opacity="{Binding TargetFoeRight.LineRightVisible}"/>
-        <Rectangle Grid.Column="1" Grid.Row="2" Stroke="#425294" StrokeThickness="2" Fill="#9CADF7"
-                   Width="48" Height="12" Opacity="{Binding TargetAllyLeft.LineRightVisible}"/>
-        <Rectangle Grid.Column="2" Grid.Row="1" Stroke="#425294" StrokeThickness="2" Fill="#9CADF7"
-                   Width="12" Height="24" Opacity="{Binding TargetFoeCenter.LineDownVisible}" IsVisible="{Binding CenterTargetsVisible}"/>
-        <Rectangle Grid.Column="3" Grid.Row="0" Stroke="#425294" StrokeThickness="2" Fill="#9CADF7"
-                   Width="48" Height="12" Opacity="{Binding TargetFoeCenter.LineRightVisible}" IsVisible="{Binding CenterTargetsVisible}"/>
-        <Rectangle Grid.Column="3" Grid.Row="2" Stroke="#425294" StrokeThickness="2" Fill="#9CADF7"
-                   Width="48" Height="12" Opacity="{Binding TargetAllyCenter.LineRightVisible}" IsVisible="{Binding CenterTargetsVisible}"/>
-        <Rectangle Grid.Column="4" Grid.Row="1" Stroke="#425294" StrokeThickness="2" Fill="#9CADF7"
-                   Width="12" Height="24" Opacity="{Binding TargetFoeLeft.LineDownVisible}"/>
-      </Grid>
-      <infrastructure:BetterWrapPanel IsVisible="{Binding PositionsVisible}" Orientation="Horizontal" HorizontalContentAlignment="Center">
-        <Button Background="White" BorderBrush="#A2A2A2" Margin="4,*" Command="{Binding SelectPosition}" ContentTemplate="{StaticResource PositionButtonTemplate}"
-                CommandParameter="Left" IsEnabled="{Binding LeftPositionEnabled}" Content="Left"/>
-        <Button Background="White" BorderBrush="#A2A2A2" Margin="4,*" Command="{Binding SelectPosition}" ContentTemplate="{StaticResource PositionButtonTemplate}"
-                CommandParameter="Center" IsEnabled="{Binding CenterPositionEnabled}" IsVisible="{Binding CenterTargetsVisible}" Content="Center"/>
-        <Button Background="White" BorderBrush="#A2A2A2" Margin="4,*" Command="{Binding SelectPosition}" ContentTemplate="{StaticResource PositionButtonTemplate}"
-                CommandParameter="Right" IsEnabled="{Binding RightPositionEnabled}" Content="Right"/>
-      </infrastructure:BetterWrapPanel>
-    </StackPanel>
-  </ScrollViewer>
+				<Rectangle Grid.Column="0" Grid.Row="1" Stroke="#425294" StrokeThickness="2" Fill="#9CADF7"
+						   Width="12" Height="24" Opacity="{Binding TargetFoeRight.LineDownVisible}"/>
+				<Rectangle Grid.Column="1" Grid.Row="0" Stroke="#425294" StrokeThickness="2" Fill="#9CADF7"
+						   Width="48" Height="12" Opacity="{Binding TargetFoeRight.LineRightVisible}"/>
+				<Rectangle Grid.Column="1" Grid.Row="2" Stroke="#425294" StrokeThickness="2" Fill="#9CADF7"
+						   Width="48" Height="12" Opacity="{Binding TargetAllyLeft.LineRightVisible}"/>
+				<Rectangle Grid.Column="2" Grid.Row="1" Stroke="#425294" StrokeThickness="2" Fill="#9CADF7"
+						   Width="12" Height="24" Opacity="{Binding TargetFoeCenter.LineDownVisible}" IsVisible="{Binding CenterTargetsVisible}"/>
+				<Rectangle Grid.Column="3" Grid.Row="0" Stroke="#425294" StrokeThickness="2" Fill="#9CADF7"
+						   Width="48" Height="12" Opacity="{Binding TargetFoeCenter.LineRightVisible}" IsVisible="{Binding CenterTargetsVisible}"/>
+				<Rectangle Grid.Column="3" Grid.Row="2" Stroke="#425294" StrokeThickness="2" Fill="#9CADF7"
+						   Width="48" Height="12" Opacity="{Binding TargetAllyCenter.LineRightVisible}" IsVisible="{Binding CenterTargetsVisible}"/>
+				<Rectangle Grid.Column="4" Grid.Row="1" Stroke="#425294" StrokeThickness="2" Fill="#9CADF7"
+						   Width="12" Height="24" Opacity="{Binding TargetFoeLeft.LineDownVisible}"/>
+			</Grid>
+			<infrastructure:BetterWrapPanel IsVisible="{Binding PositionsVisible}" Orientation="Horizontal" HorizontalContentAlignment="Center">
+				<Button Background="White" BorderBrush="#A2A2A2" Margin="4,*" Command="{Binding SelectPosition}" ContentTemplate="{StaticResource PositionButtonTemplate}"
+						CommandParameter="Left" IsEnabled="{Binding LeftPositionEnabled}" Content="Left"/>
+				<Button Background="White" BorderBrush="#A2A2A2" Margin="4,*" Command="{Binding SelectPosition}" ContentTemplate="{StaticResource PositionButtonTemplate}"
+						CommandParameter="Center" IsEnabled="{Binding CenterPositionEnabled}" IsVisible="{Binding CenterPositionEnabled}" Content="Center"/>
+				<Button Background="White" BorderBrush="#A2A2A2" Margin="4,*" Command="{Binding SelectPosition}" ContentTemplate="{StaticResource PositionButtonTemplate}"
+						CommandParameter="Right" IsEnabled="{Binding RightPositionEnabled}" Content="Right"/>
+			</infrastructure:BetterWrapPanel>
+			<Button Background="White" BorderBrush="#A2A2A2" Margin="4,*" HorizontalAlignment="Center" Command="{Binding UndoLast}" ContentTemplate="{StaticResource PositionButtonTemplate}"
+						IsVisible="{Binding BackVisible}" Content="Back"/>
+		</StackPanel>
+	</ScrollViewer>
 </UserControl>

@@ -8,9 +8,9 @@ namespace Kermalis.PokemonBattleEngineTests.Statuses
     [Collection("Utils")]
     public class ConfusionTests
     {
-        public ConfusionTests(TestUtils utils, ITestOutputHelper output)
+        public ConfusionTests(TestUtils _, ITestOutputHelper output)
         {
-            utils.SetOutputHelper(output);
+            TestUtils.SetOutputHelper(output);
         }
 
         [Theory]
@@ -32,7 +32,7 @@ namespace Kermalis.PokemonBattleEngineTests.Statuses
             var p1 = new TestPokemonCollection(1);
             p1[0] = new TestPokemon(settings, PBESpecies.Accelgor, 0, 100, PBEMove.Swagger);
 
-            var battle = new PBEBattle(PBEBattleFormat.Single, settings, new PBETrainerInfo(p0, "Trainer 0", false), new PBETrainerInfo(p1, "Trainer 1", false));
+            var battle = PBEBattle.CreateTrainerBattle(PBEBattleFormat.Single, settings, new PBETrainerInfo(p0, "Trainer 0", false), new PBETrainerInfo(p1, "Trainer 1", false));
             battle.OnNewEvent += PBEBattle.ConsoleBattleEventHandler;
 
             PBETrainer t0 = battle.Trainers[0];
@@ -44,8 +44,8 @@ namespace Kermalis.PokemonBattleEngineTests.Statuses
             #endregion
 
             #region Use and check
-            Assert.Null(t0.SelectActionsIfValid(new PBETurnAction(deoxys, PBEMove.Splash, PBETurnTarget.AllyCenter)));
-            Assert.Null(t1.SelectActionsIfValid(new PBETurnAction(accelgor, PBEMove.Swagger, PBETurnTarget.FoeCenter)));
+            Assert.True(t0.SelectActionsIfValid(out _, new PBETurnAction(deoxys, PBEMove.Splash, PBETurnTarget.AllyCenter)));
+            Assert.True(t1.SelectActionsIfValid(out _, new PBETurnAction(accelgor, PBEMove.Swagger, PBETurnTarget.FoeCenter)));
 
             battle.RunTurn();
 
@@ -84,7 +84,7 @@ namespace Kermalis.PokemonBattleEngineTests.Statuses
             var p1 = new TestPokemonCollection(1);
             p1[0] = new TestPokemon(settings, PBESpecies.Accelgor, 0, 100, PBEMove.Swagger);
 
-            var battle = new PBEBattle(PBEBattleFormat.Single, settings, new PBETrainerInfo(p0, "Trainer 0", false), new PBETrainerInfo(p1, "Trainer 1", false));
+            var battle = PBEBattle.CreateTrainerBattle(PBEBattleFormat.Single, settings, new PBETrainerInfo(p0, "Trainer 0", false), new PBETrainerInfo(p1, "Trainer 1", false));
             battle.OnNewEvent += PBEBattle.ConsoleBattleEventHandler;
 
             PBETrainer t0 = battle.Trainers[0];
@@ -96,8 +96,8 @@ namespace Kermalis.PokemonBattleEngineTests.Statuses
             #endregion
 
             #region Use and check
-            Assert.Null(t0.SelectActionsIfValid(new PBETurnAction(deoxys, PBEMove.Splash, PBETurnTarget.AllyCenter)));
-            Assert.Null(t1.SelectActionsIfValid(new PBETurnAction(accelgor, PBEMove.Swagger, PBETurnTarget.FoeCenter)));
+            Assert.True(t0.SelectActionsIfValid(out _, new PBETurnAction(deoxys, PBEMove.Splash, PBETurnTarget.AllyCenter)));
+            Assert.True(t1.SelectActionsIfValid(out _, new PBETurnAction(accelgor, PBEMove.Swagger, PBETurnTarget.FoeCenter)));
 
             battle.RunTurn();
 

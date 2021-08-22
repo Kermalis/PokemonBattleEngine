@@ -1,5 +1,4 @@
-﻿using Kermalis.PokemonBattleEngine.Data;
-using System;
+﻿using Newtonsoft.Json.Linq;
 using System.Collections.Generic;
 using System.IO;
 
@@ -11,14 +10,9 @@ namespace Kermalis.PokemonBattleEngine.Utils
         /// <summary>Returns a <see cref="string"/> that combines <paramref name="source"/>'s elements' string representations using "and" with commas.</summary>
         /// <typeparam name="T">The type of the elements of <paramref name="source"/>.</typeparam>
         /// <param name="source">An <see cref="IReadOnlyList{T}"/> to create a string from.</param>
-        /// <exception cref="ArgumentNullException">Thrown when <paramref name="source"/> == null.</exception>
         public static string Andify<T>(this IReadOnlyList<T> source)
         {
-            if (source == null)
-            {
-                throw new ArgumentNullException(nameof(source));
-            }
-            string str = source[0].ToString();
+            string str = source[0]?.ToString() ?? string.Empty;
             for (int i = 1; i < source.Count; i++)
             {
                 if (i == source.Count - 1)
@@ -33,28 +27,19 @@ namespace Kermalis.PokemonBattleEngine.Utils
                 {
                     str += ", ";
                 }
-                str += source[i].ToString();
+                str += source[i]?.ToString() ?? string.Empty;
             }
             return str;
         }
-        internal static T Clamp<T>(this T val, T min, T max) where T : IComparable<T>
+        public static IEnumerable<T> ExceptOne<T>(this IEnumerable<T> source, T one)
         {
-            if (val.CompareTo(min) < 0)
+            foreach (T t in source)
             {
-                return min;
+                if (!Equals(t, one))
+                {
+                    yield return t;
+                }
             }
-            else if (val.CompareTo(max) > 0)
-            {
-                return max;
-            }
-            else
-            {
-                return val;
-            }
-        }
-        internal static string Print<T>(this IEnumerable<T> source)
-        {
-            return "( " + string.Join(", ", source) + " )";
         }
         /// <summary>Removes all invalid file name characters from <paramref name="fileName"/>.</summary>
         internal static string ToSafeFileName(string fileName)
@@ -67,13 +52,23 @@ namespace Kermalis.PokemonBattleEngine.Utils
             return fileName;
         }
 
-        public static bool IsOppositeGender(this PBEGender gender, PBEGender otherGender)
+        internal static JToken GetSafe(this JToken j, string key)
         {
-            return gender != PBEGender.Genderless && otherGender != PBEGender.Genderless && gender != otherGender;
+            JToken? ret = j[key];
+            if (ret is null)
+            {
+                throw new InvalidDataException($"\"{key}\" was not found");
+            }
+            return ret;
         }
-        public static string ToSymbol(this PBEGender gender)
+        internal static string GetSafeString(this JToken j, string key)
         {
-            return gender == PBEGender.Female ? "♀" : gender == PBEGender.Male ? "♂" : string.Empty;
+            string? ret = j.GetSafe(key).Value<string>();
+            if (ret is null)
+            {
+                throw new InvalidDataException($"\"{key}\" is null");
+            }
+            return ret;
         }
     }
 }

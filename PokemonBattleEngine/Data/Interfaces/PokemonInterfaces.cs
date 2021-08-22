@@ -1,5 +1,6 @@
 ﻿using Kermalis.EndianBinaryIO;
 using Kermalis.PokemonBattleEngine.Battle;
+using Kermalis.PokemonBattleEngine.Data.Utils;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
@@ -13,7 +14,7 @@ namespace Kermalis.PokemonBattleEngine.Data
     public interface IPBEPokemon : IPBESpeciesForm
     {
         /// <summary>This marks the Pokémon to be ignored by the battle engine. The Pokémon will be treated like an egg or fainted Pokémon.
-        /// Therefore, it won't be sent out, copied with Illusion, or count as a battler if the rest of the team faints.</summary>
+        /// Therefore, it won't be sent out, copied with <see cref="PBEAbility.Illusion"/>, or count as a battler if the rest of the team faints.</summary>
         bool PBEIgnore { get; }
         PBEGender Gender { get; }
         string Nickname { get; }
@@ -74,10 +75,6 @@ namespace Kermalis.PokemonBattleEngine.Data
     {
         public static bool HasType(this IPBEPokemonTypes pkmn, PBEType type)
         {
-            if (pkmn == null)
-            {
-                throw new ArgumentException(nameof(pkmn));
-            }
             if (type >= PBEType.MAX)
             {
                 throw new ArgumentOutOfRangeException(nameof(type));
@@ -86,10 +83,6 @@ namespace Kermalis.PokemonBattleEngine.Data
         }
         public static bool HasType_Known(this IPBEPokemonKnownTypes pkmn, PBEType type)
         {
-            if (pkmn == null)
-            {
-                throw new ArgumentException(nameof(pkmn));
-            }
             if (type >= PBEType.MAX)
             {
                 throw new ArgumentOutOfRangeException(nameof(type));

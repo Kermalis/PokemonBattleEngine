@@ -1,4 +1,5 @@
 ﻿using Kermalis.PokemonBattleEngine.Data;
+using Kermalis.PokemonBattleEngine.Data.Utils;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -15,7 +16,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
             {
                 PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(property));
             }
-            public event PropertyChangedEventHandler PropertyChanged;
+            public event PropertyChangedEventHandler? PropertyChanged;
 
             private PBEMove _move;
             public PBEMove Move
@@ -82,7 +83,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                 return _list[index];
             }
         }
-        public PBEBattleMovesetSlot this[PBEMove move]
+        public PBEBattleMovesetSlot? this[PBEMove move]
         {
             get
             {
@@ -136,14 +137,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
 
         public static int GetTransformPP(PBESettings settings, PBEMove move)
         {
-            if (settings is null)
-            {
-                throw new ArgumentNullException(nameof(settings));
-            }
-            if (!settings.IsReadOnly)
-            {
-                throw new ArgumentException("Settings must be read-only.", nameof(settings));
-            }
+            settings.ShouldBeReadOnly(nameof(settings));
             if (move == PBEMove.None)
             {
                 return 0;
@@ -161,14 +155,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
         }
         public static int GetNonTransformPP(PBESettings settings, PBEMove move, byte ppUps)
         {
-            if (settings == null)
-            {
-                throw new ArgumentNullException(nameof(settings));
-            }
-            if (!settings.IsReadOnly)
-            {
-                throw new ArgumentException("Settings must be read-only.", nameof(settings));
-            }
+            settings.ShouldBeReadOnly(nameof(settings));
             if (move == PBEMove.None)
             {
                 return 0;
@@ -188,7 +175,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
 
         internal static void DoTransform(PBEBattlePokemon user, PBEBattlePokemon target)
         {
-            PBEBattleMoveset targetKnownBackup = null;
+            PBEBattleMoveset? targetKnownBackup = null;
             if (user.Trainer != target.Trainer)
             {
                 targetKnownBackup = new PBEBattleMoveset(target.KnownMoves);
@@ -225,8 +212,8 @@ namespace Kermalis.PokemonBattleEngine.Battle
                     userMove.MaxPP = pp;
                     targetKnownMove.Move = move;
                     // Try to copy known PP from previous known moves
-                    PBEBattleMovesetSlot bSlot = targetKnownBackup[move];
-                    if (bSlot == null) // bSlot is null if the current move was not previously known
+                    PBEBattleMovesetSlot? bSlot = targetKnownBackup![move];
+                    if (bSlot is null) // bSlot is null if the current move was not previously known
                     {
                         targetKnownMove.PP = 0;
                         targetKnownMove.MaxPP = 0;
@@ -294,7 +281,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
 
         public bool Contains(PBEMove move)
         {
-            return this[move] != null;
+            return this[move] is not null;
         }
         public bool Contains(PBEMoveEffect effect)
         {

@@ -43,7 +43,7 @@ namespace Kermalis.PokemonBattleEngineClient.Infrastructure
             set => SetValue(VerticalContentAlignmentProperty, value);
         }
 
-        IInputElement INavigableContainer.GetControl(NavigationDirection direction, IInputElement from, bool wrap)
+        IInputElement? INavigableContainer.GetControl(NavigationDirection direction, IInputElement from, bool wrap)
         {
             bool horiz = Orientation == Orientation.Horizontal;
             int index = Children.IndexOf((IControl)from);
@@ -97,7 +97,7 @@ namespace Kermalis.PokemonBattleEngineClient.Infrastructure
             for (int i = 0, count = Children.Count; i < count; i++)
             {
                 IControl child = Children[i];
-                if (child == null)
+                if (child is null)
                 {
                     continue;
                 }
@@ -146,7 +146,7 @@ namespace Kermalis.PokemonBattleEngineClient.Infrastructure
             for (int i = 0; i < Children.Count; i++)
             {
                 IControl child = Children[i];
-                if (child == null)
+                if (child is null)
                 {
                     continue;
                 }
@@ -225,7 +225,7 @@ namespace Kermalis.PokemonBattleEngineClient.Infrastructure
             for (int i = start; i < end; i++)
             {
                 IControl child = Children[i];
-                if (child != null)
+                if (child is not null)
                 {
                     var childSize = new UVSize(Orientation, child.DesiredSize.Width, child.DesiredSize.Height);
                     double layoutSlotU = childSize.U;

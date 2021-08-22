@@ -14,9 +14,9 @@ namespace Kermalis.PokemonBattleEngineServer
         public BattleServer Server { get; }
         public PBEServerClient Client { get; }
 
-        private Type _packetType;
-        private Type _actionType;
-        private readonly ManualResetEvent resetEvent = new ManualResetEvent(true);
+        private Type? _packetType;
+        private Type? _actionType;
+        private readonly ManualResetEvent _resetEvent = new(true);
 
         public Player(BattleServer server, PBEServerClient client, byte battleId, string name)
         {
@@ -30,7 +30,7 @@ namespace Kermalis.PokemonBattleEngineServer
         public bool WaitForResponse(Type packetType)
         {
             _packetType = packetType;
-            bool receivedResponseInTime = resetEvent.WaitOne(1000 * 5);
+            bool receivedResponseInTime = _resetEvent.WaitOne(1000 * 5);
             if (!receivedResponseInTime)
             {
                 Server.DisconnectClient(this);
@@ -46,26 +46,26 @@ namespace Kermalis.PokemonBattleEngineServer
             if (Client.IsConnected)
             {
                 Debug.WriteLine($"Packet sent ({BattleId} {TrainerName} \"{packet.GetType().Name}\")");
-                resetEvent.Reset();
+                _resetEvent.Reset();
                 Client.Send(packet);
             }
         }
-        private IPBEPokemonCollection _party;
-        public IPBEPokemonCollection AskForParty(bool requireLegal)
+        private IPBEPokemonCollection? _party;
+        public IPBEPokemonCollection? AskForParty(bool requireLegal)
         {
             Send(new PBEPartyRequestPacket(BattleId, requireLegal));
             WaitForResponse(requireLegal ? typeof(PBELegalPartyResponsePacket) : typeof(PBEPartyResponsePacket));
-            IPBEPokemonCollection ret = _party;
+            IPBEPokemonCollection? ret = _party;
             _party = null;
             return ret;
         }
 
-        private void OnPacketReceived(object sender, IPBEPacket packet)
+        private void OnPacketReceived(object? sender, IPBEPacket packet)
         {
             // TODO: Kick players who are sending broken packets or sending too many
             Type type = packet.GetType();
             Debug.WriteLine($"Packet received ({BattleId} {TrainerName} \"{type.Name}\")");
-            if (_packetType != null && type.Equals(_packetType))
+            if (_packetType is not null && type.Equals(_packetType))
             {
                 _packetType = null;
                 switch (packet)
@@ -82,7 +82,7 @@ namespace Kermalis.PokemonBattleEngineServer
                         else
                         {
                             _party = lprp.Party;
-                            resetEvent.Set();
+                            _resetEvent.Set();
                         }
                         break;
                     }
@@ -90,13 +90,13 @@ namespace Kermalis.PokemonBattleEngineServer
                     {
                         Console.WriteLine($"Received party ({BattleId} {TrainerName})");
                         _party = prp.Party;
-                        resetEvent.Set();
+                        _resetEvent.Set();
                         break;
                     }
-                    default: resetEvent.Set(); break;
+                    default: _resetEvent.Set(); break;
                 }
             }
-            else if (_actionType != null && (type.Equals(_actionType) || type.Equals(typeof(PBEFleeResponsePacket))))
+            else if (_actionType is not null && (type.Equals(_actionType) || type.Equals(typeof(PBEFleeResponsePacket))))
             {
                 _actionType = null;
                 switch (packet)
@@ -111,7 +111,7 @@ namespace Kermalis.PokemonBattleEngineServer
 
         public void Dispose()
         {
-            resetEvent.Dispose();
+            _resetEvent.Dispose();
             Client.PacketReceived -= OnPacketReceived;
         }
     }

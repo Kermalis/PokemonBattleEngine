@@ -1,5 +1,7 @@
 ﻿using Kermalis.EndianBinaryIO;
 using Kermalis.PokemonBattleEngine.Data;
+using Kermalis.PokemonBattleEngine.Data.Utils;
+using Kermalis.PokemonBattleEngine.DefaultData;
 using Kermalis.SimpleNARC;
 using Microsoft.Data.Sqlite;
 using System;
@@ -9,7 +11,7 @@ using System.Linq;
 
 namespace Kermalis.PokemonBattleEngineExtras
 {
-    internal sealed partial class PokemonDataDumper
+    internal static partial class PokemonDataDumper
     {
         // You must dump everything yourself
         // The GBA ROMs must all be USA v1.0
@@ -48,21 +50,21 @@ namespace Kermalis.PokemonBattleEngineExtras
             {
                 cmd.Transaction = transaction;
 
-                var dict = new Dictionary<(PBESpecies, PBEForm), Pokemon>();
+                Dictionary<(PBESpecies, PBEForm), Pokemon> dict = new();
                 #region Helpers
                 Pokemon AddSpecies((PBESpecies, PBEForm) key)
                 {
-                    if (!dict.TryGetValue(key, out Pokemon pkmn))
+                    if (!dict.TryGetValue(key, out Pokemon? pkmn))
                     {
                         pkmn = new Pokemon();
                         dict.Add(key, pkmn);
                     }
                     return pkmn;
                 }
-                void AddLevelUpMove((PBESpecies, PBEForm) key, PBEMove move, byte level, PBEMoveObtainMethod flag)
+                void AddLevelUpMove((PBESpecies, PBEForm) key, PBEMove move, byte level, PBEDDMoveObtainMethod flag)
                 {
                     Pokemon pkmn = AddSpecies(key);
-                    Dictionary<(PBEMove, byte), PBEMoveObtainMethod> levelUp = pkmn.LevelUpMoves;
+                    Dictionary<(PBEMove, byte), PBEDDMoveObtainMethod> levelUp = pkmn.LevelUpMoves;
                     (PBEMove, byte) lKey = (move, level);
                     if (levelUp.ContainsKey(lKey))
                     {
@@ -73,10 +75,10 @@ namespace Kermalis.PokemonBattleEngineExtras
                         levelUp.Add(lKey, flag);
                     }
                 }
-                void AddOtherMove((PBESpecies, PBEForm) key, PBEMove move, PBEMoveObtainMethod flag)
+                void AddOtherMove((PBESpecies, PBEForm) key, PBEMove move, PBEDDMoveObtainMethod flag)
                 {
                     Pokemon pkmn = AddSpecies(key);
-                    Dictionary<PBEMove, PBEMoveObtainMethod> other = pkmn.OtherMoves;
+                    Dictionary<PBEMove, PBEDDMoveObtainMethod> other = pkmn.OtherMoves;
                     if (other.ContainsKey(move))
                     {
                         other[move] |= flag;
@@ -191,7 +193,7 @@ namespace Kermalis.PokemonBattleEngineExtras
                         e.BaseStream.Position = 0x32937C + (sizeof(uint) * sp);
                         coloCommonRel.BaseStream.Position = 0x123250 + (0x11C * sp) + 0xBA;
                         xdCommonRel.BaseStream.Position = 0x29DA8 + (0x124 * sp) + 0xC4;
-                        void ReadGBALevelUpMoves(EndianBinaryReader reader, PBEMoveObtainMethod flag)
+                        void ReadGBALevelUpMoves(EndianBinaryReader reader, PBEDDMoveObtainMethod flag)
                         {
                             (PBESpecies, PBEForm) key = GetGen3Key(reader, sp);
                             reader.BaseStream.Position = reader.ReadUInt32() - 0x8000000;
@@ -208,12 +210,12 @@ namespace Kermalis.PokemonBattleEngineExtras
                                 }
                             }
                         }
-                        ReadGBALevelUpMoves(r, PBEMoveObtainMethod.LevelUp_RSColoXD);
-                        //ReadGBALevelUpMoves(s, PBEMoveObtainMethod.LevelUp_RSColoXD);
-                        ReadGBALevelUpMoves(fr, PBEMoveObtainMethod.LevelUp_FR);
-                        ReadGBALevelUpMoves(lg, PBEMoveObtainMethod.LevelUp_LG);
-                        ReadGBALevelUpMoves(e, PBEMoveObtainMethod.LevelUp_E);
-                        void ReadGCLevelUpMoves(EndianBinaryReader reader, PBEMoveObtainMethod flag)
+                        ReadGBALevelUpMoves(r, PBEDDMoveObtainMethod.LevelUp_RSColoXD);
+                        //ReadGBALevelUpMoves(s, PBEDDMoveObtainMethod.LevelUp_RSColoXD);
+                        ReadGBALevelUpMoves(fr, PBEDDMoveObtainMethod.LevelUp_FR);
+                        ReadGBALevelUpMoves(lg, PBEDDMoveObtainMethod.LevelUp_LG);
+                        ReadGBALevelUpMoves(e, PBEDDMoveObtainMethod.LevelUp_E);
+                        void ReadGCLevelUpMoves(EndianBinaryReader reader, PBEDDMoveObtainMethod flag)
                         {
                             (PBESpecies, PBEForm) key = GetGen3Key(reader, sp);
                             for (int i = 0; i < 17; i++)
@@ -231,8 +233,8 @@ namespace Kermalis.PokemonBattleEngineExtras
                                 }
                             }
                         }
-                        //ReadGCLevelUpMoves(coloCommonRel, PBEMoveObtainMethod.LevelUp_RSColoXD);
-                        //ReadGCLevelUpMoves(xdCommonRel, PBEMoveObtainMethod.LevelUp_RSColoXD);
+                        //ReadGCLevelUpMoves(coloCommonRel, PBEDDMoveObtainMethod.LevelUp_RSColoXD);
+                        //ReadGCLevelUpMoves(xdCommonRel, PBEDDMoveObtainMethod.LevelUp_RSColoXD);
                     }
                 }
                 #endregion
@@ -250,7 +252,7 @@ namespace Kermalis.PokemonBattleEngineExtras
                             {
                                 key = ((PBESpecies)sp, 0);
                             }
-                            void ReadLevelUpMoves(byte[] file, PBEMoveObtainMethod flag)
+                            void ReadLevelUpMoves(byte[] file, PBEDDMoveObtainMethod flag)
                             {
                                 using (var reader = new EndianBinaryReader(new MemoryStream(file), Endianness.LittleEndian))
                                 {
@@ -271,10 +273,10 @@ namespace Kermalis.PokemonBattleEngineExtras
                             // DP only has 0-500
                             if (sp <= 500)
                             {
-                                ReadLevelUpMoves(dp[sp], PBEMoveObtainMethod.LevelUp_DP);
+                                ReadLevelUpMoves(dp[sp], PBEDDMoveObtainMethod.LevelUp_DP);
                             }
-                            ReadLevelUpMoves(pt[sp], PBEMoveObtainMethod.LevelUp_Pt);
-                            ReadLevelUpMoves(hgss[sp], PBEMoveObtainMethod.LevelUp_HGSS);
+                            ReadLevelUpMoves(pt[sp], PBEDDMoveObtainMethod.LevelUp_Pt);
+                            ReadLevelUpMoves(hgss[sp], PBEDDMoveObtainMethod.LevelUp_HGSS);
                         }
                     }
                 }
@@ -302,7 +304,7 @@ namespace Kermalis.PokemonBattleEngineExtras
                                     }
                                     else
                                     {
-                                        AddLevelUpMove(key, (PBEMove)val, (byte)(val >> 0x10), isBW ? PBEMoveObtainMethod.LevelUp_BW : PBEMoveObtainMethod.LevelUp_B2W2);
+                                        AddLevelUpMove(key, (PBEMove)val, (byte)(val >> 0x10), isBW ? PBEDDMoveObtainMethod.LevelUp_BW : PBEDDMoveObtainMethod.LevelUp_B2W2);
                                     }
                                 }
                             }
@@ -339,9 +341,9 @@ namespace Kermalis.PokemonBattleEngineExtras
                         e.BaseStream.Position = 0x31E898 + (8 * sp);
                         coloCommonRel.BaseStream.Position = 0x123250 + (0x11C * sp) + 0x34;
                         xdCommonRel.BaseStream.Position = 0x29DA8 + (0x124 * sp) + 0x34;
-                        PBEMoveObtainMethod GetFlag(int i)
+                        PBEDDMoveObtainMethod GetFlag(int i)
                         {
-                            return i < 50 ? PBEMoveObtainMethod.TM_RSFRLGEColoXD : PBEMoveObtainMethod.HM_RSFRLGEColoXD;
+                            return i < 50 ? PBEDDMoveObtainMethod.TM_RSFRLGEColoXD : PBEDDMoveObtainMethod.HM_RSFRLGEColoXD;
                         }
                         void ReadGBATMHM(EndianBinaryReader reader)
                         {
@@ -403,7 +405,7 @@ namespace Kermalis.PokemonBattleEngineExtras
                                             {
                                                 move = isDPPt ? PBEMove.Defog : PBEMove.Whirlpool;
                                             }
-                                            AddOtherMove(key, move, i < 92 ? (isDPPt ? PBEMoveObtainMethod.TM_DPPt : PBEMoveObtainMethod.TM_HGSS) : (isDPPt ? PBEMoveObtainMethod.HM_DPPt : PBEMoveObtainMethod.HM_HGSS));
+                                            AddOtherMove(key, move, i < 92 ? (isDPPt ? PBEDDMoveObtainMethod.TM_DPPt : PBEDDMoveObtainMethod.TM_HGSS) : (isDPPt ? PBEDDMoveObtainMethod.HM_DPPt : PBEDDMoveObtainMethod.HM_HGSS));
                                         }
                                     }
                                 }
@@ -433,14 +435,14 @@ namespace Kermalis.PokemonBattleEngineExtras
                                 {
                                     if ((bytes[i / 8] & (1 << (i % 8))) != 0)
                                     {
-                                        PBEMoveObtainMethod flag;
+                                        PBEDDMoveObtainMethod flag;
                                         if (i < 95)
                                         {
-                                            flag = isBW ? PBEMoveObtainMethod.TM_BW : PBEMoveObtainMethod.TM_B2W2;
+                                            flag = isBW ? PBEDDMoveObtainMethod.TM_BW : PBEDDMoveObtainMethod.TM_B2W2;
                                         }
                                         else
                                         {
-                                            flag = PBEMoveObtainMethod.HM_BWB2W2;
+                                            flag = PBEDDMoveObtainMethod.HM_BWB2W2;
                                         }
                                         AddOtherMove(key, _gen5TMHMs[i], flag);
                                     }
@@ -475,7 +477,7 @@ namespace Kermalis.PokemonBattleEngineExtras
                         fr.BaseStream.Position = 0x459B7E + (sizeof(ushort) * sp);
                         lg.BaseStream.Position = 0x45959E + (sizeof(ushort) * sp);
                         e.BaseStream.Position = 0x615048 + (sizeof(uint) * sp);
-                        void ReadTutorMoves(EndianBinaryReader reader, PBEMove[] tutorMoves, PBEMoveObtainMethod flag)
+                        void ReadTutorMoves(EndianBinaryReader reader, PBEMove[] tutorMoves, PBEDDMoveObtainMethod flag)
                         {
                             (PBESpecies, PBEForm) key = GetGen3Key(reader, sp);
                             uint val = reader == e ? reader.ReadUInt32() : reader.ReadUInt16();
@@ -487,9 +489,9 @@ namespace Kermalis.PokemonBattleEngineExtras
                                 }
                             }
                         }
-                        ReadTutorMoves(fr, _frlgTutorMoves, PBEMoveObtainMethod.MoveTutor_FRLG);
-                        //ReadTutorMoves(lg, frlgTutorMoves, PBEMoveObtainMethod.MoveTutor_FRLG);
-                        ReadTutorMoves(e, _emeraldTutorMoves, PBEMoveObtainMethod.MoveTutor_E);
+                        ReadTutorMoves(fr, _frlgTutorMoves, PBEDDMoveObtainMethod.MoveTutor_FRLG);
+                        //ReadTutorMoves(lg, frlgTutorMoves, PBEDDMoveObtainMethod.MoveTutor_FRLG);
+                        ReadTutorMoves(e, _emeraldTutorMoves, PBEDDMoveObtainMethod.MoveTutor_E);
                     }
                 }
                 #endregion
@@ -505,7 +507,7 @@ namespace Kermalis.PokemonBattleEngineExtras
                         {
                             if (xdCommonRel.ReadBoolean())
                             {
-                                AddOtherMove(key, _xdTutorMoves[i], PBEMoveObtainMethod.MoveTutor_XD);
+                                AddOtherMove(key, _xdTutorMoves[i], PBEDDMoveObtainMethod.MoveTutor_XD);
                             }
                         }
                     }
@@ -522,7 +524,7 @@ namespace Kermalis.PokemonBattleEngineExtras
                         {
                             if ((bytes[i / 8] & (1 << (i % 8))) != 0)
                             {
-                                AddOtherMove(key, _ptTutorMoves[i], PBEMoveObtainMethod.MoveTutor_Pt);
+                                AddOtherMove(key, _ptTutorMoves[i], PBEDDMoveObtainMethod.MoveTutor_Pt);
                             }
                         }
                     }
@@ -537,7 +539,7 @@ namespace Kermalis.PokemonBattleEngineExtras
                         {
                             if ((bytes[i / 8] & (1 << (i % 8))) != 0)
                             {
-                                AddOtherMove(key, _hgssTutorMoves[i], PBEMoveObtainMethod.MoveTutor_HGSS);
+                                AddOtherMove(key, _hgssTutorMoves[i], PBEDDMoveObtainMethod.MoveTutor_HGSS);
                             }
                         }
                     }
@@ -560,7 +562,7 @@ namespace Kermalis.PokemonBattleEngineExtras
                             {
                                 if ((val & (1 << i)) != 0)
                                 {
-                                    AddOtherMove(key, _gen5FreeTutorMoves[i], isBW ? PBEMoveObtainMethod.MoveTutor_BW : PBEMoveObtainMethod.MoveTutor_B2W2);
+                                    AddOtherMove(key, _gen5FreeTutorMoves[i], isBW ? PBEDDMoveObtainMethod.MoveTutor_BW : PBEDDMoveObtainMethod.MoveTutor_B2W2);
                                 }
                             }
                         }
@@ -577,7 +579,7 @@ namespace Kermalis.PokemonBattleEngineExtras
                                 {
                                     if ((val & (1u << j)) != 0)
                                     {
-                                        AddOtherMove(key, _b2w2TutorMoves[i][j], PBEMoveObtainMethod.MoveTutor_B2W2);
+                                        AddOtherMove(key, _b2w2TutorMoves[i][j], PBEDDMoveObtainMethod.MoveTutor_B2W2);
                                     }
                                 }
                             }
@@ -623,7 +625,7 @@ namespace Kermalis.PokemonBattleEngineExtras
                     d.BaseStream.Position = 0x20668;
                     p.BaseStream.Position = 0x20668;
                     pt.BaseStream.Position = 0x29222;
-                    void ReadEggMoves(EndianBinaryReader reader, bool isGen3, PBEMoveObtainMethod flag)
+                    void ReadEggMoves(EndianBinaryReader reader, bool isGen3, PBEDDMoveObtainMethod flag)
                     {
                         PBESpecies species = 0;
                         while (true)
@@ -644,15 +646,15 @@ namespace Kermalis.PokemonBattleEngineExtras
                             }
                         }
                     }
-                    ReadEggMoves(r, true, PBEMoveObtainMethod.EggMove_RSFRLGE);
-                    //ReadEggMoves(s, true, PBEMoveObtainMethod.EggMove_RSFRLGE);
-                    //ReadEggMoves(fr, true, PBEMoveObtainMethod.EggMove_RSFRLGE);
-                    //ReadEggMoves(lg, true, PBEMoveObtainMethod.EggMove_RSFRLGE);
-                    //ReadEggMoves(e, true, PBEMoveObtainMethod.EggMove_RSFRLGE);
-                    ReadEggMoves(d, false, PBEMoveObtainMethod.EggMove_DPPt);
-                    //ReadEggMoves(p, false, PBEMoveObtainMethod.EggMove_DPPt);
-                    //ReadEggMoves(pt, false, PBEMoveObtainMethod.EggMove_DPPt);
-                    ReadEggMoves(hgss, false, PBEMoveObtainMethod.EggMove_HGSS);
+                    ReadEggMoves(r, true, PBEDDMoveObtainMethod.EggMove_RSFRLGE);
+                    //ReadEggMoves(s, true, PBEDDMoveObtainMethod.EggMove_RSFRLGE);
+                    //ReadEggMoves(fr, true, PBEDDMoveObtainMethod.EggMove_RSFRLGE);
+                    //ReadEggMoves(lg, true, PBEDDMoveObtainMethod.EggMove_RSFRLGE);
+                    //ReadEggMoves(e, true, PBEDDMoveObtainMethod.EggMove_RSFRLGE);
+                    ReadEggMoves(d, false, PBEDDMoveObtainMethod.EggMove_DPPt);
+                    //ReadEggMoves(p, false, PBEDDMoveObtainMethod.EggMove_DPPt);
+                    //ReadEggMoves(pt, false, PBEDDMoveObtainMethod.EggMove_DPPt);
+                    ReadEggMoves(hgss, false, PBEDDMoveObtainMethod.EggMove_HGSS);
                 }
                 #endregion
 
@@ -669,7 +671,7 @@ namespace Kermalis.PokemonBattleEngineExtras
                                 (PBESpecies, PBEForm) key = ((PBESpecies)sp, 0);
                                 for (int i = 0; i < numEggMoves; i++)
                                 {
-                                    AddOtherMove(key, (PBEMove)reader.ReadUInt16(), PBEMoveObtainMethod.EggMove_BWB2W2);
+                                    AddOtherMove(key, (PBEMove)reader.ReadUInt16(), PBEDDMoveObtainMethod.EggMove_BWB2W2);
                                 }
                             }
                         }
@@ -806,15 +808,15 @@ namespace Kermalis.PokemonBattleEngineExtras
 
                 #region Give Egg Moves To Form Variants
                 {
-                    PBEMoveObtainMethod[] flags = new[] { PBEMoveObtainMethod.EggMove_RSFRLGE, PBEMoveObtainMethod.EggMove_DPPt, PBEMoveObtainMethod.EggMove_HGSS,
-                        PBEMoveObtainMethod.EggMove_BWB2W2, PBEMoveObtainMethod.EggMove_Special };
+                    PBEDDMoveObtainMethod[] flags = new[] { PBEDDMoveObtainMethod.EggMove_RSFRLGE, PBEDDMoveObtainMethod.EggMove_DPPt, PBEDDMoveObtainMethod.EggMove_HGSS,
+                        PBEDDMoveObtainMethod.EggMove_BWB2W2, PBEDDMoveObtainMethod.EggMove_Special };
                     foreach ((PBESpecies, PBEForm) key in _b2w2SpeciesIndexToPBESpecies.Values)
                     {
-                        foreach (KeyValuePair<PBEMove, PBEMoveObtainMethod> kvp in dict[(key.Item1, 0)].OtherMoves)
+                        foreach (KeyValuePair<PBEMove, PBEDDMoveObtainMethod> kvp in dict[(key.Item1, 0)].OtherMoves)
                         {
                             PBEMove move = kvp.Key;
-                            PBEMoveObtainMethod o = kvp.Value;
-                            foreach (PBEMoveObtainMethod flag in flags)
+                            PBEDDMoveObtainMethod o = kvp.Value;
+                            foreach (PBEDDMoveObtainMethod flag in flags)
                             {
                                 if (o.HasFlag(flag))
                                 {
@@ -830,16 +832,16 @@ namespace Kermalis.PokemonBattleEngineExtras
                 #region Shedinja Gen3-4 Evolution Moves Bug
                 {
                     (PBESpecies, PBEForm) key = (PBESpecies.Shedinja, 0);
-                    PBEMoveObtainMethod[] flags = new[] { PBEMoveObtainMethod.LevelUp_RSColoXD, PBEMoveObtainMethod.LevelUp_FR, PBEMoveObtainMethod.LevelUp_E,
-                        PBEMoveObtainMethod.LevelUp_DP, PBEMoveObtainMethod.LevelUp_Pt, PBEMoveObtainMethod.LevelUp_HGSS };
+                    PBEDDMoveObtainMethod[] flags = new[] { PBEDDMoveObtainMethod.LevelUp_RSColoXD, PBEDDMoveObtainMethod.LevelUp_FR, PBEDDMoveObtainMethod.LevelUp_E,
+                        PBEDDMoveObtainMethod.LevelUp_DP, PBEDDMoveObtainMethod.LevelUp_Pt, PBEDDMoveObtainMethod.LevelUp_HGSS };
                     // Nincada evolves starting at level 20
-                    foreach (KeyValuePair<(PBEMove, byte), PBEMoveObtainMethod> kvp in dict[(PBESpecies.Ninjask, 0)].LevelUpMoves)
+                    foreach (KeyValuePair<(PBEMove, byte), PBEDDMoveObtainMethod> kvp in dict[(PBESpecies.Ninjask, 0)].LevelUpMoves)
                     {
                         (PBEMove move, byte level) = kvp.Key;
                         if (level >= 20)
                         {
-                            PBEMoveObtainMethod o = kvp.Value;
-                            foreach (PBEMoveObtainMethod flag in flags)
+                            PBEDDMoveObtainMethod o = kvp.Value;
+                            foreach (PBEDDMoveObtainMethod flag in flags)
                             {
                                 if (o.HasFlag(flag))
                                 {
@@ -853,7 +855,7 @@ namespace Kermalis.PokemonBattleEngineExtras
 
                 #region FRLG Ultimate Starter Moves
                 {
-                    PBEMoveObtainMethod flag = PBEMoveObtainMethod.MoveTutor_FRLG;
+                    PBEDDMoveObtainMethod flag = PBEDDMoveObtainMethod.MoveTutor_FRLG;
                     AddOtherMove((PBESpecies.Venusaur, 0), PBEMove.FrenzyPlant, flag);
                     AddOtherMove((PBESpecies.Charizard, 0), PBEMove.BlastBurn, flag);
                     AddOtherMove((PBESpecies.Blastoise, 0), PBEMove.HydroCannon, flag);
@@ -873,31 +875,31 @@ namespace Kermalis.PokemonBattleEngineExtras
                         PBEMove.RolePlay,
                         PBEMove.ZapCannon
                     };
-                    foreach (KeyValuePair<PBEMove, PBEMoveObtainMethod> kvp in pkmn.OtherMoves)
+                    foreach (KeyValuePair<PBEMove, PBEDDMoveObtainMethod> kvp in pkmn.OtherMoves)
                     {
-                        PBEMoveObtainMethod o = kvp.Value;
-                        if (o.HasFlag(PBEMoveObtainMethod.TM_RSFRLGEColoXD)
-                            || o.HasFlag(PBEMoveObtainMethod.HM_RSFRLGEColoXD)
-                            || o.HasFlag(PBEMoveObtainMethod.MoveTutor_FRLG)
-                            || o.HasFlag(PBEMoveObtainMethod.MoveTutor_E))
+                        PBEDDMoveObtainMethod o = kvp.Value;
+                        if (o.HasFlag(PBEDDMoveObtainMethod.TM_RSFRLGEColoXD)
+                            || o.HasFlag(PBEDDMoveObtainMethod.HM_RSFRLGEColoXD)
+                            || o.HasFlag(PBEDDMoveObtainMethod.MoveTutor_FRLG)
+                            || o.HasFlag(PBEDDMoveObtainMethod.MoveTutor_E))
                         {
                             list.Add(kvp.Key);
                         }
                     }
                     foreach (PBEMove move in list)
                     {
-                        AddOtherMove(key, move, PBEMoveObtainMethod.MoveTutor_XD);
+                        AddOtherMove(key, move, PBEDDMoveObtainMethod.MoveTutor_XD);
                     }
                 }
                 #endregion
 
                 #region Pichu VoltTackle
-                AddOtherMove((PBESpecies.Pichu, 0), PBEMove.VoltTackle, PBEMoveObtainMethod.EggMove_Special);
+                AddOtherMove((PBESpecies.Pichu, 0), PBEMove.VoltTackle, PBEDDMoveObtainMethod.EggMove_Special);
                 #endregion
 
                 #region DPPtHGSS Free Move Tutors
                 {
-                    PBEMoveObtainMethod flag = PBEMoveObtainMethod.MoveTutor_DP | PBEMoveObtainMethod.MoveTutor_Pt | PBEMoveObtainMethod.MoveTutor_HGSS;
+                    PBEDDMoveObtainMethod flag = PBEDDMoveObtainMethod.MoveTutor_DP | PBEDDMoveObtainMethod.MoveTutor_Pt | PBEDDMoveObtainMethod.MoveTutor_HGSS;
                     AddOtherMove((PBESpecies.Venusaur, 0), PBEMove.FrenzyPlant, flag);
                     AddOtherMove((PBESpecies.Charizard, 0), PBEMove.BlastBurn, flag);
                     AddOtherMove((PBESpecies.Blastoise, 0), PBEMove.HydroCannon, flag);
@@ -919,17 +921,17 @@ namespace Kermalis.PokemonBattleEngineExtras
                 #endregion
 
                 #region Rotom Form Moves
-                AddOtherMove((PBESpecies.Rotom, PBEForm.Rotom), PBEMove.ThunderShock, PBEMoveObtainMethod.Form);
-                AddOtherMove((PBESpecies.Rotom, PBEForm.Rotom_Fan), PBEMove.AirSlash, PBEMoveObtainMethod.Form);
-                AddOtherMove((PBESpecies.Rotom, PBEForm.Rotom_Frost), PBEMove.Blizzard, PBEMoveObtainMethod.Form);
-                AddOtherMove((PBESpecies.Rotom, PBEForm.Rotom_Heat), PBEMove.Overheat, PBEMoveObtainMethod.Form);
-                AddOtherMove((PBESpecies.Rotom, PBEForm.Rotom_Mow), PBEMove.LeafStorm, PBEMoveObtainMethod.Form);
-                AddOtherMove((PBESpecies.Rotom, PBEForm.Rotom_Wash), PBEMove.HydroPump, PBEMoveObtainMethod.Form);
+                AddOtherMove((PBESpecies.Rotom, PBEForm.Rotom), PBEMove.ThunderShock, PBEDDMoveObtainMethod.Form);
+                AddOtherMove((PBESpecies.Rotom, PBEForm.Rotom_Fan), PBEMove.AirSlash, PBEDDMoveObtainMethod.Form);
+                AddOtherMove((PBESpecies.Rotom, PBEForm.Rotom_Frost), PBEMove.Blizzard, PBEDDMoveObtainMethod.Form);
+                AddOtherMove((PBESpecies.Rotom, PBEForm.Rotom_Heat), PBEMove.Overheat, PBEDDMoveObtainMethod.Form);
+                AddOtherMove((PBESpecies.Rotom, PBEForm.Rotom_Mow), PBEMove.LeafStorm, PBEDDMoveObtainMethod.Form);
+                AddOtherMove((PBESpecies.Rotom, PBEForm.Rotom_Wash), PBEMove.HydroPump, PBEDDMoveObtainMethod.Form);
                 #endregion
 
                 #region Gen5 RelicSong/SecretSword
                 {
-                    PBEMoveObtainMethod flag = PBEMoveObtainMethod.MoveTutor_BW | PBEMoveObtainMethod.MoveTutor_B2W2;
+                    PBEDDMoveObtainMethod flag = PBEDDMoveObtainMethod.MoveTutor_BW | PBEDDMoveObtainMethod.MoveTutor_B2W2;
                     AddOtherMove((PBESpecies.Meloetta, 0), PBEMove.RelicSong, flag);
                     AddOtherMove((PBESpecies.Keldeo, 0), PBEMove.SecretSword, flag);
                 }
@@ -944,18 +946,18 @@ namespace Kermalis.PokemonBattleEngineExtras
                 #region Dream World
                 foreach ((PBESpecies species, PBEForm form, PBEMove moveA, PBEMove moveB, PBEMove moveC, bool bw, bool b2w2) in _dreamWorld)
                 {
-                    PBEMoveObtainMethod o = PBEMoveObtainMethod.None;
+                    PBEDDMoveObtainMethod o = PBEDDMoveObtainMethod.None;
                     if (bw)
                     {
-                        o |= PBEMoveObtainMethod.DreamWorld_BW;
+                        o |= PBEDDMoveObtainMethod.DreamWorld_BW;
                     }
                     if (b2w2)
                     {
-                        o |= PBEMoveObtainMethod.DreamWorld_B2W2;
+                        o |= PBEDDMoveObtainMethod.DreamWorld_B2W2;
                     }
-                    if (o == PBEMoveObtainMethod.None)
+                    if (o == PBEDDMoveObtainMethod.None)
                     {
-                        throw new ArgumentException($"Problem with Dream World - {species}", nameof(_dreamWorld));
+                        throw new Exception($"Problem with Dream World - {species}");
                     }
                     (PBESpecies, PBEForm) key = (species, form);
                     AddOtherMove(key, moveA, o);
@@ -966,9 +968,12 @@ namespace Kermalis.PokemonBattleEngineExtras
 
                 #region Write to Database
                 {
+                    const char Split1Char = '+';
+                    const char Split2Char = '|'; // Don't use commas since flags enums do
+
                     cmd.CommandText = "DROP TABLE IF EXISTS PokemonData";
                     cmd.ExecuteNonQuery();
-                    cmd.CommandText = "CREATE TABLE PokemonData(Species INTEGER, Form INTEGER"
+                    cmd.CommandText = "CREATE TABLE PokemonData(Species TEXT, Form TEXT"
                         + ", HP INTEGER, Attack INTEGER, Defense INTEGER, SpAttack INTEGER, SpDefense INTEGER, Speed INTEGER"
                         + ", Type1 INTEGER, Type2 INTEGER, GenderRatio INTEGER, GrowthRate INTEGER, BaseEXPYield INTEGER, CatchRate INTEGER, FleeRate INTEGER, Weight FLOAT"
                         + ", PreEvolutions TEXT, Evolutions TEXT, Abilities TEXT, LevelUpMoves TEXT, OtherMoves TEXT"
@@ -979,8 +984,8 @@ namespace Kermalis.PokemonBattleEngineExtras
                     foreach (KeyValuePair<(PBESpecies, PBEForm), Pokemon> tup in dict)
                     {
                         (PBESpecies species, PBEForm form) = tup.Key;
-                        cmd.Parameters.AddWithValue("@0", species);
-                        cmd.Parameters.AddWithValue("@1", form);
+                        cmd.Parameters.AddWithValue("@0", species.ToString());
+                        cmd.Parameters.AddWithValue("@1", PBEDataUtils.GetNameOfForm(species, form) ?? "0");
                         Pokemon pkmn = tup.Value;
                         cmd.Parameters.AddWithValue("@2", pkmn.HP);
                         cmd.Parameters.AddWithValue("@3", pkmn.Attack);
@@ -995,37 +1000,40 @@ namespace Kermalis.PokemonBattleEngineExtras
                         cmd.Parameters.AddWithValue("@12", pkmn.BaseEXPYield);
                         cmd.Parameters.AddWithValue("@13", pkmn.CatchRate);
                         cmd.Parameters.AddWithValue("@14", pkmn.FleeRate);
-                        cmd.Parameters.AddWithValue("@15", pkmn.Weight);
+                        cmd.Parameters.AddWithValue("@15", pkmn.Weight.ToString("0.0")); // Gets weird if you don't truncate (like 9.9 becomes 9.89999999999999)
                         list.Clear();
                         foreach ((PBESpecies, PBEForm) key in pkmn.PreEvolutions)
                         {
-                            list.Add($"{(ushort)key.Item1},{(byte)key.Item2}");
+                            PBESpecies spe = key.Item1;
+                            list.Add(spe.ToString() + Split2Char + (PBEDataUtils.GetNameOfForm(spe, key.Item2) ?? "0"));
                         }
-                        cmd.Parameters.AddWithValue("@16", string.Join('|', list));
+                        cmd.Parameters.AddWithValue("@16", string.Join(Split1Char, list));
                         list.Clear();
                         foreach ((PBESpecies, PBEForm) key in pkmn.Evolutions)
                         {
-                            list.Add($"{(ushort)key.Item1},{(byte)key.Item2}");
+                            PBESpecies spe = key.Item1;
+                            list.Add(spe.ToString() + Split2Char + (PBEDataUtils.GetNameOfForm(spe, key.Item2) ?? "0"));
                         }
-                        cmd.Parameters.AddWithValue("@17", string.Join('|', list));
+                        cmd.Parameters.AddWithValue("@17", string.Join(Split1Char, list));
                         list.Clear();
                         foreach (PBEAbility ab in pkmn.Abilities)
                         {
-                            list.Add($"{(byte)ab}");
+                            list.Add(ab.ToString());
                         }
-                        cmd.Parameters.AddWithValue("@18", string.Join('|', list));
+                        cmd.Parameters.AddWithValue("@18", string.Join(Split1Char, list));
                         list.Clear();
-                        foreach (KeyValuePair<(PBEMove Move, byte Level), PBEMoveObtainMethod> levelUpMove in pkmn.LevelUpMoves)
+                        foreach (KeyValuePair<(PBEMove Move, byte Level), PBEDDMoveObtainMethod> levelUpMove in pkmn.LevelUpMoves)
                         {
-                            list.Add($"{(ushort)levelUpMove.Key.Move},{levelUpMove.Key.Level},{(ulong)levelUpMove.Value}");
+                            (PBEMove move, byte level) = levelUpMove.Key;
+                            list.Add(move.ToString() + Split2Char + level.ToString() + Split2Char + levelUpMove.Value.ToString());
                         }
-                        cmd.Parameters.AddWithValue("@19", string.Join('|', list));
+                        cmd.Parameters.AddWithValue("@19", string.Join(Split1Char, list));
                         list.Clear();
-                        foreach (KeyValuePair<PBEMove, PBEMoveObtainMethod> otherMove in pkmn.OtherMoves)
+                        foreach (KeyValuePair<PBEMove, PBEDDMoveObtainMethod> otherMove in pkmn.OtherMoves)
                         {
-                            list.Add($"{(ushort)otherMove.Key},{(ulong)otherMove.Value}");
+                            list.Add(otherMove.Key.ToString() + Split2Char + otherMove.Value.ToString());
                         }
-                        cmd.Parameters.AddWithValue("@20", string.Join('|', list));
+                        cmd.Parameters.AddWithValue("@20", string.Join(Split1Char, list));
                         cmd.ExecuteNonQuery();
                         cmd.Parameters.Clear();
                     }

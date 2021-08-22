@@ -13,10 +13,10 @@ namespace Kermalis.PokemonBattleEngineClient.Clients
     {
         private readonly PBEClient _client;
         private readonly PBELegalPokemonCollection _party;
-        private readonly Action<object> _action;
+        private readonly Action<object?> _action;
         private byte _battleId = byte.MaxValue; // Spectator by default
 
-        public NetworkClientConnection(string host, ushort port, PBELegalPokemonCollection party, Action<object> action)
+        public NetworkClientConnection(string host, ushort port, PBELegalPokemonCollection party, Action<object?> action)
         {
             _party = party;
             _action = action;
@@ -24,7 +24,7 @@ namespace Kermalis.PokemonBattleEngineClient.Clients
             _client.Disconnected += OnDisconnected;
             _client.Error += OnError;
             _client.PacketReceived += OnPacketReceived;
-            if (_client.Connect(new IPEndPoint(IPAddress.Parse(host), port), 10 * 1000))
+            if (_client.Connect(new IPEndPoint(IPAddress.Parse(host), port), 10 * 1000, new PBEPacketProcessor()))
             {
                 OnConnected();
             }
@@ -40,17 +40,17 @@ namespace Kermalis.PokemonBattleEngineClient.Clients
             Debug.WriteLine($"Connecting... connected to {_client.RemoteIP}");
             _action.Invoke("Waiting for players...");
         }
-        private void OnDisconnected(object sender, EventArgs e)
+        private void OnDisconnected(object? sender, EventArgs e)
         {
             Debug.WriteLine("Connecting... disconnected from host");
             _action.Invoke(null);
         }
-        private void OnError(object sender, Exception ex)
+        private void OnError(object? sender, Exception ex)
         {
             Debug.WriteLine($"Connecting... error: {ex}");
         }
 
-        private void OnPacketReceived(object sender, IPBEPacket packet)
+        private void OnPacketReceived(object? sender, IPBEPacket packet)
         {
             Debug.WriteLine($"Connecting... received \"{packet.GetType().Name}\"");
             switch (packet)
@@ -103,13 +103,13 @@ namespace Kermalis.PokemonBattleEngineClient.Clients
     {
         private readonly PBEClient _client;
         public override PBEBattle Battle { get; }
-        public override PBETrainer Trainer { get; }
+        public override PBETrainer? Trainer { get; }
         public override BattleView BattleView { get; }
         public override bool HideNonOwned => true;
 
         public NetworkClient(PBEClient client, PBEBattlePacket bp, byte battleId, string name) : base(name)
         {
-            var b = new PBEBattle(bp);
+            var b = PBEBattle.CreateRemoteBattle(bp);
             Battle = b;
             if (battleId != byte.MaxValue)
             {
@@ -125,16 +125,16 @@ namespace Kermalis.PokemonBattleEngineClient.Clients
             Send(new PBEResponsePacket());
         }
 
-        private void OnDisconnected(object sender, EventArgs e)
+        private void OnDisconnected(object? sender, EventArgs e)
         {
             Debug.WriteLine($"{Name} disconnected from host");
             BattleView.AddMessage("Disconnected from host.", messageBox: false);
         }
-        private void OnError(object sender, Exception ex)
+        private void OnError(object? sender, Exception ex)
         {
             Debug.WriteLine($"{Name} error: {ex}");
         }
-        private void OnPacketReceived(object sender, IPBEPacket packet)
+        private void OnPacketReceived(object? sender, IPBEPacket packet)
         {
             Debug.WriteLine($"{Name} received \"{packet.GetType().Name}\"");
             switch (packet)
@@ -169,15 +169,15 @@ namespace Kermalis.PokemonBattleEngineClient.Clients
             }
         }
 
-        protected override void OnActionsReady(PBETurnAction[] acts)
+        private void OnActionsReady(PBETurnAction[] acts)
         {
             BattleView.AddMessage("Waiting for players...", messageLog: false);
             Send(new PBEActionsResponsePacket(acts));
         }
-        protected override void OnSwitchesReady()
+        private void OnSwitchesReady(PBESwitchIn[] switches)
         {
             BattleView.AddMessage("Waiting for players...", messageLog: false);
-            Send(new PBESwitchInResponsePacket(Switches));
+            Send(new PBESwitchInResponsePacket(switches));
         }
 
         private void Send(IPBEPacket packet)
@@ -200,10 +200,10 @@ namespace Kermalis.PokemonBattleEngineClient.Clients
             {
                 case PBEMovePPChangedPacket mpcp:
                 {
-                    PBEBattlePokemon moveUser = mpcp.MoveUserTrainer.TryGetPokemon(mpcp.MoveUser);
+                    PBEBattlePokemon moveUser = mpcp.MoveUserTrainer.GetPokemon(mpcp.MoveUser);
                     if (moveUser.Trainer == Trainer)
                     {
-                        moveUser.Moves[mpcp.Move].PP -= mpcp.AmountReduced;
+                        moveUser.Moves[mpcp.Move]!.PP -= mpcp.AmountReduced;
                     }
                     break;
                 }
@@ -211,9 +211,9 @@ namespace Kermalis.PokemonBattleEngineClient.Clients
                 {
                     if (arp.Trainer == Trainer)
                     {
-                        ActionsLoop(true);
+                        _ = new ActionsBuilder(BattleView, Trainer, OnActionsReady);
                     }
-                    else if (Trainer == null || Trainer.NumConsciousPkmn == 0) // Spectators/KO'd
+                    else if (Trainer is null || Trainer.NumConsciousPkmn == 0) // Spectators/KO'd
                     {
                         BattleView.AddMessage("Waiting for players...", messageLog: false);
                     }
@@ -225,10 +225,9 @@ namespace Kermalis.PokemonBattleEngineClient.Clients
                     t.SwitchInsRequired = sirp.Amount;
                     if (t == Trainer)
                     {
-                        _switchesRequired = sirp.Amount;
-                        SwitchesLoop(true);
+                        _ = new SwitchesBuilder(BattleView, sirp.Amount, OnSwitchesReady);
                     }
-                    else if (_switchesRequired == 0) // No need to switch/Spectators/KO'd
+                    else if (BattleView.Actions.SwitchesBuilder?.SwitchesRequired == 0) // No need to switch/Spectators/KO'd
                     {
                         BattleView.AddMessage("Waiting for players...", messageLog: false);
                     }
@@ -237,7 +236,7 @@ namespace Kermalis.PokemonBattleEngineClient.Clients
                 case PBEPkmnFaintedPacket_Hidden pfph:
                 {
                     bool ret = base.ProcessPacket(packet); // Process before removal
-                    PBEBattlePokemon pokemon = pfph.PokemonTrainer.TryGetPokemon(pfph.OldPosition);
+                    PBEBattlePokemon pokemon = pfph.PokemonTrainer.GetPokemon(pfph.OldPosition);
                     Battle.ActiveBattlers.Remove(pokemon);
                     pokemon.FieldPosition = PBEFieldPosition.None;
                     PBETrainer.Remove(pokemon);
@@ -245,7 +244,7 @@ namespace Kermalis.PokemonBattleEngineClient.Clients
                 }
                 case PBEPkmnFormChangedPacket_Hidden pfcph:
                 {
-                    PBEBattlePokemon pokemon = pfcph.PokemonTrainer.TryGetPokemon(pfcph.Pokemon);
+                    PBEBattlePokemon pokemon = pfcph.PokemonTrainer.GetPokemon(pfcph.Pokemon);
                     pokemon.HPPercentage = pfcph.NewHPPercentage;
                     pokemon.KnownAbility = pfcph.NewKnownAbility;
                     pokemon.KnownForm = pfcph.NewForm;
@@ -256,7 +255,7 @@ namespace Kermalis.PokemonBattleEngineClient.Clients
                 }
                 case PBEPkmnHPChangedPacket_Hidden phcph:
                 {
-                    PBEBattlePokemon pokemon = phcph.PokemonTrainer.TryGetPokemon(phcph.Pokemon);
+                    PBEBattlePokemon pokemon = phcph.PokemonTrainer.GetPokemon(phcph.Pokemon);
                     pokemon.HPPercentage = phcph.NewHPPercentage;
                     break;
                 }
@@ -264,22 +263,22 @@ namespace Kermalis.PokemonBattleEngineClient.Clients
                 {
                     foreach (PBEPkmnSwitchInPacket_Hidden.PBEPkmnSwitchInInfo info in psiph.SwitchIns)
                     {
-                        new PBEBattlePokemon(psiph.Trainer, info);
+                        _ = new PBEBattlePokemon(psiph.Trainer, info);
                     }
                     break;
                 }
                 case PBEPkmnSwitchOutPacket_Hidden psoph:
                 {
                     bool ret = base.ProcessPacket(packet); // Process before removal
-                    PBEBattlePokemon pokemon = psoph.PokemonTrainer.TryGetPokemon(psoph.OldPosition);
+                    PBEBattlePokemon pokemon = psoph.PokemonTrainer.GetPokemon(psoph.OldPosition);
                     Battle.ActiveBattlers.Remove(pokemon);
                     PBETrainer.Remove(pokemon);
                     return ret;
                 }
                 case PBEReflectTypePacket_Hidden rtph:
                 {
-                    PBEBattlePokemon user = rtph.UserTrainer.TryGetPokemon(rtph.User);
-                    PBEBattlePokemon target = rtph.TargetTrainer.TryGetPokemon(rtph.Target);
+                    PBEBattlePokemon user = rtph.UserTrainer.GetPokemon(rtph.User);
+                    PBEBattlePokemon target = rtph.TargetTrainer.GetPokemon(rtph.Target);
                     user.Type1 = user.KnownType1 = target.KnownType1; // Set Type1 and Type2 so Transform works
                     user.Type2 = user.KnownType2 = target.KnownType2;
                     break;
@@ -289,7 +288,7 @@ namespace Kermalis.PokemonBattleEngineClient.Clients
                     PBETrainer wildTrainer = Battle.Teams[1].Trainers[0];
                     foreach (PBEPkmnAppearedInfo info in wpap.Pokemon)
                     {
-                        PBEBattlePokemon pokemon = wildTrainer.TryGetPokemon(info.Pokemon);
+                        PBEBattlePokemon pokemon = wildTrainer.GetPokemon(info.Pokemon);
                         pokemon.FieldPosition = info.FieldPosition;
                         Battle.ActiveBattlers.Add(pokemon);
                     }
@@ -299,7 +298,7 @@ namespace Kermalis.PokemonBattleEngineClient.Clients
                 {
                     foreach (PBEWildPkmnAppearedPacket_Hidden.PBEWildPkmnInfo info in wpaph.Pokemon)
                     {
-                        new PBEBattlePokemon(Battle, info);
+                        _ = new PBEBattlePokemon(Battle, info);
                     }
                     break;
                 }

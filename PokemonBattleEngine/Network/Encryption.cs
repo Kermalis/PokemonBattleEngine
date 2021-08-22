@@ -31,19 +31,11 @@ namespace Kermalis.PokemonBattleEngine.Network
 
         public PBEEncryption(SymmetricAlgorithm algorithm)
         {
-            if (algorithm == null)
-            {
-                throw new ArgumentNullException(nameof(algorithm));
-            }
             _algorithm = algorithm;
         }
 
         public byte[] Encrypt(byte[] data)
         {
-            if (data == null)
-            {
-                throw new ArgumentNullException(nameof(data));
-            }
             _algorithm.GenerateIV();
             using (var ms = new MemoryStream())
             {
@@ -58,10 +50,6 @@ namespace Kermalis.PokemonBattleEngine.Network
         }
         public byte[] Decrypt(byte[] data)
         {
-            if (data == null)
-            {
-                throw new ArgumentNullException(nameof(data));
-            }
             using (var ms = new MemoryStream(data))
             {
                 byte[] iv = new byte[_algorithm.IV.Length];

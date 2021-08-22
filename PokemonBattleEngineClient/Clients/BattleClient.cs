@@ -2,8 +2,6 @@
 using Kermalis.PokemonBattleEngine.Packets;
 using Kermalis.PokemonBattleEngineClient.Views;
 using System;
-using System.Collections.Generic;
-using System.Linq;
 
 namespace Kermalis.PokemonBattleEngineClient.Clients
 {
@@ -13,7 +11,7 @@ namespace Kermalis.PokemonBattleEngineClient.Clients
 
         public string Name { get; }
         public abstract PBEBattle Battle { get; }
-        public abstract PBETrainer Trainer { get; }
+        public abstract PBETrainer? Trainer { get; }
         public abstract BattleView BattleView { get; }
         public abstract bool HideNonOwned { get; }
 
@@ -37,62 +35,6 @@ namespace Kermalis.PokemonBattleEngineClient.Clients
             }
         }
 
-        #region Actions
-        private readonly List<PBEBattlePokemon> _actions = new List<PBEBattlePokemon>(3);
-        public List<PBEBattlePokemon> StandBy { get; } = new List<PBEBattlePokemon>(3);
-        public void ActionsLoop(bool begin)
-        {
-            if (begin)
-            {
-                foreach (PBEBattlePokemon pkmn in Trainer.Party)
-                {
-                    pkmn.TurnAction = null;
-                }
-                _actions.Clear();
-                _actions.AddRange(Trainer.ActiveBattlersOrdered);
-                StandBy.Clear();
-            }
-            int i = _actions.FindIndex(p => p.TurnAction == null);
-            if (i == -1)
-            {
-                OnActionsReady(_actions.Select(p => p.TurnAction).ToArray());
-            }
-            else
-            {
-                BattleView.AddMessage($"What will {_actions[i].Nickname} do?", messageLog: false);
-                BattleView.Actions.DisplayActions(_actions[i]);
-            }
-        }
-        protected abstract void OnActionsReady(PBETurnAction[] acts);
-
-        public List<PBESwitchIn> Switches { get; } = new List<PBESwitchIn>(3);
-        protected byte _switchesRequired;
-        public List<PBEFieldPosition> PositionStandBy { get; } = new List<PBEFieldPosition>(3);
-        public void SwitchesLoop(bool begin)
-        {
-            if (begin)
-            {
-                Switches.Clear();
-                StandBy.Clear();
-                PositionStandBy.Clear();
-            }
-            else
-            {
-                _switchesRequired--;
-            }
-            if (_switchesRequired == 0)
-            {
-                OnSwitchesReady();
-            }
-            else
-            {
-                BattleView.AddMessage($"You must send in {_switchesRequired} Pokémon.", messageLog: false);
-                BattleView.Actions.DisplaySwitches();
-            }
-        }
-        protected abstract void OnSwitchesReady();
-        #endregion
-
         #region Automatic packet processing
         // Returns true if the next packet should be run immediately
         protected virtual bool ProcessPacket(IPBEPacket packet)
@@ -109,7 +51,7 @@ namespace Kermalis.PokemonBattleEngineClient.Clients
                 case PBESwitchInRequestPacket _: return true;
                 /*case PBEPkmnEXPChangedPacket pecp:
                 {
-                    PBEBattlePokemon pokemon = pecp.PokemonTrainer.TryGetPokemon(pecp.Pokemon);
+                    PBEBattlePokemon pokemon = pecp.PokemonTrainer.GetPokemon(pecp.Pokemon);
                     if (pokemon.FieldPosition != PBEFieldPosition.None)
                     {
                         BattleView.Field.UpdatePokemon(pokemon, true, false);
@@ -118,31 +60,31 @@ namespace Kermalis.PokemonBattleEngineClient.Clients
                 }*/ // Commented out because we don't have EXP bars
                 case PBEPkmnFaintedPacket pfp:
                 {
-                    PBEBattlePokemon pokemon = pfp.PokemonTrainer.TryGetPokemon(pfp.Pokemon);
+                    PBEBattlePokemon pokemon = pfp.PokemonTrainer.GetPokemon(pfp.Pokemon);
                     BattleView.Field.HidePokemon(pokemon, pfp.OldPosition);
                     break;
                 }
                 case PBEPkmnFaintedPacket_Hidden pfph:
                 {
-                    PBEBattlePokemon pokemon = pfph.PokemonTrainer.TryGetPokemon(pfph.OldPosition);
+                    PBEBattlePokemon pokemon = pfph.PokemonTrainer.GetPokemon(pfph.OldPosition);
                     BattleView.Field.HidePokemon(pokemon, pfph.OldPosition);
                     break;
                 }
                 case IPBEPkmnFormChangedPacket pfcp:
                 {
-                    PBEBattlePokemon pokemon = pfcp.PokemonTrainer.TryGetPokemon(pfcp.Pokemon);
+                    PBEBattlePokemon pokemon = pfcp.PokemonTrainer.GetPokemon(pfcp.Pokemon);
                     BattleView.Field.UpdatePokemon(pokemon, true, true);
                     break;
                 }
                 case IPBEPkmnHPChangedPacket phcp:
                 {
-                    PBEBattlePokemon pokemon = phcp.PokemonTrainer.TryGetPokemon(phcp.Pokemon);
+                    PBEBattlePokemon pokemon = phcp.PokemonTrainer.GetPokemon(phcp.Pokemon);
                     BattleView.Field.UpdatePokemon(pokemon, true, false);
                     break;
                 }
                 case PBEPkmnLevelChangedPacket plcp:
                 {
-                    PBEBattlePokemon pokemon = plcp.PokemonTrainer.TryGetPokemon(plcp.Pokemon);
+                    PBEBattlePokemon pokemon = plcp.PokemonTrainer.GetPokemon(plcp.Pokemon);
                     if (pokemon.FieldPosition != PBEFieldPosition.None)
                     {
                         BattleView.Field.UpdatePokemon(pokemon, true, false);
@@ -155,32 +97,32 @@ namespace Kermalis.PokemonBattleEngineClient.Clients
                     {
                         foreach (IPBEPkmnSwitchInInfo_Hidden info in psip.SwitchIns)
                         {
-                            BattleView.Field.ShowPokemon(psip.Trainer.TryGetPokemon(info.FieldPosition));
+                            BattleView.Field.ShowPokemon(psip.Trainer.GetPokemon(info.FieldPosition));
                         }
                     }
                     break;
                 }
                 case PBEPkmnSwitchOutPacket psop:
                 {
-                    PBEBattlePokemon pokemon = psop.PokemonTrainer.TryGetPokemon(psop.Pokemon);
+                    PBEBattlePokemon pokemon = psop.PokemonTrainer.GetPokemon(psop.Pokemon);
                     BattleView.Field.HidePokemon(pokemon, psop.OldPosition);
                     break;
                 }
                 case PBEPkmnSwitchOutPacket_Hidden psoph:
                 {
-                    PBEBattlePokemon pokemon = psoph.PokemonTrainer.TryGetPokemon(psoph.OldPosition);
+                    PBEBattlePokemon pokemon = psoph.PokemonTrainer.GetPokemon(psoph.OldPosition);
                     BattleView.Field.HidePokemon(pokemon, psoph.OldPosition);
                     break;
                 }
                 case PBEStatus1Packet s1p:
                 {
-                    PBEBattlePokemon status1Receiver = s1p.Status1ReceiverTrainer.TryGetPokemon(s1p.Status1Receiver);
+                    PBEBattlePokemon status1Receiver = s1p.Status1ReceiverTrainer.GetPokemon(s1p.Status1Receiver);
                     BattleView.Field.UpdatePokemon(status1Receiver, true, false);
                     break;
                 }
                 case PBEStatus2Packet s2p:
                 {
-                    PBEBattlePokemon status2Receiver = s2p.Status2ReceiverTrainer.TryGetPokemon(s2p.Status2Receiver);
+                    PBEBattlePokemon status2Receiver = s2p.Status2ReceiverTrainer.GetPokemon(s2p.Status2Receiver);
                     switch (s2p.Status2)
                     {
                         case PBEStatus2.Airborne: BattleView.Field.UpdatePokemon(status2Receiver, false, true); break;
@@ -221,7 +163,6 @@ namespace Kermalis.PokemonBattleEngineClient.Clients
                     {
                         case PBEWeatherAction.Added:
                         case PBEWeatherAction.Ended: BattleView.Field.UpdateWeather(); break;
-                        case PBEWeatherAction.CausedDamage: break;
                     }
                     break;
                 }
@@ -230,18 +171,18 @@ namespace Kermalis.PokemonBattleEngineClient.Clients
                     PBETrainer wildTrainer = Battle.Teams[1].Trainers[0];
                     foreach (IPBEPkmnAppearedInfo_Hidden info in wpap.Pokemon)
                     {
-                        BattleView.Field.ShowPokemon(wildTrainer.TryGetPokemon(info.FieldPosition));
+                        BattleView.Field.ShowPokemon(wildTrainer.GetPokemon(info.FieldPosition));
                     }
                     break;
                 }
                 case IPBEAutoCenterPacket acp:
                 {
                     PBEBattlePokemon pokemon0 = acp is IPBEAutoCenterPacket_0 acp0
-                        ? acp.Pokemon0Trainer.TryGetPokemon(acp0.Pokemon0)
-                        : acp.Pokemon0Trainer.TryGetPokemon(acp.Pokemon0OldPosition);
+                        ? acp.Pokemon0Trainer.GetPokemon(acp0.Pokemon0)
+                        : acp.Pokemon0Trainer.GetPokemon(acp.Pokemon0OldPosition);
                     PBEBattlePokemon pokemon1 = acp is IPBEAutoCenterPacket_1 acp1
-                        ? acp.Pokemon1Trainer.TryGetPokemon(acp1.Pokemon1)
-                        : acp.Pokemon1Trainer.TryGetPokemon(acp.Pokemon1OldPosition);
+                        ? acp.Pokemon1Trainer.GetPokemon(acp1.Pokemon1)
+                        : acp.Pokemon1Trainer.GetPokemon(acp.Pokemon1OldPosition);
                     BattleView.Field.MovePokemon(pokemon0, acp.Pokemon0OldPosition);
                     BattleView.Field.MovePokemon(pokemon1, acp.Pokemon1OldPosition);
                     break;
@@ -252,7 +193,7 @@ namespace Kermalis.PokemonBattleEngineClient.Clients
                     return true;
                 }
             }
-            string message = PBEBattle.GetDefaultMessage(Battle, packet, showRawHP: !HideNonOwned, userTrainer: Trainer);
+            string? message = PBEBattle.GetDefaultMessage(Battle, packet, showRawHP: !HideNonOwned, userTrainer: Trainer);
             if (string.IsNullOrEmpty(message))
             {
                 return true;

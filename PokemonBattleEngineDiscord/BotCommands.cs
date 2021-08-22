@@ -3,7 +3,10 @@ using Discord.Commands;
 using Discord.WebSocket;
 using Kermalis.PokemonBattleEngine.Battle;
 using Kermalis.PokemonBattleEngine.Data;
+using Kermalis.PokemonBattleEngine.Data.Utils;
 using System;
+using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
@@ -19,8 +22,7 @@ namespace Kermalis.PokemonBattleEngineDiscord
             [Alias("data")]
             public async Task Info([Remainder] string abilityName)
             {
-                PBEAbility? nAbility = PBEDataProvider.Instance.GetAbilityByName(abilityName);
-                if (!nAbility.HasValue || nAbility.Value == PBEAbility.None)
+                if (!PBEDataProvider.Instance.GetAbilityByName(abilityName, out PBEAbility? nAbility) || nAbility.Value == PBEAbility.None)
                 {
                     await Context.Channel.SendMessageAsync($"{Context.User.Mention} ― Invalid ability!");
                 }
@@ -107,8 +109,7 @@ namespace Kermalis.PokemonBattleEngineDiscord
             [Alias("data")]
             public async Task Info([Remainder] string itemName)
             {
-                PBEItem? nItem = PBEDataProvider.Instance.GetItemByName(itemName);
-                if (!nItem.HasValue || nItem.Value == PBEItem.None)
+                if (!PBEDataProvider.Instance.GetItemByName(itemName, out PBEItem? nItem) || nItem.Value == PBEItem.None)
                 {
                     await Context.Channel.SendMessageAsync($"{Context.User.Mention} ― Invalid item!");
                 }
@@ -117,7 +118,7 @@ namespace Kermalis.PokemonBattleEngineDiscord
                     PBEItem item = nItem.Value;
                     IPBEItemData iData = PBEDataProvider.Instance.GetItemData(item);
                     Color color;
-                    if (PBEDataProvider.Instance.TryGetBerryData(item, out IPBEBerryData bData))
+                    if (PBEDataProvider.Instance.TryGetBerryData(item, out IPBEBerryData? bData))
                     {
                         color = Utils.TypeColors[bData.NaturalGiftType];
                     }
@@ -135,7 +136,7 @@ namespace Kermalis.PokemonBattleEngineDiscord
                     {
                         embed.AddField("Fling Power", iData.FlingPower, true);
                     }
-                    if (bData != null)
+                    if (bData is not null)
                     {
                         embed.AddField("Natural Gift Power", bData.NaturalGiftPower, true);
                         embed.AddField("Natural Gift Type", Utils.TypeEmotes[bData.NaturalGiftType], true);
@@ -173,8 +174,7 @@ namespace Kermalis.PokemonBattleEngineDiscord
             [Alias("data")]
             public async Task Info([Remainder] string moveName)
             {
-                PBEMove? nMove = PBEDataProvider.Instance.GetMoveByName(moveName);
-                if (!nMove.HasValue || nMove.Value == PBEMove.None)
+                if (!PBEDataProvider.Instance.GetMoveByName(moveName, out PBEMove? nMove) || nMove.Value == PBEMove.None)
                 {
                     await Context.Channel.SendMessageAsync($"{Context.User.Mention} ― Invalid move!");
                 }
@@ -221,7 +221,7 @@ namespace Kermalis.PokemonBattleEngineDiscord
                 // Inputs for forms should be like "Giratina (Origin Forme)"
                 Match m = Regex.Match(input, @"^(\S+) \((.+)\)$");
                 string speciesName;
-                string formName;
+                string? formName;
                 if (m.Success)
                 {
                     speciesName = m.Groups[1].Value;
@@ -232,87 +232,101 @@ namespace Kermalis.PokemonBattleEngineDiscord
                     speciesName = input;
                     formName = null;
                 }
-                PBESpecies? nSpecies = PBEDataProvider.Instance.GetSpeciesByName(speciesName);
-                if (!nSpecies.HasValue)
+                if (!PBEDataProvider.Instance.GetSpeciesByName(speciesName, out PBESpecies? nSpecies))
                 {
                     await Context.Channel.SendMessageAsync($"{Context.User.Mention} ― Invalid species!");
+                    return;
+                }
+                PBESpecies species = nSpecies.Value;
+                speciesName = PBEDataProvider.Instance.GetSpeciesName(species).English;
+                PBEForm form;
+                if (formName is null)
+                {
+                    form = 0;
                 }
                 else
                 {
-                    PBESpecies species = nSpecies.Value;
-                    speciesName = PBEDataProvider.Instance.GetSpeciesName(species).English;
-                    PBEForm? nForm = formName == null ? 0 : PBEDataProvider.Instance.GetFormByName(species, formName);
-                    if (!nForm.HasValue)
+                    if (!PBEDataProvider.Instance.GetFormByName(species, formName, out PBEForm? nForm))
                     {
-                        await Context.Channel.SendMessageAsync($"{Context.User.Mention} ― Invalid form for {speciesName}!");
+                        IReadOnlyList<PBEForm> forms = PBEDataUtils.GetForms(species, false);
+                        string str = $"{Context.User.Mention} ― Invalid form for {speciesName}";
+                        if (forms.Count > 0)
+                        {
+                            str += ", valid forms are:\n**" + string.Join("\n", forms.Select(f => PBEDataProvider.Instance.GetFormName(species, f).English)) + "**";
+                        }
+                        else
+                        {
+                            str += "! It has no forms!";
+                        }
+                        await Context.Channel.SendMessageAsync(str);
+                        return;
                     }
-                    else
-                    {
-                        PBEForm form = nForm.Value;
-                        formName = PBEDataUtils.HasForms(species, false) ? $" ({PBEDataProvider.Instance.GetFormName(species, form).English})" : string.Empty;
-                        IPBEPokemonData pData = PBEDataProvider.Instance.GetPokemonData(species, form);
-                        string types = $"{Utils.TypeEmotes[pData.Type1]}";
-                        if (pData.Type2 != PBEType.None)
-                        {
-                            types += $" {Utils.TypeEmotes[pData.Type2]}";
-                        }
-                        string ratio;
-                        switch (pData.GenderRatio)
-                        {
-                            case PBEGenderRatio.M7_F1: ratio = "87.5% Male, 12.5% Female"; break;
-                            case PBEGenderRatio.M3_F1: ratio = "75% Male, 25% Female"; break;
-                            case PBEGenderRatio.M1_F1: ratio = "50% Male, 50% Female"; break;
-                            case PBEGenderRatio.M1_F3: ratio = "25% Male, 75% Female"; break;
-                            case PBEGenderRatio.M0_F1: ratio = "100% Female"; break;
-                            case PBEGenderRatio.M1_F0: ratio = "100% Male"; break;
-                            case PBEGenderRatio.M0_F0: ratio = "Genderless Species"; break;
-                            default: throw new ArgumentOutOfRangeException(nameof(pData.GenderRatio));
-                        }
-                        string weaknesses = string.Empty,
+                    form = nForm.Value;
+                }
+                formName = PBEDataUtils.HasForms(species, false) ? $" ({PBEDataProvider.Instance.GetFormName(species, form).English})" : string.Empty;
+                IPBEPokemonData pData = PBEDataProvider.Instance.GetPokemonData(species, form);
+                string types = $"{Utils.TypeEmotes[pData.Type1]}";
+                if (pData.Type2 != PBEType.None)
+                {
+                    types += $" {Utils.TypeEmotes[pData.Type2]}";
+                }
+                string ratio;
+                switch (pData.GenderRatio)
+                {
+                    case PBEGenderRatio.M7_F1: ratio = "87.5% Male, 12.5% Female"; break;
+                    case PBEGenderRatio.M3_F1: ratio = "75% Male, 25% Female"; break;
+                    case PBEGenderRatio.M1_F1: ratio = "50% Male, 50% Female"; break;
+                    case PBEGenderRatio.M1_F3: ratio = "25% Male, 75% Female"; break;
+                    case PBEGenderRatio.M0_F1: ratio = "100% Female"; break;
+                    case PBEGenderRatio.M1_F0: ratio = "100% Male"; break;
+                    case PBEGenderRatio.M0_F0: ratio = "Genderless Species"; break;
+                    default: throw new InvalidDataException(nameof(pData.GenderRatio));
+                }
+                string weaknesses = string.Empty,
                         resistances = string.Empty,
                         immunities = string.Empty;
-                        for (PBEType atk = PBEType.None + 1; atk < PBEType.MAX; atk++)
+                for (PBEType atk = PBEType.None + 1; atk < PBEType.MAX; atk++)
+                {
+                    float d = PBETypeEffectiveness.GetEffectiveness(atk, pData);
+                    if (d <= 0)
+                    {
+                        if (immunities != string.Empty)
                         {
-                            float d = PBETypeEffectiveness.GetEffectiveness(atk, pData);
-                            if (d <= 0)
-                            {
-                                if (immunities != string.Empty)
-                                {
-                                    immunities += ' ';
-                                }
-                                immunities += Utils.TypeEmotes[atk];
-                            }
-                            else if (d < 1)
-                            {
-                                if (resistances != string.Empty)
-                                {
-                                    resistances += ' ';
-                                }
-                                resistances += Utils.TypeEmotes[atk];
-                            }
-                            if (d > 1)
-                            {
-                                if (weaknesses != string.Empty)
-                                {
-                                    weaknesses += ' ';
-                                }
-                                weaknesses += Utils.TypeEmotes[atk];
-                            }
+                            immunities += ' ';
                         }
-                        if (weaknesses == string.Empty)
+                        immunities += Utils.TypeEmotes[atk];
+                    }
+                    else if (d < 1)
+                    {
+                        if (resistances != string.Empty)
                         {
-                            weaknesses = "No Weaknesses";
+                            resistances += ' ';
                         }
-                        if (resistances == string.Empty)
+                        resistances += Utils.TypeEmotes[atk];
+                    }
+                    if (d > 1)
+                    {
+                        if (weaknesses != string.Empty)
                         {
-                            resistances = "No Resistances";
+                            weaknesses += ' ';
                         }
-                        if (immunities == string.Empty)
-                        {
-                            immunities = "No Immunities";
-                        }
+                        weaknesses += Utils.TypeEmotes[atk];
+                    }
+                }
+                if (weaknesses == string.Empty)
+                {
+                    weaknesses = "No Weaknesses";
+                }
+                if (resistances == string.Empty)
+                {
+                    resistances = "No Resistances";
+                }
+                if (immunities == string.Empty)
+                {
+                    immunities = "No Immunities";
+                }
 
-                        EmbedBuilder embed = new EmbedBuilder()
+                EmbedBuilder embed = new EmbedBuilder()
                         .WithAuthor(Context.User)
                         .WithColor(Utils.GetColor(pData.Type1, pData.Type2))
                         .WithTitle($"{speciesName}{formName} ― {PBEDataProvider.Instance.GetSpeciesCategory(species).English}")
@@ -332,9 +346,7 @@ namespace Kermalis.PokemonBattleEngineDiscord
                         .AddField("Type Resistances", resistances, true)
                         .AddField("Type Immunities", immunities, true)
                         .WithImageUrl(Utils.GetPokemonSprite(species, form, PBEDataProvider.GlobalRandom.RandomShiny(), PBEDataProvider.GlobalRandom.RandomGender(pData.GenderRatio), false, false));
-                        await Context.Channel.SendMessageAsync(string.Empty, embed: embed.Build());
-                    }
-                }
+                await Context.Channel.SendMessageAsync(string.Empty, embed: embed.Build());
             }
         }
 
@@ -354,8 +366,7 @@ namespace Kermalis.PokemonBattleEngineDiscord
             [Alias("data, effectiveness, weaknesses")]
             public async Task Info([Remainder] string typeName)
             {
-                PBEType? nType = PBEDataProvider.Instance.GetTypeByName(typeName);
-                if (!nType.HasValue || nType.Value == PBEType.None)
+                if (!PBEDataProvider.Instance.GetTypeByName(typeName, out PBEType? nType) || nType.Value == PBEType.None)
                 {
                     await Context.Channel.SendMessageAsync($"{Context.User.Mention} ― Invalid type!");
                 }

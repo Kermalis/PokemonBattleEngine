@@ -1,9 +1,9 @@
-﻿using Kermalis.PokemonBattleEngine.AI;
-using Kermalis.PokemonBattleEngine.Battle;
+﻿using Kermalis.PokemonBattleEngine.Battle;
 using Kermalis.PokemonBattleEngine.Data;
 using Kermalis.PokemonBattleEngine.Data.Legality;
+using Kermalis.PokemonBattleEngine.DefaultData;
+using Kermalis.PokemonBattleEngine.DefaultData.AI;
 using Kermalis.PokemonBattleEngine.Packets;
-using Kermalis.PokemonBattleEngine.Utils;
 using System;
 using System.IO;
 using System.Threading;
@@ -14,11 +14,12 @@ namespace Kermalis.PokemonBattleEngineExtras
     {
         private const string LogFile = "AI Demo Log.txt";
         private const string ReplayFile = "AI Demo.pbereplay";
-        private static PBEBattle _battle;
-        private static StreamWriter _writer;
-        private static TextWriter _oldWriter;
+        private readonly PBEBattle _battle;
+        private readonly PBEDDAI _ai0, _ai1;
+        private readonly StreamWriter _writer;
+        private readonly TextWriter _oldWriter;
 
-        public static void Run()
+        public AIBattleDemo()
         {
             Console.WriteLine("----- Pokémon Battle Engine - AI Battle Demo -----");
             try
@@ -29,6 +30,11 @@ namespace Kermalis.PokemonBattleEngineExtras
             {
                 Console.WriteLine($"Cannot open \"{LogFile}\" for writing.");
                 Console.WriteLine(e.Message);
+                _battle = null!;
+                _ai0 = null!;
+                _ai1 = null!;
+                _writer = null!;
+                _oldWriter = null!;
                 return;
             }
 
@@ -38,14 +44,16 @@ namespace Kermalis.PokemonBattleEngineExtras
             PBELegalPokemonCollection p0, p1;
 
             // Competitively Randomized Pokémon
-            p0 = PBERandomTeamGenerator.CreateRandomTeam(settings.MaxPartySize);
-            p1 = PBERandomTeamGenerator.CreateRandomTeam(settings.MaxPartySize);
+            p0 = PBEDDRandomTeamGenerator.CreateRandomTeam(settings.MaxPartySize);
+            p1 = PBEDDRandomTeamGenerator.CreateRandomTeam(settings.MaxPartySize);
 
-            _battle = new PBEBattle(PBEBattleFormat.Double, settings, new PBETrainerInfo(p0, "Trainer 0", false), new PBETrainerInfo(p1, "Trainer 1", false),
+            _battle = PBEBattle.CreateTrainerBattle(PBEBattleFormat.Double, settings, new PBETrainerInfo(p0, "Trainer 0", false), new PBETrainerInfo(p1, "Trainer 1", false),
                 battleTerrain: PBEDataProvider.GlobalRandom.RandomBattleTerrain());
             _battle.OnNewEvent += PBEBattle.ConsoleBattleEventHandler;
             _battle.OnNewEvent += Battle_OnNewEvent;
             _battle.OnStateChanged += Battle_OnStateChanged;
+            _ai0 = new PBEDDAI(_battle.Trainers[0]);
+            _ai1 = new PBEDDAI(_battle.Trainers[1]);
             _oldWriter = Console.Out;
             Console.SetOut(_writer);
             new Thread(() =>
@@ -62,7 +70,7 @@ namespace Kermalis.PokemonBattleEngineExtras
             { Name = "Battle Thread" }.Start();
         }
 
-        private static void CatchException(Exception e)
+        private void CatchException(Exception e)
         {
             Console.WriteLine(e.Message);
             Console.WriteLine(e.StackTrace);
@@ -75,7 +83,12 @@ namespace Kermalis.PokemonBattleEngineExtras
             Console.ReadKey();
         }
 
-        private static void Battle_OnNewEvent(PBEBattle battle, IPBEPacket packet)
+        private PBEDDAI GetAI(PBETrainer t)
+        {
+            return t.Id == 0 ? _ai0 : _ai1;
+        }
+
+        private void Battle_OnNewEvent(PBEBattle battle, IPBEPacket packet)
         {
             try
             {
@@ -83,12 +96,12 @@ namespace Kermalis.PokemonBattleEngineExtras
                 {
                     case PBEActionsRequestPacket arp:
                     {
-                        arp.Trainer.CreateAIActions();
+                        GetAI(arp.Trainer).CreateActions();
                         break;
                     }
                     case PBESwitchInRequestPacket sirp:
                     {
-                        sirp.Trainer.CreateAISwitches();
+                        GetAI(sirp.Trainer).CreateAISwitches();
                         break;
                     }
                     case PBETurnBeganPacket tbp:
@@ -106,7 +119,7 @@ namespace Kermalis.PokemonBattleEngineExtras
                 CatchException(e);
             }
         }
-        private static void Battle_OnStateChanged(PBEBattle battle)
+        private void Battle_OnStateChanged(PBEBattle battle)
         {
             try
             {

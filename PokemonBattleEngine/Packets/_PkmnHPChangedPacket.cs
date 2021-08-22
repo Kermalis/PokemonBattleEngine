@@ -1,6 +1,5 @@
 ﻿using Kermalis.EndianBinaryIO;
 using Kermalis.PokemonBattleEngine.Battle;
-using System;
 using System.Collections.ObjectModel;
 using System.IO;
 
@@ -63,10 +62,6 @@ namespace Kermalis.PokemonBattleEngine.Packets
 
         public PBEPkmnHPChangedPacket_Hidden(PBEPkmnHPChangedPacket other)
         {
-            if (other == null)
-            {
-                throw new ArgumentNullException(nameof(other));
-            }
             using (var ms = new MemoryStream())
             using (var w = new EndianBinaryWriter(ms, encoding: EncodingType.UTF16))
             {

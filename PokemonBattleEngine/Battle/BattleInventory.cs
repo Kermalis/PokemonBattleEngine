@@ -3,6 +3,7 @@ using Kermalis.PokemonBattleEngine.Packets;
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 
 namespace Kermalis.PokemonBattleEngine.Battle
 {
@@ -32,11 +33,11 @@ namespace Kermalis.PokemonBattleEngine.Battle
             _slots = new Dictionary<PBEItem, PBEBattleInventorySlot>(items.Count);
             foreach ((PBEItem item, uint quantity) in items)
             {
-                if (item == PBEItem.None || !Enum.IsDefined(typeof(PBEItem), item))
+                if (item == PBEItem.None || !Enum.IsDefined(item))
                 {
                     throw new ArgumentOutOfRangeException(nameof(items), $"Invalid item returned: {item}");
                 }
-                if (!_slots.TryGetValue(item, out PBEBattleInventorySlot slot))
+                if (!_slots.TryGetValue(item, out PBEBattleInventorySlot? slot))
                 {
                     slot = new PBEBattleInventorySlot(item, quantity);
                     _slots.Add(item, slot);
@@ -60,7 +61,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
         {
             return _slots.ContainsKey(key);
         }
-        public bool TryGetValue(PBEItem key, out PBEBattleInventorySlot value)
+        public bool TryGetValue(PBEItem key, [NotNullWhen(true)] out PBEBattleInventorySlot? value)
         {
             return _slots.TryGetValue(key, out value);
         }
@@ -73,7 +74,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
             return _slots.GetEnumerator();
         }
 
-        private static readonly PBEBattleInventory _empty = new PBEBattleInventory(Array.Empty<(PBEItem, uint)>());
+        private static readonly PBEBattleInventory _empty = new(Array.Empty<(PBEItem, uint)>());
         internal static PBEBattleInventory Empty()
         {
             return _empty;
