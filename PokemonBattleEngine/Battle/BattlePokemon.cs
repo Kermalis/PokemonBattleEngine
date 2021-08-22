@@ -9,7 +9,6 @@ using System.Text;
 
 namespace Kermalis.PokemonBattleEngine.Battle
 {
-    // TODO: INPC
     /// <summary>Represents a specific Pokémon during a battle.</summary>
     public sealed class PBEBattlePokemon : IPBEPokemonKnownTypes, IPBEPokemonTypes, IPBESpeciesForm
     {
@@ -18,6 +17,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
         public PBETrainer Trainer { get; }
         public byte Id { get; }
         public bool IsWild => Team.IsWild;
+        public bool IsLocallyHosted => Battle.IsLocallyHosted;
         public bool PBEIgnore { get; }
 
         public bool CanBattle => HP > 0 && !PBEIgnore;
@@ -1288,7 +1288,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
             return null;
         }
 
-        // Will only be accurate for the host
+        /// <summary>Will only be accurate for the host</summary>
         public override string ToString()
         {
             var sb = new StringBuilder();

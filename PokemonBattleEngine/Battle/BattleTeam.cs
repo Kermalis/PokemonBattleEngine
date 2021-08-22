@@ -31,34 +31,34 @@ namespace Kermalis.PokemonBattleEngine.Battle
         }
 
         // Trainer battle
-        internal PBETeams(PBEBattle battle, IReadOnlyList<PBETrainerInfo> ti0, IReadOnlyList<PBETrainerInfo> ti1, out ReadOnlyCollection<PBETrainer> trainers)
+        internal PBETeams(PBEBattle battle, IReadOnlyList<PBETrainerInfo> ti0, IReadOnlyList<PBETrainerInfo> ti1, out PBETrainers trainers)
         {
             var allTrainers = new List<PBETrainer>();
             _team0 = new PBETeam(battle, 0, ti0, allTrainers);
             _team1 = new PBETeam(battle, 1, ti1, allTrainers);
             _team0.OpposingTeam = _team1;
             _team1.OpposingTeam = _team0;
-            trainers = new ReadOnlyCollection<PBETrainer>(allTrainers);
+            trainers = new PBETrainers(allTrainers);
         }
         // Wild battle
-        internal PBETeams(PBEBattle battle, IReadOnlyList<PBETrainerInfo> ti, PBEWildInfo wi, out ReadOnlyCollection<PBETrainer> trainers)
+        internal PBETeams(PBEBattle battle, IReadOnlyList<PBETrainerInfo> ti, PBEWildInfo wi, out PBETrainers trainers)
         {
             var allTrainers = new List<PBETrainer>();
             _team0 = new PBETeam(battle, 0, ti, allTrainers);
             _team1 = new PBETeam(battle, 1, wi, allTrainers);
             _team0.OpposingTeam = _team1;
             _team1.OpposingTeam = _team0;
-            trainers = new ReadOnlyCollection<PBETrainer>(allTrainers);
+            trainers = new PBETrainers(allTrainers);
         }
         // Remote battle
-        internal PBETeams(PBEBattle battle, PBEBattlePacket packet, out ReadOnlyCollection<PBETrainer> trainers)
+        internal PBETeams(PBEBattle battle, PBEBattlePacket packet, out PBETrainers trainers)
         {
             var allTrainers = new List<PBETrainer>();
             _team0 = new PBETeam(battle, packet.Teams[0], allTrainers);
             _team1 = new PBETeam(battle, packet.Teams[1], allTrainers);
             _team0.OpposingTeam = _team1;
             _team1.OpposingTeam = _team0;
-            trainers = new ReadOnlyCollection<PBETrainer>(allTrainers);
+            trainers = new PBETrainers(allTrainers);
         }
 
         public bool All(Predicate<PBETeam> match)
@@ -77,7 +77,6 @@ namespace Kermalis.PokemonBattleEngine.Battle
             yield return _team1;
         }
     }
-    // TODO: INPC
     /// <summary>Represents a team in a specific <see cref="PBEBattle"/>.</summary>
     public sealed class PBETeam
     {
@@ -88,7 +87,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
         public byte Id { get; }
         public bool IsWild => Battle.BattleType == PBEBattleType.Wild && Id == 1;
 
-        public string CombinedName => Trainers.Select(t => t.Name).ToArray().Andify(); // TODO: Calculate this once
+        public string CombinedName { get; }
         public IEnumerable<PBEBattlePokemon> CombinedParty => Trainers.SelectMany(t => t.Party);
         public List<PBEBattlePokemon> ActiveBattlers => Battle.ActiveBattlers.FindAll(p => p.Team == this);
         public int NumConsciousPkmn => Trainers.Sum(t => t.NumConsciousPkmn);
@@ -129,6 +128,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                 trainers[i] = new PBETrainer(this, ti[i], allTrainers);
             }
             Trainers = new ReadOnlyCollection<PBETrainer>(trainers);
+            CombinedName = GetCombinedName();
             OpposingTeam = null!; // OpposingTeam is set in PBETeams after both are created
         }
         // Wild battle
@@ -146,6 +146,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
             Battle = battle;
             Id = id;
             Trainers = new ReadOnlyCollection<PBETrainer>(new[] { new PBETrainer(this, wi, allTrainers) });
+            CombinedName = GetCombinedName();
             OpposingTeam = null!; // OpposingTeam is set in PBETeams after both are created
         }
         // Remote battle
@@ -165,6 +166,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                 trainers[i] = new PBETrainer(this, ti[i], allTrainers);
             }
             Trainers = new ReadOnlyCollection<PBETrainer>(trainers);
+            CombinedName = GetCombinedName();
             OpposingTeam = null!; // OpposingTeam is set in PBETeams after both are created
         }
         private static bool VerifyWildCount(PBEBattleFormat format, int count)
@@ -188,6 +190,15 @@ namespace Kermalis.PokemonBattleEngine.Battle
                 case PBEBattleFormat.Triple: return count == 1 || count == 3;
                 default: throw new ArgumentOutOfRangeException(nameof(format));
             }
+        }
+        private string GetCombinedName()
+        {
+            string[] names = new string[Trainers.Count];
+            for (int i = 0; i < names.Length; i++)
+            {
+                names[i] = Trainers[i].Name;
+            }
+            return names.Andify();
         }
 
         public bool IsSpotOccupied(PBEFieldPosition pos)

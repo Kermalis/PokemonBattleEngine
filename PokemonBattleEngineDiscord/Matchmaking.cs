@@ -84,7 +84,7 @@ namespace Kermalis.PokemonBattleEngineDiscord
             p0 = PBEDDRandomTeamGenerator.CreateRandomTeam(3);
             p1 = PBEDDRandomTeamGenerator.CreateRandomTeam(3);
 
-            var battle = new PBEBattle(PBEBattleFormat.Single, PBESettings.DefaultSettings, new PBETrainerInfo(p0, team0Name, false), new PBETrainerInfo(p1, team1Name, false));
+            var battle = PBEBattle.CreateTrainerBattle(PBEBattleFormat.Single, PBESettings.DefaultSettings, new PBETrainerInfo(p0, team0Name, false), new PBETrainerInfo(p1, team1Name, false));
 
             var bc = new BattleContext(battle, battler0, battler1);
             ITextChannel channel = await ChannelHandler.CreateChannel(guild, $"battle-{bc.BattleId}");

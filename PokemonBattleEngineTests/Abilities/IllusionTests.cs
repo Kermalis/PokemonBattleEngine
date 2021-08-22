@@ -31,7 +31,7 @@ namespace Kermalis.PokemonBattleEngineTests.Abilities
                 Ability = PBEAbility.Illusion
             };
 
-            var battle = new PBEBattle(PBEBattleFormat.Single, settings, new PBETrainerInfo(p0, "Trainer 0", false), new PBETrainerInfo(p1, "Trainer 1", false));
+            var battle = PBEBattle.CreateTrainerBattle(PBEBattleFormat.Single, settings, new PBETrainerInfo(p0, "Trainer 0", false), new PBETrainerInfo(p1, "Trainer 1", false));
             battle.OnNewEvent += PBEBattle.ConsoleBattleEventHandler;
 
             PBETrainer t1 = battle.Trainers[1];
@@ -67,7 +67,7 @@ namespace Kermalis.PokemonBattleEngineTests.Abilities
             };
             p1[1] = p0[0];
 
-            var battle = new PBEBattle(PBEBattleFormat.Double, settings, new PBETrainerInfo(p0, "Trainer 0", false), new PBEWildInfo(p1));
+            var battle = PBEBattle.CreateWildBattle(PBEBattleFormat.Double, settings, new PBETrainerInfo(p0, "Trainer 0", false), new PBEWildInfo(p1));
             battle.OnNewEvent += PBEBattle.ConsoleBattleEventHandler;
 
             PBETrainer t1 = battle.Trainers[1];
@@ -102,7 +102,7 @@ namespace Kermalis.PokemonBattleEngineTests.Abilities
             };
             p1[1] = p0[0];
 
-            var battle = new PBEBattle(PBEBattleFormat.Double, settings, new PBETrainerInfo(p0, "Trainer 0", false), new PBETrainerInfo(p1, "Trainer 1", false));
+            var battle = PBEBattle.CreateTrainerBattle(PBEBattleFormat.Double, settings, new PBETrainerInfo(p0, "Trainer 0", false), new PBETrainerInfo(p1, "Trainer 1", false));
             battle.OnNewEvent += PBEBattle.ConsoleBattleEventHandler;
 
             PBETrainer t1 = battle.Trainers[1];
@@ -138,7 +138,7 @@ namespace Kermalis.PokemonBattleEngineTests.Abilities
                 Ability = PBEAbility.Illusion
             };
 
-            var battle = new PBEBattle(PBEBattleFormat.Single, settings, new PBETrainerInfo(p0, "Trainer 0", false), new PBETrainerInfo(p1, "Trainer 1", false),
+            var battle = PBEBattle.CreateTrainerBattle(PBEBattleFormat.Single, settings, new PBETrainerInfo(p0, "Trainer 0", false), new PBETrainerInfo(p1, "Trainer 1", false),
                 battleTerrain: PBEBattleTerrain.Snow);
             battle.OnNewEvent += PBEBattle.ConsoleBattleEventHandler;
 
@@ -184,7 +184,7 @@ namespace Kermalis.PokemonBattleEngineTests.Abilities
             };
             p1[3] = new TestPokemon(settings, PBESpecies.Feebas, 0, 1, PBEMove.Splash);
 
-            var battle = new PBEBattle(PBEBattleFormat.Double, settings, new PBETrainerInfo(p0, "Trainer 0", false), new PBETrainerInfo(p1, "Trainer 1", false),
+            var battle = PBEBattle.CreateTrainerBattle(PBEBattleFormat.Double, settings, new PBETrainerInfo(p0, "Trainer 0", false), new PBETrainerInfo(p1, "Trainer 1", false),
                 battleTerrain: PBEBattleTerrain.Snow);
             battle.OnNewEvent += PBEBattle.ConsoleBattleEventHandler;
 
@@ -237,7 +237,7 @@ namespace Kermalis.PokemonBattleEngineTests.Abilities
             };
             p1[2] = new TestPokemon(settings, PBESpecies.Magikarp, 0, 100, PBEMove.Splash);
 
-            var battle = new PBEBattle(PBEBattleFormat.Single, settings, new PBETrainerInfo(p0, "Trainer 0", false), new PBETrainerInfo(p1, "Trainer 1", false),
+            var battle = PBEBattle.CreateTrainerBattle(PBEBattleFormat.Single, settings, new PBETrainerInfo(p0, "Trainer 0", false), new PBETrainerInfo(p1, "Trainer 1", false),
                 battleTerrain: PBEBattleTerrain.Snow);
             battle.OnNewEvent += PBEBattle.ConsoleBattleEventHandler;
 
@@ -300,7 +300,7 @@ namespace Kermalis.PokemonBattleEngineTests.Abilities
                 CaughtBall = PBEItem.None
             };
 
-            var battle = new PBEBattle(PBEBattleFormat.Single, settings, new PBETrainerInfo(p0, "Trainer 0", false), new PBEWildInfo(p1));
+            var battle = PBEBattle.CreateWildBattle(PBEBattleFormat.Single, settings, new PBETrainerInfo(p0, "Trainer 0", false), new PBEWildInfo(p1));
             battle.OnNewEvent += PBEBattle.ConsoleBattleEventHandler;
 
             PBETrainer t0 = battle.Trainers[0];

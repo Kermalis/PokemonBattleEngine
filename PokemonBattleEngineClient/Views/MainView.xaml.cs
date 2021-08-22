@@ -191,7 +191,7 @@ namespace Kermalis.PokemonBattleEngineClient.Views
                 }
                 default: throw new ArgumentOutOfRangeException(nameof(battleType));
             }
-            var b = new PBEBattle(battleFormat, settings, t0, t1,
+            var b = PBEBattle.CreateTrainerBattle(battleFormat, settings, t0, t1,
                     battleTerrain: PBEDataProvider.GlobalRandom.RandomBattleTerrain());
             Add(new SinglePlayerClient(b, $"SP {_battles.Count + 1}"));
         }

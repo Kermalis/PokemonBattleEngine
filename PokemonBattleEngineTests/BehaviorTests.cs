@@ -30,7 +30,7 @@ namespace Kermalis.PokemonBattleEngineTests
                 CaughtBall = PBEItem.None
             };
 
-            var battle = new PBEBattle(PBEBattleFormat.Single, settings, new PBETrainerInfo(p0, "Trainer 0", false), new PBEWildInfo(p1));
+            var battle = PBEBattle.CreateWildBattle(PBEBattleFormat.Single, settings, new PBETrainerInfo(p0, "Trainer 0", false), new PBEWildInfo(p1));
 
             PBETrainer t1 = battle.Trainers[1];
             PBEBattlePokemon darkrai = t1.Party[0];
@@ -59,7 +59,7 @@ namespace Kermalis.PokemonBattleEngineTests
             var p1 = new TestPokemonCollection(1);
             p1[0] = new TestPokemon(settings, PBESpecies.Darkrai, 0, 100, PBEMove.Splash);
 
-            var battle = new PBEBattle(PBEBattleFormat.Single, settings, new PBETrainerInfo(p0, "Trainer 0", false), new PBETrainerInfo(p1, "Trainer 1", false));
+            var battle = PBEBattle.CreateTrainerBattle(PBEBattleFormat.Single, settings, new PBETrainerInfo(p0, "Trainer 0", false), new PBETrainerInfo(p1, "Trainer 1", false));
 
             PBETrainer t0 = battle.Trainers[0];
             PBEBattlePokemon magikarp = t0.Party[0];
@@ -92,7 +92,7 @@ namespace Kermalis.PokemonBattleEngineTests
             var p1 = new TestPokemonCollection(1);
             p1[0] = new TestPokemon(settings, PBESpecies.Darkrai, 0, 100, PBEMove.Splash);
 
-            var battle = new PBEBattle(PBEBattleFormat.Double, settings, new PBETrainerInfo(p0, "Trainer 0", false), new PBETrainerInfo(p1, "Trainer 1", false));
+            var battle = PBEBattle.CreateTrainerBattle(PBEBattleFormat.Double, settings, new PBETrainerInfo(p0, "Trainer 0", false), new PBETrainerInfo(p1, "Trainer 1", false));
 
             PBETrainer t0 = battle.Trainers[0];
             PBEBattlePokemon magikarp = t0.Party[0];
@@ -135,7 +135,7 @@ namespace Kermalis.PokemonBattleEngineTests
             var p1 = new TestPokemonCollection(1);
             p1[0] = new TestPokemon(settings, PBESpecies.Darkrai, 0, 100, PBEMove.Splash);
 
-            var battle = new PBEBattle(PBEBattleFormat.Triple, settings, new PBETrainerInfo(p0, "Trainer 0", false), new PBETrainerInfo(p1, "Trainer 1", false));
+            var battle = PBEBattle.CreateTrainerBattle(PBEBattleFormat.Triple, settings, new PBETrainerInfo(p0, "Trainer 0", false), new PBETrainerInfo(p1, "Trainer 1", false));
 
             PBETrainer t0 = battle.Trainers[0];
             PBEBattlePokemon magikarp = t0.Party[0];
@@ -173,7 +173,7 @@ namespace Kermalis.PokemonBattleEngineTests
             var p1 = new TestPokemonCollection(1);
             p1[0] = new TestPokemon(settings, PBESpecies.Darkrai, 0, 100, PBEMove.Protect);
 
-            var battle = new PBEBattle(PBEBattleFormat.Single, settings, new PBETrainerInfo(p0, "Trainer 0", false), new PBETrainerInfo(p1, "Trainer 1", false));
+            var battle = PBEBattle.CreateTrainerBattle(PBEBattleFormat.Single, settings, new PBETrainerInfo(p0, "Trainer 0", false), new PBETrainerInfo(p1, "Trainer 1", false));
             battle.OnNewEvent += PBEBattle.ConsoleBattleEventHandler;
 
             PBETrainer t0 = battle.Trainers[0];

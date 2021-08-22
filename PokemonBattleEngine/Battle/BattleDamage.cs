@@ -1089,7 +1089,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
             damage = damage * a * basePower / d;
             damage /= 50;
             damage += 2;
-            return (int)(damage * ((100d - _rand.RandomInt(0, 15)) / 100));
+            return (int)(damage * ((100f - _rand.RandomInt(0, 15)) / 100));
         }
         private int CalculateConfusionDamage(PBEBattlePokemon pkmn)
         {

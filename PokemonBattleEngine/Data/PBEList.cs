@@ -151,7 +151,7 @@ namespace Kermalis.PokemonBattleEngine.Data
         }
         IEnumerator IEnumerable.GetEnumerator()
         {
-            return GetEnumerator();
+            return ((IEnumerable<T>)this).GetEnumerator();
         }
     }
 }

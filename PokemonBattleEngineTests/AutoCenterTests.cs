@@ -27,7 +27,7 @@ namespace Kermalis.PokemonBattleEngineTests
             p[1] = new TestPokemon(settings, PBESpecies.Golem, 0, 100, PBEMove.Explosion);
             p[2] = new TestPokemon(settings, PBESpecies.Happiny, 0, 1, PBEMove.Protect, PBEMove.Splash);
 
-            var battle = new PBEBattle(PBEBattleFormat.Triple, settings, new PBETrainerInfo(p, "Trainer 0", false), new PBETrainerInfo(p, "Trainer 1", false));
+            var battle = PBEBattle.CreateTrainerBattle(PBEBattleFormat.Triple, settings, new PBETrainerInfo(p, "Trainer 0", false), new PBETrainerInfo(p, "Trainer 1", false));
             battle.OnNewEvent += PBEBattle.ConsoleBattleEventHandler;
 
             PBETrainer t0 = battle.Trainers[0];
@@ -81,7 +81,7 @@ namespace Kermalis.PokemonBattleEngineTests
             p0R[0] = p1[2] = new TestPokemon(settings, PBESpecies.Happiny, 0, 1, PBEMove.Protect, PBEMove.Splash);
             (faintLeft ? p0R : p0L)[1] = p1[3] = new TestPokemon(settings, PBESpecies.Weezing, 0, 100, PBEMove.Explosion);
 
-            var battle = new PBEBattle(PBEBattleFormat.Triple, settings,
+            var battle = PBEBattle.CreateTrainerBattle(PBEBattleFormat.Triple, settings,
                 new[] { new PBETrainerInfo(p0L, "Trainer 0", false), new PBETrainerInfo(p0C, "Trainer 1", false), new PBETrainerInfo(p0R, "Trainer 2", false) },
                 new[] { new PBETrainerInfo(p1, "Trainer 3", false) });
             battle.OnNewEvent += PBEBattle.ConsoleBattleEventHandler;
@@ -175,7 +175,7 @@ namespace Kermalis.PokemonBattleEngineTests
             };
             p1[2] = new TestPokemon(settings, PBESpecies.Sunkern, 0, 1, PBEMove.Splash, PBEMove.StealthRock);
 
-            var battle = new PBEBattle(PBEBattleFormat.Triple, settings, new PBETrainerInfo(p0, "Trainer 0", false), new PBETrainerInfo(p1, "Trainer 1", false));
+            var battle = PBEBattle.CreateTrainerBattle(PBEBattleFormat.Triple, settings, new PBETrainerInfo(p0, "Trainer 0", false), new PBETrainerInfo(p1, "Trainer 1", false));
             battle.OnNewEvent += PBEBattle.ConsoleBattleEventHandler;
 
             PBETrainer t0 = battle.Trainers[0];
@@ -256,7 +256,7 @@ namespace Kermalis.PokemonBattleEngineTests
             var pR = new TestPokemonCollection(1);
             pR[0] = new TestPokemon(settings, PBESpecies.Happiny, 0, 1, PBEMove.Protect, PBEMove.Splash);
 
-            var battle = new PBEBattle(PBEBattleFormat.Triple, settings,
+            var battle = PBEBattle.CreateTrainerBattle(PBEBattleFormat.Triple, settings,
                 new[] { new PBETrainerInfo(pL, "Trainer 0", false), new PBETrainerInfo(pC, "Trainer 1", false), new PBETrainerInfo(pR, "Trainer 2", false) },
                 new[] { new PBETrainerInfo(pL, "Trainer 3", false), new PBETrainerInfo(pC, "Trainer 4", false), new PBETrainerInfo(pR, "Trainer 5", false) });
             battle.OnNewEvent += PBEBattle.ConsoleBattleEventHandler;

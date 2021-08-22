@@ -162,7 +162,7 @@ namespace Kermalis.PokemonBattleEngineServer
             if (++_battlerCounter == NumBattlers)
             {
                 Console.WriteLine("All players connected!");
-                _battle = new PBEBattle(BattleFormat, Settings, _incomingTrainers[0], _incomingTrainers[1]);
+                _battle = PBEBattle.CreateTrainerBattle(BattleFormat, Settings, _incomingTrainers[0], _incomingTrainers[1]);
                 _incomingTrainers = null!; // _incomingTrainers is created again in Reset()
                 _battle.OnNewEvent += PBEBattle.ConsoleBattleEventHandler;
                 _battle.OnNewEvent += BattleEventHandler;

@@ -3,22 +3,13 @@ using Kermalis.PokemonBattleEngine.Packets;
 using Kermalis.PokemonBattleEngine.Utils;
 using System;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.ComponentModel;
 using System.Linq;
 
 namespace Kermalis.PokemonBattleEngine.Battle
 {
-    // TODO: Fully implement INPC
     /// <summary>Represents a specific Pokémon battle.</summary>
-    public sealed partial class PBEBattle : INotifyPropertyChanged
+    public sealed partial class PBEBattle
     {
-        private void OnPropertyChanged(string property)
-        {
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(property));
-        }
-        public event PropertyChangedEventHandler? PropertyChanged;
-
         public delegate void BattleStateChangedEvent(PBEBattle battle);
         public event BattleStateChangedEvent? OnStateChanged;
         private PBEBattleState _battleState;
@@ -31,7 +22,6 @@ namespace Kermalis.PokemonBattleEngine.Battle
                 {
                     _battleState = value;
                     OnStateChanged?.Invoke(this);
-                    OnPropertyChanged(nameof(BattleState));
                 }
             }
         }
@@ -45,7 +35,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
         public PBEBattleFormat BattleFormat { get; }
         public PBESettings Settings { get; }
         public PBETeams Teams { get; }
-        public ReadOnlyCollection<PBETrainer> Trainers { get; } // TODO: PBETrainers?
+        public PBETrainers Trainers { get; }
         public List<PBEBattlePokemon> ActiveBattlers { get; } = new(6);
         private readonly List<PBEBattlePokemon> _turnOrder;
 
@@ -57,11 +47,8 @@ namespace Kermalis.PokemonBattleEngine.Battle
         public List<IPBEPacket> Events { get; } = new();
 
         // Trainer battle
-        public PBEBattle(PBEBattleFormat battleFormat, PBESettings settings, PBETrainerInfo ti0, PBETrainerInfo ti1,
-            PBEBattleTerrain battleTerrain = PBEBattleTerrain.Plain, PBEWeather weather = PBEWeather.None, int? randomSeed = null)
-            : this(battleFormat, settings, new[] { ti0 }, new[] { ti1 }, battleTerrain: battleTerrain, weather: weather, randomSeed: randomSeed) { }
-        public PBEBattle(PBEBattleFormat battleFormat, PBESettings settings, IReadOnlyList<PBETrainerInfo> ti0, IReadOnlyList<PBETrainerInfo> ti1,
-            PBEBattleTerrain battleTerrain = PBEBattleTerrain.Plain, PBEWeather weather = PBEWeather.None, int? randomSeed = null)
+        private PBEBattle(PBEBattleFormat battleFormat, PBESettings settings, IReadOnlyList<PBETrainerInfo> ti0, IReadOnlyList<PBETrainerInfo> ti1,
+            PBEBattleTerrain battleTerrain, PBEWeather weather, int? randomSeed)
         {
             if (battleFormat >= PBEBattleFormat.MAX)
             {
@@ -83,17 +70,14 @@ namespace Kermalis.PokemonBattleEngine.Battle
             BattleFormat = battleFormat;
             Settings = settings;
             Weather = weather;
-            Teams = new PBETeams(this, ti0, ti1, out ReadOnlyCollection<PBETrainer> trainers);
+            Teams = new PBETeams(this, ti0, ti1, out PBETrainers trainers);
             Trainers = trainers;
             _turnOrder = new List<PBEBattlePokemon>(6);
             QueueUpPokemon();
         }
         // Wild battle
-        public PBEBattle(PBEBattleFormat battleFormat, PBESettings settings, PBETrainerInfo ti, PBEWildInfo wi,
-            PBEBattleTerrain battleTerrain = PBEBattleTerrain.Plain, PBEWeather weather = PBEWeather.None, int? randomSeed = null)
-            : this(battleFormat, settings, new[] { ti }, wi, battleTerrain: battleTerrain, weather: weather, randomSeed: randomSeed) { }
-        public PBEBattle(PBEBattleFormat battleFormat, PBESettings settings, IReadOnlyList<PBETrainerInfo> ti, PBEWildInfo wi,
-            PBEBattleTerrain battleTerrain = PBEBattleTerrain.Plain, PBEWeather weather = PBEWeather.None, int? randomSeed = null)
+        private PBEBattle(PBEBattleFormat battleFormat, PBESettings settings, IReadOnlyList<PBETrainerInfo> ti, PBEWildInfo wi,
+            PBEBattleTerrain battleTerrain, PBEWeather weather, int? randomSeed)
         {
             if (battleFormat >= PBEBattleFormat.MAX)
             {
@@ -115,13 +99,13 @@ namespace Kermalis.PokemonBattleEngine.Battle
             BattleFormat = battleFormat;
             Settings = settings;
             Weather = weather;
-            Teams = new PBETeams(this, ti, wi, out ReadOnlyCollection<PBETrainer> trainers);
+            Teams = new PBETeams(this, ti, wi, out PBETrainers trainers);
             Trainers = trainers;
             _turnOrder = new List<PBEBattlePokemon>(6);
             QueueUpPokemon();
         }
         // Remote battle
-        public PBEBattle(PBEBattlePacket packet)
+        private PBEBattle(PBEBattlePacket packet)
         {
             IsLocallyHosted = false;
             BattleType = packet.BattleType;
@@ -129,11 +113,36 @@ namespace Kermalis.PokemonBattleEngine.Battle
             BattleTerrain = packet.BattleTerrain;
             Weather = packet.Weather;
             Settings = packet.Settings;
-            Teams = new PBETeams(this, packet, out ReadOnlyCollection<PBETrainer> trainers);
+            Teams = new PBETeams(this, packet, out PBETrainers trainers);
             Trainers = trainers;
             // These two will never be used in a non-local battle
             _rand = null!;
             _turnOrder = null!;
+        }
+
+        public static PBEBattle CreateTrainerBattle(PBEBattleFormat battleFormat, PBESettings settings, PBETrainerInfo ti0, PBETrainerInfo ti1,
+            PBEBattleTerrain battleTerrain = PBEBattleTerrain.Plain, PBEWeather weather = PBEWeather.None, int? randomSeed = null)
+        {
+            return new PBEBattle(battleFormat, settings, new[] { ti0 }, new[] { ti1 }, battleTerrain, weather, randomSeed);
+        }
+        public static PBEBattle CreateTrainerBattle(PBEBattleFormat battleFormat, PBESettings settings, IReadOnlyList<PBETrainerInfo> ti0, IReadOnlyList<PBETrainerInfo> ti1,
+            PBEBattleTerrain battleTerrain = PBEBattleTerrain.Plain, PBEWeather weather = PBEWeather.None, int? randomSeed = null)
+        {
+            return new PBEBattle(battleFormat, settings, ti0, ti1, battleTerrain, weather, randomSeed);
+        }
+        public static PBEBattle CreateWildBattle(PBEBattleFormat battleFormat, PBESettings settings, PBETrainerInfo ti0, PBEWildInfo wi,
+            PBEBattleTerrain battleTerrain = PBEBattleTerrain.Plain, PBEWeather weather = PBEWeather.None, int? randomSeed = null)
+        {
+            return new PBEBattle(battleFormat, settings, new[] { ti0 }, wi, battleTerrain, weather, randomSeed);
+        }
+        public static PBEBattle CreateWildBattle(PBEBattleFormat battleFormat, PBESettings settings, IReadOnlyList<PBETrainerInfo> ti0, PBEWildInfo wi,
+            PBEBattleTerrain battleTerrain = PBEBattleTerrain.Plain, PBEWeather weather = PBEWeather.None, int? randomSeed = null)
+        {
+            return new PBEBattle(battleFormat, settings, ti0, wi, battleTerrain, weather, randomSeed);
+        }
+        public static PBEBattle CreateRemoteBattle(PBEBattlePacket packet)
+        {
+            return new PBEBattle(packet);
         }
 
         private void QueueUp(PBETeam team, PBEFieldPosition pos, ref PBETrainer? tr, ref int i)

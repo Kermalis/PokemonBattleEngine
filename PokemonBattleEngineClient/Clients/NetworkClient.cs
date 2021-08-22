@@ -109,7 +109,7 @@ namespace Kermalis.PokemonBattleEngineClient.Clients
 
         public NetworkClient(PBEClient client, PBEBattlePacket bp, byte battleId, string name) : base(name)
         {
-            var b = new PBEBattle(bp);
+            var b = PBEBattle.CreateRemoteBattle(bp);
             Battle = b;
             if (battleId != byte.MaxValue)
             {
