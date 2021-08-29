@@ -100,7 +100,7 @@ namespace Kermalis.PokemonBattleEngine.DefaultData
         {
             if (IsBerry(item))
             {
-                bData = GetBerryData(item, cache);
+                bData = GetBerryData(item, cache: cache);
                 return true;
             }
             bData = null;
@@ -114,29 +114,17 @@ namespace Kermalis.PokemonBattleEngine.DefaultData
         {
             return PBEDDMoveData.Data[move];
         }
-        public override bool HasEvolutions(IPBESpeciesForm pkmn, bool cache = true)
-        {
-            return HasEvolutions(pkmn.Species, pkmn.Form, cache);
-        }
         public override bool HasEvolutions(PBESpecies species, PBEForm form, bool cache = true)
         {
-            return PBEDDPokemonData.GetData(species, form, cache).HasEvolutions();
-        }
-        public override IPBEPokemonData GetPokemonData(IPBESpeciesForm pkmn, bool cache = true)
-        {
-            return GetPokemonData(pkmn.Species, pkmn.Form, cache);
+            return PBEDDPokemonData.GetData(species, form, cache: cache).HasEvolutions();
         }
         public override IPBEPokemonData GetPokemonData(PBESpecies species, PBEForm form, bool cache = true)
         {
-            return PBEDDPokemonData.GetData(species, form, cache);
-        }
-        public virtual IPBEDDPokemonDataExtended GetPokemonDataExtended(IPBESpeciesForm pkmn, bool cache = true)
-        {
-            return GetPokemonDataExtended(pkmn.Species, pkmn.Form, cache);
+            return PBEDDPokemonData.GetData(species, form, cache: cache);
         }
         public virtual IPBEDDPokemonDataExtended GetPokemonDataExtended(PBESpecies species, PBEForm form, bool cache = true)
         {
-            return PBEDDPokemonData.GetData(species, form, cache);
+            return PBEDDPokemonData.GetData(species, form, cache: cache);
         }
 
         public override int GetSpeciesCaught()
@@ -147,6 +135,11 @@ namespace Kermalis.PokemonBattleEngine.DefaultData
         public override IReadOnlyCollection<PBEMove> GetLegalMoves(PBESpecies species, PBEForm form, byte level)
         {
             return PBEDDLegalityChecker.GetLegalMoves(species, form, level);
+        }
+
+        public virtual IPBEDDPokemonDataExtended GetPokemonDataExtended(IPBESpeciesForm pkmn, bool cache = true)
+        {
+            return GetPokemonDataExtended(pkmn.Species, pkmn.Form, cache: cache);
         }
 
         #endregion
@@ -227,7 +220,7 @@ namespace Kermalis.PokemonBattleEngine.DefaultData
         {
             return PBEDDLocalizedString.GetAbilityByName(abilityName, out ability);
         }
-        public override IPBEReadOnlyLocalizedString GetAbilityDescription(PBEAbility ability)
+        public virtual IPBEReadOnlyLocalizedString GetAbilityDescription(PBEAbility ability)
         {
             return PBEDDLocalizedString.GetAbilityDescription(ability);
         }
@@ -238,10 +231,6 @@ namespace Kermalis.PokemonBattleEngine.DefaultData
         public override bool GetFormByName(PBESpecies species, string formName, [NotNullWhen(true)] out PBEForm? form)
         {
             return PBEDDLocalizedString.GetFormByName(species, formName, out form);
-        }
-        public override IPBEReadOnlyLocalizedString GetFormName(IPBESpeciesForm pkmn)
-        {
-            return GetFormName(pkmn.Species, pkmn.Form);
         }
         public override IPBEReadOnlyLocalizedString GetFormName(PBESpecies species, PBEForm form)
         {
@@ -259,7 +248,7 @@ namespace Kermalis.PokemonBattleEngine.DefaultData
         {
             return PBEDDLocalizedString.GetItemByName(itemName, out item);
         }
-        public override IPBEReadOnlyLocalizedString GetItemDescription(PBEItem item)
+        public virtual IPBEReadOnlyLocalizedString GetItemDescription(PBEItem item)
         {
             return PBEDDLocalizedString.GetItemDescription(item);
         }
@@ -271,7 +260,7 @@ namespace Kermalis.PokemonBattleEngine.DefaultData
         {
             return PBEDDLocalizedString.GetMoveByName(moveName, out move);
         }
-        public override IPBEReadOnlyLocalizedString GetMoveDescription(PBEMove move)
+        public virtual IPBEReadOnlyLocalizedString GetMoveDescription(PBEMove move)
         {
             return PBEDDLocalizedString.GetMoveDescription(move);
         }
@@ -291,11 +280,11 @@ namespace Kermalis.PokemonBattleEngine.DefaultData
         {
             return PBEDDLocalizedString.GetSpeciesByName(speciesName, out species);
         }
-        public override IPBEReadOnlyLocalizedString GetSpeciesCategory(PBESpecies species)
+        public virtual IPBEReadOnlyLocalizedString GetSpeciesCategory(PBESpecies species)
         {
             return PBEDDLocalizedString.GetSpeciesCategory(species);
         }
-        public override IPBEReadOnlyLocalizedString GetSpeciesEntry(PBESpecies species)
+        public virtual IPBEReadOnlyLocalizedString GetSpeciesEntry(PBESpecies species)
         {
             return PBEDDLocalizedString.GetSpeciesEntry(species);
         }

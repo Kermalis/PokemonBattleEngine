@@ -4,6 +4,7 @@ using Discord.WebSocket;
 using Kermalis.PokemonBattleEngine.Battle;
 using Kermalis.PokemonBattleEngine.Data;
 using Kermalis.PokemonBattleEngine.Data.Utils;
+using Kermalis.PokemonBattleEngine.DefaultData;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -34,7 +35,7 @@ namespace Kermalis.PokemonBattleEngineDiscord
                         .WithColor(Utils.RandomColor())
                         .WithTitle(PBEDataProvider.Instance.GetAbilityName(ability).English)
                         .WithUrl(Utils.URL)
-                        .WithDescription(PBEDataProvider.Instance.GetAbilityDescription(ability).English.Replace('\n', ' '));
+                        .WithDescription(PBEDefaultDataProvider.Instance.GetAbilityDescription(ability).English.Replace('\n', ' '));
                     await Context.Channel.SendMessageAsync(string.Empty, embed: embed.Build());
                 }
             }
@@ -131,7 +132,7 @@ namespace Kermalis.PokemonBattleEngineDiscord
                         .WithColor(color)
                         .WithTitle(PBEDataProvider.Instance.GetItemName(item).English)
                         .WithUrl(Utils.URL)
-                        .WithDescription(PBEDataProvider.Instance.GetItemDescription(item).English.Replace('\n', ' '));
+                        .WithDescription(PBEDefaultDataProvider.Instance.GetItemDescription(item).English.Replace('\n', ' '));
                     if (iData.FlingPower > 0)
                     {
                         embed.AddField("Fling Power", iData.FlingPower, true);
@@ -188,7 +189,7 @@ namespace Kermalis.PokemonBattleEngineDiscord
                         .WithColor(Utils.TypeColors[mData.Type])
                         .WithTitle(moveName)
                         .WithUrl(Utils.URL)
-                        .WithDescription(PBEDataProvider.Instance.GetMoveDescription(move).English.Replace('\n', ' '))
+                        .WithDescription(PBEDefaultDataProvider.Instance.GetMoveDescription(move).English.Replace('\n', ' '))
                         .AddField("Type", Utils.TypeEmotes[mData.Type], true)
                         .AddField("Category", mData.Category, true)
                         .AddField("Priority", mData.Priority, true)
@@ -329,9 +330,9 @@ namespace Kermalis.PokemonBattleEngineDiscord
                 EmbedBuilder embed = new EmbedBuilder()
                         .WithAuthor(Context.User)
                         .WithColor(Utils.GetColor(pData.Type1, pData.Type2))
-                        .WithTitle($"{speciesName}{formName} ― {PBEDataProvider.Instance.GetSpeciesCategory(species).English}")
+                        .WithTitle($"{speciesName}{formName} ― {PBEDefaultDataProvider.Instance.GetSpeciesCategory(species).English}")
                         .WithUrl(Utils.URL)
-                        .WithDescription(PBEDataProvider.Instance.GetSpeciesEntry(species).English.Replace('\n', ' '))
+                        .WithDescription(PBEDefaultDataProvider.Instance.GetSpeciesEntry(species).English.Replace('\n', ' '))
                         .AddField("Types", types, true)
                         .AddField("Gender Ratio", ratio, true)
                         .AddField("Weight", $"{pData.Weight:N1} kg", true)

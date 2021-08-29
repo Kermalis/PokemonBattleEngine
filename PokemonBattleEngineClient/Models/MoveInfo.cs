@@ -1,6 +1,7 @@
 ﻿using Avalonia.Media;
 using Kermalis.PokemonBattleEngine.Battle;
 using Kermalis.PokemonBattleEngine.Data;
+using Kermalis.PokemonBattleEngine.DefaultData;
 using ReactiveUI;
 using System;
 using System.Collections.Generic;
@@ -87,7 +88,7 @@ namespace Kermalis.PokemonBattleEngineClient.Models
                     case PBEMoveEffect.Struggle: sb.AppendLine("Recoil: 1/4 user's max HP"); break;
                 }
                 sb.AppendLine();
-                sb.Append(PBEDataProvider.Instance.GetMoveDescription(move).FromGlobalLanguage().Replace('\n', ' '));
+                sb.Append(PBEDefaultDataProvider.Instance.GetMoveDescription(move).FromGlobalLanguage().Replace('\n', ' '));
                 Description = sb.ToString();
             }
             SelectMoveCommand = ReactiveCommand.Create(() => clickAction(move));
