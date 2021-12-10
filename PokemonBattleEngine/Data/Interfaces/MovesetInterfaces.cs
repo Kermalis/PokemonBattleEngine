@@ -26,8 +26,21 @@ namespace Kermalis.PokemonBattleEngine.Data
     {
     }
 
-    internal static class PBEMovesetInterfaceExtensions
+    public static class PBEMovesetInterfaceExtensions
     {
+        public static int CountMoves(this IPBEMoveset moves)
+        {
+            int num = 0;
+            for (int i = 0; i < moves.Count; i++)
+            {
+                if (moves[i].Move != PBEMove.None)
+                {
+                    num++;
+                }
+            }
+            return num;
+        }
+
         internal static void ToBytes(this IPBEMoveset moveset, EndianBinaryWriter w)
         {
             byte count = (byte)moveset.Count;

@@ -296,6 +296,20 @@ namespace Kermalis.PokemonBattleEngine.Battle
             return false;
         }
 
+        // TODO: This is copied from PBEMovesetInterfaceExtensions
+        public int CountMoves()
+        {
+            int num = 0;
+            for (int i = 0; i < _list.Length; i++)
+            {
+                if (_list[i].Move != PBEMove.None)
+                {
+                    num++;
+                }
+            }
+            return num;
+        }
+
         public IEnumerator<PBEBattleMovesetSlot> GetEnumerator()
         {
             for (int i = 0; i < _list.Length; i++)
