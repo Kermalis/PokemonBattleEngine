@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
 	<PropertyGroup>
-		<TargetFrameworks>net5.0</TargetFrameworks>
+		<TargetFrameworks>net6.0</TargetFrameworks>
 		<OutputType>Exe</OutputType>
 		<RootNamespace>Kermalis.PokemonBattleEngineClient.Desktop</RootNamespace>
 		<Authors>Kermalis</Authors>
@@ -13,7 +13,6 @@
 	</PropertyGroup>
 
 	<ItemGroup>
-		<PackageReference Include="SQLitePCLRaw.bundle_e_sqlite3" Version="2.0.4" />
 		<ProjectReference Include="..\PokemonBattleEngineClient\PokemonBattleEngineClient.csproj" />
 	</ItemGroup>
 

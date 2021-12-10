@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
 	<PropertyGroup>
-		<TargetFramework>net5.0</TargetFramework>
+		<TargetFramework>net6.0</TargetFramework>
 		<OutputType>Exe</OutputType>
 		<RootNamespace>Kermalis.PokemonBattleEngineExtras</RootNamespace>
 		<Authors>Kermalis</Authors>
@@ -15,11 +15,9 @@
 	<ItemGroup>
 		<None Remove="Dependencies\**" />
 		<None Remove="DumpedData\**" />
-		<PackageReference Include="System.Drawing.Common" Version="5.0.2" />
+		<PackageReference Include="System.Drawing.Common" Version="6.0.0" />
 		<ProjectReference Include="..\PokemonBattleEngine.DefaultData\PokemonBattleEngine.DefaultData.csproj" />
-		<Reference Include="SimpleNARC">
-			<HintPath>Dependencies\SimpleNARC.dll</HintPath>
-		</Reference>
+		<Reference Include="Dependencies\SimpleNARC.dll" />
 	</ItemGroup>
 
 </Project>

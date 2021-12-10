@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
 	<PropertyGroup>
-		<TargetFramework>net5.0</TargetFramework>
+		<TargetFramework>net6.0</TargetFramework>
 		<OutputType>Library</OutputType>
 		<RootNamespace>Kermalis.PokemonBattleEngineClient</RootNamespace>
 		<Authors>Kermalis</Authors>
@@ -25,13 +25,11 @@
 		<Compile Remove="Dependencies\**" />
 		<EmbeddedResource Remove="Dependencies\**" />
 		<None Remove="Dependencies\**" />
-		<PackageReference Include="Avalonia" Version="0.10.7" />
-		<PackageReference Include="Avalonia.Desktop" Version="0.10.7" />
-		<PackageReference Include="Avalonia.ReactiveUI" Version="0.10.7" />
+		<PackageReference Include="Avalonia" Version="0.10.5" /> <!--Had to downgrade because Avalonia can't get their shit together-->
+		<PackageReference Include="Avalonia.Desktop" Version="0.10.5" />
+		<PackageReference Include="Avalonia.ReactiveUI" Version="0.10.5" />
 		<ProjectReference Include="..\PokemonBattleEngine.DefaultData\PokemonBattleEngine.DefaultData.csproj" />
-		<Reference Include="AvaloniaGif">
-			<HintPath>Dependencies\AvaloniaGif.dll</HintPath>
-		</Reference>
+		<Reference Include="Dependencies\AvaloniaGif.dll" />
 	</ItemGroup>
 
 </Project>
