@@ -1771,6 +1771,10 @@ namespace Kermalis.PokemonBattleEngine.Battle
         }
         private void CastformCherrimCheck(PBEBattlePokemon pkmn)
         {
+            if (pkmn.HP == 0)
+            {
+                return; // #344 - Castform/Cherrim can change form while fainting from Explosion, if they kill someone with a weather-blocking ability
+            }
             if (pkmn.Species == PBESpecies.Castform && pkmn.OriginalSpecies == PBESpecies.Castform)
             {
                 PBEForm newForm = PBEForm.Castform;
