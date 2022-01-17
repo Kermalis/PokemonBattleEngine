@@ -12,9 +12,14 @@ The engine does not send information a player should not know; information only 
 For example, a client has no way of knowing if the opponent has sent out a Pokémon with Illusion, the opponent's nature, stats, Hidden Power damage/type, unused item/moves, etc.
 Therefore, a custom/modified client cannot do anything more than an ordinary player unless it is hosting the battle. A lot of work has been done to prevent any cheating.
 
-Join our _(new-ish)_ [Discord server][Discord] to talk or try out the battle bot!
+Join our [Discord server][Discord] to talk or try out the battle bot!
 
 ![DiscordPreview](Discord%20Preview.png)
+
+## Important Note for Discord:
+If you are going to self-host the bot after downloading the code, you will need to have your bot join these two servers for the emotes:
+* https://discord.gg/bjrk2NRW8n
+* https://discord.gg/5gKGKWUg9u
 
 ## Other Features:
 * There are [settings](PokemonBattleEngine/Data/Settings.cs) that you can change, such as having more moves, a higher maximum level, or weaker poison.
