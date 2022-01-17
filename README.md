@@ -24,12 +24,12 @@ If you are going to self-host the bot after downloading the code, you will need 
 ## Other Features:
 * There are [settings](PokemonBattleEngine/Data/Settings.cs) that you can change, such as having more moves, a higher maximum level, or weaker poison.
 * There are helper classes to build legal Pokémon, as well as require legality for a battle.
-* Alternatively, you can represent the Pokémon in any way you wish, as long as you have the basic info to start the battle. This works well with custom games.
+* Alternatively, you can represent the Pokémon in any way you wish, as long as you have the basic info to start the battle. This works well with custom games like [PokemonGameEngine][PokemonGameEngine].
 * You can save battle replays to watch them back in the client or to train a neural network.
 * There is a work-in-progress random team generator inspired by [Pokémon Showdown](https://github.com/smogon/pokemon-showdown)'s which aims to work well with custom settings and moves.
 * The library has classes which automatically use the correct language from the games, meaning you can see the Pokémon's names, items, etc in your language, as long as your language was one supported by Pokémon B2W2.
-* Multi-Battles exist, but they can be customized to work in 2v1, 2v2, 3v1, or 3v3 battles.
-* Wild-Battles exist, and a wild Pokémon can appear disguised from the start.
+* Multi-Battles exist, and they can be customized to work in 2v1, 2v2, 3v1, or 3v3 battles.
+* Wild-Battles exist, and a wild Pokémon can appear disguised from the start, and have statuses etc.
 * EXP & Level up work, but not currently with remote battles. It can be added though.
 
 ----
@@ -41,7 +41,7 @@ If you are going to self-host the bot after downloading the code, you will need 
 
 ----
 ## PokemonBattleEngine Is Used By:
-* [PokemonGameEngine](https://github.com/Kermalis/PokemonGameEngine)
+* [PokemonGameEngine][PokemonGameEngine]
 
 ----
 ## PokemonBattleEngine Uses:
@@ -65,3 +65,4 @@ If you are going to self-host the bot after downloading the code, you will need 
 * [xUnit.net](https://github.com/xunit/xunit)
 
 [Discord]: https://discord.gg/Z4Mn9qX
+[PokemonGameEngine]: https://github.com/Kermalis/PokemonGameEngine
