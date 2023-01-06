@@ -15,7 +15,6 @@
 	<ItemGroup>
 		<PackageReference Include="EndianBinaryIO" Version="1.1.2" />
 		<PackageReference Include="Microsoft.Data.Sqlite" Version="6.0.0" />
-		<PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
 		<PackageReference Include="SQLitePCLRaw.bundle_e_sqlite3" Version="2.0.7" />
 		<ProjectReference Include="..\PokemonBattleEngine\PokemonBattleEngine.csproj" />
 		<None Update="PokemonBattleEngine.db">
