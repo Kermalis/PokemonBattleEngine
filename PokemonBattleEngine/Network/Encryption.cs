@@ -23,47 +23,48 @@ using System;
 using System.IO;
 using System.Security.Cryptography;
 
-namespace Kermalis.PokemonBattleEngine.Network
+namespace Kermalis.PokemonBattleEngine.Network;
+
+public sealed class PBEEncryption
 {
-    public sealed class PBEEncryption
-    {
-        private readonly SymmetricAlgorithm _algorithm;
+	private readonly SymmetricAlgorithm _algorithm;
 
-        public PBEEncryption(SymmetricAlgorithm algorithm)
-        {
-            _algorithm = algorithm;
-        }
+	public PBEEncryption(SymmetricAlgorithm algorithm)
+	{
+		_algorithm = algorithm;
+	}
 
-        public byte[] Encrypt(byte[] data)
-        {
-            _algorithm.GenerateIV();
-            using (var ms = new MemoryStream())
-            {
-                ms.Write(_algorithm.IV, 0, _algorithm.IV.Length);
-                using (var cs = new CryptoStream(ms, _algorithm.CreateEncryptor(_algorithm.Key, _algorithm.IV), CryptoStreamMode.Write))
-                {
-                    cs.Write(data, 0, data.Length);
-                    cs.FlushFinalBlock();
-                }
-                return ms.ToArray();
-            }
-        }
-        public byte[] Decrypt(byte[] data)
-        {
-            using (var ms = new MemoryStream(data))
-            {
-                byte[] iv = new byte[_algorithm.IV.Length];
-                ms.Read(iv, 0, iv.Length);
-                _algorithm.IV = iv;
-                using (var cs = new CryptoStream(ms, _algorithm.CreateDecryptor(_algorithm.Key, _algorithm.IV), CryptoStreamMode.Read))
-                {
-                    byte[] decrypted = new byte[data.Length];
-                    int byteCount = cs.Read(decrypted, 0, decrypted.Length);
-                    byte[] ret = new byte[byteCount];
-                    Buffer.BlockCopy(decrypted, 0, ret, 0, byteCount);
-                    return ret;
-                }
-            }
-        }
-    }
+	public byte[] Encrypt(byte[] data)
+	{
+		_algorithm.GenerateIV();
+		using (var ms = new MemoryStream())
+		{
+			ms.Write(_algorithm.IV, 0, _algorithm.IV.Length);
+			using (var cs = new CryptoStream(ms, _algorithm.CreateEncryptor(_algorithm.Key, _algorithm.IV), CryptoStreamMode.Write))
+			{
+				cs.Write(data, 0, data.Length);
+				cs.FlushFinalBlock();
+			}
+			return ms.ToArray();
+		}
+	}
+	public byte[] Decrypt(byte[] data)
+	{
+		using (var ms = new MemoryStream(data))
+		{
+			byte[] iv = new byte[_algorithm.IV.Length];
+			ms.Read(iv);
+
+			_algorithm.IV = iv;
+
+			using (var cs = new CryptoStream(ms, _algorithm.CreateDecryptor(_algorithm.Key, _algorithm.IV), CryptoStreamMode.Read))
+			{
+				byte[] decrypted = new byte[data.Length];
+				int byteCount = cs.Read(decrypted, 0, decrypted.Length);
+				byte[] ret = new byte[byteCount];
+				Array.Copy(decrypted, 0, ret, 0, byteCount);
+				return ret;
+			}
+		}
+	}
 }

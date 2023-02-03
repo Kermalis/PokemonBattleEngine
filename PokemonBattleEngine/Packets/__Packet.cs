@@ -1,9 +1,8 @@
 ﻿using System.Collections.ObjectModel;
 
-namespace Kermalis.PokemonBattleEngine.Packets
+namespace Kermalis.PokemonBattleEngine.Packets;
+
+public interface IPBEPacket
 {
-    public interface IPBEPacket
-    {
-        ReadOnlyCollection<byte> Data { get; }
-    }
+	ReadOnlyCollection<byte> Data { get; }
 }

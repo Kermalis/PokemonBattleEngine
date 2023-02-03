@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
 	<PropertyGroup>
-		<TargetFramework>net6.0</TargetFramework>
+		<TargetFramework>net7.0</TargetFramework>
 		<OutputType>Library</OutputType>
 		<RootNamespace>Kermalis.PokemonBattleEngine</RootNamespace>
 		<Authors>Kermalis</Authors>
@@ -13,8 +13,7 @@
 	</PropertyGroup>
 
 	<ItemGroup>
-		<PackageReference Include="EndianBinaryIO" Version="1.1.2" />
-		<PackageReference Include="Newtonsoft.Json" Version="13.0.2" />
+		<PackageReference Include="EndianBinaryIO" Version="2.1.0" />
 	</ItemGroup>
 
 </Project>

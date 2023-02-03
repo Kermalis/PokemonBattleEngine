@@ -27,176 +27,175 @@ using System.Linq;
 using System.Net;
 using System.Net.Sockets;
 
-namespace Kermalis.PokemonBattleEngine.Network
+namespace Kermalis.PokemonBattleEngine.Network;
+
+public sealed class PBEClient : IDisposable
 {
-    public sealed class PBEClient : IDisposable
-    {
-        public PBEBattle? Battle { get; set; }
+	public PBEBattle? Battle { get; set; }
 
-        private Socket? _socket;
-        private PBEEncryption? _encryption;
-        private PBEPacketProcessor _packetProcessor = null!; // Set in Connect()
-        private byte[]? _buffer;
+	private Socket? _socket;
+	private PBEEncryption? _encryption;
+	private PBEPacketProcessor _packetProcessor = null!; // Set in Connect()
+	private byte[]? _buffer;
 
-        public IPEndPoint? RemoteIP { get; private set; }
-        [MemberNotNullWhen(true, nameof(_socket), nameof(RemoteIP))]
-        public bool IsConnected { get; private set; }
+	public IPEndPoint? RemoteIP { get; private set; }
+	[MemberNotNullWhen(true, nameof(_socket), nameof(RemoteIP))]
+	public bool IsConnected { get; private set; }
 
-        public event EventHandler? Disconnected;
-        public event EventHandler<Exception>? Error;
-        public event EventHandler<IPBEPacket>? PacketReceived;
+	public event EventHandler? Disconnected;
+	public event EventHandler<Exception>? Error;
+	public event EventHandler<IPBEPacket>? PacketReceived;
 
-        public bool Connect(IPEndPoint ip, int millisecondsTimeout, PBEPacketProcessor packetProcessor, PBEEncryption? encryption = null)
-        {
-            if (millisecondsTimeout < -1)
-            {
-                throw new ArgumentException($"\"{nameof(millisecondsTimeout)}\" is invalid.");
-            }
+	public bool Connect(IPEndPoint ip, int millisecondsTimeout, PBEPacketProcessor packetProcessor, PBEEncryption? encryption = null)
+	{
+		if (millisecondsTimeout < -1)
+		{
+			throw new ArgumentException($"\"{nameof(millisecondsTimeout)}\" is invalid.");
+		}
 
-            Disconnect(true);
-            _socket = new Socket(ip.AddressFamily, SocketType.Stream, ProtocolType.Tcp);
+		Disconnect(true);
+		_socket = new Socket(ip.AddressFamily, SocketType.Stream, ProtocolType.Tcp);
 
-            try
-            {
-                if (_socket.BeginConnect(ip, null, null).AsyncWaitHandle.WaitOne(millisecondsTimeout))
-                {
-                    IsConnected = true;
-                    RemoteIP = ip;
-                    _encryption = encryption;
-                    _packetProcessor = packetProcessor;
-                    BeginReceive();
-                    return true;
-                }
-            }
-            catch (Exception ex)
-            {
-                NotifyError(ex);
-            }
-            Disconnect(false);
-            return false;
-        }
-        public void Disconnect(bool notify)
-        {
-            if (!IsConnected)
-            {
-                return;
-            }
-            IsConnected = false;
-            RemoteIP = null;
-            _encryption = null;
-            try
-            {
-                _socket.Shutdown(SocketShutdown.Both);
-            }
-            catch (Exception ex)
-            {
-                NotifyError(ex);
-            }
-            _socket.Dispose();
-            _socket = null;
-            if (notify)
-            {
-                Disconnected?.Invoke(this, EventArgs.Empty);
-            }
-        }
+		try
+		{
+			if (_socket.BeginConnect(ip, null, null).AsyncWaitHandle.WaitOne(millisecondsTimeout))
+			{
+				IsConnected = true;
+				RemoteIP = ip;
+				_encryption = encryption;
+				_packetProcessor = packetProcessor;
+				BeginReceive();
+				return true;
+			}
+		}
+		catch (Exception ex)
+		{
+			NotifyError(ex);
+		}
+		Disconnect(false);
+		return false;
+	}
+	public void Disconnect(bool notify)
+	{
+		if (!IsConnected)
+		{
+			return;
+		}
+		IsConnected = false;
+		RemoteIP = null;
+		_encryption = null;
+		try
+		{
+			_socket.Shutdown(SocketShutdown.Both);
+		}
+		catch (Exception ex)
+		{
+			NotifyError(ex);
+		}
+		_socket.Dispose();
+		_socket = null;
+		if (notify)
+		{
+			Disconnected?.Invoke(this, EventArgs.Empty);
+		}
+	}
 
-        public void Send(IPBEPacket packet)
-        {
-            if (!IsConnected)
-            {
-                throw new InvalidOperationException("Socket not connected.");
-            }
-            byte[] data = packet.Data.ToArray();
-            if (_encryption is not null)
-            {
-                data = _encryption.Encrypt(data);
-            }
-            PBENetworkUtils.Send(data, _socket);
-        }
+	public void Send(IPBEPacket packet)
+	{
+		if (!IsConnected)
+		{
+			throw new InvalidOperationException("Socket not connected.");
+		}
+		byte[] data = packet.Data.ToArray();
+		if (_encryption is not null)
+		{
+			data = _encryption.Encrypt(data);
+		}
+		PBENetworkUtils.Send(data, _socket);
+	}
 
-        private void BeginReceive()
-        {
-            _socket!.BeginReceive(_buffer = new byte[2], 0, 2, SocketFlags.None, OnReceiveLength, null);
-        }
-        private void OnReceiveLength(IAsyncResult ar)
-        {
-            if (!IsConnected)
-            {
-                return;
-            }
-            try
-            {
-                if (_socket.Poll(0, SelectMode.SelectRead) && _socket.Available <= 0)
-                {
-                    Disconnect(true);
-                }
-                else
-                {
-                    ushort dataLength = (ushort)(_buffer![0] | (_buffer[1] << 8));
-                    if (dataLength <= 0)
-                    {
-                        Disconnect(true);
-                    }
-                    else
-                    {
-                        _socket.BeginReceive(_buffer = new byte[dataLength], 0, dataLength, SocketFlags.None, OnReceiveData, null);
-                    }
-                }
-            }
-            catch (Exception ex)
-            {
-                NotifyError(ex);
-                Disconnect(true);
-            }
-        }
-        private void OnReceiveData(IAsyncResult ar)
-        {
-            if (!IsConnected)
-            {
-                return;
-            }
-            try
-            {
-                if (_socket.Poll(0, SelectMode.SelectRead) && _socket.Available <= 0)
-                {
-                    Disconnect(true);
-                }
-                else
-                {
-                    byte[] data = _buffer!;
-                    if (_encryption is not null)
-                    {
-                        data = _encryption.Decrypt(data);
-                    }
-                    PacketReceived?.Invoke(this, _packetProcessor.CreatePacket(data, Battle));
-                    BeginReceive();
-                }
-            }
-            catch (Exception ex)
-            {
-                NotifyError(ex);
-                Disconnect(true);
-            }
-        }
+	private void BeginReceive()
+	{
+		_socket!.BeginReceive(_buffer = new byte[2], 0, 2, SocketFlags.None, OnReceiveLength, null);
+	}
+	private void OnReceiveLength(IAsyncResult ar)
+	{
+		if (!IsConnected)
+		{
+			return;
+		}
+		try
+		{
+			if (_socket.Poll(0, SelectMode.SelectRead) && _socket.Available <= 0)
+			{
+				Disconnect(true);
+			}
+			else
+			{
+				ushort dataLength = (ushort)(_buffer![0] | (_buffer[1] << 8));
+				if (dataLength <= 0)
+				{
+					Disconnect(true);
+				}
+				else
+				{
+					_socket.BeginReceive(_buffer = new byte[dataLength], 0, dataLength, SocketFlags.None, OnReceiveData, null);
+				}
+			}
+		}
+		catch (Exception ex)
+		{
+			NotifyError(ex);
+			Disconnect(true);
+		}
+	}
+	private void OnReceiveData(IAsyncResult ar)
+	{
+		if (!IsConnected)
+		{
+			return;
+		}
+		try
+		{
+			if (_socket.Poll(0, SelectMode.SelectRead) && _socket.Available <= 0)
+			{
+				Disconnect(true);
+			}
+			else
+			{
+				byte[] data = _buffer!;
+				if (_encryption is not null)
+				{
+					data = _encryption.Decrypt(data);
+				}
+				PacketReceived?.Invoke(this, _packetProcessor.CreatePacket(data, Battle));
+				BeginReceive();
+			}
+		}
+		catch (Exception ex)
+		{
+			NotifyError(ex);
+			Disconnect(true);
+		}
+	}
 
-        private void NotifyError(Exception ex)
-        {
-            if (Error is not null)
-            {
-                Error.Invoke(this, ex);
-            }
-            else
-            {
-                throw ex;
-            }
-        }
+	private void NotifyError(Exception ex)
+	{
+		if (Error is not null)
+		{
+			Error.Invoke(this, ex);
+		}
+		else
+		{
+			throw ex;
+		}
+	}
 
-        public void Dispose()
-        {
-            Disconnect(true);
-            Disconnected = null;
-            Error = null;
-            PacketReceived = null;
-        }
-    }
+	public void Dispose()
+	{
+		Disconnect(true);
+		Disconnected = null;
+		Error = null;
+		PacketReceived = null;
+	}
 }

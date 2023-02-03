@@ -27,253 +27,252 @@ using System.Diagnostics.CodeAnalysis;
 using System.Net;
 using System.Net.Sockets;
 
-namespace Kermalis.PokemonBattleEngine.Network
+namespace Kermalis.PokemonBattleEngine.Network;
+
+public sealed class PBEServer : IDisposable
 {
-    public sealed class PBEServer : IDisposable
-    {
-        public PBEBattle? Battle { get; set; }
+	public PBEBattle? Battle { get; set; }
 
-        private Socket? _listener;
-        private PBEEncryption? _encryption;
-        private PBEPacketProcessor _packetProcessor = null!; // Set in Start()
-        private int _maxConnections;
+	private Socket? _listener;
+	private PBEEncryption? _encryption;
+	private PBEPacketProcessor _packetProcessor = null!; // Set in Start()
+	private int _maxConnections;
 
-        [MemberNotNullWhen(true, nameof(_listener))]
-        public bool IsRunning => _listener is not null;
-        private readonly HashSet<IPEndPoint> _bannedIPs = new();
-        private readonly HashSet<PBEServerClient> _connectedClients = new();
+	[MemberNotNullWhen(true, nameof(_listener))]
+	public bool IsRunning => _listener is not null;
+	private readonly HashSet<IPEndPoint> _bannedIPs = new();
+	private readonly HashSet<PBEServerClient> _connectedClients = new();
 
-        public event EventHandler<PBEServerClient>? ClientConnected;
-        public event EventHandler<PBEServerClient>? ClientDisconnected;
-        public event EventHandler<Exception>? Error;
-        public delegate void PBEClientRefusedEventHandler(object? sender, IPEndPoint refusedIP, bool refusedForBan);
-        public event PBEClientRefusedEventHandler? ClientRefused;
+	public event EventHandler<PBEServerClient>? ClientConnected;
+	public event EventHandler<PBEServerClient>? ClientDisconnected;
+	public event EventHandler<Exception>? Error;
+	public delegate void PBEClientRefusedEventHandler(object? sender, IPEndPoint refusedIP, bool refusedForBan);
+	public event PBEClientRefusedEventHandler? ClientRefused;
 
-        public void Start(IPEndPoint ip, int maxConnections, PBEPacketProcessor packetProcessor, PBEEncryption? encryption = null, bool dualMode = false)
-        {
-            if (IsRunning)
-            {
-                throw new InvalidOperationException("Server is already running.");
-            }
-            if (maxConnections <= 0)
-            {
-                throw new ArgumentException($"\"{nameof(maxConnections)}\" must be greater than 0.");
-            }
+	public void Start(IPEndPoint ip, int maxConnections, PBEPacketProcessor packetProcessor, PBEEncryption? encryption = null, bool dualMode = false)
+	{
+		if (IsRunning)
+		{
+			throw new InvalidOperationException("Server is already running.");
+		}
+		if (maxConnections <= 0)
+		{
+			throw new ArgumentException($"\"{nameof(maxConnections)}\" must be greater than 0.");
+		}
 
-            _listener = new Socket(ip.AddressFamily, SocketType.Stream, ProtocolType.Tcp);
-            if (ip.AddressFamily == AddressFamily.InterNetworkV6)
-            {
-                _listener.DualMode = dualMode;
-            }
-            _listener.Bind(ip);
-            _encryption = encryption;
-            _packetProcessor = packetProcessor;
+		_listener = new Socket(ip.AddressFamily, SocketType.Stream, ProtocolType.Tcp);
+		if (ip.AddressFamily == AddressFamily.InterNetworkV6)
+		{
+			_listener.DualMode = dualMode;
+		}
+		_listener.Bind(ip);
+		_encryption = encryption;
+		_packetProcessor = packetProcessor;
 
-            try
-            {
-                _maxConnections = maxConnections;
-                _listener.Listen(maxConnections);
-                _listener.BeginAccept(OnClientConnected, null);
-            }
-            catch (Exception ex)
-            {
-                NotifyError(ex);
-                Stop();
-            }
-        }
-        public void Stop()
-        {
-            if (!IsRunning)
-            {
-                return;
-            }
-            try
-            {
-                _listener.Shutdown(SocketShutdown.Both);
-            }
-            catch (Exception ex)
-            {
-                NotifyError(ex);
-            }
-            _listener.Dispose();
-            _listener = null;
-        }
+		try
+		{
+			_maxConnections = maxConnections;
+			_listener.Listen(maxConnections);
+			_listener.BeginAccept(OnClientConnected, null);
+		}
+		catch (Exception ex)
+		{
+			NotifyError(ex);
+			Stop();
+		}
+	}
+	public void Stop()
+	{
+		if (!IsRunning)
+		{
+			return;
+		}
+		try
+		{
+			_listener.Shutdown(SocketShutdown.Both);
+		}
+		catch (Exception ex)
+		{
+			NotifyError(ex);
+		}
+		_listener.Dispose();
+		_listener = null;
+	}
 
-        public void SendToAll(IPBEPacket packet)
-        {
-            lock (_connectedClients)
-            {
-                foreach (PBEServerClient client in _connectedClients)
-                {
-                    client.Send(packet);
-                }
-            }
-        }
+	public void SendToAll(IPBEPacket packet)
+	{
+		lock (_connectedClients)
+		{
+			foreach (PBEServerClient client in _connectedClients)
+			{
+				client.Send(packet);
+			}
+		}
+	}
 
-        private void OnClientConnected(IAsyncResult ar)
-        {
-            if (!IsRunning)
-            {
-                return;
-            }
-            PBEServerClient? client = null;
-            try
-            {
-                client = new PBEServerClient(_listener.EndAccept(ar), _encryption);
-                bool isBanned;
-                lock (_bannedIPs)
-                {
-                    isBanned = _bannedIPs.Contains(client.IP);
-                }
-                if (isBanned)
-                {
-                    RefuseClient(client, true);
-                }
-                else
-                {
-                    int count;
-                    lock (_connectedClients)
-                    {
-                        count = _connectedClients.Count;
-                    }
-                    if (count >= _maxConnections)
-                    {
-                        RefuseClient(client, false);
-                    }
-                    else
-                    {
-                        lock (_connectedClients)
-                        {
-                            _connectedClients.Add(client);
-                        }
-                        client.IsConnected = true;
-                        ClientConnected?.Invoke(this, client);
-                        BeginReceive(client);
-                    }
-                }
-            }
-            catch (Exception ex)
-            {
-                NotifyError(ex);
-                if (client is not null)
-                {
-                    DisconnectClient(client);
-                }
-            }
-            _listener.BeginAccept(OnClientConnected, _listener);
-        }
+	private void OnClientConnected(IAsyncResult ar)
+	{
+		if (!IsRunning)
+		{
+			return;
+		}
+		PBEServerClient? client = null;
+		try
+		{
+			client = new PBEServerClient(_listener.EndAccept(ar), _encryption);
+			bool isBanned;
+			lock (_bannedIPs)
+			{
+				isBanned = _bannedIPs.Contains(client.IP);
+			}
+			if (isBanned)
+			{
+				RefuseClient(client, true);
+			}
+			else
+			{
+				int count;
+				lock (_connectedClients)
+				{
+					count = _connectedClients.Count;
+				}
+				if (count >= _maxConnections)
+				{
+					RefuseClient(client, false);
+				}
+				else
+				{
+					lock (_connectedClients)
+					{
+						_connectedClients.Add(client);
+					}
+					client.IsConnected = true;
+					ClientConnected?.Invoke(this, client);
+					BeginReceive(client);
+				}
+			}
+		}
+		catch (Exception ex)
+		{
+			NotifyError(ex);
+			if (client is not null)
+			{
+				DisconnectClient(client);
+			}
+		}
+		_listener.BeginAccept(OnClientConnected, _listener);
+	}
 
-        private void BeginReceive(PBEServerClient client)
-        {
-            byte[] buffer = new byte[2];
-            client.Buffer = buffer;
-            client.Socket.BeginReceive(buffer, 0, 2, SocketFlags.None, OnReceiveLength, client);
-        }
-        private void OnReceiveLength(IAsyncResult ar)
-        {
-            var client = (PBEServerClient)ar.AsyncState!;
-            if (!client.IsConnected)
-            {
-                return;
-            }
-            try
-            {
-                if (client.Socket.Poll(0, SelectMode.SelectRead) && client.Socket.Available <= 0)
-                {
-                    DisconnectClient(client);
-                }
-                else
-                {
-                    ushort dataLength = (ushort)(client.Buffer![0] | (client.Buffer[1] << 8));
-                    if (dataLength <= 0)
-                    {
-                        DisconnectClient(client);
-                    }
-                    else
-                    {
-                        client.Socket.BeginReceive(client.Buffer = new byte[dataLength], 0, dataLength, SocketFlags.None, OnReceiveData, client);
-                    }
-                }
-            }
-            catch (Exception ex)
-            {
-                NotifyError(ex);
-                DisconnectClient(client);
-            }
-        }
-        private void OnReceiveData(IAsyncResult ar)
-        {
-            var client = (PBEServerClient)ar.AsyncState!;
-            if (!client.IsConnected)
-            {
-                return;
-            }
-            try
-            {
-                if (client.Socket.Poll(0, SelectMode.SelectRead) && client.Socket.Available <= 0)
-                {
-                    DisconnectClient(client);
-                }
-                else
-                {
-                    byte[] data = client.Buffer!;
-                    if (_encryption is not null)
-                    {
-                        data = _encryption.Decrypt(data);
-                    }
-                    client.FirePacketReceived(_packetProcessor.CreatePacket(data, Battle));
-                    BeginReceive(client);
-                }
-            }
-            catch (Exception ex)
-            {
-                NotifyError(ex);
-                DisconnectClient(client);
-            }
-        }
+	private void BeginReceive(PBEServerClient client)
+	{
+		byte[] buffer = new byte[2];
+		client.Buffer = buffer;
+		client.Socket.BeginReceive(buffer, 0, 2, SocketFlags.None, OnReceiveLength, client);
+	}
+	private void OnReceiveLength(IAsyncResult ar)
+	{
+		var client = (PBEServerClient)ar.AsyncState!;
+		if (!client.IsConnected)
+		{
+			return;
+		}
+		try
+		{
+			if (client.Socket.Poll(0, SelectMode.SelectRead) && client.Socket.Available <= 0)
+			{
+				DisconnectClient(client);
+			}
+			else
+			{
+				ushort dataLength = (ushort)(client.Buffer![0] | (client.Buffer[1] << 8));
+				if (dataLength <= 0)
+				{
+					DisconnectClient(client);
+				}
+				else
+				{
+					client.Socket.BeginReceive(client.Buffer = new byte[dataLength], 0, dataLength, SocketFlags.None, OnReceiveData, client);
+				}
+			}
+		}
+		catch (Exception ex)
+		{
+			NotifyError(ex);
+			DisconnectClient(client);
+		}
+	}
+	private void OnReceiveData(IAsyncResult ar)
+	{
+		var client = (PBEServerClient)ar.AsyncState!;
+		if (!client.IsConnected)
+		{
+			return;
+		}
+		try
+		{
+			if (client.Socket.Poll(0, SelectMode.SelectRead) && client.Socket.Available <= 0)
+			{
+				DisconnectClient(client);
+			}
+			else
+			{
+				byte[] data = client.Buffer!;
+				if (_encryption is not null)
+				{
+					data = _encryption.Decrypt(data);
+				}
+				client.FirePacketReceived(_packetProcessor.CreatePacket(data, Battle));
+				BeginReceive(client);
+			}
+		}
+		catch (Exception ex)
+		{
+			NotifyError(ex);
+			DisconnectClient(client);
+		}
+	}
 
-        private void RefuseClient(PBEServerClient client, bool isBanned)
-        {
-            client.Socket.Shutdown(SocketShutdown.Both);
-            client.Socket.Dispose();
-            ClientRefused?.Invoke(this, client.IP, isBanned);
-        }
-        public bool DisconnectClient(PBEServerClient client)
-        {
-            bool b;
-            lock (_connectedClients)
-            {
-                b = _connectedClients.Remove(client);
-            }
-            if (b)
-            {
-                client.IsConnected = false;
-                client.Socket.Shutdown(SocketShutdown.Both);
-                client.Socket.Dispose();
-                ClientDisconnected?.Invoke(this, client);
-            }
-            return b;
-        }
+	private void RefuseClient(PBEServerClient client, bool isBanned)
+	{
+		client.Socket.Shutdown(SocketShutdown.Both);
+		client.Socket.Dispose();
+		ClientRefused?.Invoke(this, client.IP, isBanned);
+	}
+	public bool DisconnectClient(PBEServerClient client)
+	{
+		bool b;
+		lock (_connectedClients)
+		{
+			b = _connectedClients.Remove(client);
+		}
+		if (b)
+		{
+			client.IsConnected = false;
+			client.Socket.Shutdown(SocketShutdown.Both);
+			client.Socket.Dispose();
+			ClientDisconnected?.Invoke(this, client);
+		}
+		return b;
+	}
 
-        private void NotifyError(Exception ex)
-        {
-            if (Error is not null)
-            {
-                Error.Invoke(this, ex);
-            }
-            else
-            {
-                throw ex;
-            }
-        }
+	private void NotifyError(Exception ex)
+	{
+		if (Error is not null)
+		{
+			Error.Invoke(this, ex);
+		}
+		else
+		{
+			throw ex;
+		}
+	}
 
-        public void Dispose()
-        {
-            Stop();
-            ClientConnected = null;
-            ClientDisconnected = null;
-            ClientRefused = null;
-            Error = null;
-        }
-    }
+	public void Dispose()
+	{
+		Stop();
+		ClientConnected = null;
+		ClientDisconnected = null;
+		ClientRefused = null;
+		Error = null;
+	}
 }
