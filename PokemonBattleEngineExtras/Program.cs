@@ -4,9 +4,9 @@ using System;
 
 namespace Kermalis.PokemonBattleEngineExtras;
 
-internal sealed class Program
+internal static class Program
 {
-	private enum Extra
+	private enum Extra : byte
 	{
 		AIBattle,
 		LocalizationDumper,
@@ -26,34 +26,45 @@ internal sealed class Program
 		}
 
 		Extra e = Extra.AIBattle;
-		switch (e)
+		try
 		{
-			case Extra.AIBattle:
+			switch (e)
 			{
-				PBEDefaultDataProvider.InitEngine(string.Empty);
-				_ = new AIBattleDemo();
-				break;
-			}
-			case Extra.LocalizationDumper:
-			{
-				using (SqliteConnection con = GetConnection())
+				case Extra.AIBattle:
 				{
-					LocalizationDumper.Run(con);
-					con.Close();
+					PBEDefaultDataProvider.InitEngine(string.Empty);
+					new AIBattleDemo().Run().GetAwaiter().GetResult();
+					break;
 				}
-				break;
-			}
-			case Extra.NARCTextDumper: NARCTextDumper.Dump(); break;
-			case Extra.PokemonDataDumper:
-			{
-				using (SqliteConnection con = GetConnection())
+				case Extra.LocalizationDumper:
 				{
-					PokemonDataDumper.Run(con);
-					con.Close();
+					using (SqliteConnection con = GetConnection())
+					{
+						LocalizationDumper.Run(con);
+						con.Close();
+					}
+					break;
 				}
-				break;
+				case Extra.NARCTextDumper:
+				{
+					NARCTextDumper.Dump();
+					break;
+				}
+				case Extra.PokemonDataDumper:
+				{
+					using (SqliteConnection con = GetConnection())
+					{
+						PokemonDataDumper.Run(con);
+						con.Close();
+					}
+					break;
+				}
 			}
-			default: throw new Exception(nameof(e));
+		}
+		catch (Exception ex)
+		{
+			Console.WriteLine(ex);
+			Console.ReadKey();
 		}
 	}
 }
