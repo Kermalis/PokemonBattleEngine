@@ -4,6 +4,7 @@ using Kermalis.PokemonBattleEngine.Utils;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 
 namespace Kermalis.PokemonBattleEngine.Battle;
 
@@ -12,19 +13,7 @@ public sealed partial class PBEBattle
 {
 	public delegate void BattleStateChangedEvent(PBEBattle battle);
 	public event BattleStateChangedEvent? OnStateChanged;
-	private PBEBattleState _battleState;
-	public PBEBattleState BattleState
-	{
-		get => _battleState;
-		private set
-		{
-			if (value != _battleState)
-			{
-				_battleState = value;
-				OnStateChanged?.Invoke(this);
-			}
-		}
-	}
+	public PBEBattleState BattleState { get; private set; }
 	public ushort TurnNumber { get; set; }
 	public PBEBattleResult? BattleResult { get; set; }
 
@@ -232,7 +221,7 @@ public sealed partial class PBEBattle
 			default: throw new ArgumentOutOfRangeException(nameof(BattleFormat));
 		}
 
-		BattleState = PBEBattleState.ReadyToBegin;
+		SetBattleState(PBEBattleState.ReadyToBegin);
 	}
 	private void CheckLocal()
 	{
@@ -243,16 +232,18 @@ public sealed partial class PBEBattle
 	}
 	/// <summary>Begins the battle.</summary>
 	/// <exception cref="InvalidOperationException">Thrown when <see cref="BattleState"/> is not <see cref="PBEBattleState.ReadyToBegin"/>.</exception>
-	public void Begin()
+	public async Task Begin()
 	{
 		CheckLocal();
-		if (_battleState != PBEBattleState.ReadyToBegin)
+		if (BattleState != PBEBattleState.ReadyToBegin)
 		{
 			throw new InvalidOperationException($"{nameof(BattleState)} must be {PBEBattleState.ReadyToBegin} to begin the battle.");
 		}
-		BattleState = PBEBattleState.Processing;
-		BroadcastBattle(); // The first packet sent is PBEBattlePacket which replays rely on
-						   // Wild Pokémon appearing
+
+		SetBattleState(PBEBattleState.Processing);
+		await BroadcastBattle(); // The first packet sent is PBEBattlePacket which replays rely on
+
+		// Wild Pokémon appearing
 		if (BattleType == PBEBattleType.Wild)
 		{
 			PBETeam team = Teams[1];
@@ -264,70 +255,78 @@ public sealed partial class PBEBattle
 				appearances[i] = new PBEPkmnAppearedInfo(trainer.SwitchInQueue[i].Pkmn);
 			}
 			trainer.SwitchInQueue.Clear();
-			BroadcastWildPkmnAppeared(appearances);
+			await BroadcastWildPkmnAppeared(appearances);
 		}
-		SwitchesOrActions();
+		await SwitchesOrActions();
 	}
 	/// <summary>Runs a turn.</summary>
 	/// <exception cref="InvalidOperationException">Thrown when <see cref="BattleState"/> is not <see cref="PBEBattleState.ReadyToRunTurn"/>.</exception>
-	public void RunTurn()
+	public async Task RunTurn()
 	{
 		CheckLocal();
-		if (_battleState != PBEBattleState.ReadyToRunTurn)
+		if (BattleState != PBEBattleState.ReadyToRunTurn)
 		{
 			throw new InvalidOperationException($"{nameof(BattleState)} must be {PBEBattleState.ReadyToRunTurn} to run a turn.");
 		}
-		BattleState = PBEBattleState.Processing;
-		FleeCheck();
-		if (EndCheck())
+
+		SetBattleState(PBEBattleState.Processing);
+		await FleeCheck();
+		if (await EndCheck())
 		{
 			return;
 		}
 		DetermineTurnOrder();
-		RunActionsInOrder();
-		TurnEnded();
+		await RunActionsInOrder();
+		await TurnEnded();
 	}
-	public void RunSwitches()
+	public async Task RunSwitches()
 	{
 		CheckLocal();
-		if (_battleState != PBEBattleState.ReadyToRunSwitches)
+		if (BattleState != PBEBattleState.ReadyToRunSwitches)
 		{
 			throw new InvalidOperationException($"{nameof(BattleState)} must be {PBEBattleState.ReadyToRunSwitches} to run switches.");
 		}
-		BattleState = PBEBattleState.Processing;
-		FleeCheck();
-		if (EndCheck())
+
+		SetBattleState(PBEBattleState.Processing);
+		await FleeCheck();
+		if (await EndCheck())
 		{
 			return;
 		}
-		SwitchesOrActions();
+		await SwitchesOrActions();
 	}
 
+	private void SetBattleState(PBEBattleState state)
+	{
+		if (state != BattleState)
+		{
+			BattleState = state;
+			OnStateChanged?.Invoke(this);
+		}
+	}
 	/// <summary>Sets <see cref="BattleState"/> to <see cref="PBEBattleState.Ended"/> and clears <see cref="OnNewEvent"/> and <see cref="OnStateChanged"/>. Does not touch <see cref="BattleResult"/>.</summary>
 	public void SetEnded()
 	{
-		if (_battleState != PBEBattleState.Ended)
-		{
-			BattleState = PBEBattleState.Ended;
-			OnNewEvent = null;
-			OnStateChanged = null;
-		}
+		SetBattleState(PBEBattleState.Ended);
+		OnNewEvent = null;
+		OnStateChanged = null;
 	}
-	private bool EndCheck()
+	private async Task<bool> EndCheck()
 	{
-		if (BattleResult is not null)
+		if (BattleResult is null)
 		{
-			BroadcastBattleResult(BattleResult.Value);
-			foreach (PBEBattlePokemon pkmn in ActiveBattlers)
-			{
-				pkmn.ApplyNaturalCure(); // Natural Cure happens at the end of the battle. Pokémon should be copied when BattleState is set to "Ended", not upon battle result.
-			}
-			SetEnded();
-			return true;
+			return false;
 		}
-		return false;
+
+		await BroadcastBattleResult(BattleResult.Value);
+		foreach (PBEBattlePokemon pkmn in ActiveBattlers)
+		{
+			pkmn.ApplyNaturalCure(); // Natural Cure happens at the end of the battle. Pokémon should be copied when BattleState is set to "Ended", not upon battle result.
+		}
+		SetEnded();
+		return true;
 	}
-	private void SwitchesOrActions()
+	private async Task SwitchesOrActions()
 	{
 		// Checking SwitchInQueue count since SwitchInsRequired is set to 0 after submitting switches
 		PBETrainer[] trainersWithSwitchIns = Trainers.Where(t => t.SwitchInQueue.Count > 0).ToArray();
@@ -347,9 +346,9 @@ public sealed partial class PBEBattle
 					ActiveBattlers.Add(pkmn); // Add before broadcast
 					list.Add(pkmn);
 				}
-				BroadcastPkmnSwitchIn(trainer, switches);
+				await BroadcastPkmnSwitchIn(trainer, switches);
 			}
-			DoSwitchInEffects(list);
+			await DoSwitchInEffects(list);
 		}
 
 		foreach (PBETrainer trainer in Trainers)
@@ -408,15 +407,15 @@ public sealed partial class PBEBattle
 		trainersWithSwitchIns = Trainers.Where(t => t.SwitchInsRequired > 0).ToArray();
 		if (trainersWithSwitchIns.Length > 0)
 		{
-			BattleState = PBEBattleState.WaitingForSwitchIns;
+			SetBattleState(PBEBattleState.WaitingForSwitchIns);
 			foreach (PBETrainer trainer in trainersWithSwitchIns)
 			{
-				BroadcastSwitchInRequest(trainer);
+				await BroadcastSwitchInRequest(trainer);
 			}
 		}
 		else
 		{
-			if (EndCheck())
+			if (await EndCheck())
 			{
 				return;
 			}
@@ -429,18 +428,18 @@ public sealed partial class PBEBattle
 
 				if (pkmn.Status2.HasFlag(PBEStatus2.Flinching))
 				{
-					BroadcastStatus2(pkmn, pkmn, PBEStatus2.Flinching, PBEStatusAction.Ended);
+					await BroadcastStatus2(pkmn, pkmn, PBEStatus2.Flinching, PBEStatusAction.Ended);
 				}
 				if (pkmn.Status2.HasFlag(PBEStatus2.HelpingHand))
 				{
-					BroadcastStatus2(pkmn, pkmn, PBEStatus2.HelpingHand, PBEStatusAction.Ended);
+					await BroadcastStatus2(pkmn, pkmn, PBEStatus2.HelpingHand, PBEStatusAction.Ended);
 				}
 				if (pkmn.Status2.HasFlag(PBEStatus2.LockOn))
 				{
 					if (--pkmn.LockOnTurns == 0)
 					{
 						pkmn.LockOnPokemon = null;
-						BroadcastStatus2(pkmn, pkmn, PBEStatus2.LockOn, PBEStatusAction.Ended);
+						await BroadcastStatus2(pkmn, pkmn, PBEStatus2.LockOn, PBEStatusAction.Ended);
 					}
 				}
 				if (pkmn.Protection_Used)
@@ -449,7 +448,7 @@ public sealed partial class PBEBattle
 					pkmn.Protection_Used = false;
 					if (pkmn.Status2.HasFlag(PBEStatus2.Protected))
 					{
-						BroadcastStatus2(pkmn, pkmn, PBEStatus2.Protected, PBEStatusAction.Ended);
+						await BroadcastStatus2(pkmn, pkmn, PBEStatus2.Protected, PBEStatusAction.Ended);
 					}
 				}
 				else
@@ -459,18 +458,18 @@ public sealed partial class PBEBattle
 				if (pkmn.Status2.HasFlag(PBEStatus2.Roost))
 				{
 					pkmn.EndRoost();
-					BroadcastStatus2(pkmn, pkmn, PBEStatus2.Roost, PBEStatusAction.Ended);
+					await BroadcastStatus2(pkmn, pkmn, PBEStatus2.Roost, PBEStatusAction.Ended);
 				}
 			}
 			foreach (PBETeam team in Teams)
 			{
 				if (team.TeamStatus.HasFlag(PBETeamStatus.QuickGuard))
 				{
-					BroadcastTeamStatus(team, PBETeamStatus.QuickGuard, PBETeamStatusAction.Ended);
+					await BroadcastTeamStatus(team, PBETeamStatus.QuickGuard, PBETeamStatusAction.Ended);
 				}
 				if (team.TeamStatus.HasFlag(PBETeamStatus.WideGuard))
 				{
-					BroadcastTeamStatus(team, PBETeamStatus.WideGuard, PBETeamStatusAction.Ended);
+					await BroadcastTeamStatus(team, PBETeamStatus.WideGuard, PBETeamStatusAction.Ended);
 				}
 			}
 			foreach (PBETrainer trainer in Trainers)
@@ -484,29 +483,30 @@ public sealed partial class PBEBattle
 			if (BattleFormat == PBEBattleFormat.Triple && Teams.All(t => t.NumPkmnOnField == 1))
 			{
 				PBEBattlePokemon pkmn0 = ActiveBattlers[0],
-						pkmn1 = ActiveBattlers[1];
+					pkmn1 = ActiveBattlers[1];
 				if ((pkmn0.FieldPosition == PBEFieldPosition.Left && pkmn1.FieldPosition == PBEFieldPosition.Left) || (pkmn0.FieldPosition == PBEFieldPosition.Right && pkmn1.FieldPosition == PBEFieldPosition.Right))
 				{
 					PBEFieldPosition pkmn0OldPos = pkmn0.FieldPosition,
-							pkmn1OldPos = pkmn1.FieldPosition;
+						pkmn1OldPos = pkmn1.FieldPosition;
 					pkmn0.FieldPosition = PBEFieldPosition.Center;
 					pkmn1.FieldPosition = PBEFieldPosition.Center;
-					BroadcastAutoCenter(pkmn0, pkmn0OldPos, pkmn1, pkmn1OldPos);
+					await BroadcastAutoCenter(pkmn0, pkmn0OldPos, pkmn1, pkmn1OldPos);
 				}
 			}
 
 			TurnNumber++;
-			BroadcastTurnBegan();
+			await BroadcastTurnBegan();
 			foreach (PBETeam team in Teams)
 			{
 				bool old = team.MonFaintedThisTurn; // Fire events in a specific order
 				team.MonFaintedThisTurn = false;
 				team.MonFaintedLastTurn = old;
 			}
-			BattleState = PBEBattleState.WaitingForActions;
+
+			SetBattleState(PBEBattleState.WaitingForActions);
 			foreach (PBETrainer trainer in Trainers.Where(t => t.NumConsciousPkmn > 0))
 			{
-				BroadcastActionsRequest(trainer);
+				await BroadcastActionsRequest(trainer);
 			}
 		}
 	}
@@ -665,7 +665,7 @@ public sealed partial class PBEBattle
 			_turnOrder.AddRange(GetActingOrder(bracket, ignoreItemsThatActivate));
 		}
 	}
-	private void RunActionsInOrder()
+	private async Task RunActionsInOrder()
 	{
 		foreach (PBEBattlePokemon pkmn in _turnOrder.ToArray()) // Copy the list so a faint or ejection does not cause a collection modified exception
 		{
@@ -673,23 +673,24 @@ public sealed partial class PBEBattle
 			{
 				return;
 			}
+
 			else if (ActiveBattlers.Contains(pkmn))
 			{
 				switch (pkmn.TurnAction!.Decision)
 				{
 					case PBETurnDecision.Fight:
 					{
-						UseMove(pkmn, pkmn.TurnAction.FightMove, pkmn.TurnAction.FightTargets);
+						await UseMove(pkmn, pkmn.TurnAction.FightMove, pkmn.TurnAction.FightTargets);
 						break;
 					}
 					case PBETurnDecision.Item:
 					{
-						UseItem(pkmn, pkmn.TurnAction.UseItem);
+						await UseItem(pkmn, pkmn.TurnAction.UseItem);
 						break;
 					}
 					case PBETurnDecision.SwitchOut:
 					{
-						SwitchTwoPokemon(pkmn, pkmn.Trainer.GetPokemon(pkmn.TurnAction.SwitchPokemonId));
+						await SwitchTwoPokemon(pkmn, pkmn.Trainer.GetPokemon(pkmn.TurnAction.SwitchPokemonId));
 						break;
 					}
 					case PBETurnDecision.WildFlee:
@@ -702,17 +703,17 @@ public sealed partial class PBEBattle
 			}
 		}
 	}
-	private void TurnEnded()
+	private async Task TurnEnded()
 	{
-		if (EndCheck())
+		if (await EndCheck())
 		{
 			return;
 		}
 
 		// Verified: Effects before LightScreen/LuckyChant/Reflect/Safeguard/TrickRoom
-		DoTurnEndedEffects();
+		await DoTurnEndedEffects();
 
-		if (EndCheck())
+		if (await EndCheck())
 		{
 			return;
 		}
@@ -725,7 +726,7 @@ public sealed partial class PBEBattle
 				team.LightScreenCount--;
 				if (team.LightScreenCount == 0)
 				{
-					BroadcastTeamStatus(team, PBETeamStatus.LightScreen, PBETeamStatusAction.Ended);
+					await BroadcastTeamStatus(team, PBETeamStatus.LightScreen, PBETeamStatusAction.Ended);
 				}
 			}
 			if (team.TeamStatus.HasFlag(PBETeamStatus.LuckyChant))
@@ -733,7 +734,7 @@ public sealed partial class PBEBattle
 				team.LuckyChantCount--;
 				if (team.LuckyChantCount == 0)
 				{
-					BroadcastTeamStatus(team, PBETeamStatus.LuckyChant, PBETeamStatusAction.Ended);
+					await BroadcastTeamStatus(team, PBETeamStatus.LuckyChant, PBETeamStatusAction.Ended);
 				}
 			}
 			if (team.TeamStatus.HasFlag(PBETeamStatus.Reflect))
@@ -741,7 +742,7 @@ public sealed partial class PBEBattle
 				team.ReflectCount--;
 				if (team.ReflectCount == 0)
 				{
-					BroadcastTeamStatus(team, PBETeamStatus.Reflect, PBETeamStatusAction.Ended);
+					await BroadcastTeamStatus(team, PBETeamStatus.Reflect, PBETeamStatusAction.Ended);
 				}
 			}
 			if (team.TeamStatus.HasFlag(PBETeamStatus.Safeguard))
@@ -749,7 +750,7 @@ public sealed partial class PBEBattle
 				team.SafeguardCount--;
 				if (team.SafeguardCount == 0)
 				{
-					BroadcastTeamStatus(team, PBETeamStatus.Safeguard, PBETeamStatusAction.Ended);
+					await BroadcastTeamStatus(team, PBETeamStatus.Safeguard, PBETeamStatusAction.Ended);
 				}
 			}
 			if (team.TeamStatus.HasFlag(PBETeamStatus.Tailwind))
@@ -757,7 +758,7 @@ public sealed partial class PBEBattle
 				team.TailwindCount--;
 				if (team.TailwindCount == 0)
 				{
-					BroadcastTeamStatus(team, PBETeamStatus.Tailwind, PBETeamStatusAction.Ended);
+					await BroadcastTeamStatus(team, PBETeamStatus.Tailwind, PBETeamStatusAction.Ended);
 				}
 			}
 		}
@@ -767,10 +768,10 @@ public sealed partial class PBEBattle
 			TrickRoomCount--;
 			if (TrickRoomCount == 0)
 			{
-				BroadcastBattleStatus(PBEBattleStatus.TrickRoom, PBEBattleStatusAction.Ended);
+				await BroadcastBattleStatus(PBEBattleStatus.TrickRoom, PBEBattleStatusAction.Ended);
 			}
 		}
 
-		SwitchesOrActions();
+		await SwitchesOrActions();
 	}
 }

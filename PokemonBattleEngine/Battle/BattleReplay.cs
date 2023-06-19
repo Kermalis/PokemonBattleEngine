@@ -6,6 +6,7 @@ using System;
 using System.IO;
 using System.Linq;
 using System.Security.Cryptography;
+using System.Threading.Tasks;
 
 namespace Kermalis.PokemonBattleEngine.Battle;
 
@@ -24,23 +25,23 @@ public sealed partial class PBEBattle
 		{
 			throw new InvalidOperationException("Can only save replays of locally hosted battles");
 		}
-		if (_battleState != PBEBattleState.Ended)
+		if (BattleState != PBEBattleState.Ended)
 		{
 			throw new InvalidOperationException($"{nameof(BattleState)} must be {PBEBattleState.Ended} to save a replay.");
 		}
 	}
 
-	public void SaveReplay()
+	public async Task SaveReplay()
 	{
 		CheckCanSaveReplay();
-		SaveReplay(GetDefaultReplayFileName());
+		await SaveReplay(GetDefaultReplayFileName());
 	}
-	public void SaveReplayToFolder(string path)
+	public async Task SaveReplayToFolder(string path)
 	{
 		CheckCanSaveReplay();
-		SaveReplay(Path.Combine(path, GetDefaultReplayFileName()));
+		await SaveReplay(Path.Combine(path, GetDefaultReplayFileName()));
 	}
-	public void SaveReplay(string path)
+	public async Task SaveReplay(string path)
 	{
 		CheckCanSaveReplay();
 
@@ -62,13 +63,13 @@ public sealed partial class PBEBattle
 			ms.Position = 0;
 			w.WriteBytes(MD5.HashData(ms));
 
-			File.WriteAllBytes(path, ms.ToArray());
+			await File.WriteAllBytesAsync(path, ms.ToArray());
 		}
 	}
 
-	public static PBEBattle LoadReplay(string path, PBEPacketProcessor packetProcessor)
+	public static async Task<PBEBattle> LoadReplay(string path, PBEPacketProcessor packetProcessor)
 	{
-		byte[] fileBytes = File.ReadAllBytes(path);
+		byte[] fileBytes = await File.ReadAllBytesAsync(path);
 		using (var s = new MemoryStream(fileBytes))
 		{
 			var r = new EndianBinaryReader(s);
@@ -82,6 +83,7 @@ public sealed partial class PBEBattle
 					throw new InvalidDataException();
 				}
 			}
+
 			ushort version = r.ReadUInt16(); // Unused for now
 			int seed = r.ReadInt32(); // Unused for now
 			PBEBattle b = null!; // The first packet should be a PBEBattlePacket

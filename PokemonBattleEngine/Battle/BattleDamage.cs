@@ -1,6 +1,7 @@
 ﻿using Kermalis.PokemonBattleEngine.Data;
 using System;
 using System.Linq;
+using System.Threading.Tasks;
 
 namespace Kermalis.PokemonBattleEngine.Battle;
 
@@ -18,20 +19,22 @@ public sealed partial class PBEBattle
 	}
 
 	// Verified: Sturdy and Substitute only activate on damaging attacks (so draining HP or liquid ooze etc can bypass sturdy)
-	private ushort DealDamage(PBEBattlePokemon culprit, PBEBattlePokemon victim, int hp, bool ignoreSubstitute = true, bool ignoreSturdy = true)
+	private async Task<ushort> DealDamage(PBEBattlePokemon culprit, PBEBattlePokemon victim, int hp, bool ignoreSubstitute = true, bool ignoreSturdy = true)
 	{
 		if (hp < 1)
 		{
 			hp = 1;
 		}
+
 		if (!ignoreSubstitute && victim.Status2.HasFlag(PBEStatus2.Substitute))
 		{
 			ushort oldSubHP = victim.SubstituteHP;
 			victim.SubstituteHP = (ushort)Math.Max(0, victim.SubstituteHP - hp);
 			ushort damageAmt = (ushort)(oldSubHP - victim.SubstituteHP);
-			BroadcastStatus2(victim, culprit, PBEStatus2.Substitute, PBEStatusAction.Damage);
+			await BroadcastStatus2(victim, culprit, PBEStatus2.Substitute, PBEStatusAction.Damage);
 			return damageAmt;
 		}
+
 		ushort oldHP = victim.HP;
 		float oldPercentage = victim.HPPercentage;
 		victim.HP = (ushort)Math.Max(0, victim.HP - hp);
@@ -56,27 +59,28 @@ public sealed partial class PBEBattle
 			}
 		}
 		victim.UpdateHPPercentage();
-		BroadcastPkmnHPChanged(victim, oldHP, oldPercentage);
+		await BroadcastPkmnHPChanged(victim, oldHP, oldPercentage);
 		if (sturdyHappened)
 		{
-			BroadcastAbility(victim, culprit, PBEAbility.Sturdy, PBEAbilityAction.Damage);
-			BroadcastEndure(victim);
+			await BroadcastAbility(victim, culprit, PBEAbility.Sturdy, PBEAbilityAction.Damage);
+			await BroadcastEndure(victim);
 		}
 		else if (focusBandHappened)
 		{
-			BroadcastItem(victim, culprit, PBEItem.FocusBand, PBEItemAction.Damage);
+			await BroadcastItem(victim, culprit, PBEItem.FocusBand, PBEItemAction.Damage);
 		}
 		else if (focusSashHappened)
 		{
-			BroadcastItem(victim, culprit, PBEItem.FocusSash, PBEItemAction.Consumed);
+			await BroadcastItem(victim, culprit, PBEItem.FocusSash, PBEItemAction.Consumed);
 		}
 		return (ushort)(oldHP - victim.HP);
 	}
+
 	/// <summary>Restores HP to <paramref name="pkmn"/> and broadcasts the HP changing if it changes.</summary>
 	/// <param name="pkmn">The Pokémon receiving the HP.</param>
 	/// <param name="hp">The amount of HP <paramref name="pkmn"/> will try to gain.</param>
 	/// <returns>The amount of HP restored.</returns>
-	private ushort HealDamage(PBEBattlePokemon pkmn, int hp)
+	private async Task<ushort> HealDamage(PBEBattlePokemon pkmn, int hp)
 	{
 		if (hp < 1)
 		{
@@ -89,12 +93,12 @@ public sealed partial class PBEBattle
 		if (healAmt > 0)
 		{
 			pkmn.UpdateHPPercentage();
-			BroadcastPkmnHPChanged(pkmn, oldHP, oldPercentage);
+			await BroadcastPkmnHPChanged(pkmn, oldHP, oldPercentage);
 		}
 		return healAmt;
 	}
 
-	private float CalculateBasePower(PBEBattlePokemon user, PBEBattlePokemon[] targets, IPBEMoveData mData, PBEType moveType)
+	private async Task<float> CalculateBasePower(PBEBattlePokemon user, PBEBattlePokemon[] targets, IPBEMoveData mData, PBEType moveType)
 	{
 		float basePower;
 
@@ -242,7 +246,7 @@ public sealed partial class PBEBattle
 					magnitude = 10;
 					basePower = 150;
 				}
-				BroadcastMagnitude(magnitude);
+				await BroadcastMagnitude(magnitude);
 				break;
 			}
 			case PBEMoveEffect.Punishment:
@@ -289,7 +293,7 @@ public sealed partial class PBEBattle
 					}
 					case PBEItem.BugGem:
 					{
-						BroadcastItem(user, user, PBEItem.BugGem, PBEItemAction.Consumed);
+						await BroadcastItem(user, user, PBEItem.BugGem, PBEItemAction.Consumed);
 						basePower *= 1.5f;
 						break;
 					}
@@ -308,7 +312,7 @@ public sealed partial class PBEBattle
 					}
 					case PBEItem.DarkGem:
 					{
-						BroadcastItem(user, user, PBEItem.DarkGem, PBEItemAction.Consumed);
+						await BroadcastItem(user, user, PBEItem.DarkGem, PBEItemAction.Consumed);
 						basePower *= 1.5f;
 						break;
 					}
@@ -351,7 +355,7 @@ public sealed partial class PBEBattle
 					}
 					case PBEItem.DragonGem:
 					{
-						BroadcastItem(user, user, PBEItem.DragonGem, PBEItemAction.Consumed);
+						await BroadcastItem(user, user, PBEItem.DragonGem, PBEItemAction.Consumed);
 						basePower *= 1.5f;
 						break;
 					}
@@ -370,7 +374,7 @@ public sealed partial class PBEBattle
 					}
 					case PBEItem.ElectricGem:
 					{
-						BroadcastItem(user, user, PBEItem.ElectricGem, PBEItemAction.Consumed);
+						await BroadcastItem(user, user, PBEItem.ElectricGem, PBEItemAction.Consumed);
 						basePower *= 1.5f;
 						break;
 					}
@@ -389,7 +393,7 @@ public sealed partial class PBEBattle
 					}
 					case PBEItem.FightingGem:
 					{
-						BroadcastItem(user, user, PBEItem.FightingGem, PBEItemAction.Consumed);
+						await BroadcastItem(user, user, PBEItem.FightingGem, PBEItemAction.Consumed);
 						basePower *= 1.5f;
 						break;
 					}
@@ -408,7 +412,7 @@ public sealed partial class PBEBattle
 					}
 					case PBEItem.FireGem:
 					{
-						BroadcastItem(user, user, PBEItem.FireGem, PBEItemAction.Consumed);
+						await BroadcastItem(user, user, PBEItem.FireGem, PBEItemAction.Consumed);
 						basePower *= 1.5f;
 						break;
 					}
@@ -427,7 +431,7 @@ public sealed partial class PBEBattle
 					}
 					case PBEItem.FlyingGem:
 					{
-						BroadcastItem(user, user, PBEItem.FlyingGem, PBEItemAction.Consumed);
+						await BroadcastItem(user, user, PBEItem.FlyingGem, PBEItemAction.Consumed);
 						basePower *= 1.5f;
 						break;
 					}
@@ -454,7 +458,7 @@ public sealed partial class PBEBattle
 					}
 					case PBEItem.GhostGem:
 					{
-						BroadcastItem(user, user, PBEItem.GhostGem, PBEItemAction.Consumed);
+						await BroadcastItem(user, user, PBEItem.GhostGem, PBEItemAction.Consumed);
 						basePower *= 1.5f;
 						break;
 					}
@@ -474,7 +478,7 @@ public sealed partial class PBEBattle
 					}
 					case PBEItem.GrassGem:
 					{
-						BroadcastItem(user, user, PBEItem.GrassGem, PBEItemAction.Consumed);
+						await BroadcastItem(user, user, PBEItem.GrassGem, PBEItemAction.Consumed);
 						basePower *= 1.5f;
 						break;
 					}
@@ -493,7 +497,7 @@ public sealed partial class PBEBattle
 					}
 					case PBEItem.GroundGem:
 					{
-						BroadcastItem(user, user, PBEItem.GroundGem, PBEItemAction.Consumed);
+						await BroadcastItem(user, user, PBEItem.GroundGem, PBEItemAction.Consumed);
 						basePower *= 1.5f;
 						break;
 					}
@@ -512,7 +516,7 @@ public sealed partial class PBEBattle
 					}
 					case PBEItem.IceGem:
 					{
-						BroadcastItem(user, user, PBEItem.IceGem, PBEItemAction.Consumed);
+						await BroadcastItem(user, user, PBEItem.IceGem, PBEItemAction.Consumed);
 						basePower *= 1.5f;
 						break;
 					}
@@ -534,7 +538,7 @@ public sealed partial class PBEBattle
 					}
 					case PBEItem.NormalGem:
 					{
-						BroadcastItem(user, user, PBEItem.NormalGem, PBEItemAction.Consumed);
+						await BroadcastItem(user, user, PBEItem.NormalGem, PBEItemAction.Consumed);
 						basePower *= 1.5f;
 						break;
 					}
@@ -553,7 +557,7 @@ public sealed partial class PBEBattle
 					}
 					case PBEItem.PoisonGem:
 					{
-						BroadcastItem(user, user, PBEItem.PoisonGem, PBEItemAction.Consumed);
+						await BroadcastItem(user, user, PBEItem.PoisonGem, PBEItemAction.Consumed);
 						basePower *= 1.5f;
 						break;
 					}
@@ -573,7 +577,7 @@ public sealed partial class PBEBattle
 					}
 					case PBEItem.PsychicGem:
 					{
-						BroadcastItem(user, user, PBEItem.PsychicGem, PBEItemAction.Consumed);
+						await BroadcastItem(user, user, PBEItem.PsychicGem, PBEItemAction.Consumed);
 						basePower *= 1.5f;
 						break;
 					}
@@ -593,7 +597,7 @@ public sealed partial class PBEBattle
 					}
 					case PBEItem.RockGem:
 					{
-						BroadcastItem(user, user, PBEItem.RockGem, PBEItemAction.Consumed);
+						await BroadcastItem(user, user, PBEItem.RockGem, PBEItemAction.Consumed);
 						basePower *= 1.5f;
 						break;
 					}
@@ -620,7 +624,7 @@ public sealed partial class PBEBattle
 					}
 					case PBEItem.SteelGem:
 					{
-						BroadcastItem(user, user, PBEItem.SteelGem, PBEItemAction.Consumed);
+						await BroadcastItem(user, user, PBEItem.SteelGem, PBEItemAction.Consumed);
 						basePower *= 1.5f;
 						break;
 					}
@@ -649,7 +653,7 @@ public sealed partial class PBEBattle
 					}
 					case PBEItem.WaterGem:
 					{
-						BroadcastItem(user, user, PBEItem.WaterGem, PBEItemAction.Consumed);
+						await BroadcastItem(user, user, PBEItem.WaterGem, PBEItemAction.Consumed);
 						basePower *= 1.5f;
 						break;
 					}

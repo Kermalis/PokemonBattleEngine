@@ -5,34 +5,47 @@ using Kermalis.PokemonBattleEngine.Utils;
 using System;
 using System.IO;
 using System.Linq;
+using System.Threading.Tasks;
 
 namespace Kermalis.PokemonBattleEngine.Battle;
 
 public sealed partial class PBEBattle
 {
-	public delegate void BattleEvent(PBEBattle battle, IPBEPacket packet);
+	public delegate Task BattleEvent(PBEBattle battle, IPBEPacket packet);
 	public event BattleEvent? OnNewEvent;
 
-	private void Broadcast(IPBEPacket packet)
+	private async Task Broadcast(IPBEPacket packet)
 	{
 		Events.Add(packet);
-		OnNewEvent?.Invoke(this, packet);
+
+		BattleEvent? handler = OnNewEvent;
+		if (handler is null)
+		{
+			return;
+		}
+
+		// If any of the subscribers return `Task.FromCanceled(new CancellationToken(true))`, execution will stop here.
+		// They need to catch the OperationCanceledException though
+		await Task.WhenAll(
+			handler.GetInvocationList().Cast<BattleEvent>()
+			.Select(h => h(this, packet))
+			);
 	}
 
-	private void BroadcastAbility(PBEBattlePokemon abilityOwner, PBEBattlePokemon pokemon2, PBEAbility ability, PBEAbilityAction abilityAction)
+	private async Task BroadcastAbility(PBEBattlePokemon abilityOwner, PBEBattlePokemon pokemon2, PBEAbility ability, PBEAbilityAction abilityAction)
 	{
 		abilityOwner.Ability = ability;
 		abilityOwner.KnownAbility = ability;
-		Broadcast(new PBEAbilityPacket(abilityOwner, pokemon2, ability, abilityAction));
+		await Broadcast(new PBEAbilityPacket(abilityOwner, pokemon2, ability, abilityAction));
 	}
-	private void BroadcastAbilityReplaced(PBEBattlePokemon abilityOwner, PBEAbility newAbility)
+	private async Task BroadcastAbilityReplaced(PBEBattlePokemon abilityOwner, PBEAbility newAbility)
 	{
 		PBEAbility? oldAbility = newAbility == PBEAbility.None ? null : abilityOwner.Ability; // Gastro Acid does not reveal previous ability
 		abilityOwner.Ability = newAbility;
 		abilityOwner.KnownAbility = newAbility;
-		Broadcast(new PBEAbilityReplacedPacket(abilityOwner, oldAbility, newAbility));
+		await Broadcast(new PBEAbilityReplacedPacket(abilityOwner, oldAbility, newAbility));
 	}
-	private void BroadcastBattleStatus(PBEBattleStatus battleStatus, PBEBattleStatusAction battleStatusAction)
+	private async Task BroadcastBattleStatus(PBEBattleStatus battleStatus, PBEBattleStatusAction battleStatusAction)
 	{
 		switch (battleStatusAction)
 		{
@@ -41,25 +54,25 @@ public sealed partial class PBEBattle
 			case PBEBattleStatusAction.Ended: BattleStatus &= ~battleStatus; break;
 			default: throw new ArgumentOutOfRangeException(nameof(battleStatusAction));
 		}
-		Broadcast(new PBEBattleStatusPacket(battleStatus, battleStatusAction));
+		await Broadcast(new PBEBattleStatusPacket(battleStatus, battleStatusAction));
 	}
-	private void BroadcastCapture(PBEBattlePokemon pokemon, PBEItem ball, byte numShakes, bool success, bool critical)
+	private async Task BroadcastCapture(PBEBattlePokemon pokemon, PBEItem ball, byte numShakes, bool success, bool critical)
 	{
-		Broadcast(new PBECapturePacket(pokemon, ball, numShakes, success, critical));
+		await Broadcast(new PBECapturePacket(pokemon, ball, numShakes, success, critical));
 	}
-	private void BroadcastFleeFailed(PBEBattlePokemon pokemon)
+	private async Task BroadcastFleeFailed(PBEBattlePokemon pokemon)
 	{
-		Broadcast(new PBEFleeFailedPacket(pokemon));
+		await Broadcast(new PBEFleeFailedPacket(pokemon));
 	}
-	private void BroadcastHaze()
+	private async Task BroadcastHaze()
 	{
-		Broadcast(new PBEHazePacket());
+		await Broadcast(new PBEHazePacket());
 	}
-	private void BroadcastIllusion(PBEBattlePokemon pokemon)
+	private async Task BroadcastIllusion(PBEBattlePokemon pokemon)
 	{
-		Broadcast(new PBEIllusionPacket(pokemon));
+		await Broadcast(new PBEIllusionPacket(pokemon));
 	}
-	private void BroadcastItem(PBEBattlePokemon itemHolder, PBEBattlePokemon pokemon2, PBEItem item, PBEItemAction itemAction)
+	private async Task BroadcastItem(PBEBattlePokemon itemHolder, PBEBattlePokemon pokemon2, PBEItem item, PBEItemAction itemAction)
 	{
 		switch (itemAction)
 		{
@@ -76,36 +89,36 @@ public sealed partial class PBEBattle
 				break;
 			}
 		}
-		Broadcast(new PBEItemPacket(itemHolder, pokemon2, item, itemAction));
+		await Broadcast(new PBEItemPacket(itemHolder, pokemon2, item, itemAction));
 	}
-	private void BroadcastItemTurn(PBEBattlePokemon itemUser, PBEItem item, PBEItemTurnAction itemAction)
+	private async Task BroadcastItemTurn(PBEBattlePokemon itemUser, PBEItem item, PBEItemTurnAction itemAction)
 	{
-		Broadcast(new PBEItemTurnPacket(itemUser, item, itemAction));
+		await Broadcast(new PBEItemTurnPacket(itemUser, item, itemAction));
 	}
-	private void BroadcastMoveCrit(PBEBattlePokemon victim)
+	private async Task BroadcastMoveCrit(PBEBattlePokemon victim)
 	{
-		Broadcast(new PBEMoveCritPacket(victim));
+		await Broadcast(new PBEMoveCritPacket(victim));
 	}
-	private void BroadcastMoveLock_ChoiceItem(PBEBattlePokemon moveUser, PBEMove lockedMove)
+	private async Task BroadcastMoveLock_ChoiceItem(PBEBattlePokemon moveUser, PBEMove lockedMove)
 	{
 		moveUser.ChoiceLockedMove = lockedMove;
-		Broadcast(new PBEMoveLockPacket(moveUser, PBEMoveLockType.ChoiceItem, lockedMove));
+		await Broadcast(new PBEMoveLockPacket(moveUser, PBEMoveLockType.ChoiceItem, lockedMove));
 	}
-	private void BroadcastMoveLock_Temporary(PBEBattlePokemon moveUser, PBEMove lockedMove, PBETurnTarget lockedTargets)
+	private async Task BroadcastMoveLock_Temporary(PBEBattlePokemon moveUser, PBEMove lockedMove, PBETurnTarget lockedTargets)
 	{
 		moveUser.TempLockedMove = lockedMove;
 		moveUser.TempLockedTargets = lockedTargets;
-		Broadcast(new PBEMoveLockPacket(moveUser, PBEMoveLockType.Temporary, lockedMove, lockedTargets));
+		await Broadcast(new PBEMoveLockPacket(moveUser, PBEMoveLockType.Temporary, lockedMove, lockedTargets));
 	}
-	private void BroadcastMovePPChanged(PBEBattlePokemon moveUser, PBEMove move, int amountReduced)
+	private async Task BroadcastMovePPChanged(PBEBattlePokemon moveUser, PBEMove move, int amountReduced)
 	{
-		Broadcast(new PBEMovePPChangedPacket(moveUser, move, amountReduced));
+		await Broadcast(new PBEMovePPChangedPacket(moveUser, move, amountReduced));
 	}
-	private void BroadcastMoveResult(PBEBattlePokemon moveUser, PBEBattlePokemon pokemon2, PBEResult result)
+	private async Task BroadcastMoveResult(PBEBattlePokemon moveUser, PBEBattlePokemon pokemon2, PBEResult result)
 	{
-		Broadcast(new PBEMoveResultPacket(moveUser, pokemon2, result));
+		await Broadcast(new PBEMoveResultPacket(moveUser, pokemon2, result));
 	}
-	private void BroadcastMoveUsed(PBEBattlePokemon moveUser, PBEMove move)
+	private async Task BroadcastMoveUsed(PBEBattlePokemon moveUser, PBEMove move)
 	{
 		bool owned;
 		if (!_calledFromOtherMove && moveUser.Moves.Contains(move))
@@ -121,21 +134,21 @@ public sealed partial class PBEBattle
 		{
 			owned = false;
 		}
-		Broadcast(new PBEMoveUsedPacket(moveUser, move, owned));
+		await Broadcast(new PBEMoveUsedPacket(moveUser, move, owned));
 	}
-	private void BroadcastPkmnEXPChanged(PBEBattlePokemon pokemon, uint oldEXP)
+	private async Task BroadcastPkmnEXPChanged(PBEBattlePokemon pokemon, uint oldEXP)
 	{
-		Broadcast(new PBEPkmnEXPChangedPacket(pokemon, oldEXP));
+		await Broadcast(new PBEPkmnEXPChangedPacket(pokemon, oldEXP));
 	}
-	private void BroadcastPkmnEXPEarned(PBEBattlePokemon pokemon, uint earned)
+	private async Task BroadcastPkmnEXPEarned(PBEBattlePokemon pokemon, uint earned)
 	{
-		Broadcast(new PBEPkmnEXPEarnedPacket(pokemon, earned));
+		await Broadcast(new PBEPkmnEXPEarnedPacket(pokemon, earned));
 	}
-	private void BroadcastPkmnFainted(PBEBattlePokemon pokemon, PBEFieldPosition oldPosition)
+	private async Task BroadcastPkmnFainted(PBEBattlePokemon pokemon, PBEFieldPosition oldPosition)
 	{
-		Broadcast(new PBEPkmnFaintedPacket(pokemon, oldPosition));
+		await Broadcast(new PBEPkmnFaintedPacket(pokemon, oldPosition));
 	}
-	private void BroadcastPkmnFormChanged(PBEBattlePokemon pokemon, PBEForm newForm, PBEAbility newAbility, PBEAbility newKnownAbility, bool isRevertForm)
+	private async Task BroadcastPkmnFormChanged(PBEBattlePokemon pokemon, PBEForm newForm, PBEAbility newAbility, PBEAbility newKnownAbility, bool isRevertForm)
 	{
 		pokemon.Ability = newAbility;
 		pokemon.KnownAbility = newKnownAbility;
@@ -159,34 +172,34 @@ public sealed partial class PBEBattle
 		float weight = pData.Weight; // TODO: Is weight updated here? Bulbapedia claims in Autotomize's page that it is not
 		pokemon.Weight = weight;
 		pokemon.KnownWeight = weight;
-		Broadcast(new PBEPkmnFormChangedPacket(pokemon, isRevertForm));
+		await Broadcast(new PBEPkmnFormChangedPacket(pokemon, isRevertForm));
 		// BUG: PBEStatus2.PowerTrick is not cleared when changing form (meaning it can still be baton passed)
 		if (Settings.BugFix && pokemon.Status2.HasFlag(PBEStatus2.PowerTrick))
 		{
-			BroadcastStatus2(pokemon, pokemon, PBEStatus2.PowerTrick, PBEStatusAction.Ended);
+			await BroadcastStatus2(pokemon, pokemon, PBEStatus2.PowerTrick, PBEStatusAction.Ended);
 		}
 	}
-	private void BroadcastPkmnHPChanged(PBEBattlePokemon pokemon, ushort oldHP, float oldHPPercentage)
+	private async Task BroadcastPkmnHPChanged(PBEBattlePokemon pokemon, ushort oldHP, float oldHPPercentage)
 	{
-		Broadcast(new PBEPkmnHPChangedPacket(pokemon, oldHP, oldHPPercentage));
+		await Broadcast(new PBEPkmnHPChangedPacket(pokemon, oldHP, oldHPPercentage));
 	}
-	private void BroadcastPkmnLevelChanged(PBEBattlePokemon pokemon)
+	private async Task BroadcastPkmnLevelChanged(PBEBattlePokemon pokemon)
 	{
-		Broadcast(new PBEPkmnLevelChangedPacket(pokemon));
+		await Broadcast(new PBEPkmnLevelChangedPacket(pokemon));
 	}
-	private void BroadcastPkmnStatChanged(PBEBattlePokemon pokemon, PBEStat stat, sbyte oldValue, sbyte newValue)
+	private async Task BroadcastPkmnStatChanged(PBEBattlePokemon pokemon, PBEStat stat, sbyte oldValue, sbyte newValue)
 	{
-		Broadcast(new PBEPkmnStatChangedPacket(pokemon, stat, oldValue, newValue));
+		await Broadcast(new PBEPkmnStatChangedPacket(pokemon, stat, oldValue, newValue));
 	}
-	private void BroadcastPkmnSwitchIn(PBETrainer trainer, PBEPkmnAppearedInfo[] switchIns, PBEBattlePokemon? forcedByPokemon = null)
+	private async Task BroadcastPkmnSwitchIn(PBETrainer trainer, PBEPkmnAppearedInfo[] switchIns, PBEBattlePokemon? forcedByPokemon = null)
 	{
-		Broadcast(new PBEPkmnSwitchInPacket(trainer, switchIns, forcedByPokemon));
+		await Broadcast(new PBEPkmnSwitchInPacket(trainer, switchIns, forcedByPokemon));
 	}
-	private void BroadcastPkmnSwitchOut(PBEBattlePokemon pokemon, PBEFieldPosition oldPosition, PBEBattlePokemon? forcedByPokemon = null)
+	private async Task BroadcastPkmnSwitchOut(PBEBattlePokemon pokemon, PBEFieldPosition oldPosition, PBEBattlePokemon? forcedByPokemon = null)
 	{
-		Broadcast(new PBEPkmnSwitchOutPacket(pokemon, oldPosition, forcedByPokemon));
+		await Broadcast(new PBEPkmnSwitchOutPacket(pokemon, oldPosition, forcedByPokemon));
 	}
-	private void BroadcastPsychUp(PBEBattlePokemon user, PBEBattlePokemon target)
+	private async Task BroadcastPsychUp(PBEBattlePokemon user, PBEBattlePokemon target)
 	{
 		user.AttackChange = target.AttackChange;
 		user.DefenseChange = target.DefenseChange;
@@ -195,65 +208,65 @@ public sealed partial class PBEBattle
 		user.SpeedChange = target.SpeedChange;
 		user.AccuracyChange = target.AccuracyChange;
 		user.EvasionChange = target.EvasionChange;
-		Broadcast(new PBEPsychUpPacket(user, target));
+		await Broadcast(new PBEPsychUpPacket(user, target));
 	}
-	private void BroadcastReflectType(PBEBattlePokemon user, PBEBattlePokemon target)
+	private async Task BroadcastReflectType(PBEBattlePokemon user, PBEBattlePokemon target)
 	{
 		user.Type1 = user.KnownType1 = target.KnownType1 = target.Type1;
 		user.Type2 = user.KnownType2 = target.KnownType2 = target.Type2;
-		Broadcast(new PBEReflectTypePacket(user, target));
+		await Broadcast(new PBEReflectTypePacket(user, target));
 	}
 
-	private void BroadcastDraggedOut(PBEBattlePokemon pokemon)
+	private async Task BroadcastDraggedOut(PBEBattlePokemon pokemon)
 	{
-		Broadcast(new PBESpecialMessagePacket(PBESpecialMessage.DraggedOut, pokemon));
+		await Broadcast(new PBESpecialMessagePacket(PBESpecialMessage.DraggedOut, pokemon));
 	}
-	private void BroadcastEndure(PBEBattlePokemon pokemon)
+	private async Task BroadcastEndure(PBEBattlePokemon pokemon)
 	{
-		Broadcast(new PBESpecialMessagePacket(PBESpecialMessage.Endure, pokemon));
+		await Broadcast(new PBESpecialMessagePacket(PBESpecialMessage.Endure, pokemon));
 	}
-	private void BroadcastHPDrained(PBEBattlePokemon pokemon)
+	private async Task BroadcastHPDrained(PBEBattlePokemon pokemon)
 	{
-		Broadcast(new PBESpecialMessagePacket(PBESpecialMessage.HPDrained, pokemon));
+		await Broadcast(new PBESpecialMessagePacket(PBESpecialMessage.HPDrained, pokemon));
 	}
-	private void BroadcastMagnitude(byte magnitude)
+	private async Task BroadcastMagnitude(byte magnitude)
 	{
-		Broadcast(new PBESpecialMessagePacket(PBESpecialMessage.Magnitude, magnitude));
+		await Broadcast(new PBESpecialMessagePacket(PBESpecialMessage.Magnitude, magnitude));
 	}
-	private void BroadcastMultiHit(byte numHits)
+	private async Task BroadcastMultiHit(byte numHits)
 	{
-		Broadcast(new PBESpecialMessagePacket(PBESpecialMessage.MultiHit, numHits));
+		await Broadcast(new PBESpecialMessagePacket(PBESpecialMessage.MultiHit, numHits));
 	}
-	private void BroadcastNothingHappened()
+	private async Task BroadcastNothingHappened()
 	{
-		Broadcast(new PBESpecialMessagePacket(PBESpecialMessage.NothingHappened));
+		await Broadcast(new PBESpecialMessagePacket(PBESpecialMessage.NothingHappened));
 	}
-	private void BroadcastOneHitKnockout()
+	private async Task BroadcastOneHitKnockout()
 	{
-		Broadcast(new PBESpecialMessagePacket(PBESpecialMessage.OneHitKnockout));
+		await Broadcast(new PBESpecialMessagePacket(PBESpecialMessage.OneHitKnockout));
 	}
-	private void BroadcastPainSplit(PBEBattlePokemon user, PBEBattlePokemon target)
+	private async Task BroadcastPainSplit(PBEBattlePokemon user, PBEBattlePokemon target)
 	{
-		Broadcast(new PBESpecialMessagePacket(PBESpecialMessage.PainSplit, user, target));
+		await Broadcast(new PBESpecialMessagePacket(PBESpecialMessage.PainSplit, user, target));
 	}
-	private void BroadcastPayDay()
+	private async Task BroadcastPayDay()
 	{
-		Broadcast(new PBESpecialMessagePacket(PBESpecialMessage.PayDay));
+		await Broadcast(new PBESpecialMessagePacket(PBESpecialMessage.PayDay));
 	}
-	private void BroadcastRecoil(PBEBattlePokemon pokemon)
+	private async Task BroadcastRecoil(PBEBattlePokemon pokemon)
 	{
-		Broadcast(new PBESpecialMessagePacket(PBESpecialMessage.Recoil, pokemon));
+		await Broadcast(new PBESpecialMessagePacket(PBESpecialMessage.Recoil, pokemon));
 	}
-	private void BroadcastStruggle(PBEBattlePokemon pokemon)
+	private async Task BroadcastStruggle(PBEBattlePokemon pokemon)
 	{
-		Broadcast(new PBESpecialMessagePacket(PBESpecialMessage.Struggle, pokemon));
+		await Broadcast(new PBESpecialMessagePacket(PBESpecialMessage.Struggle, pokemon));
 	}
 
-	private void BroadcastStatus1(PBEBattlePokemon status1Receiver, PBEBattlePokemon pokemon2, PBEStatus1 status1, PBEStatusAction statusAction)
+	private async Task BroadcastStatus1(PBEBattlePokemon status1Receiver, PBEBattlePokemon pokemon2, PBEStatus1 status1, PBEStatusAction statusAction)
 	{
-		Broadcast(new PBEStatus1Packet(status1Receiver, pokemon2, status1, statusAction));
+		await Broadcast(new PBEStatus1Packet(status1Receiver, pokemon2, status1, statusAction));
 	}
-	private void BroadcastStatus2(PBEBattlePokemon status2Receiver, PBEBattlePokemon pokemon2, PBEStatus2 status2, PBEStatusAction statusAction)
+	private async Task BroadcastStatus2(PBEBattlePokemon status2Receiver, PBEBattlePokemon pokemon2, PBEStatus2 status2, PBEStatusAction statusAction)
 	{
 		switch (statusAction)
 		{
@@ -265,9 +278,9 @@ public sealed partial class PBEBattle
 			case PBEStatusAction.Ended: status2Receiver.Status2 &= ~status2; status2Receiver.KnownStatus2 &= ~status2; break;
 			default: throw new ArgumentOutOfRangeException(nameof(statusAction));
 		}
-		Broadcast(new PBEStatus2Packet(status2Receiver, pokemon2, status2, statusAction));
+		await Broadcast(new PBEStatus2Packet(status2Receiver, pokemon2, status2, statusAction));
 	}
-	private void BroadcastTeamStatus(PBETeam team, PBETeamStatus teamStatus, PBETeamStatusAction teamStatusAction)
+	private async Task BroadcastTeamStatus(PBETeam team, PBETeamStatus teamStatus, PBETeamStatusAction teamStatusAction)
 	{
 		switch (teamStatusAction)
 		{
@@ -276,60 +289,60 @@ public sealed partial class PBEBattle
 			case PBETeamStatusAction.Ended: team.TeamStatus &= ~teamStatus; break;
 			default: throw new ArgumentOutOfRangeException(nameof(teamStatusAction));
 		}
-		Broadcast(new PBETeamStatusPacket(team, teamStatus, teamStatusAction));
+		await Broadcast(new PBETeamStatusPacket(team, teamStatus, teamStatusAction));
 	}
-	private void BroadcastTeamStatusDamage(PBETeam team, PBETeamStatus teamStatus, PBEBattlePokemon damageVictim)
+	private async Task BroadcastTeamStatusDamage(PBETeam team, PBETeamStatus teamStatus, PBEBattlePokemon damageVictim)
 	{
 		team.TeamStatus |= teamStatus;
-		Broadcast(new PBETeamStatusDamagePacket(team, teamStatus, damageVictim));
+		await Broadcast(new PBETeamStatusDamagePacket(team, teamStatus, damageVictim));
 	}
-	private void BroadcastTransform(PBEBattlePokemon user, PBEBattlePokemon target)
+	private async Task BroadcastTransform(PBEBattlePokemon user, PBEBattlePokemon target)
 	{
-		Broadcast(new PBETransformPacket(user, target));
+		await Broadcast(new PBETransformPacket(user, target));
 	}
-	private void BroadcastTypeChanged(PBEBattlePokemon pokemon, PBEType type1, PBEType type2)
+	private async Task BroadcastTypeChanged(PBEBattlePokemon pokemon, PBEType type1, PBEType type2)
 	{
 		pokemon.Type1 = type1;
 		pokemon.KnownType1 = type1;
 		pokemon.Type2 = type2;
 		pokemon.KnownType2 = type2;
-		Broadcast(new PBETypeChangedPacket(pokemon, type1, type2));
+		await Broadcast(new PBETypeChangedPacket(pokemon, type1, type2));
 	}
-	private void BroadcastWeather(PBEWeather weather, PBEWeatherAction weatherAction)
+	private async Task BroadcastWeather(PBEWeather weather, PBEWeatherAction weatherAction)
 	{
-		Broadcast(new PBEWeatherPacket(weather, weatherAction));
+		await Broadcast(new PBEWeatherPacket(weather, weatherAction));
 	}
-	private void BroadcastWeatherDamage(PBEWeather weather, PBEBattlePokemon damageVictim)
+	private async Task BroadcastWeatherDamage(PBEWeather weather, PBEBattlePokemon damageVictim)
 	{
-		Broadcast(new PBEWeatherDamagePacket(weather, damageVictim));
+		await Broadcast(new PBEWeatherDamagePacket(weather, damageVictim));
 	}
-	private void BroadcastWildPkmnAppeared(PBEPkmnAppearedInfo[] appearances)
+	private async Task BroadcastWildPkmnAppeared(PBEPkmnAppearedInfo[] appearances)
 	{
-		Broadcast(new PBEWildPkmnAppearedPacket(appearances));
+		await Broadcast(new PBEWildPkmnAppearedPacket(appearances));
 	}
-	private void BroadcastActionsRequest(PBETrainer trainer)
+	private async Task BroadcastActionsRequest(PBETrainer trainer)
 	{
-		Broadcast(new PBEActionsRequestPacket(trainer));
+		await Broadcast(new PBEActionsRequestPacket(trainer));
 	}
-	private void BroadcastAutoCenter(PBEBattlePokemon pokemon0, PBEFieldPosition pokemon0OldPosition, PBEBattlePokemon pokemon1, PBEFieldPosition pokemon1OldPosition)
+	private async Task BroadcastAutoCenter(PBEBattlePokemon pokemon0, PBEFieldPosition pokemon0OldPosition, PBEBattlePokemon pokemon1, PBEFieldPosition pokemon1OldPosition)
 	{
-		Broadcast(new PBEAutoCenterPacket(pokemon0, pokemon0OldPosition, pokemon1, pokemon1OldPosition));
+		await Broadcast(new PBEAutoCenterPacket(pokemon0, pokemon0OldPosition, pokemon1, pokemon1OldPosition));
 	}
-	private void BroadcastBattle()
+	private async Task BroadcastBattle()
 	{
-		Broadcast(new PBEBattlePacket(this));
+		await Broadcast(new PBEBattlePacket(this));
 	}
-	private void BroadcastBattleResult(PBEBattleResult r)
+	private async Task BroadcastBattleResult(PBEBattleResult r)
 	{
-		Broadcast(new PBEBattleResultPacket(r));
+		await Broadcast(new PBEBattleResultPacket(r));
 	}
-	private void BroadcastSwitchInRequest(PBETrainer trainer)
+	private async Task BroadcastSwitchInRequest(PBETrainer trainer)
 	{
-		Broadcast(new PBESwitchInRequestPacket(trainer));
+		await Broadcast(new PBESwitchInRequestPacket(trainer));
 	}
-	private void BroadcastTurnBegan()
+	private async Task BroadcastTurnBegan()
 	{
-		Broadcast(new PBETurnBeganPacket(TurnNumber));
+		await Broadcast(new PBETurnBeganPacket(TurnNumber));
 	}
 
 	public static string? GetDefaultMessage(PBEBattle battle, IPBEPacket packet, bool showRawHP = false, PBETrainer? userTrainer = null,
@@ -1679,13 +1692,13 @@ public sealed partial class PBEBattle
 	/// <param name="battle">The battle that <paramref name="packet"/> belongs to.</param>
 	/// <param name="packet">The battle event packet.</param>
 	/// <exception cref="ArgumentNullException">Thrown when <paramref name="battle"/> or <paramref name="packet"/> are null.</exception>
-	public static void ConsoleBattleEventHandler(PBEBattle battle, IPBEPacket packet)
+	public static Task ConsoleBattleEventHandler(PBEBattle battle, IPBEPacket packet)
 	{
 		string? message = GetDefaultMessage(battle, packet, showRawHP: true);
-		if (string.IsNullOrEmpty(message))
+		if (!string.IsNullOrEmpty(message))
 		{
-			return;
+			Console.WriteLine(message);
 		}
-		Console.WriteLine(message);
+		return Task.CompletedTask;
 	}
 }

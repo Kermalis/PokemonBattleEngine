@@ -136,7 +136,7 @@ public sealed partial class PBEBattle
 {
 	internal static bool AreActionsValid(PBETrainer trainer, IReadOnlyCollection<PBETurnAction> actions, [NotNullWhen(false)] out string? invalidReason)
 	{
-		if (trainer.Battle._battleState != PBEBattleState.WaitingForActions)
+		if (trainer.Battle.BattleState != PBEBattleState.WaitingForActions)
 		{
 			throw new InvalidOperationException($"{nameof(BattleState)} must be {PBEBattleState.WaitingForActions} to validate actions.");
 		}
@@ -363,14 +363,14 @@ public sealed partial class PBEBattle
 		}
 		if (trainer.Battle.Trainers.All(t => t.ActionsRequired.Count == 0))
 		{
-			trainer.Battle.BattleState = PBEBattleState.ReadyToRunTurn;
+			trainer.Battle.SetBattleState(PBEBattleState.ReadyToRunTurn);
 		}
 		return true;
 	}
 
 	internal static bool AreSwitchesValid(PBETrainer trainer, IReadOnlyCollection<PBESwitchIn> switches, [NotNullWhen(false)] out string? invalidReason)
 	{
-		if (trainer.Battle._battleState != PBEBattleState.WaitingForSwitchIns)
+		if (trainer.Battle.BattleState != PBEBattleState.WaitingForSwitchIns)
 		{
 			throw new InvalidOperationException($"{nameof(BattleState)} must be {PBEBattleState.WaitingForSwitchIns} to validate switches.");
 		}
@@ -435,7 +435,7 @@ public sealed partial class PBEBattle
 		}
 		if (trainer.Battle.Trainers.All(t => t.SwitchInsRequired == 0))
 		{
-			trainer.Battle.BattleState = PBEBattleState.ReadyToRunSwitches;
+			trainer.Battle.SetBattleState(PBEBattleState.ReadyToRunSwitches);
 		}
 		return true;
 	}
@@ -446,7 +446,7 @@ public sealed partial class PBEBattle
 		{
 			throw new InvalidOperationException($"{nameof(BattleType)} must be {PBEBattleType.Wild} to flee.");
 		}
-		switch (trainer.Battle._battleState)
+		switch (trainer.Battle.BattleState)
 		{
 			case PBEBattleState.WaitingForActions:
 			{
@@ -483,13 +483,14 @@ public sealed partial class PBEBattle
 		{
 			return false;
 		}
+
 		trainer.RequestedFlee = true;
-		if (trainer.Battle._battleState == PBEBattleState.WaitingForActions)
+		if (trainer.Battle.BattleState == PBEBattleState.WaitingForActions)
 		{
 			trainer.ActionsRequired.Clear();
 			if (trainer.Battle.Trainers.All(t => t.ActionsRequired.Count == 0))
 			{
-				trainer.Battle.BattleState = PBEBattleState.ReadyToRunTurn;
+				trainer.Battle.SetBattleState(PBEBattleState.ReadyToRunTurn);
 			}
 		}
 		else // WaitingForSwitches
@@ -497,7 +498,7 @@ public sealed partial class PBEBattle
 			trainer.SwitchInsRequired = 0;
 			if (trainer.Battle.Trainers.All(t => t.SwitchInsRequired == 0))
 			{
-				trainer.Battle.BattleState = PBEBattleState.ReadyToRunSwitches;
+				trainer.Battle.SetBattleState(PBEBattleState.ReadyToRunSwitches);
 			}
 		}
 		return true;
