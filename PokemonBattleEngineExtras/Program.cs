@@ -1,6 +1,8 @@
 ﻿using Kermalis.PokemonBattleEngine.DefaultData;
 using Microsoft.Data.Sqlite;
+using SQLitePCL;
 using System;
+using System.Threading.Tasks;
 
 namespace Kermalis.PokemonBattleEngineExtras;
 
@@ -14,17 +16,18 @@ internal static class Program
 		PokemonDataDumper
 	}
 
-	public static void Main()
-	{
-		static SqliteConnection GetConnection()
-		{
-			SQLitePCL.Batteries_V2.Init();
-			const string databasePath = @"PokemonBattleEngine.db";
-			var con = new SqliteConnection($"Filename={databasePath};");
-			con.Open();
-			return con;
-		}
+	private const string DB_PATH = @"PokemonBattleEngine.db";
 
+	private static SqliteConnection CreateDBConnection()
+	{
+		Batteries_V2.Init();
+		var con = new SqliteConnection($"Filename={DB_PATH};");
+		con.Open();
+		return con;
+	}
+
+	public static async Task Main()
+	{
 		Extra e = Extra.AIBattle;
 		try
 		{
@@ -33,12 +36,12 @@ internal static class Program
 				case Extra.AIBattle:
 				{
 					PBEDefaultDataProvider.InitEngine(string.Empty);
-					new AIBattleDemo().Run().GetAwaiter().GetResult();
+					await new AIBattleDemo().Run();
 					break;
 				}
 				case Extra.LocalizationDumper:
 				{
-					using (SqliteConnection con = GetConnection())
+					using (SqliteConnection con = CreateDBConnection())
 					{
 						LocalizationDumper.Run(con);
 						con.Close();
@@ -52,7 +55,7 @@ internal static class Program
 				}
 				case Extra.PokemonDataDumper:
 				{
-					using (SqliteConnection con = GetConnection())
+					using (SqliteConnection con = CreateDBConnection())
 					{
 						PokemonDataDumper.Run(con);
 						con.Close();
